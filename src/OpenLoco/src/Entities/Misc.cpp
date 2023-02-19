@@ -103,8 +103,8 @@ namespace OpenLoco
             return;
         }
 
-        const auto tile = Map::TileManager::get(position);
-        const auto lowZ = (position.z / Map::kSmallZStep) - 3;
+        const auto tile = World::TileManager::get(position);
+        const auto lowZ = (position.z / World::kSmallZStep) - 3;
         const auto highZ = lowZ + 6;
         for (const auto& el : tile)
         {
@@ -119,7 +119,7 @@ namespace OpenLoco
                 return;
             }
 
-            auto* elTrack = el.as<Map::TrackElement>();
+            auto* elTrack = el.as<World::TrackElement>();
             if (elTrack == nullptr)
             {
                 continue;
@@ -128,7 +128,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            auto* elStation = elTrack->next()->as<Map::StationElement>();
+            auto* elStation = elTrack->next()->as<World::StationElement>();
             if (elStation == nullptr)
             {
                 continue;
@@ -166,11 +166,11 @@ namespace OpenLoco
     }
 
     // 0x0044080C
-    Exhaust* Exhaust::create(Map::Pos3 loc, uint8_t type)
+    Exhaust* Exhaust::create(World::Pos3 loc, uint8_t type)
     {
-        if (!Map::validCoords(loc))
+        if (!World::validCoords(loc))
             return nullptr;
-        auto surface = Map::TileManager::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
+        auto surface = World::TileManager::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
         if (surface == nullptr)
             return nullptr;
@@ -203,7 +203,7 @@ namespace OpenLoco
     void Smoke::update()
     {
         Ui::ViewportManager::invalidate(this, ZoomLevel::half);
-        moveTo(position + Map::Pos3(0, 0, 1));
+        moveTo(position + World::Pos3(0, 0, 1));
         Ui::ViewportManager::invalidate(this, ZoomLevel::half);
 
         frame += 0x55;
@@ -214,7 +214,7 @@ namespace OpenLoco
     }
 
     // 0x00440BEB
-    Smoke* Smoke::create(Map::Pos3 loc)
+    Smoke* Smoke::create(World::Pos3 loc)
     {
         auto t = static_cast<Smoke*>(EntityManager::createEntityMisc());
         if (t != nullptr)
@@ -231,7 +231,7 @@ namespace OpenLoco
     }
 
     // 0x004FADD0
-    constexpr Map::Pos2 _wiggleAmounts[] = {
+    constexpr World::Pos2 _wiggleAmounts[] = {
         { 1, -1 },
         { 1, 1 },
         { -1, 1 },
@@ -282,7 +282,7 @@ namespace OpenLoco
             }
             const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()] * ((frame & 1) ? 0 : 1);
             const auto nudgeZ = _wiggleZAmounts[frame];
-            moveTo(position + Map::Pos3{ nudge.x, nudge.y, nudgeZ });
+            moveTo(position + World::Pos3{ nudge.x, nudge.y, nudgeZ });
             frame++;
         }
         else
@@ -304,7 +304,7 @@ namespace OpenLoco
             moveDelay = 0;
 
             const auto nudge = _wiggleAmounts[Ui::WindowManager::getCurrentRotation()];
-            moveTo(position + Map::Pos3{ nudge.x, nudge.y, position.z });
+            moveTo(position + World::Pos3{ nudge.x, nudge.y, position.z });
             numMovements++;
             if (numMovements >= kRedGreenLifetime)
             {
@@ -317,7 +317,7 @@ namespace OpenLoco
     // company : updatingCompanyId global
     // loc : ax, cx, dx
     // amount : ebx
-    MoneyEffect* MoneyEffect::create(const Map::Pos3& loc, const CompanyId company, const currency32_t amount)
+    MoneyEffect* MoneyEffect::create(const World::Pos3& loc, const CompanyId company, const currency32_t amount)
     {
         if (isTitleMode())
         {
@@ -403,7 +403,7 @@ namespace OpenLoco
     }
 
     // 0x00440BBF
-    ExplosionSmoke* ExplosionSmoke::create(const Map::Pos3& loc)
+    ExplosionSmoke* ExplosionSmoke::create(const World::Pos3& loc)
     {
         auto t = static_cast<ExplosionSmoke*>(EntityManager::createEntityMisc());
         if (t != nullptr)
@@ -412,7 +412,7 @@ namespace OpenLoco
             t->spriteHeightNegative = 32;
             t->spriteHeightPositive = 34;
             t->baseType = EntityBaseType::misc;
-            t->moveTo(loc + Map::Pos3{ 0, 0, 4 });
+            t->moveTo(loc + World::Pos3{ 0, 0, 4 });
             t->setSubType(MiscEntityType::explosionSmoke);
             t->frame = 0;
         }

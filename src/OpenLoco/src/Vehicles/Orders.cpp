@@ -64,7 +64,7 @@ namespace OpenLoco::Vehicles
         return {};
     }
 
-    void OrderRouteWaypoint::setWaypoint(const Map::TilePos2& pos, const uint8_t baseZ)
+    void OrderRouteWaypoint::setWaypoint(const World::TilePos2& pos, const uint8_t baseZ)
     {
         _type &= ~0x80;
         _type |= ((pos.x & 0x100) >> 1);
@@ -87,11 +87,11 @@ namespace OpenLoco::Vehicles
         _data[4] = (trackId >> 5) & 0x1;
     }
 
-    Map::Pos3 OrderRouteWaypoint::getWaypoint() const
+    World::Pos3 OrderRouteWaypoint::getWaypoint() const
     {
-        Map::Pos3 loc{};
-        loc.x = ((static_cast<int16_t>(_type & 0x80) << 1) | _data[0]) * Map::kTileSize;
-        loc.y = ((static_cast<int16_t>(_data[1] & 0x80) << 1) | _data[2]) * Map::kTileSize;
+        World::Pos3 loc{};
+        loc.x = ((static_cast<int16_t>(_type & 0x80) << 1) | _data[0]) * World::kTileSize;
+        loc.y = ((static_cast<int16_t>(_data[1] & 0x80) << 1) | _data[2]) * World::kTileSize;
         loc.z = (_data[1] & 0x7F) * 8;
         return loc;
     }

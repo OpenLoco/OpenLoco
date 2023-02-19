@@ -777,8 +777,8 @@ namespace OpenLoco
         call(0x004613F0); // Map::TileManager::reorg?
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
-        Map::TileManager::update();
-        Map::WaveManager::update();
+        World::TileManager::update();
+        World::WaveManager::update();
         TownManager::update();
         IndustryManager::update();
         VehicleManager::update();
@@ -787,7 +787,7 @@ namespace OpenLoco
         EffectsManager::update();
         sub_46FFCA();
         CompanyManager::update();
-        Map::AnimationManager::update();
+        World::AnimationManager::update();
         Audio::updateVehicleNoise();
         Audio::updateAmbientNoise();
         Title::update();
@@ -959,7 +959,7 @@ namespace OpenLoco
                         CompanyManager::updateYearly();
                         ObjectManager::updateYearly1();
                         ObjectManager::updateYearly2();
-                        Map::TileManager::updateYearly();
+                        World::TileManager::updateYearly();
                     }
 
                     autosaveCheck();

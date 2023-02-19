@@ -41,7 +41,7 @@
 #include <sstream>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Vehicle
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<EntityId, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
-    static loco_global<Map::Pos3, 0x0113625E> _ghostVehiclePos;
+    static loco_global<World::Pos3, 0x0113625E> _ghostVehiclePos;
     static loco_global<StationId, 0x0113625A> _ghostAirportStationId;
     static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
 
@@ -2760,7 +2760,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         break;
                     auto height = trackElement->baseHeight();
                     auto trackId = trackElement->trackId();
-                    const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
+                    const auto& trackPiece = World::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->unkDirection());
@@ -2808,7 +2808,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         break;
                     auto height = roadElement->baseHeight();
                     auto roadId = roadElement->roadId();
-                    const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
+                    const auto& roadPiece = World::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->unkDirection());
@@ -3414,22 +3414,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Search 8x8 area centerd on mouse pos
-            const auto centerPos = *pos + Map::Pos2(16, 16);
-            Map::Pos2 initialPos = *pos - Map::TilePos2(4, 4);
+            const auto centerPos = *pos + World::Pos2(16, 16);
+            World::Pos2 initialPos = *pos - World::TilePos2(4, 4);
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
-            Map::Pos3 bestLoc;
+            World::Pos3 bestLoc;
 
             for (auto i = 0; i < 8; ++i)
             {
                 for (auto j = 0; j < 8; ++j)
                 {
-                    const auto loc = initialPos + Map::TilePos2(i, j);
-                    if (!Map::validCoords(loc))
+                    const auto loc = initialPos + World::TilePos2(i, j);
+                    if (!World::validCoords(loc))
                     {
                         continue;
                     }
 
-                    auto tile = Map::TileManager::get(loc);
+                    auto tile = World::TileManager::get(loc);
                     for (auto& el : tile)
                     {
                         auto* elStation = el.as<StationElement>();
@@ -3448,7 +3448,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             continue;
                         }
 
-                        auto firstTile = loc - Map::offsets[elStation->multiTileIndex()];
+                        auto firstTile = loc - World::offsets[elStation->multiTileIndex()];
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
                         auto boatLoc = firstTile + TilePos2{ 1, 1 } + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
 
@@ -3456,7 +3456,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         if (distance < bestDistance)
                         {
                             bestDistance = distance;
-                            bestLoc = Map::Pos3(loc.x, loc.y, elStation->baseHeight());
+                            bestLoc = World::Pos3(loc.x, loc.y, elStation->baseHeight());
                         }
                     }
                 }
@@ -3509,11 +3509,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x00426D52
         // used to return NodeMovementFlags on ebx
-        static std::optional<Map::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node)
+        static std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node)
         {
             auto* station = StationManager::get(stationId);
-            auto tile = TileManager::get(Map::Pos2{ station->unk_tile_x, station->unk_tile_y });
-            Map::StationElement* elStation = nullptr;
+            auto tile = TileManager::get(World::Pos2{ station->unk_tile_x, station->unk_tile_y });
+            World::StationElement* elStation = nullptr;
             for (auto& el : tile)
             {
                 elStation = el.as<StationElement>();
@@ -3537,8 +3537,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto& movementNode = airportObj->movementNodes[node];
-            auto nodeOffset = Math::Vector::rotate(Map::Pos2(movementNode.x, movementNode.y) - Map::Pos2(16, 16), elStation->rotation()) + Map::Pos2(16, 16);
-            auto nodeLoc = Map::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.y } + Map::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
+            auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
+            auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.y } + World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
             if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))
             {
                 nodeLoc.z = station->unk_tile_z + 255;
@@ -3554,7 +3554,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static std::optional<GameCommands::VehicleAirPlacementArgs> getVehicleAirPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
             auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::station);
-            auto* elStation = static_cast<Map::StationElement*>(res.first.object);
+            auto* elStation = static_cast<World::StationElement*>(res.first.object);
             if (res.first.type != ViewportInteraction::InteractionItem::airport)
             {
                 res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
@@ -3576,16 +3576,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         continue;
                     }
 
-                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * Map::kTileSize)
+                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * World::kTileSize)
                     {
                         continue;
                     }
-                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * Map::kTileSize)
+                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * World::kTileSize)
                     {
                         continue;
                     }
 
-                    auto tile = TileManager::get(Map::Pos2{ station.unk_tile_x, station.unk_tile_y });
+                    auto tile = TileManager::get(World::Pos2{ station.unk_tile_x, station.unk_tile_y });
                     for (auto& el : tile)
                     {
                         elStation = el.as<StationElement>();
@@ -3640,7 +3640,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     continue;
                 }
 
-                auto viewPos = Map::gameToScreen(*nodeLoc, res.second->getRotation());
+                auto viewPos = World::gameToScreen(*nodeLoc, res.second->getRotation());
                 auto uiPos = res.second->viewportToScreen(viewPos);
                 auto distance = Math::Vector::manhattanDistance(uiPos, Point{ x, y });
                 if (distance < bestDistance)
@@ -3694,18 +3694,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A43E4
-        static uint16_t getRoadProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
+        static uint16_t getRoadProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const World::Pos3& loc)
         {
             // Get the coordinates of the first tile of the possibly multitile road
-            const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement.roadId());
+            const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement.roadId());
             const auto& roadData = roadDataArr[roadElement.sequenceIndex()];
-            auto roadOffset2 = Math::Vector::rotate(Map::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
-            auto roadOffset = Map::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
+            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
+            auto roadOffset = World::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
 
             // Get the movement info for this specific road id
             uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
-            const auto moveInfoArr = Map::TrackData::getRoadPlacementSubPositon(trackAndDirection);
+            const auto moveInfoArr = World::TrackData::getRoadPlacementSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the road that is as close as possible
             // to the cursors location.
@@ -3714,7 +3714,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = roadFirstTile + moveInfo.loc;
-                auto viewPos = Map::gameToScreen(potentialLoc, viewport.getRotation());
+                auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
                 auto uiPos = viewport.viewportToScreen(viewPos);
                 auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
                 if (distance < bestDistance)
@@ -3736,15 +3736,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Get the best progress along the road relative to the cursor
-            auto* roadElement = static_cast<Map::RoadElement*>(interaction.object);
-            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseHeight());
+            auto* roadElement = static_cast<World::RoadElement*>(interaction.object);
+            World::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseHeight());
             auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
 
             // Get the coordinates of the first tile of the possibly multitile road
-            const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement->roadId());
+            const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement->roadId());
             const auto& roadData = roadDataArr[roadElement->sequenceIndex()];
-            auto roadOffset2 = Math::Vector::rotate(Map::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
-            auto roadOffset = Map::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
+            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
+            auto roadOffset = World::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
 
             GameCommands::VehiclePlacementArgs placementArgs;
@@ -3764,7 +3764,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             placementArgs->head = head.id;
-            const auto moveInfoArr = Map::TrackData::getRoadPlacementSubPositon(placementArgs->trackAndDirection);
+            const auto moveInfoArr = World::TrackData::getRoadPlacementSubPositon(placementArgs->trackAndDirection);
             const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
 
             uint8_t unkYaw = moveInfo.yaw + (WindowManager::getCurrentRotation() << 4);
@@ -3776,12 +3776,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             unkYaw &= 0x3F;
             if (unkYaw <= 0x20)
             {
-                static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
+                static loco_global<World::Pos2[352], 0x00503C6C> _503C6C;
                 const auto& unkItem = TrackData::getUnkRoad(placementArgs->trackAndDirection);
                 placementArgs->pos += unkItem.pos;
                 if (unkItem.rotationEnd < 12)
                 {
-                    placementArgs->pos -= Map::Pos3{ _503C6C[unkItem.rotationEnd], 0 };
+                    placementArgs->pos -= World::Pos3{ _503C6C[unkItem.rotationEnd], 0 };
                 }
                 placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
                 if (placementArgs->trackProgress >= moveInfoArr.size())
@@ -3794,18 +3794,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A43E4
-        static uint16_t getTrackProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
+        static uint16_t getTrackProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const World::Pos3& loc)
         {
             // Get the coordinates of the first tile of the possibly multitile track
-            const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement.trackId());
+            const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement.trackId());
             const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
-            auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
-            auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
+            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
+            auto trackOffset = World::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
 
             // Get the movement info for this specific track id
             uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
-            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
+            const auto moveInfoArr = World::TrackData::getTrackSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the track that is as close as possible
             // to the cursors location.
@@ -3814,7 +3814,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
-                auto viewPos = Map::gameToScreen(potentialLoc, viewport.getRotation());
+                auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
                 auto uiPos = viewport.viewportToScreen(viewPos);
                 auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
                 if (distance < bestDistance)
@@ -3836,15 +3836,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Get the best progress along the track relative to the cursor
-            auto* trackElement = static_cast<Map::TrackElement*>(interaction.object);
-            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseHeight());
+            auto* trackElement = static_cast<World::TrackElement*>(interaction.object);
+            World::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseHeight());
             auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
 
             // Get the coordinates of the first tile of the possibly multitile road
-            const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement->trackId());
+            const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement->trackId());
             const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
-            auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
-            auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
+            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
+            auto trackOffset = World::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
 
             GameCommands::VehiclePlacementArgs placementArgs;
@@ -3864,7 +3864,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             placementArgs->head = head.id;
-            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
+            const auto moveInfoArr = World::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
             const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
 
             uint8_t unkYaw = moveInfo.yaw + (WindowManager::getCurrentRotation() << 4);
@@ -3876,12 +3876,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             unkYaw &= 0x3F;
             if (unkYaw <= 0x20)
             {
-                static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
+                static loco_global<World::Pos2[352], 0x00503C6C> _503C6C;
                 const auto& unkItem = TrackData::getUnkTrack(placementArgs->trackAndDirection);
                 placementArgs->pos += unkItem.pos;
                 if (unkItem.rotationEnd < 12)
                 {
-                    placementArgs->pos -= Map::Pos3{ _503C6C[unkItem.rotationEnd], 0 };
+                    placementArgs->pos -= World::Pos3{ _503C6C[unkItem.rotationEnd], 0 };
                 }
                 placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
                 if (placementArgs->trackProgress >= moveInfoArr.size())

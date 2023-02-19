@@ -21,12 +21,12 @@
 #include "Ui.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Map::TileManager
+namespace OpenLoco::World::TileManager
 {
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
@@ -39,7 +39,7 @@ namespace OpenLoco::Map::TileManager
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
     static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<Map::Pos2, 0x00525F6E> _startUpdateLocation;
+    static loco_global<World::Pos2, 0x00525F6E> _startUpdateLocation;
 
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -61,7 +61,7 @@ namespace OpenLoco::Map::TileManager
     void initialise()
     {
         _F00168 = 0;
-        _startUpdateLocation = Map::Pos2(0, 0);
+        _startUpdateLocation = World::Pos2(0, 0);
         const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
 
         SurfaceElement defaultElement{};
@@ -203,7 +203,7 @@ namespace OpenLoco::Map::TileManager
 
     Tile get(coord_t x, coord_t y)
     {
-        return get(TilePos2(x / Map::kTileSize, y / Map::kTileSize));
+        return get(TilePos2(x / World::kTileSize, y / World::kTileSize));
     }
 
     constexpr uint8_t kTileSize = 31;
@@ -330,7 +330,7 @@ namespace OpenLoco::Map::TileManager
     {
         TileHeight height{ 16, 0 };
         // Off the map
-        if ((unsigned)pos.x >= (Map::kMapWidth - 1) || (unsigned)pos.y >= (Map::kMapHeight - 1))
+        if ((unsigned)pos.x >= (World::kMapWidth - 1) || (unsigned)pos.y >= (World::kMapHeight - 1))
             return height;
 
         auto tile = TileManager::get(pos);
@@ -478,7 +478,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x00462926
-    bool canConstructAt(const Map::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
+    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
     {
         registers regs;
         regs.ax = pos.x;
@@ -490,7 +490,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // TODO: Return std::optional
-    uint16_t setMapSelectionTiles(const Map::Pos2& loc, const uint8_t selectionType)
+    uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType)
     {
         uint16_t xPos = loc.x;
         uint16_t yPos = loc.y;
@@ -555,7 +555,7 @@ namespace OpenLoco::Map::TileManager
         return count;
     }
 
-    uint16_t setMapSelectionSingleTile(const Map::Pos2& loc, bool setQuadrant)
+    uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant)
     {
         uint16_t xPos = loc.x & 0xFFE0;
         uint16_t yPos = loc.y & 0xFFE0;
@@ -626,7 +626,7 @@ namespace OpenLoco::Map::TileManager
     // 0x004CBE5F
     // regs.ax: pos.x
     // regs.cx: pos.y
-    void mapInvalidateTileFull(Map::Pos2 pos)
+    void mapInvalidateTileFull(World::Pos2 pos)
     {
         Ui::ViewportManager::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }
@@ -664,22 +664,22 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x00469A81
-    int16_t mountainHeight(const Map::Pos2& loc)
+    int16_t mountainHeight(const World::Pos2& loc)
     {
         // Works out roughly the height of a mountain of area 11 * 11
         // (Its just the heighest point - the lowest point)
         int16_t lowest = std::numeric_limits<int16_t>::max();
         int16_t highest = 0;
-        Map::TilePosRangeView range{
-            loc - Map::TilePos2{ 5, 5 }, loc + Map::TilePos2{ 5, 5 }
+        World::TilePosRangeView range{
+            loc - World::TilePos2{ 5, 5 }, loc + World::TilePos2{ 5, 5 }
         };
         for (auto& tilePos : range)
         {
-            if (!Map::validCoords(tilePos))
+            if (!World::validCoords(tilePos))
             {
                 continue;
             }
-            auto tile = Map::TileManager::get(tilePos);
+            auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             auto height = surface->baseHeight();
             lowest = std::min(lowest, height);
@@ -701,15 +701,15 @@ namespace OpenLoco::Map::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tilePos = initialTilePos + Map::TilePos2(xOffset, yOffset);
-                if (!Map::validCoords(tilePos))
+                auto tilePos = initialTilePos + World::TilePos2(xOffset, yOffset);
+                if (!World::validCoords(tilePos))
                     continue;
 
                 auto tile = get(tilePos);
@@ -727,13 +727,13 @@ namespace OpenLoco::Map::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingDesertTiles = 0;
 
-        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + Map::TilePos2{ 10, 10 }))
+        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + World::TilePos2{ 10, 10 }))
         {
-            if (!Map::validCoords(tilePos))
+            if (!World::validCoords(tilePos))
                 continue;
 
             auto tile = get(tilePos);
@@ -762,15 +762,15 @@ namespace OpenLoco::Map::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tilePos = initialTilePos + Map::TilePos2(xOffset, yOffset);
-                if (!Map::validCoords(tilePos))
+                auto tilePos = initialTilePos + World::TilePos2(xOffset, yOffset);
+                if (!World::validCoords(tilePos))
                     continue;
 
                 auto tile = get(tilePos);
@@ -793,7 +793,7 @@ namespace OpenLoco::Map::TileManager
         return surroundingTrees;
     }
 
-    static bool update(TileElement& el, const Map::Pos2& loc)
+    static bool update(TileElement& el, const World::Pos2& loc)
     {
         registers regs;
         regs.ax = loc.x;
@@ -842,9 +842,9 @@ namespace OpenLoco::Map::TileManager
 
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
         auto pos = *_startUpdateLocation;
-        for (; pos.y < Map::kMapHeight; pos.y += 16 * Map::kTileSize)
+        for (; pos.y < World::kMapHeight; pos.y += 16 * World::kTileSize)
         {
-            for (; pos.x < Map::kMapWidth; pos.x += 16 * Map::kTileSize)
+            for (; pos.x < World::kMapWidth; pos.x += 16 * World::kTileSize)
             {
                 auto tile = TileManager::get(pos);
                 for (auto& el : tile)
@@ -859,9 +859,9 @@ namespace OpenLoco::Map::TileManager
                     }
                 }
             }
-            pos.x -= Map::kMapWidth;
+            pos.x -= World::kMapWidth;
         }
-        pos.y -= Map::kMapHeight;
+        pos.y -= World::kMapHeight;
 
         const TilePos2 tilePos(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
@@ -873,21 +873,21 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x0048B0C7
-    void createDestructExplosion(const Map::Pos3& pos)
+    void createDestructExplosion(const World::Pos3& pos)
     {
-        ExplosionSmoke::create(pos + Map::Pos3{ 0, 0, 13 });
+        ExplosionSmoke::create(pos + World::Pos3{ 0, 0, 13 });
         const auto randFreq = gPrng().randNext(20'003, 24'098);
         Audio::playSound(Audio::SoundId::demolishBuilding, pos, -1400, randFreq);
     }
 
     // 0x0042D8FF
-    void removeBuildingElement(BuildingElement& elBuilding, const Map::Pos2& pos)
+    void removeBuildingElement(BuildingElement& elBuilding, const World::Pos2& pos)
     {
         if (!elBuilding.isGhost() && !elBuilding.isFlag5())
         {
             if (CompanyManager::getUpdatingCompanyId() != CompanyId::neutral)
             {
-                createDestructExplosion(Map::Pos3(pos.x + 16, pos.y + 16, elBuilding.baseHeight()));
+                createDestructExplosion(World::Pos3(pos.x + 16, pos.y + 16, elBuilding.baseHeight()));
             }
         }
 
@@ -924,9 +924,9 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x004C482B
-    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseZ)
+    void removeAllWallsOnTile(const World::TilePos2& pos, SmallZ baseZ)
     {
-        std::vector<Map::TileElement*> toDelete;
+        std::vector<World::TileElement*> toDelete;
         auto tile = get(pos);
         for (auto& el : tile)
         {
@@ -946,7 +946,7 @@ namespace OpenLoco::Map::TileManager
             toDelete.push_back(&el);
         }
         // Remove in reverse order to prevent pointer invalidation
-        std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](Map::TileElement* el) {
+        std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](World::TileElement* el) {
             Ui::ViewportManager::invalidate(pos, el->baseHeight(), el->baseHeight() + 72, ZoomLevel::half);
             removeElement(*el);
         });

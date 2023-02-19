@@ -8,12 +8,12 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     static loco_global<uint32_t, 0x00525FBC> _525FBC;
 
     // 0x00477FC2
-    bool RoadElement::update(const Map::Pos2& loc)
+    bool RoadElement::update(const World::Pos2& loc)
     {
         if (owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(owner()))
             return true;
@@ -68,7 +68,7 @@ namespace OpenLoco::Map
         CompanyManager::setUpdatingCompanyId(owner());
 
         GameCommands::RoadRemovalArgs args;
-        args.pos = Map::Pos3(loc.x, loc.y, baseHeight());
+        args.pos = World::Pos3(loc.x, loc.y, baseHeight());
         args.unkDirection = unkDirection();
         args.roadId = roadId();
         args.sequenceIndex = sequenceIndex();

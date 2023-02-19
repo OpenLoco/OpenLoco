@@ -1,5 +1,5 @@
 #pragma once
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
 
 namespace OpenLoco::Paint

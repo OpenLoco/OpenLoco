@@ -4,12 +4,12 @@
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cstddef>
 #include <cstdlib>
 
-namespace OpenLoco::Map::TrackData
+namespace OpenLoco::World::TrackData
 {
     using ConnectionsByRotation = std::array<uint8_t, 4>;
 
@@ -49,7 +49,7 @@ namespace OpenLoco::Map::TrackData
     {
         uint8_t rotationBegin; // 0x00
         uint8_t rotationEnd;   // 0x01
-        Map::Pos3 pos;         // 0x02
+        World::Pos3 pos;       // 0x02
     };
     static_assert(sizeof(TrackCoordinates) == 0x8);
 #pragma pack(pop)

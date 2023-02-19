@@ -23,14 +23,14 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Paint
 {
     // 0x004621FF
-    static void paintVoid(PaintSession& session, const Map::Pos2& loc)
+    static void paintVoid(PaintSession& session, const World::Pos2& loc)
     {
-        constexpr Map::Pos2 kUnkOffsets[4] = {
+        constexpr World::Pos2 kUnkOffsets[4] = {
             { 0, 0 },
             { 32, 0 },
             { 32, 32 },
@@ -38,7 +38,7 @@ namespace OpenLoco::Paint
         };
 
         const auto loc2 = loc + kUnkOffsets[session.getRotation()];
-        const auto vpPos = Map::gameToScreen(Map::Pos3(loc2.x, loc2.y, 16), session.getRotation());
+        const auto vpPos = World::gameToScreen(World::Pos3(loc2.x, loc2.y, 16), session.getRotation());
         if (vpPos.y + 32 <= session.getRenderTarget()->y)
         {
             return;
@@ -54,9 +54,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x00461EA7
-    static void paintConstructionArrow(PaintSession& session, const Map::Pos2& loc)
+    static void paintConstructionArrow(PaintSession& session, const World::Pos2& loc)
     {
-        static loco_global<Map::Pos3, 0x00F24942> _constructionArrowLocation;
+        static loco_global<World::Pos3, 0x00F24942> _constructionArrowLocation;
         static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow))
         {
@@ -88,7 +88,7 @@ namespace OpenLoco::Paint
         };
         const auto imageId = ImageId{ kConstructionArrowImages[dirIndex], Colour::yellow };
         session.setItemType(InteractionItem::noInteraction);
-        session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, Map::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, -1 });
+        session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, World::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, -1 });
     }
 
     // 0x004792E7 streetlights?
@@ -124,7 +124,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004656BF
-    static void paintSurface([[maybe_unused]] PaintSession& session, Map::SurfaceElement& elSurface)
+    static void paintSurface([[maybe_unused]] PaintSession& session, World::SurfaceElement& elSurface)
     {
         registers regs;
         regs.esi = X86Pointer(&elSurface);
@@ -133,7 +133,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0042C6C4
-    static void paintBuilding([[maybe_unused]] PaintSession& session, Map::BuildingElement& elBuilding)
+    static void paintBuilding([[maybe_unused]] PaintSession& session, World::BuildingElement& elBuilding)
     {
         registers regs;
         regs.esi = X86Pointer(&elBuilding);
@@ -143,7 +143,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004C3D7C
-    static void paintWall([[maybe_unused]] PaintSession& session, Map::WallElement& elWall)
+    static void paintWall([[maybe_unused]] PaintSession& session, World::WallElement& elWall)
     {
         registers regs;
         regs.esi = X86Pointer(&elWall);
@@ -153,7 +153,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004759A6
-    static void paintRoad([[maybe_unused]] PaintSession& session, Map::RoadElement& elRoad)
+    static void paintRoad([[maybe_unused]] PaintSession& session, World::RoadElement& elRoad)
     {
         registers regs;
         regs.esi = X86Pointer(&elRoad);
@@ -163,7 +163,7 @@ namespace OpenLoco::Paint
     }
 
     // Returns std::nullopt on no need to paint
-    static std::optional<Ui::viewport_pos> paintTileElementsSetup(PaintSession& session, const Map::Pos2& loc)
+    static std::optional<Ui::viewport_pos> paintTileElementsSetup(PaintSession& session, const World::Pos2& loc)
     {
         session.setSegmentSupportHeight(SegmentFlags::all, std::numeric_limits<uint16_t>::max(), 0);
         session.setGeneralSupportHeight(std::numeric_limits<uint16_t>::max(), 0);
@@ -173,7 +173,7 @@ namespace OpenLoco::Paint
 
         session.setMaxHeight(loc);
 
-        constexpr Map::Pos2 kUnkOffsets[4] = {
+        constexpr World::Pos2 kUnkOffsets[4] = {
             { 0, 0 },
             { 32, 0 },
             { 32, 32 },
@@ -181,7 +181,7 @@ namespace OpenLoco::Paint
         };
 
         const auto loc2 = loc + kUnkOffsets[session.getRotation()];
-        const auto vpPos = Map::gameToScreen(Map::Pos3(loc2.x, loc2.y, 0), session.getRotation());
+        const auto vpPos = World::gameToScreen(World::Pos3(loc2.x, loc2.y, 0), session.getRotation());
         paintConstructionArrow(session, loc2);
 
         if (vpPos.y + 52 <= session.getRenderTarget()->y)
@@ -198,7 +198,7 @@ namespace OpenLoco::Paint
         return { vpPos };
     }
 
-    static void paintTileElementsEndLoop(PaintSession& session, const Map::TileElement& el)
+    static void paintTileElementsEndLoop(PaintSession& session, const World::TileElement& el)
     {
         if (el.isLast() || el.baseZ() != ((&el) + 1)->baseZ())
         {
@@ -240,9 +240,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x00461CF8
-    void paintTileElements(PaintSession& session, const Map::Pos2& loc)
+    void paintTileElements(PaintSession& session, const World::Pos2& loc)
     {
-        if (!Map::drawableCoords(loc))
+        if (!World::drawableCoords(loc))
         {
             paintVoid(session, loc);
             return;
@@ -261,58 +261,58 @@ namespace OpenLoco::Paint
             session.setCurrentItem(&el);
             switch (el.type())
             {
-                case Map::ElementType::surface:
+                case World::ElementType::surface:
                 {
-                    auto& elSurface = el.get<Map::SurfaceElement>();
+                    auto& elSurface = el.get<World::SurfaceElement>();
                     paintSurface(session, elSurface);
                     break;
                 }
-                case Map::ElementType::track:
+                case World::ElementType::track:
                 {
-                    auto& elTrack = el.get<Map::TrackElement>();
+                    auto& elTrack = el.get<World::TrackElement>();
                     paintTrack(session, elTrack);
                     break;
                 }
-                case Map::ElementType::station:
+                case World::ElementType::station:
                 {
-                    auto& elStation = el.get<Map::StationElement>();
+                    auto& elStation = el.get<World::StationElement>();
                     paintStation(session, elStation);
                     break;
                 }
-                case Map::ElementType::signal:
+                case World::ElementType::signal:
                 {
-                    auto& elSignal = el.get<Map::SignalElement>();
+                    auto& elSignal = el.get<World::SignalElement>();
                     paintSignal(session, elSignal);
                     break;
                 }
-                case Map::ElementType::building:
+                case World::ElementType::building:
                 {
-                    auto& elBuilding = el.get<Map::BuildingElement>();
+                    auto& elBuilding = el.get<World::BuildingElement>();
                     paintBuilding(session, elBuilding);
 
                     break;
                 }
-                case Map::ElementType::tree:
+                case World::ElementType::tree:
                 {
-                    auto& elTree = el.get<Map::TreeElement>();
+                    auto& elTree = el.get<World::TreeElement>();
                     paintTree(session, elTree);
                     break;
                 }
-                case Map::ElementType::wall:
+                case World::ElementType::wall:
                 {
-                    auto& elWall = el.get<Map::WallElement>();
+                    auto& elWall = el.get<World::WallElement>();
                     paintWall(session, elWall);
                     break;
                 }
-                case Map::ElementType::road:
+                case World::ElementType::road:
                 {
-                    auto& elRoad = el.get<Map::RoadElement>();
+                    auto& elRoad = el.get<World::RoadElement>();
                     paintRoad(session, elRoad);
                     break;
                 }
-                case Map::ElementType::industry:
+                case World::ElementType::industry:
                 {
-                    auto& elIndustry = el.get<Map::IndustryElement>();
+                    auto& elIndustry = el.get<World::IndustryElement>();
                     paintIndustry(session, elIndustry);
                     break;
                 }
@@ -322,9 +322,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x004617C6
-    void paintTileElements2(PaintSession& session, const Map::Pos2& loc)
+    void paintTileElements2(PaintSession& session, const World::Pos2& loc)
     {
-        if (!Map::drawableCoords(loc))
+        if (!World::drawableCoords(loc))
         {
             return;
         }
@@ -342,14 +342,14 @@ namespace OpenLoco::Paint
             session.setCurrentItem(&el);
             switch (el.type())
             {
-                case Map::ElementType::surface:
-                case Map::ElementType::track:
-                case Map::ElementType::signal:
-                case Map::ElementType::wall:
-                case Map::ElementType::road:
+                case World::ElementType::surface:
+                case World::ElementType::track:
+                case World::ElementType::signal:
+                case World::ElementType::wall:
+                case World::ElementType::road:
                     continue;
 
-                case Map::ElementType::station:
+                case World::ElementType::station:
                 {
                     auto& elStation = el.get<StationElement>();
                     switch (elStation.stationType())
@@ -365,19 +365,19 @@ namespace OpenLoco::Paint
                     }
                     break;
                 }
-                case Map::ElementType::building:
+                case World::ElementType::building:
                 {
                     auto& elBuilding = el.get<BuildingElement>();
                     paintBuilding(session, elBuilding);
                     break;
                 }
-                case Map::ElementType::tree:
+                case World::ElementType::tree:
                 {
                     auto& elTree = el.get<TreeElement>();
                     paintTree(session, elTree);
                     break;
                 }
-                case Map::ElementType::industry:
+                case World::ElementType::industry:
                 {
                     auto& elIndustry = el.get<IndustryElement>();
                     paintIndustry(session, elIndustry);

@@ -133,7 +133,7 @@ namespace OpenLoco::GameCommands
     void registerHooks();
     uint32_t doCommand(GameCommand command, const registers& registers);
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);
-    bool sub_431E6A(const CompanyId company, Map::TileElement* const tile = nullptr);
+    bool sub_431E6A(const CompanyId company, World::TileElement* const tile = nullptr);
 
     template<typename T>
     uint32_t doCommand(const T& args, uint8_t flags)
@@ -158,7 +158,7 @@ namespace OpenLoco::GameCommands
 
         VehiclePlacementArgs() = default;
         explicit VehiclePlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dx * Map::kSmallZStep)
+            : pos(regs.ax, regs.cx, regs.dx * World::kSmallZStep)
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
             , head(EntityId(regs.di))
@@ -166,7 +166,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint16_t trackAndDirection;
         uint16_t trackProgress;
         EntityId head;
@@ -179,7 +179,7 @@ namespace OpenLoco::GameCommands
             regs.di = enumValue(head);
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dx = pos.z / Map::kSmallZStep;
+            regs.dx = pos.z / World::kSmallZStep;
             regs.ebx = convertGhost ? 0xFFFF0000 : (trackProgress << 16);
             return regs;
         }
@@ -261,7 +261,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t mods;
@@ -295,7 +295,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -409,7 +409,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -446,7 +446,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -482,7 +482,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -517,7 +517,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -553,7 +553,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -591,7 +591,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
@@ -660,13 +660,13 @@ namespace OpenLoco::GameCommands
 
         TreeRemovalArgs() = default;
         explicit TreeRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dl * Map::kSmallZStep)
+            : pos(regs.ax, regs.cx, regs.dl * World::kSmallZStep)
             , type(regs.dh)
             , elementType(regs.bh)
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t type;
         uint8_t elementType;
 
@@ -675,7 +675,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dl = pos.z / Map::kSmallZStep;
+            regs.dl = pos.z / World::kSmallZStep;
             regs.dh = type;
             regs.bh = elementType;
             return regs;
@@ -698,7 +698,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos2 pos;
+        World::Pos2 pos;
         uint8_t rotation;
         uint8_t type;
         uint8_t quadrant;
@@ -730,8 +730,8 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos2 pointA;
-        Map::Pos2 pointB;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
         uint8_t landType;
 
         explicit operator registers() const
@@ -747,7 +747,7 @@ namespace OpenLoco::GameCommands
     };
 
     // Raise Land
-    inline uint32_t do_25(Map::Pos2 centre, Map::Pos2 pointA, Map::Pos2 pointB, uint16_t di, uint8_t flags)
+    inline uint32_t do_25(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -760,7 +760,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Lower Land
-    inline uint32_t do_26(Map::Pos2 centre, Map::Pos2 pointA, Map::Pos2 pointB, uint16_t di, uint8_t flags)
+    inline uint32_t do_26(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -773,7 +773,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Lower/Raise Land Mountain
-    inline uint32_t do_27(Map::Pos2 centre, Map::Pos2 pointA, Map::Pos2 pointB, uint16_t di, uint8_t flags)
+    inline uint32_t do_27(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -786,7 +786,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Raise Water
-    inline uint32_t do_28(Map::Pos2 pointA, Map::Pos2 pointB, uint8_t flags)
+    inline uint32_t do_28(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
     {
         registers regs;
         regs.ax = pointA.x;
@@ -798,7 +798,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Lower Water
-    inline uint32_t do_29(Map::Pos2 pointA, Map::Pos2 pointB, uint8_t flags)
+    inline uint32_t do_29(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
     {
         registers regs;
         regs.ax = pointA.x;
@@ -850,7 +850,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
         uint8_t unk;
@@ -877,12 +877,12 @@ namespace OpenLoco::GameCommands
 
         WallRemovalArgs() = default;
         explicit WallRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.dh * Map::kSmallZStep)
+            : pos(regs.ax, regs.cx, regs.dh * World::kSmallZStep)
             , rotation(regs.dl)
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
 
         explicit operator registers() const
@@ -890,7 +890,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dh = pos.z / Map::kSmallZStep;
+            regs.dh = pos.z / World::kSmallZStep;
             regs.dl = rotation;
             return regs;
         }
@@ -939,7 +939,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t roadId;
         uint8_t mods;
@@ -972,7 +972,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t unkDirection;
         uint8_t roadId;
         uint8_t sequenceIndex;
@@ -1008,7 +1008,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t roadId;
         uint8_t index;
@@ -1046,7 +1046,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t roadId;
         uint8_t index;
@@ -1083,7 +1083,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t roadId;
         uint8_t index;
@@ -1118,7 +1118,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t roadId;
         uint8_t index;
@@ -1153,7 +1153,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
         uint8_t variation;
@@ -1186,7 +1186,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
 
         explicit operator registers() const
         {
@@ -1225,7 +1225,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos2 pos;
+        World::Pos2 pos;
         uint8_t type;
         bool buildImmediately = false; // No scaffolding required (editor mode)
         uint32_t srand0;
@@ -1275,7 +1275,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos2 pos;
+        World::Pos2 pos;
         uint8_t size;
 
         explicit operator registers() const
@@ -1310,7 +1310,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
         bool buildImmediately = false; // No scaffolding required (editor mode)
@@ -1341,7 +1341,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         explicit operator registers() const
         {
             registers regs;
@@ -1364,7 +1364,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
 
@@ -1390,7 +1390,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
 
         explicit operator registers() const
         {
@@ -1451,7 +1451,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
 
@@ -1477,7 +1477,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
 
         explicit operator registers() const
         {
@@ -1501,7 +1501,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        Map::Pos3 pos;
+        World::Pos3 pos;
         EntityId head;
         bool convertGhost = false;
 
@@ -1550,7 +1550,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Clear Land
-    inline uint32_t do_66(Map::Pos2 centre, Map::Pos2 pointA, Map::Pos2 pointB, uint8_t flags)
+    inline uint32_t do_66(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -1788,8 +1788,8 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);
 
-    const Map::Pos3& getPosition();
-    void setPosition(const Map::Pos3& pos);
+    const World::Pos3& getPosition();
+    void setPosition(const World::Pos3& pos);
     void setErrorText(const string_id message);
     string_id getErrorText();
     void setErrorTitle(const string_id title);

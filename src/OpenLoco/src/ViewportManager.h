@@ -15,8 +15,8 @@ namespace OpenLoco::Ui::ViewportManager
     void registerHooks();
     void collectGarbage();
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId thing_id);
-    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, Map::Pos3 tile);
+    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, World::Pos3 tile);
     void invalidate(Station* station);
     void invalidate(EntityBase* t, ZoomLevel zoom);
-    void invalidate(Map::Pos2 pos, coord_t zMin, coord_t zMax, ZoomLevel zoom = ZoomLevel::eighth, int radius = 32);
+    void invalidate(World::Pos2 pos, coord_t zMin, coord_t zMax, ZoomLevel zoom = ZoomLevel::eighth, int radius = 32);
 }

@@ -7,12 +7,12 @@ namespace OpenLoco::S5
     struct Options;
 }
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     struct SurfaceElement;
 }
 
-namespace OpenLoco::Map::MapGenerator
+namespace OpenLoco::World::MapGenerator
 {
     void generate(const S5::Options& options);
     std::optional<uint8_t> getRandomTerrainVariation(const SurfaceElement& surface);

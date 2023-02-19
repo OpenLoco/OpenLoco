@@ -4,7 +4,7 @@
 #include <array>
 #include <cassert>
 
-namespace OpenLoco::Map::TrackData
+namespace OpenLoco::World::TrackData
 {
     constexpr ConnectionsByRotation generateConnections(uint8_t connection)
     {

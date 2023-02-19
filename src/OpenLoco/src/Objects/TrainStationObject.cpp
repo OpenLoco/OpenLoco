@@ -160,12 +160,12 @@ namespace OpenLoco
         while (*bytes != static_cast<std::byte>(0xFF))
         {
             result.push_back({
-                Map::Pos3{
+                World::Pos3{
                     *reinterpret_cast<const int8_t*>(bytes),
                     *reinterpret_cast<const int8_t*>(bytes + 1),
                     z,
                 },
-                Map::Pos3{
+                World::Pos3{
                     *reinterpret_cast<const int8_t*>(bytes + 2),
                     *reinterpret_cast<const int8_t*>(bytes + 3),
                     z,

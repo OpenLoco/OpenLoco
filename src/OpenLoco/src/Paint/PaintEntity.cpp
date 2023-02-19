@@ -15,7 +15,7 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 namespace OpenLoco::Paint
 {
     template<typename FilterType>
-    static void paintEntitiesWithFilter(PaintSession& session, const Map::Pos2& loc, FilterType&& filter)
+    static void paintEntitiesWithFilter(PaintSession& session, const World::Pos2& loc, FilterType&& filter)
     {
         auto* rt = session.getRenderTarget();
         if (Config::get().old.vehiclesMinScale < rt->zoomLevel)
@@ -77,7 +77,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0046FA88
-    void paintEntities(PaintSession& session, const Map::Pos2& loc)
+    void paintEntities(PaintSession& session, const World::Pos2& loc)
     {
         paintEntitiesWithFilter(session, loc, [](const EntityBase*) { return true; });
     }
@@ -102,7 +102,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0046FB67
-    void paintEntities2(PaintSession& session, const Map::Pos2& loc)
+    void paintEntities2(PaintSession& session, const World::Pos2& loc)
     {
         paintEntitiesWithFilter(session, loc, isEntityFlyingOrFloating);
     }

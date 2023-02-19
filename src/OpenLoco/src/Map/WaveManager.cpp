@@ -13,7 +13,7 @@
 #include <OpenLoco/Core/Prng.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
-namespace OpenLoco::Map::WaveManager
+namespace OpenLoco::World::WaveManager
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::Ui;
@@ -37,7 +37,7 @@ namespace OpenLoco::Map::WaveManager
         return FixedVector(rawWaves());
     }
     // 0x0046956E
-    void createWave(SurfaceElement& surface, const Map::Pos2& pos)
+    void createWave(SurfaceElement& surface, const World::Pos2& pos)
     {
         const auto waveIndex = getWaveIndex(pos);
         if (!rawWaves()[getWaveIndex(pos)].empty())
@@ -57,7 +57,7 @@ namespace OpenLoco::Map::WaveManager
         for (const auto& offset : _offsets)
         {
             auto searchLoc = pos + offset;
-            if (!Map::validCoords(searchLoc))
+            if (!World::validCoords(searchLoc))
                 return;
 
             const auto tile = TileManager::get(searchLoc);

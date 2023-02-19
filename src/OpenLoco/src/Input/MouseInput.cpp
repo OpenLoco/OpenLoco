@@ -31,7 +31,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::ViewportInteraction;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Input
 {
@@ -330,8 +330,8 @@ namespace OpenLoco::Input
         {
             Input::resetFlag(Input::Flags::toolActive);
 
-            Map::TileManager::mapInvalidateSelectionRect();
-            Map::TileManager::mapInvalidateMapSelectionTiles();
+            World::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateMapSelectionTiles();
 
             resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 
@@ -566,12 +566,12 @@ namespace OpenLoco::Input
 
                         case InteractionItem::headquarterBuilding:
                         {
-                            const auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
-                            const auto* building = tileElement->as<Map::BuildingElement>();
+                            const auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+                            const auto* building = tileElement->as<World::BuildingElement>();
                             if (building != nullptr)
                             {
                                 auto index = building->multiTileIndex();
-                                const auto firstTile = interaction.pos - Map::offsets[index];
+                                const auto firstTile = interaction.pos - World::offsets[index];
                                 const Pos3 pos = { firstTile.x,
                                                    firstTile.y,
                                                    building->baseZ() };
@@ -608,9 +608,9 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5AA1 TODO: Move to a better file
-    static void signalInteract(Map::SignalElement* signal, const bool isLeftSignal, const Map::Pos2 pos)
+    static void signalInteract(World::SignalElement* signal, const bool isLeftSignal, const World::Pos2 pos)
     {
-        auto* track = signal->prev()->as<Map::TrackElement>();
+        auto* track = signal->prev()->as<World::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -653,9 +653,9 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5B66 TODO: Move to a better file
-    static void trackStationInteract(Map::StationElement* station, const Map::Pos2 pos)
+    static void trackStationInteract(World::StationElement* station, const World::Pos2 pos)
     {
-        auto* track = station->prev()->as<Map::TrackElement>();
+        auto* track = station->prev()->as<World::TrackElement>();
         if (track == nullptr)
         {
             return;
@@ -675,7 +675,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5BDF TODO: Move to a better file
-    static void roadStationInteract(Map::StationElement* station, const Map::Pos2 pos)
+    static void roadStationInteract(World::StationElement* station, const World::Pos2 pos)
     {
         auto* road = station->prev()->as<RoadElement>();
         if (road == nullptr)
@@ -697,7 +697,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5C58 TODO: Move to a better file
-    static void airportInteract(Map::StationElement* station, const Map::Pos2 pos)
+    static void airportInteract(World::StationElement* station, const World::Pos2 pos)
     {
         if (!Ui::Windows::Construction::isStationTabOpen())
         {
@@ -714,7 +714,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5CC5 TODO: Move to a better file
-    static void dockInteract(Map::StationElement* station, const Map::Pos2 pos)
+    static void dockInteract(World::StationElement* station, const World::Pos2 pos)
     {
         if (!Ui::Windows::Construction::isStationTabOpen())
         {
@@ -723,7 +723,7 @@ namespace OpenLoco::Input
         }
         GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
         GameCommands::PortRemovalArgs args;
-        Pos2 firstTile = pos - Map::offsets[station->multiTileIndex()];
+        Pos2 firstTile = pos - World::offsets[station->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
@@ -732,7 +732,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004BB116 TODO: Move to a better file
-    static void treeInteract(Map::TreeElement* tree, const Map::Pos2 pos)
+    static void treeInteract(World::TreeElement* tree, const World::Pos2 pos)
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::TreeRemovalArgs args;
@@ -743,17 +743,17 @@ namespace OpenLoco::Input
     }
 
     // 0x0042D9BF TODO: Move to a better file
-    static void buildingInteract(Map::BuildingElement* building, const Map::Pos2 pos)
+    static void buildingInteract(World::BuildingElement* building, const World::Pos2 pos)
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::BuildingRemovalArgs args;
-        Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
+        Pos2 firstTile = pos - World::offsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x004C4809 TODO: Move to a better file
-    static void wallInteract(Map::WallElement* wall, const Map::Pos2 pos)
+    static void wallInteract(World::WallElement* wall, const World::Pos2 pos)
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::WallRemovalArgs args;
@@ -763,11 +763,11 @@ namespace OpenLoco::Input
     }
 
     // 0x0042F007 TODO: Move to a better file
-    static void headquarterInteract(Map::BuildingElement* building, const Map::Pos2 pos)
+    static void headquarterInteract(World::BuildingElement* building, const World::Pos2 pos)
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::HeadquarterRemovalArgs args;
-        Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
+        Pos2 firstTile = pos - World::offsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
@@ -845,7 +845,7 @@ namespace OpenLoco::Input
                 Input::state(State::reset);
                 auto interaction = ViewportInteraction::rightOver(_dragLastX, _dragLastY);
 
-                auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+                auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
 
                 switch (interaction.type)
                 {

@@ -43,7 +43,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Vehicles
 {
@@ -205,7 +205,7 @@ namespace OpenLoco::Vehicles
                 {
                     auto v2 = car.body; // body
 
-                    Smoke::create(v2->position + Map::Pos3{ 0, 0, 4 });
+                    Smoke::create(v2->position + World::Pos3{ 0, 0, 4 });
                 }
             }
 
@@ -220,7 +220,7 @@ namespace OpenLoco::Vehicles
                     applyBreakdownToTrain();
 
                     auto soundId = (Audio::SoundId)gPrng().randNext(26, 26 + 5);
-                    Audio::playSound(soundId, car.body->position + Map::Pos3{ 0, 0, 22 });
+                    Audio::playSound(soundId, car.body->position + World::Pos3{ 0, 0, 22 });
                 }
             }
         }
@@ -849,7 +849,7 @@ namespace OpenLoco::Vehicles
     }
 
     // Returns veh1, veh2 position
-    static std::pair<Pos2, Pos2> calculateNextPosition(const uint8_t yaw, const Map::Pos2& curPos, const Vehicle1* veh1, const Speed32 speed)
+    static std::pair<Pos2, Pos2> calculateNextPosition(const uint8_t yaw, const World::Pos2& curPos, const Vehicle1* veh1, const Speed32 speed)
     {
         auto dist = Math::Trigonometry::computeXYVector(speed.getRaw() >> 5, yaw);
 
@@ -1564,10 +1564,10 @@ namespace OpenLoco::Vehicles
             station->unk_tile_z
         };
 
-        auto tile = Map::TileManager::get(loc);
+        auto tile = World::TileManager::get(loc);
         for (auto& el : tile)
         {
-            auto* elStation = el.as<Map::StationElement>();
+            auto* elStation = el.as<World::StationElement>();
             if (elStation == nullptr)
                 continue;
 
@@ -1793,10 +1793,10 @@ namespace OpenLoco::Vehicles
                 station->unk_tile_z
             };
 
-            auto tile = Map::TileManager::get(loc);
+            auto tile = World::TileManager::get(loc);
             for (auto& el : tile)
             {
-                auto* elStation = el.as<Map::StationElement>();
+                auto* elStation = el.as<World::StationElement>();
                 if (elStation == nullptr)
                     continue;
 
@@ -1950,7 +1950,7 @@ namespace OpenLoco::Vehicles
     {
         _vehicleUpdate_helicopterAirportMovement = AirportMovementNodeFlags::none;
         StationId targetStationId = StationId::null;
-        std::optional<Map::Pos3> targetPos{};
+        std::optional<World::Pos3> targetPos{};
         if (stationId == StationId::null)
         {
             auto orders = getCurrentOrders();
@@ -2010,7 +2010,7 @@ namespace OpenLoco::Vehicles
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
         // manhattan distance to target
-        auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ position }, Map::Pos2{ *targetPos });
+        auto manhattanDistance = Math::Vector::manhattanDistance(World::Pos2{ position }, World::Pos2{ *targetPos });
 
         // Manhatten distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
@@ -2160,7 +2160,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426E26
-    std::pair<AirportMovementNodeFlags, Map::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
+    std::pair<AirportMovementNodeFlags, World::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge)
     {
         auto station = StationManager::get(targetStation);
 
@@ -2212,7 +2212,7 @@ namespace OpenLoco::Vehicles
         // Tile not found. Todo: fail gracefully
         assert(false);
         // Flags, location
-        return std::make_pair(AirportMovementNodeFlags::none, Map::Pos3{ 0, 0, 0 });
+        return std::make_pair(AirportMovementNodeFlags::none, World::Pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A
@@ -2247,7 +2247,7 @@ namespace OpenLoco::Vehicles
             {
                 volume = -1500;
             }
-            Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, volume, 22050);
+            Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, volume, 22050);
         }
     }
 
@@ -2300,7 +2300,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426CA4
-    void VehicleHead::movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch)
+    void VehicleHead::movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch)
     {
         Vehicle train(head);
         moveTo({ newLoc.x, newLoc.y, newLoc.z });
@@ -2396,7 +2396,7 @@ namespace OpenLoco::Vehicles
             veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
-        auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ position }, Map::Pos2{ veh2->position });
+        auto manhattanDistance = Math::Vector::manhattanDistance(World::Pos2{ position }, World::Pos2{ veh2->position });
         auto targetTolerance = 3;
         if (veh2->currentSpeed >= 20.0_mph)
         {
@@ -2440,7 +2440,7 @@ namespace OpenLoco::Vehicles
 
             if (stationId != StationId::null)
             {
-                auto targetTile = TileManager::get(Map::Pos2{ tileX, tileY });
+                auto targetTile = TileManager::get(World::Pos2{ tileX, tileY });
                 StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
@@ -2471,7 +2471,7 @@ namespace OpenLoco::Vehicles
                 tileY = stationTarget.y;
                 tileBaseZ = stationTarget.z / 4;
 
-                auto targetTile = TileManager::get(Map::Pos2{ tileX, tileY });
+                auto targetTile = TileManager::get(World::Pos2{ tileX, tileY });
                 StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
@@ -2545,7 +2545,7 @@ namespace OpenLoco::Vehicles
                 return 1;
             case TransportMode::rail:
             {
-                auto tile = Map::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
+                auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->trackAndDirection.track.cardinalDirection();
                 auto trackId = bogie->trackAndDirection.track.id();
                 auto loadingModifier = 12;
@@ -2564,7 +2564,7 @@ namespace OpenLoco::Vehicles
             }
             case TransportMode::road:
             {
-                auto tile = Map::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
+                auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->trackAndDirection.road.cardinalDirection();
                 auto roadId = bogie->trackAndDirection.road.id();
                 auto loadingModifier = 2;
@@ -2609,8 +2609,8 @@ namespace OpenLoco::Vehicles
         {
             station->deliverCargoToTown(cargo.type, cargo.qty);
             auto* sourceStation = StationManager::get(cargo.townFrom);
-            auto stationLoc = Map::Pos2{ station->x, station->y };
-            auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
+            auto stationLoc = World::Pos2{ station->x, station->y };
+            auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
             auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
 
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(owner));
@@ -2710,13 +2710,13 @@ namespace OpenLoco::Vehicles
             if (cargoStats.origin != StationId::null)
             {
                 auto* cargoSourceStation = StationManager::get(cargoStats.origin);
-                auto stationLoc = Map::Pos2{ station->x, station->y };
-                auto cargoSourceLoc = Map::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
+                auto stationLoc = World::Pos2{ station->x, station->y };
+                auto cargoSourceLoc = World::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
                 auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
-                auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
+                auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
                 auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
                 if (cargoSourceDistance > stationSourceDistance)
                 {
@@ -2811,7 +2811,7 @@ namespace OpenLoco::Vehicles
 
             CompanyManager::applyPaymentToCompany(owner, -cargoProfit, ExpenditureType(static_cast<uint8_t>(vehicleType) * 2));
 
-            auto loc = train.cars.firstCar.body->position + Map::Pos3{ 0, 0, 28 };
+            auto loc = train.cars.firstCar.body->position + World::Pos3{ 0, 0, 28 };
             CompanyManager::spendMoneyEffect(loc, owner, -cargoProfit);
 
             Audio::playSound(Audio::SoundId::income, loc);
@@ -2933,13 +2933,13 @@ namespace OpenLoco::Vehicles
                 cargo.numDays = std::max(cargo.numDays, stationCargo.enrouteAge);
 
                 auto* cargoSourceStation = StationManager::get(stationCargo.origin);
-                auto stationLoc = Map::Pos2{ station->x, station->y };
-                auto cargoSourceLoc = Map::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
+                auto stationLoc = World::Pos2{ station->x, station->y };
+                auto cargoSourceLoc = World::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
                 auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
-                auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
+                auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
                 auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
                 if (cargoSourceDistance >= stationSourceDistance)
                 {
@@ -3132,18 +3132,18 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = _vehicleUpdate_2;
-            Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
+            Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
 
     // 0x00427FC9
-    std::tuple<StationId, Map::Pos2, Map::Pos3> VehicleHead::sub_427FC9()
+    std::tuple<StationId, World::Pos2, World::Pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x00427FC9, regs);
-        Map::Pos2 headTarget = { regs.ax, regs.cx };
-        Map::Pos3 stationTarget = { regs.di, regs.bp, regs.dx };
+        World::Pos2 headTarget = { regs.ax, regs.cx };
+        World::Pos3 stationTarget = { regs.di, regs.bp, regs.dx };
         return std::make_tuple(StationId(regs.bx), headTarget, stationTarget);
     }
 
@@ -3159,7 +3159,7 @@ namespace OpenLoco::Vehicles
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
             Vehicle2* veh2 = _vehicleUpdate_2;
-            Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
+            Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
 
@@ -3196,8 +3196,8 @@ namespace OpenLoco::Vehicles
     {
         Track::TrackConnections connections{};
         connections.size = 0;
-        const auto [nextPos, rotation] = Map::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
-        Map::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
+        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
+        World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
         if (connections.size != 1)
         {
             return false;
@@ -3235,7 +3235,7 @@ namespace OpenLoco::Vehicles
         auto direction = bogie->trackAndDirection.track.cardinalDirection();
         auto trackId = bogie->trackAndDirection.track.id();
 
-        auto tile = TileManager::get(Map::Pos2{ bogie->tileX, bogie->tileY });
+        auto tile = TileManager::get(World::Pos2{ bogie->tileX, bogie->tileY });
         auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
         if (elStation == nullptr)
         {

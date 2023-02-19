@@ -20,7 +20,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Figure out the industry's position on the map.
             auto industry = IndustryManager::get(IndustryId(self.number));
-            int16_t tileZ = Map::TileManager::getHeight({ industry->x, industry->y }).landHeight;
+            int16_t tileZ = World::TileManager::getHeight({ industry->x, industry->y }).landHeight;
 
             // Compute views.
             SavedView view = {
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (self.viewports[0] == nullptr)
             {
                 auto widget = &self.widgets[widx::viewport];
-                auto tile = Map::Pos3({ industry->x, industry->y, tileZ });
+                auto tile = World::Pos3({ industry->x, industry->y, tileZ });
                 auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);

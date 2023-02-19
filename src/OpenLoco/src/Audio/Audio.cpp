@@ -73,7 +73,7 @@ namespace OpenLoco::Audio
     static OpenAL::SourceManager _sourceManager;
     static OpenAL::BufferManager _bufferManager;
 
-    static void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
+    static void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
@@ -412,11 +412,11 @@ namespace OpenLoco::Audio
         }
     }
 
-    static int32_t calculateVolumeFromViewport([[maybe_unused]] SoundId id, const Map::Pos3& mpos, const Viewport& viewport)
+    static int32_t calculateVolumeFromViewport([[maybe_unused]] SoundId id, const World::Pos3& mpos, const Viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;
-        auto tile = Map::TileManager::get(mpos);
+        auto tile = World::TileManager::get(mpos);
         if (!tile.isNull())
         {
             auto surface = tile.surface();
@@ -432,7 +432,7 @@ namespace OpenLoco::Audio
         return volume;
     }
 
-    void playSound(SoundId id, const Map::Pos3& loc)
+    void playSound(SoundId id, const World::Pos3& loc)
     {
         playSound(id, loc, kPlayAtLocation);
     }
@@ -483,13 +483,13 @@ namespace OpenLoco::Audio
     }
 
     // 0x00489F1B
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency)
+    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t frequency)
     {
         playSound(id, loc, volume, kPlayAtLocation, frequency);
     }
 
     // 0x00489CB5
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t pan)
+    void playSound(SoundId id, const World::Pos3& loc, int32_t pan)
     {
         playSound(id, loc, 0, pan, 22050);
     }
@@ -504,14 +504,14 @@ namespace OpenLoco::Audio
 
     // 0x00489CB5 / 0x00489F1B
     // pan is in UI pixels or known constant
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
+    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
     {
         if (_audioIsEnabled)
         {
             volume += getVolumeForSoundId(id);
             if (pan == kPlayAtLocation)
             {
-                auto vpos = Map::gameToScreen(loc, WindowManager::getCurrentRotation());
+                auto vpos = World::gameToScreen(loc, WindowManager::getCurrentRotation());
                 auto viewport = findBestViewportForSound(vpos);
                 if (viewport == nullptr)
                 {
@@ -841,23 +841,23 @@ namespace OpenLoco::Audio
         {
             maxVolume = getAmbientMaxVolume(mainViewport->zoom);
             const auto centre = mainViewport->getCentreMapPosition();
-            const auto topLeft = Map::TilePos2{ centre } - Map::TilePos2{ 5, 5 };
-            const auto bottomRight = topLeft + Map::TilePos2{ 11, 11 };
-            Map::TilePosRangeView searchRange(topLeft, bottomRight);
+            const auto topLeft = World::TilePos2{ centre } - World::TilePos2{ 5, 5 };
+            const auto bottomRight = topLeft + World::TilePos2{ 11, 11 };
+            World::TilePosRangeView searchRange(topLeft, bottomRight);
             size_t waterCount = 0;      // bl
             size_t wildernessCount = 0; // bh
             size_t treeCount = 0;       // cx
             for (auto& tilePos : searchRange)
             {
-                if (!Map::validCoords(tilePos))
+                if (!World::validCoords(tilePos))
                 {
                     continue;
                 }
-                const auto tile = Map::TileManager::get(tilePos);
+                const auto tile = World::TileManager::get(tilePos);
                 bool passedSurface = false;
                 for (const auto& el : tile)
                 {
-                    auto* elSurface = el.as<Map::SurfaceElement>();
+                    auto* elSurface = el.as<World::SurfaceElement>();
                     if (elSurface != nullptr)
                     {
                         passedSurface = true;
@@ -878,7 +878,7 @@ namespace OpenLoco::Audio
                         }
                         continue;
                     }
-                    auto* elTree = el.as<Map::TreeElement>();
+                    auto* elTree = el.as<World::TreeElement>();
                     if (passedSurface && elTree != nullptr)
                     {
                         const auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());

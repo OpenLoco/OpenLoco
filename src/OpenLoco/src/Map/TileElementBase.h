@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Types.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cassert>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     struct TileElement;
 

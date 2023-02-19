@@ -3,7 +3,7 @@
 #include "Economy/Currency.h"
 #include "Entity.h"
 #include "Objects/SteamObject.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
 {
@@ -71,7 +71,7 @@ namespace OpenLoco
         const SteamObject* getObject() const;
         void update();
 
-        static Exhaust* create(Map::Pos3 loc, uint8_t type);
+        static Exhaust* create(World::Pos3 loc, uint8_t type);
         bool isSubObjType1() const { return objectId & (1 << 7); } // Used for steam / steampuff
     };
     static_assert(sizeof(Exhaust) == 0x4A);
@@ -96,7 +96,7 @@ namespace OpenLoco
 
         void update();
 
-        static MoneyEffect* create(const Map::Pos3& loc, const CompanyId company, const currency32_t amount);
+        static MoneyEffect* create(const World::Pos3& loc, const CompanyId company, const currency32_t amount);
     };
     static_assert(sizeof(MoneyEffect) == 0x48);
 
@@ -146,7 +146,7 @@ namespace OpenLoco
 
         void update();
 
-        static ExplosionSmoke* create(const Map::Pos3& loc);
+        static ExplosionSmoke* create(const World::Pos3& loc);
     };
     static_assert(sizeof(ExplosionSmoke) == 0x2A);
 
@@ -157,7 +157,7 @@ namespace OpenLoco
 
         void update();
 
-        static Smoke* create(Map::Pos3 loc);
+        static Smoke* create(World::Pos3 loc);
     };
     static_assert(sizeof(Smoke) == 0x2A);
 #pragma pack(pop)

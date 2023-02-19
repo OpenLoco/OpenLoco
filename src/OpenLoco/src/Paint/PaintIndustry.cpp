@@ -10,14 +10,14 @@
 
 namespace OpenLoco::Paint
 {
-    static Map::Pos3 kImageOffsetBase1x1 = { 16, 16, 0 };
-    static Map::Pos3 kImageOffsetBase2x2 = { 0, 0, 0 };
-    static Map::Pos3 kBBOffsetBase1x1 = { 3, 3, 0 };
-    static Map::Pos3 kBBOffsetBase2x2 = { -8, -8, 0 };
-    static Map::Pos3 kBBSizeBase1x1 = { 26, 26, 0 };
-    static Map::Pos3 kBBSizeBase2x2 = { 38, 38, 0 };
+    static World::Pos3 kImageOffsetBase1x1 = { 16, 16, 0 };
+    static World::Pos3 kImageOffsetBase2x2 = { 0, 0, 0 };
+    static World::Pos3 kBBOffsetBase1x1 = { 3, 3, 0 };
+    static World::Pos3 kBBOffsetBase2x2 = { -8, -8, 0 };
+    static World::Pos3 kBBSizeBase1x1 = { 26, 26, 0 };
+    static World::Pos3 kBBSizeBase2x2 = { 38, 38, 0 };
 
-    static void paintIndustryBuilding(PaintSession& session, const Map::IndustryElement& elIndustry, const IndustryObject& indObj, const Map::Pos3& imageOffset, const Map::Pos3& bbOffset, const Map::Pos3& bbSize, const ImageId& baseColour, const uint8_t rotation, const bool isMultiTile)
+    static void paintIndustryBuilding(PaintSession& session, const World::IndustryElement& elIndustry, const IndustryObject& indObj, const World::Pos3& imageOffset, const World::Pos3& bbOffset, const World::Pos3& bbSize, const ImageId& baseColour, const uint8_t rotation, const bool isMultiTile)
     {
         // 0xE0C3A0
         auto ticks = ScenarioManager::getScenarioTicks();
@@ -100,7 +100,7 @@ namespace OpenLoco::Paint
                 auto tickThing = ticks >> cl;
                 if (buildingAnimation.animationSpeed & (1 << 7))
                 {
-                    auto pos = Map::TilePos2(session.getUnkPosition());
+                    auto pos = World::TilePos2(session.getUnkPosition());
                     tickThing += pos.x * 5;
                     tickThing += pos.y * 3;
                 }
@@ -152,7 +152,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00453C52
-    void paintIndustry(PaintSession& session, const Map::IndustryElement& elIndustry)
+    void paintIndustry(PaintSession& session, const World::IndustryElement& elIndustry)
     {
         session.setItemType(Ui::ViewportInteraction::InteractionItem::industry);
         auto* industry = elIndustry.industry();
@@ -176,9 +176,9 @@ namespace OpenLoco::Paint
         bool isMultiTile = indObj->buildingSizeFlags & (1 << buildingType);
 
         // Note: Image offsets will change as you move up the building but bboffset/size does not
-        const Map::Pos3 imageOffset = (isMultiTile ? kImageOffsetBase2x2 : kImageOffsetBase1x1) + Map::Pos3{ 0, 0, baseHeight };
-        const Map::Pos3 bbOffset = (isMultiTile ? kBBOffsetBase2x2 : kBBOffsetBase1x1) + Map::Pos3{ 0, 0, baseHeight };
-        const Map::Pos3 bbSize = (isMultiTile ? kBBSizeBase2x2 : kBBSizeBase1x1) + Map::Pos3{ 0, 0, bbLengthZ };
+        const World::Pos3 imageOffset = (isMultiTile ? kImageOffsetBase2x2 : kImageOffsetBase1x1) + World::Pos3{ 0, 0, baseHeight };
+        const World::Pos3 bbOffset = (isMultiTile ? kBBOffsetBase2x2 : kBBOffsetBase1x1) + World::Pos3{ 0, 0, baseHeight };
+        const World::Pos3 bbSize = (isMultiTile ? kBBSizeBase2x2 : kBBSizeBase1x1) + World::Pos3{ 0, 0, bbLengthZ };
 
         session.resetLastPS(); // Odd...
         if (indObj->hasFlags(IndustryObjectFlags::hasShadows))

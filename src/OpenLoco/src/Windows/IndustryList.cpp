@@ -20,7 +20,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -29,7 +29,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 {
     static loco_global<currency32_t, 0x00E0C39C> _dword_E0C39C;
     static loco_global<bool, 0x00E0C3D9> _industryGhostPlaced;
-    static loco_global<Map::Pos2, 0x00E0C3C2> _industryGhostPos;
+    static loco_global<World::Pos2, 0x00E0C3C2> _industryGhostPos;
     static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
     static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
     static loco_global<IndustryId, 0x00E0C3DB> _industryGhostId;
@@ -740,7 +740,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     LastGameOptionManager::setLastIndustry(rowInfo);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self.savedView.mapX = -16;
                     _dword_E0C39C = 0x80000000;
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045848A
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -1032,9 +1032,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            Map::TileManager::setMapSelectionCorner(4);
-            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::setMapSelectionCorner(4);
+            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::TileManager::mapInvalidateSelectionRect();
 
             if (_industryGhostPlaced)
             {

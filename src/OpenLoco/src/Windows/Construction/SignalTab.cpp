@@ -16,8 +16,8 @@
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::TileManager;
+using namespace OpenLoco::World;
+using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
@@ -121,11 +121,11 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     // Reverse direction map?
     static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x004A417A
     // false for left, true for right
-    static bool getSide(const Map::Pos3& loc, const Point& mousePos, const TrackElement& elTrack, const Viewport& viewport)
+    static bool getSide(const World::Pos3& loc, const Point& mousePos, const TrackElement& elTrack, const Viewport& viewport)
     {
         Common::setNextAndPreviousTrackTile(elTrack, loc);
 
@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<TrackElement>();
+        auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;
@@ -154,7 +154,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         GameCommands::SignalPlacementArgs args;
         args.type = _lastSelectedSignal;
-        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
+        args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         args.rotation = elTrack->unkDirection();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();

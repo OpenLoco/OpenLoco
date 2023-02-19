@@ -12,11 +12,11 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x00468EDD
-    static uint32_t changeLandMaterial(const Map::Pos2& pointA, const Map::Pos2& pointB, const uint8_t landType, const uint8_t flags)
+    static uint32_t changeLandMaterial(const World::Pos2& pointA, const World::Pos2& pointB, const uint8_t landType, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
-        const auto midPoint = (pointA + pointB) / 2 + Map::Pos2{ 16, 16 };
-        auto height = Map::TileManager::getHeight(midPoint);
+        const auto midPoint = (pointA + pointB) / 2 + World::Pos2{ 16, 16 };
+        auto height = World::TileManager::getHeight(midPoint);
         GameCommands::setPosition({ midPoint.x, midPoint.y, height.landHeight });
 
         if ((flags & Flags::apply) == 0)
@@ -24,10 +24,10 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        Map::TilePosRangeView tileLoop{ { pointA }, { pointB } };
+        World::TilePosRangeView tileLoop{ { pointA }, { pointB } };
         for (const auto& tilePos : tileLoop)
         {
-            auto surface = Map::TileManager::get(tilePos).surface();
+            auto surface = World::TileManager::get(tilePos).surface();
             if (surface == nullptr)
                 continue;
 
@@ -36,7 +36,7 @@ namespace OpenLoco::GameCommands
             {
                 surface->setVar6SLR5(0);
             }
-            const auto variation = Map::MapGenerator::getRandomTerrainVariation(*surface);
+            const auto variation = World::MapGenerator::getRandomTerrainVariation(*surface);
             if (variation.has_value())
             {
                 if (!surface->isIndustrial())
@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
                     surface->setVar6SLR5(landObj->var_03 - 1);
                 }
             }
-            Map::TileManager::mapInvalidateTileFull(tilePos);
+            World::TileManager::mapInvalidateTileFull(tilePos);
             auto& options = S5::getOptions();
             options.madeAnyChanges = 1;
         }

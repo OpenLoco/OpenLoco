@@ -504,7 +504,7 @@ namespace OpenLoco::CompanyManager
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(screenPosition);
 
-        Map::Pos2 mapPosition{};
+        World::Pos2 mapPosition{};
         if (!res || res->second != viewport)
         {
             // Happens if center of viewport is obstructed. Probably estimates the centre location
@@ -525,13 +525,13 @@ namespace OpenLoco::CompanyManager
     // loc : gGameCommandMapX/Y/Z global
     // company : updatingCompanyId global
     // amount : ebx
-    void spendMoneyEffect(const Map::Pos3& loc, const CompanyId company, const currency32_t amount)
+    void spendMoneyEffect(const World::Pos3& loc, const CompanyId company, const currency32_t amount)
     {
         if (isEditorMode())
         {
             return;
         }
-        Map::Pos3 pos = loc;
+        World::Pos3 pos = loc;
         if (loc.x == Location::null)
         {
             auto* view = Ui::WindowManager::getMainViewport();
@@ -545,7 +545,7 @@ namespace OpenLoco::CompanyManager
             {
                 return;
             }
-            pos = Map::Pos3(centre->x, centre->y, Map::TileManager::getHeight(*centre).landHeight);
+            pos = World::Pos3(centre->x, centre->y, World::TileManager::getHeight(*centre).landHeight);
         }
 
         pos.z += 10;

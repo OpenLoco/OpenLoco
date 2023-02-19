@@ -22,7 +22,7 @@
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco
 {
@@ -445,7 +445,7 @@ namespace OpenLoco
             {
                 if (prng.randBool())
                 {
-                    Map::Pos2 randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
+                    World::Pos2 randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
                     uint8_t primaryWallType = obj->wallTypes[0];
                     uint8_t secondaryWallType = obj->wallTypes[1];
                     if (obj->wallTypes[2] != 0xFF && prng.randBool())
@@ -461,18 +461,18 @@ namespace OpenLoco
     }
 
     // 0x0045510C bl == 0
-    static bool isSurfaceClaimed(const Map::TilePos2& pos)
+    static bool isSurfaceClaimed(const World::TilePos2& pos)
     {
-        if (!Map::validCoords(pos))
+        if (!World::validCoords(pos))
         {
             return false;
         }
 
-        const auto tile = Map::TileManager::get(pos);
+        const auto tile = World::TileManager::get(pos);
         bool passedSurface = false;
         for (auto& el : tile)
         {
-            auto* elSurface = el.as<Map::SurfaceElement>();
+            auto* elSurface = el.as<World::SurfaceElement>();
             if (elSurface != nullptr)
             {
                 if (elSurface->water() != 0)
@@ -494,7 +494,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (el.as<Map::WallElement>() != nullptr || el.as<Map::TreeElement>() != nullptr)
+            if (el.as<World::WallElement>() != nullptr || el.as<World::TreeElement>() != nullptr)
             {
                 continue;
             }
@@ -505,21 +505,21 @@ namespace OpenLoco
     }
 
     // 0x0045510C bl == 1
-    static bool claimSurfaceForIndustry(const Map::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
+    static bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
     {
         if (!isSurfaceClaimed(pos))
         {
             return false;
         }
 
-        const auto tile = Map::TileManager::get(pos);
-        Map::SurfaceElement* surface = tile.surface();
+        const auto tile = World::TileManager::get(pos);
+        World::SurfaceElement* surface = tile.surface();
         surface->setIsIndustrialFlag(true);
         surface->setIndustry(industryId);
         surface->setVar5SLR5((var_EA & 0xE0) >> 5);
         surface->setVar6SLR5((var_EA & 0x7));
         Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
-        Map::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
+        World::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
 
         return true;
     }
@@ -591,7 +591,7 @@ namespace OpenLoco
             }
             auto getWallPlacementArgs = [randWallTypeFlags, &i, secondaryWallType, primaryWallType, &tilePos](const uint8_t rotation) {
                 GameCommands::WallPlacementArgs args;
-                args.pos = Map::Pos3(Map::Pos2(tilePos), 0);
+                args.pos = World::Pos3(World::Pos2(tilePos), 0);
                 args.rotation = rotation;
                 args.type = randWallTypeFlags & (1 << i) ? secondaryWallType : primaryWallType;
                 i++;

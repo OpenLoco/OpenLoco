@@ -183,7 +183,7 @@ namespace OpenLoco
 
         auto& entry = var_4A8[index];
 
-        Map::Pos2 pos;
+        World::Pos2 pos;
         if ((_dword4FE720[entry.var_00] & 2) != 0)
         {
             auto* industry = IndustryManager::get(static_cast<IndustryId>(entry.var_01));
@@ -198,15 +198,15 @@ namespace OpenLoco
         auto& prng = gPrng();
         const auto randPick = prng.randNext();
         // Random tile position 32x32 tiles centered on 0,0 i.e. +-16 tiles
-        const auto randPos = Map::Pos2{
+        const auto randPos = World::Pos2{
             static_cast<coord_t>(randPick & 0x3E0),
             static_cast<coord_t>(Utility::ror<uint32_t>(randPick, 5) & 0x3E0)
-        } - Map::TilePos2{ 16, 16 };
+        } - World::TilePos2{ 16, 16 };
 
         const auto selectedPos = randPos + pos;
-        if (Map::validCoords(selectedPos))
+        if (World::validCoords(selectedPos))
         {
-            auto tile = Map::TileManager::get(selectedPos);
+            auto tile = World::TileManager::get(selectedPos);
             auto* surface = tile.surface();
 
             coord_t z = surface->baseHeight();
@@ -217,7 +217,7 @@ namespace OpenLoco
             const auto buildingType = CompanyManager::getHeadquarterBuildingType();
 
             GameCommands::HeadquarterPlacementArgs args;
-            args.pos = Map::Pos3(selectedPos, z);
+            args.pos = World::Pos3(selectedPos, z);
             args.rotation = rot;
             args.type = buildingType;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
@@ -476,15 +476,15 @@ namespace OpenLoco
     }
 
     // 0x0042F0C1
-    static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour newColour)
+    static void updateHeadquartersColourAtTile(const World::TilePos2& pos, uint8_t zPos, Colour newColour)
     {
-        auto tile = Map::TileManager::get(pos);
+        auto tile = World::TileManager::get(pos);
         for (auto& element : tile)
         {
             if (element.baseZ() != zPos)
                 continue;
 
-            auto* building = element.as<Map::BuildingElement>();
+            auto* building = element.as<World::BuildingElement>();
             if (building == nullptr)
                 continue;
 
@@ -500,11 +500,11 @@ namespace OpenLoco
             return;
 
         const auto colour = mainColours.primary;
-        auto hqPos = Map::TilePos2(Map::Pos2(headquartersX, headquartersY));
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 0), headquartersZ, colour);
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 0), headquartersZ, colour);
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 1), headquartersZ, colour);
-        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 1), headquartersZ, colour);
+        auto hqPos = World::TilePos2(World::Pos2(headquartersX, headquartersY));
+        updateHeadquartersColourAtTile(hqPos + World::TilePos2(0, 0), headquartersZ, colour);
+        updateHeadquartersColourAtTile(hqPos + World::TilePos2(1, 0), headquartersZ, colour);
+        updateHeadquartersColourAtTile(hqPos + World::TilePos2(1, 1), headquartersZ, colour);
+        updateHeadquartersColourAtTile(hqPos + World::TilePos2(0, 1), headquartersZ, colour);
     }
 
     // 0x00437F47
@@ -596,20 +596,20 @@ namespace OpenLoco
         {
             return;
         }
-        Map::TilePos2 headPos = Map::Pos2{ headquartersX, headquartersY };
-        for (const auto& pos : Map::TilePosRangeView(headPos, headPos + Map::TilePos2{ 1, 1 }))
+        World::TilePos2 headPos = World::Pos2{ headquartersX, headquartersY };
+        for (const auto& pos : World::TilePosRangeView(headPos, headPos + World::TilePos2{ 1, 1 }))
         {
             setHeadquartersVariation(variation, pos);
         }
     }
 
     // 0x0042F142
-    void Company::setHeadquartersVariation(const uint8_t variation, const Map::TilePos2& pos)
+    void Company::setHeadquartersVariation(const uint8_t variation, const World::TilePos2& pos)
     {
-        auto tile = Map::TileManager::get(pos);
+        auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
         {
-            auto* elBuilding = el.as<Map::BuildingElement>();
+            auto* elBuilding = el.as<World::BuildingElement>();
             if (elBuilding == nullptr)
             {
                 continue;

@@ -33,7 +33,7 @@
 #include <sstream>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::S5
@@ -632,11 +632,11 @@ namespace OpenLoco::S5
             }
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
-                TileManager::setElements(stdx::span<Map::TileElement>(reinterpret_cast<Map::TileElement*>(file->tileElements.data()), file->tileElements.size()));
+                TileManager::setElements(stdx::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
             }
             else
             {
-                Map::TileManager::initialise();
+                World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
             if (flags & LoadFlags::scenario)

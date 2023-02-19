@@ -4,7 +4,7 @@
 #include "Graphics/RenderTarget.h"
 #include "Location.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <string>
 #include <vector>
 
@@ -202,7 +202,7 @@ namespace OpenLoco::Ui
 
         struct InteractionArg
         {
-            Map::Pos2 pos;
+            World::Pos2 pos;
             union
             {
                 uint32_t value;
@@ -211,7 +211,7 @@ namespace OpenLoco::Ui
             InteractionItem type;
             uint8_t modId; // used for track mods and to indicate left/right signals
             InteractionArg() = default;
-            InteractionArg(const Map::Pos2& _pos, uint32_t _value, InteractionItem _type, uint8_t _unkBh)
+            InteractionArg(const World::Pos2& _pos, uint32_t _value, InteractionItem _type, uint8_t _unkBh)
                 : pos(_pos)
                 , value(_value)
                 , type(_type)
@@ -225,10 +225,10 @@ namespace OpenLoco::Ui
         InteractionArg rightOver(int16_t x, int16_t y);
 
         std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags);
-        std::optional<Map::Pos2> getSurfaceOrWaterLocFromUi(const Point& screenCoords);
-        uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc);
-        uint8_t getQuadrantFromPos(const Map::Pos2& loc);
-        uint8_t getSideFromPos(const Map::Pos2& loc);
-        std::optional<std::pair<Map::Pos2, Ui::Viewport*>> getSurfaceLocFromUi(const Point& screenCoords);
+        std::optional<World::Pos2> getSurfaceOrWaterLocFromUi(const Point& screenCoords);
+        uint8_t getQuadrantOrCentreFromPos(const World::Pos2& loc);
+        uint8_t getQuadrantFromPos(const World::Pos2& loc);
+        uint8_t getSideFromPos(const World::Pos2& loc);
+        std::optional<std::pair<World::Pos2, Ui::Viewport*>> getSurfaceLocFromUi(const Point& screenCoords);
     }
 }

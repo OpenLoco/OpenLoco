@@ -23,7 +23,7 @@
 #include <cassert>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Literals;
 
@@ -386,8 +386,8 @@ namespace OpenLoco
                                 if (obj->hasFlags(BuildingObjectFlags::largeTile))
                                 {
                                     auto index = buildingEl.multiTileIndex();
-                                    tile_coord_t xPos = (pos.x - Map::offsets[index].x) / kTileSize;
-                                    tile_coord_t yPos = (pos.y - Map::offsets[index].y) / kTileSize;
+                                    tile_coord_t xPos = (pos.x - World::offsets[index].x) / kTileSize;
+                                    tile_coord_t yPos = (pos.y - World::offsets[index].y) / kTileSize;
 
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 1);

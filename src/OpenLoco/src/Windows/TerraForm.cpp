@@ -25,13 +25,13 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Terraform
@@ -98,9 +98,9 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
     static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
-    static loco_global<Map::TileElement*, 0x01136470> _lastPlacedWall;
-    static loco_global<Map::TreeElement*, 0x01136470> _lastPlacedTree;
-    static loco_global<Map::Pos2, 0x01136488> _terraformGhostPos;
+    static loco_global<World::TileElement*, 0x01136470> _lastPlacedWall;
+    static loco_global<World::TreeElement*, 0x01136470> _lastPlacedTree;
+    static loco_global<World::Pos2, 0x01136488> _terraformGhostPos;
     static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
     static loco_global<uint16_t, 0x01136492> _terraformGhostTreeRotationFlag;
     static loco_global<uint8_t, 0x01136499> _terraformGhostBaseZ;
@@ -415,7 +415,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 _terraformGhostPlacedFlags = _terraformGhostPlacedFlags & ~Common::GhostPlacedFlags::tree;
                 GameCommands::TreeRemovalArgs args;
-                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * Map::kSmallZStep);
+                args.pos = World::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
                 args.type = _terraformGhostType;
                 args.elementType = _terraformGhostTreeElementType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             GameCommands::TreePlacementArgs args;
             // 0 for Z value means game command finds first available height
-            args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
+            args.pos = World::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
             args.colour = *_treeColour;
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 return;
             }
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getTreePlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -493,9 +493,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            Map::TileManager::setMapSelectionCorner((placementArgs->quadrant ^ (1 << 1)) + 6);
-            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::setMapSelectionCorner((placementArgs->quadrant ^ (1 << 1)) + 6);
+            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::TileManager::mapInvalidateSelectionRect();
 
             if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
             {
@@ -540,10 +540,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
-                        if (Map::placeTreeCluster(placementArgs->pos, 320, 3, placementArgs->type))
+                        if (World::placeTreeCluster(placementArgs->pos, 320, 3, placementArgs->type))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
-                            Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                            Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
                         }
                         else
                         {
@@ -559,10 +559,10 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
-                        if (Map::placeTreeCluster(placementArgs->pos, 384, 4, std::nullopt))
+                        if (World::placeTreeCluster(placementArgs->pos, 384, 4, std::nullopt))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
-                            Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                            Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
                         }
                         else
                         {
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(&self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self.savedView.mapX = -16;
                     _lastTreeCost = 0x80000000;
@@ -972,18 +972,18 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC677
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
             uint32_t cost = 0x80000000;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
-                if (Map::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                if (World::TileManager::setMapSelectionTiles(res->first, 4) == 0)
                 {
                     return;
                 }
-                const auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                const auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
                 const Pos2 centre = (pointA + pointB) / 2;
                 cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
             }
@@ -999,7 +999,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             {
-                auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
                 Pos2 centre = (pointA + pointB) / 2;
                 GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
@@ -1259,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if ((flags & 1))
                 Common::sub_4A69DD();
 
-            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
             auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_lower_land_here);
 
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                auto corner = Map::TileManager::getMapSelectionCorner();
+                auto corner = World::TileManager::getMapSelectionCorner();
                 cost = GameCommands::do_26(centre, pointA, pointB, corner, flags);
             }
             return cost;
@@ -1283,7 +1283,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if ((flags & 1))
                 Common::sub_4A69DD();
 
-            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
             auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_raise_land_here);
 
@@ -1294,7 +1294,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                uint16_t corner = Map::TileManager::getMapSelectionCorner();
+                uint16_t corner = World::TileManager::getMapSelectionCorner();
                 cost = GameCommands::do_25(centre, pointA, pointB, corner, flags);
             }
             return cost;
@@ -1316,18 +1316,18 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void onPaintToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
             uint32_t cost = 0x80000000;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
-                if (Map::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                if (World::TileManager::setMapSelectionTiles(res->first, 4) == 0)
                 {
                     return;
                 }
-                const auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                const auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
                 const Pos2 centre = (pointA + pointB) / 2;
                 cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
             }
@@ -1416,7 +1416,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (_lastSelectedLand != 0xFF)
                 {
                     GameCommands::setErrorTitle(StringIds::error_cant_change_land_type);
-                    auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                    auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
 
                     ChangeLandMaterialArgs args{};
                     args.pointA = pointA;
@@ -1715,7 +1715,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     setAdjustCost(0x80000000, 0x80000000);
                     return;
                 }
-                if (!TileManager::setMapSelectionTiles(interaction.pos + Map::Pos2(16, 16), 5))
+                if (!TileManager::setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), 5))
                 {
                     // no change in selection
                     return;
@@ -1733,7 +1733,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
                 auto lowerCost = GameCommands::do_29(pointA, pointB, 0);
                 auto raiseCost = GameCommands::do_28(pointA, pointB, 0);
                 setAdjustCost(raiseCost, lowerCost);
@@ -1755,7 +1755,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::sub_4A69DD();
             GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
 
             GameCommands::do_28(pointA, pointB, flags);
         }
@@ -1764,7 +1764,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::sub_4A69DD();
             GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
 
             GameCommands::do_29(pointA, pointB, flags);
         }
@@ -2099,7 +2099,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 _terraformGhostPlacedFlags = _terraformGhostPlacedFlags & ~Common::GhostPlacedFlags::wall;
                 GameCommands::WallRemovalArgs args;
-                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * Map::kSmallZStep);
+                args.pos = World::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
                 args.rotation = _terraformGhostRotation;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
@@ -2143,7 +2143,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             GameCommands::WallPlacementArgs args;
             // 0 for Z value means game command finds first available height
-            args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
+            args.pos = World::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
             args.rotation = ViewportInteraction::getSideFromPos(res->first);
             args.primaryColour = Colour::black;
@@ -2159,7 +2159,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 return;
             }
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getWallPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -2169,9 +2169,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            Map::TileManager::setMapSelectionCorner(placementArgs->rotation + 10);
-            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::setMapSelectionCorner(placementArgs->rotation + 10);
+            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::TileManager::mapInvalidateSelectionRect();
 
             if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::wall) != Common::GhostPlacedFlags::none)
             {
@@ -2236,7 +2236,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     LastGameOptionManager::setLastWall(static_cast<uint8_t>(rowInfo));
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self.savedView.mapX = -16;
                     self.invalidate();
@@ -2633,7 +2633,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         return false;
     }
 
-    void setLastPlacedTree(Map::TreeElement* elTree)
+    void setLastPlacedTree(World::TreeElement* elTree)
     {
         _lastPlacedTree = elTree;
     }

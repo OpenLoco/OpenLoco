@@ -23,7 +23,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
@@ -753,7 +753,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto pan = window.width / 2 + window.x;
-        Audio::playSound(Audio::SoundId::clickDown, Map::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
+        Audio::playSound(Audio::SoundId::clickDown, World::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
         auto item = window.rowInfo[scrollItem];
         auto vehicleObj = ObjectManager::get<VehicleObject>(item);
         FormatArguments args{};

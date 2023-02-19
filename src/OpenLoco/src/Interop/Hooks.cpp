@@ -759,8 +759,8 @@ void OpenLoco::Interop::registerHooks()
         });
 
     Ui::ProgressBar::registerHooks();
-    Map::TileManager::registerHooks();
-    Map::AnimationManager::registerHooks();
+    World::TileManager::registerHooks();
+    World::AnimationManager::registerHooks();
     Ui::Windows::TextInput::registerHooks();
     Ui::Windows::ToolTip::registerHooks();
     Ui::Windows::Vehicle::registerHooks();
@@ -785,10 +785,10 @@ void OpenLoco::Interop::registerHooks()
         0x0046956E,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            Map::Pos2 pos(regs.ax, regs.cx);
-            Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
+            World::Pos2 pos(regs.ax, regs.cx);
+            World::SurfaceElement* surface = X86Pointer<World::SurfaceElement>(regs.esi);
 
-            Map::WaveManager::createWave(*surface, pos);
+            World::WaveManager::createWave(*surface, pos);
 
             regs = backup;
             return 0;
@@ -920,7 +920,7 @@ void OpenLoco::Interop::registerHooks()
         0x00454A43,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            Map::Pos2 pos{ regs.ax, regs.cx };
+            World::Pos2 pos{ regs.ax, regs.cx };
             uint8_t primaryWall = regs.bl;
             uint8_t secondaryWall = regs.bh;
             auto* industry = IndustryManager::get(static_cast<IndustryId>(regs.dh));

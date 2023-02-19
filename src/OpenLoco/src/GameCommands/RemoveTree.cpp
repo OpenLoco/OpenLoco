@@ -14,7 +14,7 @@ namespace OpenLoco::GameCommands
 {
     // 0x004BB432
     // TODO: Move to somewhere else multiple functions call this one
-    static void removeTree(Map::TreeElement& element, const uint8_t flags, const Map::Pos2& pos)
+    static void removeTree(World::TreeElement& element, const uint8_t flags, const World::Pos2& pos)
     {
         registers regs;
         regs.bl = flags;
@@ -38,14 +38,14 @@ namespace OpenLoco::GameCommands
      * @param flags @<bl>
      * @return @<ebx> - returns the remove cost if successful; otherwise GameCommands::FAILURE (in the assembly code we never get into failure path)
      */
-    static uint32_t removeTree(const Map::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
+    static uint32_t removeTree(const World::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
-        auto tileHeight = Map::TileManager::getHeight(pos);
-        GameCommands::setPosition(Map::Pos3(pos.x + Map::kTileSize / 2, pos.y + Map::kTileSize / 2, tileHeight.landHeight));
+        auto tileHeight = World::TileManager::getHeight(pos);
+        GameCommands::setPosition(World::Pos3(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2, tileHeight.landHeight));
 
-        auto tile = Map::TileManager::get(pos);
+        auto tile = World::TileManager::get(pos);
         for (auto& element : tile)
         {
             // TODO: refactor! Figure out what info it actually needs.
@@ -55,7 +55,7 @@ namespace OpenLoco::GameCommands
             if (element.baseHeight() != pos.z)
                 continue;
 
-            auto* treeElement = element.as<Map::TreeElement>();
+            auto* treeElement = element.as<World::TreeElement>();
             if (treeElement == nullptr)
                 continue;
 
