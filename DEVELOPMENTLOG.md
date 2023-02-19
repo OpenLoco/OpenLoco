@@ -1,5 +1,23 @@
 # OpenLoco version 23.01+ (???)
 
+## Implement object loading functions [#1822, #1824, #1829, #1834, #1842, #1846]
+This month, our journey towards implementing the object load functions continues. As of this release, we're nearly at the finish line! As we noted in last month's development log, these loading functions handle data such as sprites, animations, and localisable strings. Implementing these functions will eventually make it possible to introduce our own object format, increasing limits further down the line. Exciting stuff to look forward to!
+
+## Enumeration flag conversions [37 separate PRs]
+This month, @niceeffort converted most of the flags in OpenLoco to use strict enumeration class types. Building on the work introduced in the past month, these new types make it easier to spot mistakes -- both for ourselves, and the C++ compiler. Ultimately, this should lead to less bugs, which is nice for everyone :-)
+
+## Object selection window improvements [#1833, #1837]
+Players with many objects (mods) in their Locomotion folders will often have to spend much time looking for particular objects when designing custom scenarios. No longer! You can now find objects by display name or filename, simply by typing in the new filter box. With the object selection window having been made available in-game since December 2022, this should make scenario play even more fun.
+
+## Split off more code into modules [#1771, #1785, #1800, #1844]
+A longtime contributor and friend from the OpenRCT2 project, @ZehMatt, recently joined forces with us to help out moduralise the OpenLoco project further. This helps us compartmentalise and test the code base better, ultimately leading to better, more reusable code.
+
+## Right-click panning is smooth again [#1475]
+A bug that has been plaguing OpenLoco for a while is the map panning being slow when the 'uncap FPS' option were disabled. It turns out to have been introduced by that very same option, making this a regression. Thanks to @ZehMatt, the bug has been vanquished, making the game buttery smooth while panning, once again.
+
+## Renderer code improvements [#1766, #1796, #1799, #1835, #1838]
+Another of @ZehMatt's projects has been the UI rendering. While OpenLoco code already takes care to split core game logic from UI logic, we have had difficulty to split UI code from the viewport (map) buffers. @ZehMatt's recent efforts will ultimately make it possible to scale the UI separately from the rest of the game. Very exciting indeed!
+
 # OpenLoco version 23.01 (2023-01-25)
 
 ## Implement Object Loading Functions [#1739, #1746, #1747, #1749, #1752, #1753, #1758, #1759]
