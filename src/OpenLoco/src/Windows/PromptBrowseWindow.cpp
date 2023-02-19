@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         const char* filter,
         string_id titleId)
     {
-        auto path = fs::u8path(szPath);
+        auto path = fs::path(reinterpret_cast<const char8_t*>(szPath));
         auto directory = getDirectory(path);
         auto baseName = getBasename(path);
 

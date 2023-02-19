@@ -90,7 +90,7 @@ namespace OpenLoco::Game
     // 0x004418DB
     bool saveScenarioOpen()
     {
-        auto path = fs::u8path(&_pathScenarios[0]).parent_path() / S5::getOptions().scenarioName;
+        auto path = fs::path(reinterpret_cast<const char8_t*>(&_pathScenarios[0])).parent_path() / S5::getOptions().scenarioName;
         auto path8 = path.u8string();
         const auto path8s = std::string(path8.cbegin(), path8.cend());
         strncpy(&_savePath[0], path8s.c_str(), std::size(_savePath));
@@ -108,8 +108,8 @@ namespace OpenLoco::Game
             S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             sub_46DB4C();
         }
-
-        auto path = fs::u8path(&_pathLandscapes[0]).parent_path() / S5::getOptions().scenarioName;
+        
+        auto path = fs::path(reinterpret_cast<const char8_t*>(&_pathLandscapes[0])).parent_path() / S5::getOptions().scenarioName;
         auto path8 = path.u8string();
         const auto path8s = std::string(path8.cbegin(), path8.cend());
         strncpy(&_savePath[0], path8s.c_str(), std::size(_savePath));
@@ -142,7 +142,7 @@ namespace OpenLoco::Game
             if (Game::loadLandscapeOpen())
             {
                 // 0x0043C087
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+                auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0])).replace_extension(S5::extensionSC5);
                 auto path8 = path.u8string();
                 const auto path8s = std::string(path8.cbegin(), path8.cend());
                 std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
@@ -159,7 +159,7 @@ namespace OpenLoco::Game
             if (Game::loadSaveGameOpen())
             {
                 // 0x0043C033
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+                auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0])).replace_extension(S5::extensionSV5);
                 auto path8 = path.u8string();
                 const auto path8s = std::string(path8.cbegin(), path8.cend());
                 std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
@@ -292,7 +292,7 @@ namespace OpenLoco::Game
             if (Game::saveSaveGameOpen())
             {
                 // 0x0043C446
-                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+                auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0])).replace_extension(S5::extensionSV5);
                 auto path8 = path.u8string();
                 const auto path8s = std::string(path8.cbegin(), path8.cend());
                 std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));
@@ -334,7 +334,7 @@ namespace OpenLoco::Game
     bool saveLandscape()
     {
         // 0x0043C4B3
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+        auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0])).replace_extension(S5::extensionSC5);
         auto path8 = path.u8string();
         const auto path8s = std::string(path8.cbegin(), path8.cend());
         std::strncpy(&_currentScenarioFilename[0], path8s.c_str(), std::size(_currentScenarioFilename));

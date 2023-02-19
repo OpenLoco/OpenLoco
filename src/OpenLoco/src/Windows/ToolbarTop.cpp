@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         static loco_global<char[512], 0x0112CE04> _savePath;
-        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+        auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0])).replace_extension(S5::extensionSV5);
 
         // Store path to active file
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;

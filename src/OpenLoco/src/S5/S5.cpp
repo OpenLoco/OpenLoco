@@ -789,13 +789,13 @@ namespace OpenLoco::S5
         registerHook(
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto path = fs::u8path(std::string(_savePath));
+                auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0]));
                 return exportGameStateToFile(path, regs.eax) ? 0 : X86_FLAG_CARRY;
             });
         registerHook(
             0x00441FA7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto path = fs::u8path(std::string(_savePath));
+                auto path = fs::path(reinterpret_cast<const char8_t*>(&_savePath[0]));
                 return importSaveToGameState(path, regs.eax) ? X86_FLAG_CARRY : 0;
             });
     }
