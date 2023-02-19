@@ -147,22 +147,6 @@ namespace OpenLoco
         auto numPrimaryImages = nextImageOffset - imageOffset;
         nextImageOffset = imageOffset;
 
-        /*
-            TODO: here for quick verification; remove later
-            0x0A -> sprites[0]
-            0x0E -> sprites[1]
-            0x12 -> sprites[2]
-            0x16 -> sprites[3]
-            0x1A -> sprites[4]
-            0x1E -> sprites[5]
-            0x22 -> snowsprites[0]
-            0x26 -> snowsprites[1]
-            0x2A -> snowsprites[2]
-            0x2E -> snowsprites[3]
-            0x32 -> snowsprites[4]
-            0x36 -> snowsprites[5]
-        */
-
         if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 4)) != 0)
         {
             sprites[5] = sprites[4];
@@ -206,14 +190,6 @@ namespace OpenLoco
         {
             shadowImageOffset = nextImageOffset;
         }
-
-        /*
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004BE144, regs);
-        */
     }
 
     // 0x004BE231
