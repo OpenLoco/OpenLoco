@@ -190,6 +190,9 @@ namespace OpenLoco
         {
             shadowImageOffset = nextImageOffset;
         }
+
+        // Verify we haven't overshot any lengths
+        assert(imgRes.imageOffset + shadowImageOffset == ObjectManager::getTotalNumImages());
     }
 
     // 0x004BE231
