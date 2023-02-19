@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw(Ui::Window& window)
+    static void prepareDraw([[maybe_unused]] Ui::Window& window)
     {
         _widgets[Widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);

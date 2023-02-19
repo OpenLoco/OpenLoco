@@ -1230,13 +1230,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x4B38FA
-        static void getScrollSize(Ui::Window& self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
         {
             *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
 
         // 0x004B3B54
-        static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseDown(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -1266,7 +1266,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B399E
-        static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
@@ -1382,7 +1382,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3B18
-        static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, [[maybe_unused]] const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::carList)
             {
@@ -1569,7 +1569,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B36A3
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t i)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -1881,7 +1881,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3F62
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t i)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -2055,7 +2055,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4360
-        static void getScrollSize(Ui::Window& self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
         {
             *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
@@ -2100,7 +2100,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4404
-        static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
@@ -2739,14 +2739,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5088
-        static void toolCancel(Window& self, const WidgetIndex_t widgetIdx)
+        static void toolCancel(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx)
         {
             self.invalidate();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_04);
             Gfx::invalidateScreen();
         }
 
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             auto [type, args] = sub_4B5A1A(self, x, y);
             switch (type)
@@ -2840,7 +2840,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4D9B
-        static void getScrollSize(Ui::Window& self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
         {
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -2854,7 +2854,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             *height += lineHeight;
         }
 
-        static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseDown(Window& self, const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -2950,7 +2950,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B530C
-        static void scrollMouseOver(Window& self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)
         {
             self.flags &= ~WindowFlags::notScrollView;
             auto item = y / lineHeight;
@@ -2962,7 +2962,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5339
-        static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, const int16_t widgetIdx, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::routeList)
             {
@@ -3193,7 +3193,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B48BA
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t i)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 

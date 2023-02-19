@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458172
-        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / kRowHeight;
             if (currentRow > self.var_83C)
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458140
-        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             self.flags &= ~(WindowFlags::notScrollView);
 
@@ -367,7 +367,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EE8
-        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
@@ -375,13 +375,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00457D2A
-        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -451,7 +451,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458113
-        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458966
-        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
         {
             int16_t xPos = (x / kRowHeight);
             int16_t yPos = (y / kRowHeight) * 5;
@@ -751,7 +751,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458721
-        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
@@ -885,7 +885,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458455
-        static std::optional<FormatArguments> tooltip(Ui::Window& self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
@@ -893,7 +893,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self.var_83C) / 5;
             if (*scrollHeight == 0)
@@ -902,7 +902,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458352
-        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045848A
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045851F
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
             removeIndustryGhost();
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
@@ -1073,7 +1073,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585AD
-        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeIndustryGhost();
             Ui::Windows::hideGridlines();

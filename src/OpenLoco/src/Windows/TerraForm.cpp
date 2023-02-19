@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void removeTreeGhost();
 
         // 0x004BBB0A
-        static void onClose(Window& self)
+        static void onClose([[maybe_unused]] Window& self)
         {
             removeTreeGhost();
             Ui::Windows::hideGridlines();
@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB15
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB20
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -577,7 +577,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEC1
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (self.var_83C + 8) / 9;
             if (*scrollHeight == 0)
@@ -591,7 +591,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBF3B
-        static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseDown(Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             int16_t xPos = (x / kColumnWidth);
             int16_t yPos = (y / kRowHeight) * 5;
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBEF8
-        static void scrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseOver(Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB00
-        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_trees_list);
@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB982
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -922,7 +922,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList events;
 
         // 0x004BC671
-        static void onClose(Window& self)
+        static void onClose([[maybe_unused]] Window& self)
         {
             Ui::Windows::hideGridlines();
         }
@@ -970,7 +970,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC677
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
@@ -1008,7 +1008,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC689
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1016,7 +1016,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC682
-        static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1029,7 +1029,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC701
-        static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -1119,7 +1119,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList events;
 
         // 0x004BC9D1
-        static void onClose(Window& self)
+        static void onClose([[maybe_unused]] Window& self)
         {
             Ui::Windows::hideGridlines();
         }
@@ -1314,7 +1314,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform, 0);
         }
 
-        static void onPaintToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onPaintToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
@@ -1339,7 +1339,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void onAdjustLandToolUpdate(const OpenLoco::Ui::WidgetIndex_t& widgetIndex, const int16_t& x, const int16_t& y)
+        static void onAdjustLandToolUpdate([[maybe_unused]] const OpenLoco::Ui::WidgetIndex_t& widgetIndex, const int16_t& x, const int16_t& y)
         {
             uint16_t xPos = 0;
 
@@ -1428,7 +1428,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9ED
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -1445,7 +1445,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC9E2
-        static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             switch (widgetIndex)
             {
@@ -1507,7 +1507,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCA5D
-        static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1635,7 +1635,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList events;
 
         // 0x004BCDAE
-        static void onClose(Window& self)
+        static void onClose([[maybe_unused]] Window& self)
         {
             Ui::Windows::hideGridlines();
         }
@@ -1698,7 +1698,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDB4
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1741,7 +1741,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDCA
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1770,7 +1770,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDBF
-        static void toolDragContinue(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
                 return;
@@ -1818,7 +1818,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCDE8
-        static void toolDragEnd(Window& self, const WidgetIndex_t widgetIndex)
+        static void toolDragEnd([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Common::widx::panel)
             {
@@ -1981,7 +1981,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void removeWallGhost();
 
         // 0x004BC21C
-        static void onClose(Window& self)
+        static void onClose([[maybe_unused]] Window& self)
         {
             removeWallGhost();
             Ui::Windows::hideGridlines();
@@ -2153,7 +2153,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC227
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2187,7 +2187,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC232
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != Common::widx::panel)
             {
@@ -2206,7 +2206,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC359
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (self.var_83C + 9) / 10;
             if (*scrollHeight == 0)
@@ -2220,7 +2220,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC3D3
-        static void scrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseDown(Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             int16_t xPos = (x / 40);
             int16_t yPos = (y / kRowHeight) * 10;
@@ -2246,7 +2246,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC390
-        static void scrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void scrollMouseOver(Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
@@ -2266,7 +2266,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC212
-        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_walls_list);
@@ -2309,7 +2309,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC11C
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 

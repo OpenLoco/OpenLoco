@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439268
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {

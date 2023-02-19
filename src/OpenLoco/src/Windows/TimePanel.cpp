@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004396A4
-    static void prepareDraw(Window& window)
+    static void prepareDraw([[maybe_unused]] Window& window)
     {
         _widgets[Widx::inner_frame].type = WidgetType::none;
         _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004398FB
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static void onMouseUp([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x0043A72F
-    static void mapDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void mapDropdown(Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439944
-    static Ui::CursorId onCursor(Ui::Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor([[maybe_unused]] Ui::Window& self, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIdx)
         {
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439955
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -370,7 +370,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439A15
-    static void textInput(Window& w, WidgetIndex_t widgetIndex, const char* str)
+    static void textInput([[maybe_unused]] Window& w, WidgetIndex_t widgetIndex, const char* str)
     {
         switch (widgetIndex)
         {

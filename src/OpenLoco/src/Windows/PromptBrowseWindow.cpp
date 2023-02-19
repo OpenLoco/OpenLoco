@@ -216,13 +216,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004464A1
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window.rowHeight * static_cast<uint16_t>(_files.size());
     }
 
     // 0x004464F7
-    static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
     {
         auto index = size_t(y / self.rowHeight);
         if (index >= _files.size())
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004464B1
-    static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
     {
         if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
             return;
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467D7
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -573,7 +573,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446314
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 

@@ -11,7 +11,7 @@
  */
 // Hack to trick mingw into thinking we forward-declared this function.
 extern "C" __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
-extern "C" __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+extern "C" __declspec(dllexport) int StartOpenLoco([[maybe_unused]] HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, LPSTR lpCmdLine, [[maybe_unused]] int nCmdShow)
 {
     return OpenLoco::main(lpCmdLine);
 }

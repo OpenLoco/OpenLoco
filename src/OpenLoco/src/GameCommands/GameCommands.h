@@ -1681,7 +1681,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::applyFreeCashCheat;
 
         ApplyFreeCashCheatArgs() = default;
-        explicit ApplyFreeCashCheatArgs(const registers& regs)
+        explicit ApplyFreeCashCheatArgs(const registers&)
         {
         }
 

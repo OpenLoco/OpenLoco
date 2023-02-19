@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043B154
-    static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void loadsaveMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         auto id = Dropdown::getSelectedItem<LoadSaveDropdownId>(itemIndex);
         if (!id)
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043B0B8
-    static void audioMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void audioMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Dropdown::setItemSelected(7);
     }
 
-    static void cheatsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void cheatsMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = 0;
@@ -438,7 +438,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A39F
-    static void railroadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void railroadMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -482,7 +482,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043AA0A
-    static void portMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void portMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043ADC7
-    static void buildVehiclesMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void buildVehiclesMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043ACEF
-    static void vehiclesMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void vehiclesMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A596
-    static void stationsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void stationsMenuDropdown([[maybe_unused]] Window* window, [[maybe_unused]] WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();

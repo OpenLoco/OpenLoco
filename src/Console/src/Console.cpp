@@ -25,7 +25,7 @@ namespace OpenLoco::Console
         va_end(args);
     }
 
-    void logVerbose(const char* format, ...)
+    void logVerbose([[maybe_unused]] const char* format, ...)
     {
 #ifdef VERBOSE
         va_list args;

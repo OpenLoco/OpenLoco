@@ -181,7 +181,7 @@ std::optional<Packet> NetworkConnection::takeNextPacket()
     }
 }
 
-void NetworkConnection::logPacket(const Packet& packet, bool sent, bool resend)
+void NetworkConnection::logPacket([[maybe_unused]] const Packet& packet, [[maybe_unused]] bool sent, [[maybe_unused]] bool resend)
 {
 #if defined(DEBUG)
 #ifdef LOG_PACKETS

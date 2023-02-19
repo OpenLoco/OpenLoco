@@ -78,7 +78,7 @@ void NetworkBase::onUpdate()
 {
 }
 
-void NetworkBase::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
+void NetworkBase::onReceivePacket(IUdpSocket&, std::unique_ptr<INetworkEndpoint>, const Packet&)
 {
 }
 

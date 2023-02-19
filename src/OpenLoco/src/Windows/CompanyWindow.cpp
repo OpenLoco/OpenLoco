@@ -971,7 +971,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432CA1
-        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
@@ -1007,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = widgetIndex;
         // regs.ax = mouseX;
         // regs.bx = mouseY;
-        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t mouseX, const int16_t mouseY)
+        static void onToolDown([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t mouseX, const int16_t mouseY)
         {
             removeHeadquarterGhost();
 
@@ -1027,7 +1027,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432D7A
-        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
+        static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeHeadquarterGhost();
             Ui::Windows::hideGridlines();
@@ -1874,7 +1874,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043361E
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -2030,14 +2030,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043386F
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, [[maybe_unused]] uint16_t* scrollHeight)
         {
             const auto& company = CompanyManager::get(CompanyId(self.number));
             *scrollWidth = company->numExpenditureMonths * expenditureColumnWidth;
         }
 
         // 0x00433887
-        static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);

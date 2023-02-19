@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         Gfx::invalidateScreen();
     }
 
-    static void onClose(Ui::Window& window)
+    static void onClose([[maybe_unused]] Ui::Window& window)
     {
         if (_cbClose)
         {
@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         }
     }
 
-    static void prepareDraw(Window& self)
+    static void prepareDraw([[maybe_unused]] Window& self)
     {
         StringManager::setString(StringIds::buffer_1250, _text.c_str());
     }

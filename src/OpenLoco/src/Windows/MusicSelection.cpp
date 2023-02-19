@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1663
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C176C
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = kRowHeight * Audio::kNumMusicTracks;
     }
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1799
-    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount)
@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1771
-    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
         uint16_t currentTrack = y / kRowHeight;
         if (currentTrack > window.rowCount || currentTrack == window.rowHover)
@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1762
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex)
+    static std::optional<FormatArguments> tooltip([[maybe_unused]] Ui::Window& window, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);

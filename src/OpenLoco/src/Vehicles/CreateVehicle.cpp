@@ -121,7 +121,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE8F1, 0x004AEA9E
-    static VehicleBogie* createBogie(const EntityId head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createBogie(const EntityId head, const uint16_t vehicleTypeId, [[maybe_unused]] const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleThing<VehicleBogie>();
         newBogie->owner = _updatingCompanyId;

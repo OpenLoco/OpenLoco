@@ -530,7 +530,7 @@ namespace OpenLoco
                 // This address is where those routines jump back to to end the tick prematurely
                 registerHook(
                     0x0046AD71,
-                    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                    [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                         longjmp(tickJump, 1);
                     });
 

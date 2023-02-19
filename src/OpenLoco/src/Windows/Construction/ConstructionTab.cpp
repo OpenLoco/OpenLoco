@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049F92D
-    static void constructTrack(Window* self, WidgetIndex_t widgetIndex)
+    static void constructTrack([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         if (_trackType & (1 << 7))
         {
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0121
-    static void removeTrack(Window* self, WidgetIndex_t widgetIndex)
+    static void removeTrack([[maybe_unused]] Window* self, [[maybe_unused]] WidgetIndex_t widgetIndex)
     {
         if (_trackType & (1 << 7))
         {
@@ -1734,7 +1734,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4EA
-    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onDropdown([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == widx::bridge_dropdown)
         {
@@ -2391,7 +2391,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC8C
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
         {
@@ -2473,7 +2473,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DC97
-    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::construct)
             return;
@@ -2489,7 +2489,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4F5
-    static Ui::CursorId cursor(Window& self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor([[maybe_unused]] Window& self, int16_t widgetIndex, [[maybe_unused]] int16_t xPos, [[maybe_unused]] int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
             Input::setTooltipTimeout(2000);

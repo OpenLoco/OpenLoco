@@ -83,9 +83,9 @@ namespace OpenLoco
         virtual ~Stream() {}
         virtual uint64_t getLength() const { throwInvalidOperation(); }
         virtual uint64_t getPosition() const { throwInvalidOperation(); }
-        virtual void setPosition(uint64_t position) { throwInvalidOperation(); }
-        virtual void read(void* buffer, size_t len) { throwInvalidOperation(); }
-        virtual void write(const void* buffer, size_t len) { throwInvalidOperation(); }
+        virtual void setPosition(uint64_t) { throwInvalidOperation(); }
+        virtual void read(void*, size_t) { throwInvalidOperation(); }
+        virtual void write(const void*, size_t) { throwInvalidOperation(); }
 
         void seek(int64_t pos)
         {
@@ -93,7 +93,7 @@ namespace OpenLoco
         }
 
     private:
-        [[noreturn]] static void throwInvalidOperation() { throw std::runtime_error("Invalid operation"); }
+        [[noreturn]] static void throwInvalidOperation(...) { throw std::runtime_error("Invalid operation"); }
     };
 
     class BinaryStream final : public Stream

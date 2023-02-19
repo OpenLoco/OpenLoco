@@ -345,13 +345,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436321
-        static void getScrollSize(Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = self.var_83C * kRowHeight;
         }
 
         // 0x004363A0
-        static void onScrollMouseDown(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             uint16_t currentRow = y / kRowHeight;
             if (currentRow > self.var_83C)
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436361
-        static void onScrollMouseOver(Window& self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
             self.flags &= ~(WindowFlags::notScrollView);
 
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004362B6
-        static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex)
+        static std::optional<FormatArguments> tooltip([[maybe_unused]] Window& self, [[maybe_unused]] WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_company_list);
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043632C
-        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window& self, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00435EA7
-        static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 

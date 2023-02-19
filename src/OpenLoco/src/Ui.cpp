@@ -342,7 +342,7 @@ namespace OpenLoco::Ui
     {
     }
 
-    static void positionChanged(int32_t x, int32_t y)
+    static void positionChanged([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y)
     {
         auto displayIndex = SDL_GetWindowDisplayIndex(window);
 

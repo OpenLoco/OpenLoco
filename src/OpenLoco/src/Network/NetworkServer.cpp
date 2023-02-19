@@ -187,7 +187,7 @@ void NetworkServer::onReceiveSendChatMessagePacket(Client& client, const SendCha
     _chatMessageQueue.push({ client.id, std::string(packet.getText()) });
 }
 
-void NetworkServer::onReceiveGameCommandPacket(Client& client, const GameCommandPacket& packet)
+void NetworkServer::onReceiveGameCommandPacket([[maybe_unused]] Client& client, const GameCommandPacket& packet)
 {
     queueGameCommand(packet.company, packet.regs);
 }

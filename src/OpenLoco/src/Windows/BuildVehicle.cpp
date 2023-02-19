@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37B9
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window.var_83C * window.rowHeight;
     }
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3802
-    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
@@ -851,7 +851,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, [[maybe_unused]] int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview_vehicle_selection)
         {

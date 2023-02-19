@@ -72,7 +72,7 @@ static void STDCALL fn_40447f()
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
+static void STDCALL fn_404b68(int, int, int, int)
 {
     STUB();
     return;
@@ -114,7 +114,7 @@ static uint32_t STDCALL lib_timeGetTime()
 
 // typedef bool (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, char*, char*, void*);
 FORCE_ALIGN_ARG_POINTER
-static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pContext)
+static long STDCALL fn_DirectSoundEnumerateA(void*, void*)
 {
     STUB();
     return 0;
@@ -144,7 +144,7 @@ static void STDCALL fn_407b26()
 /// region Progress bar
 
 FORCE_ALIGN_ARG_POINTER
-static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
+static void CDECL fn_4080bb(char*, uint32_t)
 {
     Console::log("Create progress bar");
 }
@@ -298,13 +298,13 @@ FORCE_ALIGN_ARG_POINTER
 }
 
 FORCE_ALIGN_ARG_POINTER
-[[maybe_unused]] static void CDECL fnc1(int i1)
+[[maybe_unused]] static void CDECL fnc1(int)
 {
     STUB();
 }
 
 FORCE_ALIGN_ARG_POINTER
-[[maybe_unused]] static void CDECL fnc2(int i1, int i2)
+[[maybe_unused]] static void CDECL fnc2(int, int)
 {
     STUB();
 }
@@ -316,13 +316,13 @@ FORCE_ALIGN_ARG_POINTER
 }
 
 FORCE_ALIGN_ARG_POINTER
-[[maybe_unused]] static void STDCALL fn1(int i1)
+[[maybe_unused]] static void STDCALL fn1(int)
 {
     return;
 }
 
 FORCE_ALIGN_ARG_POINTER
-[[maybe_unused]] static void STDCALL fn2(int i1, int i2)
+[[maybe_unused]] static void STDCALL fn2(int, int)
 {
     STUB();
 }
@@ -402,7 +402,7 @@ static uint32_t STDCALL lib_WriteFile(
     char* buffer,
     size_t nNumberOfBytesToWrite,
     uint32_t* lpNumberOfBytesWritten,
-    uintptr_t lpOverlapped)
+    uintptr_t)
 {
     *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
     Console::logVerbose("WriteFile(%s)", buffer);
@@ -423,11 +423,11 @@ FORCE_ALIGN_ARG_POINTER
 static int32_t STDCALL lib_CreateFileA(
     char* lpFileName,
     uint32_t dwDesiredAccess,
-    uint32_t dwShareMode,
-    uintptr_t lpSecurityAttributes,
+    uint32_t,
+    uintptr_t,
     uint32_t dwCreationDisposition,
-    uint32_t dwFlagsAndAttributes,
-    uintptr_t hTemplateFile)
+    uint32_t,
+    uintptr_t)
 {
     Console::logVerbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
@@ -590,13 +590,13 @@ static void registerAudioHooks()
     writeRet(0x00404B40);
     registerHook(
         0x0048A18C,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Audio::updateSounds();
             return 0;
         });
     registerHook(
         0x00489C6A,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Audio::stopVehicleNoise();
             return 0;
         });
@@ -660,7 +660,7 @@ void OpenLoco::Interop::registerHooks()
     // Replace Ui::update() with our own
     registerHook(
         0x004524C1,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Ui::update();
             return 0;
         });
@@ -675,7 +675,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x00407231,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             OpenLoco::Input::sub_407231();
             return 0;
         });
@@ -715,7 +715,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x00438A6C,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Gui::init();
             return 0;
         });
@@ -805,7 +805,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x004392BD,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Gui::resize();
             return 0;
         });
