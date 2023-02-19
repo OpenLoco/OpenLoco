@@ -1,4 +1,4 @@
-# OpenLoco version 23.01+ (???)
+# OpenLoco version 23.02 (2023-02-19)
 
 ## Implement object loading functions [#1822, #1824, #1829, #1834, #1842, #1846]
 This month, our journey towards implementing the object load functions continues. As of this release, we're nearly at the finish line! As we noted in last month's development log, these loading functions handle data such as sprites, animations, and localisable strings. Implementing these functions will eventually make it possible to introduce our own object format, increasing limits further down the line. Exciting stuff to look forward to!

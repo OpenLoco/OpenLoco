@@ -1,4 +1,4 @@
-23.01+ (???)
+23.02 (2023-02-19)
 ------------------------------------------------------------------------
 - Feature: [#1837]: Add search/filter functionality to object selection window.
 - Fix: [#1475] Slow view panning with uncaps FPS disabled.
