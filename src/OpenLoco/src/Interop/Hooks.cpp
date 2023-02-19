@@ -590,13 +590,13 @@ static void registerAudioHooks()
     writeRet(0x00404B40);
     registerHook(
         0x0048A18C,
-        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Audio::updateSounds();
             return 0;
         });
     registerHook(
         0x00489C6A,
-        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Audio::stopVehicleNoise();
             return 0;
         });
@@ -660,7 +660,7 @@ void OpenLoco::Interop::registerHooks()
     // Replace Ui::update() with our own
     registerHook(
         0x004524C1,
-        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Ui::update();
             return 0;
         });
@@ -675,7 +675,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x00407231,
-        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             OpenLoco::Input::sub_407231();
             return 0;
         });
@@ -715,7 +715,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x00438A6C,
-        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Gui::init();
             return 0;
         });

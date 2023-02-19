@@ -195,7 +195,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437BE1
-        // FIXME: rhs is not used.
         static bool orderByStatus(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
             char lhsString[256] = { 0 };

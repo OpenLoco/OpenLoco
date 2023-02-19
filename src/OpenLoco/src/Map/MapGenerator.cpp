@@ -46,7 +46,7 @@ namespace OpenLoco::Map::MapGenerator
         int32_t const height;
         int32_t const pitch;
 
-        HeightMap(int32_t width, int32_t height, int32_t pitch, [[maybe_unused]] uint8_t baseHeight)
+        HeightMap(int32_t width, int32_t height, int32_t pitch)
             : _height(width * pitch)
             , width(width)
             , height(height)
@@ -756,7 +756,7 @@ namespace OpenLoco::Map::MapGenerator
 
         {
             // Should be 384x384 (but generateLandscape goes out of bounds?)
-            HeightMap heightMap(512, 512, 512, options.minLandHeight);
+            HeightMap heightMap(512, 512, 512);
 
             generateHeightMap(options, heightMap);
             updateProgress(17);
