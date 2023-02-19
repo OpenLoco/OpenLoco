@@ -69,7 +69,6 @@ function(loco_target_compile_link_flags TARGET)
         -fstrict-aliasing
         -Wall
         -Wextra
-        -Wno-unused-parameter
         -Wtype-limits
         $<$<BOOL:${STRICT}>:-Werror>         # Warnings are errors (STRICT ONLY)
 
