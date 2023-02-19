@@ -139,7 +139,7 @@ namespace OpenLoco
             if ((var_3C & (1 << variant)) == 0)
                 continue;
 
-            sprites[0][variant] = imageOffset;
+            sprites[0][variant] = nextImageOffset;
             nextImageOffset += numVariantImages;
         }
 
@@ -195,10 +195,15 @@ namespace OpenLoco
                 sprites[1][variant] = sprites[0][variant] + numPrimaryImages;
             }
 
-            shadowImageOffset = numPrimaryImages * 2;
+            nextImageOffset = numPrimaryImages * 2;
         }
         else
-            shadowImageOffset = numPrimaryImages;
+            nextImageOffset = numPrimaryImages;
+
+        if ((flags & TreeObjectFlags::hasShadow) != TreeObjectFlags::none)
+        {
+            shadowImageOffset = nextImageOffset;
+        }
 
         /*
         Interop::registers regs;
