@@ -1024,14 +1024,15 @@ namespace OpenLoco
 
         if (_accumulator < UpdateTime)
         {
-            auto timeMissing = static_cast<uint32_t>((UpdateTime - _accumulator) * 1000);
-            std::this_thread::sleep_for(std::chrono::milliseconds(timeMissing));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
+        else
+        {
+            tick();
+            _accumulator -= UpdateTime;
 
-        tick();
-        _accumulator -= UpdateTime;
-
-        Ui::render();
+            Ui::render();
+        }
     }
 
     static void update()
