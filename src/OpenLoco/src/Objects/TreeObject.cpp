@@ -198,7 +198,9 @@ namespace OpenLoco
             nextImageOffset = numPrimaryImages * 2;
         }
         else
+        {
             nextImageOffset = numPrimaryImages;
+        }
 
         if ((flags & TreeObjectFlags::hasShadow) != TreeObjectFlags::none)
         {
