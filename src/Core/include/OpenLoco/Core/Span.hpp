@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <nonstd/span.hpp>
+#include <span>
 
 namespace stdx
 {
-    using nonstd::span;
+    using std::span;
 }

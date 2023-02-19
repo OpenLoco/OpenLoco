@@ -6,13 +6,13 @@
 #include <filesystem>
 #include <fstream>
 #include <istream>
-#include <nonstd/span.hpp>
+#include <span>
 #include <stdexcept>
 #include <vector>
 
 namespace stdx
 {
-    using nonstd::span;
+    using std::span;
 }
 
 namespace OpenLoco
