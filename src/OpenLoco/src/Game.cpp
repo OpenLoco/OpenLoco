@@ -108,7 +108,7 @@ namespace OpenLoco::Game
             S5::getOptions().scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             sub_46DB4C();
         }
-        
+
         auto path = fs::path(reinterpret_cast<const char8_t*>(&_pathLandscapes[0])).parent_path() / S5::getOptions().scenarioName;
         auto path8 = path.u8string();
         const auto path8s = std::string(path8.cbegin(), path8.cend());

@@ -360,7 +360,7 @@ namespace OpenLoco::ScenarioManager
             loadScenarioProgress(entry, *options);
             if (!foundId.has_value())
             {
-                _scenarioHeader->numScenarios++; 
+                _scenarioHeader->numScenarios++;
                 const auto u8sFileName = std::string(u8FileName.cbegin(), u8FileName.cend());
                 std::strcpy(entry.filename, u8sFileName.c_str());
             }
