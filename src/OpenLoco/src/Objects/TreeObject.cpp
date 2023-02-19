@@ -16,7 +16,7 @@ namespace OpenLoco
         uint32_t image = getTreeGrowthDisplayOffset() * numRotations;
         auto rotation = (numRotations - 1) & 2;
         image += rotation;
-        image += sprites[0][seasonState];
+        image += sprites[seasonState];
 
         auto colourOptions = colours;
         if (colourOptions != 0)
@@ -36,7 +36,7 @@ namespace OpenLoco
         {
             auto snowImage = getTreeGrowthDisplayOffset() * numRotations;
             snowImage += rotation;
-            snowImage += sprites[1][seasonState];
+            snowImage += snowSprites[seasonState];
 
             if (colourOptions != 0)
             {
@@ -129,7 +129,7 @@ namespace OpenLoco
         // Initialise sprites array
         for (auto variant = 0; variant < 6; variant++)
         {
-            sprites[0][variant] = imageOffset;
+            sprites[variant] = imageOffset;
         }
 
         auto numVariantImages = numRotations * growth;
@@ -139,7 +139,7 @@ namespace OpenLoco
             if ((var_3C & (1 << variant)) == 0)
                 continue;
 
-            sprites[0][variant] = nextImageOffset;
+            sprites[variant] = nextImageOffset;
             nextImageOffset += numVariantImages;
         }
 
@@ -149,50 +149,50 @@ namespace OpenLoco
 
         /*
             TODO: here for quick verification; remove later
-            0x0A -> sprites[0][0]
-            0x0E -> sprites[0][1]
-            0x12 -> sprites[0][2]
-            0x16 -> sprites[0][3]
-            0x1A -> sprites[0][4]
-            0x1E -> sprites[0][5]
-            0x22 -> sprites[1][0]
-            0x26 -> sprites[1][1]
-            0x2A -> sprites[1][2]
-            0x2E -> sprites[1][3]
-            0x32 -> sprites[1][4]
-            0x36 -> sprites[1][5]
+            0x0A -> sprites[0]
+            0x0E -> sprites[1]
+            0x12 -> sprites[2]
+            0x16 -> sprites[3]
+            0x1A -> sprites[4]
+            0x1E -> sprites[5]
+            0x22 -> snowsprites[0]
+            0x26 -> snowsprites[1]
+            0x2A -> snowsprites[2]
+            0x2E -> snowsprites[3]
+            0x32 -> snowsprites[4]
+            0x36 -> snowsprites[5]
         */
 
         if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 4)) != 0)
         {
-            sprites[0][5] = sprites[0][4];
+            sprites[5] = sprites[4];
         }
 
         if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 1)) != 0)
         {
-            sprites[0][5] = sprites[0][1];
+            sprites[5] = sprites[1];
         }
 
         if ((var_3C & (1 << 4)) == 0 && (var_3C & (1 << 1)) != 0)
         {
-            sprites[0][4] = sprites[0][1];
+            sprites[4] = sprites[1];
         }
 
         if ((var_3C & (1 << 1)) == 0 && (var_3C & (1 << 0)) != 0)
         {
-            sprites[0][1] = sprites[0][0];
+            sprites[1] = sprites[0];
         }
 
         if ((var_3C & (1 << 0)) == 0 && (var_3C & (1 << 1)) != 0)
         {
-            sprites[0][0] = sprites[0][1];
+            sprites[0] = sprites[1];
         }
 
         if ((flags & TreeObjectFlags::hasSnowVariation) != TreeObjectFlags::none)
         {
             for (auto variant = 0; variant < 6; variant++)
             {
-                sprites[1][variant] = sprites[0][variant] + numPrimaryImages;
+                snowSprites[variant] = sprites[variant] + numPrimaryImages;
             }
 
             nextImageOffset = numPrimaryImages * 2;
@@ -220,12 +220,13 @@ namespace OpenLoco
     void TreeObject::unload()
     {
         name = 0;
-        for (auto& spriteSeason : sprites)
+        for (auto& sprite : sprites)
         {
-            for (auto& sprite : spriteSeason)
-            {
-                sprite = 0;
-            }
+            sprite = 0;
+        }
+        for (auto& sprite : snowSprites)
+        {
+            sprite = 0;
         }
         shadowImageOffset = 0;
     }
