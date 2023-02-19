@@ -973,8 +973,8 @@ namespace OpenLoco
         // Idle loop for a 40 FPS
         do
         {
-            std::this_thread::yield();
-        } while (Platform::getTime() - _last_tick_time < 25);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        } while (Platform::getTime() - _last_tick_time < Engine::UpdateRateInMs);
     }
 
     void promptTickLoop(std::function<bool()> tickAction)
@@ -988,6 +988,7 @@ namespace OpenLoco
                 break;
             }
             Ui::render();
+
             tickWait();
         }
     }
