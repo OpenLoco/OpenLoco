@@ -179,11 +179,11 @@ namespace OpenLoco
                 snowSprites[variant] = sprites[variant] + numPrimaryImages;
             }
 
-            nextImageOffset = numPrimaryImages * 2;
+            nextImageOffset = imageOffset + numPrimaryImages * 2;
         }
         else
         {
-            nextImageOffset = numPrimaryImages;
+            nextImageOffset = imageOffset + numPrimaryImages;
         }
 
         if ((flags & TreeObjectFlags::hasShadow) != TreeObjectFlags::none)
