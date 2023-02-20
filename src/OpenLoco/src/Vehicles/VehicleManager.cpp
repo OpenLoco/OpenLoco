@@ -48,7 +48,14 @@ namespace OpenLoco::VehicleManager
     // 0x004B94CF
     void updateDaily()
     {
-        call(0x004B94CF);
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded) && !isEditorMode())
+        {
+            for (auto* v : VehicleList())
+            {
+                v->updateDaily();
+            }
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
+        }
     }
 
     // 0x004C3A0C
