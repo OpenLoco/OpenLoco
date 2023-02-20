@@ -1378,10 +1378,82 @@ namespace OpenLoco::Drawing
         // @return width @<cx>
         static uint16_t getStringWidthNewLined(const char* buffer)
         {
-            registers regs;
-            regs.esi = X86Pointer(buffer);
-            call(0x00495715, regs);
-            return regs.cx;
+            auto font = *_currentFontSpriteBase;
+            uint16_t maxWidth = 0;
+
+            for (auto* ptr = buffer; *ptr != '\0'; ++ptr)
+            {
+                uint16_t lineWidth = 0;
+                for (; *ptr != '\0'; ++ptr)
+                {
+                    if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                    {
+                        bool forceEndl = false;
+                        switch (*ptr)
+                        {
+                            case ControlCodes::newline:
+                            {
+                                forceEndl = true;
+                                break;
+                            }
+                            case ControlCodes::Font::small:
+                                font = Font::small;
+                                break;
+                            case ControlCodes::Font::large:
+                                font = Font::large;
+                                break;
+                            case ControlCodes::Font::bold:
+                                font = Font::medium_bold;
+                                break;
+                            case ControlCodes::Font::regular:
+                                font = Font::medium_normal;
+                                break;
+                        }
+                        if (forceEndl)
+                        {
+                            break;
+                        }
+                    }
+                    else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                    {
+                        switch (*ptr)
+                        {
+                            case ControlCodes::moveX:
+                                lineWidth = static_cast<uint8_t>(ptr[1]);
+                                break;
+                        }
+                        ptr += 1;
+                    }
+                    else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                    {
+                        ptr += 2;
+                    }
+                    else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                    {
+                        switch (*ptr)
+                        {
+                            case ControlCodes::inlineSpriteStr:
+                            {
+                                uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
+                                ImageId imageId{ image & 0x7FFFF };
+                                auto* el = Gfx::getG1Element(imageId.getIndex());
+                                if (el != nullptr)
+                                {
+                                    lineWidth += el->width;
+                                }
+                                break;
+                            }
+                        }
+                        ptr += 4;
+                    }
+                    else
+                    {
+                        lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                    }
+                }
+                maxWidth = std::max(maxWidth, lineWidth);
+            }
+            return maxWidth;
         }
 
         // 0x00495301
