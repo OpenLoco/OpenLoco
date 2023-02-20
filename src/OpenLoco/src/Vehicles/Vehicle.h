@@ -337,6 +337,7 @@ namespace OpenLoco::Vehicles
         void updateVehicle();
         bool update();
         void updateMonthly();
+        void updateDaily();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
         bool isPlaced() const { return tileX != -1 && !has38Flags(Flags38::isGhost); }

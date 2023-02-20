@@ -174,6 +174,14 @@ namespace OpenLoco::Vehicles
         calculateRefundCost();
     }
 
+    // 0x004B9509
+    void VehicleHead::updateDaily()
+    {
+        registers regs{};
+        regs.esi = X86Pointer(this);
+        call(0x004B9509, regs);
+    }
+
     // 0x004BA8D4
     void VehicleHead::updateBreakdown()
     {
