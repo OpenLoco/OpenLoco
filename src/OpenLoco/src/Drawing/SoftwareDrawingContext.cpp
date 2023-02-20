@@ -1074,7 +1074,8 @@ namespace OpenLoco::Drawing
             return loopNewline(&rt, origin, (uint8_t*)str);
         }
 
-        static const char* advanceToNextLine(const char* buffer)
+        // Use only with buffer mangled by wrapString
+        static const char* advanceToNextLineWrapped(const char* buffer)
         {
             // Traverse the buffer for the next line
             const char* ptr = buffer;
@@ -1102,6 +1103,17 @@ namespace OpenLoco::Drawing
             }
 
             return nullptr;
+        }
+
+        static uint16_t lineHeightFromFont(int16_t font)
+        {
+            if (font <= Font::medium_bold)
+                return 10;
+            else if (font == Font::small)
+                return 6;
+            else if (font == Font::large)
+                return 18;
+            return 0;
         }
 
         // 0x00495224
@@ -1134,13 +1146,7 @@ namespace OpenLoco::Drawing
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = 0; // _112D404
-            if (_currentFontSpriteBase <= Font::medium_bold)
-                lineHeight = 10;
-            else if (_currentFontSpriteBase == Font::small)
-                lineHeight = 6;
-            else if (_currentFontSpriteBase == Font::large)
-                lineHeight = 18;
+            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
 
             _currentFontFlags = TextDrawFlags::none;
             Ui::Point point = { x, y };
@@ -1150,7 +1156,7 @@ namespace OpenLoco::Drawing
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
                 drawString(rt, point.x, point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
-                ptr = advanceToNextLine(ptr);
+                ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
 
@@ -1394,13 +1400,7 @@ namespace OpenLoco::Drawing
             auto breakCount = wrapResult.second + 1;
 
             // wrapString might change the font due to formatting codes
-            uint16_t lineHeight = 0; // _112D404
-            if (_currentFontSpriteBase <= Font::medium_bold)
-                lineHeight = 10;
-            else if (_currentFontSpriteBase == Font::small)
-                lineHeight = 6;
-            else if (_currentFontSpriteBase == Font::large)
-                lineHeight = 18;
+            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
 
             _currentFontFlags = TextDrawFlags::none;
             Ui::Point point = origin;
@@ -1413,7 +1413,7 @@ namespace OpenLoco::Drawing
                 uint16_t lineWidth = getStringWidth(ptr);
 
                 drawString(rt, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
-                ptr = advanceToNextLine(ptr);
+                ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
 
@@ -1432,18 +1432,31 @@ namespace OpenLoco::Drawing
             RenderTarget& rt,
             int16_t x,
             int16_t y,
-            int16_t width,
+            int16_t linebreakCount,
             AdvancedColour colour,
-            const void* args)
+            const char* wrappedStr)
         {
-            registers regs;
-            regs.edi = X86Pointer(&rt);
-            regs.esi = X86Pointer(args);
-            regs.cx = x;
-            regs.dx = y;
-            regs.al = colour.u8();
-            regs.bp = width;
-            call(0x00494E33, regs);
+            _currentFontSpriteBase = Font::medium_bold;
+            // Setup the text colours (FIXME: This should be a separate function)
+            char empty[1] = "";
+            drawString(rt, rt.x, rt.y, colour, empty);
+
+            _currentFontSpriteBase = Font::medium_bold;
+
+            _currentFontFlags = TextDrawFlags::none;
+            Ui::Point origin{ x, y };
+
+            const char* ptr = wrappedStr;
+
+            for (auto i = 0; i < linebreakCount + 1 && ptr != nullptr; ++i)
+            {
+                uint16_t lineWidth = getStringWidth(ptr);
+
+                drawString(rt, origin.x - (lineWidth / 2), origin.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+
+                ptr = advanceToNextLineWrapped(ptr);
+                origin.y += lineHeightFromFont(_currentFontSpriteBase);
+            }
         }
 
         static void drawStringYOffsets(RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
@@ -2035,9 +2048,9 @@ namespace OpenLoco::Drawing
         return Impl::drawStringCentredWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredRaw(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, const void* args)
+    void SoftwareDrawingContext::drawStringCentredRaw(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
     {
-        return Impl::drawStringCentredRaw(rt, x, y, width, colour, args);
+        return Impl::drawStringCentredRaw(rt, x, y, linebreakCount, colour, wrappedStr);
     }
 
     void SoftwareDrawingContext::drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)

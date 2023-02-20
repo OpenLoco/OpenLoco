@@ -97,9 +97,9 @@ namespace OpenLoco::Drawing
             Gfx::RenderTarget& rt,
             int16_t x,
             int16_t y,
-            int16_t width,
+            int16_t linebreakCount,
             AdvancedColour colour,
-            const void* args) override;
+            const char* wrappedStr) override;
         void drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) override;
         uint16_t getStringWidthNewLined(const char* buffer) override;
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) override;
