@@ -51,6 +51,16 @@ namespace OpenLoco::S5
 
     static bool exportGameState(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
+    constexpr bool hasSaveFlags(SaveFlags flags, SaveFlags flagsToTest)
+    {
+        return (flags & flagsToTest) != SaveFlags::none;
+    }
+
+    constexpr bool hasLoadFlags(LoadFlags flags, LoadFlags flagsToTest)
+    {
+        return (flags & flagsToTest) != LoadFlags::none;
+    }
+
     Options& getOptions()
     {
         return _activeOptions;

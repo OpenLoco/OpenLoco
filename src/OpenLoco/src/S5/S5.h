@@ -433,11 +433,6 @@ namespace OpenLoco::S5
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LoadFlags);
 
-    constexpr bool hasLoadFlags(LoadFlags flags, LoadFlags flagsToTest)
-    {
-        return (flags & flagsToTest) != LoadFlags::none;
-    }
-
     enum class SaveFlags : uint32_t
     {
         none = 0,
@@ -449,11 +444,6 @@ namespace OpenLoco::S5
         dump = 1U << 31, // Used for dumping the game state when there is a fatal error
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SaveFlags);
-
-    constexpr bool hasSaveFlags(SaveFlags flags, SaveFlags flagsToTest)
-    {
-        return (flags & flagsToTest) != SaveFlags::none;
-    }
 
     constexpr const char* extensionSC5 = ".SC5";
     constexpr const char* extensionSV5 = ".SV5";
