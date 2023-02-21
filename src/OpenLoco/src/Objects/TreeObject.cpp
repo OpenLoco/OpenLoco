@@ -133,19 +133,18 @@ namespace OpenLoco
         }
 
         auto numVariantImages = numRotations * growth;
-        auto nextImageOffset = imageOffset;
+        auto totalImageCount = 0;
         for (auto variant = 0; variant < 6; variant++)
         {
             if ((var_3C & (1 << variant)) == 0)
                 continue;
 
-            sprites[variant] = nextImageOffset;
-            nextImageOffset += numVariantImages;
+            sprites[variant] = imgRes.imageOffset + totalImageCount;
+            totalImageCount += numVariantImages;
         }
 
         // 0x004BE186
-        auto numPrimaryImages = nextImageOffset - imageOffset;
-        nextImageOffset = imageOffset;
+        const auto numPrimaryImages = totalImageCount;
 
         if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 4)) != 0)
         {
@@ -179,20 +178,23 @@ namespace OpenLoco
                 snowSprites[variant] = sprites[variant] + numPrimaryImages;
             }
 
-            nextImageOffset = imageOffset + numPrimaryImages * 2;
-        }
-        else
-        {
-            nextImageOffset = imageOffset + numPrimaryImages;
+            // Snow doubles the number of images
+            totalImageCount += numPrimaryImages;
         }
 
         if ((flags & TreeObjectFlags::hasShadow) != TreeObjectFlags::none)
         {
-            shadowImageOffset = nextImageOffset;
+            shadowImageOffset = imgRes.imageOffset + totalImageCount;
+
+            // Shadows double the number of images (combines to a x4 with snow)
+            const auto numShadowImages = totalImageCount;
+
+            // Calculate the total just for checking purposes
+            totalImageCount += numShadowImages;
         }
 
         // Verify we haven't overshot any lengths
-        assert(imgRes.imageOffset + shadowImageOffset == ObjectManager::getTotalNumImages());
+        assert(imgRes.imageOffset + totalImageCount == ObjectManager::getTotalNumImages());
     }
 
     // 0x004BE231
