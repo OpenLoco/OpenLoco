@@ -36,25 +36,25 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::tree;
 
-        string_id name;
-        uint8_t var_02;
-        uint8_t height; // 0x03
-        uint8_t var_04;
-        uint8_t var_05;
+        string_id name;             // 0x00
+        uint8_t var_02;             // 0x02
+        uint8_t height;             // 0x03
+        uint8_t var_04;             // 0x04
+        uint8_t var_05;             // 0x05
         uint8_t numRotations;       // 0x06 (1,2,4)
         uint8_t growth;             // 0x07 (number of tree size images)
         TreeObjectFlags flags;      // 0x08
         uint32_t sprites[2][6];     // 0x0A
         uint16_t shadowImageOffset; // 0x3A
-        uint8_t var_3C;
-        uint8_t seasonState; // 0x3D (index for sprites, seasons + dying)
-        uint8_t var_3E;
-        uint8_t costIndex;       // 0x3F
-        int16_t buildCostFactor; // 0x40
-        int16_t clearCostFactor; // 0x42
-        uint32_t colours;        // 0x44
-        int16_t rating;          // 0x48
-        uint16_t var_4A;
+        uint8_t var_3C;             // 0x3C
+        uint8_t seasonState;        // 0x3D (index for sprites, seasons + dying)
+        uint8_t var_3E;             // 0x3E
+        uint8_t costIndex;          // 0x3F
+        int16_t buildCostFactor;    // 0x40
+        int16_t clearCostFactor;    // 0x42
+        uint32_t colours;           // 0x44
+        int16_t rating;             // 0x48
+        uint16_t demolishRatingReduction;            // 0x4A
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         uint8_t getTreeGrowthDisplayOffset() const;

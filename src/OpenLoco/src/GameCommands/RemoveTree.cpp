@@ -1,27 +1,57 @@
+#include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
+#include "Map/TileElement.h"
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "TownManager.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+    static loco_global<Core::Prng, 0x00525E20> _prng;
+
+    // 0x0048B089
+    void playDemolishTreeSound(const Map::Pos3 loc)
+    {
+        const auto frequency = _prng->randNext(20003, 24098);
+        Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
+    }
+
     // 0x004BB432
+    // bl = flags;
+    // esi = X86Pointer(&element);
+    // ax = pos.x;
+    // cx = pos.y;
     // TODO: Move to somewhere else multiple functions call this one
     static void removeTree(Map::TreeElement& element, const uint8_t flags, const Map::Pos2& pos)
     {
-        registers regs;
-        regs.bl = flags;
-        regs.esi = X86Pointer(&element);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004BB432, regs);
+        if ((!element.isGhost() && !element.isFlag5())
+            && getUpdatingCompanyId() != CompanyId::null)
+        {
+            auto loc = Map::Pos3(pos.x, pos.y, element.baseHeight());
+            playDemolishTreeSound(loc);
+        }
+
+        if ((flags & Flags::flag_6) == 0)
+        {
+            auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
+            auto ratingReduction = treeObj->demolishRatingReduction;
+            TownManager::sub_497DC1(pos, 0, 0, ratingReduction, 0);
+        }
+
+        // last function
+        element.baseHeight();
+        element.clearHeight();
+        // /************* call sub_4CBFBF *************
+
+        Map::TileManager::removeElement(*reinterpret_cast<Map::TileElement*>(&element));
     }
 
     /**
