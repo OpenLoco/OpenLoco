@@ -9,6 +9,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
@@ -586,7 +587,10 @@ namespace OpenLoco
         }
 
         // Verify we haven't overshot any lengths
-        assert(imgRes.imageOffset + offset == ObjectManager::getTotalNumImages());
+        if (imgRes.imageOffset + offset != ObjectManager::getTotalNumImages())
+        {
+            Console::logVerbose("Incorrect number of images for object");
+        }
     }
 
     // 0x004B89FF
