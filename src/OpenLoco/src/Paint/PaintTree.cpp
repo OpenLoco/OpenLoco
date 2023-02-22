@@ -24,11 +24,6 @@ namespace OpenLoco::Paint
     // 0x004BAEDA
     void paintTree(PaintSession& session, const Map::TreeElement& elTree)
     {
-        // registers regs;
-        // regs.esi = X86Pointer(&elTree);
-        // regs.ecx = (session.getRotation() + elTree.data()[0]) & 0x3;
-        // regs.dx = elTree.baseHeight();
-        // call(0x004BAEDA, regs);
         session.setItemType(InteractionItem::tree);
 
         const auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
@@ -36,8 +31,6 @@ namespace OpenLoco::Paint
         const uint32_t treeFrameNum = (viewableRotation % treeObj->numRotations) + elTree.unk5l() * treeObj->numRotations;
 
         uint8_t season = elTree.season();
-
-        const uint8_t altSeason = elTree.hasSnow() ? 1 : 0;
         bool hasImage2 = false;
         uint32_t imageIndex2 = 0;
         uint8_t noiseMask = 0;
@@ -55,10 +48,12 @@ namespace OpenLoco::Paint
                 season = elTree.season();
                 noiseMask = 8 - noiseMask;
             }
-            imageIndex2 = treeFrameNum + treeObj->sprites[altSeason][image2Season];
+
+            auto imageId = elTree.hasSnow() ? treeObj->snowSprites[image2Season] : treeObj->sprites[image2Season];
+            imageIndex2 = treeFrameNum + imageId;
         }
 
-        const auto seasonBaseImageIndex = treeObj->sprites[altSeason][season];
+        const auto seasonBaseImageIndex = elTree.hasSnow() ? treeObj->snowSprites[season] : treeObj->sprites[season];
 
         std::optional<ImageId> shadowImageId = std::nullopt;
         if (treeObj->hasFlags(TreeObjectFlags::hasShadow))
