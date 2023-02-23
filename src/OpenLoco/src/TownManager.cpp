@@ -25,7 +25,7 @@ namespace OpenLoco::TownManager
     // esi population
     // edi capacity
     // ebp rating
-    Town* sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
+    Town* updateTownInfo(const Map::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
     {
         auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
@@ -111,7 +111,7 @@ namespace OpenLoco::TownManager
                 {
                     population = producedQuantity;
                 }
-                auto* town = sub_497DC1(tilePos, population, producedQuantity, 0, 1);
+                auto* town = updateTownInfo(tilePos, population, producedQuantity, 0, 1);
                 if (town != nullptr)
                 {
                     if (buildingObj->var_AC != 0xFF)

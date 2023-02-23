@@ -43,7 +43,7 @@ namespace OpenLoco::GameCommands
         {
             auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
             auto ratingReduction = treeObj->demolishRatingReduction;
-            TownManager::sub_497DC1(pos, 0, 0, ratingReduction, 0);
+            TownManager::updateTownInfo(pos, 0, 0, ratingReduction, 0);
         }
 
         // call sub_4CBFBF

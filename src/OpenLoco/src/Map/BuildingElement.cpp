@@ -91,7 +91,7 @@ namespace OpenLoco::Map
                         }
                     }
 
-                    TownManager::sub_497DC1(loc, buildingObj->producedQuantity[0], 0, 0, 0);
+                    TownManager::updateTownInfo(loc, buildingObj->producedQuantity[0], 0, 0, 0);
 
                     newUnk5u = 0;
                     newAge = 0;
