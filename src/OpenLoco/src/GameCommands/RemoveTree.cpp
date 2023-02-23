@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
     static loco_global<Core::Prng, 0x00525E20> _prng;
 
     // 0x0048B089
-    void playDemolishTreeSound(const Map::Pos3 loc)
+    static void playDemolishTreeSound(const Map::Pos3 loc)
     {
         const auto frequency = _prng->randNext(20003, 24098);
         Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
