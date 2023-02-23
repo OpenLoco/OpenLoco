@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
     static loco_global<Core::Prng, 0x00525E20> _prng;
 
     // 0x0048B089
-    static void playDemolishTreeSound(const Map::Pos3 loc)
+    static void playDemolishTreeSound(const Map::Pos3& loc)
     {
         const auto frequency = _prng->randNext(20003, 24098);
         Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
@@ -34,7 +34,7 @@ namespace OpenLoco::GameCommands
     static void removeTree(Map::TreeElement& element, const uint8_t flags, const Map::Pos2& pos)
     {
         if ((!element.isGhost() && !element.isFlag5())
-            && getUpdatingCompanyId() != CompanyId::null)
+            && getUpdatingCompanyId() != CompanyId::neutral)
         {
             auto loc = Map::Pos3(pos.x, pos.y, element.baseHeight());
             playDemolishTreeSound(loc);
@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
 
         auto zMin = element.baseHeight();
         auto zMax = element.clearHeight();
-        Ui::ViewportManager::invalidate(pos, zMin, zMax);
+        Ui::ViewportManager::invalidate(pos, zMin, zMax, ZoomLevel::eighth, 56);
 
         Map::TileManager::removeElement(*reinterpret_cast<Map::TileElement*>(&element));
     }

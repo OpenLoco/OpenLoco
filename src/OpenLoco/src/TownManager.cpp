@@ -24,7 +24,7 @@ namespace OpenLoco::TownManager
     // The return value of this function is also being returned via dword_1135C38.
     // esi population
     // edi capacity
-    // ebp rating
+    // ebp rating | (numBuildings << 16)
     Town* updateTownInfo(const Map::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
     {
         auto res = getClosestTownAndDensity(loc);
