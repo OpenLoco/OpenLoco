@@ -2,7 +2,7 @@
 
 #include "TileElementBase.h"
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 #pragma pack(push, 1)
     struct SignalElement : public TileElementBase

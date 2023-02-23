@@ -21,7 +21,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::Station
 {
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Station
             if (self.viewports[0] == nullptr)
             {
                 auto widget = &self.widgets[widx::viewport];
-                auto tile = Map::Pos3({ station->x, station->y, station->z });
+                auto tile = World::Pos3({ station->x, station->y, station->z });
                 auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);

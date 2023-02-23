@@ -1,6 +1,6 @@
 #pragma once
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     struct StationElement;
 }
@@ -8,5 +8,5 @@ namespace OpenLoco::Paint
 {
     struct PaintSession;
 
-    void paintStation(PaintSession& session, const Map::StationElement& elStation);
+    void paintStation(PaintSession& session, const World::StationElement& elStation);
 }

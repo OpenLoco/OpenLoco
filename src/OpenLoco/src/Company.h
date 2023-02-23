@@ -4,7 +4,7 @@
 #include "Economy/Expenditures.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -66,7 +66,7 @@ namespace OpenLoco
             data[0] = -2;
             data[1] = enumValue(id);
         }
-        OwnerStatus(const Map::Pos2& pos)
+        OwnerStatus(const World::Pos2& pos)
         {
             data[0] = pos.x;
             data[1] = pos.y;
@@ -131,9 +131,9 @@ namespace OpenLoco
         uint8_t var_4A7;
         unk4A8 var_4A8[60];
         uint8_t var_2578;
-        Map::SmallZ headquartersZ; // 0x2579
-        coord_t headquartersX;     // 0x257A -1 on no headquarter placed
-        coord_t headquartersY;     // 0x257C
+        World::SmallZ headquartersZ; // 0x2579
+        coord_t headquartersX;       // 0x257A -1 on no headquarter placed
+        coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
         uint8_t pad_25A2[0x85C4 - 0x25A2];
@@ -187,7 +187,7 @@ namespace OpenLoco
     private:
         uint8_t getHeadquarterPerformanceVariation() const;
         void setHeadquartersVariation(const uint8_t variation);
-        void setHeadquartersVariation(const uint8_t variation, const Map::TilePos2& pos);
+        void setHeadquartersVariation(const uint8_t variation, const World::TilePos2& pos);
 
         void callThinkFunc2();
         bool tryPlaceVehicles();

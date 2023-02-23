@@ -2,7 +2,7 @@
 
 #include "TileElement.h"
 #include "Types.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -13,7 +13,7 @@ namespace OpenLoco::Ui
     struct viewport_pos;
 }
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     struct TileHeight
     {

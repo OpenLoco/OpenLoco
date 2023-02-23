@@ -28,6 +28,6 @@ namespace OpenLoco::IndustryManager
     void updateDaily();
     void updateMonthly();
     void createAllMapAnimations();
-    bool industryNearPosition(const Map::Pos2& position, IndustryObjectFlags flags);
+    bool industryNearPosition(const World::Pos2& position, IndustryObjectFlags flags);
     void updateProducedCargoStats();
 }

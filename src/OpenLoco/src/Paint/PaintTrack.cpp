@@ -10,7 +10,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Viewport.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -27,7 +27,7 @@ namespace OpenLoco::Paint
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
     // 0x0049B6BF
-    void paintTrack(PaintSession& session, const Map::TrackElement& elTrack)
+    void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
         if (elTrack.isFlag5())
         {
@@ -51,9 +51,9 @@ namespace OpenLoco::Paint
                 session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                 const auto markerHeight = height + getTrackDecorationHeightOffset(isFirstTile, elTrack.trackId()) + 8;
                 const auto imageId = ImageId{ getHeightMarkerImage(markerHeight), Colour::blue };
-                const Map::Pos3 offset(16, 16, markerHeight);
-                const Map::Pos3 bbOffset(1000, 1000, 1087);
-                const Map::Pos3 bbSize(1, 1, 0);
+                const World::Pos3 offset(16, 16, markerHeight);
+                const World::Pos3 bbOffset(1000, 1000, 1087);
+                const World::Pos3 bbSize(1, 1, 0);
                 session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
             }
         }

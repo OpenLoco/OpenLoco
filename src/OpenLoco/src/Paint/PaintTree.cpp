@@ -14,15 +14,15 @@ namespace OpenLoco::Paint
 {
     constexpr std::array<uint8_t, 6> _50076A = { 3, 0, 1, 2, 1, 4 };
     constexpr std::array<bool, 6> _500770 = { true, true, false, false, true, true };
-    constexpr std::array<Map::Pos2, 4> kTreeQuadrantOffset = {
-        Map::Pos2{ 7, 7 },
-        Map::Pos2{ 7, 23 },
-        Map::Pos2{ 23, 23 },
-        Map::Pos2{ 23, 7 },
+    constexpr std::array<World::Pos2, 4> kTreeQuadrantOffset = {
+        World::Pos2{ 7, 7 },
+        World::Pos2{ 7, 23 },
+        World::Pos2{ 23, 23 },
+        World::Pos2{ 23, 7 },
     };
 
     // 0x004BAEDA
-    void paintTree(PaintSession& session, const Map::TreeElement& elTree)
+    void paintTree(PaintSession& session, const World::TreeElement& elTree)
     {
         session.setItemType(InteractionItem::tree);
 
@@ -62,9 +62,9 @@ namespace OpenLoco::Paint
         }
 
         const uint8_t quadrant = (elTree.quadrant() + session.getRotation()) % 4;
-        const auto imageOffset = Map::Pos3(kTreeQuadrantOffset[quadrant].x, kTreeQuadrantOffset[quadrant].y, elTree.baseHeight());
+        const auto imageOffset = World::Pos3(kTreeQuadrantOffset[quadrant].x, kTreeQuadrantOffset[quadrant].y, elTree.baseHeight());
 
-        const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * Map::kSmallZStep - 3;
+        const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * World::kSmallZStep - 3;
 
         const uint32_t imageIndex1 = treeFrameNum + seasonBaseImageIndex;
         ImageId imageId1{};
@@ -97,11 +97,11 @@ namespace OpenLoco::Paint
             }
         }
 
-        session.addToPlotListAsParent(imageId1, imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
+        session.addToPlotListAsParent(imageId1, imageOffset, imageOffset + World::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
 
         if (hasImage2)
         {
-            session.addToPlotListAsChild(imageId2, imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
+            session.addToPlotListAsChild(imageId2, imageOffset, imageOffset + World::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
         }
     }
 }

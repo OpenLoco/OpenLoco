@@ -306,7 +306,7 @@ namespace OpenLoco::Vehicles::OrderManager
     }
 
     // 0x00470B76
-    std::pair<Map::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum)
+    std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum)
     {
         std::stringstream ss;
         ss << ControlCodes::inlineSpriteStr;
@@ -315,7 +315,7 @@ namespace OpenLoco::Vehicles::OrderManager
         ss.write(reinterpret_cast<const char*>(&imageId), 4);
         OrderRingView orderRing(orderOffset);
         auto order = orderRing.begin();
-        Map::Pos3 pos{};
+        World::Pos3 pos{};
 
         switch (order->getType())
         {
@@ -324,7 +324,7 @@ namespace OpenLoco::Vehicles::OrderManager
                 auto* stopAt = order->as<Vehicles::OrderStopAt>();
                 // 0x00470B7D
                 auto* station = StationManager::get(stopAt->getStation());
-                pos = Map::Pos3{ station->x, station->y, station->z } + Map::Pos3{ 0, 0, 30 };
+                pos = World::Pos3{ station->x, station->y, station->z } + World::Pos3{ 0, 0, 30 };
                 ss << ControlCodes::Colour::white;
                 for (auto nextOrder = order + 1; nextOrder != order; ++nextOrder)
                 {
@@ -360,12 +360,12 @@ namespace OpenLoco::Vehicles::OrderManager
 
                 // 0x00470C25
                 auto* station = StationManager::get(order->as<Vehicles::OrderRouteThrough>()->getStation());
-                pos = Map::Pos3{ station->x, station->y, station->z } + Map::Pos3{ 0, 0, 30 };
+                pos = World::Pos3{ station->x, station->y, station->z } + World::Pos3{ 0, 0, 30 };
                 break;
             }
             case Vehicles::OrderType::RouteWaypoint:
                 // 0x00470C6F
-                pos = order->as<Vehicles::OrderRouteWaypoint>()->getWaypoint() + Map::Pos3{ 16, 16, 8 };
+                pos = order->as<Vehicles::OrderRouteWaypoint>()->getWaypoint() + World::Pos3{ 16, 16, 8 };
                 break;
             case Vehicles::OrderType::End:
             case Vehicles::OrderType::UnloadAll:
@@ -443,7 +443,7 @@ namespace OpenLoco::Vehicles::OrderManager
             }
 
             auto [loc, str] = generateOrderUiStringAndLoc(order->getOffset(), i);
-            const auto pos = Map::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
+            const auto pos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
             auto stringWidth = drawingCtx.getStringWidth(str.c_str());
             for (auto zoom = 0; zoom < 4; ++zoom)
             {

@@ -27,8 +27,8 @@
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::TileManager;
+using namespace OpenLoco::World;
+using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
@@ -222,8 +222,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         call(0x0049E421, regs);
     }
 
-    static loco_global<Map::Pos2, 0x001135F7C> _1135F7C;
-    static loco_global<Map::Pos2, 0x001135F80> _1135F90;
+    static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
+    static loco_global<World::Pos2, 0x001135F80> _1135F90;
 
     // 0x004A47D9
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -275,11 +275,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     return std::nullopt;
                 }
 
-                const auto baseZ = surface->water() ? surface->water() * Map::kMicroToSmallZStep : surface->baseZ();
+                const auto baseZ = surface->water() ? surface->water() * World::kMicroToSmallZStep : surface->baseZ();
                 maxBaseZ = std::max(maxBaseZ, baseZ);
             }
         }
-        placementArgs.pos = Map::Pos3(pos->x, pos->y, maxBaseZ * Map::kSmallZStep);
+        placementArgs.pos = World::Pos3(pos->x, pos->y, maxBaseZ * World::kSmallZStep);
         return { placementArgs };
     }
 
@@ -373,7 +373,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                         {
                             continue;
                         }
-                        waterHeight = surface->water() * Map::kMicroToSmallZStep;
+                        waterHeight = surface->water() * World::kMicroToSmallZStep;
                         if (waterHeight - 4 == surface->baseZ() && surface->isSlopeDoubleHeight())
                         {
                             continue;
@@ -392,7 +392,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::PortPlacementArgs placementArgs;
         placementArgs.type = _lastSelectedStationType;
-        placementArgs.pos = Map::Pos3(pos->x, pos->y, waterHeight * Map::kSmallZStep);
+        placementArgs.pos = World::Pos3(pos->x, pos->y, waterHeight * World::kSmallZStep);
         if (directionOfIndustry != 0xFF)
         {
             placementArgs.rotation = directionOfIndustry;
@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         GameCommands::RoadStationPlacementArgs placementArgs;
-        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
+        placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
         placementArgs.rotation = elRoad->unkDirection();
         placementArgs.roadId = elRoad->roadId();
         placementArgs.index = elRoad->sequenceIndex();
@@ -503,7 +503,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         GameCommands::TrackStationPlacementArgs placementArgs;
-        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
+        placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->unkDirection();
         placementArgs.trackId = elTrack->trackId();
         placementArgs.index = elTrack->sequenceIndex();

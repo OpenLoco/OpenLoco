@@ -7,7 +7,7 @@ namespace OpenLoco
     struct BuildingObject;
 }
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 #pragma pack(push, 1)
     struct BuildingElement : public TileElementBase
@@ -51,7 +51,7 @@ namespace OpenLoco::Map
             _6 &= ~0x3F;
             _6 |= value & 0x3F;
         }
-        bool update(const Map::Pos2& loc);
+        bool update(const World::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(BuildingElement) == kTileElementSize);

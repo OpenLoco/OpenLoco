@@ -38,7 +38,7 @@
 #include <map>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::TileInspector
 {
@@ -401,22 +401,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::xPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::kMapColumns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, World::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::xPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::kMapColumns);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, World::kMapColumns);
                 self.invalidate();
                 break;
 
             case widx::yPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::kMapRows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, World::kMapRows);
                 self.invalidate();
                 break;
 
             case widx::yPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::kMapRows);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, World::kMapRows);
                 self.invalidate();
                 break;
         }

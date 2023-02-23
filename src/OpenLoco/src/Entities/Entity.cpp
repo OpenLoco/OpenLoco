@@ -16,7 +16,7 @@ bool EntityBase::empty() const
 }
 
 // 0x0046FC83
-void EntityBase::moveTo(const Map::Pos3& loc)
+void EntityBase::moveTo(const World::Pos3& loc)
 {
     EntityManager::moveSpatialEntry(*this, loc);
 
@@ -27,7 +27,7 @@ void EntityBase::moveTo(const Map::Pos3& loc)
         return;
     }
 
-    const auto vpPos = Map::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
+    const auto vpPos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
     spriteLeft = vpPos.x - spriteWidth;
     spriteRight = vpPos.x + spriteWidth;
     spriteTop = vpPos.y - spriteHeightNegative;

@@ -3,7 +3,7 @@
 #include "TileElementBase.h"
 #include <optional>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 #pragma pack(push, 1)
 
@@ -19,7 +19,7 @@ namespace OpenLoco::Map
 
     public:
         TrackElement() = default;
-        TrackElement(Map::SmallZ baseZ, Map::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
+        TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
 
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         bool hasSignal() const { return (_type & 0x40) != 0; }

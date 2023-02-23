@@ -30,9 +30,9 @@ namespace OpenLoco::IndustryManager
     constexpr int32_t kNumIndustryInCluster = 3;
     constexpr int32_t kFindRandomNewIndustryAttempts = 250;
     // Above this is classed as high ground
-    constexpr Map::SmallZ kIndustryHighGroundMin = 48;
+    constexpr World::SmallZ kIndustryHighGroundMin = 48;
     // Below this is classed as low ground
-    constexpr Map::SmallZ kIndustryLowGroundMax = 56;
+    constexpr World::SmallZ kIndustryLowGroundMax = 56;
     // Below this is classed as flat ground
     constexpr int32_t kIndustryFlatGroundMountainMax = 32;
     constexpr uint32_t kIndustryTilesToBeInDesertMin = 100;
@@ -217,11 +217,11 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x00459A05
-    static bool isTooCloseToNearbyIndustries(const Map::Pos2& loc)
+    static bool isTooCloseToNearbyIndustries(const World::Pos2& loc)
     {
         for (auto& industry : industries())
         {
-            const auto dist = Math::Vector::manhattanDistance(loc, Map::Pos2{ industry.x, industry.y });
+            const auto dist = Math::Vector::manhattanDistance(loc, World::Pos2{ industry.x, industry.y });
             if (dist < kCloseIndustryDistanceMax)
             {
                 return true;
@@ -231,7 +231,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x00459A50
-    static bool isOutwithCluster(const Map::Pos2& loc, const uint8_t indObjId)
+    static bool isOutwithCluster(const World::Pos2& loc, const uint8_t indObjId)
     {
         auto numClusters = 0;
         for (auto& industry : industries())
@@ -241,7 +241,7 @@ namespace OpenLoco::IndustryManager
                 continue;
             }
             numClusters++;
-            const auto dist = Math::Vector::manhattanDistance(loc, Map::Pos2{ industry.x, industry.y });
+            const auto dist = Math::Vector::manhattanDistance(loc, World::Pos2{ industry.x, industry.y });
             if (dist < kIndustryWithinClusterDistance)
             {
                 return false;
@@ -255,7 +255,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x004599B3
-    static std::optional<Map::Pos2> findRandomNewIndustryLocation(const uint8_t indObjId)
+    static std::optional<World::Pos2> findRandomNewIndustryLocation(const uint8_t indObjId)
     {
         auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
         for (auto i = 0; i < kFindRandomNewIndustryAttempts; ++i)
@@ -266,10 +266,10 @@ namespace OpenLoco::IndustryManager
             // };
             const auto randomNum = gPrng().randNext();
 
-            Map::Pos2 randomPos{
-                Map::TilePos2(
-                    (((randomNum >> 16) * Map::kMapRows) >> 16),
-                    (((randomNum & 0xFFFF) * Map::kMapColumns) >> 16))
+            World::Pos2 randomPos{
+                World::TilePos2(
+                    (((randomNum >> 16) * World::kMapRows) >> 16),
+                    (((randomNum & 0xFFFF) * World::kMapColumns) >> 16))
             };
 
             if (isTooCloseToNearbyIndustries(randomPos))
@@ -287,7 +287,7 @@ namespace OpenLoco::IndustryManager
 
             if (indObj->hasFlags(IndustryObjectFlags::builtOnHighGround))
             {
-                auto tile = Map::TileManager::get(randomPos);
+                auto tile = World::TileManager::get(randomPos);
                 auto* surface = tile.surface();
                 if (surface == nullptr || surface->baseZ() < kIndustryHighGroundMin)
                 {
@@ -296,7 +296,7 @@ namespace OpenLoco::IndustryManager
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtOnLowGround))
             {
-                auto tile = Map::TileManager::get(randomPos);
+                auto tile = World::TileManager::get(randomPos);
                 auto* surface = tile.surface();
                 if (surface == nullptr || surface->baseZ() > kIndustryLowGroundMax)
                 {
@@ -305,7 +305,7 @@ namespace OpenLoco::IndustryManager
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtOnSnow))
             {
-                auto tile = Map::TileManager::get(randomPos);
+                auto tile = World::TileManager::get(randomPos);
                 auto* surface = tile.surface();
                 auto* climateObj = ObjectManager::get<ClimateObject>();
                 if (surface == nullptr || surface->baseZ() < climateObj->summerSnowLine)
@@ -315,7 +315,7 @@ namespace OpenLoco::IndustryManager
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtBelowSnowLine))
             {
-                auto tile = Map::TileManager::get(randomPos);
+                auto tile = World::TileManager::get(randomPos);
                 auto* surface = tile.surface();
                 auto* climateObj = ObjectManager::get<ClimateObject>();
                 if (surface == nullptr || surface->baseZ() > climateObj->winterSnowLine)
@@ -325,42 +325,42 @@ namespace OpenLoco::IndustryManager
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtOnFlatGround))
             {
-                if (Map::TileManager::mountainHeight(randomPos) > kIndustryFlatGroundMountainMax)
+                if (World::TileManager::mountainHeight(randomPos) > kIndustryFlatGroundMountainMax)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtInDesert))
             {
-                if (Map::TileManager::countSurroundingDesertTiles(randomPos) < kIndustryTilesToBeInDesertMin)
+                if (World::TileManager::countSurroundingDesertTiles(randomPos) < kIndustryTilesToBeInDesertMin)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtNearDesert))
             {
-                if (Map::TileManager::countSurroundingDesertTiles(randomPos) >= kIndustryTilesToBeNearDesertMax)
+                if (World::TileManager::countSurroundingDesertTiles(randomPos) >= kIndustryTilesToBeNearDesertMax)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtNearWater))
             {
-                if (Map::TileManager::countSurroundingWaterTiles(randomPos) < kIndustryTilesToBeNearWaterMin)
+                if (World::TileManager::countSurroundingWaterTiles(randomPos) < kIndustryTilesToBeNearWaterMin)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtAwayFromWater))
             {
-                if (Map::TileManager::countSurroundingWaterTiles(randomPos) > kIndustryTilesToBeAwayWaterMax)
+                if (World::TileManager::countSurroundingWaterTiles(randomPos) > kIndustryTilesToBeAwayWaterMax)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtOnWater))
             {
-                auto tile = Map::TileManager::get(randomPos);
+                auto tile = World::TileManager::get(randomPos);
                 auto* surface = tile.surface();
                 if (surface != nullptr && surface->water() == 0)
                 {
@@ -378,7 +378,7 @@ namespace OpenLoco::IndustryManager
                 if (density == 0)
                 {
                     const auto* town = TownManager::get(townId);
-                    if (Math::Vector::manhattanDistance(randomPos, Map::Pos2{ town->x, town->y }) > kIndustryDistToBeNearTownMax)
+                    if (Math::Vector::manhattanDistance(randomPos, World::Pos2{ town->x, town->y }) > kIndustryDistToBeNearTownMax)
                     {
                         continue;
                     }
@@ -393,21 +393,21 @@ namespace OpenLoco::IndustryManager
                 }
                 const auto townId = res->first;
                 const auto* town = TownManager::get(townId);
-                if (Math::Vector::manhattanDistance(randomPos, Map::Pos2{ town->x, town->y }) < kIndustryDistToBeAwayTownMin)
+                if (Math::Vector::manhattanDistance(randomPos, World::Pos2{ town->x, town->y }) < kIndustryDistToBeAwayTownMin)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtNearTrees))
             {
-                if (Map::TileManager::countSurroundingTrees(randomPos) < kIndustryNumTreesToBeNearTreesMin)
+                if (World::TileManager::countSurroundingTrees(randomPos) < kIndustryNumTreesToBeNearTreesMin)
                 {
                     continue;
                 }
             }
             if (indObj->hasFlags(IndustryObjectFlags::builtRequiresOpenSpace))
             {
-                if (Map::TileManager::countSurroundingTrees(randomPos) > kIndustryNumTressToBeOpenSpaceMax)
+                if (World::TileManager::countSurroundingTrees(randomPos) > kIndustryNumTressToBeOpenSpaceMax)
                 {
                     continue;
                 }
@@ -533,7 +533,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x048FE92
-    bool industryNearPosition(const Map::Pos2& position, IndustryObjectFlags flags)
+    bool industryNearPosition(const World::Pos2& position, IndustryObjectFlags flags)
     {
         for (auto& industry : industries())
         {
@@ -541,8 +541,8 @@ namespace OpenLoco::IndustryManager
             if (!industryObj->hasFlags(flags))
                 continue;
 
-            auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ industry.x, industry.y }, position);
-            if (manhattanDistance / Map::kTileSize < 11)
+            auto manhattanDistance = Math::Vector::manhattanDistance(World::Pos2{ industry.x, industry.y }, position);
+            if (manhattanDistance / World::kTileSize < 11)
                 return true;
         }
 

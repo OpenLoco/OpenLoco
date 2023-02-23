@@ -19,7 +19,7 @@
 #include <cassert>
 
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
@@ -344,7 +344,7 @@ namespace OpenLoco::GameCommands
         if (ebx != 0 && _updatingCompanyId == CompanyManager::getControllingId())
         {
             // Add flying cost text
-            CompanyManager::spendMoneyEffect(getPosition() + Map::Pos3{ 0, 0, 24 }, _updatingCompanyId, ebx);
+            CompanyManager::spendMoneyEffect(getPosition() + World::Pos3{ 0, 0, 24 }, _updatingCompanyId, ebx);
         }
 
         return ebx;
@@ -444,7 +444,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const CompanyId company, Map::TileElement* const tile /*= nullptr*/)
+    bool sub_431E6A(const CompanyId company, World::TileElement* const tile /*= nullptr*/)
     {
         if (company == CompanyId::neutral)
         {
@@ -456,16 +456,16 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = -2;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<Map::TileElement*>(-1) : tile;
+        _9C68D0 = tile == nullptr ? reinterpret_cast<World::TileElement*>(-1) : tile;
         return false;
     }
 
-    const Map::Pos3& getPosition()
+    const World::Pos3& getPosition()
     {
         return _gGameCommandPosition;
     }
 
-    void setPosition(const Map::Pos3& pos)
+    void setPosition(const World::Pos3& pos)
     {
         _gGameCommandPosition = pos;
     }

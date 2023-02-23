@@ -14,7 +14,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00497D8D
-    static std::optional<int16_t> getCompanyRating(Map::Pos2& pos)
+    static std::optional<int16_t> getCompanyRating(World::Pos2& pos)
     {
         auto companyId = CompanyManager::getUpdatingCompanyId();
         if (companyId != CompanyId::neutral)
@@ -34,20 +34,20 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0042D74E
-    static uint32_t removeBuilding(Map::Pos3& pos, uint8_t flags)
+    static uint32_t removeBuilding(World::Pos3& pos, uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
         GameCommands::setPosition(pos);
 
-        auto tile = Map::TileManager::get(pos);
+        auto tile = World::TileManager::get(pos);
 
         for (auto& el : tile)
         {
-            auto* elBuilding = el.as<Map::BuildingElement>();
+            auto* elBuilding = el.as<World::BuildingElement>();
             if (elBuilding == nullptr)
                 continue;
 
-            if (elBuilding->baseZ() != pos.z / Map::kSmallZStep)
+            if (elBuilding->baseZ() != pos.z / World::kSmallZStep)
                 continue;
 
             const auto* buildingObj = elBuilding->getObject();
@@ -81,19 +81,19 @@ namespace OpenLoco::GameCommands
             {
                 const auto subTilePos = animOffset.pos + pos;
 
-                auto subTile = Map::TileManager::get(subTilePos);
+                auto subTile = World::TileManager::get(subTilePos);
                 for (auto& element : subTile)
                 {
-                    auto* subElBuilding = element.as<Map::BuildingElement>();
+                    auto* subElBuilding = element.as<World::BuildingElement>();
                     if (subElBuilding == nullptr)
                         continue;
 
-                    if (subElBuilding->baseZ() != pos.z / Map::kSmallZStep)
+                    if (subElBuilding->baseZ() != pos.z / World::kSmallZStep)
                         continue;
 
                     if (flags & GameCommands::Flags::apply)
                     {
-                        Map::TileManager::removeBuildingElement(subElBuilding->get<Map::BuildingElement>(), subTilePos);
+                        World::TileManager::removeBuildingElement(subElBuilding->get<World::BuildingElement>(), subTilePos);
                         auto& options = S5::getOptions();
                         options.madeAnyChanges = 1;
                     }

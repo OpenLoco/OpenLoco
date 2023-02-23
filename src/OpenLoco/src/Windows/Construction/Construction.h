@@ -7,8 +7,8 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::TileManager;
+using namespace OpenLoco::World;
+using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
@@ -38,28 +38,28 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _constructionZ;
-    static loco_global<Map::Pos3, 0x01135FBA> _ghostTrackPos;
-    static loco_global<Map::Pos3, 0x01135FC0> _ghostRemovalTrackPos;
+    static loco_global<World::Pos3, 0x01135FBA> _ghostTrackPos;
+    static loco_global<World::Pos3, 0x01135FC0> _ghostRemovalTrackPos;
     static loco_global<uint8_t, 0x0113606A> _ghostRemovalTrackId;
     static loco_global<uint8_t, 0x0113606B> _stationGhostRotation;
     static loco_global<uint8_t, 0x0113606C> _stationGhostTrackId;
     static loco_global<uint8_t, 0x0113606D> _stationGhostTileIndex;
     static loco_global<uint8_t, 0x01136069> _ghostRemovalTrackRotation;
     static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
-    static loco_global<Map::Pos3, 0x01135FC6> _nextTile;
+    static loco_global<World::Pos3, 0x01135FC6> _nextTile;
     static loco_global<uint16_t, 0x01135FCC> _nextTileRotation;
-    static loco_global<Map::Pos3, 0x01135FCE> _previousTile;
+    static loco_global<World::Pos3, 0x01135FCE> _previousTile;
     static loco_global<uint16_t, 0x01135FD4> _previousTileRotation;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
-    static loco_global<Map::Pos3, 0x01135FE6> _stationGhostPos;
+    static loco_global<World::Pos3, 0x01135FE6> _stationGhostPos;
     static loco_global<uint16_t, 0x01135FEE> _stationGhostType;
-    static loco_global<Map::Pos3, 0x01135FF8> _modGhostPos;
+    static loco_global<World::Pos3, 0x01135FF8> _modGhostPos;
     static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
     static loco_global<int16_t, 0x01136000> _word_1136000;
     static loco_global<uint16_t, 0x01136002> _signalGhostSides;
-    static loco_global<Map::Pos3, 0x01136004> _signalGhostPos;
+    static loco_global<World::Pos3, 0x01136004> _signalGhostPos;
     static loco_global<uint16_t, 0x0113600A> _signalGhostTrackObjId;
     static loco_global<uint8_t, 0x01136010> _modGhostTrackObjId;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x01136078> _byte_1136078;
     static loco_global<uint8_t, 0x01136079> _lastSelectedTrackPieceId;
     static loco_global<uint8_t, 0x0113607E> _byte_113607E;
-    static loco_global<Map::TileElement, 0x01136090> _backupTileElement;
+    static loco_global<World::TileElement, 0x01136090> _backupTileElement;
 
     namespace Common
     {
@@ -142,8 +142,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
-        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos);
-        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos);
+        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos);
+        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
         void previousTab(Window* self);
         void nextTab(Window* self);
@@ -221,8 +221,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void activateSelectedConstructionWidgets();
         void tabReset(Window* self);
         void initEvents();
-        void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
-        void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
+        void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
+        void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
         void removeTrackGhosts();
         void previousTrackPiece(Window* self);
         void nextTrackPiece(Window* self);

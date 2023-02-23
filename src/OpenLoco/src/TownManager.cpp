@@ -25,7 +25,7 @@ namespace OpenLoco::TownManager
     // esi population
     // edi capacity
     // ebp rating | (numBuildings << 16)
-    Town* updateTownInfo(const Map::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
+    Town* updateTownInfo(const World::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
     {
         auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
@@ -80,13 +80,13 @@ namespace OpenLoco::TownManager
             std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
         }
 
-        Map::TilePosRangeView tileLoop{ { 1, 1 }, { Map::kMapColumns - 1, Map::kMapRows - 1 } };
+        World::TilePosRangeView tileLoop{ { 1, 1 }, { World::kMapColumns - 1, World::kMapRows - 1 } };
         for (const auto& tilePos : tileLoop)
         {
-            auto tile = Map::TileManager::get(tilePos);
+            auto tile = World::TileManager::get(tilePos);
             for (auto& element : tile)
             {
-                auto* building = element.as<Map::BuildingElement>();
+                auto* building = element.as<World::BuildingElement>();
                 if (building == nullptr)
                     continue;
 
@@ -188,13 +188,13 @@ namespace OpenLoco::TownManager
     }
 
     // 0x00497E52
-    std::optional<std::pair<TownId, uint8_t>> getClosestTownAndDensity(const Map::Pos2& loc)
+    std::optional<std::pair<TownId, uint8_t>> getClosestTownAndDensity(const World::Pos2& loc)
     {
         int32_t closestDistance = std::numeric_limits<uint16_t>::max();
         auto closestTown = TownId::null; // ebx
         for (const auto& town : towns())
         {
-            const auto distance = Math::Vector::manhattanDistance(Map::Pos2(town.x, town.y), loc);
+            const auto distance = Math::Vector::manhattanDistance(World::Pos2(town.x, town.y), loc);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
@@ -212,7 +212,7 @@ namespace OpenLoco::TownManager
         {
             return std::nullopt;
         }
-        const int32_t realDistance = Math::Vector::distance(Map::Pos2(town->x, town->y), loc);
+        const int32_t realDistance = Math::Vector::distance(World::Pos2(town->x, town->y), loc);
         // Works out a proxiy for how likely there is to be buildings at the location
         // i.e. how dense the area is.
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);

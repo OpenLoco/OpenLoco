@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Types.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <utility>
 
-namespace OpenLoco::Map::Track
+namespace OpenLoco::World::Track
 {
     struct TrackConnections
     {
@@ -66,7 +66,7 @@ namespace OpenLoco::Map::Track
         unkTurnaround,
     };
 
-    void getRoadConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection);
-    void getTrackConnections(const Map::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId);
-    std::pair<Map::Pos3, uint8_t> getTrackConnectionEnd(const Map::Pos3& pos, const uint16_t trackAndDirection);
+    void getRoadConnections(const World::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection);
+    void getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId);
+    std::pair<World::Pos3, uint8_t> getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
 }

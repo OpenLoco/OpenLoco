@@ -20,7 +20,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
@@ -127,7 +127,7 @@ namespace OpenLoco::Ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    std::optional<Map::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z)
+    std::optional<World::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z)
     {
         Window* w = WindowManager::findAt(mouse.x, mouse.y);
         if (w == nullptr)
@@ -144,8 +144,8 @@ namespace OpenLoco::Ui
         if (vp->containsUi(mouse))
         {
             viewport_pos vpos = vp->screenToViewport(mouse);
-            Map::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
-            if (Map::validCoords(position))
+            World::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
+            if (World::validCoords(position))
             {
                 return position;
             }
@@ -163,10 +163,10 @@ namespace OpenLoco::Ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    World::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
         constexpr uint8_t inverseRotationMapping[4] = { 0, 3, 2, 1 };
-        const auto result = Map::Pos2(y - (x >> 1) + z, y + (x >> 1) + z);
+        const auto result = World::Pos2(y - (x >> 1) + z, y + (x >> 1) + z);
         return Math::Vector::rotate(result, inverseRotationMapping[rotation]);
     }
 
@@ -305,7 +305,7 @@ namespace OpenLoco::Ui
                 int16_t midX = config->savedViewX + (viewport->viewWidth / 2);
                 int16_t midY = config->savedViewY + (viewport->viewHeight / 2);
 
-                Map::Pos2 mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
+                World::Pos2 mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
                 viewportSetUndergroundFlag(false, viewport);
 
                 bool atMapEdge = false;
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004C6827
-    void Window::viewportCentreOnTile(const Map::Pos3& loc)
+    void Window::viewportCentreOnTile(const World::Pos3& loc)
     {
         auto viewport = this->viewports[0];
         if (viewport == nullptr)
@@ -752,17 +752,17 @@ namespace OpenLoco::Ui
         const auto uiCentre = viewport->getUiCentre();
         auto res = ViewportInteraction::getSurfaceLocFromUi(uiCentre);
 
-        Map::Pos3 target = [&]() {
+        World::Pos3 target = [&]() {
             if (!res.has_value() || res->second != viewport)
             {
                 const auto centre = viewport->getCentreMapPosition();
-                const auto height = Map::TileManager::getHeight(centre).landHeight;
-                return Map::Pos3{ centre, height };
+                const auto height = World::TileManager::getHeight(centre).landHeight;
+                return World::Pos3{ centre, height };
             }
             else
             {
-                auto height = Map::TileManager::getHeight(res->first);
-                return Map::Pos3{ res->first.x, res->first.y, height.landHeight };
+                auto height = World::TileManager::getHeight(res->first);
+                return World::Pos3{ res->first.x, res->first.y, height.landHeight };
             }
         }();
 

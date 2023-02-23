@@ -9,7 +9,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Map::AnimationManager
+namespace OpenLoco::World::AnimationManager
 {
     static auto& rawAnimations()
     {

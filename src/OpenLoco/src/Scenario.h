@@ -2,7 +2,7 @@
 
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
 
 namespace OpenLoco
@@ -114,8 +114,8 @@ namespace OpenLoco::Scenario
     void updateSnowLine(int32_t currentDayOfYear);
 
     // 0x00525FB4
-    Map::SmallZ getCurrentSnowLine();
-    void setCurrentSnowLine(Map::SmallZ snowline);
+    World::SmallZ getCurrentSnowLine();
+    void setCurrentSnowLine(World::SmallZ snowline);
 
     // 0x00525FB5
     Season getCurrentSeason();

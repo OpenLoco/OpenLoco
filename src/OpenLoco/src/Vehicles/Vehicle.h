@@ -169,10 +169,10 @@ namespace OpenLoco::Vehicles
     static_assert(sizeof(TrackAndDirection) == 2);
 
     // TODO move to a different header
-    void setSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
-    uint8_t getSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
-    void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
-    uint8_t sub_4A2A58(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
 
     void playPickupSound(Vehicles::Vehicle2* veh2);
 
@@ -240,7 +240,7 @@ namespace OpenLoco::Vehicles
         TransportMode getTransportMode() const;
         Flags38 getFlags38() const;
         uint8_t getTrackType() const;
-        Map::Pos3 getTrackLoc() const;
+        World::Pos3 getTrackLoc() const;
         TrackAndDirection getTrackAndDirection() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
@@ -251,7 +251,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
         void sub_4AA464();
-        uint8_t sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
+        uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         uint32_t sub_4B15FF(uint32_t unk1);
         void explodeComponent();
     };
@@ -294,7 +294,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles orderId * maxNumRoutingSteps
         Flags38 var_38;
@@ -384,7 +384,7 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<AirportMovementNodeFlags, Map::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
+        std::pair<AirportMovementNodeFlags, World::Pos3> airportGetMovementEdgeTarget(StationId targetStation, uint8_t curEdge);
         bool updateWater();
         void tryCreateInitialMovementSound();
         void setStationVisitedTypes();
@@ -392,9 +392,9 @@ namespace OpenLoco::Vehicles
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
         void beginLoading();
-        void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
+        void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         WaterMotionFlags updateWaterMotion(WaterMotionFlags flags);
-        void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
+        void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         uint8_t getLoadingModifier(const VehicleBogie* bogie);
         bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
@@ -404,7 +404,7 @@ namespace OpenLoco::Vehicles
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::tuple<StationId, Map::Pos2, Map::Pos3> sub_427FC9();
+        std::tuple<StationId, World::Pos2, World::Pos3> sub_427FC9();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
         void sub_4AD778();
@@ -447,7 +447,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         Flags38 var_38;
@@ -484,7 +484,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         Flags38 var_38;
@@ -532,7 +532,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         Flags38 var_38;
@@ -591,7 +591,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         Flags38 var_38;
@@ -645,7 +645,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         Flags38 var_38;

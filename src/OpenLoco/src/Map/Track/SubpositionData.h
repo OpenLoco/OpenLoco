@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <vector>
 
 namespace OpenLoco
@@ -9,14 +9,14 @@ namespace OpenLoco
     enum class Pitch : uint8_t;
 }
 
-namespace OpenLoco::Map::TrackData
+namespace OpenLoco::World::TrackData
 {
 #pragma pack(push, 1)
     struct MoveInfo
     {
-        Map::Pos3 loc; // 0x00
-        uint8_t yaw;   // 0x06
-        Pitch pitch;   // 0x07
+        World::Pos3 loc; // 0x00
+        uint8_t yaw;     // 0x06
+        Pitch pitch;     // 0x07
     };
 #pragma pack(pop)
     static_assert(sizeof(MoveInfo) == 0x8);

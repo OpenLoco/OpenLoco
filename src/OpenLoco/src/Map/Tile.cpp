@@ -11,7 +11,7 @@
 #include "Viewport.hpp"
 #include <cassert>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     const uint8_t* TileElementBase::data() const
     {

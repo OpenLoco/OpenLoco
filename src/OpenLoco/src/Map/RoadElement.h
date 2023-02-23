@@ -2,7 +2,7 @@
 
 #include "TileElementBase.h"
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 #pragma pack(push, 1)
     struct RoadElement : public TileElementBase
@@ -45,7 +45,7 @@ namespace OpenLoco::Map
         uint8_t mods() const { return _7 >> 6; }                         // _7u
         CompanyId owner() const { return CompanyId(_7 & 0xF); }          // _7l
         void setOwner(CompanyId newOwner) { _7 = (_7 & 0xF0) | (enumValue(newOwner) & 0xF); }
-        bool update(const Map::Pos2& loc);
+        bool update(const World::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(RoadElement) == kTileElementSize);

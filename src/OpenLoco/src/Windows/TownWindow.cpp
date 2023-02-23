@@ -19,7 +19,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -204,8 +204,8 @@ namespace OpenLoco::Ui::Windows::Town
                     town->history[town->historySize - 1] = historyEntry;
 
                     // Play construction sound at the town centre.
-                    int16_t tileZ = Map::TileManager::getHeight({ town->x, town->y }).landHeight;
-                    Audio::playSound(Audio::SoundId::construct, Map::Pos3(town->x + 16, town->y + 16, tileZ));
+                    int16_t tileZ = World::TileManager::getHeight({ town->x, town->y }).landHeight;
+                    Audio::playSound(Audio::SoundId::construct, World::Pos3(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
 
@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             // Figure out the town's position on the map.
             auto town = TownManager::get(TownId(self.number));
-            int16_t tileZ = Map::TileManager::getHeight({ town->x, town->y }).landHeight;
+            int16_t tileZ = World::TileManager::getHeight({ town->x, town->y }).landHeight;
 
             // Compute views.
             SavedView view = {
@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Windows::Town
             if (self.viewports[0] == nullptr)
             {
                 auto widget = &self.widgets[widx::viewport];
-                auto tile = Map::Pos3({ town->x, town->y, tileZ });
+                auto tile = World::Pos3({ town->x, town->y, tileZ });
                 auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, tile);

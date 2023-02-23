@@ -3,7 +3,7 @@
 #include "Types.hpp"
 #include <OpenLoco/Math/Vector.hpp>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     constexpr coord_t kTileSize = 32;
     constexpr coord_t kMapRows = 384;
@@ -55,7 +55,7 @@ namespace OpenLoco::Map
     // drawing coordinates validation differs from general valid coordinate validation
     constexpr bool drawableCoord(const coord_t coord)
     {
-        return (coord >= (Map::kTileSize - 1)) && (coord < (Map::kMapWidth - Map::kTileSize));
+        return (coord >= (World::kTileSize - 1)) && (coord < (World::kMapWidth - World::kTileSize));
     }
 
     constexpr bool drawableCoords(const Pos2& coords)

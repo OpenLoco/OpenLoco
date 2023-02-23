@@ -21,12 +21,12 @@
 #include <vector>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::S5;
-using namespace OpenLoco::Map::MapGenerator;
+using namespace OpenLoco::World::MapGenerator;
 
-namespace OpenLoco::Map::MapGenerator
+namespace OpenLoco::World::MapGenerator
 {
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
@@ -420,7 +420,7 @@ namespace OpenLoco::Map::MapGenerator
     {
         static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
-        Map::TileLoop tileLoop;
+        World::TileLoop tileLoop;
         for (uint32_t posId = 0; posId < kMapSize; posId++)
         {
             auto pos = tileLoop.current();
@@ -584,7 +584,7 @@ namespace OpenLoco::Map::MapGenerator
         TilePosRangeView tileLoop{ { 1, 1 }, { kMapColumns - 1, kMapRows - 1 } };
         for (const auto& tilePos : tileLoop)
         {
-            auto* surface = Map::TileManager::get(tilePos).surface();
+            auto* surface = World::TileManager::get(tilePos).surface();
             if (surface == nullptr)
             {
                 continue;
@@ -635,7 +635,7 @@ namespace OpenLoco::Map::MapGenerator
         for (auto i = 0; i < options.numberOfForests; ++i)
         {
             const auto randRadius = ((gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * kTileSize;
-            const auto randLoc = Map::TilePos2(gPrng().randNext(kMapRows), gPrng().randNext(kMapColumns));
+            const auto randLoc = World::TilePos2(gPrng().randNext(kMapRows), gPrng().randNext(kMapColumns));
             const auto randDensity = (gPrng().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
@@ -648,7 +648,7 @@ namespace OpenLoco::Map::MapGenerator
         // Place a number of random trees
         for (auto i = 0; i < options.numberRandomTrees; ++i)
         {
-            const auto randLoc = Map::Pos2(gPrng().randNext(kMapWidth), gPrng().randNext(kMapHeight));
+            const auto randLoc = World::Pos2(gPrng().randNext(kMapWidth), gPrng().randNext(kMapHeight));
             placeRandomTree(randLoc, std::nullopt);
         }
 

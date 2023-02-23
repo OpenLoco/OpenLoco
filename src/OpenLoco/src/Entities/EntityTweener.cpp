@@ -11,7 +11,7 @@ namespace OpenLoco
     using EntityListIterator = EntityManager::ListIterator<EntityBase, &EntityBase::nextThingId>;
 
     template<EntityListType id, typename Pred>
-    void PopulateEntities(std::vector<EntityBase*>& list, std::vector<Map::Pos3>& posList, const Pred& pred)
+    void PopulateEntities(std::vector<EntityBase*>& list, std::vector<World::Pos3>& posList, const Pred& pred)
     {
         auto entsView = EntityManager::EntityList<EntityListIterator, id>();
         for (auto* ent : entsView)
@@ -88,9 +88,9 @@ namespace OpenLoco
             if (posA == posB)
                 continue;
 
-            auto newPos = Map::Pos3{ static_cast<int16_t>(std::round(posB.x * alpha + posA.x * inv)),
-                                     static_cast<int16_t>(std::round(posB.y * alpha + posA.y * inv)),
-                                     static_cast<int16_t>(std::round(posB.z * alpha + posA.z * inv)) };
+            auto newPos = World::Pos3{ static_cast<int16_t>(std::round(posB.x * alpha + posA.x * inv)),
+                                       static_cast<int16_t>(std::round(posB.y * alpha + posA.y * inv)),
+                                       static_cast<int16_t>(std::round(posB.z * alpha + posA.z * inv)) };
 
             if (ent->position == newPos)
                 continue;

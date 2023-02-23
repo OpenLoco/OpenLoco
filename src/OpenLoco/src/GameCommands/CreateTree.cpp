@@ -20,11 +20,11 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    constexpr std::array<Map::Pos2, 4> _quadrantCentreOffsets = {
-        Map::Pos2{ 7, 7 },
-        Map::Pos2{ 7, 23 },
-        Map::Pos2{ 23, 23 },
-        Map::Pos2{ 23, 7 },
+    constexpr std::array<World::Pos2, 4> _quadrantCentreOffsets = {
+        World::Pos2{ 7, 7 },
+        World::Pos2{ 7, 23 },
+        World::Pos2{ 23, 23 },
+        World::Pos2{ 23, 7 },
     };
 
     /**
@@ -38,24 +38,24 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
 
-        auto tileHeight = Map::TileManager::getHeight(args.pos);
-        setPosition(Map::Pos3(args.pos.x + Map::kTileSize / 2, args.pos.y + Map::kTileSize / 2, tileHeight.landHeight));
+        auto tileHeight = World::TileManager::getHeight(args.pos);
+        setPosition(World::Pos3(args.pos.x + World::kTileSize / 2, args.pos.y + World::kTileSize / 2, tileHeight.landHeight));
 
-        if (!Map::TileManager::checkFreeElementsAndReorganise())
+        if (!World::TileManager::checkFreeElementsAndReorganise())
         {
             // Error message set in checkFreeElementsAndReorganise
             return FAILURE;
         }
 
-        if (!Map::validCoords(args.pos))
+        if (!World::validCoords(args.pos))
         {
             return FAILURE;
         }
 
         const auto* treeObj = ObjectManager::get<TreeObject>(args.type);
-        const auto quadrantHeight = Map::TileManager::getHeight(args.pos + _quadrantCentreOffsets[args.quadrant] - Map::Pos2{ 1, 1 });
+        const auto quadrantHeight = World::TileManager::getHeight(args.pos + _quadrantCentreOffsets[args.quadrant] - World::Pos2{ 1, 1 });
 
-        auto* elSurface = Map::TileManager::get(args.pos).surface();
+        auto* elSurface = World::TileManager::get(args.pos).surface();
         if (elSurface == nullptr)
         {
             return FAILURE;
@@ -77,15 +77,15 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto baseZ = quadrantHeight.landHeight / Map::kSmallZStep;
+        const auto baseZ = quadrantHeight.landHeight / World::kSmallZStep;
         auto clearanceZ = baseZ + treeObj->var_02;
         if (args.requiresFullClearance)
         {
             clearanceZ = std::numeric_limits<uint8_t>::max();
         }
 
-        Map::QuarterTile qt(1 << (args.quadrant ^ (1 << 1)), 0xF);
-        if (!Map::TileManager::canConstructAt(args.pos, baseZ, clearanceZ, qt))
+        World::QuarterTile qt(1 << (args.quadrant ^ (1 << 1)), 0xF);
+        if (!World::TileManager::canConstructAt(args.pos, baseZ, clearanceZ, qt))
         {
             // Error message set in canConstructAt
             return FAILURE;
@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            auto* elTree = Map::TileManager::insertElement<Map::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
+            auto* elTree = World::TileManager::insertElement<World::TreeElement>(args.pos, baseZ, qt.getBaseQuarterOccupied());
             if (elTree == nullptr)
             {
                 return FAILURE;
@@ -109,12 +109,12 @@ namespace OpenLoco::GameCommands
             elTree->setSnow(false);
             elTree->setSeason(treeObj->var_3E);
             elTree->setUnk7l(7);
-            elTree->setClearZ(treeObj->var_02 / Map::kSmallZStep + elTree->baseZ());
+            elTree->setClearZ(treeObj->var_02 / World::kSmallZStep + elTree->baseZ());
             S5::getOptions().madeAnyChanges = 1;
             if (args.buildImmediately)
             {
                 elTree->setUnk5l(treeObj->growth - 1);
-                elTree->setClearZ(treeObj->height / Map::kSmallZStep + elTree->baseZ());
+                elTree->setClearZ(treeObj->height / World::kSmallZStep + elTree->baseZ());
                 if (elTree->baseZ() - 4 > Scenario::getCurrentSnowLine() && treeObj->hasFlags(TreeObjectFlags::hasSnowVariation))
                 {
                     elTree->setSnow(true);

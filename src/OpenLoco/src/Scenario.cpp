@@ -39,7 +39,7 @@
 #include <OpenLoco/Platform/Platform.h>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Literals;
 
@@ -134,11 +134,11 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00525FB4
-    Map::SmallZ getCurrentSnowLine()
+    World::SmallZ getCurrentSnowLine()
     {
         return getGameState().currentSnowLine;
     }
-    void setCurrentSnowLine(Map::SmallZ snowline)
+    void setCurrentSnowLine(World::SmallZ snowline)
     {
         getGameState().currentSnowLine = snowline;
     }

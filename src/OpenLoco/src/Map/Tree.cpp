@@ -10,17 +10,17 @@
 #include "Ui.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     // 0x004BDF19
-    std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
+    std::optional<uint8_t> getRandomTreeTypeFromSurface(const World::TilePos2& loc, bool unk)
     {
-        if (!Map::validCoords(loc))
+        if (!World::validCoords(loc))
         {
             return {};
         }
 
-        auto* surface = Map::TileManager::get(loc).surface();
+        auto* surface = World::TileManager::get(loc).surface();
         if (surface == nullptr)
         {
             return {};
@@ -94,11 +94,11 @@ namespace OpenLoco::Map
         return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
     }
 
-    bool placeRandomTree(const Map::Pos2& pos, std::optional<uint8_t> treeType)
+    bool placeRandomTree(const World::Pos2& pos, std::optional<uint8_t> treeType)
     {
         GameCommands::TreePlacementArgs args;
         args.quadrant = Ui::ViewportInteraction::getQuadrantFromPos(pos);
-        args.pos = Map::Pos2(pos.x & 0xFFE0, pos.y & 0xFFE0);
+        args.pos = World::Pos2(pos.x & 0xFFE0, pos.y & 0xFFE0);
         // Note: this is not the same as the randomDirection above as it is the trees rotation
         args.rotation = gPrng().randNext(3);
         args.colour = Colour::black;
@@ -131,7 +131,7 @@ namespace OpenLoco::Map
     }
 
     // 0x004BDC67 (when treeType is nullopt) & 0x004BDDC6 (when treeType is set)
-    bool placeTreeCluster(const Map::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
+    bool placeTreeCluster(const World::TilePos2& centreLoc, const uint16_t range, const uint16_t density, const std::optional<uint8_t> treeType)
     {
         const auto numPlacements = (range * range * density) / 8192;
         uint16_t numErrors = 0;
@@ -141,7 +141,7 @@ namespace OpenLoco::Map
             auto& rng = gPrng();
             auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
             auto randomDirection = rng.randNext(Math::Trigonometry::kDirectionPrecisionHigh - 1);
-            Map::Pos2 randomOffset(
+            World::Pos2 randomOffset(
                 Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
                 Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
 

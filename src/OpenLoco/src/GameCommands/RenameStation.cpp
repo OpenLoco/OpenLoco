@@ -77,7 +77,7 @@ namespace OpenLoco::GameCommands
             if ((flags & GameCommands::Flags::apply) == 0)
                 return 0;
 
-            station->name = StationManager::generateNewStationName(_stationId, station->town, Map::Pos3(station->x, station->y, station->z), 0);
+            station->name = StationManager::generateNewStationName(_stationId, station->town, World::Pos3(station->x, station->y, station->z), 0);
         }
         else
         {

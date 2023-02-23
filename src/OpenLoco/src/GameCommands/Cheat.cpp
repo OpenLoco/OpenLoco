@@ -18,7 +18,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {

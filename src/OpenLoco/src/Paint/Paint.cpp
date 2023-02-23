@@ -24,16 +24,16 @@ namespace OpenLoco::Paint
 {
     PaintSession _session;
 
-    void PaintSession::setEntityPosition(const Map::Pos2& pos)
+    void PaintSession::setEntityPosition(const World::Pos2& pos)
     {
         _spritePositionX = pos.x;
         _spritePositionY = pos.y;
     }
-    void PaintSession::setMapPosition(const Map::Pos2& pos)
+    void PaintSession::setMapPosition(const World::Pos2& pos)
     {
         _mapPosition = pos;
     }
-    void PaintSession::setUnkPosition(const Map::Pos2& pos)
+    void PaintSession::setUnkPosition(const World::Pos2& pos)
     {
         _unkPositionX = pos.x;
         _unkPositionY = pos.y;
@@ -61,14 +61,14 @@ namespace OpenLoco::Paint
         _112C306 = 0;
     }
 
-    void PaintSession::setMaxHeight(const Map::Pos2& loc)
+    void PaintSession::setMaxHeight(const World::Pos2& loc)
     {
-        auto tile = Map::TileManager::get(loc);
+        auto tile = World::TileManager::get(loc);
         uint8_t maxClearZ = 0;
         for (const auto& el : tile)
         {
             maxClearZ = std::max(maxClearZ, el.clearZ());
-            const auto* surface = el.as<Map::SurfaceElement>();
+            const auto* surface = el.as<World::SurfaceElement>();
             if (!surface)
             {
                 continue;
@@ -76,14 +76,14 @@ namespace OpenLoco::Paint
 
             if (surface->water())
             {
-                maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * Map::kMicroToSmallZStep);
+                maxClearZ = std::max<uint8_t>(maxClearZ, surface->water() * World::kMicroToSmallZStep);
             }
             if (surface->isIndustrial())
             {
                 maxClearZ = std::max<uint8_t>(maxClearZ, surface->clearZ() + 24);
             }
         }
-        _maxHeight = (maxClearZ * Map::kSmallZStep) + 32;
+        _maxHeight = (maxClearZ * World::kSmallZStep) + 32;
     }
 
     loco_global<int32_t[4], 0x4FD120> _addToStringPlotList;
@@ -105,7 +105,7 @@ namespace OpenLoco::Paint
 
     static int32_t remapPositionToQuadrant(const PaintStruct& ps, uint8_t rotation)
     {
-        constexpr auto mapRangeMax = kMaxPaintQuadrants * Map::kTileSize;
+        constexpr auto mapRangeMax = kMaxPaintQuadrants * World::kTileSize;
         constexpr auto mapRangeCenter = mapRangeMax / 2;
 
         const auto x = ps.bounds.x;
@@ -134,7 +134,7 @@ namespace OpenLoco::Paint
         const auto positionHash = remapPositionToQuadrant(ps, currentRotation);
 
         // Values below zero or above MaxPaintQuadrants are void, corners also share the same quadrant as void.
-        const uint32_t paintQuadrantIndex = std::clamp(positionHash / Map::kTileSize, 0, kMaxPaintQuadrants - 1);
+        const uint32_t paintQuadrantIndex = std::clamp(positionHash / World::kTileSize, 0, kMaxPaintQuadrants - 1);
 
         ps.quadrantIndex = paintQuadrantIndex;
         ps.nextQuadrantPS = _quadrants[paintQuadrantIndex];
@@ -157,7 +157,7 @@ namespace OpenLoco::Paint
         psString->yOffsets = yOffsets;
         psString->colour = colour;
 
-        const auto& vpPos = Map::gameToScreen(Map::Pos3(getSpritePosition(), z), currentRotation);
+        const auto& vpPos = World::gameToScreen(World::Pos3(getSpritePosition(), z), currentRotation);
         psString->vpPos.x = vpPos.x + xOffset;
         psString->vpPos.y = vpPos.y;
 
@@ -166,7 +166,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD130
-    PaintStruct* PaintSession::addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsParent(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxSize)
     {
         return addToPlotListAsParent(imageId, offset, offset, boundBoxSize);
     }
@@ -190,7 +190,7 @@ namespace OpenLoco::Paint
         return true;
     }
 
-    static constexpr Map::Pos3 rotateBoundBoxSize(const Map::Pos3& bbSize, const uint8_t rotation)
+    static constexpr World::Pos3 rotateBoundBoxSize(const World::Pos3& bbSize, const uint8_t rotation)
     {
         auto output = bbSize;
         // This probably rotates the variables so they're relative to rotation 0.
@@ -200,25 +200,25 @@ namespace OpenLoco::Paint
             case 0:
                 output.x--;
                 output.y--;
-                output = Map::Pos3{ Math::Vector::rotate(output, 0), output.z };
+                output = World::Pos3{ Math::Vector::rotate(output, 0), output.z };
                 break;
             case 1:
                 output.x--;
-                output = Map::Pos3{ Math::Vector::rotate(output, 3), output.z };
+                output = World::Pos3{ Math::Vector::rotate(output, 3), output.z };
                 break;
             case 2:
-                output = Map::Pos3{ Math::Vector::rotate(output, 2), output.z };
+                output = World::Pos3{ Math::Vector::rotate(output, 2), output.z };
                 break;
             case 3:
                 output.y--;
-                output = Map::Pos3{ Math::Vector::rotate(output, 1), output.z };
+                output = World::Pos3{ Math::Vector::rotate(output, 1), output.z };
                 break;
         }
         return output;
     }
 
     // 0x004FD140
-    PaintStruct* PaintSession::addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsParent(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
 
@@ -232,7 +232,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD150
-    void PaintSession::addToPlotList4FD150(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId.toUInt32();
@@ -251,7 +251,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD200
-    void PaintSession::addToPlotList4FD200(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD200(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId.toUInt32();
@@ -270,7 +270,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD1E0
-    PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         if (*_lastPS == nullptr)
         {
@@ -286,7 +286,7 @@ namespace OpenLoco::Paint
         return ps;
     }
 
-    void PaintSession::addToPlotList4FD180(ImageId imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD180(ImageId imageId, uint32_t ecx, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId.toUInt32();
@@ -401,10 +401,10 @@ namespace OpenLoco::Paint
 
     struct GenerationParameters
     {
-        Map::Pos2 mapLoc;
+        World::Pos2 mapLoc;
         uint16_t numVerticalQuadrants;
-        std::array<Map::Pos2, 5> additionalQuadrants;
-        Map::Pos2 nextVerticalQuadrant;
+        std::array<World::Pos2, 5> additionalQuadrants;
+        World::Pos2 nextVerticalQuadrant;
     };
 
     template<uint8_t rotation>
@@ -422,14 +422,14 @@ namespace OpenLoco::Paint
         mapLoc.y &= 0xFFE0;
 
         constexpr auto direction = directionFlipXAxis(rotation);
-        constexpr std::array<Map::Pos2, 5> additionalQuadrants = {
-            Math::Vector::rotate(Map::Pos2{ -32, 32 }, direction),
-            Math::Vector::rotate(Map::Pos2{ 0, 32 }, direction),
-            Math::Vector::rotate(Map::Pos2{ 32, 0 }, direction),
-            Math::Vector::rotate(Map::Pos2{ 32, -32 }, direction),
-            Math::Vector::rotate(Map::Pos2{ -32, 64 }, direction),
+        constexpr std::array<World::Pos2, 5> additionalQuadrants = {
+            Math::Vector::rotate(World::Pos2{ -32, 32 }, direction),
+            Math::Vector::rotate(World::Pos2{ 0, 32 }, direction),
+            Math::Vector::rotate(World::Pos2{ 32, 0 }, direction),
+            Math::Vector::rotate(World::Pos2{ 32, -32 }, direction),
+            Math::Vector::rotate(World::Pos2{ -32, 64 }, direction),
         };
-        constexpr auto nextVerticalQuadrant = Math::Vector::rotate(Map::Pos2{ 32, 32 }, direction);
+        constexpr auto nextVerticalQuadrant = Math::Vector::rotate(World::Pos2{ 32, 32 }, direction);
 
         return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
     }
@@ -477,7 +477,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    PaintStruct* PaintSession::createNormalPaintStruct(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::createNormalPaintStruct(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         auto* const g1 = Gfx::getG1Element(imageId.getIndex());
         if (g1 == nullptr)
@@ -486,17 +486,17 @@ namespace OpenLoco::Paint
         }
 
         const auto swappedRotation = directionFlipXAxis(currentRotation);
-        auto swappedRotCoord = Map::Pos3{ Math::Vector::rotate(offset, swappedRotation), offset.z };
-        swappedRotCoord += Map::Pos3{ getSpritePosition(), 0 };
+        auto swappedRotCoord = World::Pos3{ Math::Vector::rotate(offset, swappedRotation), offset.z };
+        swappedRotCoord += World::Pos3{ getSpritePosition(), 0 };
 
-        const auto vpPos = Map::gameToScreen(swappedRotCoord, currentRotation);
+        const auto vpPos = World::gameToScreen(swappedRotCoord, currentRotation);
 
         if (!imageWithinRT(vpPos, *g1, **_renderTarget))
         {
             return nullptr;
         }
 
-        const auto rotBoundBoxOffset = Map::Pos3{ Math::Vector::rotate(boundBoxOffset, swappedRotation), boundBoxOffset.z };
+        const auto rotBoundBoxOffset = World::Pos3{ Math::Vector::rotate(boundBoxOffset, swappedRotation), boundBoxOffset.z };
         const auto rotBoundBoxSize = rotateBoundBoxSize(boundBoxSize, currentRotation);
 
         auto* ps = allocatePaintStruct<PaintStruct>();
@@ -520,7 +520,7 @@ namespace OpenLoco::Paint
         ps->type = _itemType;
         ps->modId = _trackModId;
         ps->mapPos = _mapPosition;
-        ps->tileElement = reinterpret_cast<Map::TileElement*>(*_currentItem);
+        ps->tileElement = reinterpret_cast<World::TileElement*>(*_currentItem);
         return ps;
     }
 
@@ -800,7 +800,7 @@ namespace OpenLoco::Paint
         {
             if (isTypeForegroundCullableScenery(ps.type))
             {
-                const auto pos = Math::Vector::rotate(Map::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
+                const auto pos = Math::Vector::rotate(World::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
                 const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
                 if (height > foregroundCullingHeight)
                 {
@@ -813,7 +813,7 @@ namespace OpenLoco::Paint
         {
             if (isTypeForegroundCullableTrack(ps.type))
             {
-                const auto pos = Math::Vector::rotate(Map::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
+                const auto pos = Math::Vector::rotate(World::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
                 const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
                 if (height > foregroundCullingHeight)
                 {
