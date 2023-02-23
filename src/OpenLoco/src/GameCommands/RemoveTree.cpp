@@ -10,6 +10,7 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "TownManager.h"
+#include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
 
@@ -46,11 +47,9 @@ namespace OpenLoco::GameCommands
             TownManager::updateTownInfo(pos, 0, 0, ratingReduction, 0);
         }
 
-        // call sub_4CBFBF
-        registers regs;
-        regs.si = element.baseHeight();
-        regs.di = element.clearHeight();
-        call(0x004CBFBF, regs);
+        auto zMin = element.baseHeight();
+        auto zMax = element.clearHeight();
+        Ui::ViewportManager::invalidate(pos, zMin, zMax);
 
         Map::TileManager::removeElement(*reinterpret_cast<Map::TileElement*>(&element));
     }
