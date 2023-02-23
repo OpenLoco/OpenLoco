@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             uint32_t image = treeObj->getTreeGrowthDisplayOffset() * treeObj->numRotations;
             auto rotation = (treeObj->numRotations - 1) & _treeRotation;
             image += rotation;
-            image += treeObj->sprites[0][treeObj->seasonState];
+            image += treeObj->sprites[treeObj->seasonState];
 
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)

@@ -2,6 +2,9 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "ObjectImageTable.h"
+#include "ObjectManager.h"
+#include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 
@@ -13,7 +16,7 @@ namespace OpenLoco
         uint32_t image = getTreeGrowthDisplayOffset() * numRotations;
         auto rotation = (numRotations - 1) & 2;
         image += rotation;
-        image += sprites[0][seasonState];
+        image += sprites[seasonState];
 
         auto colourOptions = colours;
         if (colourOptions != 0)
@@ -33,7 +36,7 @@ namespace OpenLoco
         {
             auto snowImage = getTreeGrowthDisplayOffset() * numRotations;
             snowImage += rotation;
-            snowImage += sprites[1][seasonState];
+            snowImage += snowSprites[seasonState];
 
             if (colourOptions != 0)
             {
@@ -109,24 +112,97 @@ namespace OpenLoco
     // 0x004BE144
     void TreeObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
-        Interop::registers regs;
-        regs.esi = Interop::X86Pointer(this);
-        regs.ebx = handle.id;
-        regs.ecx = enumValue(handle.type);
-        Interop::call(0x004BE144, regs);
+        auto remainingData = data.subspan(sizeof(TreeObject));
+
+        // Load localised name string
+        {
+            auto strRes = ObjectManager::loadStringTable(remainingData, handle, 0);
+            name = strRes.str;
+            remainingData = remainingData.subspan(strRes.tableLength);
+        }
+
+        // Load image offsets
+        auto imgRes = ObjectManager::loadImageTable(remainingData);
+        auto imageOffset = imgRes.imageOffset;
+        assert(remainingData.size() == imgRes.tableLength);
+
+        // Initialise sprites array
+        for (auto variant = 0; variant < 6; variant++)
+        {
+            sprites[variant] = imageOffset;
+        }
+
+        auto numVariantImages = numRotations * growth;
+        auto totalImageCount = 0;
+        for (auto variant = 0; variant < 6; variant++)
+        {
+            if ((var_3C & (1 << variant)) == 0)
+                continue;
+
+            sprites[variant] = imgRes.imageOffset + totalImageCount;
+            totalImageCount += numVariantImages;
+        }
+
+        // 0x004BE186
+        const auto numPrimaryImages = totalImageCount;
+
+        if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 4)) != 0)
+        {
+            sprites[5] = sprites[4];
+        }
+
+        if ((var_3C & (1 << 5)) == 0 && (var_3C & (1 << 1)) != 0)
+        {
+            sprites[5] = sprites[1];
+        }
+
+        if ((var_3C & (1 << 4)) == 0 && (var_3C & (1 << 1)) != 0)
+        {
+            sprites[4] = sprites[1];
+        }
+
+        if ((var_3C & (1 << 1)) == 0 && (var_3C & (1 << 0)) != 0)
+        {
+            sprites[1] = sprites[0];
+        }
+
+        if ((var_3C & (1 << 0)) == 0 && (var_3C & (1 << 1)) != 0)
+        {
+            sprites[0] = sprites[1];
+        }
+
+        if ((flags & TreeObjectFlags::hasSnowVariation) != TreeObjectFlags::none)
+        {
+            for (auto variant = 0; variant < 6; variant++)
+            {
+                snowSprites[variant] = sprites[variant] + numPrimaryImages;
+            }
+
+            // Snow doubles the number of images
+            totalImageCount += numPrimaryImages;
+        }
+
+        if ((flags & TreeObjectFlags::hasShadow) != TreeObjectFlags::none)
+        {
+            shadowImageOffset = imgRes.imageOffset + totalImageCount;
+
+            // Shadows double the number of images (combines to a x4 with snow)
+            const auto numShadowImages = totalImageCount;
+
+            // Calculate the total just for checking purposes
+            totalImageCount += numShadowImages;
+        }
+
+        // Verify we haven't overshot any lengths
+        assert(imgRes.imageOffset + totalImageCount == ObjectManager::getTotalNumImages());
     }
 
     // 0x004BE231
     void TreeObject::unload()
     {
         name = 0;
-        for (auto& spriteSeason : sprites)
-        {
-            for (auto& sprite : spriteSeason)
-            {
-                sprite = 0;
-            }
-        }
+        std::fill(std::begin(sprites), std::end(sprites), 0);
+        std::fill(std::begin(snowSprites), std::end(snowSprites), 0);
         shadowImageOffset = 0;
     }
 }
