@@ -4,6 +4,7 @@
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Engine/Map.hpp>
 #include <array>
 
 namespace OpenLoco
@@ -15,6 +16,10 @@ namespace OpenLoco
     namespace Gfx
     {
         struct RenderTarget;
+    }
+    namespace GameCommand
+    {
+        void playDemolishTreeSound(const Map::Pos3 loc);
     }
 
     enum class TreeObjectFlags : uint16_t
