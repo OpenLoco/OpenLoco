@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
     static loco_global<Core::Prng, 0x00525E20> _prng;
 
     // 0x0048B089
-    static void playDemolishTreeSound(const Map::Pos3& loc)
+    static void playDemolishTreeSound(const World::Pos3& loc)
     {
         const auto frequency = _prng->randNext(20003, 24098);
         Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
@@ -36,7 +36,7 @@ namespace OpenLoco::GameCommands
         if ((!element.isGhost() && !element.isFlag5())
             && getUpdatingCompanyId() != CompanyId::neutral)
         {
-            auto loc = Map::Pos3(pos.x, pos.y, element.baseHeight());
+            auto loc = World::Pos3(pos.x, pos.y, element.baseHeight());
             playDemolishTreeSound(loc);
         }
 
@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
         auto zMax = element.clearHeight();
         Ui::ViewportManager::invalidate(pos, zMin, zMax, ZoomLevel::eighth, 56);
 
-        Map::TileManager::removeElement(*reinterpret_cast<Map::TileElement*>(&element));
+        World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(&element));
     }
 
     /**
@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
      *
      * @param pos_x @<ax>
      * @param pos_y @<cx>
-     * @param pos_z @<dl> * Map::kSmallZStep
+     * @param pos_z @<dl> * World::kSmallZStep
      * @param type @<dh>
      * @param elementType @<bh>
      * @param flags @<bl>
