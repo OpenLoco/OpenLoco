@@ -32,7 +32,7 @@ namespace OpenLoco
 
     struct Sub497FFCResult
     {
-        Map::Pos3 roadStart;
+        World::Pos3 roadStart;
         uint16_t tad;
         bool isBridge;
     };

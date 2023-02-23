@@ -213,7 +213,7 @@ namespace OpenLoco
 
     // 0x00463BD2
     template<typename Func>
-    static void sub_463BD2(const Map::Pos2& topLeftLoc, uint8_t searchSize, Func&& predicate)
+    static void sub_463BD2(const World::Pos2& topLeftLoc, uint8_t searchSize, Func&& predicate)
     {
         /* Searches in a square of increasing size
          * Note: Will repeateadly check the first row and column
@@ -232,15 +232,15 @@ namespace OpenLoco
          * -9 | K K K K K K K K K K
          */
         // Note: Could be refactored into a fixed array
-        static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
-        Map::Pos2 pos = topLeftLoc;
+        static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
+        World::Pos2 pos = topLeftLoc;
         for (uint8_t i = 1; i <= searchSize; i += 2)
         {
             for (uint8_t direction = 0; direction < 4; ++direction)
             {
                 for (auto j = i; j != 0; --j)
                 {
-                    if (Map::validCoords(pos))
+                    if (World::validCoords(pos))
                     {
                         if (!predicate(pos))
                         {
@@ -250,7 +250,7 @@ namespace OpenLoco
                     pos += _503C6C[direction];
                 }
             }
-            pos += Map::TilePos2{ 1, -1 };
+            pos += World::TilePos2{ 1, -1 };
         }
     }
 
@@ -266,21 +266,21 @@ namespace OpenLoco
         {
             static loco_global<uint16_t, 0x001135C5A> _trackAndDirection2;
             origRes = Sub497FFCResult{
-                Map::Pos3{ regs.ax, regs.cx, regs.dx }, static_cast<uint16_t>(regs.ebp), static_cast<bool>((*_trackAndDirection2) & (1 << 12))
+                World::Pos3{ regs.ax, regs.cx, regs.dx }, static_cast<uint16_t>(regs.ebp), static_cast<bool>((*_trackAndDirection2) & (1 << 12))
             };
         }
         struct FindResult
         {
-            Map::Pos2 loc;
-            Map::RoadElement* elRoad;
+            World::Pos2 loc;
+            World::RoadElement* elRoad;
         };
         std::optional<FindResult> res;
-        auto sub_497F74 = [randVal = prng.srand_0(), &res](const Map::Pos2& loc) mutable {
-            auto tile = Map::TileManager::get(loc);
+        auto sub_497F74 = [randVal = prng.srand_0(), &res](const World::Pos2& loc) mutable {
+            auto tile = World::TileManager::get(loc);
             bool hasPassedSurface = false;
             for (auto& el : tile)
             {
-                auto* elSurface = el.as<Map::SurfaceElement>();
+                auto* elSurface = el.as<World::SurfaceElement>();
                 if (elSurface != nullptr)
                 {
                     hasPassedSurface = true;
@@ -290,7 +290,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                auto* elRoad = el.as<Map::RoadElement>();
+                auto* elRoad = el.as<World::RoadElement>();
                 if (elRoad == nullptr)
                 {
                     continue;
@@ -304,7 +304,7 @@ namespace OpenLoco
                     continue;
                 }
                 auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
-                if (!(roadObj->flags & Flags12::unk_03))
+                if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
                 {
                     continue;
                 }
@@ -332,9 +332,9 @@ namespace OpenLoco
 
         // static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
 
-        auto& roadPiece = Map::TrackData::getRoadPiece(res->elRoad->roadId());
+        auto& roadPiece = World::TrackData::getRoadPiece(res->elRoad->roadId());
         std::optional<Sub497FFCResult> newRes = Sub497FFCResult{
-            Map::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
+            World::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
             static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->unkDirection()),
             res->elRoad->hasBridge()
         };
