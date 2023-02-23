@@ -19,7 +19,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
@@ -336,7 +336,7 @@ namespace OpenLoco::Ui
     // 0x004CA444
     viewport_pos Viewport::centre2dCoordinates(const Pos3& loc)
     {
-        auto centre = Map::gameToScreen(loc, getRotation());
+        auto centre = World::gameToScreen(loc, getRotation());
 
         return viewport_pos(centre.x - viewWidth / 2, centre.y - viewHeight / 2);
     }
@@ -373,7 +373,7 @@ namespace OpenLoco::Ui
         auto result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, 0, rotation);
         for (auto i = 0; i < 6; i++)
         {
-            const auto z = Map::TileManager::getHeight(result);
+            const auto z = World::TileManager::getHeight(result);
             result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z.landHeight, rotation);
         }
 

@@ -24,8 +24,8 @@
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::TileManager;
+using namespace OpenLoco::World;
+using namespace OpenLoco::World::TileManager;
 using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Construction::Construction
@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
-    static loco_global<Map::Pos3, 0x00F24942> _constructionArrowPos;
+    static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
 
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
         GameCommands::RoadPlacementArgs args;
-        args.pos = Map::Pos3(_x, _y, _constructionZ);
+        args.pos = World::Pos3(_x, _y, _constructionZ);
         args.rotation = roadPiece->rotation;
         args.roadId = roadPiece->id;
         args.mods = _lastSelectedMods;
@@ -228,7 +228,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
 
             WindowManager::close(WindowType::error);
-            args.pos = Map::Pos3(_x, _y, _constructionZ);
+            args.pos = World::Pos3(_x, _y, _constructionZ);
             args.rotation = roadPiece->rotation;
             args.roadId = roadPiece->id;
             args.mods = _lastSelectedMods;
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
         GameCommands::TrackPlacementArgs args;
-        args.pos = Map::Pos3(_x, _y, _constructionZ);
+        args.pos = World::Pos3(_x, _y, _constructionZ);
         args.rotation = trackPiece->rotation;
         args.trackId = trackPiece->id;
         args.mods = _lastSelectedMods;
@@ -317,8 +317,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
-    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
-    static loco_global<Map::Track::TrackConnections, 0x0113609C> _113609C;
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
+    static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
     // 0x004A012E
@@ -332,7 +332,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        Map::Pos3 loc(_x, _y, _constructionZ);
+        World::Pos3 loc(_x, _y, _constructionZ);
         uint32_t trackAndDirection = 0;
 
         if (_constructionRotation < 4)
@@ -350,14 +350,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         else
         {
             trackAndDirection = 1 << 3;
-            loc += Map::Pos3{ _503C6C[_constructionRotation], 0 };
+            loc += World::Pos3{ _503C6C[_constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_constructionRotation & 0x3);
         _113601A[0] = 0;
         _113601A[1] = 0;
         _113609C->size = 0;
-        auto trackEnd = Map::Track::getTrackConnectionEnd(loc, trackAndDirection);
-        Map::Track::getTrackConnections(trackEnd.first, trackEnd.second, _113609C, CompanyManager::getControllingId(), _trackType);
+        auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
+        World::Track::getTrackConnections(trackEnd.first, trackEnd.second, _113609C, CompanyManager::getControllingId(), _trackType);
 
         if (_113609C->size == 0)
         {
@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         const auto trackAndDirection2 = (_113609C->data[_113609C->size - 1] & 0x1FF) ^ (1 << 2);
-        Map::Pos3 loc2(_x, _y, _constructionZ);
+        World::Pos3 loc2(_x, _y, _constructionZ);
         loc2 -= TrackData::getUnkTrack(trackAndDirection2).pos;
         if (trackAndDirection2 & (1 << 2))
         {
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
-            Map::Pos3 newConstructLoc = Map::Pos3(_x, _y, _constructionZ) - TrackData::getUnkTrack(trackAndDirection2).pos;
+            World::Pos3 newConstructLoc = World::Pos3(_x, _y, _constructionZ) - TrackData::getUnkTrack(trackAndDirection2).pos;
             _x = newConstructLoc.x;
             _y = newConstructLoc.y;
             _constructionZ = newConstructLoc.z;
@@ -413,12 +413,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        Map::Pos3 loc(_x, _y, _constructionZ);
+        World::Pos3 loc(_x, _y, _constructionZ);
         uint32_t trackAndDirection = (1 << 2) | (_constructionRotation & 0x3);
         _113601A[0] = 0;
         _113601A[1] = 0;
         _113609C->size = 0;
-        Map::Track::getRoadConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), trackAndDirection);
+        World::Track::getRoadConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), trackAndDirection);
 
         if (_113609C->size == 0)
         {
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         while (_113609C->size != 0)
         {
             trackAndDirection2 = (_113609C->pop_back() & 0x1FF) ^ (1 << 2);
-            Map::Pos3 loc2(_x, _y, _constructionZ);
+            World::Pos3 loc2(_x, _y, _constructionZ);
             loc2 -= TrackData::getUnkRoad(trackAndDirection2).pos;
             if (trackAndDirection2 & (1 << 2))
             {
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
         }
 
-        Map::Pos3 newConstructLoc = Map::Pos3(_x, _y, _constructionZ) - TrackData::getUnkRoad(trackAndDirection2).pos;
+        World::Pos3 newConstructLoc = World::Pos3(_x, _y, _constructionZ) - TrackData::getUnkRoad(trackAndDirection2).pos;
         _x = newConstructLoc.x;
         _y = newConstructLoc.y;
         _constructionZ = newConstructLoc.z;
@@ -632,16 +632,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
     }
 
-    static void setMapSelectedTilesFromPiece(const stdx::span<const TrackData::PreviewTrack> pieces, const Map::Pos2& origin, const uint8_t rotation)
+    static void setMapSelectedTilesFromPiece(const stdx::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
     {
         size_t i = 0;
         for (const auto& piece : pieces)
         {
-            if (piece.hasFlags(Map::TrackData::PreviewTrackFlags::diagonal))
+            if (piece.hasFlags(World::TrackData::PreviewTrackFlags::diagonal))
             {
                 continue;
             }
-            _mapSelectedTiles[i++] = origin + Math::Vector::rotate(Map::Pos2{ piece.x, piece.y }, rotation);
+            _mapSelectedTiles[i++] = origin + Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, rotation);
         }
 
         _mapSelectedTiles[i].x = -1;
@@ -672,10 +672,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             roadId = road->id;
         }
 
-        const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
+        const auto& roadPiece = World::TrackData::getRoadPiece(roadId);
         rotation &= 3;
 
-        setMapSelectedTilesFromPiece(roadPiece, Map::Pos2(x, y), rotation);
+        setMapSelectedTilesFromPiece(roadPiece, World::Pos2(x, y), rotation);
         window->holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
@@ -847,10 +847,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             trackId = track->id;
         }
 
-        const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
+        const auto& trackPiece = World::TrackData::getTrackPiece(trackId);
         rotation &= 3;
 
-        setMapSelectedTilesFromPiece(trackPiece, Map::Pos2(x, y), rotation);
+        setMapSelectedTilesFromPiece(trackPiece, World::Pos2(x, y), rotation);
         window->holdableWidgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
@@ -1752,8 +1752,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation);
-    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation);
+    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const World::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation);
+    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const World::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation);
     static uint32_t placeRoadGhost(const GameCommands::RoadPlacementArgs& args);
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args);
     static void sub_4A193B();
@@ -1765,14 +1765,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             _constructionArrowFrameNum = 5;
             _byte_522096 = _byte_522096 ^ (1 << 0);
-            _constructionArrowPos = Map::Pos3(_x, _y, _constructionZ);
+            _constructionArrowPos = World::Pos3(_x, _y, _constructionZ);
             _constructionArrowDirection = _constructionRotation;
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
             if (_byte_522096 & (1 << 0))
             {
                 Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
             }
-            Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
+            World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
         }
     }
 
@@ -1791,7 +1791,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (_trackType & (1 << 7))
             {
 
-                auto args = getRoadPlacementArgs(Map::Pos3(_x, _y, _constructionZ), _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+                auto args = getRoadPlacementArgs(World::Pos3(_x, _y, _constructionZ), _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
                 if (args)
                 {
                     _trackCost = placeRoadGhost(*args);
@@ -1806,7 +1806,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
             else
             {
-                auto args = getTrackPlacementArgs(Map::Pos3(_x, _y, _constructionZ), _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+                auto args = getTrackPlacementArgs(World::Pos3(_x, _y, _constructionZ), _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
                 if (args)
                 {
                     _trackCost = placeTrackGhost(*args);
@@ -1844,7 +1844,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // Simplified TileManager::getHeight that only considers flat height
-    static std::optional<Map::TileHeight> getConstructionHeight(const Pos2& mapPos)
+    static std::optional<World::TileHeight> getConstructionHeight(const Pos2& mapPos)
     {
         auto tile = TileManager::get(mapPos);
 
@@ -1853,7 +1853,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (surfaceTile == nullptr)
             return std::nullopt;
 
-        Map::TileHeight height = { static_cast<coord_t>(surfaceTile->baseHeight()), surfaceTile->waterHeight() };
+        World::TileHeight height = { static_cast<coord_t>(surfaceTile->baseHeight()), surfaceTile->waterHeight() };
         if (surfaceTile->slopeCorners())
         {
             height.landHeight += 16;
@@ -1879,7 +1879,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        const auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<RoadElement>();
+        const auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<RoadElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;
@@ -1906,7 +1906,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        const auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<TrackElement>();
+        const auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;
@@ -1992,7 +1992,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 {
                     break;
                 }
-                if (!Map::validCoords(tile))
+                if (!World::validCoords(tile))
                     continue;
 
                 const auto tileHeight = getConstructionHeight(tile);
@@ -2013,7 +2013,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return maxHeight;
     }
 
-    static std::optional<std::pair<Map::TilePos2, int16_t>> tryMakeRoadJunctionAtLoc(const int16_t x, const int16_t y)
+    static std::optional<std::pair<World::TilePos2, int16_t>> tryMakeRoadJunctionAtLoc(const int16_t x, const int16_t y)
     {
         const auto existingRoad = getExistingRoadAtLoc(x, y);
 
@@ -2023,13 +2023,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
             if (mapPos)
             {
-                return { std::make_pair(Map::TilePos2(*mapPos), existingHeight) };
+                return { std::make_pair(World::TilePos2(*mapPos), existingHeight) };
             }
         }
         return std::nullopt;
     }
 
-    static std::optional<std::pair<Map::TilePos2, int16_t>> tryMakeTrackJunctionAtLoc(const int16_t x, const int16_t y)
+    static std::optional<std::pair<World::TilePos2, int16_t>> tryMakeTrackJunctionAtLoc(const int16_t x, const int16_t y)
     {
         const auto existingTrack = getExistingTrackAtLoc(x, y);
 
@@ -2041,14 +2041,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
                 if (mapPos)
                 {
-                    return { std::make_pair(Map::TilePos2(*mapPos), existingHeight) };
+                    return { std::make_pair(World::TilePos2(*mapPos), existingHeight) };
                 }
             }
         }
         return std::nullopt;
     }
 
-    static std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight = std::numeric_limits<int16_t>::max())
+    static std::optional<std::pair<World::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight = std::numeric_limits<int16_t>::max())
     {
         auto mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
@@ -2063,7 +2063,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto height = std::min(tileHeight->landHeight, baseHeight);
         height = std::max(height, tileHeight->waterHeight);
 
-        return { std::make_pair(Map::TilePos2(*mapPos), height) };
+        return { std::make_pair(World::TilePos2(*mapPos), height) };
     }
 
     static int16_t getMaxPieceHeight(const stdx::span<const TrackData::PreviewTrack> piece)
@@ -2234,7 +2234,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return res;
     }
 
-    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
+    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const World::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
     {
         auto trackId = getTrackPieceId(trackPiece, gradient, rotation);
         if (!trackId)
@@ -2252,7 +2252,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return args;
     }
 
-    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
+    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const World::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
     {
         auto roadId = getRoadPieceId(trackPiece, gradient, rotation);
         if (!roadId)
@@ -2326,7 +2326,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
     static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
-        Map::TileManager::mapInvalidateMapSelectionTiles();
+        World::TileManager::mapInvalidateMapSelectionTiles();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
@@ -2355,7 +2355,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
 
-        _constructionArrowPos = Map::Pos3(constructPos.x, constructPos.y, constructHeight);
+        _constructionArrowPos = World::Pos3(constructPos.x, constructPos.y, constructHeight);
         _constructionArrowDirection = _constructionRotation;
         _mapSelectedTiles[0] = constructPos;
         _mapSelectedTiles[1].x = -1;
@@ -2364,7 +2364,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (!pieceId)
         {
             removeConstructionGhosts();
-            Map::TileManager::mapInvalidateMapSelectionTiles();
+            World::TileManager::mapInvalidateMapSelectionTiles();
             return;
         }
         _byte_1136065 = pieceId->id;
@@ -2387,7 +2387,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionArrowPos->z = constructHeight;
         }
         constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
-        Map::TileManager::mapInvalidateMapSelectionTiles();
+        World::TileManager::mapInvalidateMapSelectionTiles();
     }
 
     // 0x0049DC8C
@@ -2534,7 +2534,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A0AE5
-    void drawTrack(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
+    void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
     {
         const ViewportFlags backupViewFlags = addr<0x00E3F0BC, ViewportFlags>(); // After all users of 0x00E3F0BC implemented this is not required
         Paint::SessionOptions options{};
@@ -2542,7 +2542,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto* session = Paint::allocateSession(rt, options);
 
         const auto backupSelectionFlags = Input::getMapSelectionFlags();
-        const Map::Pos3 backupConstructionArrowPos = _constructionArrowPos;
+        const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
         const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
 
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
@@ -2570,52 +2570,52 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto& trackPieces = TrackData::getTrackPiece(trackPieceId);
         const auto trackDirection = direction & 3;
 
-        Map::TileElement backupTileElements[5] = {};
+        World::TileElement backupTileElements[5] = {};
 
-        Map::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
+        World::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
         previewSideSurfaceTileElement.setLastFlag(true);
 
         for (const auto& trackPiece : trackPieces)
         {
-            const auto pieceOffset = Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackDirection), trackPiece.z };
+            const auto pieceOffset = World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, trackDirection), trackPiece.z };
             const auto quarterTile = trackPiece.subTileClearance.rotate(trackDirection);
             const auto trackPos = pos + pieceOffset;
             const auto baseZ = trackPos.z / kSmallZStep;
             const auto clearZ = baseZ + (trackPiece.clearZ + 32) / kSmallZStep;
 
-            const auto centreTileCoords = Map::TilePos2{ trackPos };
-            const auto eastTileCoords = centreTileCoords + Map::offsets[1];
-            const auto westTileCoords = centreTileCoords - Map::offsets[1];
-            const auto northTileCoords = centreTileCoords + Map::offsets[3];
-            const auto southTileCoords = centreTileCoords - Map::offsets[3];
+            const auto centreTileCoords = World::TilePos2{ trackPos };
+            const auto eastTileCoords = centreTileCoords + World::offsets[1];
+            const auto westTileCoords = centreTileCoords - World::offsets[1];
+            const auto northTileCoords = centreTileCoords + World::offsets[3];
+            const auto southTileCoords = centreTileCoords - World::offsets[3];
 
             // Copy map elements which will be replaced with temporary ones containing track
-            backupTileElements[0] = *Map::TileManager::get(centreTileCoords)[0];
-            backupTileElements[1] = *Map::TileManager::get(eastTileCoords)[0];
-            backupTileElements[2] = *Map::TileManager::get(westTileCoords)[0];
-            backupTileElements[3] = *Map::TileManager::get(northTileCoords)[0];
-            backupTileElements[4] = *Map::TileManager::get(southTileCoords)[0];
+            backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];
+            backupTileElements[1] = *World::TileManager::get(eastTileCoords)[0];
+            backupTileElements[2] = *World::TileManager::get(westTileCoords)[0];
+            backupTileElements[3] = *World::TileManager::get(northTileCoords)[0];
+            backupTileElements[4] = *World::TileManager::get(southTileCoords)[0];
 
             // Set the temporary track element
-            Map::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile.getBaseQuarterOccupied(), trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
+            World::TrackElement newTrackEl(baseZ, clearZ, trackDirection, quarterTile.getBaseQuarterOccupied(), trackPiece.index, trackType, trackPieceId, std::nullopt, CompanyManager::getControllingId(), selectedMods);
             newTrackEl.setLastFlag(true);
 
             // Replace map elements with temp ones
-            *Map::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&newTrackEl);
-            *Map::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
-            *Map::TileManager::get(westTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
-            *Map::TileManager::get(northTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
-            *Map::TileManager::get(southTileCoords)[0] = *reinterpret_cast<Map::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&newTrackEl);
+            *World::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(westTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(northTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(southTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
 
             // Draw this map tile
             Paint::paintTileElements(*session, trackPos);
 
             // Restore map elements
-            *Map::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
-            *Map::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
-            *Map::TileManager::get(westTileCoords)[0] = backupTileElements[2];
-            *Map::TileManager::get(northTileCoords)[0] = backupTileElements[3];
-            *Map::TileManager::get(southTileCoords)[0] = backupTileElements[4];
+            *World::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
+            *World::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
+            *World::TileManager::get(westTileCoords)[0] = backupTileElements[2];
+            *World::TileManager::get(northTileCoords)[0] = backupTileElements[3];
+            *World::TileManager::get(southTileCoords)[0] = backupTileElements[4];
         }
 
         session->arrangeStructs();
@@ -2630,7 +2630,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x00478F1F
-    void drawRoad(const Map::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
+    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::RenderTarget& rt)
     {
         static loco_global<Gfx::RenderTarget*, 0x00E0C3E0> _dword_E0C3E0;
         _dword_E0C3E0 = &rt;
@@ -2681,7 +2681,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawTrack(Map::Pos3(256 * Map::kTileSize, 256 * Map::kTileSize, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
+        drawTrack(World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -2701,7 +2701,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 | (1 << 1);
 
-        drawRoad(Map::Pos3(256 * Map::kTileSize, 256 * Map::kTileSize, 120 * Map::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
+        drawRoad(World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 120 * World::kSmallZStep), _word_1135FD8, _byte_1136077, _lastSelectedTrackPieceId, _byte_1136078, *clipped);
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
@@ -2758,12 +2758,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
             if (clipped)
             {
-                const auto& roadPiece = Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
+                const auto& roadPiece = World::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
 
                 Pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                if (lastRoadPart.hasFlags(Map::TrackData::PreviewTrackFlags::unused))
+                if (lastRoadPart.hasFlags(World::TrackData::PreviewTrackFlags::unused))
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2808,12 +2808,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
             if (clipped)
             {
-                const auto& trackPiece = Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
+                const auto& trackPiece = World::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
 
                 Pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                if (lastTrackPart.hasFlags(Map::TrackData::PreviewTrackFlags::unused))
+                if (lastTrackPart.hasFlags(World::TrackData::PreviewTrackFlags::unused))
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;

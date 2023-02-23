@@ -4,7 +4,7 @@
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cstddef>
 #include <vector>
@@ -32,7 +32,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::trackStation;
 
-        using CargoOffset = std::array<Map::Pos3, 2>;
+        using CargoOffset = std::array<World::Pos3, 2>;
 
         string_id name;
         uint8_t drawStyle; // 0x02

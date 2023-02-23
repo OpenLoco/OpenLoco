@@ -2,7 +2,7 @@
 
 #include "Localisation/StringManager.h"
 #include "Window.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cstddef>
 #include <functional>
 #include <string_view>
@@ -16,7 +16,7 @@ namespace OpenLoco::Ui
     struct Viewport;
     struct Window;
 }
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     struct TrackElement;
     struct RoadElement;
@@ -155,10 +155,10 @@ namespace OpenLoco::Ui::Windows
     namespace Construction
     {
         Window* openWithFlags(uint32_t flags);
-        Window* openAtTrack(Window* main, Map::TrackElement* track, const Map::Pos2 pos);
-        Window* openAtRoad(Window* main, Map::RoadElement* track, const Map::Pos2 pos);
-        void setToTrackExtra(Window* main, Map::TrackElement* track, const uint8_t bh, const Map::Pos2 pos);
-        void setToRoadExtra(Window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
+        Window* openAtTrack(Window* main, World::TrackElement* track, const World::Pos2 pos);
+        Window* openAtRoad(Window* main, World::RoadElement* track, const World::Pos2 pos);
+        void setToTrackExtra(Window* main, World::TrackElement* track, const uint8_t bh, const World::Pos2 pos);
+        void setToRoadExtra(Window* main, World::RoadElement* track, const uint8_t bh, const World::Pos2 pos);
         void sub_4A6FAC();
         bool isStationTabOpen();
         bool isOverheadTabOpen();
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows
         void openPlantTrees();
         void openBuildWalls();
         bool rotate(Window*);
-        void setLastPlacedTree(Map::TreeElement* elTree);
+        void setLastPlacedTree(World::TreeElement* elTree);
     }
 
     namespace TextInput

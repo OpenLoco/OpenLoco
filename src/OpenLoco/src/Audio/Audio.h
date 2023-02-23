@@ -2,7 +2,7 @@
 
 #include "Location.hpp"
 #include "Types.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <optional>
 #include <string>
 #include <tuple>
@@ -108,14 +108,14 @@ namespace OpenLoco::Audio
     void pauseSound();
     void unpauseSound();
     void playSound(Vehicles::Vehicle2or6* t);
-    void playSound(SoundId id, const Map::Pos3& loc);
+    void playSound(SoundId id, const World::Pos3& loc);
 
     // FOR HOOKS ONLY DO NOT USE THIS FUNCTION FOR OPENLOCO CODE
     // INSTEAD USE playSound(SoundId id, const Map::Pos3& loc) OR playSound(SoundId id, int32_t pan)
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t pan);
+    void playSound(SoundId id, const World::Pos3& loc, int32_t pan);
 
     void playSound(SoundId id, int32_t pan);
-    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
+    void playSound(SoundId id, const World::Pos3& loc, int32_t volume, int32_t frequency);
     void updateSounds();
 
     void setBgmVolume(int32_t volume);

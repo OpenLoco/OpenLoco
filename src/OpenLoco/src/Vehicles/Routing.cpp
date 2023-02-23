@@ -9,17 +9,17 @@
 #include "Map/TrackElement.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Vehicles
 {
     using namespace OpenLoco::Interop;
-    using namespace OpenLoco::Map;
+    using namespace OpenLoco::World;
 
     struct LocationOfInterest
     {
-        Map::Pos3 loc;
+        World::Pos3 loc;
         uint16_t trackAndDirection;
         CompanyId company;
         uint8_t trackType;
@@ -76,7 +76,7 @@ namespace OpenLoco::Vehicles
 
             void findAllocatedEntry()
             {
-                while (_index < kMapSize && _map.locs[_index] == Map::Pos2{ -1, -1 })
+                while (_index < kMapSize && _map.locs[_index] == World::Pos2{ -1, -1 })
                 {
                     _index++;
                 }
@@ -119,7 +119,7 @@ namespace OpenLoco::Vehicles
 
     public:
 #pragma pack(push, 1)
-        Map::Pos2 locs[kMapSize];
+        World::Pos2 locs[kMapSize];
         ZAndTD zAndTDs[kMapSize];
         CAndT cAndTs[kMapSize];
 #pragma pack(pop)
@@ -130,12 +130,12 @@ namespace OpenLoco::Vehicles
             , cAndTs{}
             , count()
         {
-            std::fill(std::begin(locs), std::end(locs), Map::Pos2{ -1, -1 });
+            std::fill(std::begin(locs), std::end(locs), World::Pos2{ -1, -1 });
         }
 
         LocationOfInterest get(const uint16_t index) const
         {
-            return LocationOfInterest{ Map::Pos3(locs[index].x, locs[index].y, zAndTDs[index].z), zAndTDs[index].trackAndDirection, cAndTs[index].company, cAndTs[index].trackType };
+            return LocationOfInterest{ World::Pos3(locs[index].x, locs[index].y, zAndTDs[index].z), zAndTDs[index].trackAndDirection, cAndTs[index].company, cAndTs[index].trackType };
         }
 
         constexpr uint16_t hash(const LocationOfInterest& interest) const
@@ -147,7 +147,7 @@ namespace OpenLoco::Vehicles
         bool tryAdd(LocationOfInterest& interest)
         {
             auto index = hash(interest);
-            for (; locs[index] != Map::Pos2{ -1, -1 }; ++index, index &= kMapSizeMask)
+            for (; locs[index] != World::Pos2{ -1, -1 }; ++index, index &= kMapSizeMask)
             {
                 if (get(index) == interest)
                 {
@@ -180,7 +180,7 @@ namespace OpenLoco::Vehicles
 
     // Reverse direction map?
     static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
     static loco_global<FilterFunction, 0x01135F0E> _filterFunction;
     static loco_global<uint32_t, 0x01135F0A> _1135F0A;
     static loco_global<uint16_t, 0x01135FA6> _1135FA6;
@@ -190,9 +190,9 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x001135F88> _routingTransformData;
 
-    static std::optional<std::pair<Map::SignalElement*, Map::TrackElement*>> findSignalOnTrack(const Map::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
+    static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
-        auto tile = Map::TileManager::get(signalLoc);
+        auto tile = World::TileManager::get(signalLoc);
         for (auto& el : tile)
         {
             if (el.baseZ() != signalLoc.z / 4)
@@ -236,24 +236,24 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0048963F but only when flags are 0xXXXX_XXXA
-    uint8_t getSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
         auto trackStart = loc;
         if (trackAndDirection.isReversed())
         {
-            auto& trackSize = Map::TrackData::getUnkTrack(trackAndDirection._data);
+            auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection._data);
             trackStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                trackStart -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
             flags ^= (1ULL << 31);
         }
 
-        auto& trackPieces = Map::TrackData::getTrackPiece(trackAndDirection.id());
+        auto& trackPieces = World::TrackData::getTrackPiece(trackAndDirection.id());
         auto& trackPiece = trackPieces[0];
 
-        auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
+        auto signalLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
         signalLoc.z += trackPiece.z;
         auto res = findSignalOnTrack(signalLoc, trackAndDirection, trackType, trackPiece.index);
 
@@ -303,26 +303,26 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0048963F
-    void setSignalState(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
         const auto unk1 = flags & 0xFFFF;
         assert(unk1 != 10); // Only happens if wrong function was called call getSignalState
         auto trackStart = loc;
         if (trackAndDirection.isReversed())
         {
-            auto& trackSize = Map::TrackData::getUnkTrack(trackAndDirection._data);
+            auto& trackSize = World::TrackData::getUnkTrack(trackAndDirection._data);
             trackStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                trackStart -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                trackStart -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
             flags ^= (1ULL << 31);
         }
 
-        auto& trackPieces = Map::TrackData::getTrackPiece(trackAndDirection.id());
+        auto& trackPieces = World::TrackData::getTrackPiece(trackAndDirection.id());
         for (auto& trackPiece : trackPieces)
         {
-            auto signalLoc = trackStart + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
+            auto signalLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, trackAndDirection.cardinalDirection()), 0 };
             signalLoc.z += trackPiece.z;
             auto res = findSignalOnTrack(signalLoc, trackAndDirection, trackType, trackPiece.index);
 
@@ -407,7 +407,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (animate)
                 {
-                    Map::AnimationManager::createAnimation(0, signalLoc, signalLoc.z / 4);
+                    World::AnimationManager::createAnimation(0, signalLoc, signalLoc.z / 4);
                     Ui::ViewportManager::invalidate(signalLoc, signalLoc.z, signalLoc.z + 24, ZoomLevel::half);
                 }
             }
@@ -421,11 +421,11 @@ namespace OpenLoco::Vehicles
     {
         auto nextLoc = interest.loc;
         const auto tad = interest.tad();
-        auto& trackSize = Map::TrackData::getUnkTrack(tad._data);
+        auto& trackSize = World::TrackData::getUnkTrack(tad._data);
         nextLoc += trackSize.pos;
         if (trackSize.rotationEnd < 12)
         {
-            nextLoc -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+            nextLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
         }
 
         auto backwardTaD = tad;
@@ -518,21 +518,21 @@ namespace OpenLoco::Vehicles
         auto nextLoc = interest.loc;
         if (tad.isReversed())
         {
-            auto& trackSize = Map::TrackData::getUnkTrack(tad._data);
+            auto& trackSize = World::TrackData::getUnkTrack(tad._data);
             nextLoc += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextLoc -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                nextLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
         }
 
         std::vector<LocationOfInterest> trackToCheck;
 
-        for (auto& piece : Map::TrackData::getTrackPiece(tad.id()))
+        for (auto& piece : World::TrackData::getTrackPiece(tad.id()))
         {
             const auto connectFlags = piece.connectFlags[tad.cardinalDirection()];
-            const auto pieceLoc = nextLoc + Map::Pos3{ Math::Vector::rotate(Map::Pos2{ piece.x, piece.y }, tad.cardinalDirection()), piece.z };
-            auto tile = Map::TileManager::get(pieceLoc);
+            const auto pieceLoc = nextLoc + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, tad.cardinalDirection()), piece.z };
+            auto tile = World::TileManager::get(pieceLoc);
             for (auto& el : tile)
             {
                 if (el.baseZ() != pieceLoc.z / 4)
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                const auto& targetPiece = Map::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
+                const auto& targetPiece = World::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
                 const auto targetConnectFlags = targetPiece.connectFlags[elTrack->unkDirection()];
                 if ((targetConnectFlags & connectFlags) == 0)
                 {
@@ -567,8 +567,8 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                const auto startTargetPos2 = Map::Pos2{ pieceLoc } - Math::Vector::rotate(Map::Pos2{ targetPiece.x, targetPiece.y }, elTrack->unkDirection());
-                const auto startTargetPos = Map::Pos3{ startTargetPos2, static_cast<int16_t>(elTrack->baseHeight() - targetPiece.z) };
+                const auto startTargetPos2 = World::Pos2{ pieceLoc } - Math::Vector::rotate(World::Pos2{ targetPiece.x, targetPiece.y }, elTrack->unkDirection());
+                const auto startTargetPos = World::Pos3{ startTargetPos2, static_cast<int16_t>(elTrack->baseHeight() - targetPiece.z) };
                 TrackAndDirection::_TrackAndDirection tad2(elTrack->trackId(), elTrack->unkDirection());
                 LocationOfInterest newInterest{ startTargetPos, tad2._data, elTrack->owner(), elTrack->trackObjectId() };
 
@@ -580,11 +580,11 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                auto& trackSize = Map::TrackData::getUnkTrack(tad2._data);
+                auto& trackSize = World::TrackData::getUnkTrack(tad2._data);
                 auto endTargetPos = startTargetPos + trackSize.pos;
                 if (trackSize.rotationEnd < 12)
                 {
-                    endTargetPos -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                    endTargetPos -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
                 }
 
                 tad2.setReversed(!tad2.isReversed());
@@ -611,14 +611,14 @@ namespace OpenLoco::Vehicles
     // 0x004A2FE6
     static void findAllUsableTrackInBlock(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap)
     {
-        Map::Track::TrackConnections connections{};
+        World::Track::TrackConnections connections{};
         _113601A[0] = 0;
         _113601A[1] = 0;
         connections.size = 0;
         std::vector<LocationOfInterest> trackToCheck;
 
-        const auto [trackEndLoc, trackEndRotation] = Map::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
-        Map::Track::getTrackConnections(trackEndLoc, trackEndRotation, connections, initialInterest.company, initialInterest.trackType);
+        const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
+        World::Track::getTrackConnections(trackEndLoc, trackEndRotation, connections, initialInterest.company, initialInterest.trackType);
 
         if (connections.size != 0)
         {
@@ -644,16 +644,16 @@ namespace OpenLoco::Vehicles
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
-            auto& trackSize = Map::TrackData::getUnkTrack(initialInterest.tad()._data);
+            auto& trackSize = World::TrackData::getUnkTrack(initialInterest.tad()._data);
             nextLoc += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextLoc -= Map::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                nextLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
             }
 
             connections.size = 0;
             const auto rotation = _503CAC[trackSize.rotationEnd];
-            Map::Track::getTrackConnections(nextLoc, rotation, connections, initialInterest.company, initialInterest.trackType);
+            World::Track::getTrackConnections(nextLoc, rotation, connections, initialInterest.company, initialInterest.trackType);
             for (size_t i = 0; i < connections.size; ++i)
             {
                 uint16_t trackAndDirection2 = connections.data[i] & 0x81FF;
@@ -675,7 +675,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2E46
-    static void findAllTracksFilterTransform(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const FilterFunction filterFunction, const TransformFunction transformFunction)
+    static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const FilterFunction filterFunction, const TransformFunction transformFunction)
     {
         _filterFunction = filterFunction;
         _transformFunction = transformFunction;
@@ -691,13 +691,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AD7
-    void sub_4A2AD7(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         _routingTransformData = 0;
         findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, findSignalsAndOccupation, setSignalsOccupiedState);
     }
 
-    uint8_t sub_4A2A58(const Map::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         addr<0x001135F88, uint16_t>() = 0;
         findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, sub_4A2D4C, reinterpret_cast<TransformFunction>(0xFFFFFFFF));

@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observationX != -1)
                 {
-                    auto tileZAndWater = Map::TileManager::getHeight({ company->observationX, company->observationY });
+                    auto tileZAndWater = World::TileManager::getHeight({ company->observationX, company->observationY });
                     coord_t tileZ = tileZAndWater.landHeight;
                     coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)
@@ -644,7 +644,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 340, 194 };
 
-        loco_global<Map::Pos3, 0x009C68D6> _headquarterGhostPos;
+        loco_global<World::Pos3, 0x009C68D6> _headquarterGhostPos;
         loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
         loco_global<uint8_t, 0x009C68F1> _headquarterGhostType;
         loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
@@ -950,7 +950,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             args.type = CompanyManager::getHeadquarterBuildingType();
             args.rotation = (WindowManager::getCurrentRotation() + 2) & 3;
 
-            auto tile = Map::TileManager::get(*pos);
+            auto tile = World::TileManager::get(*pos);
             const auto* surface = tile.surface();
             if (surface == nullptr)
             {
@@ -962,7 +962,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 z += 16;
             }
-            args.pos = Map::Pos3(pos->x, pos->y, z);
+            args.pos = World::Pos3(pos->x, pos->y, z);
             if (isEditorMode())
             {
                 args.buildImmediately = true; // bh
@@ -973,7 +973,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432CA1
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getHeadquarterPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -983,12 +983,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            Map::TileManager::setMapSelectionCorner(4);
+            World::TileManager::setMapSelectionCorner(4);
 
             // TODO: This selection may be incorrect if getHeadquarterBuildingType returns 0
-            auto posB = Map::Pos2(placementArgs->pos) + Map::Pos2(32, 32);
-            Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
-            Map::TileManager::mapInvalidateSelectionRect();
+            auto posB = World::Pos2(placementArgs->pos) + World::Pos2(32, 32);
+            World::TileManager::setMapSelectionArea(placementArgs->pos, posB);
+            World::TileManager::mapInvalidateSelectionRect();
 
             if (_headquarterGhostPlaced)
             {
@@ -1081,10 +1081,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
             int8_t rotation = static_cast<int8_t>(self.viewports[0]->getRotation());
-            Map::Pos3 loc = {
+            World::Pos3 loc = {
                 static_cast<coord_t>(company->headquartersX + 32),
                 static_cast<coord_t>(company->headquartersY + 32),
-                static_cast<coord_t>((company->headquartersZ + 8) * Map::kSmallZStep)
+                static_cast<coord_t>((company->headquartersZ + 8) * World::kSmallZStep)
             };
             SavedView view{
                 loc.x,

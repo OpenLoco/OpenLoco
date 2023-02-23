@@ -23,7 +23,7 @@ namespace OpenLoco::Vehicles
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
-        Map::SmallZ tileBaseZ;               // 0x34
+        World::SmallZ tileBaseZ;             // 0x34
         uint8_t trackType;                   // 0x35 field same in all vehicles
         RoutingHandle routingHandle;         // 0x36 field same in all vehicles
         Flags38 var_38;                      // 0x38
@@ -64,10 +64,10 @@ namespace OpenLoco::Vehicles
         return veh->trackType;
     }
 
-    Map::Pos3 VehicleBase::getTrackLoc() const
+    World::Pos3 VehicleBase::getTrackLoc() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return Map::Pos3(veh->tileX, veh->tileY, veh->tileBaseZ * Map::kSmallZStep);
+        return World::Pos3(veh->tileX, veh->tileY, veh->tileBaseZ * World::kSmallZStep);
     }
 
     TrackAndDirection VehicleBase::getTrackAndDirection() const
@@ -140,13 +140,13 @@ namespace OpenLoco::Vehicles
     // bp : trackAndDirection
     // ebp : bp | (setOccupied << 31)
     // returns dh : trackType
-    uint8_t VehicleBase::sub_47D959(const Map::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
+    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
     {
         auto trackType = getTrackType();
-        auto tile = Map::TileManager::get(loc);
+        auto tile = World::TileManager::get(loc);
         for (auto& el : tile)
         {
-            auto* elRoad = el.as<Map::RoadElement>();
+            auto* elRoad = el.as<World::RoadElement>();
             if (elRoad == nullptr)
             {
                 continue;

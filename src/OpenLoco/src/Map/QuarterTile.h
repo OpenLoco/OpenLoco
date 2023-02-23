@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     class QuarterTile
     {

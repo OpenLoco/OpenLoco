@@ -13,7 +13,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     const BuildingObject* BuildingElement::getObject() const
     {
@@ -21,7 +21,7 @@ namespace OpenLoco::Map
     }
 
     // 0x0042DF8B
-    bool BuildingElement::update(const Map::Pos2& loc)
+    bool BuildingElement::update(const World::Pos2& loc)
     {
         // Only update from tile index 0 of multi tile buildings
         if (multiTileIndex())
@@ -71,7 +71,7 @@ namespace OpenLoco::Map
                     {
                         for (auto i = 1; i < 4; ++i)
                         {
-                            const auto pos = loc + Map::offsets[i];
+                            const auto pos = loc + World::offsets[i];
                             auto tile = TileManager::get(pos);
                             for (auto& el : tile)
                             {
@@ -106,7 +106,7 @@ namespace OpenLoco::Map
             {
                 for (auto i = 1; i < 4; ++i)
                 {
-                    const auto pos = loc + Map::offsets[i];
+                    const auto pos = loc + World::offsets[i];
                     auto tile = TileManager::get(pos);
                     for (auto& el : tile)
                     {
@@ -152,7 +152,7 @@ namespace OpenLoco::Map
                 {
                     for (auto i = 1; i < 4; ++i)
                     {
-                        const auto pos = loc + Map::offsets[i];
+                        const auto pos = loc + World::offsets[i];
                         auto tile = TileManager::get(pos);
                         for (auto& el : tile)
                         {
@@ -177,7 +177,7 @@ namespace OpenLoco::Map
             if (town->prng.randNext(0xFFFF) <= 16)
             {
                 GameCommands::BuildingRemovalArgs args;
-                args.pos = Map::Pos3(loc.x, loc.y, baseHeight());
+                args.pos = World::Pos3(loc.x, loc.y, baseHeight());
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 return false;
             }
@@ -203,7 +203,7 @@ namespace OpenLoco::Map
                 }
                 town->var_19C[i][0] += producedAmount;
 
-                const auto size = buildingObj->hasFlags(BuildingObjectFlags::largeTile) ? Map::TilePos2(2, 2) : Map::TilePos2(1, 1);
+                const auto size = buildingObj->hasFlags(BuildingObjectFlags::largeTile) ? World::TilePos2(2, 2) : World::TilePos2(1, 1);
                 town->var_19C[i][1] += StationManager::deliverCargoToNearbyStations(buildingObj->producedCargoType[i], producedAmount, loc, size) & 0xFF;
             }
         }

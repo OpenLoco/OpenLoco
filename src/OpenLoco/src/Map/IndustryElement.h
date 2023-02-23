@@ -7,7 +7,7 @@ namespace OpenLoco
     struct Industry;
 }
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 #pragma pack(push, 1)
 
@@ -41,7 +41,7 @@ namespace OpenLoco::Map
         bool isConstructed() const { return _type & 0x80; }
         void setIsConstructed(bool val);
 
-        bool update(const Map::Pos2& loc);
+        bool update(const World::Pos2& loc);
     };
 #pragma pack(pop)
     static_assert(sizeof(IndustryElement) == kTileElementSize);

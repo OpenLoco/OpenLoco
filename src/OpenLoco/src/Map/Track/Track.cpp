@@ -9,7 +9,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Map::Track
+namespace OpenLoco::World::Track
 {
     void TrackConnections::push_back(uint16_t value)
     {
@@ -29,7 +29,7 @@ namespace OpenLoco::Map::Track
     static loco_global<uint8_t, 0x0113607D> _113607D;
 
     // 0x00478895
-    void getRoadConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
+    void getRoadConnections(const World::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
     {
         const auto nextTrackPos = pos + TrackData::getUnkRoad(trackAndDirection).pos;
         _1135FAE = StationId::null; // stationId
@@ -38,7 +38,7 @@ namespace OpenLoco::Map::Track
         uint8_t nextRotation = TrackData::getUnkRoad(trackAndDirection).rotationEnd;
         _112C2EE = nextRotation;
 
-        const auto tile = Map::TileManager::get(nextTrackPos);
+        const auto tile = World::TileManager::get(nextTrackPos);
         for (const auto& el : tile)
         {
             auto* elRoad = el.as<RoadElement>();
@@ -163,7 +163,7 @@ namespace OpenLoco::Map::Track
 
     // Part of 0x004A2604
     // For 0x004A2604 call this followed by getTrackConnections
-    std::pair<Map::Pos3, uint8_t> getTrackConnectionEnd(const Map::Pos3& pos, const uint16_t trackAndDirection)
+    std::pair<World::Pos3, uint8_t> getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
         const auto& trackData = TrackData::getUnkTrack(trackAndDirection);
 
@@ -171,14 +171,14 @@ namespace OpenLoco::Map::Track
     }
 
     // 0x004A2638, 0x004A2601
-    void getTrackConnections(const Map::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId)
+    void getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId)
     {
         _1135FAE = StationId::null; // stationId
         _113607D = 0;
 
         uint8_t baseZ = nextTrackPos.z / 4;
 
-        const auto tile = Map::TileManager::get(nextTrackPos);
+        const auto tile = World::TileManager::get(nextTrackPos);
         for (const auto& el : tile)
         {
             auto* elTrack = el.as<TrackElement>();
@@ -328,11 +328,11 @@ namespace OpenLoco::Map::Track
     }
 }
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
-    TrackElement::TrackElement(Map::SmallZ baseZ, Map::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods)
+    TrackElement::TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods)
     {
-        setType(Map::ElementType::track);
+        setType(World::ElementType::track);
         setBaseZ(baseZ);
         setClearZ(clearZ);
         _type |= direction & 0x3;

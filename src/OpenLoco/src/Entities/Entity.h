@@ -3,7 +3,7 @@
 #include "Location.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
 #include <limits>
 
@@ -61,7 +61,7 @@ namespace OpenLoco
         uint8_t spriteHeightNegative; // 0x09
         EntityId id;                  // 0x0A
         VehicleFlags vehicleFlags;    // 0x0C, Move these to VehicleBase after full reimplementation
-        Map::Pos3 position;           // 0x0E
+        World::Pos3 position;         // 0x0E
         uint8_t spriteWidth;          // 0x14
         uint8_t spriteHeightPositive; // 0x15
         int16_t spriteLeft;           // 0x16
@@ -74,7 +74,7 @@ namespace OpenLoco
         CompanyId owner;              // 0x21
         string_id name;               // 0x22, combined with ordinalNumber on vehicles
 
-        void moveTo(const Map::Pos3& loc);
+        void moveTo(const World::Pos3& loc);
         void invalidateSprite();
 
         template<typename T>

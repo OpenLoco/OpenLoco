@@ -29,7 +29,7 @@ namespace OpenLoco::Ui::Windows::TownList
 {
     static loco_global<currency32_t, 0x01135C34> _dword_1135C34;
     static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
-    static loco_global<Map::Pos3, 0x01135C50> _buildingGhostPos;
+    static loco_global<World::Pos3, 0x01135C50> _buildingGhostPos;
     static loco_global<Colour, 0x01135C61> _buildingColour;
     static loco_global<uint8_t, 0x01135C62> _buildingGhostType;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
@@ -699,16 +699,16 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A710
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
             auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (mapPos)
             {
                 Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-                Map::TileManager::setMapSelectionCorner(4);
-                Map::TileManager::setMapSelectionArea(*mapPos, *mapPos);
-                Map::TileManager::mapInvalidateSelectionRect();
+                World::TileManager::setMapSelectionCorner(4);
+                World::TileManager::setMapSelectionArea(*mapPos, *mapPos);
+                World::TileManager::mapInvalidateSelectionRect();
             }
         }
 
@@ -1042,7 +1042,7 @@ namespace OpenLoco::Ui::Windows::TownList
             GameCommands::BuildingPlacementArgs args;
             args.rotation = (_buildingRotation - WindowManager::getCurrentRotation()) & 0x3; // bh
             args.colour = *_buildingColour;
-            auto tile = Map::TileManager::get(*pos);
+            auto tile = World::TileManager::get(*pos);
             const auto* surface = tile.surface();
             if (surface == nullptr)
             {
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 z += 16;
             }
-            args.pos = Map::Pos3(pos->x, pos->y, z);
+            args.pos = World::Pos3(pos->x, pos->y, z);
             args.type = townListWnd->rowHover;   // dl
             args.variation = _buildingVariation; // dh
             if (isEditorMode())
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049ABF0
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            Map::TileManager::mapInvalidateSelectionRect();
+            World::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -1077,11 +1077,11 @@ namespace OpenLoco::Ui::Windows::TownList
             }
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            Map::TileManager::setMapSelectionCorner(4);
+            World::TileManager::setMapSelectionCorner(4);
             auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
-            auto posB = Map::Pos2(placementArgs->pos) + (building->hasFlags(BuildingObjectFlags::largeTile) ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
-            Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
-            Map::TileManager::mapInvalidateSelectionRect();
+            auto posB = World::Pos2(placementArgs->pos) + (building->hasFlags(BuildingObjectFlags::largeTile) ? World::Pos2(32, 32) : World::Pos2(0, 0));
+            World::TileManager::setMapSelectionArea(placementArgs->pos, posB);
+            World::TileManager::mapInvalidateSelectionRect();
 
             if (_buildingGhostPlaced)
             {
@@ -1278,7 +1278,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     updateBuildingColours(&self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
 
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self.savedView.mapX = -16;

@@ -30,13 +30,13 @@ namespace OpenLoco::Audio
         return std::min<uint8_t>(zoom, 2) * kVolumeModifierZoomIncrement;
     }
 
-    static int8_t getUndergroundVolumeModifier(const Map::Pos3& pos)
+    static int8_t getUndergroundVolumeModifier(const World::Pos3& pos)
     {
-        if (pos.x == Location::null || !Map::validCoords(pos))
+        if (pos.x == Location::null || !World::validCoords(pos))
         {
             return 0;
         }
-        auto* surface = Map::TileManager::get(pos).surface();
+        auto* surface = World::TileManager::get(pos).surface();
         if (surface->baseHeight() > pos.z)
         {
             return kVolumeModifierUnderground;

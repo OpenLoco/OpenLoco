@@ -3,11 +3,11 @@
 #include "Types.hpp"
 #include "Viewport.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Engine/Map.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     struct TileElement;
 }
@@ -113,11 +113,11 @@ namespace OpenLoco::Paint
         Ui::ViewportInteraction::InteractionItem type; // 0x28
         uint8_t modId;                                 // 0x29 used for track mods and signal sides
         uint16_t pad_2A;
-        Map::Pos2 mapPos; // 0x2C
+        World::Pos2 mapPos; // 0x2C
         union
         {
-            Map::TileElement* tileElement; // 0x30 (or entity pointer)
-            EntityBase* entity;            // 0x30
+            World::TileElement* tileElement; // 0x30 (or entity pointer)
+            EntityBase* entity;              // 0x30
         };
         constexpr bool hasQuadrantFlags(QuadrantFlags flagsToTest) const
         {
@@ -183,27 +183,27 @@ namespace OpenLoco::Paint
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         uint16_t get525CE4(const uint8_t i) { return _525CE4[i]; }
         uint16_t get525CF8() { return _525CF8; }
-        Map::Pos2 getUnkPosition()
+        World::Pos2 getUnkPosition()
         {
-            return Map::Pos2{ _unkPositionX, _unkPositionY };
+            return World::Pos2{ _unkPositionX, _unkPositionY };
         }
-        Map::Pos2 getSpritePosition()
+        World::Pos2 getSpritePosition()
         {
-            return Map::Pos2{ _spritePositionX, _spritePositionY };
+            return World::Pos2{ _spritePositionX, _spritePositionY };
         }
         Ui::ViewportFlags getViewFlags() { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
         void setTrackModId(const uint8_t mod) { _trackModId = mod; }
-        void setEntityPosition(const Map::Pos2& pos);
-        void setMapPosition(const Map::Pos2& pos);
-        void setUnkPosition(const Map::Pos2& pos);
+        void setEntityPosition(const World::Pos2& pos);
+        void setMapPosition(const World::Pos2& pos);
+        void setUnkPosition(const World::Pos2& pos);
         void setVpPosition(const Ui::Point& pos);
         void setUnkVpY(const uint16_t y) { _unkVpPositionY = y; }
         void setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope);
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
-        void setMaxHeight(const Map::Pos2& loc);
+        void setMaxHeight(const World::Pos2& loc);
         void set525CF8(const uint16_t segments) { _525CF8 = segments; }
         void set525CF0(const uint8_t newValue) { _525CF0 = newValue; }
         void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
@@ -233,7 +233,7 @@ namespace OpenLoco::Paint
          * @param boundBoxLengthY @<si>
          * @param boundBoxLengthZ @<ah>
          */
-        PaintStruct* addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListAsParent(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -248,7 +248,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        PaintStruct* addToPlotListAsParent(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListAsParent(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -261,7 +261,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotList4FD150(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        void addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -276,7 +276,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        PaintStruct* addToPlotListAsChild(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -290,7 +290,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotList4FD180(ImageId imageId, uint32_t ecx, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        void addToPlotList4FD180(ImageId imageId, uint32_t ecx, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -305,7 +305,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotList4FD200(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        void addToPlotList4FD200(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
         /*
          * @param imageId @<ebx>
          * @param offsetX @<ax>
@@ -340,7 +340,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00E3F0A6> _foregroundCullingHeight;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
         inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;
-        inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
+        inline static Interop::loco_global<World::Pos2, 0x00E3F0B0> _mapPosition;
         inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
         inline static Interop::loco_global<PaintStruct* [kMaxPaintQuadrants], 0x00E3F0C0> _quadrants;
         inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
@@ -387,7 +387,7 @@ namespace OpenLoco::Paint
         }
         void attachStringStruct(PaintStringStruct& psString);
         void addPSToQuadrant(PaintStruct& ps);
-        PaintStruct* createNormalPaintStruct(ImageId imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
+        PaintStruct* createNormalPaintStruct(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
     };
 
     PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options);

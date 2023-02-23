@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Map::TrackData
+namespace OpenLoco::World::TrackData
 {
 #pragma region TrackData
     // 0x4da526

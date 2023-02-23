@@ -4,7 +4,7 @@
 #include "Location.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <algorithm>
 
 namespace OpenLoco::Ui
@@ -157,13 +157,13 @@ namespace OpenLoco::Ui
         }
 
         void render(Gfx::RenderTarget* rt);
-        viewport_pos centre2dCoordinates(const Map::Pos3& loc);
+        viewport_pos centre2dCoordinates(const World::Pos3& loc);
         SavedViewSimple toSavedView() const;
 
         viewport_pos getCentre() const;
         Point getUiCentre() const;
-        Map::Pos2 getCentreMapPosition() const;
-        std::optional<Map::Pos2> getCentreScreenMapPosition() const;
+        World::Pos2 getCentreMapPosition() const;
+        std::optional<World::Pos2> getCentreScreenMapPosition() const;
 
         constexpr bool hasFlags(ViewportFlags flagsToTest) const
         {

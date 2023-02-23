@@ -12,7 +12,7 @@
 #include "PaintTileDecorations.h"
 #include "Ui.h"
 #include "Viewport.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -22,8 +22,8 @@ namespace OpenLoco::Paint
 {
     struct OffsetAndBBOffset
     {
-        Map::Pos2 offset;
-        Map::Pos2 boundingOffset;
+        World::Pos2 offset;
+        World::Pos2 boundingOffset;
     };
     // clang-format off
     static constexpr std::array<OffsetAndBBOffset, 16> _4FE830 = {
@@ -110,11 +110,11 @@ namespace OpenLoco::Paint
     {
         if (isRight)
         {
-            return Map::TrackData::getUnkTrack((trackId << 3) | (rotation + 4)).rotationBegin;
+            return World::TrackData::getUnkTrack((trackId << 3) | (rotation + 4)).rotationBegin;
         }
         else
         {
-            return Map::TrackData::getUnkTrack((trackId << 3) | rotation).rotationBegin;
+            return World::TrackData::getUnkTrack((trackId << 3) | rotation).rotationBegin;
         }
     }
 
@@ -132,7 +132,7 @@ namespace OpenLoco::Paint
 
     static uint32_t getOneWayArrowImage(const bool isRight, const uint8_t trackId, const uint8_t rotation)
     {
-        const auto& trackCoordinates = Map::TrackData::getUnkTrack((trackId << 3) | rotation);
+        const auto& trackCoordinates = World::TrackData::getUnkTrack((trackId << 3) | rotation);
         if (isRight)
         {
             return kOneWayArrowRight[trackCoordinates.rotationBegin];
@@ -143,7 +143,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    static void paintSignalSide(PaintSession& session, const Map::SignalElement::Side& side, const bool isRight, const bool isGhost, const uint8_t trackId, const uint8_t rotation, const coord_t height)
+    static void paintSignalSide(PaintSession& session, const World::SignalElement::Side& side, const bool isRight, const bool isGhost, const uint8_t trackId, const uint8_t rotation, const coord_t height)
     {
         if (side.hasSignal())
         {
@@ -162,9 +162,9 @@ namespace OpenLoco::Paint
                 session.setItemType(InteractionItem::noInteraction);
                 imageId = Gfx::applyGhostToImage(imageOffset);
             }
-            Map::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
-            Map::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
-            Map::Pos3 bbSize(1, 1, 14);
+            World::Pos3 offset(offsetAndBBoffset.offset.x, offsetAndBBoffset.offset.y, getSignalHeightOffset(isRight, trackId) + height);
+            World::Pos3 bbOffset(offsetAndBBoffset.boundingOffset.x, offsetAndBBoffset.boundingOffset.y, offset.z + 4);
+            World::Pos3 bbSize(1, 1, 14);
             session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
 
             if (signalObj->hasFlags(TrainSignalObjectFlags::hasLights))
@@ -202,23 +202,23 @@ namespace OpenLoco::Paint
             {
                 session.setItemType(InteractionItem::noInteraction);
                 const auto imageId = ImageId{ getOneWayArrowImage(!isRight, trackId, rotation), Colour::mutedAvocadoGreen };
-                const Map::Pos3 offset(0, 0, height + getTrackDecorationHeightOffset(!isRight, trackId) + 2);
-                const Map::Pos3 bbOffset(15, 15, offset.z + 16);
-                const Map::Pos3 bbSize(1, 1, 0);
+                const World::Pos3 offset(0, 0, height + getTrackDecorationHeightOffset(!isRight, trackId) + 2);
+                const World::Pos3 bbOffset(15, 15, offset.z + 16);
+                const World::Pos3 bbSize(1, 1, 0);
                 session.addToPlotListAsParent(imageId, offset, bbOffset, bbSize);
             }
         }
     }
 
     // 0x0048864C
-    void paintSignal(PaintSession& session, const Map::SignalElement& elSignal)
+    void paintSignal(PaintSession& session, const World::SignalElement& elSignal)
     {
         if (elSignal.isFlag5())
         {
             return;
         }
 
-        auto* elTrack = elSignal.prev()->as<Map::TrackElement>();
+        auto* elTrack = elSignal.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)
         {
             return;

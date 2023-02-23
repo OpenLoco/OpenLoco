@@ -50,7 +50,7 @@ namespace OpenLoco::Vehicles
                 struct PlaceDown
                 {
                     EntityId head;
-                    Map::Pos3 pos;
+                    World::Pos3 pos;
                     TrackAndDirection tad;
                     uint16_t subPosition;
                 };
@@ -87,7 +87,7 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
-                        VehicleManager::placeDownVehicle(head, placeArgs->pos.x, placeArgs->pos.y, placeArgs->pos.z / Map::kSmallZStep, placeArgs->tad, placeArgs->subPosition);
+                        VehicleManager::placeDownVehicle(head, placeArgs->pos.x, placeArgs->pos.y, placeArgs->pos.z / World::kSmallZStep, placeArgs->tad, placeArgs->subPosition);
                     }
                 }
             }

@@ -32,10 +32,10 @@ namespace OpenLoco::Vehicles
 
         if (train.head->stationId != StationId::null)
         {
-            auto tile = Map::TileManager::get(train.head->getTrackLoc());
+            auto tile = World::TileManager::get(train.head->getTrackLoc());
             for (auto& el : tile)
             {
-                auto* elStation = el.as<Map::StationElement>();
+                auto* elStation = el.as<World::StationElement>();
                 if (elStation == nullptr)
                 {
                     continue;

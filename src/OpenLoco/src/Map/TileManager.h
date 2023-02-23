@@ -5,14 +5,14 @@
 #include <cstdint>
 #include <tuple>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     class QuarterTile;
     struct BuildingElement;
     enum class ElementType;
 }
 
-namespace OpenLoco::Map::TileManager
+namespace OpenLoco::World::TileManager
 {
     constexpr size_t maxElements = 0x6C000;
 
@@ -36,18 +36,18 @@ namespace OpenLoco::Map::TileManager
     void updateTilePointers();
     void reorganise();
     bool checkFreeElementsAndReorganise();
-    bool canConstructAt(const Map::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
-    uint16_t setMapSelectionTiles(const Map::Pos2& loc, const uint8_t selectionType);
-    uint16_t setMapSelectionSingleTile(const Map::Pos2& loc, bool setQuadrant = false);
+    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
+    uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType);
+    uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
-    void mapInvalidateTileFull(Map::Pos2 pos);
+    void mapInvalidateTileFull(World::Pos2 pos);
     void mapInvalidateMapSelectionTiles();
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB);
     std::pair<Pos2, Pos2> getMapSelectionArea();
     void setMapSelectionCorner(const uint8_t corner);
     uint8_t getMapSelectionCorner();
     void resetSurfaceClearance();
-    int16_t mountainHeight(const Map::Pos2& loc);
+    int16_t mountainHeight(const World::Pos2& loc);
     uint16_t countSurroundingWaterTiles(const Pos2& pos);
     uint16_t countSurroundingDesertTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
@@ -55,7 +55,7 @@ namespace OpenLoco::Map::TileManager
     void updateYearly();
     void registerHooks();
     void removeSurfaceIndustry(const Pos2& pos);
-    void createDestructExplosion(const Map::Pos3& pos);
-    void removeBuildingElement(BuildingElement& element, const Map::Pos2& pos);
-    void removeAllWallsOnTile(const Map::TilePos2& pos, SmallZ baseZ);
+    void createDestructExplosion(const World::Pos3& pos);
+    void removeBuildingElement(BuildingElement& element, const World::Pos2& pos);
+    void removeAllWallsOnTile(const World::TilePos2& pos, SmallZ baseZ);
 }

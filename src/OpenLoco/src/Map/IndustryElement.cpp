@@ -13,7 +13,7 @@
 #include "ViewportManager.h"
 #include <numeric>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     Industry* IndustryElement::industry() const
     {
@@ -66,7 +66,7 @@ namespace OpenLoco::Map
     // 0x0045769A
     // A more generic version of the vanilla function
     template<typename TFunction>
-    static void applyToMultiTile(IndustryElement& el0, const Map::Pos2& loc, bool isMultiTile, TFunction&& func)
+    static void applyToMultiTile(IndustryElement& el0, const World::Pos2& loc, bool isMultiTile, TFunction&& func)
     {
         for (auto& offset : getBuildingTileOffsets(isMultiTile))
         {
@@ -74,7 +74,7 @@ namespace OpenLoco::Map
             const auto pos = loc + offset.pos;
             if (offset.unk != 0)
             {
-                auto tile = Map::TileManager::get(pos);
+                auto tile = World::TileManager::get(pos);
                 for (auto& el : tile)
                 {
                     elIndustry = el.as<IndustryElement>();
@@ -98,7 +98,7 @@ namespace OpenLoco::Map
     }
 
     // 0x00456FF7
-    bool IndustryElement::update(const Map::Pos2& loc)
+    bool IndustryElement::update(const World::Pos2& loc)
     {
         // Sequence 0 updates all the other ones
         if (sequenceIndex() != 0)
@@ -140,9 +140,9 @@ namespace OpenLoco::Map
                         return total + partHeights[part];
                     });
 
-                    const auto newClearZ = ((height + 3) / Map::kSmallZStep) + baseHeight();
+                    const auto newClearZ = ((height + 3) / World::kSmallZStep) + baseHeight();
 
-                    applyToMultiTile(*this, loc, isMultiTile, [newClearZ](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                    applyToMultiTile(*this, loc, isMultiTile, [newClearZ](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                         Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
                         elIndustry.setClearZ(newClearZ);
                     });
@@ -162,7 +162,7 @@ namespace OpenLoco::Map
                 newSectionProgress++;
             }
 
-            applyToMultiTile(*this, loc, isMultiTile, [newConstructed, newSectionProgress, newNumSections](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+            applyToMultiTile(*this, loc, isMultiTile, [newConstructed, newSectionProgress, newNumSections](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                 elIndustry.setIsConstructed(newConstructed);
                 elIndustry.setSectionProgress(newSectionProgress);
                 elIndustry.setVar_6_003F(newNumSections);
@@ -202,7 +202,7 @@ namespace OpenLoco::Map
                     {
                         const auto randAnim = _E0C3D4[(numAnimations * (rand & 0xFF)) / 256];
                         const auto newVar6_3F = randAnim | (1 << 5) | (var_6_003F() & 0xC);
-                        applyToMultiTile(*this, loc, isMultiTile, [newVar6_3F](IndustryElement& elIndustry, [[maybe_unused]] const Map::Pos2& pos) {
+                        applyToMultiTile(*this, loc, isMultiTile, [newVar6_3F](IndustryElement& elIndustry, [[maybe_unused]] const World::Pos2& pos) {
                             elIndustry.setVar_6_003F(newVar6_3F);
                         });
                         AnimationManager::createAnimation(4, loc, baseZ());
@@ -217,7 +217,7 @@ namespace OpenLoco::Map
             constexpr coord_t kLowerRange = 4;
 
             // Find all stations in range of industry building
-            for (auto& tilePos : TilePosRangeView(Map::TilePos2(loc) - Map::TilePos2{ kLowerRange, kLowerRange }, Map::TilePos2(loc) + Map::TilePos2{ upperRange, upperRange }))
+            for (auto& tilePos : TilePosRangeView(World::TilePos2(loc) - World::TilePos2{ kLowerRange, kLowerRange }, World::TilePos2(loc) + World::TilePos2{ upperRange, upperRange }))
             {
                 if (!validCoords(tilePos))
                 {
@@ -327,7 +327,7 @@ namespace OpenLoco::Map
                     {
                         if ((speedMask & (ScenarioManager::getScenarioTicks() >> animSpeed)) == 0)
                         {
-                            applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                            applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                 Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
                                 elIndustry.setVar_6_003F(elIndustry.var_6_003F() & ~(1 << 5));
                             });
@@ -338,7 +338,7 @@ namespace OpenLoco::Map
                             const auto speedMask2 = (1 << animSpeed) - 1;
                             if (!(speedMask2 & ScenarioManager::getScenarioTicks()))
                             {
-                                applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                                applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                     Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
                                 });
                             }
@@ -349,7 +349,7 @@ namespace OpenLoco::Map
                     {
                         if ((speedMask & (ScenarioManager::getScenarioTicks() >> animSpeed)) == 1)
                         {
-                            applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](Map::IndustryElement& elIndustry, const Map::Pos2& pos) {
+                            applyToMultiTile(*elIndustry, anim.pos, isMultiTile, [](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                                 Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
                                 elIndustry.setVar_6_003F(elIndustry.var_6_003F() | (1 << 4));
                             });

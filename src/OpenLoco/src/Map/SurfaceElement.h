@@ -2,7 +2,7 @@
 
 #include "TileElementBase.h"
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
     namespace SurfaceSlope
     {
@@ -58,7 +58,7 @@ namespace OpenLoco::Map
 
     public:
         SurfaceElement() = default;
-        SurfaceElement(Map::SmallZ baseZ, Map::SmallZ clearZ, uint8_t quarterTile, bool highTypeFlag)
+        SurfaceElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t quarterTile, bool highTypeFlag)
         {
             setType(kElementType);
             setBaseZ(baseZ);
@@ -107,7 +107,7 @@ namespace OpenLoco::Map
             _type &= ~0x80;
             _type |= state ? 0x80 : 0;
         }
-        void removeIndustry(const Map::Pos2& pos);
+        void removeIndustry(const World::Pos2& pos);
     };
 #pragma pack(pop)
     static_assert(sizeof(SurfaceElement) == kTileElementSize);

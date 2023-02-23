@@ -34,7 +34,7 @@ namespace OpenLoco::Title
         uint16_t arg;
     };
 
-    using MoveStep = Map::TilePos2;
+    using MoveStep = World::TilePos2;
 
     struct RotateStep
     {
@@ -229,12 +229,12 @@ namespace OpenLoco::Title
                            [](MoveStep step) {
                                if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
                                {
-                                   auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
-                                   auto height = Map::TileManager::getHeight(pos);
+                                   auto pos = World::Pos2(step) + World::Pos2(16, 16);
+                                   auto height = World::TileManager::getHeight(pos);
                                    auto main = Ui::WindowManager::getMainWindow();
                                    if (main != nullptr)
                                    {
-                                       auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
+                                       auto pos3d = World::Pos3(pos.x, pos.y, height.landHeight);
                                        main->viewportCentreOnTile(pos3d);
                                        main->flags &= ~Ui::WindowFlags::scrollingToLocation;
                                        main->viewportsUpdatePosition();

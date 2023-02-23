@@ -19,19 +19,19 @@ namespace OpenLoco::GameCommands
 {
     // 0x00455916
     // NOTE: Element is invalid after this call and all elements on tile
-    static void removeElement(const Map::Pos2& pos, Map::TileElement& el)
+    static void removeElement(const World::Pos2& pos, World::TileElement& el)
     {
         Ui::ViewportManager::invalidate(pos, el.baseHeight(), el.clearHeight());
-        Map::TileManager::removeElement(el);
+        World::TileManager::removeElement(el);
     }
 
     // 0x0045579F
-    static void removeIndustryElement(const Map::Pos3& pos)
+    static void removeIndustryElement(const World::Pos3& pos)
     {
-        auto tile = Map::TileManager::get(pos);
+        auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
         {
-            auto* elIndustry = el.as<Map::IndustryElement>();
+            auto* elIndustry = el.as<World::IndustryElement>();
             if (elIndustry == nullptr)
             {
                 continue;
@@ -55,10 +55,10 @@ namespace OpenLoco::GameCommands
             for (auto& buildTilePos : buildingTiles)
             {
                 auto buildPos = buildTilePos.pos + pos;
-                auto buildTile = Map::TileManager::get(buildPos);
+                auto buildTile = World::TileManager::get(buildPos);
                 for (auto& elB : buildTile)
                 {
-                    auto* elBIndustry = elB.as<Map::IndustryElement>();
+                    auto* elBIndustry = elB.as<World::IndustryElement>();
                     if (elBIndustry == nullptr)
                     {
                         continue;
@@ -74,8 +74,8 @@ namespace OpenLoco::GameCommands
             for (auto i = 0; i < industry->numTiles; ++i)
             {
                 const auto& indTile = industry->tiles[i];
-                const auto indPos = Map::Pos3{ Map::Pos2(indTile),
-                                               static_cast<coord_t>(indTile.z & ~(1 << 15)) };
+                const auto indPos = World::Pos3{ World::Pos2(indTile),
+                                                 static_cast<coord_t>(indTile.z & ~(1 << 15)) };
                 if (indPos == pos)
                 {
                     if (industry->numTiles > 1)
@@ -93,9 +93,9 @@ namespace OpenLoco::GameCommands
     // 0x00455A5C
     static void revokeAllSurfaceClaims(const IndustryId id)
     {
-        for (auto& pos : Map::TilePosRangeView({ 1, 1 }, { Map::kMapRows - 1, Map::kMapColumns - 1 }))
+        for (auto& pos : World::TilePosRangeView({ 1, 1 }, { World::kMapRows - 1, World::kMapColumns - 1 }))
         {
-            auto tile = Map::TileManager::get(pos);
+            auto tile = World::TileManager::get(pos);
             auto* surface = tile.surface();
             if (surface == nullptr)
             {
@@ -113,7 +113,7 @@ namespace OpenLoco::GameCommands
             surface->setVar6SLR5(0);
             surface->setVariation(0);
             Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
-            Map::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
+            World::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
         }
     }
 
@@ -132,7 +132,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto height = Map::TileManager::getHeight(Map::Pos2{ industry->x, industry->y } + Map::Pos2{ 16, 16 });
+        const auto height = World::TileManager::getHeight(World::Pos2{ industry->x, industry->y } + World::Pos2{ 16, 16 });
         setPosition({ industry->x, industry->y, height.landHeight });
         if (flags & Flags::apply)
         {

@@ -32,7 +32,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {

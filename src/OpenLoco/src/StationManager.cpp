@@ -22,7 +22,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::StationManager
 {
@@ -140,7 +140,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x048F988
-    string_id generateNewStationName(StationId stationId, TownId townId, Map::Pos3 position, uint8_t mode)
+    string_id generateNewStationName(StationId stationId, TownId townId, World::Pos3 position, uint8_t mode)
     {
         enum StationName : uint8_t
         {
@@ -229,7 +229,7 @@ namespace OpenLoco::StationManager
         else if (mode == 3)
         {
             // 0x0048FA00
-            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            auto tile = TileManager::get(World::Pos2(position.x, position.y));
             auto* surface = tile.surface();
             if (surface != nullptr && surface->water() == 0)
             {
@@ -284,7 +284,7 @@ namespace OpenLoco::StationManager
         // 0x0048FB29
         {
             auto* town = TownManager::get(townId);
-            auto tile = TileManager::get(Map::Pos2(town->x, town->y));
+            auto tile = TileManager::get(World::Pos2(town->x, town->y));
             auto* surface = tile.surface();
             if (surface != nullptr)
             {
@@ -310,8 +310,8 @@ namespace OpenLoco::StationManager
 
         auto town = TownManager::get(townId);
         {
-            auto manhattanDistance = Math::Vector::manhattanDistance(position, Map::Pos2{ town->x, town->y });
-            if (manhattanDistance / Map::kTileSize <= 9)
+            auto manhattanDistance = Math::Vector::manhattanDistance(position, World::Pos2{ town->x, town->y });
+            if (manhattanDistance / World::kTileSize <= 9)
             {
                 // Central
                 if (!realNamesInUse.test(StationName::townCentral))
@@ -460,7 +460,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0042F2FE
-    uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size)
+    uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size)
     {
         const auto initialLoc = TilePos2(pos) - TilePos2(4, 4);
         const auto catchmentSize = size + TilePos2(8, 8);
@@ -471,7 +471,7 @@ namespace OpenLoco::StationManager
             for (; searchOffset.x < catchmentSize.x; ++searchOffset.x)
             {
                 const auto searchLoc = initialLoc + searchOffset;
-                if (!Map::validCoords(searchLoc))
+                if (!World::validCoords(searchLoc))
                 {
                     continue;
                 }
@@ -542,7 +542,7 @@ namespace OpenLoco::StationManager
             0x048F988,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                regs.bx = generateNewStationName(stationId, TownId(regs.ebx), Map::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                regs.bx = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
                 return 0;
             });
     }

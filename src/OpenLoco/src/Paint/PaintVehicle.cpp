@@ -329,8 +329,8 @@ namespace OpenLoco::Paint
     // 0x004B103C
     static void paintBody(PaintSession& session, VehicleBody* body)
     {
-        static loco_global<Map::Pos2[64], 0x00503B6A> _503B6A;  // also used in vehicle.cpp
-        static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4; // array of 4 byte structures
+        static loco_global<World::Pos2[64], 0x00503B6A> _503B6A; // also used in vehicle.cpp
+        static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4;  // array of 4 byte structures
 
         auto* vehObject = ObjectManager::get<VehicleObject>(body->objectId);
         if (body->objectSpriteType == SpriteIndex::null)
@@ -392,9 +392,9 @@ namespace OpenLoco::Paint
             brakingImageIndex = getBrakingImageIndex(pitchImageIndex, sprite);
         }
 
-        Map::Pos3 offsets = { 0, 0, body->position.z };
-        Map::Pos3 boundBoxOffsets;
-        Map::Pos3 boundBoxSize;
+        World::Pos3 offsets = { 0, 0, body->position.z };
+        World::Pos3 boundBoxOffsets;
+        World::Pos3 boundBoxSize;
         if ((body->getTransportMode() == TransportMode::air) || (body->getTransportMode() == TransportMode::water))
         {
             boundBoxOffsets = { -8, -8, static_cast<int16_t>(body->position.z + 11) };

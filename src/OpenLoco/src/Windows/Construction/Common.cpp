@@ -27,8 +27,8 @@
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::TileManager;
+using namespace OpenLoco::World;
+using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         if (_byte_522096 & (1 << 0))
         {
-            Map::TileManager::mapInvalidateTileFull(Map::Pos2(_x, _y));
+            World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
             _byte_522096 = _byte_522096 & ~(1 << 0);
         }
@@ -624,13 +624,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
         // Reverse direction map?
         static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-        static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+        static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
-        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos)
+        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)
         {
             const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
-            const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
-            const auto firstTile = Map::Pos3(pos.x, pos.y, elTrack.baseHeight()) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+            const auto firstTileOffset = Math::Vector::rotate(World::Pos2(piece.x, piece.y), elTrack.unkDirection());
+            const auto firstTile = World::Pos3(pos.x, pos.y, elTrack.baseHeight()) - World::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 
             // Get coordinates of the next tile after the end of the track piece
             const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
@@ -645,16 +645,16 @@ namespace OpenLoco::Ui::Windows::Construction
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += Map::Pos3{ _503C6C[unk], 0 };
+                previousTile += World::Pos3{ _503C6C[unk], 0 };
             }
             _previousTile = previousTile;
         }
 
-        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos)
+        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos)
         {
             const auto& piece = TrackData::getRoadPiece(elRoad.roadId())[elRoad.sequenceIndex()];
-            const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elRoad.unkDirection());
-            const auto firstTile = Map::Pos3(pos.x, pos.y, elRoad.baseHeight()) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+            const auto firstTileOffset = Math::Vector::rotate(World::Pos2(piece.x, piece.y), elRoad.unkDirection());
+            const auto firstTile = World::Pos3(pos.x, pos.y, elRoad.baseHeight()) - World::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 
             // Get coordinates of the next tile after the end of the track piece
             const auto trackAndDirection = (elRoad.roadId() << 3) | elRoad.unkDirection();
@@ -669,7 +669,7 @@ namespace OpenLoco::Ui::Windows::Construction
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += Map::Pos3{ _503C6C[unk], 0 };
+                previousTile += World::Pos3{ _503C6C[unk], 0 };
             }
             _previousTile = previousTile;
         }
@@ -677,11 +677,11 @@ namespace OpenLoco::Ui::Windows::Construction
         // True for next, false for previous
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport)
         {
-            const auto vpPosNext = gameToScreen(*_nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+            const auto vpPosNext = gameToScreen(*_nextTile + World::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosNext = viewport.viewportToScreen(vpPosNext);
             const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, point);
 
-            const auto vpPosPrevious = gameToScreen(*_previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+            const auto vpPosPrevious = gameToScreen(*_previousTile + World::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosPrevious = viewport.viewportToScreen(vpPosPrevious);
             const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, point);
 

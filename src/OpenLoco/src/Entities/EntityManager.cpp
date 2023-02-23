@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t kSpatialEntityMapSize = (Map::kMapPitch * Map::kMapPitch) + 1;
+    constexpr size_t kSpatialEntityMapSize = (World::kMapPitch * World::kMapPitch) + 1;
     constexpr size_t kEntitySpatialIndexNull = kSpatialEntityMapSize - 1;
 
     static_assert(kSpatialEntityMapSize == 0x40001);
@@ -107,21 +107,21 @@ namespace OpenLoco::EntityManager
         return result;
     }
 
-    constexpr size_t getSpatialIndexOffset(const Map::Pos2& loc)
+    constexpr size_t getSpatialIndexOffset(const World::Pos2& loc)
     {
         if (loc.x == Location::null)
             return kEntitySpatialIndexNull;
 
-        const auto tileX = std::abs(loc.x) / Map::kTileSize;
-        const auto tileY = std::abs(loc.y) / Map::kTileSize;
+        const auto tileX = std::abs(loc.x) / World::kTileSize;
+        const auto tileY = std::abs(loc.y) / World::kTileSize;
 
-        if (tileX >= Map::kMapPitch || tileY >= Map::kMapPitch)
+        if (tileX >= World::kMapPitch || tileY >= World::kMapPitch)
             return kEntitySpatialIndexNull;
 
-        return (Map::kMapPitch * tileX) + tileY;
+        return (World::kMapPitch * tileX) + tileY;
     }
 
-    EntityId firstQuadrantId(const Map::Pos2& loc)
+    EntityId firstQuadrantId(const World::Pos2& loc)
     {
         auto index = getSpatialIndexOffset(loc);
         return _entitySpatialIndex[index];
@@ -191,7 +191,7 @@ namespace OpenLoco::EntityManager
         return removeFromSpatialIndex(entity, index);
     }
 
-    void moveSpatialEntry(EntityBase& entity, const Map::Pos3& loc)
+    void moveSpatialEntry(EntityBase& entity, const World::Pos3& loc)
     {
         const auto newIndex = getSpatialIndexOffset(loc);
         const auto oldIndex = getSpatialIndexOffset(entity.position);

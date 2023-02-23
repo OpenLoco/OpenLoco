@@ -3,9 +3,9 @@
 #include "TownManager.h"
 #include "ViewportManager.h"
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
-    void SurfaceElement::removeIndustry(const Map::Pos2& pos)
+    void SurfaceElement::removeIndustry(const World::Pos2& pos)
     {
         if (isIndustrial())
         {

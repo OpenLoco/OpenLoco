@@ -19,8 +19,8 @@
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::TileManager;
+using namespace OpenLoco::World;
+using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return std::nullopt;
         }
 
-        auto* elRoad = reinterpret_cast<Map::TileElement*>(interaction.object)->as<RoadElement>();
+        auto* elRoad = reinterpret_cast<World::TileElement*>(interaction.object)->as<RoadElement>();
         if (elRoad == nullptr)
         {
             return std::nullopt;
@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         GameCommands::RoadModsPlacementArgs args;
         args.type = _lastSelectedMods;
-        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
+        args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
         args.rotation = elRoad->unkDirection();
         args.roadId = elRoad->roadId();
         args.index = elRoad->sequenceIndex();
@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             return std::nullopt;
         }
 
-        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->as<TrackElement>();
+        auto* elTrack = reinterpret_cast<World::TileElement*>(interaction.object)->as<TrackElement>();
         if (elTrack == nullptr)
         {
             return std::nullopt;
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         GameCommands::TrackModsPlacementArgs args;
         args.type = _lastSelectedMods;
-        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
+        args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         args.rotation = elTrack->unkDirection();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
 
-                const auto previewPos = Map::Pos3(256 * Map::kTileSize, 256 * Map::kTileSize, 116 * Map::kSmallZStep);
+                const auto previewPos = World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 116 * World::kSmallZStep);
 
                 _byte_522095 = _byte_522095 | (1 << 0);
 

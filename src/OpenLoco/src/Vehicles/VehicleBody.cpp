@@ -947,7 +947,7 @@ namespace OpenLoco::Vehicles
 
         auto bogieDifference = backBogie->position - frontBogie->position;
 
-        auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         Exhaust::create(smokeLoc, vehicleObject->animation[num].objectId | (soundCode ? 0 : 0x80));
         if (soundCode == false)
@@ -965,7 +965,7 @@ namespace OpenLoco::Vehicles
         // Looking for a station
         if (steamObj->hasFlags(SteamObjectFlags::unk2))
         {
-            auto tile = Map::TileManager::get(frontBogie->tileX, frontBogie->tileY);
+            auto tile = World::TileManager::get(frontBogie->tileX, frontBogie->tileY);
 
             for (auto& el : tile)
             {
@@ -977,7 +977,7 @@ namespace OpenLoco::Vehicles
                 {
                     stationFound = false;
                 }
-                auto* track = el.as<Map::TrackElement>();
+                auto* track = el.as<World::TrackElement>();
                 if (track == nullptr)
                     continue;
                 if (track->baseZ() != frontBogie->tileBaseZ)
@@ -1003,7 +1003,7 @@ namespace OpenLoco::Vehicles
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
-            auto height = Map::TileManager::getHeight(smokeLoc).landHeight;
+            auto height = World::TileManager::getHeight(smokeLoc).landHeight;
 
             if (smokeLoc.z <= height)
             {
@@ -1027,7 +1027,7 @@ namespace OpenLoco::Vehicles
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
-            auto height = Map::TileManager::getHeight(smokeLoc).landHeight;
+            auto height = World::TileManager::getHeight(smokeLoc).landHeight;
 
             if (smokeLoc.z <= height)
             {
@@ -1073,7 +1073,7 @@ namespace OpenLoco::Vehicles
             auto invertedDirection = spriteYaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
-            Map::Pos3 loc = position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+            World::Pos3 loc = position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
             Exhaust::create(loc, vehicleObject->animation[num].objectId);
         }
         else
@@ -1096,7 +1096,7 @@ namespace OpenLoco::Vehicles
             auto bogieDifference = backBogie->position - frontBogie->position;
             auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
-            auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+            auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
             Exhaust::create(loc, vehicleObject->animation[num].objectId);
         }
@@ -1132,7 +1132,7 @@ namespace OpenLoco::Vehicles
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
@@ -1182,7 +1182,7 @@ namespace OpenLoco::Vehicles
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         Exhaust::create(loc, vehicleObject->animation[num].objectId);
     }
@@ -1219,7 +1219,7 @@ namespace OpenLoco::Vehicles
         auto bogieDifference = backBogie->position - frontBogie->position;
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, spritePitch, spriteYaw);
 
-        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
+        auto loc = bogieDifference * var_05 / 128 + frontBogie->position + World::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;
@@ -1275,7 +1275,7 @@ namespace OpenLoco::Vehicles
         auto invertedDirection = spriteYaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
-        Map::Pos3 loc = position + Map::Pos3(xyFactor.x, xyFactor.y, 0);
+        World::Pos3 loc = position + World::Pos3(xyFactor.x, xyFactor.y, 0);
 
         // 90 degrees C.W.
         auto yaw = (spriteYaw + 16) & 0x3F;

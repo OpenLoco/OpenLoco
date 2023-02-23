@@ -4,7 +4,7 @@
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
 {
@@ -44,7 +44,7 @@ namespace OpenLoco
         const uint8_t* var_1C[1]; // odd that this is size 1 but that is how its used
         uint16_t designedYear;    // 0x20
         uint16_t obsoleteYear;    // 0x22
-        Map::Pos2 boatPosition;   // 0x24
+        World::Pos2 boatPosition; // 0x24
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

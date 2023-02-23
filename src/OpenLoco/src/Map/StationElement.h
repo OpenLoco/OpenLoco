@@ -6,7 +6,7 @@ namespace OpenLoco
     enum class StationType : uint8_t;
 }
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 
 #pragma pack(push, 1)

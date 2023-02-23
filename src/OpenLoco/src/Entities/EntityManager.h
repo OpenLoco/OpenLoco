@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entity.h"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <cstdio>
 #include <iterator>
 
@@ -38,10 +38,10 @@ namespace OpenLoco::EntityManager
 
     EntityId firstId(EntityListType list);
 
-    EntityId firstQuadrantId(const Map::Pos2& loc);
+    EntityId firstQuadrantId(const World::Pos2& loc);
     void resetSpatialIndex();
     void updateSpatialIndex();
-    void moveSpatialEntry(EntityBase& entity, const Map::Pos3& loc);
+    void moveSpatialEntry(EntityBase& entity, const World::Pos3& loc);
 
     EntityBase* createEntityMisc();
     EntityBase* createEntityMoney();
@@ -140,7 +140,7 @@ namespace OpenLoco::EntityManager
         using Iterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:
-        EntityTileList(const Map::Pos2& loc)
+        EntityTileList(const World::Pos2& loc)
         {
             firstId = EntityManager::firstQuadrantId(loc);
         }

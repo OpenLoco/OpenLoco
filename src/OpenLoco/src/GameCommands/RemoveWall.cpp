@@ -6,7 +6,7 @@
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Map;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
@@ -28,9 +28,9 @@ namespace OpenLoco::GameCommands
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
-        GameCommands::setPosition(Map::Pos3(args.pos.x + Map::kTileSize / 2, args.pos.y + Map::kTileSize / 2, args.pos.z));
+        GameCommands::setPosition(World::Pos3(args.pos.x + World::kTileSize / 2, args.pos.y + World::kTileSize / 2, args.pos.z));
 
-        auto tile = Map::TileManager::get(args.pos);
+        auto tile = World::TileManager::get(args.pos);
         for (auto& tileElement : tile)
         {
             auto* wallElement = tileElement.as<WallElement>();

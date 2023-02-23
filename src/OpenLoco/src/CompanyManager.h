@@ -4,7 +4,7 @@
 #include "Engine/Limits.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/LocoFixedVector.hpp>
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cstddef>
 
@@ -51,7 +51,7 @@ namespace OpenLoco::CompanyManager
     void updateColours();
     void setPreferredName();
 
-    void spendMoneyEffect(const Map::Pos3& loc, const CompanyId company, const currency32_t amount);
+    void spendMoneyEffect(const World::Pos3& loc, const CompanyId company, const currency32_t amount);
     void applyPaymentToCompany(const CompanyId id, const currency32_t payment, const ExpenditureType type);
     uint32_t competingColourMask(CompanyId companyId);
     uint32_t competingColourMask();

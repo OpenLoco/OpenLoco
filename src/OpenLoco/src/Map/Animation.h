@@ -1,15 +1,15 @@
 #pragma once
 
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 
-namespace OpenLoco::Map
+namespace OpenLoco::World
 {
 #pragma pack(push, 1)
     struct Animation
     {
         uint8_t baseZ;
         uint8_t type;
-        Map::Pos2 pos;
+        World::Pos2 pos;
     };
     static_assert(sizeof(Animation) == 6);
 #pragma pack(pop)

@@ -3,7 +3,7 @@
 #include "LabelFrame.h"
 #include "Routing.h"
 #include "Types.hpp"
-#include <OpenLoco/Engine/Map.hpp>
+#include <OpenLoco/Engine/World.hpp>
 #include <iterator>
 #include <optional>
 #include <string>
@@ -47,7 +47,7 @@ namespace OpenLoco::Vehicles::OrderManager
     };
 
     void freeOrders(VehicleHead* const head);
-    std::pair<Map::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
+    std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
     void generateNumDisplayFrames(Vehicles::VehicleHead* head);
     const std::vector<NumDisplayFrame>& displayFrames();
 }
