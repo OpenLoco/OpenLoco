@@ -46,11 +46,12 @@ namespace OpenLoco::GameCommands
             TownManager::sub_497DC1(pos, 0, 0, ratingReduction, 0);
         }
 
-        // last function
-        element.baseHeight();
-        element.clearHeight();
-        // /************* call sub_4CBFBF *************
-
+        // call sub_4CBFBF
+        registers regs;
+        regs.si = element.baseHeight();
+        regs.di = element.clearHeight();
+        call(0x004CBFBF, regs);
+        
         Map::TileManager::removeElement(*reinterpret_cast<Map::TileElement*>(&element));
     }
 
