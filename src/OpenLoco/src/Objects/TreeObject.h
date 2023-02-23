@@ -17,7 +17,7 @@ namespace OpenLoco
     {
         struct RenderTarget;
     }
-    namespace GameCommand
+    namespace GameCommands
     {
         void playDemolishTreeSound(const Map::Pos3 loc);
     }
