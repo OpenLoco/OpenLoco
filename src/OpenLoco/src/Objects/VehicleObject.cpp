@@ -589,7 +589,10 @@ namespace OpenLoco
         // Verify we haven't overshot any lengths
         if (imgRes.imageOffset + offset != ObjectManager::getTotalNumImages())
         {
-            Console::logVerbose("Incorrect number of images for object");
+            // There are some official objects that suffer from this so can't assert on this.
+            const auto& header = ObjectManager::getHeader(handle);
+            std::string objName(header.getName());
+            Console::logVerbose("Incorrect number of images for object: %s", objName.c_str());
         }
     }
 
