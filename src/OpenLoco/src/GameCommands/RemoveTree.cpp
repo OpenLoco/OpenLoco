@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
         regs.si = element.baseHeight();
         regs.di = element.clearHeight();
         call(0x004CBFBF, regs);
-        
+
         Map::TileManager::removeElement(*reinterpret_cast<Map::TileElement*>(&element));
     }
 
