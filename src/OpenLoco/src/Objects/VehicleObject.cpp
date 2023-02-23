@@ -9,6 +9,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
@@ -586,7 +587,13 @@ namespace OpenLoco
         }
 
         // Verify we haven't overshot any lengths
-        assert(imgRes.imageOffset + offset == ObjectManager::getTotalNumImages());
+        if (imgRes.imageOffset + offset != ObjectManager::getTotalNumImages())
+        {
+            // There are some official objects that suffer from this so can't assert on this.
+            const auto& header = ObjectManager::getHeader(handle);
+            std::string objName(header.getName());
+            Console::logVerbose("Incorrect number of images for object: %s", objName.c_str());
+        }
     }
 
     // 0x004B89FF
