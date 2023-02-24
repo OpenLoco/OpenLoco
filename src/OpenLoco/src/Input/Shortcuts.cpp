@@ -1,4 +1,4 @@
-#include "ShortcutManager.h"
+#include "Shortcuts.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
@@ -10,6 +10,7 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <unordered_map>
@@ -17,123 +18,8 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::Input::ShortcutManager
+namespace OpenLoco::Input::Shortcuts
 {
-    static void closeTopmostWindow();
-    static void closeAllFloatingWindows();
-    static void cancelConstructionMode();
-    static void pauseUnpauseGame();
-    static void zoomViewOut();
-    static void zoomViewIn();
-    static void rotateView();
-    static void rotateConstructionObject();
-    static void toggleUndergroundView();
-    static void toggleHideForegroundTracks();
-    static void toggleHideForegroundScenery();
-    static void toggleHeightMarksOnLand();
-    static void toggleHeightMarksOnTracks();
-    static void toggleDirArrowsOnTracks();
-    static void adjustLand();
-    static void adjustWater();
-    static void plantTrees();
-    static void bulldozeArea();
-    static void buildTracks();
-    static void buildRoads();
-    static void buildAirports();
-    static void buildShipPorts();
-    static void buildNewVehicles();
-    static void showVehiclesList();
-    static void showStationsList();
-    static void showTownsList();
-    static void showIndustriesList();
-    static void showMap();
-    static void showCompaniesList();
-    static void showCompanyInformation();
-    static void showFinances();
-    static void showAnnouncementsList();
-    static void makeScreenshot();
-    static void toggleLastAnnouncement();
-    static void sendMessage();
-    static void constructionPreviousTab();
-    static void constructionNextTab();
-    static void constructionPreviousTrackPiece();
-    static void constructionNextTrackPiece();
-    static void constructionPreviousSlope();
-    static void constructionNextSlope();
-    static void constructionBuildAtCurrentPos();
-    static void constructionRemoveAtCurrentPos();
-    static void constructionSelectPosition();
-    static void gameSpeedNormal();
-    static void gameSpeedFastForward();
-    static void gameSpeedExtraFastForward();
-
-    // clang-format off
-    static constexpr std::array<const KeyboardShortcut, kCount> kShortcuts = { {
-        { closeTopmostWindow,             StringIds::shortcut_close_topmost_window,               "closeTopmostWindow",             "Backspace" },
-        { closeAllFloatingWindows,        StringIds::shortcut_close_all_floating_windows,         "closeAllFloatingWindows",        "Left Shift+Backspace" },
-        { cancelConstructionMode,         StringIds::shortcut_cancel_construction_mode,           "cancelConstructionMode",         "Escape" },
-        { pauseUnpauseGame,               StringIds::shortcut_pause_unpause_game,                 "pauseUnpauseGame",               "Pause" },
-        { zoomViewOut,                    StringIds::shortcut_zoom_view_out,                      "zoomViewOut",                    "PageUp" },
-        { zoomViewIn,                     StringIds::shortcut_zoom_view_in,                       "zoomViewIn",                     "PageDown" },
-        { rotateView,                     StringIds::shortcut_rotate_view,                        "rotateView",                     "Return" },
-        { rotateConstructionObject,       StringIds::shortcut_rotate_construction_object,         "rotateConstructionObject",       "Z" },
-        { toggleUndergroundView,          StringIds::shortcut_toggle_underground_view,            "toggleUndergroundView",          "1" },
-        { toggleHideForegroundTracks,     StringIds::shortcut_toggle_hide_foreground_tracks,      "toggleHideForegroundTracks",     "2" },
-        { toggleHideForegroundScenery,    StringIds::shortcut_toggle_hide_foreground_scenery,     "toggleHideForegroundScenery",    "3" },
-        { toggleHeightMarksOnLand,        StringIds::shortcut_toggle_height_marks_on_land,        "toggleHeightMarksOnLand",        "4" },
-        { toggleHeightMarksOnTracks,      StringIds::shortcut_toggle_height_marks_on_tracks,      "toggleHeightMarksOnTracks",      "5" },
-        { toggleDirArrowsOnTracks,        StringIds::shortcut_toggle_dir_arrows_on_tracks,        "toggleDirArrowsOnTracks",        "6" },
-        { adjustLand,                     StringIds::shortcut_adjust_land,                        "adjustLand",                     "L" },
-        { adjustWater,                    StringIds::shortcut_adjust_water,                       "adjustWater",                    "W" },
-        { plantTrees,                     StringIds::shortcut_plant_trees,                        "plantTrees",                     "P" },
-        { bulldozeArea,                   StringIds::shortcut_bulldoze_area,                      "bulldozeArea",                   "X" },
-        { buildTracks,                    StringIds::shortcut_build_tracks,                       "buildTracks",                    "T" },
-        { buildRoads,                     StringIds::shortcut_build_roads,                        "buildRoads",                     "R" },
-        { buildAirports,                  StringIds::shortcut_build_airports,                     "buildAirports",                  "A" },
-        { buildShipPorts,                 StringIds::shortcut_build_ship_ports,                   "buildShipPorts",                 "D" },
-        { buildNewVehicles,               StringIds::shortcut_build_new_vehicles,                 "buildNewVehicles",               "N" },
-        { showVehiclesList,               StringIds::shortcut_show_vehicles_list,                 "showVehiclesList",               "V" },
-        { showStationsList,               StringIds::shortcut_show_stations_list,                 "showStationsList",               "S" },
-        { showTownsList,                  StringIds::shortcut_show_towns_list,                    "showTownsList",                  "U" },
-        { showIndustriesList,             StringIds::shortcut_show_industries_list,               "showIndustriesList",             "I" },
-        { showMap,                        StringIds::shortcut_show_map,                           "showMap",                        "M" },
-        { showCompaniesList,              StringIds::shortcut_show_companies_list,                "showCompaniesList",              "C" },
-        { showCompanyInformation,         StringIds::shortcut_show_company_information,           "showCompanyInformation",         "Q" },
-        { showFinances,                   StringIds::shortcut_show_finances,                      "showFinances",                   "F" },
-        { showAnnouncementsList,          StringIds::shortcut_show_announcements_list,            "showAnnouncementsList",          "Tab" },
-        { makeScreenshot,                 StringIds::shortcut_screenshot,                         "makeScreenshot",                 "Left Ctrl+S" },
-        { toggleLastAnnouncement,         StringIds::shortcut_toggle_last_announcement,           "toggleLastAnnouncement",         "Space" },
-        { sendMessage,                    StringIds::shortcut_send_message,                       "sendMessage",                    "F1" },
-        { constructionPreviousTab,        StringIds::shortcut_construction_previous_tab,          "constructionPreviousTab",        "" },
-        { constructionNextTab,            StringIds::shortcut_construction_next_tab,              "constructionNextTab",            "" },
-        { constructionPreviousTrackPiece, StringIds::shortcut_construction_previous_track_piece,  "constructionPreviousTrackPiece", "" },
-        { constructionNextTrackPiece,     StringIds::shortcut_construction_next_track_piece,      "constructionNextTrackPiece",     "" },
-        { constructionPreviousSlope,      StringIds::shortcut_construction_previous_slope,        "constructionPreviousSlope",      "" },
-        { constructionNextSlope,          StringIds::shortcut_construction_next_slope,            "constructionNextSlope",          "" },
-        { constructionBuildAtCurrentPos,  StringIds::shortcut_construction_build_at_current_pos,  "constructionBuildAtCurrentPos",  "" },
-        { constructionRemoveAtCurrentPos, StringIds::shortcut_construction_remove_at_current_pos, "constructionRemoveAtCurrentPos", "" },
-        { constructionSelectPosition,     StringIds::shortcut_construction_select_position,       "constructionSelectPosition",     "" },
-        { gameSpeedNormal,                StringIds::shortcut_game_speed_normal,                  "gameSpeedNormal",                "" },
-        { gameSpeedFastForward,           StringIds::shortcut_game_speed_fast_forward,            "gameSpeedFastForward",           "" },
-        { gameSpeedExtraFastForward,      StringIds::shortcut_game_speed_extra_fast_forward,      "gameSpeedExtraFastForward",      "" },
-    } };
-    // clang-format on
-
-    void execute(Shortcut s)
-    {
-        kShortcuts[s].function();
-    }
-
-    string_id getName(Shortcut s)
-    {
-        return kShortcuts[s].displayName;
-    }
-
-    const std::array<const KeyboardShortcut, kCount>& getList()
-    {
-        return kShortcuts;
-    }
-
     // 0x004BF089
     static void closeTopmostWindow()
     {
@@ -581,5 +467,56 @@ namespace OpenLoco::Input::ShortcutManager
     static void gameSpeedExtraFastForward()
     {
         GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::ExtraFastForward }, GameCommands::Flags::apply);
+    }
+
+    void initialize()
+    {
+        ShortcutManager::add(Shortcut::closeTopmostWindow, StringIds::shortcut_close_topmost_window, closeTopmostWindow, "closeTopmostWindow", "Backspace");
+        ShortcutManager::add(Shortcut::closeAllFloatingWindows, StringIds::shortcut_close_all_floating_windows, closeAllFloatingWindows, "closeAllFloatingWindows", "Left Shift+Backspace");
+        ShortcutManager::add(Shortcut::cancelConstructionMode, StringIds::shortcut_cancel_construction_mode, cancelConstructionMode, "cancelConstructionMode", "Escape");
+        ShortcutManager::add(Shortcut::pauseUnpauseGame, StringIds::shortcut_pause_unpause_game, pauseUnpauseGame, "pauseUnpauseGame", "Pause");
+        ShortcutManager::add(Shortcut::zoomViewOut, StringIds::shortcut_zoom_view_out, zoomViewOut, "zoomViewOut", "PageUp");
+        ShortcutManager::add(Shortcut::zoomViewIn, StringIds::shortcut_zoom_view_in, zoomViewIn, "zoomViewIn", "PageDown");
+        ShortcutManager::add(Shortcut::rotateView, StringIds::shortcut_rotate_view, rotateView, "rotateView", "Return");
+        ShortcutManager::add(Shortcut::rotateConstructionObject, StringIds::shortcut_rotate_construction_object, rotateConstructionObject, "rotateConstructionObject", "Z");
+        ShortcutManager::add(Shortcut::toggleUndergroundView, StringIds::shortcut_toggle_underground_view, toggleUndergroundView, "toggleUndergroundView", "1");
+        ShortcutManager::add(Shortcut::toggleHideForegroundTracks, StringIds::shortcut_toggle_hide_foreground_tracks, toggleHideForegroundTracks, "toggleHideForegroundTracks", "2");
+        ShortcutManager::add(Shortcut::toggleHideForegroundScenery, StringIds::shortcut_toggle_hide_foreground_scenery, toggleHideForegroundScenery, "toggleHideForegroundScenery", "3");
+        ShortcutManager::add(Shortcut::toggleHeightMarksonLand, StringIds::shortcut_toggle_height_marks_on_land, toggleHeightMarksOnLand, "toggleHeightMarksOnLand", "4");
+        ShortcutManager::add(Shortcut::toggleHeightMarksonTracks, StringIds::shortcut_toggle_height_marks_on_tracks, toggleHeightMarksOnTracks, "toggleHeightMarksOnTracks", "5");
+        ShortcutManager::add(Shortcut::toggleDirArrowsonTracks, StringIds::shortcut_toggle_dir_arrows_on_tracks, toggleDirArrowsOnTracks, "toggleDirArrowsOnTracks", "6");
+        ShortcutManager::add(Shortcut::adjustLand, StringIds::shortcut_adjust_land, adjustLand, "adjustLand", "L");
+        ShortcutManager::add(Shortcut::adjustWater, StringIds::shortcut_adjust_water, adjustWater, "adjustWater", "W");
+        ShortcutManager::add(Shortcut::plantTrees, StringIds::shortcut_plant_trees, plantTrees, "plantTrees", "P");
+        ShortcutManager::add(Shortcut::bulldozeArea, StringIds::shortcut_bulldoze_area, bulldozeArea, "bulldozeArea", "X");
+        ShortcutManager::add(Shortcut::buildTracks, StringIds::shortcut_build_tracks, buildTracks, "buildTracks", "T");
+        ShortcutManager::add(Shortcut::buildRoads, StringIds::shortcut_build_roads, buildRoads, "buildRoads", "R");
+        ShortcutManager::add(Shortcut::buildAirports, StringIds::shortcut_build_airports, buildAirports, "buildAirports", "A");
+        ShortcutManager::add(Shortcut::buildShipPorts, StringIds::shortcut_build_ship_ports, buildShipPorts, "buildShipPorts", "D");
+        ShortcutManager::add(Shortcut::buildNewVehicles, StringIds::shortcut_build_new_vehicles, buildNewVehicles, "buildNewVehicles", "N");
+        ShortcutManager::add(Shortcut::showVehiclesList, StringIds::shortcut_show_vehicles_list, showVehiclesList, "showVehiclesList", "V");
+        ShortcutManager::add(Shortcut::showStationsList, StringIds::shortcut_show_stations_list, showStationsList, "showStationsList", "S");
+        ShortcutManager::add(Shortcut::showTownsList, StringIds::shortcut_show_towns_list, showTownsList, "showTownsList", "U");
+        ShortcutManager::add(Shortcut::showIndustriesList, StringIds::shortcut_show_industries_list, showIndustriesList, "showIndustriesList", "I");
+        ShortcutManager::add(Shortcut::showMap, StringIds::shortcut_show_map, showMap, "showMap", "M");
+        ShortcutManager::add(Shortcut::showCompaniesList, StringIds::shortcut_show_companies_list, showCompaniesList, "showCompaniesList", "C");
+        ShortcutManager::add(Shortcut::showCompanyInformation, StringIds::shortcut_show_company_information, showCompanyInformation, "showCompanyInformation", "Q");
+        ShortcutManager::add(Shortcut::showFinances, StringIds::shortcut_show_finances, showFinances, "showFinances", "F");
+        ShortcutManager::add(Shortcut::showAnnouncementsList, StringIds::shortcut_show_announcements_list, showAnnouncementsList, "showAnnouncementsList", "Tab");
+        ShortcutManager::add(Shortcut::screenshot, StringIds::shortcut_screenshot, makeScreenshot, "makeScreenshot", "Left Ctrl+S");
+        ShortcutManager::add(Shortcut::toggleLastAnnouncement, StringIds::shortcut_toggle_last_announcement, toggleLastAnnouncement, "toggleLastAnnouncement", "Space");
+        ShortcutManager::add(Shortcut::sendMessage, StringIds::shortcut_send_message, sendMessage, "sendMessage", "F1");
+        ShortcutManager::add(Shortcut::constructionPreviousTab, StringIds::shortcut_construction_previous_tab, constructionPreviousTab, "constructionPreviousTab", "");
+        ShortcutManager::add(Shortcut::constructionNextTab, StringIds::shortcut_construction_next_tab, constructionNextTab, "constructionNextTab", "");
+        ShortcutManager::add(Shortcut::constructionPreviousTrackPiece, StringIds::shortcut_construction_previous_track_piece, constructionPreviousTrackPiece, "constructionPreviousTrackPiece", "");
+        ShortcutManager::add(Shortcut::constructionNextTrackPiece, StringIds::shortcut_construction_next_track_piece, constructionNextTrackPiece, "constructionNextTrackPiece", "");
+        ShortcutManager::add(Shortcut::constructionPreviousSlope, StringIds::shortcut_construction_previous_slope, constructionPreviousSlope, "constructionPreviousSlope", "");
+        ShortcutManager::add(Shortcut::constructionNextSlope, StringIds::shortcut_construction_next_slope, constructionNextSlope, "constructionNextSlope", "");
+        ShortcutManager::add(Shortcut::constructionBuildAtCurrentPos, StringIds::shortcut_construction_build_at_current_pos, constructionBuildAtCurrentPos, "constructionBuildAtCurrentPos", "");
+        ShortcutManager::add(Shortcut::constructionRemoveAtCurrentPos, StringIds::shortcut_construction_remove_at_current_pos, constructionRemoveAtCurrentPos, "constructionRemoveAtCurrentPos", "");
+        ShortcutManager::add(Shortcut::constructionSelectPosition, StringIds::shortcut_construction_select_position, constructionSelectPosition, "constructionSelectPosition", "");
+        ShortcutManager::add(Shortcut::gameSpeedNormal, StringIds::shortcut_game_speed_normal, gameSpeedNormal, "gameSpeedNormal", "");
+        ShortcutManager::add(Shortcut::gameSpeedFastForward, StringIds::shortcut_game_speed_fast_forward, gameSpeedFastForward, "gameSpeedFastForward", "");
+        ShortcutManager::add(Shortcut::gameSpeedExtraFastForward, StringIds::shortcut_game_speed_extra_fast_forward, gameSpeedExtraFastForward, "gameSpeedExtraFastForward", "");
     }
 }

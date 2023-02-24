@@ -2,13 +2,13 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "Input/ShortcutManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <unordered_map>
@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->setColour(WindowColour::primary, skin->colour_0B);
         window->setColour(WindowColour::secondary, skin->colour_10);
 
-        window->rowCount = static_cast<uint16_t>(ShortcutManager::kCount);
+        window->rowCount = static_cast<uint16_t>(ShortcutManager::getList().size());
         window->rowHover = -1;
 
         return window;
@@ -161,6 +161,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto shade = Colours::getShade(colour, 4);
         drawingCtx.clearSingle(rt, shade);
 
+        const auto& shortcutDefs = ShortcutManager::getList();
         const auto& shortcuts = Config::get().shortcuts;
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)
@@ -176,15 +177,17 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             auto baseStringId = StringIds::empty;
             char buffer[128]{};
 
-            if (shortcuts[i].keyCode != 0xFFFFFFFF)
+            const auto& def = shortcutDefs[i];
+            auto& shortcut = shortcuts.at(def.id);
+            if (shortcut.keyCode != 0xFFFFFFFF)
             {
-                if (shortcuts[i].modifiers == KeyModifier::shift)
+                if (shortcut.modifiers == KeyModifier::shift)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                else if (shortcuts[i].modifiers == KeyModifier::control)
+                else if (shortcut.modifiers == KeyModifier::control)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
 
                 baseStringId = StringIds::stringptr;
-                getBindingString(shortcuts[i].keyCode, buffer, std::size(buffer));
+                getBindingString(shortcut.keyCode, buffer, std::size(buffer));
             }
 
             auto formatter = FormatArguments::common();
