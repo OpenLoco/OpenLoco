@@ -14,12 +14,12 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
-#include "Town.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/Town.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 

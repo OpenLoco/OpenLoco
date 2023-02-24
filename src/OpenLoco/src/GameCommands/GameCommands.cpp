@@ -1,7 +1,5 @@
 #include "GameCommands.h"
 #include "Audio/Audio.h"
-#include "Company.h"
-#include "CompanyManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
@@ -13,9 +11,11 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "SceneManager.h"
-#include "StationManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "World/Company.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
 #include <cassert>
 
 using namespace OpenLoco::Ui;

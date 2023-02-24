@@ -1,5 +1,5 @@
-#include "CompanyManager.h"
 #include "GameCommands.h"
+#include "World/CompanyManager.h"
 
 using namespace OpenLoco::Interop;
 

@@ -1,10 +1,10 @@
 #include "Economy.h"
-#include "CompanyManager.h"
 #include "GameState.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

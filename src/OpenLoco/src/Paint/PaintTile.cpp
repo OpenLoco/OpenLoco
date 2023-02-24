@@ -18,8 +18,8 @@
 #include "PaintStation.h"
 #include "PaintTrack.h"
 #include "PaintTree.h"
-#include "Station.h"
 #include "Ui.h"
+#include "World/Station.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -7,7 +6,6 @@
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
@@ -28,12 +26,14 @@
 #include "Orders.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>

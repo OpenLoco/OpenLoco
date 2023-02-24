@@ -24,7 +24,6 @@
 #endif
 
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
@@ -41,7 +40,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
-#include "IndustryManager.h"
 #include "Input.h"
 #include "Interop/Hooks.h"
 #include "Intro.h"
@@ -60,15 +58,17 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
-#include "StationManager.h"
 #include "Title.h"
-#include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>

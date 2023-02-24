@@ -1,4 +1,3 @@
-#include "CompanyManager.h"
 #include "Construction.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
@@ -23,8 +22,9 @@
 #include "Objects/TrainSignalObject.h"
 #include "Objects/TrainStationObject.h"
 #include "SceneManager.h"
-#include "StationManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;

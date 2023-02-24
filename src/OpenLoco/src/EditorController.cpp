@@ -1,6 +1,5 @@
 #include "EditorController.h"
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -15,8 +14,9 @@
 #include "Scenario.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

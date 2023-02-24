@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
@@ -25,6 +24,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>

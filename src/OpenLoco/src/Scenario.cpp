@@ -1,7 +1,5 @@
 #include "Scenario.h"
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
-#include "CompanyRecords.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -13,7 +11,6 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Gui.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
@@ -30,11 +27,14 @@
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
 #include "SceneManager.h"
-#include "StationManager.h"
 #include "Title.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
+#include "World/CompanyManager.h"
+#include "World/CompanyRecords.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 

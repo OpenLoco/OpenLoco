@@ -1,11 +1,9 @@
 #include "News.h"
-#include "CompanyManager.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
@@ -13,12 +11,14 @@
 #include "MessageManager.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
 #include "Window.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

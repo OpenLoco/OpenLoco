@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
@@ -15,10 +14,11 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 

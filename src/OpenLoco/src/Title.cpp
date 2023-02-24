@@ -1,6 +1,5 @@
 #include "Title.h"
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Environment.h"
 #include "Game.h"
@@ -15,6 +14,7 @@
 #include "Scenario.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <variant>

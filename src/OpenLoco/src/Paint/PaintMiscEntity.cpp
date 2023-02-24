@@ -1,5 +1,4 @@
 #include "PaintMiscEntity.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -7,6 +6,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "Paint.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <unordered_map>

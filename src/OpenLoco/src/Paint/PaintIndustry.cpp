@@ -1,5 +1,4 @@
 #include "PaintIndustry.h"
-#include "Industry.h"
 #include "Map/IndustryElement.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
@@ -7,6 +6,7 @@
 #include "Paint.h"
 #include "ScenarioManager.h"
 #include "Ui.h"
+#include "World/Industry.h"
 
 namespace OpenLoco::Paint
 {

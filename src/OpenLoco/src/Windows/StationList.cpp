@@ -1,4 +1,3 @@
-#include "CompanyManager.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -11,11 +10,12 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

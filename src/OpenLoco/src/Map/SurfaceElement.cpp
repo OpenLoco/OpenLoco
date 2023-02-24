@@ -1,7 +1,7 @@
 #include "SurfaceElement.h"
 #include "TileManager.h"
-#include "TownManager.h"
 #include "ViewportManager.h"
+#include "World/TownManager.h"
 
 namespace OpenLoco::World
 {

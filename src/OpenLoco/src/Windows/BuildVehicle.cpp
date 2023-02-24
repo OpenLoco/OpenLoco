@@ -1,4 +1,3 @@
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
@@ -23,6 +22,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>

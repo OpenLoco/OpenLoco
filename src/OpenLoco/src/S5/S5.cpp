@@ -3,13 +3,11 @@
 #include "S5.h"
 
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameException.hpp"
 #include "GameStateFlags.h"
 #include "Gui.h"
-#include "IndustryManager.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
@@ -20,11 +18,13 @@
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Exception.hpp>
 #include <OpenLoco/Utility/Stream.hpp>

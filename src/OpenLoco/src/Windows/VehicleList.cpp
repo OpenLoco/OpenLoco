@@ -1,4 +1,3 @@
-#include "CompanyManager.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
@@ -13,13 +12,14 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
-#include "StationManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <stdexcept>

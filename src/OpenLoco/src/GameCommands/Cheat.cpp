@@ -1,5 +1,4 @@
 #include "Cheat.h"
-#include "CompanyManager.h"
 #include "Economy/Currency.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands.h"
@@ -8,12 +7,13 @@
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
 #include "Scenario.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 

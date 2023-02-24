@@ -1,12 +1,12 @@
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
 #include "Graphics/Gfx.h"
-#include "Industry.h"
-#include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
+#include "World/Industry.h"
+#include "World/IndustryManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

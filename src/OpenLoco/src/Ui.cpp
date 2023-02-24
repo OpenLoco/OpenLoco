@@ -29,7 +29,6 @@
 #include <SDL2/SDL_syswm.h>
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Drawing/FPSCounter.h"
 #include "Game.h"
@@ -44,6 +43,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>

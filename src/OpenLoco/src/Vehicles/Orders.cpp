@@ -3,7 +3,7 @@
 #include "Map/Tile.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
-#include "StationManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

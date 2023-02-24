@@ -2,9 +2,9 @@
 
 #include "Entities/Entity.h"
 #include "Map/Tile.h"
-#include "Station.h"
 #include "Types.hpp"
 #include "Window.h"
+#include "World/Station.h"
 #include <array>
 
 namespace OpenLoco::Ui::ViewportManager

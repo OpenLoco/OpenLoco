@@ -2,7 +2,6 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
-#include "IndustryManager.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -12,10 +11,11 @@
 #include "Objects/ObjectManager.h"
 #include "S5/S5.h"
 #include "Scenario.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/IndustryManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

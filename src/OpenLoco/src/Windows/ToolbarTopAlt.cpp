@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
@@ -18,13 +17,14 @@
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
 #include "S5/S5.h"
-#include "StationManager.h"
 #include "ToolbarTopCommon.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

@@ -1,6 +1,4 @@
 #include "VehicleManager.h"
-#include "Company.h"
-#include "CompanyManager.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
@@ -13,9 +11,11 @@
 #include "Objects/CargoObject.h"
 #include "Orders.h"
 #include "SceneManager.h"
-#include "StationManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
+#include "World/Company.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
 
 #include <OpenLoco/Interop/Interop.hpp>
 #include <sstream>

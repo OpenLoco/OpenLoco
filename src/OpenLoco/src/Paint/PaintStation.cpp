@@ -1,5 +1,4 @@
 #include "PaintStation.h"
-#include "CompanyManager.h"
 #include "Graphics/Colour.h"
 #include "Map/StationElement.h"
 #include "Map/TrackElement.h"
@@ -7,9 +6,10 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainStationObject.h"
 #include "Paint.h"
-#include "Station.h"
-#include "StationManager.h"
 #include "Ui.h"
+#include "World/CompanyManager.h"
+#include "World/Station.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Paint
