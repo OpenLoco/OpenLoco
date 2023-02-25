@@ -1771,6 +1771,9 @@ namespace OpenLoco::GameCommands
     void vehicleShuntCheat(registers& regs);
     void freeCashCheat(registers& regs);
 
+    // Defined in GameCommands/ClearLand.cpp
+    void clearLand(registers& regs);
+
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
