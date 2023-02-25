@@ -985,7 +985,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 const auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
                 const Pos2 centre = (pointA + pointB) / 2;
-                cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+
+                ClearLandArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                cost = GameCommands::doCommand(args, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
             }
 
             if (cost != _raiseLandCost)
@@ -1003,7 +1008,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                 Pos2 centre = (pointA + pointB) / 2;
                 GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
-                GameCommands::do_66(centre, pointA, pointB, flags);
+                ClearLandArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                GameCommands::doCommand(args, flags);
             }
         }
 
@@ -1329,7 +1338,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 const auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
                 const Pos2 centre = (pointA + pointB) / 2;
-                cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+
+                ClearLandArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                cost = GameCommands::doCommand(args, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
             }
 
             if (cost != _raiseLandCost)
