@@ -1,27 +1,57 @@
+#include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
+#include "Map/TileElement.h"
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
+#include "TownManager.h"
+#include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+    static loco_global<Core::Prng, 0x00525E20> _prng;
+
+    // 0x0048B089
+    static void playDemolishTreeSound(const World::Pos3& loc)
+    {
+        const auto frequency = _prng->randNext(20003, 24098);
+        Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
+    }
+
     // 0x004BB432
+    // bl = flags;
+    // esi = X86Pointer(&element);
+    // ax = pos.x;
+    // cx = pos.y;
     // TODO: Move to somewhere else multiple functions call this one
     static void removeTree(World::TreeElement& element, const uint8_t flags, const World::Pos2& pos)
     {
-        registers regs;
-        regs.bl = flags;
-        regs.esi = X86Pointer(&element);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004BB432, regs);
+        if ((!element.isGhost() && !element.isFlag5())
+            && getUpdatingCompanyId() != CompanyId::neutral)
+        {
+            auto loc = World::Pos3(pos.x, pos.y, element.baseHeight());
+            playDemolishTreeSound(loc);
+        }
+
+        if ((flags & Flags::flag_6) == 0)
+        {
+            auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
+            auto ratingReduction = treeObj->demolishRatingReduction;
+            TownManager::updateTownInfo(pos, 0, 0, ratingReduction, 0);
+        }
+
+        auto zMin = element.baseHeight();
+        auto zMax = element.clearHeight();
+        Ui::ViewportManager::invalidate(pos, zMin, zMax, ZoomLevel::eighth, 56);
+
+        World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(&element));
     }
 
     /**
@@ -32,7 +62,7 @@ namespace OpenLoco::GameCommands
      *
      * @param pos_x @<ax>
      * @param pos_y @<cx>
-     * @param pos_z @<dl> * Map::kSmallZStep
+     * @param pos_z @<dl> * World::kSmallZStep
      * @param type @<dh>
      * @param elementType @<bh>
      * @param flags @<bl>

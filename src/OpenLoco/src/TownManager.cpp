@@ -22,7 +22,10 @@ namespace OpenLoco::TownManager
 
     // 0x00497DC1
     // The return value of this function is also being returned via dword_1135C38.
-    Town* sub_497DC1(const World::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
+    // esi population
+    // edi capacity
+    // ebp rating | (numBuildings << 16)
+    Town* updateTownInfo(const World::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings)
     {
         auto res = getClosestTownAndDensity(loc);
         if (res == std::nullopt)
@@ -108,7 +111,7 @@ namespace OpenLoco::TownManager
                 {
                     population = producedQuantity;
                 }
-                auto* town = sub_497DC1(tilePos, population, producedQuantity, 0, 1);
+                auto* town = updateTownInfo(tilePos, population, producedQuantity, 0, 1);
                 if (town != nullptr)
                 {
                     if (buildingObj->var_AC != 0xFF)

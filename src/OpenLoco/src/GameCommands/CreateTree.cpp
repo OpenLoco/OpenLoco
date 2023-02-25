@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
             }
             else
             {
-                TownManager::sub_497DC1(args.pos, 0, 0, treeObj->rating, 0);
+                TownManager::updateTownInfo(args.pos, 0, 0, treeObj->rating, 0);
             }
             Ui::ViewportManager::invalidate(args.pos, elTree->baseHeight(), elTree->clearHeight(), ZoomLevel::eighth, 56);
         }

@@ -15,7 +15,7 @@ namespace OpenLoco::TownManager
     void update();
     void updateLabels();
     void updateMonthly();
-    Town* sub_497DC1(const World::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings);
+    Town* updateTownInfo(const World::Pos2& loc, uint32_t population, uint32_t populationCapacity, int16_t rating, int16_t numBuildings);
     void resetBuildingsInfluence();
     void registerHooks();
 }

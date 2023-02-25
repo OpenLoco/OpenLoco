@@ -907,7 +907,7 @@ namespace OpenLoco::World::TileManager
                             removedPopulation = 0;
                         }
                         auto ratingReduction = buildingObj->demolishRatingReduction;
-                        auto* town = TownManager::sub_497DC1(pos, removedPopulation, buildingCapacity, ratingReduction, -1);
+                        auto* town = TownManager::updateTownInfo(pos, removedPopulation, buildingCapacity, ratingReduction, -1);
                         if (town != nullptr)
                         {
                             if (buildingObj->var_AC != 0xFF)

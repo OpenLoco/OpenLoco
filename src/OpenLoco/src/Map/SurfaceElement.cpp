@@ -14,7 +14,7 @@ namespace OpenLoco::World
             setIndustry(IndustryId(0));
             auto z = baseHeight();
             Ui::ViewportManager::invalidate(pos, z, z + 32, ZoomLevel::eighth);
-            TownManager::sub_497DC1(pos, 0, 0, -30, 0);
+            TownManager::updateTownInfo(pos, 0, 0, -30, 0);
         }
     }
 }
