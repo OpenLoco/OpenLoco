@@ -1,13 +1,11 @@
 #include "TileManager.h"
 #include "Audio/Audio.h"
 #include "BuildingElement.h"
-#include "CompanyManager.h"
 #include "Entities/Misc.h"
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryElement.h"
-#include "IndustryManager.h"
 #include "Input.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/LandObject.h"
@@ -16,11 +14,13 @@
 #include "QuarterTile.h"
 #include "RoadElement.h"
 #include "SurfaceElement.h"
-#include "TownManager.h"
 #include "TreeElement.h"
 #include "Ui.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 

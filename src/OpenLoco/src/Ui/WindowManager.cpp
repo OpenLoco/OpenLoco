@@ -1,6 +1,5 @@
 #include "WindowManager.h"
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
@@ -15,13 +14,14 @@
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "ScrollView.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>

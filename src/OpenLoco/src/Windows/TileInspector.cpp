@@ -1,9 +1,7 @@
-#include "CompanyManager.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "Industry.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -31,9 +29,11 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/TreeObject.h"
 #include "Objects/WallObject.h"
-#include "Station.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/Industry.h"
+#include "World/Station.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "CompanyManager.h"
 #include "EditorController.h"
 #include "Engine/Limits.h"
 #include "Objects/Object.h"
 #include "ScenarioObjective.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
 #include <memory>

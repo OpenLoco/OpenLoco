@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
@@ -17,6 +16,7 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;

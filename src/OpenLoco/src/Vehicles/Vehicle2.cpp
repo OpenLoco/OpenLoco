@@ -1,10 +1,10 @@
-#include "CompanyManager.h"
 #include "MessageManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Vehicle.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

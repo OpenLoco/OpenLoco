@@ -1,17 +1,17 @@
 #pragma once
-#include "Company.h"
-#include "CompanyRecords.h"
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
-#include "Industry.h"
-#include "IndustryManager.h"
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
 #include "Scenario.h"
 #include "ScenarioObjective.h"
-#include "Station.h"
-#include "Town.h"
+#include "World/Company.h"
+#include "World/CompanyRecords.h"
+#include "World/Industry.h"
+#include "World/IndustryManager.h"
+#include "World/Station.h"
+#include "World/Town.h"
 
 namespace OpenLoco
 {

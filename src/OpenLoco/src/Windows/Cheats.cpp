@@ -1,4 +1,3 @@
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
@@ -17,6 +16,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Math/Bound.hpp>
 
 using OpenLoco::GameCommands::CheatCommand;

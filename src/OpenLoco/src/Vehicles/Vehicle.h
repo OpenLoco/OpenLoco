@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Audio/Audio.h"
-#include "Company.h"
 #include "Entities/Entity.h"
 #include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
@@ -11,6 +10,7 @@
 #include "Types.hpp"
 #include "Ui/WindowType.h"
 #include "Window.h"
+#include "World/Company.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 
 namespace OpenLoco::Vehicles

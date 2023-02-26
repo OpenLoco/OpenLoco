@@ -1,6 +1,3 @@
-#include "Company.h"
-#include "CompanyManager.h"
-#include "CompanyRecords.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
@@ -16,6 +13,9 @@
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include "World/Company.h"
+#include "World/CompanyManager.h"
+#include "World/CompanyRecords.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 

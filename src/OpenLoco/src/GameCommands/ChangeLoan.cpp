@@ -1,8 +1,8 @@
-#include "CompanyManager.h"
 #include "Economy/Economy.h"
 #include "GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Ui/WindowManager.h"
+#include "World/CompanyManager.h"
 
 using namespace OpenLoco::Interop;
 

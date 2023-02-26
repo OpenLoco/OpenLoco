@@ -7,7 +7,7 @@
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "StringIds.h"
-#include "TownManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 

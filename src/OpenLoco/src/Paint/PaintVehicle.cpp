@@ -1,11 +1,11 @@
 #include "PaintVehicle.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Graphics/Colour.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Paint.h"
 #include "Vehicles/Vehicle.h"
+#include "World/CompanyManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Vehicles;

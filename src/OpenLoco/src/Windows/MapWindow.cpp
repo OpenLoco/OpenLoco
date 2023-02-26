@@ -1,4 +1,3 @@
-#include "CompanyManager.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
@@ -8,7 +7,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
-#include "IndustryManager.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -19,8 +17,6 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "SceneManager.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Types.hpp"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
@@ -28,6 +24,10 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

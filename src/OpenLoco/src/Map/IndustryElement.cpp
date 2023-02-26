@@ -1,8 +1,6 @@
 #include "IndustryElement.h"
 #include "Animation.h"
 #include "AnimationManager.h"
-#include "Industry.h"
-#include "IndustryManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "ScenarioManager.h"
@@ -11,6 +9,8 @@
 #include "TileManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include "World/Industry.h"
+#include "World/IndustryManager.h"
 #include <numeric>
 
 namespace OpenLoco::World

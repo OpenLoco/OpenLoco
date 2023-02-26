@@ -12,9 +12,9 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
-#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include "World/TownManager.h"
 
 using namespace OpenLoco::Interop;
 

@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
@@ -17,6 +16,7 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Game

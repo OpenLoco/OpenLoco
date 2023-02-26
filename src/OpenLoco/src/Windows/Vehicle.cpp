@@ -1,5 +1,4 @@
 #include "Vehicles/Vehicle.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
@@ -28,7 +27,6 @@
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
 #include "SceneManager.h"
-#include "StationManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
@@ -36,6 +34,8 @@
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 #include <sstream>

@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
@@ -19,9 +18,10 @@
 #include "Objects/TrackObject.h"
 #include "Paint/Paint.h"
 #include "Paint/PaintTile.h"
-#include "Station.h"
 #include "Ui/Dropdown.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/Station.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;

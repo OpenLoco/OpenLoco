@@ -11,10 +11,10 @@
 #include "PaintEntity.h"
 #include "PaintTile.h"
 #include "PaintTrack.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

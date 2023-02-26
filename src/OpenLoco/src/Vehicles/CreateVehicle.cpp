@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
@@ -16,11 +15,12 @@
 #include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
 #include "OpenLoco.h"
-#include "Station.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
+#include "World/CompanyManager.h"
+#include "World/Station.h"
 #include <numeric>
 #include <optional>
 #include <utility>

@@ -1,5 +1,4 @@
 #include "PaintSignal.h"
-#include "CompanyManager.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Map/SignalElement.h"
@@ -12,6 +11,7 @@
 #include "PaintTileDecorations.h"
 #include "Ui.h"
 #include "Viewport.hpp"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 

@@ -1,6 +1,5 @@
 #include "ToolbarTopCommon.h"
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Config.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
@@ -17,11 +16,12 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/WaterObject.h"
-#include "StationManager.h"
-#include "TownManager.h"
 #include "Ui/Dropdown.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 

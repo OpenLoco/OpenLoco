@@ -17,7 +17,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
-#include "IndustryManager.h"
 #include "Input.h"
 #include "Map/AnimationManager.h"
 #include "Map/Tile.h"
@@ -28,10 +27,7 @@
 #include "Paint/Paint.h"
 #include "S5/S5.h"
 #include "Scenario.h"
-#include "Station.h"
-#include "StationManager.h"
 #include "Title.h"
-#include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
@@ -39,6 +35,10 @@
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
+#include "World/IndustryManager.h"
+#include "World/Station.h"
+#include "World/StationManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>

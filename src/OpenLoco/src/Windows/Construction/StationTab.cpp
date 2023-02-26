@@ -1,10 +1,8 @@
 #include "Audio/Audio.h"
-#include "CompanyManager.h"
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/ImageIds.h"
-#include "Industry.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -22,9 +20,11 @@
 #include "Objects/RoadStationObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
-#include "StationManager.h"
 #include "Ui/Dropdown.h"
 #include "Widget.h"
+#include "World/CompanyManager.h"
+#include "World/Industry.h"
+#include "World/StationManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;

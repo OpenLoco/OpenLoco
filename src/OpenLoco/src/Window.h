@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Company.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Map/Tile.h"
@@ -10,6 +9,7 @@
 #include "Ui/ScrollFlags.hpp"
 #include "Ui/WindowType.h"
 #include "Viewport.hpp"
+#include "World/Company.h"
 #include "ZoomLevel.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>

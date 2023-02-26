@@ -1,5 +1,4 @@
 #include "ScenarioManager.h"
-#include "CompanyManager.h"
 #include "EditorController.h"
 #include "Environment.h"
 #include "GameState.h"
@@ -13,6 +12,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <OpenLoco/Utility/String.hpp>
