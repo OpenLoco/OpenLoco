@@ -9,8 +9,8 @@
 #include "Objects/TreeObject.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
-#include "TownManager.h"
 #include "ViewportManager.h"
+#include "World/TownManager.h"
 
 using namespace OpenLoco::Interop;
 
