@@ -462,7 +462,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/Construction.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopCommon.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/Company.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/CompanyManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/CompanyRecords.h"
@@ -471,7 +470,8 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/Station.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/StationManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/Town.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/World/TownManager.h")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/World/TownManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ZoomLevel.hpp")
 
 if (MINGW)
     loco_add_library(OpenLoco SHARED
