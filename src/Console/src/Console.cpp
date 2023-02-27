@@ -15,10 +15,11 @@ namespace OpenLoco::Console
 {
     namespace Detail
     {
-        static const auto colourInfo = fmt::fg(fmt::color::white_smoke);
+        static const auto colourInfo = fmt::fg(fmt::color::light_gray);
         static const auto colourWarning = fmt::fg(fmt::color::yellow);
         static const auto colourError = fmt::fg(fmt::color::red);
-        static const auto colourVerbose = fmt::fg(fmt::color::light_gray);
+        static const auto colourVerbose = fmt::fg(fmt::color::gray);
+
 
         void Detail::print(Level level, std::string_view message)
         {
