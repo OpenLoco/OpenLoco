@@ -1,7 +1,5 @@
 # TODO: look into using FetchContent's FIND_PACKAGE_ARGS when next increasing CMake version
 find_package(yaml-cpp QUIET)
-find_package(span-lite QUIET)
-
 if ( NOT yaml-cpp_FOUND )
     ## yaml-cpp
     # Get rid of yaml uninstall target
@@ -25,6 +23,7 @@ if ( NOT yaml-cpp_FOUND )
     set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
 endif()
 
+find_package(span-lite QUIET)
 if ( NOT span-lite_FOUND )
     ## span-lite
     FetchContent_Declare(
