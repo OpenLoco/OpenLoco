@@ -491,7 +491,7 @@ namespace OpenLoco
     static void tickInterrupted()
     {
         EntityTweener::get().reset();
-        Console::logDeprecated("Tick interrupted");
+        Console::info("Tick interrupted");
     }
 
     // 0x0046A794
@@ -1122,17 +1122,17 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            Console::errorDeprecated("Unable to simulate park: %s", e.what());
+            Console::error("Unable to simulate park: {}", e.what());
         }
         catch (const GameException i)
         {
             if (i != GameException::Interrupt)
             {
-                Console::errorDeprecated("Unable to simulate park!");
+                Console::error("Unable to simulate park!");
             }
             else
             {
-                Console::logDeprecated("File loaded. Starting simulation.");
+                Console::info("File loaded. Starting simulation.");
             }
         }
         tickLogic(ticks);
@@ -1142,6 +1142,9 @@ namespace OpenLoco
     static int main(const CommandLineOptions& options)
     {
         Console::initialize();
+
+        // Always print the product name and version first.
+        Console::info("{}", OpenLoco::getVersionInfo());
 
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)
@@ -1157,11 +1160,9 @@ namespace OpenLoco
         }
         else
         {
-            Console::logDeprecated("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+            Console::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
         }
 
-        auto versionInfo = OpenLoco::getVersionInfo();
-        std::cout << versionInfo << std::endl;
         try
         {
             const auto& cfg = Config::read();
@@ -1177,16 +1178,12 @@ namespace OpenLoco
             Audio::initialiseDSound();
             run();
             exitCleanly();
-
-            // TODO extra clean up code
-            return 0;
         }
         catch (const std::exception& e)
         {
-            std::cerr << e.what() << std::endl;
+            Console::error("Exception: {}", e.what());
             Ui::showMessageBox("Exception", e.what());
             exitCleanly();
-            return 2;
         }
     }
 
