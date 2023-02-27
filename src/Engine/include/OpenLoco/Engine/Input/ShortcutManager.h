@@ -5,6 +5,12 @@
 #include <functional>
 #include <vector>
 
+namespace OpenLoco
+{
+    // TODO: Remove this when Localisation/StringTable/StringManager is moved to the engine.
+    using string_id = uint16_t;
+}
+
 namespace OpenLoco::Input
 {
     enum class Shortcut : uint32_t;
@@ -12,7 +18,6 @@ namespace OpenLoco::Input
 
 namespace OpenLoco::Input::ShortcutManager
 {
-    using string_id = uint16_t;
     using ShortcutAction = std::function<void()>;
 
     struct ShortcutEntry
