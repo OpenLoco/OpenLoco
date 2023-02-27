@@ -111,7 +111,7 @@ namespace OpenLoco::Config
     {
         const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& shortcuts = _newConfig.shortcuts;
-        for (auto& def : shortcutDefs)
+        for (const auto& def : shortcutDefs)
         {
             auto node = scNode[def.configName];
             if (node)

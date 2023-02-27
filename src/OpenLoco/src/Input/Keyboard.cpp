@@ -259,7 +259,6 @@ namespace OpenLoco::Input
         auto& cfg = Config::get();
 
         // Unbind any shortcuts that may be using the current keycode.
-        // for (size_t i = 0; i < ShortcutManager::kCount; i++)
         for (auto& [id, shortcut] : cfg.shortcuts)
         {
             if (shortcut.keyCode == k->keyCode && shortcut.modifiers == _keyModifier)
