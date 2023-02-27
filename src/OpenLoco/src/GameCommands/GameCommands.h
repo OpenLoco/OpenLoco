@@ -1578,18 +1578,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Clear Land
-    inline uint32_t do_66(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
-    {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        return doCommand(GameCommand::clearLand, regs);
-    }
-
     // Load multiplayer map
     inline void do_67(const char* filename)
     {
