@@ -1,9 +1,60 @@
 #include "Console.h"
 #include <cstdio>
+#include <fmt/color.h>
 #include <stdarg.h>
+
+// TODO: Remove this when the VT100 terminal initialiation is moved into Platform
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
 
 namespace OpenLoco::Console
 {
+    namespace Detail
+    {
+        static const auto colourInfo = fmt::fg(fmt::color::white_smoke);
+        static const auto colourWarning = fmt::fg(fmt::color::yellow);
+        static const auto colourError = fmt::fg(fmt::color::red);
+        static const auto colourVerbose = fmt::fg(fmt::color::light_gray);
+
+        void Detail::print(Level level, std::string_view message)
+        {
+            // TODO: Move this into the Terminal sink.
+            switch (level)
+            {
+                case Level::info:
+                    fmt::print(stdout, colourInfo, "{}\n", message);
+                    return;
+                case Level::warning:
+                    fmt::print(stdout, colourWarning, "{}\n", message);
+                    return;
+                case Level::error:
+                    fmt::print(stderr, colourError, "{}\n", message);
+                    return;
+                case Level::verbose:
+                    fmt::print(stdout, colourVerbose, "{}\n", message);
+                    return;
+                default:
+                    break;
+            }
+        }
+    }
+
+    void initialize()
+    {
+        // TODO: Move this into Platform.Terminal
+#ifdef _WIN32
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        DWORD dwMode = 0;
+        GetConsoleMode(hOut, &dwMode);
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        SetConsoleMode(hOut, dwMode);
+#endif
+    }
+
     static int _group = 0;
 
     static void vwrite(FILE* buffer, const char* format, va_list args)
@@ -64,4 +115,5 @@ namespace OpenLoco::Console
     {
         _group--;
     }
+
 }

@@ -1141,6 +1141,8 @@ namespace OpenLoco
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {
+        Console::initialize();
+
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)
         {
