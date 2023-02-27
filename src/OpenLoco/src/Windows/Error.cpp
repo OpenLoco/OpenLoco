@@ -18,8 +18,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::Error
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-    static loco_global<char[512], 0x009C64B3> _byte_9C64B3;
-    static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
+    static loco_global<char[512], 0x009C64B3> _errorText;
+    static loco_global<uint16_t, 0x009C66B3> _linebreakCount;
     static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
@@ -89,20 +89,20 @@ namespace OpenLoco::Ui::Windows::Error
     {
         WindowManager::close(WindowType::error);
 
-        char* buffer = _byte_9C64B3;
+        char* buffer = _errorText;
 
         auto args = FormatArguments();
 
         buffer = formatErrorString(title, message, args, buffer);
 
-        if (buffer != &_byte_9C64B3[0])
+        if (buffer != &_errorText[0])
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             int16_t strWidth;
             {
-                strWidth = drawingCtx.getStringWidthNewLined(&_byte_9C64B3[0]);
+                strWidth = drawingCtx.getStringWidthNewLined(&_errorText[0]);
             }
 
             strWidth = std::min<int16_t>(strWidth, 196);
@@ -110,12 +110,12 @@ namespace OpenLoco::Ui::Windows::Error
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             {
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = drawingCtx.wrapString(&_byte_9C64B3[0], strWidth);
-                _word_9C66B3 = breakLineCount;
+                std::tie(strWidth, breakLineCount) = drawingCtx.wrapString(&_errorText[0], strWidth);
+                _linebreakCount = breakLineCount;
             }
 
             uint16_t frameWidth = strWidth + 3;
-            uint16_t frameHeight = (_word_9C66B3 + 1) * 10 + 4;
+            uint16_t frameHeight = (_linebreakCount + 1) * 10 + 4;
             uint16_t width = frameWidth;
             uint16_t height = frameHeight;
 
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _linebreakCount, Colour::black, &_errorText[0]);
             }
             else
             {
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::Error
                     drawingCtx.drawImage(rt, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                drawingCtx.drawStringCentredRaw(*rt, self.x + 156, self.y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                drawingCtx.drawStringCentredRaw(*rt, self.x + 156, self.y + 20, _linebreakCount, Colour::black, &_errorText[0]);
             }
         }
 
