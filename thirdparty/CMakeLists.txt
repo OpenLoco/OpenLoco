@@ -81,7 +81,9 @@ if ( NOT fmt_FOUND )
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(fmt)
-
+    
+    loco_thirdparty_target_compile_link_flags(fmt)
+    
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")
 endif()

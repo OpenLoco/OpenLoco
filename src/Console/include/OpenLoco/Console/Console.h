@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fmt/format.h>
+#include <string_view>
 
 namespace OpenLoco::Console
 {

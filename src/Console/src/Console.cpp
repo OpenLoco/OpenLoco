@@ -20,7 +20,7 @@ namespace OpenLoco::Console
         static const auto colourError = fmt::fg(fmt::color::red);
         static const auto colourVerbose = fmt::fg(fmt::color::gray);
 
-        void Detail::print(Level level, std::string_view message)
+        void print(Level level, std::string_view message)
         {
             // TODO: Move this into the Terminal sink.
             switch (level)
