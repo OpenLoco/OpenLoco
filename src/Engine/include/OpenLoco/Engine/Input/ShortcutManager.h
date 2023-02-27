@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <vector>
 
 namespace OpenLoco::Input
@@ -12,11 +13,12 @@ namespace OpenLoco::Input
 namespace OpenLoco::Input::ShortcutManager
 {
     using string_id = uint16_t;
+    using ShortcutAction = std::function<void()>;
 
     struct KeyboardShortcut
     {
         Shortcut id;
-        void (*function)();
+        ShortcutAction action;
         string_id displayName;
         const char* configName;
         const char* defaultBinding;
@@ -24,7 +26,7 @@ namespace OpenLoco::Input::ShortcutManager
 
     using ShortcutMap = std::vector<KeyboardShortcut>;
 
-    void add(Shortcut id, string_id displayName, void (*function)(), const char* configName, const char* defaultBinding);
+    void add(Shortcut id, string_id displayName, const ShortcutAction& action, const char* configName, const char* defaultBinding);
 
     void remove(Shortcut id);
 
