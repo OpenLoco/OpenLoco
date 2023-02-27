@@ -41,10 +41,12 @@ namespace OpenLoco::Console
     }
 
     template<typename... TArgs>
-    void verbose(const char* fmt, TArgs&&... args)
+    void verbose([[maybe_unused]] const char* fmt, [[maybe_unused]] TArgs&&... args)
     {
+#ifdef VERBOSE
         auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
         Detail::print(Level::verbose, msg);
+#endif
     }
 
     // Use the functions above, those should be phased out.
