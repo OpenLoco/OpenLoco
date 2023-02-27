@@ -17,7 +17,7 @@ namespace OpenLoco::Console
         fprintf(buffer, "\n");
     }
 
-    void log(const char* format, ...)
+    void logDeprecated(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -25,7 +25,7 @@ namespace OpenLoco::Console
         va_end(args);
     }
 
-    void logVerbose([[maybe_unused]] const char* format, ...)
+    void logVerboseDeprecated([[maybe_unused]] const char* format, ...)
     {
 #ifdef VERBOSE
         va_list args;
@@ -35,7 +35,7 @@ namespace OpenLoco::Console
 #endif
     }
 
-    void error(const char* format, ...)
+    void errorDeprecated(const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -43,7 +43,7 @@ namespace OpenLoco::Console
         va_end(args);
     }
 
-    void group(const char* format, ...)
+    void groupDeprecated(const char* format, ...)
     {
         for (int i = 0; i < _group; i++)
         {
@@ -60,7 +60,7 @@ namespace OpenLoco::Console
         _group++;
     }
 
-    void groupEnd()
+    void groupEndDeprecated()
     {
         _group--;
     }

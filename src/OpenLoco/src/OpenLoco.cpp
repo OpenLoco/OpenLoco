@@ -491,7 +491,7 @@ namespace OpenLoco
     static void tickInterrupted()
     {
         EntityTweener::get().reset();
-        Console::log("Tick interrupted");
+        Console::logDeprecated("Tick interrupted");
     }
 
     // 0x0046A794
@@ -1122,17 +1122,17 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            Console::error("Unable to simulate park: %s", e.what());
+            Console::errorDeprecated("Unable to simulate park: %s", e.what());
         }
         catch (const GameException i)
         {
             if (i != GameException::Interrupt)
             {
-                Console::error("Unable to simulate park!");
+                Console::errorDeprecated("Unable to simulate park!");
             }
             else
             {
-                Console::log("File loaded. Starting simulation.");
+                Console::logDeprecated("File loaded. Starting simulation.");
             }
         }
         tickLogic(ticks);
@@ -1155,7 +1155,7 @@ namespace OpenLoco
         }
         else
         {
-            Console::log("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+            Console::logDeprecated("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
         }
 
         auto versionInfo = OpenLoco::getVersionInfo();

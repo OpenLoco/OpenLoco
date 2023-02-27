@@ -681,7 +681,7 @@ namespace OpenLoco::StringManager
             if (sourceStr == nullptr)
             {
                 sprintf(buffer, "(missing string id: %d)", id);
-                Console::log("formatString: nullptr for string id: %d", id);
+                Console::logDeprecated("formatString: nullptr for string id: %d", id);
                 buffer += strlen(buffer);
                 return buffer;
             }
@@ -720,7 +720,7 @@ namespace OpenLoco::StringManager
         else
         {
             sprintf(buffer, "(invalid string id: %d)", id);
-            Console::log("formatString: invalid string id: %d", id);
+            Console::logDeprecated("formatString: invalid string id: %d", id);
             buffer += strlen(buffer);
             return buffer;
         }

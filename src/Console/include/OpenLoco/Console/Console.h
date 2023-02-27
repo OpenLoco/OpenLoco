@@ -1,11 +1,13 @@
 #pragma once
 
+#include <fmt/format.h>
+
 namespace OpenLoco::Console
 {
-    void log(const char* format, ...);
-    void logVerbose(const char* format, ...);
-    void error(const char* format, ...);
+    void logDeprecated(const char* format, ...);
+    void logVerboseDeprecated(const char* format, ...);
+    void errorDeprecated(const char* format, ...);
 
-    void group(const char* format, ...);
-    void groupEnd();
+    void groupDeprecated(const char* format, ...);
+    void groupEndDeprecated();
 }

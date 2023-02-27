@@ -199,7 +199,7 @@ namespace OpenLoco::EntityManager
         {
             if (!removeFromSpatialIndex(entity, oldIndex))
             {
-                Console::log("Invalid quadrant ids... Reseting spatial index.");
+                Console::logDeprecated("Invalid quadrant ids... Reseting spatial index.");
                 resetSpatialIndex();
                 moveSpatialEntry(entity, loc);
                 return;
@@ -214,7 +214,7 @@ namespace OpenLoco::EntityManager
         auto* newEntity = get<EntityBase>(id);
         if (newEntity == nullptr)
         {
-            Console::error("Tried to create invalid entity!");
+            Console::errorDeprecated("Tried to create invalid entity!");
             return nullptr;
         }
         moveEntityToList(newEntity, list);
@@ -284,7 +284,7 @@ namespace OpenLoco::EntityManager
 
         if (!removeFromSpatialIndex(*entity))
         {
-            Console::log("Invalid quadrant ids... Reseting spatial index.");
+            Console::logDeprecated("Invalid quadrant ids... Reseting spatial index.");
             resetSpatialIndex();
         }
     }
@@ -312,7 +312,7 @@ namespace OpenLoco::EntityManager
             auto* previousEntity = get<EntityBase>(previousId);
             if (previousEntity == nullptr)
             {
-                Console::error("Invalid previous entity id. Entity linked list corrupted?");
+                Console::errorDeprecated("Invalid previous entity id. Entity linked list corrupted?");
             }
             else
             {
@@ -325,7 +325,7 @@ namespace OpenLoco::EntityManager
             auto* nextEntity = get<EntityBase>(nextId);
             if (nextEntity == nullptr)
             {
-                Console::error("Invalid next entity id. Entity linked list corrupted?");
+                Console::errorDeprecated("Invalid next entity id. Entity linked list corrupted?");
             }
             else
             {
@@ -343,7 +343,7 @@ namespace OpenLoco::EntityManager
             auto* nextEntity = get<EntityBase>(entity->nextThingId);
             if (nextEntity == nullptr)
             {
-                Console::error("Invalid next entity id. Entity linked list corrupted?");
+                Console::errorDeprecated("Invalid next entity id. Entity linked list corrupted?");
             }
             else
             {

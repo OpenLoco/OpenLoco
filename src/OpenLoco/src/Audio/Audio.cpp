@@ -127,7 +127,7 @@ namespace OpenLoco::Audio
 
     static std::vector<uint32_t> loadSoundsFromCSS(const fs::path& path)
     {
-        Console::logVerbose("loadSoundsFromCSS(%s)", path.string().c_str());
+        Console::logVerboseDeprecated("loadSoundsFromCSS(%s)", path.string().c_str());
         std::vector<uint32_t> results;
         std::ifstream fs(path, std::ios::in | std::ios::binary);
 
@@ -473,7 +473,7 @@ namespace OpenLoco::Audio
     {
         if (v->var_4A & 1)
         {
-            Console::logVerbose("playSound(vehicle #%d)", v->id);
+            Console::logVerboseDeprecated("playSound(vehicle #%d)", v->id);
             auto vc = getFreeVehicleChannel();
             if (vc != nullptr)
             {
@@ -576,7 +576,7 @@ namespace OpenLoco::Audio
 
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        Console::logVerbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
+        Console::logVerboseDeprecated("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = getSoundSample(id);
         if (sample)
         {
@@ -655,7 +655,7 @@ namespace OpenLoco::Audio
     // 0x00401A05
     static void stopChannel(ChannelId id)
     {
-        Console::logVerbose("stopChannel(%d)", id);
+        Console::logVerboseDeprecated("stopChannel(%d)", id);
 
         auto channel = getChannel(id);
         if (channel != nullptr)

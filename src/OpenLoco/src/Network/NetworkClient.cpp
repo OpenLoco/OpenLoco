@@ -37,7 +37,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
     _serverConnection = std::make_unique<NetworkConnection>(socket.get(), _serverEndpoint->clone());
 
     auto szHostIpAddress = _serverEndpoint->getIpAddress();
-    Console::log("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), port);
+    Console::logDeprecated("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), port);
 
     beginReceivePacketLoop();
 
@@ -56,7 +56,7 @@ void NetworkClient::onClose()
     {
         _status = NetworkClientStatus::closed;
         clearScreenFlag(ScreenFlags::networked);
-        Console::log("Disconnected from server");
+        Console::logDeprecated("Disconnected from server");
     }
     else if (_status == NetworkClientStatus::connecting)
     {
@@ -73,7 +73,7 @@ void NetworkClient::onUpdate()
         if (Platform::getTime() >= _timeout)
         {
             close();
-            Console::log("Failed to connect to server");
+            Console::logDeprecated("Failed to connect to server");
             endStatus("Failed to connect to server");
         }
     }
@@ -81,7 +81,7 @@ void NetworkClient::onUpdate()
     {
         if (hasTimedOut())
         {
-            Console::log("Connection with server timed out");
+            Console::logDeprecated("Connection with server timed out");
             close();
         }
         else
@@ -143,7 +143,7 @@ void NetworkClient::onCancel()
     switch (_status)
     {
         case NetworkClientStatus::connecting:
-            Console::log("Connecting to server cancelled");
+            Console::logDeprecated("Connecting to server cancelled");
             close();
             break;
         default:
