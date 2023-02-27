@@ -1557,14 +1557,12 @@ namespace OpenLoco::GameCommands
             : centre(regs.ax, regs.cx)
             , pointA(regs.edx & 0xFFFF, regs.ebp & 0xFFFF)
             , pointB(regs.edx >> 16, regs.ebp >> 16)
-            , flags(regs.bl)
         {
         }
 
         World::Pos2 centre;
         World::Pos2 pointA;
         World::Pos2 pointB;
-        uint8_t flags;
 
         explicit operator registers() const
         {
@@ -1573,7 +1571,6 @@ namespace OpenLoco::GameCommands
             regs.cx = centre.y;
             regs.edx = pointB.x << 16 | pointA.x;
             regs.ebp = pointB.y << 16 | pointA.y;
-            regs.bl = flags;
             return regs;
         }
     };
