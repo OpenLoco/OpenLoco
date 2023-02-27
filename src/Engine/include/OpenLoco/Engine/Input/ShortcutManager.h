@@ -15,7 +15,7 @@ namespace OpenLoco::Input::ShortcutManager
     using string_id = uint16_t;
     using ShortcutAction = std::function<void()>;
 
-    struct KeyboardShortcut
+    struct ShortcutEntry
     {
         Shortcut id;
         ShortcutAction action;
@@ -24,7 +24,7 @@ namespace OpenLoco::Input::ShortcutManager
         const char* defaultBinding;
     };
 
-    using ShortcutMap = std::vector<KeyboardShortcut>;
+    using ShortcutMap = std::vector<ShortcutEntry>;
 
     void add(Shortcut id, string_id displayName, const ShortcutAction& action, const char* configName, const char* defaultBinding);
 

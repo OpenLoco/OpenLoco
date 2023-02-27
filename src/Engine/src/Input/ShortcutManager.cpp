@@ -21,7 +21,7 @@ namespace OpenLoco::Input::ShortcutManager
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)
         {
-            _shortcuts.insert(it, KeyboardShortcut{ id, action, displayName, configName, defaultBinding });
+            _shortcuts.insert(it, ShortcutEntry{ id, action, displayName, configName, defaultBinding });
         }
         else
         {
