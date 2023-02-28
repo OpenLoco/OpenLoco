@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cstdint>
+
 namespace OpenLoco::Input
 {
-    enum Shortcut
+    enum class Shortcut : uint32_t
     {
         closeTopmostWindow,
         closeAllFloatingWindows,
@@ -38,6 +40,23 @@ namespace OpenLoco::Input
         showAnnouncementsList,
         screenshot,
         toggleLastAnnouncement,
-        sendMessage
+        sendMessage,
+        constructionPreviousTab,
+        constructionNextTab,
+        constructionPreviousTrackPiece,
+        constructionNextTrackPiece,
+        constructionPreviousSlope,
+        constructionNextSlope,
+        constructionBuildAtCurrentPos,
+        constructionRemoveAtCurrentPos,
+        constructionSelectPosition,
+        gameSpeedNormal,
+        gameSpeedFastForward,
+        gameSpeedExtraFastForward,
     };
+
+    namespace Shortcuts
+    {
+        void initialize();
+    }
 }

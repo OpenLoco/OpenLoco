@@ -1,4 +1,5 @@
 set(public_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Engine/Input/ShortcutManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Engine/Types.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Engine/Ui/Point.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Engine/Ui/Rect.hpp"
@@ -8,6 +9,7 @@ set(public_files
 
 set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Engine.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Input/ShortcutManager.cpp"
 )
 
 loco_add_library(Engine STATIC

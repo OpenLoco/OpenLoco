@@ -3,16 +3,17 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
+#include "Input/Shortcuts.h"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
-#include "ShortcutManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Screenshot.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <cstdint>
@@ -258,18 +259,19 @@ namespace OpenLoco::Input
         auto& cfg = Config::get();
 
         // Unbind any shortcuts that may be using the current keycode.
-        for (size_t i = 0; i < ShortcutManager::kCount; i++)
+        for (auto& [id, shortcut] : cfg.shortcuts)
         {
-            if (cfg.shortcuts[i].keyCode == k->keyCode && cfg.shortcuts[i].modifiers == _keyModifier)
+            if (shortcut.keyCode == k->keyCode && shortcut.modifiers == _keyModifier)
             {
-                cfg.shortcuts[i].keyCode = 0xFFFFFFFF;
-                cfg.shortcuts[i].modifiers = KeyModifier::invalid;
+                shortcut.keyCode = 0xFFFFFFFF;
+                shortcut.modifiers = KeyModifier::invalid;
             }
         }
 
         // Assign this keybinding to the shortcut we're currently rebinding.
-        cfg.shortcuts[_editingShortcutIndex].keyCode = k->keyCode;
-        cfg.shortcuts[_editingShortcutIndex].modifiers = _keyModifier;
+        auto& shortcut = cfg.shortcuts.at(static_cast<Input::Shortcut>(*_editingShortcutIndex));
+        shortcut.keyCode = k->keyCode;
+        shortcut.modifiers = _keyModifier;
 
         WindowManager::close(WindowType::editKeyboardShortcut);
         WindowManager::invalidate(WindowType::keyboardShortcuts);
@@ -367,9 +369,9 @@ namespace OpenLoco::Input
 
             if (!isTitleMode())
             {
-                for (size_t i = 0; i < ShortcutManager::kCount; i++)
+                for (const auto& shortcut : ShortcutManager::getList())
                 {
-                    if (tryShortcut((Shortcut)i, nextKey->keyCode, _keyModifier))
+                    if (tryShortcut(shortcut.id, nextKey->keyCode, _keyModifier))
                         break;
                 }
                 continue;

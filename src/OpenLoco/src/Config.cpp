@@ -1,8 +1,8 @@
 #include "Config.h"
 #include "ConfigConvert.hpp"
 #include "Environment.h"
-#include "Input/ShortcutManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <fstream>
 #include <yaml-cpp/yaml.h>
@@ -111,13 +111,13 @@ namespace OpenLoco::Config
     {
         const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& shortcuts = _newConfig.shortcuts;
-        for (size_t i = 0; i < std::size(shortcuts); i++)
+        for (const auto& def : shortcutDefs)
         {
-            auto& def = shortcutDefs[i];
-            if (scNode && scNode.IsMap() && scNode[def.configName])
-                shortcuts[i] = scNode[def.configName].as<KeyboardShortcut>();
+            auto node = scNode[def.configName];
+            if (node)
+                shortcuts[def.id] = node.as<KeyboardShortcut>();
             else
-                shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+                shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
         }
     }
 
@@ -283,10 +283,13 @@ namespace OpenLoco::Config
         const auto& shortcuts = _newConfig.shortcuts;
         const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto scNode = node["shortcuts"];
-        for (size_t i = 0; i < std::size(shortcuts); i++)
+        for (const auto& def : shortcutDefs)
         {
-            auto& def = shortcutDefs[i];
-            scNode[def.configName] = shortcuts[i];
+            auto it = shortcuts.find(def.id);
+            if (it != std::end(shortcuts))
+                scNode[def.configName] = it->second;
+            else
+                scNode[def.configName] = "";
         }
         node["shortcuts"] = scNode;
 
@@ -301,11 +304,13 @@ namespace OpenLoco::Config
     void resetShortcuts()
     {
         const auto& shortcutDefs = Input::ShortcutManager::getList();
+
         auto& shortcuts = _newConfig.shortcuts;
-        for (size_t i = 0; i < std::size(shortcuts); i++)
+        shortcuts.clear();
+
+        for (const auto& def : shortcutDefs)
         {
-            auto& def = shortcutDefs[i];
-            shortcuts[i] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
+            shortcuts[def.id] = YAML::Node(def.defaultBinding).as<KeyboardShortcut>();
         }
 
         write();

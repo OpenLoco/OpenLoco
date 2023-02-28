@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Input.h"
-#include "Input/ShortcutManager.h"
 #include "Objects/Object.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <cstddef>
 #include <cstdint>
+#include <map>
 #include <string>
 
 namespace OpenLoco::Config
@@ -183,7 +184,7 @@ namespace OpenLoco::Config
         int32_t autosaveAmount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
-        KeyboardShortcut shortcuts[Input::ShortcutManager::kCount];
+        std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
         bool displayLockedVehicles = false;
         bool buildLockedVehicles = false;
         bool invertRightMouseViewPan = false;

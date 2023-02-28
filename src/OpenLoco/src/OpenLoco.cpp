@@ -41,6 +41,7 @@
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
+#include "Input/Shortcuts.h"
 #include "Interop/Hooks.h"
 #include "Intro.h"
 #include "Localisation/LanguageFiles.h"
@@ -1162,6 +1163,8 @@ namespace OpenLoco
         std::cout << versionInfo << std::endl;
         try
         {
+            Input::Shortcuts::initialize();
+
             const auto& cfg = Config::read();
             Environment::resolvePaths();
 
