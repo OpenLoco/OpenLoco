@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         int16_t strWidth = drawingCtx.getStringWidthNewLined(_text);
-        strWidth = std::max<int16_t>(strWidth, 196);
+        strWidth = std::min<int16_t>(strWidth, 196);
 
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
