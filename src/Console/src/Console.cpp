@@ -15,10 +15,10 @@ namespace OpenLoco::Console
 {
     namespace Detail
     {
-        static const auto colourInfo = fmt::fg(fmt::color::light_gray);
-        static const auto colourWarning = fmt::fg(fmt::color::yellow);
-        static const auto colourError = fmt::fg(fmt::color::red);
-        static const auto colourVerbose = fmt::fg(fmt::color::gray);
+        static const auto kColourInfo = fmt::fg(fmt::color::light_gray);
+        static const auto kColourWarning = fmt::fg(fmt::color::yellow);
+        static const auto kColourError = fmt::fg(fmt::color::red);
+        static const auto kColourVerbose = fmt::fg(fmt::color::gray);
 
         void print(Level level, std::string_view message)
         {
@@ -26,16 +26,16 @@ namespace OpenLoco::Console
             switch (level)
             {
                 case Level::info:
-                    fmt::print(stdout, colourInfo, "{}\n", message);
+                    fmt::print(stdout, kColourInfo, "{}\n", message);
                     return;
                 case Level::warning:
-                    fmt::print(stdout, colourWarning, "{}\n", message);
+                    fmt::print(stdout, kColourWarning, "{}\n", message);
                     return;
                 case Level::error:
-                    fmt::print(stderr, colourError, "{}\n", message);
+                    fmt::print(stderr, kColourError, "{}\n", message);
                     return;
                 case Level::verbose:
-                    fmt::print(stdout, colourVerbose, "{}\n", message);
+                    fmt::print(stdout, kColourVerbose, "{}\n", message);
                     return;
                 default:
                     break;
