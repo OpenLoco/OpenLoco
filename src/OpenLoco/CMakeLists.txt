@@ -76,6 +76,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeLandMaterial.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeLoan.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheat.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ClearLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CreateTree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/LoadSaveQuit.cpp"
