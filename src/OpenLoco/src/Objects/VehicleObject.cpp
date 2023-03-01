@@ -397,8 +397,9 @@ namespace OpenLoco
             while (*reinterpret_cast<const uint16_t*>(remainingData.data()) != 0xFFFFU)
             {
                 const auto cargoMatchFlags = *reinterpret_cast<const uint16_t*>(remainingData.data());
+                remainingData = remainingData.subspan(sizeof(uint16_t));
                 const auto unk = *reinterpret_cast<const uint8_t*>(remainingData.data());
-                remainingData = remainingData.subspan(sizeof(uint16_t) + sizeof(uint8_t));
+                remainingData = remainingData.subspan(sizeof(uint8_t));
 
                 for (auto cargoType = 0U; cargoType < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoType)
                 {
