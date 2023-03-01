@@ -33,14 +33,18 @@ namespace OpenLoco::GameCommands
         _F00144 = flags;
 
         World::TilePosRangeView tileLoop{ { args.pointA }, { args.pointB } };
-        uint32_t selectionRes = 0;
+        uint32_t totalCost = 0;
         for (const auto& tilePos : tileLoop)
         {
             uint32_t tileRes = sub_469D76(tilePos, flags);
             if (tileRes == GameCommands::FAILURE)
+            {
                 return GameCommands::FAILURE;
+            }
             else
-                selectionRes += tileRes;
+            {
+                totalCost += tileRes;
+            }
         }
 
         GameCommands::setExpenditureType(ExpenditureType::Construction);
@@ -48,7 +52,7 @@ namespace OpenLoco::GameCommands
         auto tileHeight = World::TileManager::getHeight(args.centre);
         GameCommands::setPosition(World::Pos3(args.centre.x, args.centre.y, tileHeight.landHeight));
 
-        return selectionRes;
+        return totalCost;
     }
 
     void clearLand(registers& regs)
