@@ -27,7 +27,8 @@ namespace OpenLoco::Gfx
 #pragma pack(pop)
 
     RenderTarget& getScreenRT();
-
+    RenderTarget& getScreenUiRT();
+    
     std::optional<Gfx::RenderTarget> clipRenderTarget(const Gfx::RenderTarget& src, const Ui::Rect& newRect);
 
 }

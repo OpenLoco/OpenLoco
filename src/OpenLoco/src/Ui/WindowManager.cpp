@@ -877,10 +877,10 @@ namespace OpenLoco::Ui::WindowManager
         if (position.y < 28)
             return false;
 
-        if (position.x + size.width > Ui::width())
+        if (position.x + size.width > Ui::unscaledWidth())
             return false;
 
-        if (position.y + size.height > Ui::width())
+        if (position.y + size.height > Ui::unscaledWidth())
             return false;
 
         for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
@@ -910,8 +910,8 @@ namespace OpenLoco::Ui::WindowManager
         Ui::WindowFlags flags,
         WindowEventList* events)
     {
-        origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, std::max(0, Ui::width() - size.width));
-        origin.y = std::clamp<decltype(origin.y)>(origin.y, 28, std::max(28, Ui::height() - size.height));
+        origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, std::max(0, Ui::unscaledWidth() - size.width));
+        origin.y = std::clamp<decltype(origin.y)>(origin.y, 28, std::max(28, Ui::unscaledHeight() - size.height));
 
         return createWindow(type, origin, size, flags, events);
     }
@@ -2157,12 +2157,15 @@ namespace OpenLoco::Ui::WindowManager
 
     void render(Gfx::RenderTarget& rt, const Rect& rect)
     {
+        auto* mainWnd = getMainWindow();
         for (size_t i = 0; i < count(); i++)
         {
             auto w = get(i);
-
-            if (w->isTranslucent())
+            if (w == mainWnd)
                 continue;
+
+            // if (w->isTranslucent())
+            // continue;
 
             if (rect.right() <= w->x || rect.bottom() <= w->y)
                 continue;

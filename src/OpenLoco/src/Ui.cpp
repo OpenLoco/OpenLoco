@@ -102,6 +102,16 @@ namespace OpenLoco::Ui
     }
 #endif // _WIN32
 
+    int32_t unscaledWidth()
+    {
+        return width() * Config::get().scaleFactor;
+    }
+
+    int32_t unscaledHeight()
+    {
+        return height() * Config::get().scaleFactor;
+    }
+
     int32_t width()
     {
         return _screenInfo->width;
@@ -496,7 +506,7 @@ namespace OpenLoco::Ui
                     break;
                 case SDL_MOUSEMOTION:
                 {
-                    auto scaleFactor = Config::get().scaleFactor;
+                    auto scaleFactor = 1; // Config::get().scaleFactor;
                     auto x = static_cast<int32_t>(e.motion.x / scaleFactor);
                     auto y = static_cast<int32_t>(e.motion.y / scaleFactor);
                     auto xrel = static_cast<int32_t>(e.motion.xrel / scaleFactor);
@@ -509,7 +519,7 @@ namespace OpenLoco::Ui
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
-                    auto scaleFactor = Config::get().scaleFactor;
+                    auto scaleFactor = 1; // Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
                     const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
                     addr<0x00525324, int32_t>() = 1;
@@ -530,7 +540,7 @@ namespace OpenLoco::Ui
                 }
                 case SDL_MOUSEBUTTONUP:
                 {
-                    auto scaleFactor = Config::get().scaleFactor;
+                    auto scaleFactor = 1; // Config::get().scaleFactor;
                     const auto x = static_cast<int32_t>(e.button.x / scaleFactor);
                     const auto y = static_cast<int32_t>(e.button.y / scaleFactor);
                     addr<0x00525324, int32_t>() = 1;

@@ -113,6 +113,9 @@ namespace OpenLoco::Ui
 
     void* hwnd();
 
+    int32_t unscaledWidth();
+    int32_t unscaledHeight();
+    
     int32_t width();
     int32_t height();
     bool dirtyBlocksInitialised();

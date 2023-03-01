@@ -2250,8 +2250,8 @@ namespace OpenLoco::Input
             }
 
             // 0x004C6FE4
-            x = std::clamp<uint16_t>(x, 0, Ui::width() - 1);
-            y = std::clamp<uint16_t>(y, 0, Ui::height() - 1);
+            x = std::clamp<uint16_t>(x, 0, Ui::unscaledWidth() - 1);
+            y = std::clamp<uint16_t>(y, 0, Ui::unscaledHeight() - 1);
             return button;
         }
         else

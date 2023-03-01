@@ -54,7 +54,7 @@ namespace OpenLoco::Drawing
 
         // Draw text
         const int stringWidth = drawingCtx.getStringWidth(buffer);
-        const auto x = Ui::width() / 2 - (stringWidth / 2);
+        const auto x = Ui::unscaledWidth() / 2 - (stringWidth / 2);
         const auto y = 2;
         drawingCtx.drawString(rt, x, y, Colour::black, buffer);
 
