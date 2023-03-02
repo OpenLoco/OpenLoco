@@ -32,6 +32,11 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
+    static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
+    static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
+    static loco_global<uint32_t, 0x00112C734> _lastConstructedGhostStationId;
+    static loco_global<World::Pos2, 0x00112C792> _lastConstructedGhostStationCentrePos;
+
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
         makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
@@ -211,6 +216,42 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
+    std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& pos, const uint8_t type, const uint8_t rotation)
+    {
+        auto* airportObject = ObjectManager::get<AirportObject>(type);
+        TilePos2 minPos(airportObject->minX, airportObject->minY);
+        TilePos2 maxPos(airportObject->maxX, airportObject->maxY);
+
+        minPos = Math::Vector::rotate(minPos, rotation);
+        maxPos = Math::Vector::rotate(maxPos, rotation);
+
+        minPos += pos;
+        maxPos += pos;
+
+        if (minPos.x > maxPos.x)
+        {
+            std::swap(minPos.x, maxPos.x);
+        }
+
+        if (minPos.y > maxPos.y)
+        {
+            std::swap(minPos.y, maxPos.y);
+        }
+        return std::make_pair(minPos, maxPos);
+    }
+
+    static void setMapSelectedTilesFromRange(const World::TilePosRangeView& range)
+    {
+        size_t i = 0;
+        for (const auto& pos : range)
+        {
+            _mapSelectedTiles[i++] = pos;
+        }
+
+        _mapSelectedTiles[i].x = -1;
+        mapInvalidateMapSelectionTiles();
+    }
+
     // 0x004A4F3B
     static void onToolUpdateAirport(const Ui::Point& mousePos)
     {
@@ -227,6 +268,53 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 Ui::WindowManager::invalidate(Ui::WindowType::construction);
             }
             return;
+        }
+
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        _constructionArrowDirection = args->rotation;
+        _constructionArrowPos = args->pos;
+
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+
+        if (_byte_522096 & (1U << 3))
+        {
+            if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
+            {
+                return;
+            }
+            removeConstructionGhosts();
+        }
+
+        _stationGhostPos = args->pos;
+        _stationGhostRotation = args->rotation;
+        _stationGhostTypeDockAirport = args->type;
+        _stationGhostType = 0x8000; // Why??
+
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+        _stationCost = cost;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::construction);
+
+        if (cost == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        _byte_522096 = _byte_522096 | (1U << 3);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        _constructingStationId = _lastConstructedGhostStationId;
+        // Original did some odd stuff here when no id returned
+        if (_lastConstructedGhostStationId != 0xFFFFFFFFU)
+        {
+            auto* station = StationManager::get(static_cast<StationId>(*_lastConstructedGhostStationId));
+            setCatchmentDisplay(station, CatchmentFlags::flag_0);
+            auto pos = *_lastConstructedGhostStationCentrePos;
+            if (pos.x == -1)
+            {
+                pos = args->pos;
+            }
         }
         // 0x004AF65
         // set construction arrow, set map selection
@@ -275,25 +363,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         GameCommands::AirportPlacementArgs placementArgs;
         placementArgs.type = _lastSelectedStationType;
         placementArgs.rotation = _constructionRotation;
-        auto* airportObject = ObjectManager::get<AirportObject>(placementArgs.type);
-        TilePos2 minPos(airportObject->minX, airportObject->minY);
-        TilePos2 maxPos(airportObject->maxX, airportObject->maxY);
 
-        minPos = Math::Vector::rotate(minPos, placementArgs.rotation);
-        maxPos = Math::Vector::rotate(maxPos, placementArgs.rotation);
-
-        minPos += *pos;
-        maxPos += *pos;
-
-        if (minPos.x > maxPos.x)
-        {
-            std::swap(minPos.x, maxPos.x);
-        }
-
-        if (minPos.y > maxPos.y)
-        {
-            std::swap(minPos.y, maxPos.y);
-        }
+        const auto [minPos, maxPos] = getAirportExtents(placementArgs.pos, placementArgs.type, placementArgs.rotation);
 
         _1135F7C = minPos;
         _1135F90 = maxPos;

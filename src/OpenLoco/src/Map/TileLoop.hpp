@@ -101,8 +101,8 @@ namespace OpenLoco::World
         {
         }
 
-        Iterator begin() { return Iterator(_bottomLeft, _topRight); }
-        Iterator end()
+        Iterator begin() const { return Iterator(_bottomLeft, _topRight); }
+        Iterator end() const
         {
             // End iterator must be 1 step past the end so that loop is inclusive
             return Iterator(TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight);
