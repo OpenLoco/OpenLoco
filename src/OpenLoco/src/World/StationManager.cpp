@@ -504,7 +504,7 @@ namespace OpenLoco::StationManager
                     {
                         continue;
                     }
-                    if (!(station->cargoStats[cargoType].flags & (1 << 1)))
+                    if ((station->cargoStats[cargoType].flags & StationCargoStatsFlags::flag1) == StationCargoStatsFlags::none)
                     {
                         continue;
                     }

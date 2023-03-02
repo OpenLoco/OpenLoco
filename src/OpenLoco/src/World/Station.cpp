@@ -46,25 +46,25 @@ namespace OpenLoco
     public:
         bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
-            return (_map[y * kMapColumns + x] & (1 << 1)) != 0;
+            return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_1))) != 0;
         }
 
         void mapRemove2(const tile_coord_t x, const tile_coord_t y)
         {
-            _map[y * kMapColumns + x] &= ~(1 << 1);
+            _map[y * kMapColumns + x] &= ~(1 << enumValue(CatchmentFlags::flag_1));
         }
 
-        void setTile(const tile_coord_t x, const tile_coord_t y, const uint8_t flag)
+        void setTile(const tile_coord_t x, const tile_coord_t y, const CatchmentFlags flag)
         {
-            _map[y * kMapColumns + x] |= (1 << flag);
+            _map[y * kMapColumns + x] |= (1 << enumValue(flag));
         }
 
-        void resetTile(const tile_coord_t x, const tile_coord_t y, const uint8_t flag)
+        void resetTile(const tile_coord_t x, const tile_coord_t y, const CatchmentFlags flag)
         {
-            _map[y * kMapColumns + x] &= ~(1 << flag);
+            _map[y * kMapColumns + x] &= ~(1 << enumValue(flag));
         }
 
-        void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const uint8_t flag)
+        void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const CatchmentFlags flag)
         {
             auto xStart = x;
             auto xTileStartCount = xTileCount;
@@ -84,7 +84,7 @@ namespace OpenLoco
             }
         }
 
-        void resetTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const uint8_t flag)
+        void resetTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const CatchmentFlags flag)
         {
             auto xStart = x;
             auto xTileStartCount = xTileCount;
@@ -165,7 +165,7 @@ namespace OpenLoco
         }
     };
 
-    static void sub_491BF5(const Pos2& pos, const uint8_t flag);
+    static void sub_491BF5(const Pos2& pos, const CatchmentFlags flag);
     static StationElement* getStationElement(const Pos3& pos);
 
     // 0x0048B23E
@@ -244,11 +244,11 @@ namespace OpenLoco
 
         cargoSearchState.resetIndustryMap();
 
-        setCatchmentDisplay(1);
+        setCatchmentDisplay(CatchmentFlags::flag_1);
 
         if (location.x != -1)
         {
-            sub_491BF5(location, 1);
+            sub_491BF5(location, CatchmentFlags::flag_1);
         }
 
         cargoSearchState.resetScores();
@@ -418,11 +418,11 @@ namespace OpenLoco
         return acceptedCargos;
     }
 
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const uint8_t flags);
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flags);
 
     // 0x00491D70
     // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
-    void Station::setCatchmentDisplay(const uint8_t catchmentFlag)
+    void Station::setCatchmentDisplay(const CatchmentFlags catchmentFlag)
     {
         CargoSearchState cargoSearchState;
         cargoSearchState.resetTileRegion(0, 0, kMapColumns, kMapRows, catchmentFlag);
@@ -683,7 +683,7 @@ namespace OpenLoco
             }
         }
 
-        if ((flags & (StationFlags::flag_7 | StationFlags::flag_8)) == 0 && !CompanyManager::isPlayerCompany(owner))
+        if ((flags & (StationFlags::flag_7 | StationFlags::flag_8)) == StationFlags::none && !CompanyManager::isPlayerCompany(owner))
         {
             rating = 120;
         }
@@ -801,7 +801,7 @@ namespace OpenLoco
     }
 
     // 0x00491EDC
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const uint8_t flag)
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flag)
     {
         minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
         minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
@@ -817,7 +817,7 @@ namespace OpenLoco
     }
 
     // 0x00491BF5
-    static void sub_491BF5(const Pos2& pos, const uint8_t flag)
+    static void sub_491BF5(const Pos2& pos, const CatchmentFlags flag)
     {
         TilePos2 minPos(pos);
         auto maxPos = minPos;
@@ -831,7 +831,7 @@ namespace OpenLoco
         setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
     }
 
-    string_id getTransportIconsFromStationFlags(const uint16_t flags)
+    string_id getTransportIconsFromStationFlags(const StationFlags flags)
     {
         constexpr string_id label_icons[] = {
             StringIds::label_icons_none,
@@ -851,6 +851,8 @@ namespace OpenLoco
             StringIds::label_icons_road_air_water,
             StringIds::label_icons_rail_road_air_water,
         };
-        return label_icons[flags & StationFlags::allModes];
+
+        const auto label = enumValue(flags & StationFlags::allModes);
+        return label_icons[label];
     }
 }

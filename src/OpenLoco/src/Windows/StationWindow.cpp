@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Station
             Ui::Windows::Construction::sub_4A6FAC();
             auto station = StationManager::get(_lastSelectedStation);
 
-            station->setCatchmentDisplay(0);
+            station->setCatchmentDisplay(CatchmentFlags::flag_0);
             Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
 
             WindowManager::invalidate(WindowType::station, enumValue(newStationId));
@@ -814,30 +814,12 @@ namespace OpenLoco::Ui::Windows::Station
             self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put station and town name in place.
-            auto station = StationManager::get(StationId(self.number));
+            auto* station = StationManager::get(StationId(self.number));
 
-            uint32_t stationTypeImages[16] = {
-                StringIds::label_icons_none,
-                StringIds::label_icons_rail,
-                StringIds::label_icons_road,
-                StringIds::label_icons_rail_road,
-                StringIds::label_icons_air,
-                StringIds::label_icons_rail_air,
-                StringIds::label_icons_road_air,
-                StringIds::label_icons_rail_road_air,
-                StringIds::label_icons_water,
-                StringIds::label_icons_rail_water,
-                StringIds::label_icons_road_water,
-                StringIds::label_icons_rail_road_water,
-                StringIds::label_icons_air_water,
-                StringIds::label_icons_rail_air_water,
-                StringIds::label_icons_road_air_water,
-                StringIds::label_icons_rail_road_air_water
-            };
             auto args = FormatArguments();
             args.push(station->name);
             args.push(station->town);
-            args.push(stationTypeImages[(station->flags & 0xF)]);
+            args.push(getTransportIconsFromStationFlags(station->flags));
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;

@@ -1782,7 +1782,7 @@ namespace OpenLoco::Vehicles
 
             auto station = StationManager::get(orderStationId);
 
-            if (station == nullptr || !(station->flags & StationFlags::flag_6))
+            if (station == nullptr || (station->flags & StationFlags::flag_6) == StationFlags::none)
             {
                 airportMovementEdge = cAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
@@ -1982,7 +1982,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 auto station = StationManager::get(stationId);
-                if (!(station->flags & StationFlags::flag_6))
+                if ((station->flags & StationFlags::flag_6) == StationFlags::none)
                 {
                     targetStationId = stationId;
                 }
@@ -2005,7 +2005,7 @@ namespace OpenLoco::Vehicles
             {
                 auto station = StationManager::get(targetStationId);
                 targetPos = Pos3{ station->x, station->y, 960 };
-                if (station->flags & StationFlags::flag_6)
+                if ((station->flags & StationFlags::flag_6) != StationFlags::none)
                 {
                     targetPos = Pos3{ station->unk_tile_x, station->unk_tile_y, 960 };
                 }
@@ -2673,7 +2673,7 @@ namespace OpenLoco::Vehicles
 
             if (cargoStats.isAccepted())
             {
-                cargoStats.flags |= (1 << 3);
+                cargoStats.flags |= StationCargoStatsFlags::flag3;
             }
 
             company->var_4A0 |= 1ULL << cargo.type;
@@ -2968,14 +2968,14 @@ namespace OpenLoco::Vehicles
         auto vehMaxSpeed = train.veh2->maxSpeed;
         auto carAgeFactor = static_cast<uint8_t>(std::min<uint32_t>(0xFF, (getCurrentDay() - bogie->creationDay) / 256));
 
-        if (stationCargo.flags & (1 << 2))
+        if ((stationCargo.flags & StationCargoStatsFlags::flag2) != StationCargoStatsFlags::none)
         {
             stationCargo.vehicleSpeed = (stationCargo.vehicleSpeed + vehMaxSpeed) / 2;
             stationCargo.vehicleAge = (stationCargo.vehicleAge + carAgeFactor) / 2;
         }
         else
         {
-            stationCargo.flags |= (1 << 2);
+            stationCargo.flags |= StationCargoStatsFlags::flag2;
             stationCargo.vehicleSpeed = vehMaxSpeed;
             stationCargo.vehicleAge = carAgeFactor;
         }

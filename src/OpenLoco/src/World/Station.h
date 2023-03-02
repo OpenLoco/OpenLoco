@@ -5,6 +5,7 @@
 #include "Map/Tile.h"
 #include "Speed.hpp"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <cstdint>
 #include <limits>
@@ -12,11 +13,21 @@
 namespace OpenLoco
 {
 #pragma pack(push, 1)
+    enum class StationCargoStatsFlags : uint8_t
+    {
+        none = 0U,
+        flag0 = (1U << 0),
+        flag1 = (1U << 1),
+        flag2 = (1U << 2),
+        flag3 = (1U << 3),
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(StationCargoStatsFlags);
+
     struct StationCargoStats
     {
         uint16_t quantity{};                // 0x2E
         StationId origin = StationId::null; // 0x30
-        uint8_t flags{};                    // 0x32
+        StationCargoStatsFlags flags{};     // 0x32
         uint8_t age{};                      // 0x33
         uint8_t rating{};                   // 0x34
         uint8_t enrouteAge{};               // 0x35
@@ -32,12 +43,12 @@ namespace OpenLoco
 
         bool isAccepted() const
         {
-            return flags & 1;
+            return (flags & StationCargoStatsFlags::flag0) != StationCargoStatsFlags::none;
         }
 
         void isAccepted(bool value)
         {
-            flags = Utility::setMask<uint8_t>(flags, 1, value);
+            flags = Utility::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
         }
     };
 
@@ -51,23 +62,31 @@ namespace OpenLoco
         docks,
     };
 
-    namespace StationFlags
+    enum class StationFlags : uint16_t
     {
-        constexpr uint16_t transportModeRail = (1 << 0);
-        constexpr uint16_t transportModeRoad = (1 << 1);
-        constexpr uint16_t transportModeAir = (1 << 2);
-        constexpr uint16_t transportModeWater = (1 << 3);
-        constexpr uint16_t flag_4 = (1 << 4);
-        constexpr uint16_t flag_5 = (1 << 5);
-        constexpr uint16_t flag_6 = (1 << 6);
-        constexpr uint16_t flag_7 = (1 << 7);
-        constexpr uint16_t flag_8 = (1 << 8);
-        constexpr uint16_t allModes = StationFlags::transportModeRail | StationFlags::transportModeRoad | StationFlags::transportModeAir | StationFlags::transportModeWater;
-    }
+        none = 0U,
+        transportModeRail = (1U << 0),
+        transportModeRoad = (1U << 1),
+        transportModeAir = (1U << 2),
+        transportModeWater = (1U << 3),
+        flag_4 = (1U << 4),
+        flag_5 = (1U << 5),
+        flag_6 = (1U << 6),
+        flag_7 = (1U << 7),
+        flag_8 = (1U << 8),
+        allModes = StationFlags::transportModeRail | StationFlags::transportModeRoad | StationFlags::transportModeAir | StationFlags::transportModeWater,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(StationFlags);
 
-    string_id getTransportIconsFromStationFlags(const uint16_t flags);
+    string_id getTransportIconsFromStationFlags(const StationFlags flags);
 
     struct CargoSearchState;
+
+    enum class CatchmentFlags : uint8_t
+    {
+        flag_0 = 0U,
+        flag_1 = 1U,
+    };
 
     struct Station
     {
@@ -78,7 +97,7 @@ namespace OpenLoco
         LabelFrame labelFrame;            // 0x08
         CompanyId owner{};                // 0x28
         uint8_t var_29{};
-        uint16_t flags{};                             // 0x2A
+        StationFlags flags{};                         // 0x2A
         TownId town{};                                // 0x2C
         StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E
         uint16_t stationTileSize{};                   // 0x1CE
@@ -103,7 +122,7 @@ namespace OpenLoco
         void updateLabel();
         void invalidate();
         void invalidateWindow();
-        void setCatchmentDisplay(uint8_t flags);
+        void setCatchmentDisplay(CatchmentFlags flags);
         void deliverCargoToStation(const uint8_t cargoType, const uint8_t cargoQuantity);
         void deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity);
         void updateCargoDistribution();

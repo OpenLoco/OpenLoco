@@ -3567,11 +3567,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 bool stationFound = false;
                 for (auto& station : StationManager::stations())
                 {
-                    if (!(station.flags & StationFlags::flag_6))
+                    if ((station.flags & StationFlags::flag_6) == StationFlags::none)
                     {
                         continue;
                     }
-                    if (station.flags & StationFlags::flag_5)
+                    if ((station.flags & StationFlags::flag_5) != StationFlags::none)
                     {
                         continue;
                     }
