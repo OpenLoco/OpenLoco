@@ -229,36 +229,17 @@ namespace OpenLoco
         }
     }
 
-    // 0x00491FE0
-    // WARNING: this may be called with station (ebp) = -1
-    // filter only used if location.x != -1
-    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const Pos2& location, const uint32_t filter)
+    // 0x00492026
+    static uint32_t doCalcAcceptedCargo(const Station* station, CargoSearchState& cargoSearchState)
     {
-        cargoSearchState.byte_112C7F2(1);
-        cargoSearchState.filter(0);
-
-        if (location.x != -1)
-        {
-            cargoSearchState.filter(filter);
-        }
-
-        cargoSearchState.resetIndustryMap();
-
-        setCatchmentDisplay(CatchmentFlags::flag_1);
-
-        if (location.x != -1)
-        {
-            sub_491BF5(location, CatchmentFlags::flag_1);
-        }
-
         cargoSearchState.resetScores();
         cargoSearchState.resetProducedCargoTypes();
 
-        if (this != (Station*)0xFFFFFFFF)
+        if (station != nullptr)
         {
-            for (uint16_t i = 0; i < stationTileSize; i++)
+            for (uint16_t i = 0; i < station->stationTileSize; i++)
             {
-                auto pos = stationTiles[i];
+                auto pos = station->stationTiles[i];
                 auto stationElement = getStationElement(pos);
 
                 if (stationElement == nullptr)
@@ -418,24 +399,61 @@ namespace OpenLoco
         return acceptedCargos;
     }
 
+    // 0x00491FE0
+    // THIS FUNCTION ONLY TO BE CALLED ON NORMAL STATIONS
+    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState) const
+    {
+        cargoSearchState.byte_112C7F2(1);
+        cargoSearchState.filter(0);
+
+        cargoSearchState.resetIndustryMap();
+
+        setCatchmentDisplay(this, CatchmentFlags::flag_1);
+
+        return doCalcAcceptedCargo(this, cargoSearchState);
+    }
+
+    // 0x00491FE0
+    // WARNING: this may be called with station (ebp) = -1
+    // THIS FUNCTION ONLY TO BE CALLED ON GHOST TRACK STATIONS
+    PotentialCargo calcAcceptedCargoTrackStationGhost(const Station* ghostStation, const Pos2& location, const uint32_t filter)
+    {
+        CargoSearchState cargoSearchState;
+        cargoSearchState.byte_112C7F2(1);
+        cargoSearchState.filter(0);
+
+        cargoSearchState.filter(filter);
+
+        cargoSearchState.resetIndustryMap();
+
+        setCatchmentDisplay(ghostStation, CatchmentFlags::flag_1);
+
+        sub_491BF5(location, CatchmentFlags::flag_1);
+
+        PotentialCargo res{};
+        res.accepted = doCalcAcceptedCargo(ghostStation, cargoSearchState);
+        res.produced = cargoSearchState.producedCargoTypes();
+        return res;
+    }
+
     static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flags);
 
     // 0x00491D70
     // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
-    void Station::setCatchmentDisplay(const CatchmentFlags catchmentFlag)
+    void setCatchmentDisplay(const Station* station, const CatchmentFlags catchmentFlag)
     {
         CargoSearchState cargoSearchState;
         cargoSearchState.resetTileRegion(0, 0, kMapColumns, kMapRows, catchmentFlag);
 
-        if (this == (Station*)0xFFFFFFFF)
+        if (station == nullptr)
             return;
 
-        if (stationTileSize == 0)
+        if (station->stationTileSize == 0)
             return;
 
-        for (uint16_t i = 0; i < stationTileSize; i++)
+        for (uint16_t i = 0; i < station->stationTileSize; i++)
         {
-            auto pos = stationTiles[i];
+            auto pos = station->stationTiles[i];
             pos.z &= ~((1 << 1) | (1 << 0));
 
             auto stationElement = getStationElement(pos);

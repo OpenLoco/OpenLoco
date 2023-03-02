@@ -114,7 +114,7 @@ namespace OpenLoco
         bool empty() const { return name == StringIds::null; }
         StationId id() const;
         void update();
-        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const World::Pos2& location = { -1, -1 }, const uint32_t filter = 0);
+        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
         void sub_48F7D1();
         char* getStatusString(char* buffer);
         bool updateCargo();
@@ -122,7 +122,7 @@ namespace OpenLoco
         void updateLabel();
         void invalidate();
         void invalidateWindow();
-        void setCatchmentDisplay(CatchmentFlags flags);
+
         void deliverCargoToStation(const uint8_t cargoType, const uint8_t cargoQuantity);
         void deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity);
         void updateCargoDistribution();
@@ -133,4 +133,12 @@ namespace OpenLoco
     };
     static_assert(sizeof(Station) == 0x3D2);
 #pragma pack(pop)
+
+    void setCatchmentDisplay(const Station* station, const CatchmentFlags flags);
+    struct PotentialCargo
+    {
+        uint32_t accepted;
+        uint32_t produced;
+    };
+    PotentialCargo calcAcceptedCargoTrackStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
 }
