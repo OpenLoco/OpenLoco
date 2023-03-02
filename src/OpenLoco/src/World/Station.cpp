@@ -46,22 +46,22 @@ namespace OpenLoco
     public:
         bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
-            return (_map[y * kMapColumns + x] & (1 << 1)) != 0;
+            return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_1))) != 0;
         }
 
         void mapRemove2(const tile_coord_t x, const tile_coord_t y)
         {
-            _map[y * kMapColumns + x] &= ~(1 << 1);
+            _map[y * kMapColumns + x] &= ~(1 << enumValue(CatchmentFlags::flag_1));
         }
 
         void setTile(const tile_coord_t x, const tile_coord_t y, const CatchmentFlags flag)
         {
-            _map[y * kMapColumns + x] |= (1 << static_cast<std::underlying_type_t<CatchmentFlags>>(flag));
+            _map[y * kMapColumns + x] |= (1 << enumValue(flag));
         }
 
         void resetTile(const tile_coord_t x, const tile_coord_t y, const CatchmentFlags flag)
         {
-            _map[y * kMapColumns + x] &= ~(1 << static_cast<std::underlying_type_t<CatchmentFlags>>(flag));
+            _map[y * kMapColumns + x] &= ~(1 << enumValue(flag));
         }
 
         void setTileRegion(tile_coord_t x, tile_coord_t y, int16_t xTileCount, int16_t yTileCount, const CatchmentFlags flag)
@@ -852,7 +852,7 @@ namespace OpenLoco
             StringIds::label_icons_rail_road_air_water,
         };
 
-        uint16_t label = static_cast<std::underlying_type_t<StationFlags>>(flags & StationFlags::allModes);
+        const auto label = enumValue(flags & StationFlags::allModes);
         return label_icons[label];
     }
 }
