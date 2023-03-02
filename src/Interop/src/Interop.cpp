@@ -95,7 +95,7 @@ namespace OpenLoco::Interop
     static int32_t DISABLE_OPT callByRef(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
 #ifdef _LOG_INTEROP_CALLS_
-        OpenLoco::Console::group("0x%x", address);
+        OpenLoco::Console::groupDeprecated("0x%x", address);
 #endif
         int32_t result = 0;
         _originalAddress = address;
@@ -252,7 +252,7 @@ namespace OpenLoco::Interop
         _originalAddress = 0;
 
 #ifdef _LOG_INTEROP_CALLS_
-        OpenLoco::Console::groupEnd();
+        OpenLoco::Console::groupEndDeprecated();
 #endif
         // lahf only modifies ah, zero out the rest
         return (result >> 8) & 0xFF;

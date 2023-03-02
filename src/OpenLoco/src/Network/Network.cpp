@@ -117,7 +117,7 @@ namespace OpenLoco::Network
     void receiveChatMessage(client_id_t client, std::string_view message)
     {
         std::string szMessage(message);
-        Console::log("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
+        Console::logDeprecated("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
     }
 
     void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)

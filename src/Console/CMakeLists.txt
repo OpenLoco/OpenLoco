@@ -12,3 +12,8 @@ loco_add_library(Console STATIC
     PRIVATE_FILES
         ${private_files}
 )
+
+target_link_libraries(Console 
+    PUBLIC
+        Core
+)

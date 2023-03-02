@@ -593,7 +593,7 @@ namespace OpenLoco
             // There are some official objects that suffer from this so can't assert on this.
             const auto& header = ObjectManager::getHeader(handle);
             std::string objName(header.getName());
-            Console::logVerbose("Incorrect number of images for object: %s", objName.c_str());
+            Console::logVerboseDeprecated("Incorrect number of images for object: %s", objName.c_str());
         }
     }
 

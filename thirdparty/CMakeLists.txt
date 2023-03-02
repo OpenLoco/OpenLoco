@@ -1,7 +1,5 @@
 # TODO: look into using FetchContent's FIND_PACKAGE_ARGS when next increasing CMake version
 find_package(yaml-cpp QUIET)
-find_package(span-lite QUIET)
-
 if ( NOT yaml-cpp_FOUND )
     ## yaml-cpp
     # Get rid of yaml uninstall target
@@ -25,6 +23,7 @@ if ( NOT yaml-cpp_FOUND )
     set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
 endif()
 
+find_package(span-lite QUIET)
 if ( NOT span-lite_FOUND )
     ## span-lite
     FetchContent_Declare(
@@ -70,4 +69,21 @@ endif()
 if (MSVC)
     find_package(unofficial-breakpad CONFIG REQUIRED)
     set(BREAKPAD_LIBRARIES unofficial::breakpad::libbreakpad unofficial::breakpad::libbreakpad_client)
+endif()
+
+find_package(fmt QUIET)
+if ( NOT fmt_FOUND )
+    ## fmt
+    FetchContent_Declare(
+        fmt
+        GIT_REPOSITORY      https://github.com/fmtlib/fmt
+        GIT_TAG             9.1.0
+        GIT_SHALLOW         ON
+    )
+    FetchContent_MakeAvailable(fmt)
+    
+    loco_thirdparty_target_compile_link_flags(fmt)
+    
+    # Group all the ThirdParty items under a ThirdParty folder in IDEs
+    set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")
 endif()

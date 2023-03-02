@@ -79,11 +79,10 @@ namespace OpenLoco::Gfx
 
         if (header.numEntries != G1ExpectedCount::kDisc)
         {
-            std::cout << "G1 element count doesn't match expected value: ";
-            std::cout << "Expected " << G1ExpectedCount::kDisc << "; Got " << header.numEntries << std::endl;
+            Console::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
             if (header.numEntries == G1ExpectedCount::kSteam)
             {
-                std::cout << "Got Steam G1.DAT variant, will fix elements automatically." << std::endl;
+                Console::info("Got Steam G1.DAT variant, will fix elements automatically.");
             }
         }
 

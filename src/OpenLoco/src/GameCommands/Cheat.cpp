@@ -192,7 +192,7 @@ namespace OpenLoco::GameCommands
         static uint32_t modifyDateCheat(int32_t year, int32_t month, int32_t day)
         {
             OpenLoco::Scenario::initialiseDate(static_cast<uint16_t>(year), static_cast<MonthId>(month), static_cast<uint8_t>(day));
-            Console::log("Date set to: Day=%u Month=%u Year=%u", day, month, year);
+            Console::info("Date set to: Day={} Month={} Year={}", day, month, year);
             return 0;
         }
     }

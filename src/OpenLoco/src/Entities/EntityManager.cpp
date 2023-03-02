@@ -199,7 +199,7 @@ namespace OpenLoco::EntityManager
         {
             if (!removeFromSpatialIndex(entity, oldIndex))
             {
-                Console::log("Invalid quadrant ids... Reseting spatial index.");
+                Console::info("Invalid quadrant ids... Reseting spatial index.");
                 resetSpatialIndex();
                 moveSpatialEntry(entity, loc);
                 return;
@@ -214,7 +214,7 @@ namespace OpenLoco::EntityManager
         auto* newEntity = get<EntityBase>(id);
         if (newEntity == nullptr)
         {
-            Console::error("Tried to create invalid entity!");
+            Console::error("Tried to create invalid entity! id: {}, list: {}", enumValue(id), enumValue(list));
             return nullptr;
         }
         moveEntityToList(newEntity, list);
@@ -284,7 +284,7 @@ namespace OpenLoco::EntityManager
 
         if (!removeFromSpatialIndex(*entity))
         {
-            Console::log("Invalid quadrant ids... Reseting spatial index.");
+            Console::info("Invalid quadrant ids... Reseting spatial index.");
             resetSpatialIndex();
         }
     }
@@ -312,7 +312,7 @@ namespace OpenLoco::EntityManager
             auto* previousEntity = get<EntityBase>(previousId);
             if (previousEntity == nullptr)
             {
-                Console::error("Invalid previous entity id. Entity linked list corrupted?");
+                Console::error("Invalid previous entity id. Entity linked list corrupted? Id: {}", enumValue(previousId));
             }
             else
             {
@@ -325,7 +325,7 @@ namespace OpenLoco::EntityManager
             auto* nextEntity = get<EntityBase>(nextId);
             if (nextEntity == nullptr)
             {
-                Console::error("Invalid next entity id. Entity linked list corrupted?");
+                Console::error("Invalid next entity id. Entity linked list corrupted? Id: {}", enumValue(nextId));
             }
             else
             {
@@ -343,7 +343,7 @@ namespace OpenLoco::EntityManager
             auto* nextEntity = get<EntityBase>(entity->nextThingId);
             if (nextEntity == nullptr)
             {
-                Console::error("Invalid next entity id. Entity linked list corrupted?");
+                Console::error("Invalid next entity id. Entity linked list corrupted? Id: {}", enumValue(entity->nextThingId));
             }
             else
             {
