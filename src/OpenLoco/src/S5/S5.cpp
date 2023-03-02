@@ -337,7 +337,7 @@ namespace OpenLoco::S5
                 fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState);
             }
 
-            if (static_cast<uint32_t>(file.header.flags) & static_cast<uint32_t>(SaveFlags::raw))
+            if (file.header.hasFlags(HeaderFlags::isRaw))
             {
                 throw NotImplementedException();
             }
