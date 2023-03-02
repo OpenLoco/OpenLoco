@@ -44,7 +44,7 @@ namespace OpenLoco::GameCommands
             }
 
             auto tileHeight = World::TileManager::getHeight(pos);
-            TileManager::removeAllWallsOnTile(pos, tileHeight.landHeight);
+            TileManager::removeAllWallsOnTile(pos, tileHeight.landHeight / 4);
         }
 
         // 0x00469DAE
