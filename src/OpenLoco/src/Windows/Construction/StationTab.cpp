@@ -211,15 +211,53 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
+    // 0x004A4F3B
+    static void onToolUpdateAirport(const Ui::Point& mousePos)
+    {
+        World::TileManager::mapInvalidateMapSelectionTiles();
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        if (!args.has_value())
+        {
+            // common for all tool updates move to parent func.
+            removeConstructionGhosts();
+            if (_stationCost != 0x80000000U)
+            {
+                _stationCost = 0x80000000U;
+                Ui::WindowManager::invalidate(Ui::WindowType::construction);
+            }
+            return;
+        }
+        // 0x004AF65
+        // set construction arrow, set map selection
+        // remove ghost, place ghost
+        // set catchment display
+        // unk??
+    }
+
     // 0x0049E421
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E421, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+        if (_byte_1136063 & (1 << 7))
+        {
+            onToolUpdateAirport({ x, y });
+        }
+        else if (_byte_1136063 & (1 << 6))
+        {
+            // onToolUpdateDock(x, y);
+        }
+        else if (_trackType & (1 << 7))
+        {
+            // onToolUpdateRoadStation(x, y);
+        }
+        else
+        {
+            // onToolUpdateTrackStation(x, y);
+        }
     }
 
     static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
