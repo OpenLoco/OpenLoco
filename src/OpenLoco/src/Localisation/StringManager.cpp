@@ -21,13 +21,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {
-    const uint16_t kUserStringsStart = 0x8000;
-    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::kMaxUserStrings;
-
-    const uint16_t kMaxTownNames = 345;
-    const uint16_t kTownNamesStart = 0x9EE7;
-    const uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
-
     // 0x2000 lang strings, 0x10 temp obj strings, 0x45E loaded obj strings
     static loco_global<char* [0x246E], 0x005183FC> _strings;
 

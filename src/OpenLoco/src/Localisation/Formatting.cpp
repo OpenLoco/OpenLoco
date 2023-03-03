@@ -22,13 +22,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::StringManager
 {
-    const uint16_t kUserStringsStart = 0x8000;
-    const uint16_t kUserStringsEnd = kUserStringsStart + Limits::kMaxUserStrings;
-
-    const uint16_t kMaxTownNames = 345;
-    const uint16_t kTownNamesStart = 0x9EE7;
-    const uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
-
     static const std::map<int32_t, string_id> kDayToString = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
@@ -703,7 +696,7 @@ namespace OpenLoco::StringManager
     {
         return formatString(buffer, id, args);
     }
-    
+
     string_id isTownName(string_id stringId)
     {
         return stringId >= kTownNamesStart && stringId < kTownNamesEnd;
