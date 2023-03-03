@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Message.h"
 #include "MessageManager.h"

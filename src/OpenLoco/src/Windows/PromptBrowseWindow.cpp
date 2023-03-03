@@ -6,6 +6,7 @@
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"

@@ -1,6 +1,7 @@
 #include "SoftwareDrawingContext.h"
 #include "DrawSprite.h"
 #include "Graphics/ImageIds.h"
+#include "Localisation/Formatting.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>

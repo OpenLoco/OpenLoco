@@ -7,6 +7,7 @@
 #include "GameStateFlags.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Localisation/Formatting.h"
 #include "MessageManager.h"
 #include "Objects/CargoObject.h"
 #include "Orders.h"
