@@ -315,12 +315,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 pos = args->pos;
             }
+            // do some catchment stuff
+            // Station::sub_491C6F
+            // Station::sub_491BC6
+            auto res = calcAcceptedCargoAirportGhost(station, pos, 0xFFFFFFFFU);
+            _constructingStationAcceptedCargoTypes = res.accepted;
+            _constructingStationProducedCargoTypes = res.produced;
         }
-        // 0x004AF65
-        // set construction arrow, set map selection
-        // remove ghost, place ghost
-        // set catchment display
-        // unk??
     }
 
     // 0x0049E421

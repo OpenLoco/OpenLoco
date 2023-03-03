@@ -436,6 +436,29 @@ namespace OpenLoco
         return res;
     }
 
+    // 0x00491F43
+    // WARNING: this may be called with station (ebp) = -1
+    // THIS FUNCTION ONLY TO BE CALLED ON GHOST AIRPORT STATIONS
+    PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const Pos2& location, const uint32_t filter)
+    {
+        CargoSearchState cargoSearchState;
+        cargoSearchState.byte_112C7F2(1);
+        cargoSearchState.filter(0);
+
+        cargoSearchState.filter(filter);
+
+        cargoSearchState.resetIndustryMap();
+
+        setCatchmentDisplay(ghostStation, CatchmentFlags::flag_1);
+
+        sub_491C6F(location, CatchmentFlags::flag_1);
+
+        PotentialCargo res{};
+        res.accepted = doCalcAcceptedCargo(ghostStation, cargoSearchState);
+        res.produced = cargoSearchState.producedCargoTypes();
+        return res;
+    }
+
     static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flags);
 
     // 0x00491D70
