@@ -770,9 +770,9 @@ namespace OpenLoco::Ui::Windows::Station
         if (newStationId != StationId::null)
         {
             Ui::Windows::Construction::sub_4A6FAC();
-            auto station = StationManager::get(_lastSelectedStation);
+            auto* station = StationManager::get(_lastSelectedStation);
 
-            station->setCatchmentDisplay(CatchmentFlags::flag_0);
+            setCatchmentDisplay(station, CatchmentFlags::flag_0);
             Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
 
             WindowManager::invalidate(WindowType::station, enumValue(newStationId));
