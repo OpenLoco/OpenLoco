@@ -216,30 +216,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& pos, const uint8_t type, const uint8_t rotation)
-    {
-        auto* airportObject = ObjectManager::get<AirportObject>(type);
-        TilePos2 minPos(airportObject->minX, airportObject->minY);
-        TilePos2 maxPos(airportObject->maxX, airportObject->maxY);
-
-        minPos = Math::Vector::rotate(minPos, rotation);
-        maxPos = Math::Vector::rotate(maxPos, rotation);
-
-        minPos += pos;
-        maxPos += pos;
-
-        if (minPos.x > maxPos.x)
-        {
-            std::swap(minPos.x, maxPos.x);
-        }
-
-        if (minPos.y > maxPos.y)
-        {
-            std::swap(minPos.y, maxPos.y);
-        }
-        return std::make_pair(minPos, maxPos);
-    }
-
     static void setMapSelectedTilesFromRange(const World::TilePosRangeView& range)
     {
         size_t i = 0;
@@ -365,7 +341,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         placementArgs.type = _lastSelectedStationType;
         placementArgs.rotation = _constructionRotation;
 
-        const auto [minPos, maxPos] = getAirportExtents(placementArgs.pos, placementArgs.type, placementArgs.rotation);
+        const auto airportObj = ObjectManager::get<AirportObject>(placementArgs.type);
+        const auto [minPos, maxPos] = airportObj->getAirportExtents(placementArgs.pos, placementArgs.rotation);
 
         _1135F7C = minPos;
         _1135F90 = maxPos;

@@ -104,4 +104,27 @@ namespace OpenLoco
         movementNodes = nullptr;
         movementEdges = nullptr;
     }
+
+    std::pair<World::TilePos2, World::TilePos2> AirportObject::getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const
+    {
+        World::TilePos2 minPos(minX, minY);
+        World::TilePos2 maxPos(maxX, maxY);
+
+        minPos = Math::Vector::rotate(minPos, rotation);
+        maxPos = Math::Vector::rotate(maxPos, rotation);
+
+        minPos += centrePos;
+        maxPos += centrePos;
+
+        if (minPos.x > maxPos.x)
+        {
+            std::swap(minPos.x, maxPos.x);
+        }
+
+        if (minPos.y > maxPos.y)
+        {
+            std::swap(minPos.y, maxPos.y);
+        }
+        return std::make_pair(minPos, maxPos);
+    }
 }

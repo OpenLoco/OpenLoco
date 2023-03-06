@@ -490,36 +490,14 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
-                    Pos2 minPos(airportObject->minX * 32, airportObject->minY * 32);
-                    Pos2 maxPos(airportObject->maxX * 32, airportObject->maxY * 32);
+                    auto[minPos, maxPos] = airportObject->getAirportExtents(pos, stationElement->rotation());
 
-                    minPos = Math::Vector::rotate(minPos, stationElement->rotation());
-                    maxPos = Math::Vector::rotate(maxPos, stationElement->rotation());
+                    minPos.x -= catchmentSize;
+                    minPos.y -= catchmentSize;
+                    maxPos.x += catchmentSize;
+                    maxPos.y += catchmentSize;
 
-                    minPos.x += pos.x;
-                    minPos.y += pos.y;
-                    maxPos.x += pos.x;
-                    maxPos.y += pos.y;
-
-                    if (minPos.x > maxPos.x)
-                    {
-                        std::swap(minPos.x, maxPos.x);
-                    }
-
-                    if (minPos.y > maxPos.y)
-                    {
-                        std::swap(minPos.y, maxPos.y);
-                    }
-
-                    TilePos2 tileMinPos(minPos);
-                    TilePos2 tileMaxPos(maxPos);
-
-                    tileMinPos.x -= catchmentSize;
-                    tileMinPos.y -= catchmentSize;
-                    tileMaxPos.x += catchmentSize;
-                    tileMaxPos.y += catchmentSize;
-
-                    setStationCatchmentRegion(cargoSearchState, tileMinPos, tileMaxPos, catchmentFlag);
+                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
                 }
                 break;
                 case StationType::docks:
