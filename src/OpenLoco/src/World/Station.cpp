@@ -439,7 +439,7 @@ namespace OpenLoco
     // 0x00491F43
     // WARNING: this may be called with station (ebp) = -1
     // THIS FUNCTION ONLY TO BE CALLED ON GHOST AIRPORT STATIONS
-    PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const Pos2& location, const uint32_t filter)
+    PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const uint8_t type, const Pos2& location, const uint8_t rotation, const uint32_t filter)
     {
         CargoSearchState cargoSearchState;
         cargoSearchState.byte_112C7F2(1);
@@ -451,7 +451,7 @@ namespace OpenLoco
 
         setCatchmentDisplay(ghostStation, CatchmentFlags::flag_1);
 
-        sub_491C6F(location, CatchmentFlags::flag_1);
+        sub_491C6F(type, location, rotation, CatchmentFlags::flag_1);
 
         PotentialCargo res{};
         res.accepted = doCalcAcceptedCargo(ghostStation, cargoSearchState);
@@ -844,6 +844,22 @@ namespace OpenLoco
         maxPos.y += catchmentSize;
         minPos.x -= catchmentSize;
         minPos.y -= catchmentSize;
+
+        CargoSearchState cargoSearchState;
+
+        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+    }
+
+    void sub_491C6F(const uint8_t type, const Pos2& pos, const uint8_t rotation, const CatchmentFlags flag)
+    {
+        auto airportObject = ObjectManager::get<AirportObject>(type);
+
+        auto [minPos, maxPos] = airportObject->getAirportExtents(pos, rotation);
+
+        minPos.x -= catchmentSize;
+        minPos.y -= catchmentSize;
+        maxPos.x += catchmentSize;
+        maxPos.y += catchmentSize;
 
         CargoSearchState cargoSearchState;
 

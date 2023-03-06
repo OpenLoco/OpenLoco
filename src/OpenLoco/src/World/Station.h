@@ -141,5 +141,6 @@ namespace OpenLoco
         uint32_t produced;
     };
     PotentialCargo calcAcceptedCargoTrackStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
-    PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
+    PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const uint8_t type, const World::Pos2& location, const uint8_t rotation, const uint32_t filter);
+    void sub_491C6F(const uint8_t type, const World::Pos2& pos, const uint8_t rotation, const CatchmentFlags flag);
 }
