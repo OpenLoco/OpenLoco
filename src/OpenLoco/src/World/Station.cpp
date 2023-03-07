@@ -165,7 +165,6 @@ namespace OpenLoco
         }
     };
 
-    static void sub_491BF5(const Pos2& pos, const CatchmentFlags flag);
     static StationElement* getStationElement(const Pos3& pos);
 
     // 0x0048B23E
@@ -859,7 +858,7 @@ namespace OpenLoco
     }
 
     // 0x00491BF5
-    static void sub_491BF5(const Pos2& pos, const CatchmentFlags flag)
+    void sub_491BF5(const Pos2& pos, const CatchmentFlags flag)
     {
         TilePos2 minPos(pos);
         auto maxPos = minPos;
