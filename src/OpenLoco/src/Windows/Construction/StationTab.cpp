@@ -231,6 +231,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
+    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
 
     static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
     static loco_global<World::Pos2, 0x001135F80> _1135F90;
@@ -444,6 +445,66 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructingStationProducedCargoTypes = res.produced;
     }
 
+    // 0x004A4B2E
+    static void onToolUpdateTrackStation(const Ui::Point& mousePos)
+    {
+        const auto args = getTrackStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        if (!args.has_value())
+        {
+            onToolUpdateFail();
+            return;
+        }
+
+        if (_byte_522096 & (1U << 3))
+        {
+            if (*_stationGhostPos == args->pos
+                && *_stationGhostRotation == args->rotation
+                && *_stationGhostTrackId == args->trackId
+                && *_stationGhostTileIndex == args->index
+                && *_stationGhostType == args->trackObjectId)
+            {
+                return;
+            }
+            removeConstructionGhosts();
+        }
+
+        _stationGhostPos = args->pos;
+        _stationGhostRotation = args->rotation;
+        _stationGhostTrackId = args->trackId;
+        _stationGhostTileIndex = args->index;
+        _stationGhostType = args->trackObjectId;
+
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+        _stationCost = cost;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::construction);
+
+        if (cost == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        _byte_522096 = _byte_522096 | (1U << 3);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        _constructingStationId = _lastConstructedAdjoiningStationId;
+
+        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        setCatchmentDisplay(station, CatchmentFlags::flag_0);
+        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        if (pos.x == -1)
+        {
+            pos = args->pos;
+        }
+
+        sub_491BF5(pos, CatchmentFlags::flag_0);
+        Windows::Station::sub_491BC6();
+
+        auto res = calcAcceptedCargoTrackStationGhost(station, pos, 0xFFFFFFFFU);
+        _constructingStationAcceptedCargoTypes = res.accepted;
+        _constructingStationProducedCargoTypes = res.produced;
+    }
+
     // 0x0049E421
     static void onToolUpdate(Window&, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
@@ -465,7 +526,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            // onToolUpdateTrackStation(x, y);
+            onToolUpdateTrackStation({ x, y });
         }
     }
 
