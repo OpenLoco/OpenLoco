@@ -34,8 +34,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 {
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-    static loco_global<uint32_t, 0x00112C734> _lastConstructedGhostStationId;
-    static loco_global<World::Pos2, 0x00112C792> _lastConstructedGhostStationCentrePos;
+    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
+    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _stationGhostPos = args->pos;
         _stationGhostRotation = args->rotation;
         _stationGhostTypeDockAirport = args->type;
-        _stationGhostType = 0x8000; // Why??
+        _stationGhostType = (1U << 15);
 
         const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
 
@@ -285,11 +285,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         _byte_522096 = _byte_522096 | (1U << 3);
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
-        _constructingStationId = _lastConstructedGhostStationId;
+        _constructingStationId = _lastConstructedAdjoiningStationId;
 
-        auto* station = _lastConstructedGhostStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedGhostStationId)) : nullptr;
+        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
         setCatchmentDisplay(station, CatchmentFlags::flag_0);
-        auto pos = *_lastConstructedGhostStationCentrePos;
+        auto pos = *_lastConstructedAdjoiningStationCentrePos;
         if (pos.x == -1)
         {
             pos = args->pos;
