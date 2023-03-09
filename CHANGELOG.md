@@ -1,6 +1,7 @@
 23.02+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1021] Excessive CPU usage when the Load/Save window is open.
+- Fix: [#1783] Crash when drawing track tunnels under certain situations.
 - Fix: [#1875] Tooltips weren't line-wrapping properly.
 
 23.02 (2023-02-19)
