@@ -27,6 +27,78 @@ namespace OpenLoco::Config
         return _newConfig;
     }
 
+    constexpr LocoConfig kDefaultConfig = {
+        /*flags*/ Flags::exportObjectsWithSaves,
+        /*resolutionWidth*/ -1,
+        /*resolutionHeight*/ -1,
+        /*backupResolutionWidth*/ 0xFFFFU,
+        /*backupResolutionHeight*/ 0xFFFFU,
+        /*countdown*/ 0,
+        /*var_0D*/ false,
+        /*audioDeviceGuid*/ { 0 },
+        /*var_1E*/ 1,
+        /*forceSoftwareAudioMixer*/ 0,
+        /*musicPlaying*/ 1,
+        /*constructionMarker*/ 0,
+        /*maxVehicleSounds*/ 16,
+        /*maxSoundInstances*/ 10,
+        /*soundQuality*/ 2,
+        /*measurementFormat*/ MeasurementFormat::imperial,
+        /*pad_29*/ 1,
+        /*keyboardShortcuts*/ {
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+            { 0xFF, 0xFF },
+        },
+        /*edgeScrolling*/ 1,
+        /*vehiclesMinScale*/ 2,
+        /*var_72*/ 0,
+        /*musicPlaylist*/ MusicPlaylistType::currentEra,
+        /*heightMarkerOffset*/ 0x100,
+        /*newsSettings*/ { NewsType::newsWindow, NewsType::newsWindow, NewsType::ticker, NewsType::newsWindow, NewsType::newsWindow },
+        /*preferredCurrency*/ { 0xFF },
+        /*enabledMusic*/ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        /*pad_A9*/ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        /*volume*/ -1100,
+        /*connectionTimeout*/ 25000,
+        /*lastHost*/ { 0 },
+        /*stationNamesMinScale*/ 2,
+        /*scenarioSelectedTab*/ 0,
+        /*preferredName*/ { 0 },
+    };
+
     constexpr uint8_t _defaultMaxVehicleSounds[3] = { 4, 8, 16 };
     constexpr uint8_t _defaultMaxSoundInstances[3] = { 6, 8, 10 };
     constexpr ObjectHeader _defaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
@@ -36,6 +108,7 @@ namespace OpenLoco::Config
 
     static void setDefaultsLegacyConfig()
     {
+        getLegacy() = kDefaultConfig;
         if (_totalPhysicalMemory <= (64 * 1024 * 1024)) // 64 MB
         {
             getLegacy().soundQuality = 0;
