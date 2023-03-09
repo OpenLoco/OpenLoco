@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;
         strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
 
-        uint32_t flags = 0;
+        S5::SaveFlags flags = S5::SaveFlags::none;
         if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
             flags = S5::SaveFlags::packCustomObjects;
 

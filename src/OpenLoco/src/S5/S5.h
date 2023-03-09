@@ -5,6 +5,7 @@
 #include "Objects/Object.h"
 #include "ScenarioObjective.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <cstdint>
 #include <memory>
@@ -26,23 +27,29 @@ namespace OpenLoco::S5
         landscape = 3,
     };
 
-    namespace S5Flags
+    enum class HeaderFlags : uint8_t
     {
-        constexpr uint8_t isRaw = 1 << 0;
-        constexpr uint8_t isDump = 1 << 1;
-        constexpr uint8_t isTitleSequence = 1 << 2;
-        constexpr uint8_t hasSaveDetails = 1 << 3;
-    }
+        none = 0U,
+        isRaw = 1U << 0,
+        isDump = 1U << 1,
+        isTitleSequence = 1U << 2,
+        hasSaveDetails = 1U << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(HeaderFlags);
 
 #pragma pack(push, 1)
     struct Header
     {
         S5Type type;
-        uint8_t flags;
+        HeaderFlags flags;
         uint16_t numPackedObjects;
         uint32_t version;
         uint32_t magic;
         std::byte padding[20];
+        constexpr bool hasFlags(HeaderFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != HeaderFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(Header) == 0x20);
@@ -257,11 +264,13 @@ namespace OpenLoco::S5
     };
     static_assert(sizeof(TileElement) == 8);
 
-    namespace S5FixFlags
+    enum class S5FixFlags : uint16_t
     {
-        constexpr uint16_t fixFlag0 = 1 << 0;
-        constexpr uint16_t fixFlag1 = 1 << 1;
-    }
+        none = 0U,
+        fixFlag0 = 1U << 0,
+        fixFlag1 = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(S5FixFlags);
 
     struct GameState
     {
@@ -351,7 +360,7 @@ namespace OpenLoco::S5
         uint8_t industryFlags;                                                           // 0x00042F (0x00526247)
         uint16_t forbiddenVehiclesPlayers;                                               // 0x000430 (0x00526248)
         uint16_t forbiddenVehiclesCompetitors;                                           // 0x000432 (0x0052624A)
-        uint16_t fixFlags;                                                               // 0x000434 (0x0052624C)
+        S5FixFlags fixFlags;                                                             // 0x000434 (0x0052624C)
         uint16_t recordSpeed[3];                                                         // 0x000436 (0x0052624E)
         uint8_t recordCompany[4];                                                        // 0x00043C (0x00526254)
         uint32_t recordDate[3];                                                          // 0x000440 (0x00526258)
@@ -395,6 +404,11 @@ namespace OpenLoco::S5
         char userStrings[S5::Limits::kMaxUserStrings][32];                               // 0x432A44 (0x0095885C)
         uint16_t routings[S5::Limits::kMaxVehicles][S5::Limits::kMaxRoutingsPerVehicle]; // 0x442A44 (0x0096885C)
         uint8_t orders[S5::Limits::kMaxOrders];                                          // 0x461E44 (0x00987C5C)
+
+        constexpr bool hasFixFlags(S5FixFlags flagsToTest) const
+        {
+            return (fixFlags & flagsToTest) != S5FixFlags::none;
+        }
     };
 #pragma pack(pop)
     static_assert(sizeof(GameState) == 0x4A0644);
@@ -410,23 +424,26 @@ namespace OpenLoco::S5
         std::vector<std::pair<ObjectHeader, std::vector<uint8_t>>> packedObjects;
     };
 
-    namespace LoadFlags
+    enum class LoadFlags : uint32_t
     {
-        constexpr uint32_t titleSequence = 1 << 0;
-        constexpr uint32_t twoPlayer = 1 << 1;
-        constexpr uint32_t scenario = 1 << 2;
-    }
-
-    namespace SaveFlags
-    {
-        constexpr uint32_t none = 0;
-        constexpr uint32_t packCustomObjects = 1 << 0;
-        constexpr uint32_t scenario = 1 << 1;
-        constexpr uint32_t landscape = 1 << 2;
-        constexpr uint32_t noWindowClose = 1u << 29;
-        constexpr uint32_t raw = 1u << 30;  // Save raw data including pointers with no clean up
-        constexpr uint32_t dump = 1u << 31; // Used for dumping the game state when there is a fatal error
+        none = 0U,
+        titleSequence = 1U << 0,
+        twoPlayer = 1U << 1,
+        scenario = 1U << 2,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(LoadFlags);
+
+    enum class SaveFlags : uint32_t
+    {
+        none = 0,
+        packCustomObjects = 1U << 0,
+        scenario = 1U << 1,
+        landscape = 1U << 2,
+        noWindowClose = 1U << 29,
+        raw = 1U << 30,  // Save raw data including pointers with no clean up
+        dump = 1U << 31, // Used for dumping the game state when there is a fatal error
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SaveFlags);
 
     constexpr const char* extensionSC5 = ".SC5";
     constexpr const char* extensionSV5 = ".SV5";
@@ -435,12 +452,12 @@ namespace OpenLoco::S5
     constexpr const char* filterSV5 = "*.SV5";
 
     Options& getOptions();
-    bool exportGameStateToFile(const fs::path& path, uint32_t flags);
-    bool exportGameStateToFile(Stream& stream, uint32_t flags);
+    bool exportGameStateToFile(const fs::path& path, SaveFlags flags);
+    bool exportGameStateToFile(Stream& stream, SaveFlags flags);
     void registerHooks();
 
-    bool importSaveToGameState(const fs::path& path, uint32_t flags);
-    bool importSaveToGameState(Stream& stream, uint32_t flags);
+    bool importSaveToGameState(const fs::path& path, LoadFlags flags);
+    bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);
     std::unique_ptr<Options> readScenarioOptions(const fs::path& path);
 
