@@ -23,7 +23,7 @@ namespace OpenLoco::Paint
     static loco_global<uint32_t, 0x001135F36> _trackImageId2;
     static loco_global<uint32_t** [1], 0x004FFB7C> _trackPaintModes;
     static loco_global<uint32_t** [2], 0x004FFB80> _trackExtraPaintModes;
-    static loco_global<uint8_t, 0x00113605E> _trackVar1B;
+    static loco_global<uint8_t, 0x00113605E> _trackTunnel;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
     // 0x0049B6BF
@@ -61,6 +61,7 @@ namespace OpenLoco::Paint
         session.setItemType(Ui::ViewportInteraction::InteractionItem::track);
         const auto* trackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
         _trackBaseImageId = trackObj->image;
+        _trackTunnel = trackObj->tunnel;
 
         _trackImageId1 = Gfx::recolour(0, CompanyManager::getCompanyColour(elTrack.owner()));
         _trackImageId2 = _trackImageId1;
