@@ -54,9 +54,10 @@ namespace OpenLoco
         var_14 = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(numAux01);
 
-        // Load unk2?
         var_18 = reinterpret_cast<const uint16_t*>(remainingData.data());
-        remainingData = remainingData.subspan(numAux02Ent * sizeof(uint16_t));
+        remainingData = remainingData.subspan(numAux01 * sizeof(uint16_t));
+
+        // Load unk2?
         for (auto i = 0U; i < numAux02Ent; ++i)
         {
             var_1C[0] = reinterpret_cast<const uint8_t*>(remainingData.data());
