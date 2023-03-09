@@ -1950,7 +1950,7 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::enableCheatsToolbarButton) | (1 << Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Widx::disableAICompanies) | (1 << Widx::use_preferred_owner_name) | (1 << Widx::change_btn) | (1 << Widx::export_plugin_objects) | (1 << Widx::disableTownExpansion) | (1 << Widx::autosave_amount) | (1 << Widx::autosave_amount_down_btn) | (1 << Widx::autosave_amount_up_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::enableCheatsToolbarButton) | (1 << Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Widx::disableAICompanies) | (1 << Widx::use_preferred_owner_name) | (1 << Widx::change_btn) | (1 << Widx::export_plugin_objects) | (1 << Widx::disableTownExpansion) | (1 << Widx::autosave_amount) | (1 << Widx::autosave_amount_down_btn) | (1 << Widx::autosave_amount_up_btn) | (1 << Widx::autosave_frequency_btn);
 
         static Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_miscellaneous),
