@@ -1188,6 +1188,11 @@ namespace OpenLoco
             Ui::showMessageBox("Exception", e.what());
             exitCleanly();
         }
+        catch (...)
+        {
+            Ui::showMessageBox("Exception", "Unsure what threw the exception!");
+            exitCleanly();
+        }
     }
 
     int main(int argc, const char** argv)

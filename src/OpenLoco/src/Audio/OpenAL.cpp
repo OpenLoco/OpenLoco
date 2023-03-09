@@ -40,7 +40,8 @@ namespace OpenAL
 
     Device::~Device()
     {
-        close();
+        // Although we should close on destruction this is causing a hang if destruction happens during process exit. Revisit when standalone
+        // close();
     }
 
     std::vector<std::string> Device::getAvailableDeviceNames() const
@@ -79,7 +80,8 @@ namespace OpenAL
 
     Context::~Context()
     {
-        close();
+        // Although we should close on destruction this is causing a hang if destruction happens during process exit. Revisit when standalone
+        // close();
     }
 
     void Source::play()
