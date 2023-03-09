@@ -4,6 +4,7 @@
 - Fix: [#1783] Crash when drawing track tunnels under certain situations.
 - Fix: [#1875] Tooltips weren't line-wrapping properly.
 - Fix: [#1882] Process hang when the game trys to crash uncleanly.
+- Fix: [#1887] Autosave frequency dropdown not working.
 
 23.02 (2023-02-19)
 ------------------------------------------------------------------------
