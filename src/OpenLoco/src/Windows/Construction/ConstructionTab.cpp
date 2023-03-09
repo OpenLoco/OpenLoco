@@ -2126,7 +2126,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     static loco_global<uint16_t[44], 0x004F8764> _4F8764;
-    static loco_global<uint16_t[10], 0x004F8764> _4F7284;
+    static loco_global<uint16_t[10], 0x004F7284> _4F7284;
 
     // 0x0049FB63
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
