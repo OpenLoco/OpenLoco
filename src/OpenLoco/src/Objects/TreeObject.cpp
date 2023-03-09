@@ -184,7 +184,7 @@ namespace OpenLoco
 
         if ((flags & TreeObjectFlags::hasShadow) != TreeObjectFlags::none)
         {
-            shadowImageOffset = imgRes.imageOffset + totalImageCount;
+            shadowImageOffset = totalImageCount;
 
             // Shadows double the number of images (combines to a x4 with snow)
             const auto numShadowImages = totalImageCount;
