@@ -165,7 +165,6 @@ namespace OpenLoco
         }
     };
 
-    static void sub_491BF5(const Pos2& pos, const CatchmentFlags flag);
     static StationElement* getStationElement(const Pos3& pos);
 
     // 0x0048B23E
@@ -436,6 +435,52 @@ namespace OpenLoco
         return res;
     }
 
+    // 0x00491F43
+    // WARNING: this may be called with station (ebp) = -1
+    // THIS FUNCTION ONLY TO BE CALLED ON GHOST AIRPORT STATIONS
+    PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const uint8_t type, const Pos2& location, const uint8_t rotation, const uint32_t filter)
+    {
+        CargoSearchState cargoSearchState;
+        cargoSearchState.byte_112C7F2(1);
+        cargoSearchState.filter(0);
+
+        cargoSearchState.filter(filter);
+
+        cargoSearchState.resetIndustryMap();
+
+        setCatchmentDisplay(ghostStation, CatchmentFlags::flag_1);
+
+        sub_491C6F(type, location, rotation, CatchmentFlags::flag_1);
+
+        PotentialCargo res{};
+        res.accepted = doCalcAcceptedCargo(ghostStation, cargoSearchState);
+        res.produced = cargoSearchState.producedCargoTypes();
+        return res;
+    }
+
+    // 0x00491F93
+    // WARNING: this may be called with station (ebp) = -1
+    // THIS FUNCTION ONLY TO BE CALLED ON GHOST DOCK STATIONS
+    PotentialCargo calcAcceptedCargoDockGhost(const Station* ghostStation, const Pos2& location, const uint32_t filter)
+    {
+        CargoSearchState cargoSearchState;
+        cargoSearchState.byte_112C7F2(1);
+        cargoSearchState.filter(0);
+
+        cargoSearchState.filter(filter);
+
+        cargoSearchState.resetIndustryMap();
+
+        setCatchmentDisplay(ghostStation, CatchmentFlags::flag_1);
+
+        sub_491D20(location, CatchmentFlags::flag_1);
+
+        PotentialCargo res{};
+        res.accepted = doCalcAcceptedCargo(ghostStation, cargoSearchState);
+        res.produced = cargoSearchState.producedCargoTypes();
+        return res;
+    }
+
     static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const CatchmentFlags flags);
 
     // 0x00491D70
@@ -467,36 +512,14 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
-                    Pos2 minPos(airportObject->minX * 32, airportObject->minY * 32);
-                    Pos2 maxPos(airportObject->maxX * 32, airportObject->maxY * 32);
+                    auto [minPos, maxPos] = airportObject->getAirportExtents(pos, stationElement->rotation());
 
-                    minPos = Math::Vector::rotate(minPos, stationElement->rotation());
-                    maxPos = Math::Vector::rotate(maxPos, stationElement->rotation());
+                    minPos.x -= catchmentSize;
+                    minPos.y -= catchmentSize;
+                    maxPos.x += catchmentSize;
+                    maxPos.y += catchmentSize;
 
-                    minPos.x += pos.x;
-                    minPos.y += pos.y;
-                    maxPos.x += pos.x;
-                    maxPos.y += pos.y;
-
-                    if (minPos.x > maxPos.x)
-                    {
-                        std::swap(minPos.x, maxPos.x);
-                    }
-
-                    if (minPos.y > maxPos.y)
-                    {
-                        std::swap(minPos.y, maxPos.y);
-                    }
-
-                    TilePos2 tileMinPos(minPos);
-                    TilePos2 tileMaxPos(maxPos);
-
-                    tileMinPos.x -= catchmentSize;
-                    tileMinPos.y -= catchmentSize;
-                    tileMaxPos.x += catchmentSize;
-                    tileMaxPos.y += catchmentSize;
-
-                    setStationCatchmentRegion(cargoSearchState, tileMinPos, tileMaxPos, catchmentFlag);
+                    setStationCatchmentRegion(cargoSearchState, minPos, maxPos, catchmentFlag);
                 }
                 break;
                 case StationType::docks:
@@ -835,10 +858,42 @@ namespace OpenLoco
     }
 
     // 0x00491BF5
-    static void sub_491BF5(const Pos2& pos, const CatchmentFlags flag)
+    void sub_491BF5(const Pos2& pos, const CatchmentFlags flag)
     {
         TilePos2 minPos(pos);
         auto maxPos = minPos;
+        maxPos.x += catchmentSize;
+        maxPos.y += catchmentSize;
+        minPos.x -= catchmentSize;
+        minPos.y -= catchmentSize;
+
+        CargoSearchState cargoSearchState;
+
+        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+    }
+
+    // 0x00491C6F
+    void sub_491C6F(const uint8_t type, const Pos2& pos, const uint8_t rotation, const CatchmentFlags flag)
+    {
+        auto airportObject = ObjectManager::get<AirportObject>(type);
+
+        auto [minPos, maxPos] = airportObject->getAirportExtents(pos, rotation);
+
+        minPos.x -= catchmentSize;
+        minPos.y -= catchmentSize;
+        maxPos.x += catchmentSize;
+        maxPos.y += catchmentSize;
+
+        CargoSearchState cargoSearchState;
+
+        setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+    }
+
+    // 0x00491D20
+    void sub_491D20(const Pos2& pos, const CatchmentFlags flag)
+    {
+        TilePos2 minPos(pos);
+        auto maxPos = minPos + TilePos2{ 1, 1 };
         maxPos.x += catchmentSize;
         maxPos.y += catchmentSize;
         minPos.x -= catchmentSize;

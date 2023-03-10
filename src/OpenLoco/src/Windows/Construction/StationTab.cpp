@@ -32,6 +32,11 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
+    static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
+    static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
+    static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
+    static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
+
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
         makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
@@ -211,19 +216,319 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    // 0x0049E421
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    static void setMapSelectedTilesFromRange(const World::TilePosRangeView& range)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E421, regs);
+        size_t i = 0;
+        for (const auto& pos : range)
+        {
+            _mapSelectedTiles[i++] = pos;
+        }
+
+        _mapSelectedTiles[i].x = -1;
+        mapInvalidateMapSelectionTiles();
     }
+
+    static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y);
+    static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgsFromCursor(const int16_t x, const int16_t y);
+    static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
+    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
 
     static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
     static loco_global<World::Pos2, 0x001135F80> _1135F90;
+
+    // 0x004A4CF9
+    static void onToolUpdateFail()
+    {
+        removeConstructionGhosts();
+        if (_stationCost != 0x80000000U)
+        {
+            _stationCost = 0x80000000U;
+            Ui::WindowManager::invalidate(Ui::WindowType::construction);
+        }
+    }
+
+    // 0x004A4F3B
+    static void onToolUpdateAirport(const Ui::Point& mousePos)
+    {
+        World::TileManager::mapInvalidateMapSelectionTiles();
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        if (!args.has_value())
+        {
+            onToolUpdateFail();
+            return;
+        }
+
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        _constructionArrowDirection = args->rotation;
+        _constructionArrowPos = args->pos;
+
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+
+        if (_byte_522096 & (1U << 3))
+        {
+            if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
+            {
+                return;
+            }
+            removeConstructionGhosts();
+        }
+
+        _stationGhostPos = args->pos;
+        _stationGhostRotation = args->rotation;
+        _stationGhostTypeDockAirport = args->type;
+        _stationGhostType = (1U << 15);
+
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+        _stationCost = cost;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::construction);
+
+        if (cost == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        _byte_522096 = _byte_522096 | (1U << 3);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        _constructingStationId = _lastConstructedAdjoiningStationId;
+
+        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        setCatchmentDisplay(station, CatchmentFlags::flag_0);
+        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        if (pos.x == -1)
+        {
+            pos = args->pos;
+        }
+
+        sub_491C6F(_stationGhostTypeDockAirport, pos, _stationGhostRotation, CatchmentFlags::flag_0);
+        Windows::Station::sub_491BC6();
+        auto res = calcAcceptedCargoAirportGhost(station, _stationGhostTypeDockAirport, pos, _stationGhostRotation, 0xFFFFFFFFU);
+        _constructingStationAcceptedCargoTypes = res.accepted;
+        _constructingStationProducedCargoTypes = res.produced;
+    }
+
+    // 0x004A5158
+    static void onToolUpdateDock(const Ui::Point& mousePos)
+    {
+        World::TileManager::mapInvalidateMapSelectionTiles();
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        const auto args = getDockPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        if (!args.has_value())
+        {
+            onToolUpdateFail();
+            return;
+        }
+
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        _constructionArrowDirection = args->rotation;
+        _constructionArrowPos = args->pos;
+
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+
+        if (_byte_522096 & (1U << 3))
+        {
+            if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
+            {
+                return;
+            }
+            removeConstructionGhosts();
+        }
+
+        _stationGhostPos = args->pos;
+        _stationGhostRotation = args->rotation;
+        _stationGhostTypeDockAirport = args->type;
+        _stationGhostType = (1U << 14);
+
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+        _stationCost = cost;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::construction);
+
+        if (cost == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        _byte_522096 = _byte_522096 | (1U << 3);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        _constructingStationId = _lastConstructedAdjoiningStationId;
+
+        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        setCatchmentDisplay(station, CatchmentFlags::flag_0);
+        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        if (pos.x == -1)
+        {
+            pos = args->pos;
+        }
+
+        sub_491D20(pos, CatchmentFlags::flag_0);
+        Windows::Station::sub_491BC6();
+        auto res = calcAcceptedCargoDockGhost(station, pos, 0xFFFFFFFFU);
+        _constructingStationAcceptedCargoTypes = res.accepted;
+        _constructingStationProducedCargoTypes = res.produced;
+    }
+
+    // 0x004A4D21
+    static void onToolUpdateRoadStation(const Ui::Point& mousePos)
+    {
+        const auto args = getRoadStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        if (!args.has_value())
+        {
+            onToolUpdateFail();
+            return;
+        }
+
+        if (_byte_522096 & (1U << 3))
+        {
+            if (*_stationGhostPos == args->pos
+                && *_stationGhostRotation == args->rotation
+                && *_stationGhostTrackId == args->roadId
+                && *_stationGhostTileIndex == args->index
+                && *_stationGhostType == (args->roadObjectId | (1 << 7)))
+            {
+                return;
+            }
+            removeConstructionGhosts();
+        }
+
+        _stationGhostPos = args->pos;
+        _stationGhostRotation = args->rotation;
+        _stationGhostTrackId = args->roadId;
+        _stationGhostTileIndex = args->index;
+        _stationGhostType = args->roadObjectId | (1 << 7);
+
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+        _stationCost = cost;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::construction);
+
+        if (cost == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        _byte_522096 = _byte_522096 | (1U << 3);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        _constructingStationId = _lastConstructedAdjoiningStationId;
+
+        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        setCatchmentDisplay(station, CatchmentFlags::flag_0);
+        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        if (pos.x == -1)
+        {
+            pos = args->pos;
+        }
+
+        sub_491BF5(pos, CatchmentFlags::flag_0);
+        Windows::Station::sub_491BC6();
+
+        const auto* roadStationObj = ObjectManager::get<RoadStationObject>(args->type);
+        uint32_t filter = 0xFFFFFFFFU;
+        if (roadStationObj->hasFlags(RoadStationFlags::passenger))
+        {
+            filter = 1U << roadStationObj->cargoType;
+        }
+        if (roadStationObj->hasFlags(RoadStationFlags::freight))
+        {
+            filter = 0xFFFFFFFFU;
+            filter &= ~(1U << roadStationObj->cargoType);
+        }
+
+        auto res = calcAcceptedCargoTrackStationGhost(station, pos, filter);
+        _constructingStationAcceptedCargoTypes = res.accepted;
+        _constructingStationProducedCargoTypes = res.produced;
+    }
+
+    // 0x004A4B2E
+    static void onToolUpdateTrackStation(const Ui::Point& mousePos)
+    {
+        const auto args = getTrackStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        if (!args.has_value())
+        {
+            onToolUpdateFail();
+            return;
+        }
+
+        if (_byte_522096 & (1U << 3))
+        {
+            if (*_stationGhostPos == args->pos
+                && *_stationGhostRotation == args->rotation
+                && *_stationGhostTrackId == args->trackId
+                && *_stationGhostTileIndex == args->index
+                && *_stationGhostType == args->trackObjectId)
+            {
+                return;
+            }
+            removeConstructionGhosts();
+        }
+
+        _stationGhostPos = args->pos;
+        _stationGhostRotation = args->rotation;
+        _stationGhostTrackId = args->trackId;
+        _stationGhostTileIndex = args->index;
+        _stationGhostType = args->trackObjectId;
+
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+
+        _stationCost = cost;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::construction);
+
+        if (cost == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        _byte_522096 = _byte_522096 | (1U << 3);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        _constructingStationId = _lastConstructedAdjoiningStationId;
+
+        auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
+        setCatchmentDisplay(station, CatchmentFlags::flag_0);
+        auto pos = *_lastConstructedAdjoiningStationCentrePos;
+        if (pos.x == -1)
+        {
+            pos = args->pos;
+        }
+
+        sub_491BF5(pos, CatchmentFlags::flag_0);
+        Windows::Station::sub_491BC6();
+
+        auto res = calcAcceptedCargoTrackStationGhost(station, pos, 0xFFFFFFFFU);
+        _constructingStationAcceptedCargoTypes = res.accepted;
+        _constructingStationProducedCargoTypes = res.produced;
+    }
+
+    // 0x0049E421
+    static void onToolUpdate(Window&, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    {
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+        if (_byte_1136063 & (1 << 7))
+        {
+            onToolUpdateAirport({ x, y });
+        }
+        else if (_byte_1136063 & (1 << 6))
+        {
+            onToolUpdateDock({ x, y });
+        }
+        else if (_trackType & (1 << 7))
+        {
+            onToolUpdateRoadStation({ x, y });
+        }
+        else
+        {
+            onToolUpdateTrackStation({ x, y });
+        }
+    }
 
     // 0x004A47D9
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -237,25 +542,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         GameCommands::AirportPlacementArgs placementArgs;
         placementArgs.type = _lastSelectedStationType;
         placementArgs.rotation = _constructionRotation;
-        auto* airportObject = ObjectManager::get<AirportObject>(placementArgs.type);
-        TilePos2 minPos(airportObject->minX, airportObject->minY);
-        TilePos2 maxPos(airportObject->maxX, airportObject->maxY);
 
-        minPos = Math::Vector::rotate(minPos, placementArgs.rotation);
-        maxPos = Math::Vector::rotate(maxPos, placementArgs.rotation);
-
-        minPos += *pos;
-        maxPos += *pos;
-
-        if (minPos.x > maxPos.x)
-        {
-            std::swap(minPos.x, maxPos.x);
-        }
-
-        if (minPos.y > maxPos.y)
-        {
-            std::swap(minPos.y, maxPos.y);
-        }
+        const auto airportObj = ObjectManager::get<AirportObject>(placementArgs.type);
+        const auto [minPos, maxPos] = airportObj->getAirportExtents(*pos, placementArgs.rotation);
 
         _1135F7C = minPos;
         _1135F90 = maxPos;

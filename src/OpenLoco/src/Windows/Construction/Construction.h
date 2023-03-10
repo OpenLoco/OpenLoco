@@ -55,6 +55,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
     static loco_global<World::Pos3, 0x01135FE6> _stationGhostPos;
     static loco_global<uint16_t, 0x01135FEE> _stationGhostType;
+    static loco_global<uint8_t, 0x01136089> _stationGhostTypeDockAirport;
     static loco_global<World::Pos3, 0x01135FF8> _modGhostPos;
     static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
     static loco_global<int16_t, 0x01136000> _word_1136000;
