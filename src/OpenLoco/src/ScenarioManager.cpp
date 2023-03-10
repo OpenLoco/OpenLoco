@@ -184,6 +184,7 @@ namespace OpenLoco::ScenarioManager
         {
             _scenarioHeader = ScoreHeader{};
             free(_scenarioList);
+            _scenarioList = nullptr;
             return false;
         }
         if (currentState != _scenarioHeader->state)
@@ -377,6 +378,7 @@ namespace OpenLoco::ScenarioManager
         if (_scenarioList != reinterpret_cast<ScenarioIndexEntry*>(-1) && _scenarioList != nullptr)
         {
             free(_scenarioList);
+            _scenarioList = nullptr;
         }
 
         const auto currentState = getCurrentScenarioFolderState();
