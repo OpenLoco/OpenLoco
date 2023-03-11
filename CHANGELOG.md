@@ -7,6 +7,7 @@
 - Fix: [#1882] Process hang when the game trys to crash uncleanly.
 - Fix: [#1887] Autosave frequency dropdown not working.
 - Fix: [#1888] Tree shadows disappeared and docks double displayed.
+- Fix: [#1890] Crash when wrapping words that are longer than max width.
 
 23.02 (2023-02-19)
 ------------------------------------------------------------------------
