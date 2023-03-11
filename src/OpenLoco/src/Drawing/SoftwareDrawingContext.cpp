@@ -1573,7 +1573,8 @@ namespace OpenLoco::Drawing
                         if (startLine == wordStart && *ptr != '\0')
                         {
                             // Shuffle the string forward by one to make space for line ending
-                            std::copy_backward(ptr, ptr + StringManager::locoStrlen(ptr) + 1, ptr + 1);
+                            const auto len = StringManager::locoStrlen(ptr) + 1; // +1 for null termination
+                            std::copy_backward(ptr, ptr + len, ptr + len + 1);
                             // Insert line ending
                             *ptr++ = '\0';
                         }
