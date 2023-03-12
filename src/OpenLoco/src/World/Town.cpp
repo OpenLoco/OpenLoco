@@ -258,7 +258,7 @@ namespace OpenLoco
 
     // 0x00463BD2
     template<typename Func>
-    static void squareSearch(const World::Pos2& topLeftLoc, uint8_t searchSize, Func&& predicate)
+    static void squareSearch(const World::Pos2& topLeftLoc, [[maybe_unused]] uint8_t searchSize, Func&& predicate)
     {
         assert(searchSize == 9);
         for (auto& offset : kSquareSearchRange<9>)
