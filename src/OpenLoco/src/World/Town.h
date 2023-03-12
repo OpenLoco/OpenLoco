@@ -30,7 +30,7 @@ namespace OpenLoco
         metropolis,
     };
 
-    struct Sub497FFCResult
+    struct RoadExtentResult
     {
         World::Pos3 roadStart;
         uint16_t tad;
@@ -74,7 +74,7 @@ namespace OpenLoco
         void recalculateSize();
         void grow(int32_t growFlags);
         string_id getTownSizeString() const;
-        std::optional<Sub497FFCResult> sub_497FFC();
+        std::optional<RoadExtentResult> findRoadExtent();
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)

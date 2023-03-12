@@ -236,7 +236,7 @@ namespace OpenLoco::TownManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backupRegs = regs;
                 Town* town = X86Pointer<Town>(regs.esi);
-                auto res = town->sub_497FFC();
+                auto res = town->findRoadExtent();
                 if (res.has_value())
                 {
                     backupRegs.ax = res->roadStart.x;

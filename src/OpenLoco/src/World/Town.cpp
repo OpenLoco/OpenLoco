@@ -275,17 +275,17 @@ namespace OpenLoco
     }
 
     // 0x00497FFC
-    std::optional<Sub497FFCResult> Town::sub_497FFC()
+    std::optional<RoadExtentResult> Town::findRoadExtent()
     {
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x00497FFC, regs);
-        std::optional<Sub497FFCResult> origRes;
+        std::optional<RoadExtentResult> origRes;
 
         if (regs.ax != -1)
         {
             static loco_global<uint16_t, 0x001135C5A> _trackAndDirection2;
-            origRes = Sub497FFCResult{
+            origRes = RoadExtentResult{
                 World::Pos3{ regs.ax, regs.cx, regs.dx }, static_cast<uint16_t>(regs.ebp), static_cast<bool>((*_trackAndDirection2) & (1 << 12))
             };
         }
@@ -295,7 +295,8 @@ namespace OpenLoco
             World::RoadElement* elRoad;
         };
         std::optional<FindResult> res;
-        auto sub_497F74 = [randVal = prng.srand_0(), &res](const World::Pos2& loc) mutable {
+        // 0x00497F74
+        auto validRoad = [randVal = prng.srand_0(), &res](const World::Pos2& loc) mutable {
             auto tile = World::TileManager::get(loc);
             bool hasPassedSurface = false;
             for (auto& el : tile)
@@ -343,7 +344,7 @@ namespace OpenLoco
             }
             return true;
         };
-        squareSearch({ x, y }, 9, sub_497F74);
+        squareSearch({ x, y }, 9, validRoad);
         assert(origRes.has_value() == res.has_value());
         if (!res.has_value())
         {
@@ -353,7 +354,7 @@ namespace OpenLoco
         // static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
 
         auto& roadPiece = World::TrackData::getRoadPiece(res->elRoad->roadId());
-        std::optional<Sub497FFCResult> newRes = Sub497FFCResult{
+        std::optional<RoadExtentResult> newRes = RoadExtentResult{
             World::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
             static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->unkDirection()),
             res->elRoad->hasBridge()
