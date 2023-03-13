@@ -229,10 +229,8 @@ namespace OpenLoco::TownManager
                 return 0;
             });
 
-        writeLocoCall(0x00498124, 0x0049748C);
-
         registerHook(
-            0x0049748C,
+            0x00497FFC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backupRegs = regs;
                 Town* town = X86Pointer<Town>(regs.esi);

@@ -258,12 +258,12 @@ namespace OpenLoco
 
     // 0x00463BD2
     template<typename Func>
-    static void squareSearch(const World::Pos2& topLeftLoc, [[maybe_unused]] uint8_t searchSize, Func&& predicate)
+    static void squareSearch(const World::Pos2& centre, [[maybe_unused]] uint8_t searchSize, Func&& predicate)
     {
         assert(searchSize == 9);
         for (auto& offset : kSquareSearchRange<9>)
         {
-            const World::Pos2 pos = offset + topLeftLoc;
+            const World::Pos2 pos = offset + centre;
             if (World::validCoords(pos))
             {
                 if (!predicate(pos))
@@ -277,24 +277,14 @@ namespace OpenLoco
     // 0x00497FFC
     std::optional<RoadExtentResult> Town::findRoadExtent()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x00497FFC, regs);
-        std::optional<RoadExtentResult> origRes;
-
-        if (regs.ax != -1)
-        {
-            static loco_global<uint16_t, 0x001135C5A> _trackAndDirection2;
-            origRes = RoadExtentResult{
-                World::Pos3{ regs.ax, regs.cx, regs.dx }, static_cast<uint16_t>(regs.ebp), static_cast<bool>((*_trackAndDirection2) & (1 << 12))
-            };
-        }
         struct FindResult
         {
             World::Pos2 loc;
             World::RoadElement* elRoad;
         };
+
         std::optional<FindResult> res;
+
         // 0x00497F74
         auto validRoad = [randVal = prng.srand_0(), &res](const World::Pos2& loc) mutable {
             auto tile = World::TileManager::get(loc);
@@ -345,23 +335,17 @@ namespace OpenLoco
             return true;
         };
         squareSearch({ x, y }, 9, validRoad);
-        assert(origRes.has_value() == res.has_value());
+
         if (!res.has_value())
         {
             return std::nullopt;
         }
 
-        // static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
-
         auto& roadPiece = World::TrackData::getRoadPiece(res->elRoad->roadId());
-        std::optional<RoadExtentResult> newRes = RoadExtentResult{
+        return RoadExtentResult{
             World::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
             static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->unkDirection()),
             res->elRoad->hasBridge()
         };
-        assert(origRes->roadStart == newRes->roadStart);
-        assert(origRes->tad == newRes->tad);
-        assert(origRes->isBridge == newRes->isBridge);
-        return newRes;
     }
 }
