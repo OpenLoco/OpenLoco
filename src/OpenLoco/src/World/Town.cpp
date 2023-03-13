@@ -275,7 +275,7 @@ namespace OpenLoco
     }
 
     // 0x00497FFC
-    std::optional<RoadExtentResult> Town::findRoadExtent()
+    std::optional<RoadExtentResult> Town::findRoadExtent() const
     {
         struct FindResult
         {

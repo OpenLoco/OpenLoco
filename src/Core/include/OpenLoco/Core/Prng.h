@@ -13,8 +13,8 @@ namespace OpenLoco::Core
         uint32_t _srand_1{};
 
     public:
-        uint32_t srand_0() { return _srand_0; }
-        uint32_t srand_1() { return _srand_1; }
+        uint32_t srand_0() const { return _srand_0; }
+        uint32_t srand_1() const { return _srand_1; }
 
         Prng()
         {
