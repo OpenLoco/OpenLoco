@@ -228,6 +228,29 @@ namespace OpenLoco::TownManager
                 resetBuildingsInfluence();
                 return 0;
             });
+
+        registerHook(
+            0x00497FFC,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backupRegs = regs;
+                Town* town = X86Pointer<Town>(regs.esi);
+                auto res = town->findRoadExtent();
+                if (res.has_value())
+                {
+                    backupRegs.ax = res->roadStart.x;
+                    backupRegs.cx = res->roadStart.y;
+                    backupRegs.dx = res->roadStart.z;
+                    static loco_global<uint16_t, 0x001135C5A> _trackAndDirection;
+                    _trackAndDirection = res->tad | (res->isBridge ? 1 << 12 : 0);
+                    backupRegs.ebp = res->tad;
+                }
+                else
+                {
+                    backupRegs.ax = -1;
+                }
+                regs = backupRegs;
+                return 0;
+            });
     }
 }
 

@@ -6,6 +6,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
 #include <limits>
+#include <optional>
 
 namespace OpenLoco
 {
@@ -27,6 +28,13 @@ namespace OpenLoco
         town,
         city,
         metropolis,
+    };
+
+    struct RoadExtentResult
+    {
+        World::Pos3 roadStart;
+        uint16_t tad;
+        bool isBridge;
     };
 
 #pragma pack(push, 1)
@@ -66,6 +74,7 @@ namespace OpenLoco
         void recalculateSize();
         void grow(int32_t growFlags);
         string_id getTownSizeString() const;
+        std::optional<RoadExtentResult> findRoadExtent() const;
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)
