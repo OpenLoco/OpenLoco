@@ -4,6 +4,7 @@
 #include "Entities/EntityManager.h"
 #include "GameState.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "SceneManager.h"

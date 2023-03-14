@@ -1,5 +1,6 @@
 #include "ProgressBar.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "SceneManager.h"
 #include "WindowManager.h"

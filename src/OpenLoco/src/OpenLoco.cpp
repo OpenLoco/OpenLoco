@@ -44,6 +44,7 @@
 #include "Input/Shortcuts.h"
 #include "Interop/Hooks.h"
 #include "Intro.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"

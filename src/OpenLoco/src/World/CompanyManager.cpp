@@ -9,6 +9,7 @@
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Objects/AirportObject.h"

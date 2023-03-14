@@ -5,6 +5,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"

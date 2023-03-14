@@ -2,6 +2,7 @@
 #include "Entities/EntityManager.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"

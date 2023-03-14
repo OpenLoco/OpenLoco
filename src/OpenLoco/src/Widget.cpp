@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Localisation/Formatting.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>

@@ -2,6 +2,7 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "IndustryManager.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/IndustryElement.h"

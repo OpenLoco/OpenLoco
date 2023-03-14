@@ -5,6 +5,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"

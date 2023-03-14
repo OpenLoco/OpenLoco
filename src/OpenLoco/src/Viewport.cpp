@@ -5,6 +5,7 @@
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"

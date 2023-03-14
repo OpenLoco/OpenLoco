@@ -3,6 +3,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
