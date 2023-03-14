@@ -198,6 +198,9 @@ namespace OpenLoco::Vehicles
         }
         if (isOnRackRail && dh == 0)
         {
+            // calculating power when it's broken down
+            const auto power = ((bool)(var_73 & Flags73::isBrokenDown)) ? totalPower / 4 : totalPower;
+
             if (train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 const auto manualSpeed = train.head->var_6E;
@@ -223,14 +226,12 @@ namespace OpenLoco::Vehicles
                         var_5A = 2;
                     }
                 }
-                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
                 ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
             }
             else
             {
-                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
                 ebp += (power * 2048) / totalWeight;
-            }
+             }
         }
         const auto speedSquare = toSpeed16(currentSpeed).getRaw() * toSpeed16(currentSpeed).getRaw();
         ebp -= speedSquare;
