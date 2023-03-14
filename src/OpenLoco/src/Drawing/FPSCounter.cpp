@@ -2,7 +2,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Localisation/StringManager.h"
+#include "Localisation/Formatting.h"
 #include "Ui.h"
 
 #include <chrono>

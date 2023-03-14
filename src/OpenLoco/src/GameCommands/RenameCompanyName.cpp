@@ -3,6 +3,7 @@
 #include "GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Types.hpp"

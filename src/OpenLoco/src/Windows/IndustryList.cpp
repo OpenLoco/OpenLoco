@@ -9,6 +9,7 @@
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"

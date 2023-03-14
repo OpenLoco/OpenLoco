@@ -6,6 +6,7 @@
 #include "Environment.h"
 #include "ImageIds.h"
 #include "Input.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/StringManager.h"
 #include "PaletteMap.h"

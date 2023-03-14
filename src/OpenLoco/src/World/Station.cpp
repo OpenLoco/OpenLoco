@@ -1,6 +1,7 @@
 #include "Station.h"
 #include "CompanyManager.h"
 #include "IndustryManager.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"

@@ -18,6 +18,7 @@
 #include "LandObject.h"
 #include "LevelCrossingObject.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
 #include "ObjectIndex.h"

@@ -9,6 +9,7 @@
 #include "GameStateFlags.h"
 #include "Gui.h"
 #include "LastGameOptionManager.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/TileManager.h"

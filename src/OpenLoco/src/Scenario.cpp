@@ -12,6 +12,7 @@
 #include "Graphics/PaletteMap.h"
 #include "Gui.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/MapGenerator.h"

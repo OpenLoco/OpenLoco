@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Intro.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "Ui.h"

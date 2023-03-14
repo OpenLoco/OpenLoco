@@ -2,6 +2,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "EntityManager.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"

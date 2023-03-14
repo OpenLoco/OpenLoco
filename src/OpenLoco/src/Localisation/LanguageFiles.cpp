@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Conversion.h"
 #include "Environment.h"
+#include "Localisation/Formatting.h"
 #include "StringIds.h"
 #include "StringManager.h"
 #include "Ui.h"

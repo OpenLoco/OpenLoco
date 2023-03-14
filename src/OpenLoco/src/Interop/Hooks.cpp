@@ -18,6 +18,7 @@
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
+#include "Localisation/Formatting.h"
 #include "Map/AnimationManager.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"

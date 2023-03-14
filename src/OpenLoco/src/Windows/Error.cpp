@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/InterfaceSkinObject.h"
