@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include <OpenLoco/Core/EnumFlags.hpp>
+#include "OpenLoco/Core/EnumFlags.hpp"
 
 namespace stdx
 {
