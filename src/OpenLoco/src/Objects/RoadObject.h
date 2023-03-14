@@ -12,14 +12,18 @@ namespace OpenLoco
     {
         struct DependentObjects;
     }
+    enum class TownSize : uint8_t;
+
     namespace Gfx
     {
         struct RenderTarget;
     }
+    enum class TownSize : uint8_t;
 
     enum class RoadObjectFlags : uint16_t
     {
         none = 0U,
+        unk_00 = 1U << 0,
         unk_01 = 1U << 1,
         unk_02 = 1U << 2,
         unk_03 = 1U << 3, // Likely isTram
@@ -68,7 +72,8 @@ namespace OpenLoco
         uint8_t pad_29;
         uint16_t compatibleRoads;  // 0x2A
         uint16_t compatibleTracks; // 0x2C
-        uint8_t pad_2E[0x30 - 0x2E];
+        TownSize targetTownSize;   // 0x2E
+        uint8_t pad_2F;
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         bool validate() const;
