@@ -75,6 +75,7 @@ namespace OpenLoco
         void grow(int32_t growFlags);
         string_id getTownSizeString() const;
         std::optional<RoadExtentResult> findRoadExtent() const;
+        void buildInitialRoad();
     };
     static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)
