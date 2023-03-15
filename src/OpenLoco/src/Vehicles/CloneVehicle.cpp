@@ -21,7 +21,11 @@ namespace OpenLoco::Vehicles
             uint32_t totalCost = 0;
             for (auto& car : existingTrain.cars)
             {
-                auto cost = GameCommands::queryDo_5(car.front->objectId);
+                GameCommands::VehicleCreateArgs args{};
+                args.vehicleId = EntityId::null;
+                args.vehicleType = car.front->objectId;
+
+                const auto cost = GameCommands::doCommand(args, 0);
                 if (cost == GameCommands::FAILURE)
                 {
                     totalCost = GameCommands::FAILURE;
@@ -46,7 +50,12 @@ namespace OpenLoco::Vehicles
             uint32_t cost = 0;
             if (newHead == nullptr)
             {
-                cost = GameCommands::do_5(car.front->objectId);
+                GameCommands::VehicleCreateArgs args{};
+                args.vehicleId = EntityId::null;
+                args.vehicleType = car.front->objectId;
+
+                cost = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
                 auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVeh == nullptr)
                 {
@@ -56,7 +65,11 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                cost = GameCommands::do_5(car.front->objectId, newHead->head);
+                GameCommands::VehicleCreateArgs args{};
+                args.vehicleId = newHead->head;
+                args.vehicleType = car.front->objectId;
+
+                cost = GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
             if (cost == GameCommands::FAILURE)
             {

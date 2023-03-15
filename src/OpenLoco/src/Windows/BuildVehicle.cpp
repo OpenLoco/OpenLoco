@@ -773,7 +773,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
         }
 
-        if (GameCommands::do_5(item, EntityId(*_buildTargetVehicle)) == GameCommands::FAILURE)
+        GameCommands::VehicleCreateArgs gcArgs{};
+        gcArgs.vehicleId = EntityId(*_buildTargetVehicle);
+        gcArgs.vehicleType = item;
+        if (GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
         {
             return;
         }
