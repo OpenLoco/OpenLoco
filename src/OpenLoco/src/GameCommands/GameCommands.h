@@ -286,13 +286,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline void do_6(EntityId car)
+    struct VehicleSellArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.dx = enumValue(car);
-        doCommand(GameCommand::vehicleSell, regs);
-    }
+        static constexpr auto command = GameCommand::vehiclePassSignal;
+
+        VehicleSellArgs() = default;
+        explicit VehicleSellArgs(const registers& regs)
+            : car(static_cast<EntityId>(regs.dx))
+        {
+        }
+
+        EntityId car;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dx = enumValue(car);
+            return regs;
+        }
+    };
 
     struct TrackPlacementArgs
     {

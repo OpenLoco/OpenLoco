@@ -1106,7 +1106,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.push(head->name);
                     args.push(head->ordinalNumber);
                     GameCommands::setErrorTitle(StringIds::cant_sell_string_id);
-                    GameCommands::do_6(head->id);
+
+                    GameCommands::VehicleSellArgs gcArgs{};
+                    gcArgs.car = head->id;
+
+                    GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
                 }
             }
@@ -1760,8 +1764,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (targetWidget)
             {
                 case widx::remove:
-                    GameCommands::do_6((*_dragCarComponent)->id);
+                {
+
+                    GameCommands::VehicleSellArgs gcArgs{};
+                    gcArgs.car = (*_dragCarComponent)->id;
+
+                    GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
+                }
                 case widx::carList:
                 {
                     auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
