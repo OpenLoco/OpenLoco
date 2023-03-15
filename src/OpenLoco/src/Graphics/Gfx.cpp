@@ -80,10 +80,10 @@ namespace OpenLoco::Gfx
 
         if (header.numEntries != G1ExpectedCount::kDisc)
         {
-            Console::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
+            Diagnostics::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
             if (header.numEntries == G1ExpectedCount::kSteam)
             {
-                Console::info("Got Steam G1.DAT variant, will fix elements automatically.");
+                Diagnostics::info("Got Steam G1.DAT variant, will fix elements automatically.");
             }
         }
 

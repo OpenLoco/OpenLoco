@@ -493,7 +493,7 @@ namespace OpenLoco
     static void tickInterrupted()
     {
         EntityTweener::get().reset();
-        Console::info("Tick interrupted");
+        Diagnostics::info("Tick interrupted");
     }
 
     // 0x0046A794
@@ -1124,17 +1124,17 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            Console::error("Unable to simulate park: {}", e.what());
+            Diagnostics::error("Unable to simulate park: {}", e.what());
         }
         catch (const GameException i)
         {
             if (i != GameException::Interrupt)
             {
-                Console::error("Unable to simulate park!");
+                Diagnostics::error("Unable to simulate park!");
             }
             else
             {
-                Console::info("File loaded. Starting simulation.");
+                Diagnostics::info("File loaded. Starting simulation.");
             }
         }
         tickLogic(ticks);
@@ -1143,10 +1143,10 @@ namespace OpenLoco
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {
-        Console::initialize();
+        Diagnostics::initialize();
 
         // Always print the product name and version first.
-        Console::info("{}", OpenLoco::getVersionInfo());
+        Diagnostics::info("{}", OpenLoco::getVersionInfo());
 
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)
@@ -1162,7 +1162,7 @@ namespace OpenLoco
         }
         else
         {
-            Console::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+            Diagnostics::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
         }
 
         try
@@ -1185,7 +1185,7 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            Console::error("Exception: {}", e.what());
+            Diagnostics::error("Exception: {}", e.what());
             Ui::showMessageBox("Exception", e.what());
             exitCleanly();
         }

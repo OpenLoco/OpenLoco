@@ -393,7 +393,7 @@ namespace OpenLoco::ObjectManager
         {
             // Something wrong has happened and installed object does not match index
             // Vanilla continued to search for subsequent matching installed headers.
-            Console::errorDeprecated("Missmatch between installed object header and object file header!");
+            Diagnostics::errorDeprecated("Missmatch between installed object header and object file header!");
             return std::nullopt;
         }
 
@@ -403,7 +403,7 @@ namespace OpenLoco::ObjectManager
         if (!computeObjectChecksum(preLoadObj.header, data))
         {
             // Something wrong has happened and installed object checksum is broken
-            Console::errorDeprecated("Missmatch between installed object header checksum and object file checksum!");
+            Diagnostics::errorDeprecated("Missmatch between installed object header checksum and object file checksum!");
             return std::nullopt;
         }
 
@@ -422,7 +422,7 @@ namespace OpenLoco::ObjectManager
             free(preLoadObj.object);
             // Object failed validation
             std::string str(header.getName());
-            Console::errorDeprecated("Object %s in index failed validation! (This should not be possible)", str.c_str());
+            Diagnostics::errorDeprecated("Object %s in index failed validation! (This should not be possible)", str.c_str());
             return std::nullopt;
         }
 
@@ -585,7 +585,7 @@ namespace OpenLoco::ObjectManager
                 result.success = false;
                 result.problemObject = header;
                 std::string str(header.getName());
-                Console::errorDeprecated("Failed to load: %s", str.c_str());
+                Diagnostics::errorDeprecated("Failed to load: %s", str.c_str());
                 // Could break early here but we want to list all of the failed objects
             }
             index++;

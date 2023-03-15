@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Dropdown
                 }
 
                 default:
-                    Console::errorDeprecated("Unknown format: %d", arg.type);
+                    Diagnostics::errorDeprecated("Unknown format: %d", arg.type);
                     break;
             }
         }

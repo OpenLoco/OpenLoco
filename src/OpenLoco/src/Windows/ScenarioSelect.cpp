@@ -202,7 +202,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
                 if (!ObjectManager::load(scenarioInfo->currency))
                 {
-                    Console::errorDeprecated("Currency object failed to load! Game will likely crash.");
+                    Diagnostics::errorDeprecated("Currency object failed to load! Game will likely crash.");
                 }
                 ObjectManager::reloadAll();
                 Gfx::loadCurrency();
@@ -211,7 +211,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             {
                 if (!_warnOnce)
                 {
-                    Console::errorDeprecated("Currency object could not be found. Scenario may be corrupt.");
+                    Diagnostics::errorDeprecated("Currency object could not be found. Scenario may be corrupt.");
                     _warnOnce = true;
                 }
             }

@@ -147,26 +147,26 @@ static void STDCALL fn_407b26()
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4080bb(char*, uint32_t)
 {
-    Console::logDeprecated("Create progress bar");
+    Diagnostics::logDeprecated("Create progress bar");
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_408163()
 {
-    Console::logDeprecated("Destroy progress bar");
+    Diagnostics::logDeprecated("Destroy progress bar");
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_40817b(uint16_t arg0)
 {
-    Console::logDeprecated("SendMessage(PBM_SETRANGE, %d)", arg0);
-    Console::logDeprecated("SendMessage(PBM_SETSTEP, %d)", 1);
+    Diagnostics::logDeprecated("SendMessage(PBM_SETRANGE, %d)", arg0);
+    Diagnostics::logDeprecated("SendMessage(PBM_SETSTEP, %d)", 1);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_4081ad(int32_t wParam)
 {
-    Console::logDeprecated("SendMessage(PBM_SETPOS, %d)", wParam);
+    Diagnostics::logDeprecated("SendMessage(PBM_SETPOS, %d)", wParam);
 }
 
 /// endregion
@@ -174,7 +174,7 @@ static void CDECL fn_4081ad(int32_t wParam)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 {
-    Console::logVerboseDeprecated("seek %d bytes from start", distance);
+    Diagnostics::logVerboseDeprecated("seek %d bytes from start", distance);
     fseek(a0, distance, SEEK_SET);
     return ftell(a0);
 }
@@ -182,7 +182,7 @@ static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
 {
-    Console::logVerboseDeprecated("seek %d bytes from current", distance);
+    Diagnostics::logVerboseDeprecated("seek %d bytes from current", distance);
     fseek(a0, distance, SEEK_CUR);
     return ftell(a0);
 }
@@ -190,7 +190,7 @@ static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 {
-    Console::logVerboseDeprecated("seek %d bytes from end", distance);
+    Diagnostics::logVerboseDeprecated("seek %d bytes from end", distance);
     fseek(a0, distance, SEEK_END);
     return ftell(a0);
 }
@@ -198,7 +198,7 @@ static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
 {
-    Console::logVerboseDeprecated("read %d bytes (%d)", size, fileno(a0));
+    Diagnostics::logVerboseDeprecated("read %d bytes (%d)", size, fileno(a0));
     size = fread(buffer, 1, size, a0);
 
     return size;
@@ -229,7 +229,7 @@ public:
 FORCE_ALIGN_ARG_POINTER
 static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 {
-    Console::logVerboseDeprecated("%s (%s)", __FUNCTION__, lpFileName);
+    Diagnostics::logVerboseDeprecated("%s (%s)", __FUNCTION__, lpFileName);
 
     Session* data = new Session;
 
@@ -350,7 +350,7 @@ static void CDECL fn_free(void* block)
 FORCE_ALIGN_ARG_POINTER
 static void STDCALL fn_dump(uint32_t address)
 {
-    Console::logDeprecated("Missing hook: 0x%x", address);
+    Diagnostics::logDeprecated("Missing hook: 0x%x", address);
 }
 
 enum
@@ -362,7 +362,7 @@ enum
 FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pUnkOuter)
 {
-    Console::logDeprecated("lib_DirectSoundCreate(%lx, %lx, %lx)", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
+    Diagnostics::logDeprecated("lib_DirectSoundCreate(%lx, %lx, %lx)", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
 
     return DSERR_NODRIVER;
 }
@@ -370,21 +370,21 @@ static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pU
 FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
 {
-    Console::logDeprecated("CreateRectRgn(%d, %d, %d, %d)", x1, y1, x2, y2);
+    Diagnostics::logDeprecated("CreateRectRgn(%d, %d, %d, %d)", x1, y1, x2, y2);
     return 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
 {
-    Console::logDeprecated("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
+    Diagnostics::logDeprecated("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
     return 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandle, char* lpName)
 {
-    Console::logDeprecated("OpenMutexA(0x%x, %d, %s)", dwDesiredAccess, bInheritHandle, lpName);
+    Diagnostics::logDeprecated("OpenMutexA(0x%x, %d, %s)", dwDesiredAccess, bInheritHandle, lpName);
 
     return nullptr;
 }
@@ -392,7 +392,7 @@ static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandl
 FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_DeleteFileA(char* lpFileName)
 {
-    Console::logDeprecated("DeleteFileA(%s)", lpFileName);
+    Diagnostics::logDeprecated("DeleteFileA(%s)", lpFileName);
 
     return 0;
 }
@@ -406,7 +406,7 @@ static uint32_t STDCALL lib_WriteFile(
     uintptr_t)
 {
     *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
-    Console::logVerboseDeprecated("WriteFile(%s)", buffer);
+    Diagnostics::logVerboseDeprecated("WriteFile(%s)", buffer);
 
     return 1;
 }
@@ -430,7 +430,7 @@ static int32_t STDCALL lib_CreateFileA(
     uint32_t,
     uintptr_t)
 {
-    Console::logVerboseDeprecated("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
+    Diagnostics::logVerboseDeprecated("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
     FILE* pFILE = nullptr;
     if (dwDesiredAccess == GENERIC_READ && dwCreationDisposition == OPEN_EXISTING)
@@ -459,7 +459,7 @@ static uint32_t STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFile
 {
     // FILE_ATTRIBUTE_NORMAL = 0x80
     assert(dwFileAttributes == 0x80);
-    Console::logDeprecated("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
+    Diagnostics::logDeprecated("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
 
     std::error_code ec;
     auto path = fs::path(lpFileName);
@@ -475,7 +475,7 @@ static uint32_t STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFile
 FORCE_ALIGN_ARG_POINTER
 static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
 {
-    Console::logDeprecated("CreateMutexA(0x%lx, %d, %s)", lmMutexAttributes, bInitialOwner, lpName);
+    Diagnostics::logDeprecated("CreateMutexA(0x%lx, %d, %s)", lmMutexAttributes, bInitialOwner, lpName);
 
     return nullptr;
 }
@@ -491,7 +491,7 @@ static uint32_t STDCALL lib_CloseHandle(void* hObject)
 FORCE_ALIGN_ARG_POINTER
 static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 {
-    Console::logDeprecated("lib_PostQuitMessage(%d)", exitCode);
+    Diagnostics::logDeprecated("lib_PostQuitMessage(%d)", exitCode);
     exit(exitCode);
 }
 #endif // _NO_LOCO_WIN32_

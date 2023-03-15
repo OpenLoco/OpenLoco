@@ -55,7 +55,7 @@ void NetworkServer::listen(const std::string& bind, port_t port)
     setScreenFlag(ScreenFlags::networked);
     setScreenFlag(ScreenFlags::networkHost);
 
-    Console::logDeprecated("Server opened");
+    Diagnostics::logDeprecated("Server opened");
     for (const auto& socket : _sockets)
     {
         auto ipAddress = socket->getIpAddress();
@@ -63,7 +63,7 @@ void NetworkServer::listen(const std::string& bind, port_t port)
         {
             ipAddress = '[' + ipAddress + ']';
         }
-        Console::logDeprecated("Listening for incoming connections on %s:%d...", ipAddress.c_str(), port);
+        Diagnostics::logDeprecated("Listening for incoming connections on %s:%d...", ipAddress.c_str(), port);
     }
 }
 
@@ -71,7 +71,7 @@ void NetworkServer::onClose()
 {
     clearScreenFlag(ScreenFlags::networked);
     clearScreenFlag(ScreenFlags::networkHost);
-    Console::logDeprecated("Server closed");
+    Diagnostics::logDeprecated("Server closed");
 }
 
 Client* NetworkServer::findClient(const INetworkEndpoint& endpoint)
@@ -100,7 +100,7 @@ void NetworkServer::createNewClient(std::unique_ptr<NetworkConnection> conn, con
     response.result = ConnectionResult::success;
     newClientPtr.connection->sendPacket(response);
 
-    Console::logDeprecated("Accepted new client: %s", newClientPtr.name.c_str());
+    Diagnostics::logDeprecated("Accepted new client: %s", newClientPtr.name.c_str());
 }
 
 void NetworkServer::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
@@ -199,7 +199,7 @@ void NetworkServer::removedTimedOutClients()
         auto& client = *it;
         if (client->connection->hasTimedOut())
         {
-            Console::logDeprecated("Client timed out: %s", client->name.c_str());
+            Diagnostics::logDeprecated("Client timed out: %s", client->name.c_str());
             it = _clients.erase(it);
         }
         else

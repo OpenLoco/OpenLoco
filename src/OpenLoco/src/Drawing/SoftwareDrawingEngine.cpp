@@ -313,7 +313,7 @@ namespace OpenLoco::Drawing
         {
             if (SDL_BlitSurface(_screenSurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
             {
-                Console::error("SDL_BlitSurface {}", SDL_GetError());
+                Diagnostics::error("SDL_BlitSurface {}", SDL_GetError());
                 exit(1);
             }
         }
@@ -322,14 +322,14 @@ namespace OpenLoco::Drawing
             // first blit to rgba surface to change the pixel format
             if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
             {
-                Console::error("SDL_BlitSurface {}", SDL_GetError());
+                Diagnostics::error("SDL_BlitSurface {}", SDL_GetError());
                 exit(1);
             }
             // then scale to window size. Without changing to RGBA first, SDL complains
             // about blit configurations being incompatible.
             if (SDL_BlitScaled(_screenRGBASurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
             {
-                Console::error("SDL_BlitScaled {}", SDL_GetError());
+                Diagnostics::error("SDL_BlitScaled {}", SDL_GetError());
                 exit(1);
             }
         }

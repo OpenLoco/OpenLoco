@@ -79,11 +79,11 @@ namespace OpenLoco::Network
         {
             if (!_isInitialised)
             {
-                Console::logVerboseDeprecated("WSAStartup()");
+                Diagnostics::logVerboseDeprecated("WSAStartup()");
                 WSADATA wsaData;
                 if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
                 {
-                    Console::errorDeprecated("Unable to initialise winsock.");
+                    Diagnostics::errorDeprecated("Unable to initialise winsock.");
                     return false;
                 }
                 _isInitialised = true;
@@ -95,7 +95,7 @@ namespace OpenLoco::Network
         {
             if (_isInitialised)
             {
-                Console::logVerboseDeprecated("WSACleanup()");
+                Diagnostics::logVerboseDeprecated("WSACleanup()");
                 WSACleanup();
                 _isInitialised = false;
             }
@@ -570,7 +570,7 @@ namespace OpenLoco::Network
                 // Incomming IPv4 addresses will be mapped to IPv6 addresses
                 if (!setOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, false))
                 {
-                    Console::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
+                    Diagnostics::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
                 }
             }
             else if (protocol == Protocol::ipv6)
@@ -578,13 +578,13 @@ namespace OpenLoco::Network
                 // Turn on IPV6_V6ONLY so we only accept both v6 connections
                 if (!setOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, true))
                 {
-                    Console::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
+                    Diagnostics::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
                 }
             }
 
             if (!setOption(sock, SOL_SOCKET, SO_REUSEADDR, true))
             {
-                Console::logVerboseDeprecated("setsockopt(socket, SO_REUSEADDR) failed: %d", LAST_SOCKET_ERROR());
+                Diagnostics::logVerboseDeprecated("setsockopt(socket, SO_REUSEADDR) failed: %d", LAST_SOCKET_ERROR());
             }
 
             if (!setNonBlocking(sock, true))
