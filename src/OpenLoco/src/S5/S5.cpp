@@ -250,7 +250,7 @@ namespace OpenLoco::S5
     // 0x00441C26
     bool exportGameStateToFile(const fs::path& path, SaveFlags flags)
     {
-        FileStream fs(path, StreamFlags::write);
+        FileStream fs(path, StreamMode::write);
         return exportGameStateToFile(fs, flags);
     }
 
@@ -536,7 +536,7 @@ namespace OpenLoco::S5
     // 0x00441FA7
     bool importSaveToGameState(const fs::path& path, LoadFlags flags)
     {
-        FileStream fs(path, StreamFlags::read);
+        FileStream fs(path, StreamMode::read);
         return importSaveToGameState(fs, flags);
     }
 
@@ -741,7 +741,7 @@ namespace OpenLoco::S5
     // 0x00442403
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path)
     {
-        FileStream stream(path, StreamFlags::read);
+        FileStream stream(path, StreamMode::read);
         SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
         {
@@ -776,7 +776,7 @@ namespace OpenLoco::S5
     // 0x00442AFC
     std::unique_ptr<Options> readScenarioOptions(const fs::path& path)
     {
-        FileStream stream(path, StreamFlags::read);
+        FileStream stream(path, StreamMode::read);
         SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
         {
