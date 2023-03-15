@@ -9,7 +9,7 @@
 #include "StringIds.h"
 #include "StringManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>

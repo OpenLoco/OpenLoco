@@ -1,9 +1,9 @@
 set(public_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/Console.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/Logging.h"
 )
 
 set(private_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Console.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp"
 )
 
 loco_add_library(Diagnostics STATIC

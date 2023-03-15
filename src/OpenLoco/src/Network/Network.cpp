@@ -8,7 +8,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Socket.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <cassert>
 #include <stdexcept>
 

@@ -1,7 +1,7 @@
 #ifndef _WIN32
 
 #include "Platform.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>

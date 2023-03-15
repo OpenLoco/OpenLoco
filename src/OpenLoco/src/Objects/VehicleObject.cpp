@@ -10,7 +10,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;

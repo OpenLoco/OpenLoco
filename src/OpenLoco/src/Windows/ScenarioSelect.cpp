@@ -15,7 +15,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

@@ -4,8 +4,8 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Localisation/StringIds.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/LocoFixedVector.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

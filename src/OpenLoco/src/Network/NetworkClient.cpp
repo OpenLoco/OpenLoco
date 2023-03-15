@@ -5,7 +5,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Stream.hpp>
 

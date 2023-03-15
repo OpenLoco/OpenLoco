@@ -19,7 +19,7 @@
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <array>

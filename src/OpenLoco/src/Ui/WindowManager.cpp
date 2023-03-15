@@ -22,7 +22,7 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cinttypes>

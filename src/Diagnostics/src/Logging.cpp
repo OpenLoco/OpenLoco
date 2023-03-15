@@ -1,4 +1,4 @@
-#include "Console.h"
+#include "Logging.h"
 #include <cstdio>
 #include <fmt/color.h>
 #include <stdarg.h>

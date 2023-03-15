@@ -7,7 +7,7 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/Station.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>

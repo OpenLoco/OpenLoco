@@ -58,7 +58,7 @@
 // clang-format on
 
 #include "Socket.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 
 namespace OpenLoco::Network
 {

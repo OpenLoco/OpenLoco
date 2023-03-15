@@ -7,7 +7,7 @@
 #include "StringManager.h"
 #include "Ui.h"
 #include "Unicode.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>

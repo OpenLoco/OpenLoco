@@ -22,7 +22,7 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <string_view>

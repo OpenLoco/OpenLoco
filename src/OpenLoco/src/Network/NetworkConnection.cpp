@@ -1,5 +1,5 @@
 #include "NetworkConnection.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstring>
 

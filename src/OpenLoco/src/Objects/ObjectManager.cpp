@@ -46,8 +46,8 @@
 #include "VehicleObject.h"
 #include "WallObject.h"
 #include "WaterObject.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/Stream.hpp>

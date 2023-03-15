@@ -15,8 +15,8 @@
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>

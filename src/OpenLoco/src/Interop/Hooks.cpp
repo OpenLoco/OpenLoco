@@ -40,15 +40,15 @@
 #include "World/Station.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;
 
-#define STUB() Console::logVerboseDeprecated(__FUNCTION__)
+#define STUB() Diagnostics::logVerboseDeprecated(__FUNCTION__)
 
 #ifdef _MSC_VER
 #define STDCALL __stdcall

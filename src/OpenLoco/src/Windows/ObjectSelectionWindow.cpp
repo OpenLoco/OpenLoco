@@ -44,8 +44,8 @@
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "Window.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 

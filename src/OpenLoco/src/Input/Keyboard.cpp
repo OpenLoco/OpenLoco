@@ -12,7 +12,7 @@
 #include "Ui/Screenshot.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>

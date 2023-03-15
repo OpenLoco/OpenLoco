@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>

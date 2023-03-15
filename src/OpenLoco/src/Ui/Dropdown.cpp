@@ -11,7 +11,7 @@
 #include "Widget.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
