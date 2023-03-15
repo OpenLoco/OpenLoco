@@ -3408,10 +3408,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             GameCommands::setErrorTitle(StringIds::cant_rename_this_vehicle);
-            const uint32_t* buffer = reinterpret_cast<const uint32_t*>(input);
-            GameCommands::do_10(EntityId(self.number), 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_10(EntityId(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_10(EntityId(0), 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::VehicleRenameArgs args{};
+            args.head = EntityId(self.number);
+            std::memcpy(args.buffer, input, 36);
+            args.i = 1;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            args.head = EntityId(0);
+            args.i = 2;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            args.i = 0;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         // 0x0050029C
