@@ -442,7 +442,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             GameCommands::setErrorTitle(StringIds::cant_reverse_train);
-            GameCommands::do_3(EntityId(self->number), head);
+            GameCommands::VehicleReverseArgs args{};
+            args.head = static_cast<EntityId>(self->number);
+            args.headPtr = head;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         static void onCentreViewportControl(Window* const self)

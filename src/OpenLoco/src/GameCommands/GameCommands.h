@@ -219,17 +219,29 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Reverse (vehicle)
-    inline void do_3(EntityId vehicleHead, Vehicles::VehicleHead* const head)
+    struct VehicleReverseArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.dx = enumValue(vehicleHead);
-        // Bug in game command 3 requires to set edi to a vehicle prior to calling
-        regs.edi = X86Pointer(head);
+        static constexpr auto command = GameCommand::vehicleReverse;
 
-        doCommand(GameCommand::vehicleReverse, regs);
-    }
+        VehicleReverseArgs() = default;
+        explicit VehicleReverseArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.dx))
+            , headPtr(nullptr)
+        {
+        }
+
+        EntityId head;
+        // Bug in GameCommand::vehicleReverse requires setting edi to a vehicle prior to calling
+        Vehicles::VehicleHead* headPtr;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dx = enumValue(head);
+            regs.edi = X86Pointer(headPtr);
+            return regs;
+        }
+    };
 
     // Pass signal (vehicle)
     inline void do_4(EntityId vehicleHead)
