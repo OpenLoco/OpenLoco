@@ -1759,7 +1759,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
                     if (car != nullptr)
                     {
-                        GameCommands::do_0((*_dragCarComponent)->id, car->id);
+                        GameCommands::VehicleRearrangeArgs args{};
+                        args.source = (*_dragCarComponent)->id;
+                        args.dest = car->id;
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
                 }
