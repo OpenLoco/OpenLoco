@@ -1,5 +1,28 @@
 # OpenLoco version 23.02+ (???)
 
+## Implement remaining object loading functions [#1851, #1848]
+At the start of this month, we finished the remaining object loading functions. The last two were the hardest ones: Vehicle and Tree. Tree might be a bit of a surprise to have such a complex loader, but it's all to do with the various seasons that trees can have, as well as their shadows. Due to the complexity of these two, we made a few mistakes, but we think we have managed to iron out all the bugs prior to the release.
+
+## Implement Town Grow Functions [#1740, #1742]
+Many people have mentioned that they don't like how towns grow in the game. Before we can overhaul how they work, we need to first implement the existing behaviour. Unfortunately, the main town growth function is large spaghetti of code, so to make it as simple to implement as possible, we are going to implement all of its calling functions before tackling the main function. This helps us understand the main meat of the function.
+
+## Project layout [#1850, #1855, #1859, #1867, #1868, #1873, #1879]
+@ZehMatt has been continuing his work with laying out our codebase in a more logical manner. Along the way, FmtLib has been introduced to OpenLoco. FmtLib is the basis of the C++20 std::format, and it is a very nice library for formatting text. It should lead to much neater code for error messaging and logging. This, in turn, will mean we will likely write more error messages and logs, as it's much easier to write.
+
+## Implement Final Window Function [#1881]
+Not only did we finish off all of the object load functions this month, we also finished off the last window function, the Station Tool's update event. The tool update functions are used to show the ghost previews of the tool you have active. Stations are quite complex, as you have rail, road, airports and docks. This leads to complex code, hence why this final function had been ignored until now. Now that all the functions have been implemented, we can start removing the legacy interop callers, and rearrange parameters into more logical structures. There are still a good many functions that use windows indirectly, so we do still have some constraints, though.
+
+## Implement Parts of Clear Land [#1872]
+@AaronVanGeffen has been chipping away at the clear land game command. It's a surprisingly tricky one, so it's been split into a couple of chunks. Hopefully, next month we will have it over the line.
+
+## Implement Drawing Engine Functions [#1836, #1861, #1862]
+@niceeffort had a shot at implementing the fillRect function for the drawing engine. This function, surprisingly enough, draws solid rectangles. It has a number of additional modes for different patterns though, which makes the code a little complex. Luckily, it's all very similar to OpenRCT2. In addition, we finished off the missing draw string centred function.
+
+## Implement Remove Tree [#1866]
+Another @niceeffort function implemented. This time, it's the low level tree removal function. One interesting detail about removing a tree is that the destruction sound has its pitch adjusted by a random amount. This pitch adjustment means that removing 100s of trees at once doesn't produce a high volume sound. Neat!
+
+## Enumeration flag conversion [#1778, #1819, #1891]
+Continuing from last month, @reinaldorauch, @niceeffort, and @leslieyip02 converted the last few remaining flags to the stricter enum classes. Along the way, one or two mistakes in existing code were noticed and fixed, showing the refactor isn't just for aesthetics. Great work!
 
 # OpenLoco version 23.02 (2023-02-19)
 
