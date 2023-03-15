@@ -160,8 +160,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.di = enumValue(source);
-            regs.dx = enumValue(dest);
+            regs.di = enumValue(dest);
+            regs.dx = enumValue(source);
             return regs;
         }
     };
