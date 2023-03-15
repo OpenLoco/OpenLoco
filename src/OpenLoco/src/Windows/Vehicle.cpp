@@ -492,9 +492,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     onChangeDirection(&self);
                     break;
                 case widx::passSignal:
+                {
+                    GameCommands::VehicleAirPlacementArgs args{};
+                    args.head = EntityId(self.number);
+
                     GameCommands::setErrorTitle(StringIds::cant_pass_signal_at_danger);
-                    GameCommands::do_4(EntityId(self.number));
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
+                }
             }
         }
 
