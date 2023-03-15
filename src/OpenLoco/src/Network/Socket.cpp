@@ -60,6 +60,8 @@
 #include "Socket.h"
 #include <OpenLoco/Diagnostics/Logging.h>
 
+using namespace OpenLoco::Diagnostics;
+
 namespace OpenLoco::Network
 {
 // RAII WSA initialisation needed for Windows
@@ -79,11 +81,11 @@ namespace OpenLoco::Network
         {
             if (!_isInitialised)
             {
-                Diagnostics::logVerboseDeprecated("WSAStartup()");
+                Logging::logVerboseDeprecated("WSAStartup()");
                 WSADATA wsaData;
                 if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
                 {
-                    Diagnostics::errorDeprecated("Unable to initialise winsock.");
+                    Logging::errorDeprecated("Unable to initialise winsock.");
                     return false;
                 }
                 _isInitialised = true;
@@ -95,7 +97,7 @@ namespace OpenLoco::Network
         {
             if (_isInitialised)
             {
-                Diagnostics::logVerboseDeprecated("WSACleanup()");
+                Logging::logVerboseDeprecated("WSACleanup()");
                 WSACleanup();
                 _isInitialised = false;
             }
@@ -570,7 +572,7 @@ namespace OpenLoco::Network
                 // Incomming IPv4 addresses will be mapped to IPv6 addresses
                 if (!setOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, false))
                 {
-                    Diagnostics::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
+                    Logging::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
                 }
             }
             else if (protocol == Protocol::ipv6)
@@ -578,13 +580,13 @@ namespace OpenLoco::Network
                 // Turn on IPV6_V6ONLY so we only accept both v6 connections
                 if (!setOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, true))
                 {
-                    Diagnostics::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
+                    Logging::logVerboseDeprecated("setsockopt(socket, IPV6_V6ONLY) failed: %d", LAST_SOCKET_ERROR());
                 }
             }
 
             if (!setOption(sock, SOL_SOCKET, SO_REUSEADDR, true))
             {
-                Diagnostics::logVerboseDeprecated("setsockopt(socket, SO_REUSEADDR) failed: %d", LAST_SOCKET_ERROR());
+                Logging::logVerboseDeprecated("setsockopt(socket, SO_REUSEADDR) failed: %d", LAST_SOCKET_ERROR());
             }
 
             if (!setNonBlocking(sock, true))

@@ -19,6 +19,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
@@ -202,7 +203,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
                 if (!ObjectManager::load(scenarioInfo->currency))
                 {
-                    Diagnostics::errorDeprecated("Currency object failed to load! Game will likely crash.");
+                    Logging::errorDeprecated("Currency object failed to load! Game will likely crash.");
                 }
                 ObjectManager::reloadAll();
                 Gfx::loadCurrency();
@@ -211,7 +212,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             {
                 if (!_warnOnce)
                 {
-                    Diagnostics::errorDeprecated("Currency object could not be found. Scenario may be corrupt.");
+                    Logging::errorDeprecated("Currency object could not be found. Scenario may be corrupt.");
                     _warnOnce = true;
                 }
             }

@@ -26,6 +26,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Drawing;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Gfx
 {
@@ -80,10 +81,10 @@ namespace OpenLoco::Gfx
 
         if (header.numEntries != G1ExpectedCount::kDisc)
         {
-            Diagnostics::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
+            Logging::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
             if (header.numEntries == G1ExpectedCount::kSteam)
             {
-                Diagnostics::info("Got Steam G1.DAT variant, will fix elements automatically.");
+                Logging::info("Got Steam G1.DAT variant, will fix elements automatically.");
             }
         }
 

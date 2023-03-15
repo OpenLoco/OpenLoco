@@ -11,6 +11,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
+using namespace OpenLoco::Diagnostics;
 
 NetworkClient::~NetworkClient()
 {
@@ -37,7 +38,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
     _serverConnection = std::make_unique<NetworkConnection>(socket.get(), _serverEndpoint->clone());
 
     auto szHostIpAddress = _serverEndpoint->getIpAddress();
-    Diagnostics::logDeprecated("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), port);
+    Logging::logDeprecated("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), port);
 
     beginReceivePacketLoop();
 
@@ -56,7 +57,7 @@ void NetworkClient::onClose()
     {
         _status = NetworkClientStatus::closed;
         clearScreenFlag(ScreenFlags::networked);
-        Diagnostics::logDeprecated("Disconnected from server");
+        Logging::logDeprecated("Disconnected from server");
     }
     else if (_status == NetworkClientStatus::connecting)
     {
@@ -73,7 +74,7 @@ void NetworkClient::onUpdate()
         if (Platform::getTime() >= _timeout)
         {
             close();
-            Diagnostics::logDeprecated("Failed to connect to server");
+            Logging::logDeprecated("Failed to connect to server");
             endStatus("Failed to connect to server");
         }
     }
@@ -81,7 +82,7 @@ void NetworkClient::onUpdate()
     {
         if (hasTimedOut())
         {
-            Diagnostics::logDeprecated("Connection with server timed out");
+            Logging::logDeprecated("Connection with server timed out");
             close();
         }
         else
@@ -143,7 +144,7 @@ void NetworkClient::onCancel()
     switch (_status)
     {
         case NetworkClientStatus::connecting:
-            Diagnostics::logDeprecated("Connecting to server cancelled");
+            Logging::logDeprecated("Connecting to server cancelled");
             close();
             break;
         default:

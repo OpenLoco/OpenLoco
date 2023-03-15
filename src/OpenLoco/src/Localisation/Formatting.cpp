@@ -19,6 +19,7 @@
 #include <stdexcept>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::StringManager
 {
@@ -641,7 +642,7 @@ namespace OpenLoco::StringManager
             if (sourceStr == nullptr)
             {
                 sprintf(buffer, "(missing string id: %d)", id);
-                Diagnostics::logDeprecated("formatString: nullptr for string id: %d", id);
+                Logging::logDeprecated("formatString: nullptr for string id: %d", id);
                 buffer += strlen(buffer);
                 return buffer;
             }
@@ -680,7 +681,7 @@ namespace OpenLoco::StringManager
         else
         {
             sprintf(buffer, "(invalid string id: %d)", id);
-            Diagnostics::logDeprecated("formatString: invalid string id: %d", id);
+            Logging::logDeprecated("formatString: invalid string id: %d", id);
             buffer += strlen(buffer);
             return buffer;
         }

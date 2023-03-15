@@ -50,6 +50,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui
 {
@@ -639,7 +640,7 @@ namespace OpenLoco::Ui
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
-            Diagnostics::errorDeprecated("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+            Logging::errorDeprecated("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
             return false;
         }
 

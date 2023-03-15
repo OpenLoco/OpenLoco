@@ -14,6 +14,7 @@
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
 {
@@ -594,7 +595,7 @@ namespace OpenLoco
             // There are some official objects that suffer from this so can't assert on this.
             const auto& header = ObjectManager::getHeader(handle);
             std::string objName(header.getName());
-            Diagnostics::logVerboseDeprecated("Incorrect number of images for object: %s", objName.c_str());
+            Logging::logVerboseDeprecated("Incorrect number of images for object: %s", objName.c_str());
         }
     }
 

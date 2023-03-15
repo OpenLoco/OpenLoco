@@ -11,7 +11,7 @@
 #include <windows.h>
 #endif
 
-namespace OpenLoco::Diagnostics
+namespace OpenLoco::Diagnostics::Logging
 {
     namespace Detail
     {

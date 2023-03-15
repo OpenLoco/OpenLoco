@@ -28,6 +28,7 @@
 #include <string>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
 {
@@ -720,7 +721,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
             catch (const fs::filesystem_error& err)
             {
-                Diagnostics::errorDeprecated("Invalid directory or file: %s", err.what());
+                Logging::errorDeprecated("Invalid directory or file: %s", err.what());
             }
         }
 

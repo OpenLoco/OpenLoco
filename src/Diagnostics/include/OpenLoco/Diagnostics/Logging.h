@@ -3,7 +3,7 @@
 #include <fmt/format.h>
 #include <string_view>
 
-namespace OpenLoco::Diagnostics
+namespace OpenLoco::Diagnostics::Logging
 {
     enum class Level
     {

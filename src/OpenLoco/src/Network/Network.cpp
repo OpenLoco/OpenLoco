@@ -12,6 +12,8 @@
 #include <cassert>
 #include <stdexcept>
 
+using namespace OpenLoco::Diagnostics;
+
 namespace OpenLoco::Network
 {
     enum class NetworkMode
@@ -117,7 +119,7 @@ namespace OpenLoco::Network
     void receiveChatMessage(client_id_t client, std::string_view message)
     {
         std::string szMessage(message);
-        Diagnostics::logDeprecated("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
+        Logging::logDeprecated("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
     }
 
     void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)
