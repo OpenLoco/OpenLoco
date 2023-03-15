@@ -263,27 +263,28 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Build vehicle
-    inline uint32_t do_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
+    struct VehicleCreateArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(vehicleId);
-        regs.edx = vehicleType;
+        static constexpr auto command = GameCommand::vehicleCreate;
 
-        return doCommand(GameCommand::vehicleCreate, regs);
-    }
+        VehicleCreateArgs() = default;
+        explicit VehicleCreateArgs(const registers& regs)
+            : vehicleId(static_cast<EntityId>(regs.di))
+            , vehicleType(regs.dx)
+        {
+        }
 
-    // Build vehicle
-    inline uint32_t queryDo_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
-    {
-        registers regs;
-        regs.bl = 0;
-        regs.di = enumValue(vehicleId);
-        regs.edx = vehicleType;
+        EntityId vehicleId; // Optional id representing where it will attach
+        uint16_t vehicleType;
 
-        return doCommand(GameCommand::vehicleCreate, regs);
-    }
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(vehicleId);
+            regs.edx = vehicleType;
+            return regs;
+        }
+    };
 
     inline void do_6(EntityId car)
     {
