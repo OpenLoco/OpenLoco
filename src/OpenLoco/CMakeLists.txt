@@ -513,7 +513,7 @@ endif ()
 
 target_link_libraries(OpenLoco
     Core
-    Console
+    Diagnostics
     Platform
     Interop
     Utility
@@ -629,7 +629,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
-        Console
+        Diagnostics
         Platform
         Interop
         Utility
