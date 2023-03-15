@@ -243,15 +243,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Pass signal (vehicle)
-    inline void do_4(EntityId vehicleHead)
+    struct VehiclePassSignalArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(vehicleHead);
+        static constexpr auto command = GameCommand::vehiclePassSignal;
 
-        doCommand(GameCommand::vehiclePassSignal, regs);
-    }
+        VehiclePassSignalArgs() = default;
+        explicit VehiclePassSignalArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     // Build vehicle
     inline uint32_t do_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
