@@ -15,8 +15,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<EntityId, 0x0113621D> _113621D;
-
     /**
      * 0x004B6572
      * Rename vehicle - calls 3 times with part of the buffers (each 12 bytes long), in each cycle first without apply flag, second with apply flag.
@@ -30,33 +28,31 @@ namespace OpenLoco::Vehicles
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
      * @return @<ebx> - if rename is successful, return 0, if failed, return GameCommands::FAILURE
      */
-    static uint32_t rename(const uint8_t flags, EntityId headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t rename(const GameCommands::VehicleRenameArgs& args, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
 
         static loco_global<EntityId, 0x0113621D> _headId_113621D;
-        if (index == 1)
+        if (args.i == 1)
         {
-            _headId_113621D = headId;
+            _headId_113621D = args.head;
         }
 
-        static uint32_t staticRenameBuffer[9];
+        static char staticRenameBuffer[37]{};
 
         if ((flags & GameCommands::Flags::apply) != 0)
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
-            int arrayIndex = kTransformTable.at(index);
-            staticRenameBuffer[arrayIndex * 3] = buffer0;
-            staticRenameBuffer[arrayIndex * 3 + 1] = buffer1;
-            staticRenameBuffer[arrayIndex * 3 + 2] = buffer2;
+            int arrayIndex = kTransformTable.at(args.i);
+            std::memcpy(staticRenameBuffer + arrayIndex * 12, args.buffer, 12);
         }
 
-        if (index != 0)
+        if (args.i != 0)
         {
             return 0;
         }
 
-        EntityId vehicleHeadId = _113621D;
+        EntityId vehicleHeadId = _headId_113621D;
         Vehicles::VehicleHead* vehicleHead = EntityManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
         if (vehicleHead == nullptr)
@@ -68,8 +64,8 @@ namespace OpenLoco::Vehicles
         renameStringBuffer[36] = '\0';
 
         char existingVehicleName[512];
-        auto args = FormatArguments::common(vehicleHead->ordinalNumber);
-        StringManager::formatString(existingVehicleName, vehicleHead->name, &args);
+        auto fArgs = FormatArguments::common(vehicleHead->ordinalNumber);
+        StringManager::formatString(existingVehicleName, vehicleHead->name, &fArgs);
         if (strcmp(existingVehicleName, renameStringBuffer) == 0)
         {
             return 0;
@@ -116,7 +112,7 @@ namespace OpenLoco::Vehicles
 
     void rename(registers& regs)
     {
-        regs.ebx = rename(regs.bl, EntityId(regs.cx), regs.ax, regs.edx, regs.ebp, regs.edi);
+        regs.ebx = rename(GameCommands::VehicleRenameArgs(regs), regs.bl);
     }
 
 }

@@ -419,18 +419,40 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Change vehicle name
-    inline void do_10(EntityId head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
+    struct VehicleRenameArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = enumValue(head); // vehicle head id
-        regs.ax = i;               // [ 0, 1, 2]
-        regs.edx = edx;            // part of name buffer
-        regs.ebp = ebp;            // part of name buffer
-        regs.edi = edi;            // part of name buffer
-        doCommand(GameCommand::vehicleRename, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleRename;
+
+        VehicleRenameArgs() = default;
+        explicit VehicleRenameArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.cx))
+            , i(regs.ax)
+            , buffer{}
+        {
+            // Copies it into the first 12 bytes not into the specific slot as per i
+            std::memcpy(buffer, &regs.edx, 4);
+            std::memcpy(buffer + 4, &regs.ebp, 4);
+            std::memcpy(buffer + 8, &regs.edi, 4);
+        }
+
+        EntityId head;
+        char buffer[37];
+        uint16_t i;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            regs.ax = i;
+            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
+            const auto offset = iToOffset[i];
+
+            std::memcpy(&regs.edx, buffer + offset, 4);
+            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
+            std::memcpy(&regs.edi, buffer + offset + 8, 4);
+            return regs;
+        }
+    };
 
     // Change station name
     inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
