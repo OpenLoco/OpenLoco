@@ -10,8 +10,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include "OpenLoco/Core/EnumFlags.hpp"
-
 namespace stdx
 {
     using nonstd::span;
@@ -73,13 +71,11 @@ namespace OpenLoco
         }
     };
 
-    enum class StreamFlags : uint8_t
+    enum class StreamMode
     {
-        none = 0U,
-        read = (1U << 0),  // 0x01
-        write = (1U << 1), // 0x02;
+        read,
+        write,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(StreamFlags);
 
     class Stream
     {
@@ -209,9 +205,9 @@ namespace OpenLoco
         bool _writing{};
 
     public:
-        FileStream(const std::filesystem::path path, StreamFlags flags)
+        FileStream(const std::filesystem::path path, StreamMode mode)
         {
-            if (flags == StreamFlags::write)
+            if (mode == StreamMode::write)
             {
                 _fstream.open(path, std::ios::out | std::ios::binary);
                 if (!_fstream.is_open())
