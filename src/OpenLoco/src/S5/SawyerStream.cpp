@@ -132,7 +132,7 @@ SawyerStreamReader::SawyerStreamReader(Stream& stream)
 
 SawyerStreamReader::SawyerStreamReader(const fs::path& path)
 {
-    _fstream = std::make_unique<FileStream>(path, StreamFlags::read);
+    _fstream = std::make_unique<FileStream>(path, StreamMode::read);
     _stream = _fstream.get();
 }
 
@@ -322,7 +322,7 @@ SawyerStreamWriter::SawyerStreamWriter(Stream& stream)
 
 SawyerStreamWriter::SawyerStreamWriter(const fs::path& path)
 {
-    _fstream = std::make_unique<FileStream>(path, StreamFlags::write);
+    _fstream = std::make_unique<FileStream>(path, StreamMode::write);
     _stream = _fstream.get();
 }
 

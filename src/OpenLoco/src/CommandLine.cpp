@@ -510,7 +510,7 @@ namespace OpenLoco
             {
                 outputPath = options.path;
             }
-            FileStream fs(outputPath, StreamFlags::write);
+            FileStream fs(outputPath, StreamMode::write);
             fs.write(ms.data(), ms.getLength());
 
             return 0;

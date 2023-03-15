@@ -71,11 +71,11 @@ namespace OpenLoco
         }
     };
 
-    namespace StreamFlags
+    enum class StreamMode
     {
-        constexpr uint8_t read = 1;
-        constexpr uint8_t write = 2;
-    }
+        read,
+        write,
+    };
 
     class Stream
     {
@@ -205,9 +205,9 @@ namespace OpenLoco
         bool _writing{};
 
     public:
-        FileStream(const std::filesystem::path path, uint8_t flags)
+        FileStream(const std::filesystem::path path, StreamMode mode)
         {
-            if (flags & StreamFlags::write)
+            if (mode == StreamMode::write)
             {
                 _fstream.open(path, std::ios::out | std::ios::binary);
                 if (!_fstream.is_open())
