@@ -3903,7 +3903,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
-                GameCommands::do_2(head.id);
+                GameCommands::VehiclePickupArgs args{};
+                args.head = head.id;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_6);
             }
             _1136264 = -1;
         }
@@ -4127,8 +4129,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case TransportMode::rail:
                 case TransportMode::road:
-                    GameCommands::do_2(head->id);
+                {
+                    GameCommands::VehiclePickupArgs args{};
+                    args.head = head->id;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_6);
                     break;
+                }
                 case TransportMode::air:
                     GameCommands::do_59(head->id);
                     break;
@@ -4254,8 +4260,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case TransportMode::rail:
                 case TransportMode::road:
-                    success = GameCommands::do_2(head->id);
+                {
+                    GameCommands::VehiclePickupArgs gcArgs{};
+                    gcArgs.head = head->id;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
                     break;
+                }
                 case TransportMode::air:
                     success = GameCommands::do_59(head->id);
                     break;
