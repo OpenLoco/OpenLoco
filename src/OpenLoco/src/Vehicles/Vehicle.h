@@ -248,7 +248,6 @@ namespace OpenLoco::Vehicles
         EntityId getHead() const;
         void setNextCar(const EntityId newNextCar);
         bool has38Flags(Flags38 flagsToTest) const;
-        bool has73Flags(Flags73 flagsToTest) const;
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
@@ -515,6 +514,9 @@ namespace OpenLoco::Vehicles
         currency32_t profit[4];       // 0x62 last 4 months net profit
         uint8_t reliability;          // 0x72
         Flags73 var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
+
+        bool has73Flags(Flags73 flagsToTest) const;
+        bool hasNo73Flags() const;
 
         bool update();
         bool sub_4A9F20();
