@@ -1,4 +1,4 @@
-# OpenLoco version 23.02+ (???)
+# OpenLoco version 23.03 (2023-03-16)
 
 ## Implement remaining object loading functions [#1851, #1848]
 At the start of this month, we finished the remaining object loading functions. The last two were the hardest ones: Vehicle and Tree. Tree might be a bit of a surprise to have such a complex loader, but it's all to do with the various seasons that trees can have, as well as their shadows. Due to the complexity of these two, we made a few mistakes, but we think we have managed to iron out all the bugs prior to the release.
