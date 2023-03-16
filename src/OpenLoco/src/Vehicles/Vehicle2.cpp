@@ -199,7 +199,7 @@ namespace OpenLoco::Vehicles
         if (isOnRackRail && dh == 0)
         {
             // calculating power when it's broken down
-            const auto power = ((bool)(var_73 & Flags73::isBrokenDown)) ? totalPower / 4 : totalPower;
+            const auto power = ((var_73 & Flags73::isBrokenDown) != Flags73::none) ? totalPower / 4 : totalPower;
 
             if (train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
@@ -231,7 +231,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 ebp += (power * 2048) / totalWeight;
-             }
+            }
         }
         const auto speedSquare = toSpeed16(currentSpeed).getRaw() * toSpeed16(currentSpeed).getRaw();
         ebp -= speedSquare;
