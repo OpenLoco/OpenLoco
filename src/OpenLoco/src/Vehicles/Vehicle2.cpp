@@ -117,6 +117,16 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    bool Vehicle2::has73Flags(Flags73 flagsToTest) const
+    {
+        return (var_73 & flagsToTest) != Flags73::none;
+    }
+
+    bool Vehicle2::hasNo73Flags() const
+    {
+        return var_73 == Flags73::none;
+    }
+
     // 0x004A9B0B
     bool Vehicle2::update()
     {
@@ -199,7 +209,7 @@ namespace OpenLoco::Vehicles
         if (isOnRackRail && dh == 0)
         {
             // calculating power when it's broken down
-            const auto power = ((var_73 & Flags73::isBrokenDown) != Flags73::none) ? totalPower / 4 : totalPower;
+            const auto power = has73Flags(Flags73::isBrokenDown) ? totalPower / 4 : totalPower;
 
             if (train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {

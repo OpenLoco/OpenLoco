@@ -432,7 +432,7 @@ namespace OpenLoco::Vehicles
             return vehStatus;
         }
         Vehicle train(head);
-        if ((train.veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
+        if (train.veh2->has73Flags(Flags73::isBrokenDown))
         {
             vehStatus.status1 = StringIds::vehicle_status_broken_down;
             return vehStatus;
@@ -876,7 +876,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2 = _vehicleUpdate_2;
 
         // If dont have any running issue and is aproaching
-        if ((vehType2->var_73 == Flags73::none) && (status == Status::approaching))
+        if (vehType2->hasNo73Flags() && (status == Status::approaching))
         {
             if (mode == TransportMode::road)
             {
@@ -930,7 +930,7 @@ namespace OpenLoco::Vehicles
         {
             status = Status::travelling;
 
-            if (vehType2->var_73 == Flags73::none)
+            if (vehType2->hasNo73Flags())
             {
                 if (!hasVehicleFlags(VehicleFlags::manualControl) || var_6E > -20)
                 {
@@ -1060,7 +1060,7 @@ namespace OpenLoco::Vehicles
         status = Status::stopped;
         vehType2 = _vehicleUpdate_2;
 
-        if ((vehType2->var_73 & Flags73::isBrokenDown) != Flags73::none)
+        if (vehType2->has73Flags(Flags73::isBrokenDown))
         {
             stationId = StationId::null;
             status = Status::brokenDown;
@@ -1559,7 +1559,7 @@ namespace OpenLoco::Vehicles
         {
             auto veh2 = train.veh2;
             auto targetSpeed = veh2->maxSpeed;
-            if ((veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
+            if (veh2->has73Flags(Flags73::isBrokenDown))
             {
                 targetSpeed = veh2->rackRailMaxSpeed;
             }
@@ -1617,7 +1617,7 @@ namespace OpenLoco::Vehicles
             if (cl == 2)
             {
                 auto targetSpeed = veh2->maxSpeed;
-                if ((veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
+                if (veh2->has73Flags(Flags73::isBrokenDown))
                 {
                     targetSpeed = veh2->rackRailMaxSpeed;
                 }
@@ -2378,7 +2378,7 @@ namespace OpenLoco::Vehicles
         {
             if ((flags & WaterMotionFlags::isStopping) == WaterMotionFlags::none)
             {
-                if ((veh2->var_73 & Flags73::isBrokenDown) == Flags73::none)
+                if (veh2->has73Flags(Flags73::isBrokenDown))
                 {
                     targetSpeed = veh2->maxSpeed;
                 }
@@ -3535,7 +3535,7 @@ namespace OpenLoco::Vehicles
                 Vehicle train(head);
                 if (this->vehicleType == VehicleType::aircraft || this->vehicleType == VehicleType::ship)
                 {
-                    if ((train.veh2->var_73 & Flags73::isBrokenDown) != Flags73::none)
+                    if (train.veh2->has73Flags(Flags73::isBrokenDown))
                     {
                         GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
                         return false;
