@@ -1380,6 +1380,27 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removeTown, regs) != FAILURE;
     }
 
+    struct RemoveTownArgs
+    {
+        static constexpr auto command = GameCommand::removeTown;
+
+        RemoveTownArgs() = default;
+
+        explicit RemoveTownArgs(const registers& regs)
+            : townId(static_cast<TownId>(regs.edi))
+        {
+        }
+
+        TownId townId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.edi = enumValue(townId);
+            return regs;
+        }
+    };
+
     struct HeadquarterPlacementArgs
     {
         static constexpr auto command = GameCommand::buildCompanyHeadquarters;
@@ -1522,6 +1543,27 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
     }
 
+    struct VehiclePickupAirArgs
+    {
+        static constexpr auto command = GameCommand::vehiclePickupAir;
+
+        VehiclePickupAirArgs() = default;
+        explicit VehiclePickupAirArgs(const registers& regs)
+            : head(EntityId(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
+
     struct PortPlacementArgs
     {
         static constexpr auto command = GameCommand::createPort;
@@ -1608,6 +1650,25 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
     }
 
+    struct VehiclePickupWater
+    {
+        VehiclePickupWater() = default;
+        explicit VehiclePickupWater(const registers& regs)
+            : head(EntityId(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
+
     // Refit vehicle
     inline void do_64(EntityId vehicleHead, uint16_t option)
     {
@@ -1617,6 +1678,27 @@ namespace OpenLoco::GameCommands
         regs.dx = option;
         doCommand(GameCommand::vehicleRefit, regs);
     }
+
+    struct VehicleRefitArgs
+    {
+        VehicleRefitArgs() = default;
+        explicit VehicleRefitArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , option(regs.dx)
+        {
+        }
+
+        EntityId head;
+        uint16_t option;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.dx = option;
+            return regs;
+        }
+    };
 
     // Change company face
     inline bool do_65(const ObjectHeader& object, CompanyId company)
@@ -1631,6 +1713,32 @@ namespace OpenLoco::GameCommands
         regs.bh = enumValue(company);
         return doCommand(GameCommand::changeCompanyFace, regs) != FAILURE;
     }
+
+    struct ChangeCompanyFaceArgs
+    {
+        ChangeCompanyFaceArgs() = default;
+        explicit ChangeCompanyFaceArgs(const registers& regs)
+            : object(regs.eax, regs.ecx, regs.edx, regs.edi)
+            , company(static_cast<CompanyId>(regs.bh))
+        {
+        }
+
+        ObjectHeader& object;
+        CompanyId company;
+
+        explicit operator registers() const
+        {
+            auto objPtr = reinterpret_cast<const int32_t*>(&object);
+            registers regs;
+            regs.bl = Flags::apply;
+            regs.eax = *objPtr++;
+            regs.ecx = *objPtr++;
+            regs.edx = *objPtr++;
+            regs.edi = *objPtr;
+            regs.bh = enumValue(company);
+            return regs;
+        }
+    };
 
     struct ClearLandArgs
     {
@@ -1667,6 +1775,26 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::loadMultiplayerMap, regs);
     }
 
+    struct LoadMultiplayerMapArgs
+    {
+        static constexpr auto command = GameCommand::loadMultiplayerMap;
+
+        LoadMultiplayerMapArgs() = default;
+        explicit LoadMultiplayerMapArgs(const registers& regs)
+            : filename(regs.ebp)
+        {
+        }
+
+        const char* filename;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ebp = X86Pointer(filename);
+            return regs;
+        }
+    };
+
     // Multiplayer-related
     inline void do_69()
     {
@@ -1675,6 +1803,22 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::gc_unk_69, regs);
     }
 
+    struct GameCommandUnkown69Args
+    {
+        static constexpr auto command = GameCommand::gc_unk_69;
+
+        GameCommandUnkown69Args() = default;
+        explicit GameCommandUnkown69Args(const registers& regs)
+        {
+        }
+
+        explicit operator registers() const
+        {
+            registers regs;
+            return regs;
+        }
+    };
+
     // Multiplayer-related
     inline void do_70()
     {
@@ -1682,6 +1826,22 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply;
         doCommand(GameCommand::gc_unk_70, regs);
     }
+
+    struct SendChatMessageArgs
+    {
+        static constexpr auto command = GameCommand::gc_unk_70;
+
+        SendChatMessageArgs() = default;
+        explicit SendChatMessageArgs(const registers& regs)
+        {
+        }
+
+        explicit operator registers() const
+        {
+            registers regs;
+            return regs;
+        }
+    };
 
     // Send chat message
     inline void do_71(int32_t ax, const char* string)
@@ -1696,6 +1856,36 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::sendChatMessage, regs);
     }
 
+    struct SendChatMessageArgs
+    {
+        static constexpr auto command = GameCommand::sendChatMessage;
+
+        SendChatMessageArgs() = default;
+        explicit SendChatMessageArgs(const registers& regs)
+            : messageBufferIndex(regs.ax)
+        {
+            // something like this?
+            // memcpy(&message[0], &regs.ecx, 4);
+            // memcpy(&message[4], &regs.edx, 4);
+            // memcpy(&message[8], &regs.edp, 4);
+            // memcpy(&message[12], &regs.edi, 4);
+        }
+
+        int32_t messageBufferIndex;
+        const char* message;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = messageBufferIndex;
+            memcpy(&regs.ecx, &message[0], 4);
+            memcpy(&regs.edx, &message[4], 4);
+            memcpy(&regs.ebp, &message[8], 4);
+            memcpy(&regs.edi, &message[12], 4);
+            return regs;
+        }
+    };
+
     // Multiplayer save
     inline void do_72()
     {
@@ -1703,6 +1893,22 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply;
         doCommand(GameCommand::multiplayerSave, regs);
     }
+
+    struct MultiplayerSaveArgs
+    {
+        static constexpr auto command = GameCommand::multiplayerSave;
+
+        MultiplayerSaveArgs() = default;
+        explicit MultiplayerSaveArgs(const registers& regs)
+        {
+        }
+
+        explicit operator registers() const
+        {
+            registers regs;
+            return regs;
+        }
+    };
 
     struct UpdateOwnerStatusArgs
     {
@@ -1735,6 +1941,29 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicleSpeedControl, regs);
     }
 
+    struct VehicleSpeedControlArgs
+    {
+        static constexpr auto command = GameCommand::vehicleSpeedControl;
+
+        VehicleSpeedControlArgs() = default;
+        explicit VehicleSpeedControlArgs(const registers& regs)
+            : head(EntityId(regs.cx))
+            , speed(regs.dx)
+        {
+        }
+
+        EntityId head;
+        int16_t speed;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            regs.dx = speed;
+            return regs;
+        }
+    };
+
     inline uint32_t do_75(EntityId head, uint32_t orderOffset)
     {
         registers regs;
@@ -1744,6 +1973,29 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicleOrderUp, regs);
     }
 
+    struct VehicleOrderUpArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderUp;
+
+        VehicleOrderUpArgs() = default;
+        explicit VehicleOrderUpArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            regs.edx = orderOffset;
+            return regs;
+        }
+    };
+
     inline uint32_t do_76(EntityId head, uint32_t orderOffset)
     {
         registers regs;
@@ -1752,6 +2004,29 @@ namespace OpenLoco::GameCommands
         regs.edx = orderOffset;
         return doCommand(GameCommand::vehicleOrderDown, regs);
     }
+
+    struct VehicleOrderDownArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderDown;
+
+        VehicleOrderDownArgs() = default;
+        explicit VehicleOrderDownArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            regs.edx = orderOffset;
+            return regs;
+        }
+    };
 
     struct VehicleApplyShuntCheatArgs
     {
@@ -1801,6 +2076,38 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::renameIndustry, regs);
     }
 
+    struct RenameIndustryArgs
+    {
+        static constexpr auto command = GameCommand::renameIndustry;
+
+        RenameIndustryArgs() = default;
+        explicit RenameIndustryArgs(const registers& regs)
+            : industry(static_cast<IndustryId>(regs.cl))
+            , bufferIndex(regs.ax)
+        {
+            // something like this?
+            // memcpy(&message[0], &regs.ecx, 4);
+            // memcpy(&message[4], &regs.edx, 4);
+            // memcpy(&message[8], &regs.edp, 4);
+            // memcpy(&message[12], &regs.edi, 4);
+        }
+
+        IndustryId industry;
+        uint16_t bufferIndex;
+        const char* buffer;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cl = enumValue(industry);    // industry number or 0
+            regs.ax = bufferIndex;            // [ 0, 1, 2]
+            memcpy(&regs.edx, &buffer[0], 4); // part of name buffer
+            memcpy(&regs.ebp, &buffer[4], 4); // part of name buffer
+            memcpy(&regs.edi, &buffer[8], 4); // part of name buffer
+            return regs;
+        }
+    };
+
     inline bool do_80(EntityId head)
     {
         registers regs;
@@ -1808,6 +2115,26 @@ namespace OpenLoco::GameCommands
         regs.ax = enumValue(head);
         return GameCommands::doCommand(GameCommand::vehicleClone, regs) != FAILURE;
     }
+
+    struct VehicleCloneArgs
+    {
+        static constexpr auto command = GameCommand::vehicleClone;
+
+        VehicleCloneArgs() = default;
+        explicit VehicleCloneArgs(const registers& regs)
+            : head(EntityId(regs.ax))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = enumValue(head); // industry number or 0
+            return regs;
+        }
+    };
 
     enum class CheatCommand : uint8_t;
 
@@ -1821,6 +2148,35 @@ namespace OpenLoco::GameCommands
         regs.edx = param3;
         return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
     }
+
+    struct CheatArgs
+    {
+        static constexpr auto command = GameCommand::vehicleClone;
+
+        CheatArgs() = default;
+        explicit CheatArgs(const registers& regs)
+            : command(static_cast<uint8_t>(regs.eax))
+            , param1(regs.ebx)
+            , param2(regs.ecx)
+            , param3(regs.edx)
+        {
+        }
+
+        CheatCommand command;
+        int32_t param1;
+        int32_t param2;
+        int32_t param3;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.eax = static_cast<int32_t>(command);
+            regs.ebx = param1;
+            regs.ecx = param2;
+            regs.edx = param3;
+            return regs;
+        }
+    };
 
     // Defined in GameCommands/ChangeCompanyColour.cpp
     void changeCompanyColour(registers& regs);
