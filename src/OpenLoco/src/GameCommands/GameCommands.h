@@ -426,8 +426,8 @@ namespace OpenLoco::GameCommands
         VehicleRenameArgs() = default;
         explicit VehicleRenameArgs(const registers& regs)
             : head(static_cast<EntityId>(regs.cx))
-            , i(regs.ax)
             , buffer{}
+            , i(regs.ax)
         {
             // Copies it into the first 12 bytes not into the specific slot as per i
             std::memcpy(buffer, &regs.edx, 4);
