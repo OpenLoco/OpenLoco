@@ -1075,6 +1075,7 @@ namespace OpenLoco::StringIds
     constexpr string_id town_size_label = 1407;
     constexpr string_id select_town_size = 1408;
     constexpr string_id expand_this_town = 1409;
+    constexpr string_id too_close_to_another_industry = 1409;
 
     constexpr string_id plant_cluster_selected_tree = 1412;
     constexpr string_id plant_cluster_random_tree = 1413;
