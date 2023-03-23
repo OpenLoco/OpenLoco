@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 case widx::passSignal:
                 {
-                    GameCommands::VehicleAirPlacementArgs args{};
+                    GameCommands::VehiclePassSignalArgs args{};
                     args.head = EntityId(self.number);
 
                     GameCommands::setErrorTitle(StringIds::cant_pass_signal_at_danger);

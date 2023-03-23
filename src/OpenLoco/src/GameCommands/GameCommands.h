@@ -288,7 +288,7 @@ namespace OpenLoco::GameCommands
 
     struct VehicleSellArgs
     {
-        static constexpr auto command = GameCommand::vehiclePassSignal;
+        static constexpr auto command = GameCommand::vehicleSell;
 
         VehicleSellArgs() = default;
         explicit VehicleSellArgs(const registers& regs)
