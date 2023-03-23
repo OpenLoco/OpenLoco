@@ -1,5 +1,6 @@
 set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogFile.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogSink.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/LogTerminal.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Diagnostics/Logging.h"
 )
