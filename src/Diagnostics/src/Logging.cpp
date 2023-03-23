@@ -14,9 +14,24 @@ namespace OpenLoco::Diagnostics::Logging
         {
             for (auto& sink : _sinks)
             {
+                if (!sink->passesLevelFilter(level))
+                    continue;
+
                 sink->print(level, message);
             }
         }
+
+        bool passesLevelFilter(Level level)
+        {
+            for (auto& sink : _sinks)
+            {
+                if (sink->passesLevelFilter(level))
+                    return true;
+            }
+            
+            return false;
+        }
+
     }
 
     void installSink(std::shared_ptr<LogSink> sink)
@@ -46,6 +61,22 @@ namespace OpenLoco::Diagnostics::Logging
         for (auto& sink : _sinks)
         {
             sink->decrementIntendSize();
+        }
+    }
+
+    void enableLevel(Level level)
+    {
+        for (auto& sink : _sinks)
+        {
+            sink->enableLevel(level);
+        }
+    }
+
+    void disableLevel(Level level)
+    {
+        for (auto& sink : _sinks)
+        {
+            sink->disableLevel(level);
         }
     }
 

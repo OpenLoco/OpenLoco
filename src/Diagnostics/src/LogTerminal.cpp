@@ -31,6 +31,11 @@ namespace OpenLoco::Diagnostics::Logging
 
     void LogTerminal::print(Level level, std::string_view message)
     {
+        if (!passesLevelFilter(level))
+        {
+            return;
+        }
+        
         std::string timestamp;
         if (getWriteTimestamps())
         {

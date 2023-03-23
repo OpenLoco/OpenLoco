@@ -57,8 +57,13 @@ namespace OpenLoco::Diagnostics::Logging
         void incrementIntendSize();
         void decrementIntendSize();
 
+        void enableLevel(Level level);
+        void disableLevel(Level level);
+        bool passesLevelFilter(Level level) const noexcept;
+
     private:
         int _intendSize{};
         bool _writeTimestamps{};
+        uint32_t _levelMask{ ~0U };
     };
 }

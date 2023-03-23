@@ -15,6 +15,11 @@ namespace OpenLoco::Diagnostics::Logging
 
     void LogFile::print(Level level, std::string_view message)
     {
+        if (!passesLevelFilter(level))
+        {
+            return;
+        }
+        
         if (!_file.is_open())
         {
             return;
@@ -33,13 +38,13 @@ namespace OpenLoco::Diagnostics::Logging
                 fmt::print(_file, "{}[INF] {:<{}}\n", timestamp, message, intendSize);
                 return;
             case Level::warning:
-                fmt::print(stdout, "{}[WARN] {:<{}}\n", timestamp, message, intendSize);
+                fmt::print(_file, "{}[WARN] {:<{}}\n", timestamp, message, intendSize);
                 return;
             case Level::error:
-                fmt::print(stderr, "{}[ERR] {:<{}}\n", timestamp, message, intendSize);
+                fmt::print(_file, "{}[ERR] {:<{}}\n", timestamp, message, intendSize);
                 return;
             case Level::verbose:
-                fmt::print(stdout, "{}[VER] {:<{}}\n", timestamp, message, intendSize);
+                fmt::print(_file, "{}[VER] {:<{}}\n", timestamp, message, intendSize);
                 return;
             default:
                 break;

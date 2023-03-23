@@ -36,4 +36,22 @@ namespace OpenLoco::Diagnostics::Logging
         assert(_intendSize >= 0);
     }
 
+    void LogSink::enableLevel(Level level)
+    {
+        const auto bitMask = 1U << static_cast<unsigned>(level);
+        _levelMask |= bitMask;
+    }
+
+    void LogSink::disableLevel(Level level)
+    {
+        const auto bitMask = 1U << static_cast<unsigned>(level);
+        _levelMask &= ~bitMask;
+    }
+
+    bool LogSink::passesLevelFilter(Level level) const noexcept
+    {
+        const auto bitMask = 1U << static_cast<unsigned>(level);
+        return (_levelMask & bitMask) != 0;
+    }
+
 }
