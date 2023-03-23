@@ -53,11 +53,11 @@ namespace OpenLoco::GameCommands
 
         // 0x00469DAE
         // TODO: check this (0x00469DC0)
-        World::QuarterTile qt(0, 0xF);
+        World::QuarterTile qt(0xF, 0);
 
         // TODO: for _F0016C -- remove this hack when no longer needed
         uint8_t flagStackHack[10] = { 0 };
-        flagStackHack[7] = flags;
+        flagStackHack[8] = flags;
 
         _F003CE = pos.x;
         _F003D0 = pos.y;
@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
 
         // TODO: check height args
         auto tileHeight = World::TileManager::getHeight(pos);
-        if (TileManager::canConstructAt(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, (void*)0x00469E07))
+        if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, (void*)0x00469E07))
             return _F25308;
         else
             return GameCommands::FAILURE;
