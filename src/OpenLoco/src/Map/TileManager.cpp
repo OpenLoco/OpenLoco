@@ -31,7 +31,9 @@ namespace OpenLoco::World::TileManager
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
+    static loco_global<uint32_t, 0x00F00138> _F00138;
     static loco_global<TileElement*, 0x00F00158> _F00158;
+    static loco_global<uint8_t, 0x00F00166> _F00166;
     static loco_global<uint32_t, 0x00F00168> _F00168;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
@@ -478,15 +480,36 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462926
-    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
+    static bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction, uint8_t flags)
     {
+        _F00138 = constructFunction != nullptr ? reinterpret_cast<uint32_t>(constructFunction) : 0xFFFFFFFF;
+        _F00166 = flags;
+
         registers regs;
         regs.ax = pos.x;
         regs.cx = pos.y;
         regs.dl = baseZ;
         regs.dh = clearZ;
         regs.bl = qt.getBaseQuarterOccupied() | (qt.getZQuarterOccupied() << 4);
-        return !(call(0x00462926, regs) & Interop::X86_FLAG_CARRY);
+        return !(call(0x00462937, regs) & Interop::X86_FLAG_CARRY);
+    }
+
+    // 0x00462908
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction)
+    {
+        return canConstructAt(pos, baseZ, clearZ, qt, constructFunction, (1 << 7) | (1 << 0));
+    }
+
+    // 0x00462917
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction)
+    {
+        return canConstructAt(pos, baseZ, clearZ, qt, constructFunction, (1 << 0));
+    }
+
+    // 0x00462926
+    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction)
+    {
+        return canConstructAt(pos, baseZ, clearZ, qt, constructFunction, (1 << 0));
     }
 
     // TODO: Return std::optional

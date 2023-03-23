@@ -36,7 +36,9 @@ namespace OpenLoco::World::TileManager
     void updateTilePointers();
     void reorganise();
     bool checkFreeElementsAndReorganise();
-    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction = nullptr);
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction = nullptr);
+    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* constructFunction = nullptr);
     uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType);
     uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
