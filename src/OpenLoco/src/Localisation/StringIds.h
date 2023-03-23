@@ -345,6 +345,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_select_track_mod = 354;
     constexpr string_id move_main_view_to_show_this = 355;
     constexpr string_id off_edge_of_map = 356;
+    constexpr string_id cannot_build_partly_above_below_water = 357;
 
     constexpr string_id error_can_only_build_above_ground = 360;
 

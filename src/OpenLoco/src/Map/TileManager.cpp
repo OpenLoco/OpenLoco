@@ -3,10 +3,12 @@
 #include "BuildingElement.h"
 #include "Entities/Misc.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryElement.h"
 #include "Input.h"
+#include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -14,6 +16,7 @@
 #include "QuarterTile.h"
 #include "Random.h"
 #include "RoadElement.h"
+#include "StationElement.h"
 #include "SurfaceElement.h"
 #include "TreeElement.h"
 #include "Ui.h"
@@ -34,6 +37,7 @@ namespace OpenLoco::World::TileManager
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
     static loco_global<uint32_t, 0x00F00138> _F00138;
     static loco_global<TileElement*, 0x00F00158> _F00158;
+    static loco_global<TileElement*, 0x00F0015C> _F0015C;
     static loco_global<uint8_t, 0x00F00166> _F00166;
     static loco_global<uint32_t, 0x00F00168> _F00168;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
@@ -478,6 +482,120 @@ namespace OpenLoco::World::TileManager
     bool checkFreeElementsAndReorganise()
     {
         return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
+    }
+
+    // 0x00462937
+    bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<bool()>> clearFunc)
+    {
+        if (!drawableCoords(pos))
+        {
+            GameCommands::setErrorText(StringIds::off_edge_of_map);
+            return false;
+        }
+
+        const auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            const auto* elSurface = el.as<SurfaceElement>();
+            if (elSurface == nullptr)
+            {
+                if (flags & (1U << 7))
+                {
+                    if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
+                    {
+                        // 0x00462B4F
+                    }
+                    const auto* elStation = el.as<StationElement>();
+                    if (elStation != nullptr)
+                    {
+                        if (elStation->stationType() == StationType::airport || elStation->stationType() == StationType::docks)
+                        {
+                            // 0x00462B4F
+                        }
+                    }
+                }
+                if (baseZ >= el.clearZ())
+                {
+                    continue;
+                }
+                if (clearZ <= el.baseZ())
+                {
+                    continue;
+                }
+                if (el.isGhost())
+                {
+                    continue;
+                }
+                if ((el.occupiedQuarter() & qt.getBaseQuarterOccupied()) == 0)
+                {
+                    continue;
+                }
+                if (!el.isFlag5())
+                {
+                    // 0x00462B4F
+                }
+                if (clearFunc.has_value())
+                {
+                    _F0015C = nullptr;
+                    if ((clearFunc.value())())
+                    {
+                        if (_F0015C == nullptr)
+                        {
+                            continue;
+                        }
+                        // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
+                        continue;
+                    }
+                }
+                // if (sub_462BB3()){ some stuff getCollideDetails() return false; }
+            }
+            else
+            {
+                if (elSurface->isFlag5())
+                {
+                    // if (sub_462BB3()){ some stuff getCollideDetails() return false; }
+                }
+                const auto waterZ = elSurface->water() * kMicroToSmallZStep;
+                if (waterZ != 0)
+                {
+                    if (clearZ > elSurface->clearZ() && baseZ < waterZ + 4)
+                    {
+                        _F00166 = _F00166 | (1 << 3);
+                        if (baseZ < waterZ)
+                        {
+                            _F00166 = _F00166 | (1 << 2);
+                            if (clearZ <= waterZ)
+                            {
+                                if (clearFunc.has_value())
+                                {
+                                    _F0015C = nullptr;
+                                    if ((clearFunc.value())())
+                                    {
+                                        // odd ?if tile iterator != 0xFFFFFFFF
+                                        // {GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);}
+                                        return false;
+                                    }
+                                    else
+                                    {
+                                        // okay?
+                                    }
+                                }
+                                else
+                                {
+                                    GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (qt.getZQuarterOccupied() == 0xF)
+                {
+                    continue;
+                }
+                // 0x004629CB
+            }
+        }
     }
 
     // 0x00462926
