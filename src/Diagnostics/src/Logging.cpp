@@ -32,32 +32,6 @@ namespace OpenLoco::Diagnostics::Logging
         fprintf(buffer, "\n");
     }
 
-    void logDeprecated(const char* format, ...)
-    {
-        va_list args;
-        va_start(args, format);
-        vwrite(stdout, format, args);
-        va_end(args);
-    }
-
-    void logVerboseDeprecated([[maybe_unused]] const char* format, ...)
-    {
-#ifdef VERBOSE
-        va_list args;
-        va_start(args, format);
-        vwrite(stdout, format, args);
-        va_end(args);
-#endif
-    }
-
-    void errorDeprecated(const char* format, ...)
-    {
-        va_list args;
-        va_start(args, format);
-        vwrite(stderr, format, args);
-        va_end(args);
-    }
-
     void groupDeprecated(const char* format, ...)
     {
         for (int i = 0; i < _group; i++)

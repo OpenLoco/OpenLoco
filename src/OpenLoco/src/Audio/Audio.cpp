@@ -656,7 +656,7 @@ namespace OpenLoco::Audio
     // 0x00401A05
     static void stopChannel(ChannelId id)
     {
-        Logging::logVerboseDeprecated("stopChannel({})", id);
+        Logging::verbose("stopChannel({})", id);
 
         auto channel = getChannel(id);
         if (channel != nullptr)

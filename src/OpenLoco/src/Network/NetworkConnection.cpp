@@ -191,23 +191,23 @@ void NetworkConnection::logPacket([[maybe_unused]] const Packet& packet, [[maybe
     if (packet.header.kind == PacketKind::ack || packet.header.kind == PacketKind::ping || resend)
     {
 #ifdef LOG_ACK_PACKETS
-        Logging::logDeprecated("[%s] #%4d | ACK", szDirection, seq);
+        Logging::info("[{}] #{:04} | ACK", szDirection, seq);
 #endif
     }
     else if (resend)
     {
-        Logging::logDeprecated("[%s] #%4d | RESEND", szDirection, seq);
+        Logging::info("[{}] #{:04} | RESEND", szDirection, seq);
     }
     else if (packet.header.kind == PacketKind::gameCommand)
     {
         auto kind = getPacketKindString(packet.header.kind);
         const auto& gc = packet.Cast<GameCommandPacket>();
-        Logging::logDeprecated("[%s] #%4d | %s (Index = %d Tick = %d Command = %d)", szDirection, seq, kind, gc->index, gc->tick, gc->regs.esi);
+        Logging::info("[{}] #{:04} | {} (Index = {} Tick = {} Command = {})", szDirection, seq, kind, gc->index, gc->tick, gc->regs.esi);
     }
     else
     {
         auto kind = getPacketKindString(packet.header.kind);
-        Logging::logDeprecated("[%s] #%4d | %s (%d bytes)", szDirection, seq, kind, bytes);
+        Logging::info("[{}] #{:04} | {} ({} bytes)", szDirection, seq, kind, bytes);
     }
 #endif
 #endif

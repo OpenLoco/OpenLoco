@@ -394,7 +394,7 @@ namespace OpenLoco::ObjectManager
         {
             // Something wrong has happened and installed object does not match index
             // Vanilla continued to search for subsequent matching installed headers.
-            Logging::errorDeprecated("Missmatch between installed object header and object file header!");
+            Logging::error("Missmatch between installed object header and object file header!");
             return std::nullopt;
         }
 
@@ -404,7 +404,7 @@ namespace OpenLoco::ObjectManager
         if (!computeObjectChecksum(preLoadObj.header, data))
         {
             // Something wrong has happened and installed object checksum is broken
-            Logging::errorDeprecated("Missmatch between installed object header checksum and object file checksum!");
+            Logging::error("Missmatch between installed object header checksum and object file checksum!");
             return std::nullopt;
         }
 
@@ -422,8 +422,7 @@ namespace OpenLoco::ObjectManager
         {
             free(preLoadObj.object);
             // Object failed validation
-            std::string str(header.getName());
-            Logging::errorDeprecated("Object %s in index failed validation! (This should not be possible)", str.c_str());
+            Logging::error("Object {} in index failed validation! (This should not be possible)", header.getName());
             return std::nullopt;
         }
 

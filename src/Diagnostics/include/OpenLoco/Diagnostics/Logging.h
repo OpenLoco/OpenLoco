@@ -46,11 +46,6 @@ namespace OpenLoco::Diagnostics::Logging
 
     void removeSink(std::shared_ptr<LogSink> sink);
 
-    // Use the functions above, those should be phased out.
-    void logDeprecated(const char* format, ...);
-    void logVerboseDeprecated(const char* format, ...);
-    void errorDeprecated(const char* format, ...);
-
     void groupDeprecated(const char* format, ...);
     void groupEndDeprecated();
 }

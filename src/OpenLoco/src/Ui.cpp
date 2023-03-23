@@ -640,7 +640,7 @@ namespace OpenLoco::Ui
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
-            Logging::errorDeprecated("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+            Logging::error("SDL_SetWindowFullscreen failed: {}", SDL_GetError());
             return false;
         }
 
