@@ -1,24 +1,16 @@
 #pragma once
 
+#include <OpenLoco/Diagnostics/LogSink.h>
 #include <fmt/format.h>
+#include <memory>
 #include <string_view>
 
 namespace OpenLoco::Diagnostics::Logging
 {
-    enum class Level
-    {
-        info,
-        warning,
-        error,
-        verbose,
-    };
-
     namespace Detail
     {
         void print(Level level, std::string_view message);
     }
-
-    void initialize();
 
     template<typename... TArgs>
     void info(const char* fmt, TArgs&&... args)
@@ -49,6 +41,10 @@ namespace OpenLoco::Diagnostics::Logging
         Detail::print(Level::verbose, msg);
 #endif
     }
+
+    void installSink(std::shared_ptr<LogSink> sink);
+
+    void removeSink(std::shared_ptr<LogSink> sink);
 
     // Use the functions above, those should be phased out.
     void logDeprecated(const char* format, ...);

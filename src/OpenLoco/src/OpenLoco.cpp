@@ -48,6 +48,7 @@
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
@@ -71,7 +72,6 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
@@ -229,6 +229,9 @@ namespace OpenLoco
             fs::remove(tempFilePath);
         }
         crashClose(_exHandler);
+
+        // Logging should be the last before terminating.
+        Logging::shutdown();
 
         // SDL_Quit();
         exit(0);
@@ -1144,6 +1147,7 @@ namespace OpenLoco
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {
+        // Bootstrap the logging system.
         Logging::initialize();
 
         // Always print the product name and version first.
