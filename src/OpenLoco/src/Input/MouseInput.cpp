@@ -4,6 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
@@ -22,7 +23,6 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 #include <queue>

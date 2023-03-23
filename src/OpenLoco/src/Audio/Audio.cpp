@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "GameStateFlags.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
@@ -19,7 +20,6 @@
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <array>

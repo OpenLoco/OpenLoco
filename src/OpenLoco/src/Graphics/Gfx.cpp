@@ -9,10 +9,10 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/StringManager.h"
+#include "Logging.h"
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <algorithm>

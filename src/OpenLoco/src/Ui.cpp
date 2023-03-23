@@ -37,6 +37,7 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
+#include "Logging.h"
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
@@ -44,7 +45,6 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 

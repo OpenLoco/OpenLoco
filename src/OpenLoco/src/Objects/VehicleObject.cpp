@@ -6,11 +6,11 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;

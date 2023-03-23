@@ -1,12 +1,12 @@
 #include "NetworkServer.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "Logging.h"
 #include "NetworkConnection.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <OpenLoco/Utility/String.hpp>

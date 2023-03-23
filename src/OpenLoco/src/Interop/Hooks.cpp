@@ -19,6 +19,7 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Localisation/Formatting.h"
+#include "Logging.h"
 #include "Map/AnimationManager.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
@@ -41,7 +42,6 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>

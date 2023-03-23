@@ -1,8 +1,8 @@
 #include "SoftwareDrawingEngine.h"
 #include "Config.h"
+#include "Logging.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>

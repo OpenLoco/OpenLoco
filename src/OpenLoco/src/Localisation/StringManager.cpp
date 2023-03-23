@@ -4,11 +4,11 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "Logging.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "StringIds.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>

@@ -3,12 +3,12 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
+#include "Logging.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Socket.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <cassert>
 #include <stdexcept>
 

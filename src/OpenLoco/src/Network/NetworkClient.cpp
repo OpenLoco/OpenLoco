@@ -1,11 +1,11 @@
 #include "NetworkClient.h"
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
+#include "Logging.h"
 #include "NetworkConnection.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Stream.hpp>
 

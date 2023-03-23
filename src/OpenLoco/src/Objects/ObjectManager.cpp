@@ -20,6 +20,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "ObjectImageTable.h"
 #include "ObjectIndex.h"
 #include "ObjectStringTable.h"
@@ -47,7 +48,6 @@
 #include "WallObject.h"
 #include "WaterObject.h"
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/Stream.hpp>

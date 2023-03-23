@@ -2,6 +2,7 @@
 #include "Economy/Currency.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands.h"
+#include "Logging.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
@@ -14,7 +15,6 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

@@ -7,6 +7,7 @@
 #include "Graphics/ImageIds.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
@@ -15,7 +16,6 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

@@ -6,12 +6,12 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Widget.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
