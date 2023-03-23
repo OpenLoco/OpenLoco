@@ -35,7 +35,7 @@ namespace OpenLoco::Diagnostics::Logging
         {
             return;
         }
-        
+
         std::string timestamp;
         if (getWriteTimestamps())
         {

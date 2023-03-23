@@ -19,12 +19,12 @@ namespace OpenLoco::Diagnostics::Logging
         {
             return;
         }
-        
+
         if (!_file.is_open())
         {
             return;
         }
-        
+
         std::string timestamp;
         if (getWriteTimestamps())
         {
