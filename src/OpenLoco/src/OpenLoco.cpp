@@ -1143,7 +1143,7 @@ namespace OpenLoco
         }
         tickLogic(ticks);
     }
-
+    
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {

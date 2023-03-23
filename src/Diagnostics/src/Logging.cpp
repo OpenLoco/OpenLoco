@@ -1,4 +1,5 @@
 #include "Logging.h"
+#include <algorithm>
 #include <cstdio>
 #include <fmt/color.h>
 #include <stdarg.h>
