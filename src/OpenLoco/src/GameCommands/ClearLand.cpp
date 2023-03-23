@@ -33,7 +33,7 @@ namespace OpenLoco::GameCommands
     static uint32_t sub_469D76(World::Pos2 pos, const uint8_t flags)
     {
         // This shoudn't happen due to using TilePosRangeView
-        if (pos.x > 0x2FFF || pos.y > 0x2FFF)
+        if (!World::validCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
             return GameCommands::FAILURE;
