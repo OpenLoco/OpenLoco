@@ -1,6 +1,7 @@
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
 #include "Localisation/StringIds.h"
+#include "Map/QuarterTile.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "SceneManager.h"
@@ -13,8 +14,11 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00F0013C> _F0013C;
     static loco_global<uint32_t, 0x00F00140> _F00140;
     static loco_global<uint16_t, 0x00F00144> _F00144;
+    static loco_global<uint8_t*, 0x00F0016C> _F0016C; // stack offset to -eventually- flags
     static loco_global<uint16_t, 0x00F00170> _F00170;
-    static loco_global<uint32_t, 0x00F25308> _F25308;
+    static loco_global<uint32_t, 0x00F0013C> _F003CE; // tile x?
+    static loco_global<uint32_t, 0x00F00140> _F003D0; // tile y?
+    static loco_global<uint32_t, 0x00F25308> _F25308; // cost?
 
     // 0x004690FC
     static void sub_4690FC(World::Pos2 pos)
@@ -48,6 +52,23 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00469DAE
+        // TODO: check this (0x00469DC0)
+        World::QuarterTile qt(0, 0xF);
+
+        // TODO: for _F0016C -- remove this hack when no longer needed
+        uint8_t flagStackHack[10] = { 0 };
+        flagStackHack[7] = flags;
+
+        _F003CE = pos.x;
+        _F003D0 = pos.y;
+        _F0016C = flagStackHack;
+
+        // TODO: check height args
+        auto tileHeight = World::TileManager::getHeight(pos);
+        if (TileManager::canConstructAt(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, (void*)0x00469E07))
+            return _F25308;
+        else
+            return GameCommands::FAILURE;
 
         /*
         registers regs;
@@ -57,8 +78,6 @@ namespace OpenLoco::GameCommands
         call(0x00469DAE, regs);
         return regs.ebx;
         */
-
-        return 0;
     }
 
     // 0x00469CCB
