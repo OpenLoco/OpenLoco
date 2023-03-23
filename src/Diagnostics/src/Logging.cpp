@@ -12,6 +12,15 @@ namespace OpenLoco::Diagnostics::Logging
     {
         void print(Level level, std::string_view message)
         {
+            if (_sinks.empty())
+            {
+                // Its possible that the logging interface is used from static initializers and
+                // may not have any sinks installed at this point, we redirect the output to
+                // stdout/stderr in this case.
+                fmt::print(level == Level::error ? stderr : stdout, "{}", message);
+                return;
+            }
+
             for (auto& sink : _sinks)
             {
                 if (!sink->passesLevelFilter(level))
@@ -23,12 +32,17 @@ namespace OpenLoco::Diagnostics::Logging
 
         bool passesLevelFilter(Level level)
         {
+            if (_sinks.empty())
+            {
+                return true;
+            }
+
             for (auto& sink : _sinks)
             {
                 if (sink->passesLevelFilter(level))
                     return true;
             }
-            
+
             return false;
         }
 
