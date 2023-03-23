@@ -21,3 +21,8 @@ if (MSVC)
 else ()
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
 endif ()
+
+target_link_libraries(Interop 
+    PUBLIC
+        Diagnostics
+)

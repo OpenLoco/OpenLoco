@@ -656,7 +656,7 @@ namespace OpenLoco::Audio
     // 0x00401A05
     static void stopChannel(ChannelId id)
     {
-        Logging::verbose("stopChannel({})", id);
+        Logging::verbose("stopChannel({})", static_cast<int>(id));
 
         auto channel = getChannel(id);
         if (channel != nullptr)

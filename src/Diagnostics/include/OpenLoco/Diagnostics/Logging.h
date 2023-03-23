@@ -43,12 +43,10 @@ namespace OpenLoco::Diagnostics::Logging
     }
 
     void incrementIntend();
+
     void decrementIntend();
 
     void installSink(std::shared_ptr<LogSink> sink);
 
     void removeSink(std::shared_ptr<LogSink> sink);
-
-    void groupDeprecated(const char* format, ...);
-    void groupEndDeprecated();
 }

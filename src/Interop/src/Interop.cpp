@@ -12,6 +12,7 @@
 #endif // _WIN32
 
 #include "Interop.hpp"
+#include <OpenLoco/Diagnostics/Logging.h>
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
 #define PLATFORM_X86
@@ -25,6 +26,8 @@
 #else
 #define DISABLE_OPT
 #endif // defined(__GNUC__)
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Interop
 {
@@ -95,7 +98,8 @@ namespace OpenLoco::Interop
     static int32_t DISABLE_OPT callByRef(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
 #ifdef _LOG_INTEROP_CALLS_
-        OpenLoco::Diagnostics::groupDeprecated("0x%x", address);
+        Logging::info("0x{:x}", address);
+        Logging::incrementIntend();
 #endif
         int32_t result = 0;
         _originalAddress = address;
@@ -252,7 +256,7 @@ namespace OpenLoco::Interop
         _originalAddress = 0;
 
 #ifdef _LOG_INTEROP_CALLS_
-        OpenLoco::Diagnostics::groupEndDeprecated();
+        Logging::decrementIntend();
 #endif
         // lahf only modifies ah, zero out the rest
         return (result >> 8) & 0xFF;

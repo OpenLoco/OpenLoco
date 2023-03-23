@@ -19,30 +19,6 @@ namespace OpenLoco::Diagnostics::Logging
         }
     }
 
-    static int _group = 0;
-
-    void groupDeprecated(const char* format, ...)
-    {
-        for (int i = 0; i < _group; i++)
-        {
-            printf("  ");
-        }
-
-        printf("> ");
-        va_list args;
-        va_start(args, format);
-        vprintf(format, args);
-        va_end(args);
-        printf("\n");
-
-        _group++;
-    }
-
-    void groupEndDeprecated()
-    {
-        _group--;
-    }
-
     void installSink(std::shared_ptr<LogSink> sink)
     {
         _sinks.push_back(sink);
