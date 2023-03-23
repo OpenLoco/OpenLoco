@@ -51,8 +51,6 @@ namespace OpenLoco::GameCommands
             TileManager::removeAllWallsOnTile(pos, tileHeight.landHeight / 4);
         }
 
-        // 0x00469DAE
-        // TODO: check this (0x00469DC0)
         World::QuarterTile qt(0xF, 0);
 
         // TODO: for _F0016C -- remove this hack when no longer needed
@@ -63,21 +61,12 @@ namespace OpenLoco::GameCommands
         _F003D0 = pos.y;
         _F0016C = flagStackHack;
 
-        // TODO: check height args
+        // TODO: implement 0x00469E07 as a real function after canConstructAt is implemented
         auto tileHeight = World::TileManager::getHeight(pos);
         if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, (void*)0x00469E07))
             return _F25308;
         else
             return GameCommands::FAILURE;
-
-        /*
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.bl = flags;
-        call(0x00469DAE, regs);
-        return regs.ebx;
-        */
     }
 
     // 0x00469CCB
