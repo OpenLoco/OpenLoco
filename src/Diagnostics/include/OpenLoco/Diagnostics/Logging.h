@@ -42,6 +42,9 @@ namespace OpenLoco::Diagnostics::Logging
 #endif
     }
 
+    void incrementIntend();
+    void decrementIntend();
+
     void installSink(std::shared_ptr<LogSink> sink);
 
     void removeSink(std::shared_ptr<LogSink> sink);

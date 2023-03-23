@@ -48,5 +48,17 @@ namespace OpenLoco::Diagnostics::Logging
             print(Level::verbose, msg);
 #endif
         }
+
+        bool getWriteTimestamps() const noexcept;
+        void setWriteTimestamps(bool value);
+
+        int getIntendSize() const noexcept;
+        void setIntendSize(int size);
+        void incrementIntendSize();
+        void decrementIntendSize();
+
+    private:
+        int _intendSize{};
+        bool _writeTimestamps{};
     };
 }

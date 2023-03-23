@@ -7,6 +7,7 @@ set(public_files
 
 set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LogFile.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/LogSink.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LogTerminal.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp"
 )

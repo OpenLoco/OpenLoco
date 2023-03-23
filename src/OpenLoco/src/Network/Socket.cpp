@@ -97,7 +97,7 @@ namespace OpenLoco::Network
         {
             if (_isInitialised)
             {
-                Logging::logVerboseDeprecated("WSACleanup()");
+                Logging::verbose("WSACleanup()");
                 WSACleanup();
                 _isInitialised = false;
             }

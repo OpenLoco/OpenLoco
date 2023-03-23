@@ -9,12 +9,9 @@ namespace OpenLoco::Diagnostics::Logging
     class LogFile final : public LogSink
     {
         std::fstream _file;
-        bool _writeTimestamps{};
 
     public:
-        LogFile(const fs::path& file, bool writeTimestamps);
-
-        void setWriteTimestamps(bool value);
+        LogFile(const fs::path& file);
 
         void print(Level level, std::string_view message) override;
     };

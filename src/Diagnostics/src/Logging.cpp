@@ -21,17 +21,6 @@ namespace OpenLoco::Diagnostics::Logging
 
     static int _group = 0;
 
-    static void vwrite(FILE* buffer, const char* format, va_list args)
-    {
-        for (int i = 0; i < _group; i++)
-        {
-            fprintf(buffer, "  ");
-        }
-
-        vprintf(format, args);
-        fprintf(buffer, "\n");
-    }
-
     void groupDeprecated(const char* format, ...)
     {
         for (int i = 0; i < _group; i++)
@@ -65,6 +54,22 @@ namespace OpenLoco::Diagnostics::Logging
         if (it != _sinks.end())
         {
             _sinks.erase(it);
+        }
+    }
+
+    void incrementIntend()
+    {
+        for (auto& sink : _sinks)
+        {
+            sink->incrementIntendSize();
+        }
+    }
+
+    void decrementIntend()
+    {
+        for (auto& sink : _sinks)
+        {
+            sink->decrementIntendSize();
         }
     }
 

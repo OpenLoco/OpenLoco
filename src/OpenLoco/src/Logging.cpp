@@ -18,9 +18,11 @@ namespace OpenLoco::Diagnostics::Logging
     void initialize()
     {
         _terminalLogSink = std::make_shared<LogTerminal>();
+        _terminalLogSink->setWriteTimestamps(false);
         Logging::installSink(_terminalLogSink);
 
-        _fileLogSink = std::make_shared<LogFile>(getLogFilePath(), true);
+        _fileLogSink = std::make_shared<LogFile>(getLogFilePath());
+        _fileLogSink->setWriteTimestamps(true);
         Logging::installSink(_fileLogSink);
     }
 

@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Dropdown
                 }
 
                 default:
-                    Logging::error("Unknown format: {}", arg.type);
+                    Logging::error("Unknown format: {}", static_cast<int>(arg.type));
                     break;
             }
         }

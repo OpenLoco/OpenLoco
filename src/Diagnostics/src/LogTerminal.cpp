@@ -1,4 +1,5 @@
 #include "OpenLoco/Diagnostics/LogTerminal.h"
+#include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/format.h>
 
@@ -30,19 +31,26 @@ namespace OpenLoco::Diagnostics::Logging
 
     void LogTerminal::print(Level level, std::string_view message)
     {
+        std::string timestamp;
+        if (getWriteTimestamps())
+        {
+            timestamp = fmt::format("[{:%Y-%m-%d %H:%M:%S}] ", fmt::localtime(std::time(nullptr)));
+        }
+
+        const int intendSize = getIntendSize();
         switch (level)
         {
             case Level::info:
-                fmt::print(stdout, kColourInfo, "{}\n", message);
+                fmt::print(stdout, kColourInfo, "{}{:>{}}\n", timestamp, message, intendSize);
                 return;
             case Level::warning:
-                fmt::print(stdout, kColourWarning, "{}\n", message);
+                fmt::print(stdout, kColourWarning, "{}{:>{}}\n", timestamp, message, intendSize);
                 return;
             case Level::error:
-                fmt::print(stderr, kColourError, "{}\n", message);
+                fmt::print(stderr, kColourError, "{}{:>{}}\n", timestamp, message, intendSize);
                 return;
             case Level::verbose:
-                fmt::print(stdout, kColourVerbose, "{}\n", message);
+                fmt::print(stdout, kColourVerbose, "{}{:>{}}\n", timestamp, message, intendSize);
                 return;
             default:
                 break;

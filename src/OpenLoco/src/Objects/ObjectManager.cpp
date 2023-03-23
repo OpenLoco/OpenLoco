@@ -585,7 +585,7 @@ namespace OpenLoco::ObjectManager
                 result.success = false;
                 result.problemObject = header;
                 std::string str(header.getName());
-                Logging::errorDeprecated("Failed to load: %s", str.c_str());
+                Logging::error("Failed to load: {}", str);
                 // Could break early here but we want to list all of the failed objects
             }
             index++;

@@ -5,8 +5,7 @@
 
 namespace OpenLoco::Diagnostics::Logging
 {
-    LogFile::LogFile(const fs::path& file, bool writeTimestamps)
-        : _writeTimestamps{ writeTimestamps }
+    LogFile::LogFile(const fs::path& file)
     {
         // Ensure the directory exists in case the filepath is a relative path and contains a sub directory.
         fs::create_directories(file.parent_path());
@@ -20,32 +19,30 @@ namespace OpenLoco::Diagnostics::Logging
         {
             return;
         }
+        
         std::string timestamp;
-        if (_writeTimestamps)
+        if (getWriteTimestamps())
         {
             timestamp = fmt::format("[{:%Y-%m-%d %H:%M:%S}] ", fmt::localtime(std::time(nullptr)));
         }
+
+        const int intendSize = getIntendSize();
         switch (level)
         {
             case Level::info:
-                fmt::print(_file, "{}[INF] {}\n", timestamp, message);
+                fmt::print(_file, "{}[INF] {:<{}}\n", timestamp, message, intendSize);
                 return;
             case Level::warning:
-                fmt::print(stdout, "{}[WARN] {}\n", timestamp, message);
+                fmt::print(stdout, "{}[WARN] {:<{}}\n", timestamp, message, intendSize);
                 return;
             case Level::error:
-                fmt::print(stderr, "{}[ERR] {}\n", timestamp, message);
+                fmt::print(stderr, "{}[ERR] {:<{}}\n", timestamp, message, intendSize);
                 return;
             case Level::verbose:
-                fmt::print(stdout, "{}[VER] {}\n", timestamp, message);
+                fmt::print(stdout, "{}[VER] {:<{}}\n", timestamp, message, intendSize);
                 return;
             default:
                 break;
         }
-    }
-
-    void LogFile::setWriteTimestamps(bool value)
-    {
-        _writeTimestamps = value;
     }
 }
