@@ -326,7 +326,8 @@ namespace OpenLoco
                           .registerOption("-o", 1)
                           .registerOption("--help", "-h")
                           .registerOption("--version")
-                          .registerOption("--intro");
+                          .registerOption("--intro")
+                          .registerOption("--log_levels", 1);
 
         if (!parser.parse())
         {
@@ -383,6 +384,11 @@ namespace OpenLoco
             options.port = parser.getArg<int32_t>("-p");
         options.outputPath = parser.getArg("-o");
 
+        if (parser.hasOption("--log_levels"))
+            options.logLevels = parser.getArg("--log_levels");
+        else
+            options.logLevels = "info, warning, error";
+
         return options;
     }
 
@@ -418,6 +424,9 @@ namespace OpenLoco
         std::cout << "--help     -h     Print help" << std::endl;
         std::cout << "--version         Print version" << std::endl;
         std::cout << "--intro           Run the game intro" << std::endl;
+        std::cout << "--log_levels      Comma separated list of log levels, valid levels:" << std::endl;
+        std::cout << "                  - info, warning, error, verbose, all" << std::endl;
+        std::cout << "                  Default: \"info, warning, error\"" << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)

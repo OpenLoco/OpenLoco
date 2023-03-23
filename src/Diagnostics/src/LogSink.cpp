@@ -54,4 +54,9 @@ namespace OpenLoco::Diagnostics::Logging
         return (_levelMask & bitMask) != 0;
     }
 
+    void LogSink::setLevelMask(uint32_t mask)
+    {
+        _levelMask = mask;
+    }
+
 }

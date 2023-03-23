@@ -4,6 +4,6 @@
 
 namespace OpenLoco::Diagnostics::Logging
 {
-    void initialize();
+    void initialize(std::string_view logLevels);
     void shutdown();
 }

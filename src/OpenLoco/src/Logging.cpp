@@ -15,15 +15,58 @@ namespace OpenLoco::Diagnostics::Logging
         return fs::path{ "logs/openloco.log" };
     }
 
-    void initialize()
+    static uint32_t parseLogLevels(std::string_view logLevels)
     {
+        uint32_t res{};
+
+        auto addLogLevel = [&res](std::string_view level) {
+            if (level == "info")
+                res |= 1U << static_cast<unsigned>(Logging::Level::info);
+            else if (level == "warning")
+                res |= 1U << static_cast<unsigned>(Logging::Level::warning);
+            else if (level == "error")
+                res |= 1U << static_cast<unsigned>(Logging::Level::error);
+            else if (level == "verbose")
+                res |= 1U << static_cast<unsigned>(Logging::Level::verbose);
+            else if (level == "all")
+                res = ~0U;
+        };
+
+        constexpr char separator = ',';
+
+        size_t start = 0;
+        size_t end = logLevels.find(separator);
+
+        while (end != std::string_view::npos)
+        {
+            std::string_view substring = logLevels.substr(start, end - start);
+            substring = substring.substr(0, substring.find_last_not_of(" \t\n\r") + 1);
+            addLogLevel(substring);
+            start = end + 1;
+            end = logLevels.find(separator, start);
+        }
+
+        std::string_view substring = logLevels.substr(start);
+        substring = substring.substr(0, substring.find_last_not_of(" \t\n\r") + 1);
+        addLogLevel(substring);
+
+        return res;
+    }
+
+    void initialize(std::string_view logLevels)
+    {
+        const auto logLevelMask = parseLogLevels(logLevels);
+
+        // Setup sink for the terminal/console.
         _terminalLogSink = std::make_shared<LogTerminal>();
         _terminalLogSink->setWriteTimestamps(false);
-        _terminalLogSink->disableLevel(Level::verbose);
+        _terminalLogSink->setLevelMask(logLevelMask);
         Logging::installSink(_terminalLogSink);
 
+        // Setup log file sink.
         _fileLogSink = std::make_shared<LogFile>(getLogFilePath());
         _fileLogSink->setWriteTimestamps(true);
+        _fileLogSink->setLevelMask(logLevelMask);
         Logging::installSink(_fileLogSink);
     }
 

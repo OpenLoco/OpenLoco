@@ -59,6 +59,8 @@ namespace OpenLoco::Diagnostics::Logging
 
         void enableLevel(Level level);
         void disableLevel(Level level);
+        void setLevelMask(uint32_t mask);
+
         bool passesLevelFilter(Level level) const noexcept;
 
     private:

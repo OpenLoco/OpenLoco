@@ -1148,7 +1148,7 @@ namespace OpenLoco
     static int main(const CommandLineOptions& options)
     {
         // Bootstrap the logging system.
-        Logging::initialize();
+        Logging::initialize(options.logLevels);
 
         // Always print the product name and version first.
         Logging::info("{}", OpenLoco::getVersionInfo());
