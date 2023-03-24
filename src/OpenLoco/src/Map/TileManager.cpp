@@ -646,6 +646,7 @@ namespace OpenLoco::World::TileManager
                 }
             }
         }
+        return false;
     }
 
     // 0x00462926
