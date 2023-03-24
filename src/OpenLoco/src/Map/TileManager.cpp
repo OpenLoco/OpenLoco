@@ -593,7 +593,57 @@ namespace OpenLoco::World::TileManager
                 {
                     continue;
                 }
-                // 0x004629CB
+
+                if (clearZ <= elSurface->baseZ())
+                {
+                    _F00166 = _F00166 | (1u << 2);  // ELEMENT_IS_UNDERGROUND
+                    _F00166 = _F00166 & ~(1u << 1); // ELEMENT_IS_ABOVE_GROUND
+                    continue;
+                }
+                else
+                {
+                    auto northZ = elSurface->baseZ();
+                    auto eastZ = northZ;
+                    auto southZ = northZ;
+                    auto westZ = northZ;
+                    const auto slope = elSurface->slope();
+                    if (slope & SurfaceSlope::CornerUp::north)
+                    {
+                        northZ += kSmallZStep;
+                        if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
+                            northZ += kSmallZStep;
+                    }
+                    if (slope & SurfaceSlope::CornerUp::east)
+                    {
+                        eastZ += kSmallZStep;
+                        if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
+                            eastZ += kSmallZStep;
+                    }
+                    if (slope & SurfaceSlope::CornerUp::south)
+                    {
+                        southZ += kSmallZStep;
+                        if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
+                            southZ += kSmallZStep;
+                    }
+                    if (slope & SurfaceSlope::CornerUp::west)
+                    {
+                        westZ += kSmallZStep;
+                        if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
+                            westZ += kSmallZStep;
+                    }
+                    const auto doublHeight = baseZ + 8;
+
+                    const auto baseQuarter = qt.getBaseQuarterOccupied();
+                    const auto zQuarter = qt.getZQuarterOccupied();
+                    if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doublHeight >= northZ))
+                        && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doublHeight >= eastZ))
+                        && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doublHeight >= southZ))
+                        && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doublHeight >= westZ)))
+                    {
+                        continue;
+                    }
+                    // 0x00462B4F
+                }
             }
         }
     }
