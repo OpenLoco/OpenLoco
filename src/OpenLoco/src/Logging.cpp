@@ -53,48 +53,26 @@ namespace OpenLoco::Diagnostics::Logging
         }
     }
 
-    static uint32_t parseLogLevels(std::string_view logLevels)
+    static LevelMask parseLogLevels(std::string_view logLevels)
     {
-        uint32_t res{};
+        LevelMask res{};
 
-        auto addLogLevel = [&res](std::string_view level) {
-            uint32_t mask = 0;
+        const auto addLogLevel = [&res](std::string_view level) {
             bool removeMask = false;
-
             if (level.substr(0, 1) == "-")
             {
                 removeMask = true;
                 level = level.substr(1);
             }
 
-            if (level == "info")
-            {
-                mask = getLevelMask(Logging::Level::info);
-            }
-            else if (level == "warning")
-            {
-                mask = getLevelMask(Logging::Level::warning);
-            }
-            else if (level == "error")
-            {
-                mask = getLevelMask(Logging::Level::error);
-            }
-            else if (level == "verbose")
-            {
-                mask = getLevelMask(Logging::Level::verbose);
-            }
-            else if (level == "all")
-            {
-                mask = getLevelMask(Logging::Level::all);
-            }
-
+            const auto levelMask = Logging::getLevelMaskFromName(level);
             if (removeMask)
             {
-                res &= ~mask;
+                res &= ~levelMask;
             }
             else
             {
-                res |= mask;
+                res |= levelMask;
             }
         };
 

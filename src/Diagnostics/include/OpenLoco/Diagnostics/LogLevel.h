@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string_view>
 
 namespace OpenLoco::Diagnostics::Logging
 {
@@ -27,6 +28,22 @@ namespace OpenLoco::Diagnostics::Logging
         };
         ((mask = mask | maskForLevel(args)), ...);
         return mask;
+    }
+
+    constexpr LevelMask getLevelMaskFromName(std::string_view name)
+    {
+        if (name == "info")
+            return getLevelMask(Level::info);
+        else if (name == "warning")
+            return getLevelMask(Level::warning);
+        else if (name == "error")
+            return getLevelMask(Level::error);
+        else if (name == "verbose")
+            return getLevelMask(Level::verbose);
+        else if (name == "all")
+            return getLevelMask(Level::all);
+        else
+            return 0;
     }
 
 }
