@@ -12,11 +12,17 @@ set(private_files
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp"
 )
 
+set(test_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/LoggingTests.cpp"
+)
+
 loco_add_library(Diagnostics STATIC
     PUBLIC_FILES
         ${public_files}
     PRIVATE_FILES
         ${private_files}
+    TEST_FILES
+        ${test_files}
 )
 
 target_link_libraries(Diagnostics 
