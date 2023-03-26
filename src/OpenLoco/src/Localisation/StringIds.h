@@ -1107,7 +1107,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_station_cargo = 1448;
     constexpr string_id tooltip_station_cargo_ratings = 1449;
     constexpr string_id demolition_not_allowed = 1450;
-
+    constexpr string_id another_company_is_about_to_build_here = 1451;
     constexpr string_id vehicle_too_long = 1452;
     constexpr string_id tooltip_build_or_move_headquarters = 1453;
     constexpr string_id tooltip_change_owner_name = 1454;

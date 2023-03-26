@@ -16,8 +16,10 @@
 #include "QuarterTile.h"
 #include "Random.h"
 #include "RoadElement.h"
+#include "SignalElement.h"
 #include "StationElement.h"
 #include "SurfaceElement.h"
+#include "TrackElement.h"
 #include "TreeElement.h"
 #include "Ui.h"
 #include "ViewportManager.h"
@@ -484,6 +486,114 @@ namespace OpenLoco::World::TileManager
         return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
     }
 
+    CompanyId getTileOwner(World::TileElement& el)
+    {
+        CompanyId owner = CompanyId::null;
+
+        if (auto* elTrack = el.as<TrackElement>();
+            elTrack != nullptr)
+        {
+            owner = elTrack->owner();
+        }
+        else if (auto* elRoad = el.as<RoadElement>();
+                 elRoad != nullptr)
+        {
+            owner = elRoad->owner();
+        }
+        else if (auto* elStation = el.as<StationElement>();
+                 elStation != nullptr)
+        {
+            if (elStation->stationType() == StationType::trainStation)
+            {
+                auto* prevElTrack = el.prev()->as<TrackElement>();
+                owner = prevElTrack->owner();
+            }
+            else if (elStation->stationType() == StationType::roadStation)
+            {
+                auto* prevElRoad = el.prev()->as<RoadElement>();
+                owner = prevElRoad->owner();
+            }
+            else
+            {
+                owner = elStation->owner();
+            }
+        }
+        else if (auto* elSignal = el.as<SignalElement>();
+                 elSignal != nullptr)
+        {
+            auto* prevElTrack = el.prev()->as<TrackElement>();
+            owner = prevElTrack->owner();
+        }
+        return owner;
+    }
+
+    // 0x00462BB3
+    // If return true input el not modified
+    // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
+    bool sub_462BB3(World::TileElement*& el)
+    {
+        auto* elSurface = el->as<SurfaceElement>();
+        auto* const initialEl = el;
+
+        // 0x00462C02
+        auto returnFunc = [&el, initialEl](const CompanyId owner) {
+            const auto updatingId = GameCommands::getUpdatingCompanyId();
+            if (updatingId == CompanyId::neutral || !CompanyManager::isPlayerCompany(updatingId))
+            {
+                GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
+                el = reinterpret_cast<World::TileElement*>(0xFFFFFFFF);
+                return false;
+            }
+            if (owner == updatingId || CompanyManager::isPlayerCompany(owner))
+            {
+                return false;
+            }
+            auto* company = CompanyManager::get(owner);
+            if ((company->challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
+            {
+                GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
+                el = reinterpret_cast<World::TileElement*>(0xFFFFFFFF);
+                return false;
+            }
+            // Modification from vanilla
+            el = initialEl;
+            company->challengeFlags |= CompanyFlags::unk1;
+            return true;
+        };
+
+        if (elSurface == nullptr)
+        {
+            CompanyId owner = getTileOwner(*el);
+            if (owner == CompanyId::null)
+            {
+                return true;
+            }
+
+            return returnFunc(owner);
+        }
+        else
+        {
+            while (!el->isLast())
+            {
+                el = el->next();
+                if (!el->isFlag5())
+                {
+                    continue;
+                }
+                const auto owner = getTileOwner(*el);
+                if (owner == CompanyId::null)
+                {
+                    continue;
+                }
+
+                return returnFunc(owner);
+            }
+            GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
+            el = reinterpret_cast<World::TileElement*>(0xFFFFFFFF);
+            return false;
+        }
+    }
+
     // 0x00462937
     bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<bool()>> clearFunc)
     {
@@ -542,6 +652,10 @@ namespace OpenLoco::World::TileManager
                         if (_F0015C == nullptr)
                         {
                             continue;
+                        }
+                        if (_F0015C == reinterpret_cast<TileElement*>(-1))
+                        {
+                            return true;
                         }
                         // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
                         continue;
