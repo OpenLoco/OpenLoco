@@ -486,7 +486,7 @@ namespace OpenLoco::World::TileManager
         return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
     }
 
-    CompanyId getTileOwner(World::TileElement& el)
+    CompanyId getTileOwner(const World::TileElement& el)
     {
         CompanyId owner = CompanyId::null;
 
@@ -527,38 +527,45 @@ namespace OpenLoco::World::TileManager
         return owner;
     }
 
+    enum class ClearResult
+    {
+        noCollision,
+        collisionWithErrorMessage,
+        collsionNoMessage
+    };
+
     // 0x00462BB3
     // If return true input el not modified
     // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
-    bool sub_462BB3(World::TileElement*& el)
+    ClearResult sub_462BB3(const World::TileElement*& el)
     {
         auto* elSurface = el->as<SurfaceElement>();
         auto* const initialEl = el;
 
         // 0x00462C02
-        auto returnFunc = [&el, initialEl](const CompanyId owner) {
+        auto returnFunc = [&el, initialEl](const CompanyId owner) -> ClearResult {
             const auto updatingId = GameCommands::getUpdatingCompanyId();
             if (updatingId == CompanyId::neutral || !CompanyManager::isPlayerCompany(updatingId))
             {
                 GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-                el = reinterpret_cast<World::TileElement*>(0xFFFFFFFF);
-                return false;
+                el = reinterpret_cast<const World::TileElement*>(0xFFFFFFFF);
+                return ClearResult::collisionWithErrorMessage;
             }
             if (owner == updatingId || CompanyManager::isPlayerCompany(owner))
             {
-                return false;
+                return ClearResult::collsionNoMessage;
             }
             auto* company = CompanyManager::get(owner);
             if ((company->challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
             {
                 GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-                el = reinterpret_cast<World::TileElement*>(0xFFFFFFFF);
-                return false;
+                el = reinterpret_cast<const World::TileElement*>(0xFFFFFFFF);
+                return ClearResult::collisionWithErrorMessage;
             }
             // Modification from vanilla
             el = initialEl;
             company->challengeFlags |= CompanyFlags::unk1;
-            return true;
+            return ClearResult::noCollision;
         };
 
         if (elSurface == nullptr)
@@ -566,7 +573,7 @@ namespace OpenLoco::World::TileManager
             CompanyId owner = getTileOwner(*el);
             if (owner == CompanyId::null)
             {
-                return true;
+                return ClearResult::noCollision;
             }
 
             return returnFunc(owner);
@@ -589,19 +596,50 @@ namespace OpenLoco::World::TileManager
                 return returnFunc(owner);
             }
             GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-            el = reinterpret_cast<World::TileElement*>(0xFFFFFFFF);
-            return false;
+            el = reinterpret_cast<const World::TileElement*>(0xFFFFFFFF);
+            return ClearResult::collisionWithErrorMessage;
         }
     }
 
+    enum class Sub462B4FResult
+    {
+        allCollisionsRemoved,
+        collision,
+        keepChecking,
+        restartChecking,
+    };
+
     // 0x00462937
-    bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<bool()>> clearFunc)
+    bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<ClearResult(const TileElement& el)>> clearFunc)
     {
         if (!drawableCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
             return false;
         }
+
+        auto sub_462B4F = [&clearFunc](const TileElement& el) -> Sub462B4FResult {
+            if (clearFunc.has_value())
+            {
+                _F0015C = nullptr;
+                if ((clearFunc.value())(el) != ClearResult::noCollision)
+                {
+                    if (_F0015C == nullptr)
+                    {
+                        return Sub462B4FResult::keepChecking;
+                    }
+                    if (_F0015C == reinterpret_cast<TileElement*>(-1))
+                    {
+                        // This is a no collision as it has removed all the collisions
+                        return Sub462B4FResult::allCollisionsRemoved; 
+                    }
+                    // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
+                    return Sub462B4FResult::restartChecking;
+                }
+            }
+            // some stuff getCollideDetails()
+            return Sub462B4FResult::collision;
+        };
 
         const auto tile = get(pos);
         for (auto& el : tile)
@@ -647,7 +685,7 @@ namespace OpenLoco::World::TileManager
                 if (clearFunc.has_value())
                 {
                     _F0015C = nullptr;
-                    if ((clearFunc.value())())
+                    if ((clearFunc.value())(el) != ClearResult::noCollision)
                     {
                         if (_F0015C == nullptr)
                         {
@@ -655,6 +693,7 @@ namespace OpenLoco::World::TileManager
                         }
                         if (_F0015C == reinterpret_cast<TileElement*>(-1))
                         {
+                            // all collisions removed
                             return true;
                         }
                         // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
@@ -683,15 +722,13 @@ namespace OpenLoco::World::TileManager
                                 if (clearFunc.has_value())
                                 {
                                     _F0015C = nullptr;
-                                    if ((clearFunc.value())())
+                                    if (auto res = (clearFunc.value())(el); res != ClearResult::noCollision)
                                     {
-                                        // odd ?if tile iterator != 0xFFFFFFFF
-                                        // {GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);}
+                                        if (res == ClearResult::collsionNoMessage)
+                                        {
+                                            GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
+                                        }
                                         return false;
-                                    }
-                                    else
-                                    {
-                                        // okay?
                                     }
                                 }
                                 else
