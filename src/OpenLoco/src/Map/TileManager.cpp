@@ -480,7 +480,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462926
-    static bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction, uint8_t flags)
+    static bool canConstructWithClearAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction, uint8_t flags)
     {
         _F00138 = clearFunction != nullptr ? reinterpret_cast<uint32_t>(clearFunction) : 0xFFFFFFFF;
         _F00166 = flags;
@@ -497,19 +497,19 @@ namespace OpenLoco::World::TileManager
     // 0x00462908
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction)
     {
-        return canConstructAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 7) | (1 << 0));
+        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 7) | (1 << 0));
     }
 
     // 0x00462917
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction)
     {
-        return canConstructAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 0));
+        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 0));
     }
 
     // 0x00462926
-    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction)
+    bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
     {
-        return canConstructAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 0));
+        return canConstructWithClearAt(pos, baseZ, clearZ, qt, nullptr, (1 << 0));
     }
 
     // TODO: Return std::optional
