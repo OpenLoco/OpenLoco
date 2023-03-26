@@ -58,16 +58,44 @@ namespace OpenLoco::Diagnostics::Logging
         uint32_t res{};
 
         auto addLogLevel = [&res](std::string_view level) {
+            uint32_t mask = 0;
+            bool removeMask = false;
+
+            if (level.substr(0, 1) == "-")
+            {
+                removeMask = true;
+                level = level.substr(1);
+            }
+
             if (level == "info")
-                res |= 1U << static_cast<unsigned>(Logging::Level::info);
+            {
+                mask = getLevelMask(Logging::Level::info);
+            }
             else if (level == "warning")
-                res |= 1U << static_cast<unsigned>(Logging::Level::warning);
+            {
+                mask = getLevelMask(Logging::Level::warning);
+            }
             else if (level == "error")
-                res |= 1U << static_cast<unsigned>(Logging::Level::error);
+            {
+                mask = getLevelMask(Logging::Level::error);
+            }
             else if (level == "verbose")
-                res |= 1U << static_cast<unsigned>(Logging::Level::verbose);
+            {
+                mask = getLevelMask(Logging::Level::verbose);
+            }
             else if (level == "all")
-                res = ~0U;
+            {
+                mask = getLevelMask(Logging::Level::all);
+            }
+
+            if (removeMask)
+            {
+                res &= ~mask;
+            }
+            else
+            {
+                res |= mask;
+            }
         };
 
         constexpr char separator = ',';

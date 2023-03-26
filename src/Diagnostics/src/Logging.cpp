@@ -1,4 +1,5 @@
 #include "Logging.h"
+#include "LogSink.h"
 #include <algorithm>
 #include <cstdio>
 #include <fmt/color.h>

@@ -1,12 +1,14 @@
 #pragma once
 
-#include <OpenLoco/Diagnostics/LogSink.h>
+#include <OpenLoco/Diagnostics/LogLevel.h>
 #include <fmt/format.h>
 #include <memory>
 #include <string_view>
 
 namespace OpenLoco::Diagnostics::Logging
 {
+    class LogSink;
+
     namespace Detail
     {
         // Sends the message to each registered sink. Sinks may print more than just the

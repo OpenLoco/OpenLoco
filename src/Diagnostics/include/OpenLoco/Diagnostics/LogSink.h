@@ -1,18 +1,11 @@
 #pragma once
 
+#include <OpenLoco/Diagnostics/LogLevel.h>
 #include <fmt/format.h>
 #include <string_view>
 
 namespace OpenLoco::Diagnostics::Logging
 {
-    enum class Level
-    {
-        info,
-        warning,
-        error,
-        verbose,
-    };
-
     class LogSink
     {
     public:
@@ -54,7 +47,7 @@ namespace OpenLoco::Diagnostics::Logging
 
         void enableLevel(Level level);
         void disableLevel(Level level);
-        void setLevelMask(uint32_t mask);
+        void setLevelMask(LevelMask mask);
 
         bool passesLevelFilter(Level level) const noexcept;
 
@@ -73,6 +66,6 @@ namespace OpenLoco::Diagnostics::Logging
     private:
         int _intendSize{};
         bool _writeTimestamps{};
-        uint32_t _levelMask{ ~0U };
+        LevelMask _levelMask = getLevelMask(Level::all);
     };
 }

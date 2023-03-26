@@ -1,3 +1,4 @@
+#include <OpenLoco/Diagnostics/LogSink.h>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <gtest/gtest.h>
 
