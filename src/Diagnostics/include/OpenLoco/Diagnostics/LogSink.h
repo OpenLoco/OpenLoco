@@ -23,31 +23,25 @@ namespace OpenLoco::Diagnostics::Logging
         template<typename... TArgs>
         void info(const char* fmt, TArgs&&... args)
         {
-            auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
-            print(Level::info, msg);
+            printLevel(Level::info, fmt, std::forward<TArgs>(args)...);
         }
 
         template<typename... TArgs>
         void warn(const char* fmt, TArgs&&... args)
         {
-            auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
-            print(Level::warning, msg);
+            printLevel(Level::warning, fmt, std::forward<TArgs>(args)...);
         }
 
         template<typename... TArgs>
         void error(const char* fmt, TArgs&&... args)
         {
-            auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
-            print(Level::error, msg);
+            printLevel(Level::error, fmt, std::forward<TArgs>(args)...);
         }
 
         template<typename... TArgs>
         void verbose([[maybe_unused]] const char* fmt, [[maybe_unused]] TArgs&&... args)
         {
-#ifdef VERBOSE
-            auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
-            print(Level::verbose, msg);
-#endif
+            printLevel(Level::verbose, fmt, std::forward<TArgs>(args)...);
         }
 
         bool getWriteTimestamps() const noexcept;
@@ -63,6 +57,18 @@ namespace OpenLoco::Diagnostics::Logging
         void setLevelMask(uint32_t mask);
 
         bool passesLevelFilter(Level level) const noexcept;
+
+    private:
+        // Helper function to avoid code duplication.
+        template<typename... TArgs>
+        void printLevel(Level level, const char* fmt, TArgs&&... args)
+        {
+            if (!passesLevelFilter(level))
+                return;
+
+            auto msg = fmt::format(fmt, std::forward<TArgs>(args)...);
+            print(level, msg);
+        }
 
     private:
         int _intendSize{};
