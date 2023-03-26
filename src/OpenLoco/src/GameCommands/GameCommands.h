@@ -143,14 +143,28 @@ namespace OpenLoco::GameCommands
         return doCommand(T::command, regs);
     }
 
-    inline void do_0(EntityId source, EntityId dest)
+    struct VehicleRearrangeArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.dx = enumValue(source);
-        regs.di = enumValue(dest);
-        doCommand(GameCommand::vehicleRearrange, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleRearrange;
+
+        VehicleRearrangeArgs() = default;
+        explicit VehicleRearrangeArgs(const registers& regs)
+            : source(static_cast<EntityId>(regs.dx))
+            , dest(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId source;
+        EntityId dest;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(dest);
+            regs.dx = enumValue(source);
+            return regs;
+        }
+    };
 
     struct VehiclePlacementArgs
     {
@@ -185,65 +199,112 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_2(EntityId head)
+    struct VehiclePickupArgs
     {
-        registers regs;
-        regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehiclePickup, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::vehiclePickup;
 
-    // Reverse (vehicle)
-    inline void do_3(EntityId vehicleHead, Vehicles::VehicleHead* const head)
+        VehiclePickupArgs() = default;
+        explicit VehiclePickupArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
+
+    struct VehicleReverseArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.dx = enumValue(vehicleHead);
-        // Bug in game command 3 requires to set edi to a vehicle prior to calling
-        regs.edi = X86Pointer(head);
+        static constexpr auto command = GameCommand::vehicleReverse;
 
-        doCommand(GameCommand::vehicleReverse, regs);
-    }
+        VehicleReverseArgs() = default;
+        explicit VehicleReverseArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.dx))
+            , headPtr(nullptr)
+        {
+        }
 
-    // Pass signal (vehicle)
-    inline void do_4(EntityId vehicleHead)
+        EntityId head;
+        // Bug in GameCommand::vehicleReverse requires setting edi to a vehicle prior to calling
+        Vehicles::VehicleHead* headPtr;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dx = enumValue(head);
+            regs.edi = X86Pointer(headPtr);
+            return regs;
+        }
+    };
+
+    struct VehiclePassSignalArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(vehicleHead);
+        static constexpr auto command = GameCommand::vehiclePassSignal;
 
-        doCommand(GameCommand::vehiclePassSignal, regs);
-    }
+        VehiclePassSignalArgs() = default;
+        explicit VehiclePassSignalArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
 
-    // Build vehicle
-    inline uint32_t do_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
+
+    struct VehicleCreateArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(vehicleId);
-        regs.edx = vehicleType;
+        static constexpr auto command = GameCommand::vehicleCreate;
 
-        return doCommand(GameCommand::vehicleCreate, regs);
-    }
+        VehicleCreateArgs() = default;
+        explicit VehicleCreateArgs(const registers& regs)
+            : vehicleId(static_cast<EntityId>(regs.di))
+            , vehicleType(regs.dx)
+        {
+        }
 
-    // Build vehicle
-    inline uint32_t queryDo_5(uint16_t vehicleType, EntityId vehicleId = EntityId::null)
+        EntityId vehicleId; // Optional id representing where it will attach
+        uint16_t vehicleType;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(vehicleId);
+            regs.edx = vehicleType;
+            return regs;
+        }
+    };
+
+    struct VehicleSellArgs
     {
-        registers regs;
-        regs.bl = 0;
-        regs.di = enumValue(vehicleId);
-        regs.edx = vehicleType;
+        static constexpr auto command = GameCommand::vehicleSell;
 
-        return doCommand(GameCommand::vehicleCreate, regs);
-    }
+        VehicleSellArgs() = default;
+        explicit VehicleSellArgs(const registers& regs)
+            : car(static_cast<EntityId>(regs.dx))
+        {
+        }
 
-    inline void do_6(EntityId car)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.dx = enumValue(car);
-        doCommand(GameCommand::vehicleSell, regs);
-    }
+        EntityId car;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dx = enumValue(car);
+            return regs;
+        }
+    };
 
     struct TrackPlacementArgs
     {
@@ -358,18 +419,40 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Change vehicle name
-    inline void do_10(EntityId head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
+    struct VehicleRenameArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = enumValue(head); // vehicle head id
-        regs.ax = i;               // [ 0, 1, 2]
-        regs.edx = edx;            // part of name buffer
-        regs.ebp = ebp;            // part of name buffer
-        regs.edi = edi;            // part of name buffer
-        doCommand(GameCommand::vehicleRename, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleRename;
+
+        VehicleRenameArgs() = default;
+        explicit VehicleRenameArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.cx))
+            , buffer{}
+            , i(regs.ax)
+        {
+            // Copies it into the first 12 bytes not into the specific slot as per i
+            std::memcpy(buffer, &regs.edx, 4);
+            std::memcpy(buffer + 4, &regs.ebp, 4);
+            std::memcpy(buffer + 8, &regs.edi, 4);
+        }
+
+        EntityId head;
+        char buffer[37];
+        uint16_t i;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            regs.ax = i;
+            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
+            const auto offset = iToOffset[i];
+
+            std::memcpy(&regs.edx, buffer + offset, 4);
+            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
+            std::memcpy(&regs.edi, buffer + offset + 8, 4);
+            return regs;
+        }
+    };
 
     // Change station name
     inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)

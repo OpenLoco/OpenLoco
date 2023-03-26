@@ -442,7 +442,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             GameCommands::setErrorTitle(StringIds::cant_reverse_train);
-            GameCommands::do_3(EntityId(self->number), head);
+            GameCommands::VehicleReverseArgs args{};
+            args.head = static_cast<EntityId>(self->number);
+            args.headPtr = head;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         static void onCentreViewportControl(Window* const self)
@@ -489,9 +492,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     onChangeDirection(&self);
                     break;
                 case widx::passSignal:
+                {
+                    GameCommands::VehiclePassSignalArgs args{};
+                    args.head = EntityId(self.number);
+
                     GameCommands::setErrorTitle(StringIds::cant_pass_signal_at_danger);
-                    GameCommands::do_4(EntityId(self.number));
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
+                }
             }
         }
 
@@ -1098,7 +1106,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.push(head->name);
                     args.push(head->ordinalNumber);
                     GameCommands::setErrorTitle(StringIds::cant_sell_string_id);
-                    GameCommands::do_6(head->id);
+
+                    GameCommands::VehicleSellArgs gcArgs{};
+                    gcArgs.car = head->id;
+
+                    GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
                 }
             }
@@ -1752,14 +1764,23 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (targetWidget)
             {
                 case widx::remove:
-                    GameCommands::do_6((*_dragCarComponent)->id);
+                {
+
+                    GameCommands::VehicleSellArgs gcArgs{};
+                    gcArgs.car = (*_dragCarComponent)->id;
+
+                    GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
+                }
                 case widx::carList:
                 {
                     auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
                     if (car != nullptr)
                     {
-                        GameCommands::do_0((*_dragCarComponent)->id, car->id);
+                        GameCommands::VehicleRearrangeArgs args{};
+                        args.source = (*_dragCarComponent)->id;
+                        args.dest = car->id;
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
                 }
@@ -3387,10 +3408,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             GameCommands::setErrorTitle(StringIds::cant_rename_this_vehicle);
-            const uint32_t* buffer = reinterpret_cast<const uint32_t*>(input);
-            GameCommands::do_10(EntityId(self.number), 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_10(EntityId(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_10(EntityId(0), 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::VehicleRenameArgs args{};
+            args.head = EntityId(self.number);
+            std::memcpy(args.buffer, input, 36);
+            args.i = 1;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            args.head = EntityId(0);
+            args.i = 2;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            args.i = 0;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         // 0x0050029C
@@ -3900,7 +3927,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
-                GameCommands::do_2(head.id);
+                GameCommands::VehiclePickupArgs args{};
+                args.head = head.id;
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_6);
             }
             _1136264 = -1;
         }
@@ -4124,8 +4153,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case TransportMode::rail:
                 case TransportMode::road:
-                    GameCommands::do_2(head->id);
+                {
+                    GameCommands::VehiclePickupArgs args{};
+                    args.head = head->id;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_6);
                     break;
+                }
                 case TransportMode::air:
                     GameCommands::do_59(head->id);
                     break;
@@ -4251,8 +4284,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 case TransportMode::rail:
                 case TransportMode::road:
-                    success = GameCommands::do_2(head->id);
+                {
+                    GameCommands::VehiclePickupArgs gcArgs{};
+                    gcArgs.head = head->id;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
                     break;
+                }
                 case TransportMode::air:
                     success = GameCommands::do_59(head->id);
                     break;
