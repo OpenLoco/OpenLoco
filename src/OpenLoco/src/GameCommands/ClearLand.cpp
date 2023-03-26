@@ -18,7 +18,7 @@ namespace OpenLoco::GameCommands
     static loco_global<uint16_t, 0x00F00170> _F00170;
     static loco_global<uint32_t, 0x00F0013C> _F003CE; // tile x?
     static loco_global<uint32_t, 0x00F00140> _F003D0; // tile y?
-    static loco_global<uint32_t, 0x00F25308> _sub469E07Cost; // cost?
+    static loco_global<uint32_t, 0x00F25308> _sub469E07Cost;
 
     // 0x004690FC
     static void setTerrainStyleAsCleared(World::Pos2 pos)
