@@ -782,19 +782,19 @@ namespace OpenLoco::GameCommands
     {
         ChangeCompanyColourSchemeArgs() = default;
         explicit ChangeCompanyColourSchemeArgs(const registers& regs)
-            : isPrimary(regs.ah)
+            : companyId(CompanyId(regs.dl))
+            , isPrimary(regs.ah)
             , value(regs.al)
             , colourType(regs.cl)
-            , companyId(CompanyId(regs.dl))
             , setColourMode() // TODO: Convert into another command for enabling sub coloring
         {
         }
 
+        CompanyId companyId;
         int8_t isPrimary;
         int8_t value;
         int8_t colourType;
         int8_t setColourMode;
-        CompanyId companyId;
 
         explicit operator registers() const
         {
