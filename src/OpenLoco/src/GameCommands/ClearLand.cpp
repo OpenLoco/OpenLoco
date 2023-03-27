@@ -1,10 +1,12 @@
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
 #include "Localisation/StringIds.h"
+#include "Map/SurfaceElement.h"
 #include "Map/QuarterTile.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "SceneManager.h"
+#include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -23,10 +25,30 @@ namespace OpenLoco::GameCommands
     // 0x004690FC
     static void setTerrainStyleAsCleared(World::Pos2 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004690FC, regs);
+        auto* surface = World::TileManager::get(pos).surface();
+        if (surface == nullptr)
+        {
+            return;
+        }
+        if (surface->isIndustrial())
+        {
+            return;
+        }
+        if (surface->var_6_SLR5() > 0)
+        {
+            surface->setVar6SLR5(0);
+            surface->setVar4SLR5(0);
+
+            // originally a call to 0x4CC098
+            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
+        }
+        if (surface->var_4_E0() > 0)
+        {
+            surface->setVar4SLR5(0);
+
+            // originally a call to 0x4CC098
+            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
+        }
     }
 
     // 0x00469D76

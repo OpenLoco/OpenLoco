@@ -71,6 +71,11 @@ namespace OpenLoco::World
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
+        void setVar4SLR5(uint8_t var4)
+        {
+            _slope &= 0x1F;
+            _slope |= var4 << 5;
+        }
         MicroZ water() const { return _water & 0x1F; }
         int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
         void setWater(MicroZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
