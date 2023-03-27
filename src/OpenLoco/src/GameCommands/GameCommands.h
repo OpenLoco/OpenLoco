@@ -1203,10 +1203,9 @@ namespace OpenLoco::GameCommands
             : companyId(CompanyId(regs.cx))
             , bufferIndex(regs.ax)
         {
-            memcpy(newName, &regs.ecx, 4);
-            memcpy(newName + 4, &regs.edx, 4);
-            memcpy(newName + 8, &regs.ebp, 4);
-            memcpy(newName + 12, &regs.edi, 4);
+            memcpy(newName, &regs.edx, 4);
+            memcpy(newName + 4, &regs.ebp, 4);
+            memcpy(newName + 8, &regs.edi, 4);
         }
 
         CompanyId companyId;
@@ -1380,6 +1379,29 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicleOrderDelete, regs);
     }
 
+    struct VehicleOrderDeleteArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderDelete;
+
+        VehicleOrderDeleteArgs() = default;
+        explicit VehicleOrderDeleteArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.edx = orderOffset;
+            return regs;
+        }
+    };
+
     inline bool do_37(EntityId head)
     {
         registers regs;
@@ -1387,6 +1409,28 @@ namespace OpenLoco::GameCommands
         regs.di = enumValue(head);
         return doCommand(GameCommand::vehicleOrderSkip, regs);
     }
+
+    struct VehicleOrderSkipArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderSkip;
+
+        VehicleOrderSkipArgs() = default;
+        explicit VehicleOrderSkipArgs(const registers& regs)
+            : head(EntityId(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+
+            regs.di = enumValue(head);
+
+            return regs;
+        }
+    };
 
     struct RoadPlacementArgs
     {
@@ -1674,6 +1718,36 @@ namespace OpenLoco::GameCommands
         regs.edi = edi; // part of name buffer
         doCommand(GameCommand::renameTown, regs);
     }
+
+    struct RenameTownArgs
+    {
+        static constexpr auto command = GameCommand::renameTown;
+
+        RenameTownArgs() = default;
+        explicit RenameTownArgs(const registers& regs)
+            : townId(TownId(regs.cx))
+            , bufferIndex(regs.ax)
+        {
+            memcpy(newName, &regs.edx, 4);
+            memcpy(newName + 4, &regs.ebp, 4);
+            memcpy(newName + 8, &regs.edi, 4);
+        }
+
+        TownId townId;
+        uint16_t bufferIndex;
+        char newName[32 * 16];
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(townId);       // town number or 0
+            regs.ax = bufferIndex;             // [ 0, 1, 2]
+            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
+            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
+            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
+            return regs;
+        }
+    };
 
     struct IndustryPlacementArgs
     {
