@@ -38,20 +38,20 @@ namespace OpenLoco::Diagnostics::Logging
 
     void LogSink::enableLevel(Level level)
     {
-        const auto bitMask = 1U << static_cast<unsigned>(level);
-        _levelMask |= bitMask;
+        const auto levelMask = getLevelMask(level);
+        _levelMask |= levelMask;
     }
 
     void LogSink::disableLevel(Level level)
     {
-        const auto bitMask = 1U << static_cast<unsigned>(level);
-        _levelMask &= ~bitMask;
+        const auto levelMask = getLevelMask(level);
+        _levelMask &= ~levelMask;
     }
 
     bool LogSink::passesLevelFilter(Level level) const noexcept
     {
-        const auto bitMask = 1U << static_cast<unsigned>(level);
-        return (_levelMask & bitMask) != 0;
+        const auto levelMask = getLevelMask(level);
+        return (_levelMask & levelMask) != 0;
     }
 
     void LogSink::setLevelMask(LevelMask mask)
