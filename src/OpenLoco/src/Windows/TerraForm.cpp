@@ -593,8 +593,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBF3B
         static void scrollMouseDown(Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
-            int16_t xPos = (x / kColumnWidth);
-            int16_t yPos = (y / kRowHeight) * 5;
             auto index = getRowIndex(x, y);
 
             for (auto i = 0; i < self.var_83C; i++)
@@ -609,8 +607,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(&self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-                    Audio::playSound(Audio::SoundId::clickDown, loc, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, pan);
                     self.savedView.mapX = -16;
                     _lastTreeCost = 0x80000000;
                     self.invalidate();
@@ -2236,8 +2233,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC3D3
         static void scrollMouseDown(Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
-            int16_t xPos = (x / 40);
-            int16_t yPos = (y / kRowHeight) * 10;
             auto index = getRowIndex(x, y);
 
             for (auto i = 0; i < self.var_83C; i++)
@@ -2250,8 +2245,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     LastGameOptionManager::setLastWall(static_cast<uint8_t>(rowInfo));
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-                    Audio::playSound(Audio::SoundId::clickDown, loc, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, pan);
                     self.savedView.mapX = -16;
                     self.invalidate();
                     break;
