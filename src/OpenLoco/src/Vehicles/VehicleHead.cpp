@@ -876,7 +876,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2 = _vehicleUpdate_2;
 
         // If dont have any running issue and is aproaching
-        if ((!vehType2->has73Flags(Flags73::isBrokenDown & Flags73::isStillPowered)) && status == Status::approaching)
+        if ((!(vehType2->has73Flags(Flags73::isBrokenDown) || vehType2->has73Flags(Flags73::isStillPowered))) && status == Status::approaching)
         {
             if (mode == TransportMode::road)
             {
@@ -930,7 +930,7 @@ namespace OpenLoco::Vehicles
         {
             status = Status::travelling;
 
-            if (!vehType2->has73Flags(Flags73::isBrokenDown & Flags73::isStillPowered))
+            if (!(vehType2->has73Flags(Flags73::isBrokenDown) || vehType2->has73Flags(Flags73::isStillPowered)))
             {
                 if (!hasVehicleFlags(VehicleFlags::manualControl) || var_6E > -20)
                 {
@@ -2378,7 +2378,7 @@ namespace OpenLoco::Vehicles
         {
             if ((flags & WaterMotionFlags::isStopping) == WaterMotionFlags::none)
             {
-                if (veh2->has73Flags(Flags73::isBrokenDown))
+                if (!veh2->has73Flags(Flags73::isBrokenDown))
                 {
                     targetSpeed = veh2->maxSpeed;
                 }
