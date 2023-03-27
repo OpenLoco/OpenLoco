@@ -467,6 +467,42 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::changeStationName, regs);
     }
 
+    struct ChangeStationNameArgs
+    {
+        static constexpr auto command = GameCommand::changeStationName;
+
+        ChangeStationNameArgs() = default;
+        explicit ChangeStationNameArgs(const registers& regs)
+            : stationId(StationId(regs.cx))
+            , nameBufferIndex(regs.ax)
+            , buffer{}
+        {
+            std::memcpy(buffer, &regs.edx, 4);
+            std::memcpy(buffer + 4, &regs.ebp, 4);
+            std::memcpy(buffer + 8, &regs.edi, 4);
+        }
+
+        StationId stationId;
+        uint8_t nameBufferIndex;
+        char buffer[37];
+
+        explicit operator registers() const
+        {
+            registers regs;
+
+            regs.cx = enumValue(stationId);
+            regs.ax = nameBufferIndex;
+            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
+            const auto offset = iToOffset[nameBufferIndex];
+
+            std::memcpy(&regs.edx, buffer + offset, 4);
+            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
+            std::memcpy(&regs.edi, buffer + offset + 8, 4);
+
+            return regs;
+        }
+    };
+
     inline void do12(EntityId head, uint8_t bh)
     {
         registers regs;
@@ -475,6 +511,29 @@ namespace OpenLoco::GameCommands
         regs.dx = enumValue(head);
         doCommand(GameCommand::vehicleLocalExpress, regs);
     }
+
+    struct VehicleLocalExpressArgs
+    {
+        static constexpr auto command = GameCommand::vehicleLocalExpress;
+
+        VehicleLocalExpressArgs() = default;
+        explicit VehicleLocalExpressArgs(const registers& regs)
+            : head(EntityId(regs.dx))
+            , mode(regs.bh)
+        {
+        }
+
+        EntityId head;
+        uint8_t mode;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dx = enumValue(head);
+            regs.bh = mode;
+            return regs;
+        }
+    };
 
     struct SignalPlacementArgs
     {
@@ -719,6 +778,47 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::changeCompanyColourScheme, regs);
     }
 
+    struct ChangeCompanyColourSchemeArgs
+    {
+        ChangeCompanyColourSchemeArgs() = default;
+        explicit ChangeCompanyColourSchemeArgs(const registers& regs)
+            : isPrimary(regs.ah)
+            , value(regs.al)
+            , colourType(regs.cl)
+            , companyId(CompanyId(regs.dl))
+            , setColourMode() // TODO: Convert into another command for enabling sub coloring
+        {
+        }
+
+        int8_t isPrimary;
+        int8_t value;
+        int8_t colourType;
+        int8_t setColourMode;
+        CompanyId companyId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+
+            regs.cl = colourType;           // vehicle type or main
+            regs.dh = setColourMode;        // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
+            regs.dl = enumValue(companyId); // company id
+
+            if (setColourMode == 0)
+            {
+                // cl is divided by 2 when used
+                regs.ah = isPrimary; // [ 0, 1 ] -- primary or secondary palette
+                regs.al = value;     // new colour
+            }
+            else if (setColourMode == 1)
+            {
+                regs.al = value; // [ 0, 1 ] -- off or on
+            }
+
+            return regs;
+        }
+    };
+
     // Pause game
     inline void do_20()
     {
@@ -726,6 +826,19 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply;
         doCommand(GameCommand::pauseGame, regs);
     }
+
+    struct PauseGameArgs
+    {
+        PauseGameArgs() = default;
+        explicit PauseGameArgs(const registers&)
+        {
+        }
+
+        explicit operator registers() const
+        {
+            return registers();
+        }
+    };
 
     // Load/save/quit game
     inline void do_21(uint8_t dl, uint8_t di)
@@ -736,6 +849,29 @@ namespace OpenLoco::GameCommands
         regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
         doCommand(GameCommand::loadSaveQuitGame, regs);
     }
+
+    struct LoadSaveQuitGameArgs
+    {
+        static constexpr auto command = GameCommand::loadSaveQuitGame;
+
+        LoadSaveQuitGameArgs() = default;
+        explicit LoadSaveQuitGameArgs(const registers& regs)
+            : option1(regs.dl)
+            , option2(regs.di)
+        {
+        }
+
+        uint8_t option1;
+        uint8_t option2;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dl = option1; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
+            regs.di = option2; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
+            return regs;
+        }
+    };
 
     struct TreeRemovalArgs
     {
@@ -842,6 +978,39 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::raiseLand, regs);
     }
 
+    struct RaiseLandArgs
+    {
+        static constexpr auto command = GameCommand::raiseLand;
+
+        RaiseLandArgs() = default;
+        explicit RaiseLandArgs(const registers& regs)
+            : centre(World::Pos2(regs.ax, regs.cx))
+            , pointA(World::Pos2(regs.edx, regs.ebp))             // lower bits
+            , pointB(World::Pos2(regs.edx >> 16, regs.ebp >> 16)) // higher bits
+            , corner(regs.di)
+            , flags(regs.bl)
+        {
+        }
+
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
+        uint8_t flags;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = pointB.x << 16 | pointA.x;
+            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.bl = flags;
+            regs.di = corner;
+            return regs;
+        }
+    };
+
     // Lower Land
     inline uint32_t do_26(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
     {
@@ -854,6 +1023,39 @@ namespace OpenLoco::GameCommands
         regs.di = di;
         return doCommand(GameCommand::lowerLand, regs);
     }
+
+    struct LowerLandArgs
+    {
+        static constexpr auto command = GameCommand::lowerLand;
+
+        LowerLandArgs() = default;
+        explicit LowerLandArgs(const registers& regs)
+            : centre(World::Pos2(regs.ax, regs.cx))
+            , pointA(World::Pos2(regs.edx, regs.ebp))             // lower bits
+            , pointB(World::Pos2(regs.edx >> 16, regs.ebp >> 16)) // higher bits
+            , corner(regs.di)
+            , flags(regs.bl)
+        {
+        }
+
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
+        uint8_t flags;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = pointB.x << 16 | pointA.x;
+            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.bl = flags;
+            regs.di = corner;
+            return regs;
+        }
+    };
 
     // Lower/Raise Land Mountain
     inline uint32_t do_27(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
@@ -868,6 +1070,39 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::lowerRaiseLandMountain, regs);
     }
 
+    struct LowerRaiseLandMountainArgs
+    {
+        static constexpr auto command = GameCommand::lowerRaiseLandMountain;
+
+        LowerRaiseLandMountainArgs() = default;
+        explicit LowerRaiseLandMountainArgs(const registers& regs)
+            : centre(World::Pos2(regs.ax, regs.cx))
+            , pointA(World::Pos2(regs.edx, regs.ebp))             // lower bits
+            , pointB(World::Pos2(regs.edx >> 16, regs.ebp >> 16)) // higher bits
+            , corner(regs.di)
+            , flags(regs.bl)
+        {
+        }
+
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
+        uint8_t flags;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = pointB.x << 16 | pointA.x;
+            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.bl = flags;
+            regs.di = corner;
+            return regs;
+        }
+    };
+
     // Raise Water
     inline uint32_t do_28(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
     {
@@ -880,6 +1115,33 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::raiseWater, regs);
     }
 
+    struct RaiseWaterArgs
+    {
+        static constexpr auto command = GameCommand::raiseWater;
+        RaiseWaterArgs() = default;
+        explicit RaiseWaterArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+            , flags(regs.bl)
+        {
+        }
+
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint8_t flags;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            regs.bl = flags;
+            return regs;
+        }
+    };
+
     // Lower Water
     inline uint32_t do_29(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
     {
@@ -891,6 +1153,33 @@ namespace OpenLoco::GameCommands
         regs.bl = flags;
         return doCommand(GameCommand::lowerWater, regs);
     }
+
+    struct LowerWaterArgs
+    {
+        static constexpr auto command = GameCommand::lowerWater;
+        LowerWaterArgs() = default;
+        explicit LowerWaterArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+            , flags(regs.bl)
+        {
+        }
+
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint8_t flags;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            regs.bl = flags;
+            return regs;
+        }
+    };
 
     // Change company name
     inline bool do_30(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
@@ -905,6 +1194,37 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::changeCompanyName, regs) != FAILURE;
     }
 
+    struct ChangeCompanyNameArgs
+    {
+        static constexpr auto command = GameCommand::changeCompanyName;
+
+        ChangeCompanyNameArgs() = default;
+        explicit ChangeCompanyNameArgs(const registers& regs)
+            : companyId(CompanyId(regs.cx))
+            , bufferIndex(regs.ax)
+        {
+            memcpy(newName, &regs.ecx, 4);
+            memcpy(newName + 4, &regs.edx, 4);
+            memcpy(newName + 8, &regs.ebp, 4);
+            memcpy(newName + 12, &regs.edi, 4);
+        }
+
+        CompanyId companyId;
+        uint16_t bufferIndex;
+        char newName[36 * 16];
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cl = enumValue(companyId);    // industry number or 0
+            regs.ax = bufferIndex;             // [ 0, 1, 2]
+            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
+            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
+            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
+            return regs;
+        }
+    };
+
     // Change company owner name
     inline bool do_31(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
@@ -917,6 +1237,37 @@ namespace OpenLoco::GameCommands
         regs.edi = edi;          // part of name buffer
         return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
+
+    struct ChangeCompanyOwnerNameArgs
+    {
+        static constexpr auto command = GameCommand::changeCompanyOwnerName;
+
+        ChangeCompanyOwnerNameArgs() = default;
+        explicit ChangeCompanyOwnerNameArgs(const registers& regs)
+            : companyId(CompanyId(regs.cx))
+            , bufferIndex(regs.ax)
+        {
+            memcpy(newName, &regs.ecx, 4);
+            memcpy(newName + 4, &regs.edx, 4);
+            memcpy(newName + 8, &regs.ebp, 4);
+            memcpy(newName + 12, &regs.edi, 4);
+        }
+
+        CompanyId companyId;
+        uint16_t bufferIndex;
+        char newName[36 * 16];
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cl = enumValue(companyId);    // industry number or 0
+            regs.ax = bufferIndex;             // [ 0, 1, 2]
+            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
+            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
+            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
+            return regs;
+        }
+    };
 
     struct WallPlacementArgs
     {
@@ -989,6 +1340,36 @@ namespace OpenLoco::GameCommands
         regs.edx = orderOffset;
         return doCommand(GameCommand::vehicleOrderInsert, regs);
     }
+
+    struct VehicleOrderInsertArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderInsert;
+
+        VehicleOrderInsertArgs() = default;
+
+        explicit VehicleOrderInsertArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , rawOrder(static_cast<uint64_t>(regs.cx) << 32 | regs.eax)
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint64_t rawOrder;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+
+            regs.di = enumValue(head);
+            regs.eax = rawOrder & 0xFFFFFFFF;
+            regs.cx = rawOrder >> 32;
+            regs.edx = orderOffset;
+
+            return regs;
+        }
+    };
 
     inline bool do_36(EntityId head, uint32_t orderOffset)
     {
@@ -1718,23 +2099,29 @@ namespace OpenLoco::GameCommands
     {
         ChangeCompanyFaceArgs() = default;
         explicit ChangeCompanyFaceArgs(const registers& regs)
-            : object(regs.eax, regs.ecx, regs.edx, regs.edi)
-            , company(static_cast<CompanyId>(regs.bh))
+            : company(static_cast<CompanyId>(regs.bh))
         {
+            uint8_t buffer[sizeof(ObjectHeader)] = {};
+            memcpy(buffer, &regs.eax, sizeof(regs.eax));
+            memcpy(buffer + 4, &regs.ecx, sizeof(regs.ecx));
+            memcpy(buffer + 8, &regs.edx, sizeof(regs.edx));
+            memcpy(buffer + 12, &regs.edi, sizeof(regs.edi));
+            memcpy(&object, &buffer, sizeof(ObjectHeader));
         }
 
-        ObjectHeader& object;
+        ObjectHeader object;
         CompanyId company;
 
         explicit operator registers() const
         {
-            auto objPtr = reinterpret_cast<const int32_t*>(&object);
+            uint8_t buffer[sizeof(ObjectHeader)];
+            memcpy(buffer, &object, sizeof(ObjectHeader));
             registers regs;
-            regs.bl = Flags::apply;
-            regs.eax = *objPtr++;
-            regs.ecx = *objPtr++;
-            regs.edx = *objPtr++;
-            regs.edi = *objPtr;
+            memcpy(&regs.eax, buffer, sizeof(regs.eax));
+            memcpy(&regs.ecx, buffer + 4, sizeof(regs.ecx));
+            memcpy(&regs.edx, buffer + 8, sizeof(regs.edx));
+            memcpy(&regs.edi, buffer + 12, sizeof(regs.edi));
+
             regs.bh = enumValue(company);
             return regs;
         }
@@ -1781,7 +2168,7 @@ namespace OpenLoco::GameCommands
 
         LoadMultiplayerMapArgs() = default;
         explicit LoadMultiplayerMapArgs(const registers& regs)
-            : filename(regs.ebp)
+            : filename(X86Pointer<const char>(regs.ebp))
         {
         }
 
@@ -1808,14 +2195,13 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::gc_unk_69;
 
         GameCommandUnkown69Args() = default;
-        explicit GameCommandUnkown69Args(const registers& regs)
+        explicit GameCommandUnkown69Args(const registers&)
         {
         }
 
         explicit operator registers() const
         {
-            registers regs;
-            return regs;
+            return registers();
         }
     };
 
@@ -1827,19 +2213,18 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::gc_unk_70, regs);
     }
 
-    struct SendChatMessageArgs
+    struct GameCommandUnkown70Args
     {
         static constexpr auto command = GameCommand::gc_unk_70;
 
-        SendChatMessageArgs() = default;
-        explicit SendChatMessageArgs(const registers& regs)
+        GameCommandUnkown70Args() = default;
+        explicit GameCommandUnkown70Args(const registers&)
         {
         }
 
         explicit operator registers() const
         {
-            registers regs;
-            return regs;
+            return registers();
         }
     };
 
@@ -1864,24 +2249,23 @@ namespace OpenLoco::GameCommands
         explicit SendChatMessageArgs(const registers& regs)
             : messageBufferIndex(regs.ax)
         {
-            // something like this?
-            // memcpy(&message[0], &regs.ecx, 4);
-            // memcpy(&message[4], &regs.edx, 4);
-            // memcpy(&message[8], &regs.edp, 4);
-            // memcpy(&message[12], &regs.edi, 4);
+            memcpy(message, &regs.ecx, 4);
+            memcpy(message + 4, &regs.edx, 4);
+            memcpy(message + 8, &regs.ebp, 4);
+            memcpy(message + 12, &regs.edi, 4);
         }
 
         int32_t messageBufferIndex;
-        const char* message;
+        char message[36 * 16];
 
         explicit operator registers() const
         {
             registers regs;
             regs.ax = messageBufferIndex;
-            memcpy(&regs.ecx, &message[0], 4);
-            memcpy(&regs.edx, &message[4], 4);
-            memcpy(&regs.ebp, &message[8], 4);
-            memcpy(&regs.edi, &message[12], 4);
+            memcpy(&regs.ecx, &message[messageBufferIndex * 16], 4);
+            memcpy(&regs.edx, &message[messageBufferIndex * 16 + 4], 4);
+            memcpy(&regs.ebp, &message[messageBufferIndex * 16 + 8], 4);
+            memcpy(&regs.edi, &message[messageBufferIndex * 16 + 12], 4);
             return regs;
         }
     };
@@ -1899,14 +2283,13 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::multiplayerSave;
 
         MultiplayerSaveArgs() = default;
-        explicit MultiplayerSaveArgs(const registers& regs)
+        explicit MultiplayerSaveArgs(const registers&)
         {
         }
 
         explicit operator registers() const
         {
-            registers regs;
-            return regs;
+            return registers();
         }
     };
 
@@ -2085,25 +2468,24 @@ namespace OpenLoco::GameCommands
             : industry(static_cast<IndustryId>(regs.cl))
             , bufferIndex(regs.ax)
         {
-            // something like this?
-            // memcpy(&message[0], &regs.ecx, 4);
-            // memcpy(&message[4], &regs.edx, 4);
-            // memcpy(&message[8], &regs.edp, 4);
-            // memcpy(&message[12], &regs.edi, 4);
+            memcpy(newName, &regs.ecx, 4);
+            memcpy(newName + 4, &regs.edx, 4);
+            memcpy(newName + 8, &regs.ebp, 4);
+            memcpy(newName + 12, &regs.edi, 4);
         }
 
         IndustryId industry;
         uint16_t bufferIndex;
-        const char* buffer;
+        char newName[36 * 16];
 
         explicit operator registers() const
         {
             registers regs;
-            regs.cl = enumValue(industry);    // industry number or 0
-            regs.ax = bufferIndex;            // [ 0, 1, 2]
-            memcpy(&regs.edx, &buffer[0], 4); // part of name buffer
-            memcpy(&regs.ebp, &buffer[4], 4); // part of name buffer
-            memcpy(&regs.edi, &buffer[8], 4); // part of name buffer
+            regs.cl = enumValue(industry);     // industry number or 0
+            regs.ax = bufferIndex;             // [ 0, 1, 2]
+            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
+            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
+            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
             return regs;
         }
     };
@@ -2155,14 +2537,14 @@ namespace OpenLoco::GameCommands
 
         CheatArgs() = default;
         explicit CheatArgs(const registers& regs)
-            : command(static_cast<uint8_t>(regs.eax))
+            : cheatCommand(static_cast<CheatCommand>(regs.eax))
             , param1(regs.ebx)
             , param2(regs.ecx)
             , param3(regs.edx)
         {
         }
 
-        CheatCommand command;
+        CheatCommand cheatCommand;
         int32_t param1;
         int32_t param2;
         int32_t param3;
