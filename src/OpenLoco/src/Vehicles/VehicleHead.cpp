@@ -876,7 +876,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2 = _vehicleUpdate_2;
 
         // If dont have any running issue and is aproaching
-        if (vehType2->hasNo73Flags() && (status == Status::approaching))
+        if ((!vehType2->has73Flags(Flags73::isBrokenDown & Flags73::isStillPowered)) && status == Status::approaching)
         {
             if (mode == TransportMode::road)
             {
@@ -930,7 +930,7 @@ namespace OpenLoco::Vehicles
         {
             status = Status::travelling;
 
-            if (vehType2->hasNo73Flags())
+            if (!vehType2->has73Flags(Flags73::isBrokenDown & Flags73::isStillPowered))
             {
                 if (!hasVehicleFlags(VehicleFlags::manualControl) || var_6E > -20)
                 {

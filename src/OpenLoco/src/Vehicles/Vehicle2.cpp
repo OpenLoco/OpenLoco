@@ -122,11 +122,6 @@ namespace OpenLoco::Vehicles
         return (var_73 & flagsToTest) != Flags73::none;
     }
 
-    bool Vehicle2::hasNo73Flags() const
-    {
-        return var_73 == Flags73::none;
-    }
-
     // 0x004A9B0B
     bool Vehicle2::update()
     {

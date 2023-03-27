@@ -516,7 +516,6 @@ namespace OpenLoco::Vehicles
         Flags73 var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         bool has73Flags(Flags73 flagsToTest) const;
-        bool hasNo73Flags() const;
 
         bool update();
         bool sub_4A9F20();
