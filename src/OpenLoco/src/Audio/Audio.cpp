@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "GameStateFlags.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
@@ -19,7 +20,6 @@
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <array>
@@ -35,6 +35,7 @@ using namespace OpenLoco::Environment;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Utility;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Audio
 {
@@ -127,7 +128,7 @@ namespace OpenLoco::Audio
 
     static std::vector<uint32_t> loadSoundsFromCSS(const fs::path& path)
     {
-        Console::verbose("loadSoundsFromCSS({})", path.string());
+        Logging::verbose("loadSoundsFromCSS({})", path.string());
         std::vector<uint32_t> results;
         std::ifstream fs(path, std::ios::in | std::ios::binary);
 
@@ -473,7 +474,7 @@ namespace OpenLoco::Audio
     {
         if (v->var_4A & 1)
         {
-            Console::verbose("playSound(vehicle #{})", enumValue(v->id));
+            Logging::verbose("playSound(vehicle #{})", enumValue(v->id));
             auto vc = getFreeVehicleChannel();
             if (vc != nullptr)
             {
@@ -576,7 +577,7 @@ namespace OpenLoco::Audio
 
     static void mixSound(SoundId id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        Console::verbose("mixSound({}, {}, {}, {}, {})", enumValue(id), loop ? "true" : "false", volume, pan, freq);
+        Logging::verbose("mixSound({}, {}, {}, {}, {})", enumValue(id), loop ? "true" : "false", volume, pan, freq);
         auto sample = getSoundSample(id);
         if (sample)
         {
@@ -655,7 +656,7 @@ namespace OpenLoco::Audio
     // 0x00401A05
     static void stopChannel(ChannelId id)
     {
-        Console::logVerboseDeprecated("stopChannel({})", id);
+        Logging::verbose("stopChannel({})", static_cast<int>(id));
 
         auto channel = getChannel(id);
         if (channel != nullptr)

@@ -5,6 +5,7 @@
 #include <cstring>
 #include <string>
 #include <string_view>
+#include <vector>
 
 namespace OpenLoco::Utility
 {
@@ -138,5 +139,55 @@ namespace OpenLoco::Utility
             }
         }
         return std::string_view(src, N);
+    }
+
+    constexpr std::string_view trim(std::string_view str)
+    {
+        const auto skipChar = [](char chr) -> bool {
+            switch (chr)
+            {
+                case ' ':
+                case '\t':
+                case '\n':
+                case '\r':
+                    return true;
+            }
+            return false;
+        };
+
+        size_t skipFront = 0;
+        while (skipFront < str.size() && skipChar(str[skipFront]))
+            skipFront++;
+        str = str.substr(skipFront);
+        size_t skipBack = 0;
+        while (skipBack < str.size() && skipChar(str[str.size() - 1 - skipBack]))
+            skipBack++;
+        str = str.substr(0, str.size() - skipBack);
+        return str;
+    }
+
+    inline std::vector<std::string_view> split(std::string_view str, std::string_view separator)
+    {
+        std::vector<std::string_view> res;
+
+        size_t start = 0;
+        size_t end = str.find(separator);
+
+        while (end != std::string_view::npos)
+        {
+            const auto subStr = str.substr(start, end - start);
+            res.push_back(subStr);
+
+            start = end + 1;
+            end = str.find(separator, start);
+        }
+
+        const auto subStr = str.substr(start);
+        if (!subStr.empty())
+        {
+            res.push_back(subStr);
+        }
+
+        return res;
     }
 }

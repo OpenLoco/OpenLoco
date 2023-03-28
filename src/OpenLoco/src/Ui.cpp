@@ -37,6 +37,7 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
+#include "Logging.h"
 #include "MultiPlayer.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
@@ -44,12 +45,12 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui
 {
@@ -639,7 +640,7 @@ namespace OpenLoco::Ui
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
-            Console::errorDeprecated("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+            Logging::error("SDL_SetWindowFullscreen failed: {}", SDL_GetError());
             return false;
         }
 

@@ -9,10 +9,10 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/StringManager.h"
+#include "Logging.h"
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
 #include <algorithm>
@@ -26,6 +26,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Drawing;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Gfx
 {
@@ -80,10 +81,10 @@ namespace OpenLoco::Gfx
 
         if (header.numEntries != G1ExpectedCount::kDisc)
         {
-            Console::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
+            Logging::warn("G1 element count doesn't match expected value:\nExpected {}; Got {}", G1ExpectedCount::kDisc, header.numEntries);
             if (header.numEntries == G1ExpectedCount::kSteam)
             {
-                Console::info("Got Steam G1.DAT variant, will fix elements automatically.");
+                Logging::info("Got Steam G1.DAT variant, will fix elements automatically.");
             }
         }
 

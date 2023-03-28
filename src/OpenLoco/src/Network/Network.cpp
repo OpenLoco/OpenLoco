@@ -3,14 +3,16 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
+#include "Logging.h"
 #include "NetworkClient.h"
 #include "NetworkServer.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Socket.h"
-#include <OpenLoco/Console/Console.h>
 #include <cassert>
 #include <stdexcept>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Network
 {
@@ -116,8 +118,7 @@ namespace OpenLoco::Network
 
     void receiveChatMessage(client_id_t client, std::string_view message)
     {
-        std::string szMessage(message);
-        Console::logDeprecated("Player #%d: %s", static_cast<int>(client), szMessage.c_str());
+        Logging::info("Player #{}: {}", static_cast<int>(client), message);
     }
 
     void queueGameCommand(CompanyId company, const OpenLoco::Interop::registers& regs)

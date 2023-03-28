@@ -1,11 +1,11 @@
 #include "NetworkServer.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "Logging.h"
 #include "NetworkConnection.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Stream.hpp>
@@ -13,6 +13,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
+using namespace OpenLoco::Diagnostics;
 
 constexpr uint32_t kPingInterval = 30;
 
@@ -55,7 +56,7 @@ void NetworkServer::listen(const std::string& bind, port_t port)
     setScreenFlag(ScreenFlags::networked);
     setScreenFlag(ScreenFlags::networkHost);
 
-    Console::logDeprecated("Server opened");
+    Logging::info("Server opened");
     for (const auto& socket : _sockets)
     {
         auto ipAddress = socket->getIpAddress();
@@ -63,7 +64,7 @@ void NetworkServer::listen(const std::string& bind, port_t port)
         {
             ipAddress = '[' + ipAddress + ']';
         }
-        Console::logDeprecated("Listening for incoming connections on %s:%d...", ipAddress.c_str(), port);
+        Logging::info("Listening for incoming connections on {}:{}...", ipAddress.c_str(), port);
     }
 }
 
@@ -71,7 +72,7 @@ void NetworkServer::onClose()
 {
     clearScreenFlag(ScreenFlags::networked);
     clearScreenFlag(ScreenFlags::networkHost);
-    Console::logDeprecated("Server closed");
+    Logging::info("Server closed");
 }
 
 Client* NetworkServer::findClient(const INetworkEndpoint& endpoint)
@@ -100,7 +101,7 @@ void NetworkServer::createNewClient(std::unique_ptr<NetworkConnection> conn, con
     response.result = ConnectionResult::success;
     newClientPtr.connection->sendPacket(response);
 
-    Console::logDeprecated("Accepted new client: %s", newClientPtr.name.c_str());
+    Logging::info("Accepted new client: {}", newClientPtr.name);
 }
 
 void NetworkServer::onReceivePacket(IUdpSocket& socket, std::unique_ptr<INetworkEndpoint> endpoint, const Packet& packet)
@@ -199,7 +200,7 @@ void NetworkServer::removedTimedOutClients()
         auto& client = *it;
         if (client->connection->hasTimedOut())
         {
-            Console::logDeprecated("Client timed out: %s", client->name.c_str());
+            Logging::info("Client timed out: %s", client->name);
             it = _clients.erase(it);
         }
         else

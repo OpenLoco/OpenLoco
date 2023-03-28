@@ -1,13 +1,13 @@
 #include "ViewportManager.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
+#include "Logging.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/Station.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cassert>

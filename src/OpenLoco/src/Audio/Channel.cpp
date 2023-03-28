@@ -1,5 +1,5 @@
 #include "Channel.h"
-#include <OpenLoco/Console/Console.h>
+#include "Logging.h"
 #include <utility>
 
 namespace OpenLoco::Audio

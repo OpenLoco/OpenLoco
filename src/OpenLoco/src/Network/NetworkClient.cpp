@@ -1,16 +1,17 @@
 #include "NetworkClient.h"
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
+#include "Logging.h"
 #include "NetworkConnection.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/Stream.hpp>
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;
+using namespace OpenLoco::Diagnostics;
 
 NetworkClient::~NetworkClient()
 {
@@ -37,7 +38,7 @@ void NetworkClient::connect(std::string_view host, port_t port)
     _serverConnection = std::make_unique<NetworkConnection>(socket.get(), _serverEndpoint->clone());
 
     auto szHostIpAddress = _serverEndpoint->getIpAddress();
-    Console::logDeprecated("Resolved endpoint for %s:%d", szHostIpAddress.c_str(), port);
+    Logging::info("Resolved endpoint for {}:{}", szHostIpAddress, port);
 
     beginReceivePacketLoop();
 
@@ -56,7 +57,7 @@ void NetworkClient::onClose()
     {
         _status = NetworkClientStatus::closed;
         clearScreenFlag(ScreenFlags::networked);
-        Console::logDeprecated("Disconnected from server");
+        Logging::info("Disconnected from server");
     }
     else if (_status == NetworkClientStatus::connecting)
     {
@@ -73,7 +74,7 @@ void NetworkClient::onUpdate()
         if (Platform::getTime() >= _timeout)
         {
             close();
-            Console::logDeprecated("Failed to connect to server");
+            Logging::info("Failed to connect to server");
             endStatus("Failed to connect to server");
         }
     }
@@ -81,7 +82,7 @@ void NetworkClient::onUpdate()
     {
         if (hasTimedOut())
         {
-            Console::logDeprecated("Connection with server timed out");
+            Logging::info("Connection with server timed out");
             close();
         }
         else
@@ -143,7 +144,7 @@ void NetworkClient::onCancel()
     switch (_status)
     {
         case NetworkClientStatus::connecting:
-            Console::logDeprecated("Connecting to server cancelled");
+            Logging::info("Connecting to server cancelled");
             close();
             break;
         default:

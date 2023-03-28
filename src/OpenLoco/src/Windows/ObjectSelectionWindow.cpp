@@ -8,6 +8,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Objects/AirportObject.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
@@ -44,7 +45,6 @@
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "Window.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>

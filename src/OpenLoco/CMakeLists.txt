@@ -112,6 +112,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Languages.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/StringManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Unicode.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.cpp"
@@ -347,6 +348,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/StringManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Unicode.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Location.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Logging.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Animation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.h"
@@ -513,7 +515,7 @@ endif ()
 
 target_link_libraries(OpenLoco
     Core
-    Console
+    Diagnostics
     Platform
     Interop
     Utility
@@ -629,7 +631,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     target_include_directories(OpenLoco-headers-check PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
     target_link_libraries(OpenLoco-headers-check PUBLIC
         Core
-        Console
+        Diagnostics
         Platform
         Interop
         Utility

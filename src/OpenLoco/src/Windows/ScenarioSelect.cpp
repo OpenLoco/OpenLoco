@@ -7,6 +7,7 @@
 #include "Graphics/ImageIds.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
@@ -15,10 +16,10 @@
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
@@ -202,7 +203,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 ObjectManager::unload(ObjectManager::getHeader({ ObjectType::currency, 0 }));
                 if (!ObjectManager::load(scenarioInfo->currency))
                 {
-                    Console::errorDeprecated("Currency object failed to load! Game will likely crash.");
+                    Logging::error("Currency object failed to load! Game will likely crash.");
                 }
                 ObjectManager::reloadAll();
                 Gfx::loadCurrency();
@@ -211,7 +212,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             {
                 if (!_warnOnce)
                 {
-                    Console::errorDeprecated("Currency object could not be found. Scenario may be corrupt.");
+                    Logging::error("Currency object could not be found. Scenario may be corrupt.");
                     _warnOnce = true;
                 }
             }

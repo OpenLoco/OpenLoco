@@ -3,11 +3,11 @@
 #include "Conversion.h"
 #include "Environment.h"
 #include "Localisation/Formatting.h"
+#include "Logging.h"
 #include "StringIds.h"
 #include "StringManager.h"
 #include "Ui.h"
 #include "Unicode.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>

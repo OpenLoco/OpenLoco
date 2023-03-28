@@ -6,13 +6,13 @@
 #include "Input/Shortcuts.h"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Screenshot.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>

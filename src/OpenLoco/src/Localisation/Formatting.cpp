@@ -4,12 +4,12 @@
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
+#include "Logging.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
 #include "StringIds.h"
 #include "StringManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
@@ -19,6 +19,7 @@
 #include <stdexcept>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::StringManager
 {
@@ -641,7 +642,7 @@ namespace OpenLoco::StringManager
             if (sourceStr == nullptr)
             {
                 sprintf(buffer, "(missing string id: %d)", id);
-                Console::logDeprecated("formatString: nullptr for string id: %d", id);
+                Logging::warn("formatString: nullptr for string id: {}", id);
                 buffer += strlen(buffer);
                 return buffer;
             }
@@ -680,7 +681,7 @@ namespace OpenLoco::StringManager
         else
         {
             sprintf(buffer, "(invalid string id: %d)", id);
-            Console::logDeprecated("formatString: invalid string id: %d", id);
+            Logging::warn("formatString: invalid string id: {}", id);
             buffer += strlen(buffer);
             return buffer;
         }

@@ -1,7 +1,7 @@
 #ifndef _WIN32
 
 #include "Platform.h"
-#include <OpenLoco/Console/Console.h>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
@@ -17,6 +17,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #endif
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Platform
 {
@@ -79,14 +81,14 @@ namespace OpenLoco::Platform
         auto bytesRead = readlink("/proc/self/exe", exePath, sizeof(exePath));
         if (bytesRead == -1)
         {
-            Console::errorDeprecated("failed to read /proc/self/exe");
+            Logging::error("failed to read /proc/self/exe");
         }
 #elif defined(__FreeBSD__)
         const int32_t mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
         auto exeLen = sizeof(exePath);
         if (sysctl(mib, 4, exePath, &exeLen, nullptr, 0) == -1)
         {
-            Console::errorDeprecated("failed to get process path");
+            Logging::error("failed to get process path");
         }
 #elif defined(__OpenBSD__)
         // There is no way to get the path name of a running executable.

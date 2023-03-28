@@ -22,7 +22,7 @@ loco_add_library(Engine STATIC
 target_link_libraries(Engine 
     PUBLIC
         Core
-        Console
+        Diagnostics
         Utility
         Interop
         Math

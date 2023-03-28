@@ -1,8 +1,8 @@
 #include "SoftwareDrawingEngine.h"
 #include "Config.h"
+#include "Logging.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
@@ -10,6 +10,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Drawing
 {
@@ -313,7 +314,7 @@ namespace OpenLoco::Drawing
         {
             if (SDL_BlitSurface(_screenSurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
             {
-                Console::error("SDL_BlitSurface {}", SDL_GetError());
+                Logging::error("SDL_BlitSurface {}", SDL_GetError());
                 exit(1);
             }
         }
@@ -322,14 +323,14 @@ namespace OpenLoco::Drawing
             // first blit to rgba surface to change the pixel format
             if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
             {
-                Console::error("SDL_BlitSurface {}", SDL_GetError());
+                Logging::error("SDL_BlitSurface {}", SDL_GetError());
                 exit(1);
             }
             // then scale to window size. Without changing to RGBA first, SDL complains
             // about blit configurations being incompatible.
             if (SDL_BlitScaled(_screenRGBASurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
             {
-                Console::error("SDL_BlitScaled {}", SDL_GetError());
+                Logging::error("SDL_BlitScaled {}", SDL_GetError());
                 exit(1);
             }
         }

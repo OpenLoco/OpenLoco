@@ -48,6 +48,7 @@
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
@@ -71,7 +72,6 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
@@ -83,6 +83,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Input;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
 {
@@ -228,6 +229,9 @@ namespace OpenLoco
             fs::remove(tempFilePath);
         }
         crashClose(_exHandler);
+
+        // Logging should be the last before terminating.
+        Logging::shutdown();
 
         // SDL_Quit();
         exit(0);
@@ -493,7 +497,7 @@ namespace OpenLoco
     static void tickInterrupted()
     {
         EntityTweener::get().reset();
-        Console::info("Tick interrupted");
+        Logging::info("Tick interrupted");
     }
 
     // 0x0046A794
@@ -1124,17 +1128,17 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            Console::error("Unable to simulate park: {}", e.what());
+            Logging::error("Unable to simulate park: {}", e.what());
         }
         catch (const GameException i)
         {
             if (i != GameException::Interrupt)
             {
-                Console::error("Unable to simulate park!");
+                Logging::error("Unable to simulate park!");
             }
             else
             {
-                Console::info("File loaded. Starting simulation.");
+                Logging::info("File loaded. Starting simulation.");
             }
         }
         tickLogic(ticks);
@@ -1143,10 +1147,11 @@ namespace OpenLoco
     // 0x00406D13
     static int main(const CommandLineOptions& options)
     {
-        Console::initialize();
+        // Bootstrap the logging system.
+        Logging::initialize(options.logLevels);
 
         // Always print the product name and version first.
-        Console::info("{}", OpenLoco::getVersionInfo());
+        Logging::info("{}", OpenLoco::getVersionInfo());
 
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)
@@ -1162,7 +1167,7 @@ namespace OpenLoco
         }
         else
         {
-            Console::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+            Logging::warn("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
         }
 
         try
@@ -1185,7 +1190,7 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            Console::error("Exception: {}", e.what());
+            Logging::error("Exception: {}", e.what());
             Ui::showMessageBox("Exception", e.what());
             exitCleanly();
         }

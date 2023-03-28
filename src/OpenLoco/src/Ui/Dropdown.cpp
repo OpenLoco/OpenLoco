@@ -6,12 +6,12 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Widget.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
@@ -19,6 +19,7 @@
 #include <limits>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Dropdown
 {
@@ -98,7 +99,7 @@ namespace OpenLoco::Ui::Dropdown
                 }
 
                 default:
-                    Console::errorDeprecated("Unknown format: %d", arg.type);
+                    Logging::error("Unknown format: {}", static_cast<int>(arg.type));
                     break;
             }
         }

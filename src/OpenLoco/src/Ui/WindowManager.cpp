@@ -9,6 +9,7 @@
 #include "Graphics/Gfx.h"
 #include "Input.h"
 #include "Intro.h"
+#include "Logging.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
@@ -22,7 +23,6 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cinttypes>

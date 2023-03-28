@@ -6,14 +6,15 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
 {
@@ -594,7 +595,7 @@ namespace OpenLoco
             // There are some official objects that suffer from this so can't assert on this.
             const auto& header = ObjectManager::getHeader(handle);
             std::string objName(header.getName());
-            Console::logVerboseDeprecated("Incorrect number of images for object: %s", objName.c_str());
+            Logging::verbose("Incorrect number of images for object: {}", objName);
         }
     }
 

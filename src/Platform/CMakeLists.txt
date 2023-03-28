@@ -24,6 +24,6 @@ loco_add_library(Platform STATIC
 
 target_link_libraries(Platform PUBLIC
     Core
-    Console
+    Diagnostics
     Utility
 )

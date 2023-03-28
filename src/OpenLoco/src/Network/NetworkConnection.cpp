@@ -1,5 +1,5 @@
 #include "NetworkConnection.h"
-#include <OpenLoco/Console/Console.h>
+#include "Logging.h"
 #include <OpenLoco/Platform/Platform.h>
 #include <cstring>
 
@@ -191,23 +191,23 @@ void NetworkConnection::logPacket([[maybe_unused]] const Packet& packet, [[maybe
     if (packet.header.kind == PacketKind::ack || packet.header.kind == PacketKind::ping || resend)
     {
 #ifdef LOG_ACK_PACKETS
-        Console::logDeprecated("[%s] #%4d | ACK", szDirection, seq);
+        Logging::info("[{}] #{:04} | ACK", szDirection, seq);
 #endif
     }
     else if (resend)
     {
-        Console::logDeprecated("[%s] #%4d | RESEND", szDirection, seq);
+        Logging::info("[{}] #{:04} | RESEND", szDirection, seq);
     }
     else if (packet.header.kind == PacketKind::gameCommand)
     {
         auto kind = getPacketKindString(packet.header.kind);
         const auto& gc = packet.Cast<GameCommandPacket>();
-        Console::logDeprecated("[%s] #%4d | %s (Index = %d Tick = %d Command = %d)", szDirection, seq, kind, gc->index, gc->tick, gc->regs.esi);
+        Logging::info("[{}] #{:04} | {} (Index = {} Tick = {} Command = {})", szDirection, seq, kind, gc->index, gc->tick, gc->regs.esi);
     }
     else
     {
         auto kind = getPacketKindString(packet.header.kind);
-        Console::logDeprecated("[%s] #%4d | %s (%d bytes)", szDirection, seq, kind, bytes);
+        Logging::info("[{}] #{:04} | {} ({} bytes)", szDirection, seq, kind, bytes);
     }
 #endif
 #endif

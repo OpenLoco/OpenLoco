@@ -8,6 +8,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Logging.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
@@ -15,7 +16,6 @@
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <OpenLoco/Console/Console.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
@@ -28,6 +28,7 @@
 #include <string>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
 {
@@ -720,7 +721,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
             catch (const fs::filesystem_error& err)
             {
-                Console::errorDeprecated("Invalid directory or file: %s", err.what());
+                Logging::error("Invalid directory or file: {}", err.what());
             }
         }
 
