@@ -38,7 +38,7 @@ namespace OpenLoco::Diagnostics::Logging
                 fmt::print(_file, "{}[INF] {:<{}}\n", timestamp, message, intendSize);
                 break;
             case Level::warning:
-                fmt::print(_file, "{}[WARN] {:<{}}\n", timestamp, message, intendSize);
+                fmt::print(_file, "{}[WRN] {:<{}}\n", timestamp, message, intendSize);
                 break;
             case Level::error:
                 fmt::print(_file, "{}[ERR] {:<{}}\n", timestamp, message, intendSize);
