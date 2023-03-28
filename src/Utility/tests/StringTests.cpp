@@ -190,3 +190,36 @@ TEST(StringTests, strlcat)
     EXPECT_STREQ(buffer, "Hello World!123");
     EXPECT_EQ(len, 15);
 }
+
+TEST(StringTests, split)
+{
+    const auto split1 = Utility::split("hello world foo bar", " ");
+    EXPECT_EQ(split1.size(), 4);
+    EXPECT_EQ(split1[0], "hello");
+    EXPECT_EQ(split1[1], "world");
+    EXPECT_EQ(split1[2], "foo");
+    EXPECT_EQ(split1[3], "bar");
+
+    const auto split2 = Utility::split("helloSEPworldSEPfooSEPbarSEP", "SEP");
+    EXPECT_EQ(split2.size(), 4);
+    EXPECT_EQ(split2[0], "hello");
+    EXPECT_EQ(split2[1], "world");
+    EXPECT_EQ(split2[2], "foo");
+    EXPECT_EQ(split2[3], "bar");
+
+    const auto split3 = Utility::split(" foo", " ");
+    EXPECT_EQ(split3.size(), 1);
+    EXPECT_EQ(split3[0], "foo");
+
+    const auto split4 = Utility::split("", " ");
+    EXPECT_EQ(split4.size(), 0);
+}
+
+TEST(StringTests, trim)
+{
+    EXPECT_EQ(Utility::trim(" hello world"), "hello world");
+    EXPECT_EQ(Utility::trim("   hello world   "), "hello world");
+    EXPECT_EQ(Utility::trim("\thello world\r\n"), "hello world");
+    EXPECT_EQ(Utility::trim(" "), "");
+    EXPECT_EQ(Utility::trim(""), "");
+}
