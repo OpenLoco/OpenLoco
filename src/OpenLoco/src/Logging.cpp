@@ -4,6 +4,7 @@
 #include <OpenLoco/Diagnostics/LogTerminal.h>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Platform/Platform.h>
+#include <OpenLoco/Utility/String.hpp>
 #include <fmt/chrono.h>
 
 namespace OpenLoco::Diagnostics::Logging
@@ -82,23 +83,11 @@ namespace OpenLoco::Diagnostics::Logging
             }
         };
 
-        constexpr char separator = ',';
-
-        size_t start = 0;
-        size_t end = logLevels.find(separator);
-
-        while (end != std::string_view::npos)
+        const auto levels = Utility::split(logLevels, ",");
+        for (const auto level : levels)
         {
-            std::string_view substring = logLevels.substr(start, end - start);
-            substring = substring.substr(0, substring.find_last_not_of(" \t\n\r") + 1);
-            addLogLevel(substring);
-            start = end + 1;
-            end = logLevels.find(separator, start);
+            addLogLevel(Utility::trim(level));
         }
-
-        std::string_view substring = logLevels.substr(start);
-        substring = substring.substr(0, substring.find_last_not_of(" \t\n\r") + 1);
-        addLogLevel(substring);
 
         return res;
     }
