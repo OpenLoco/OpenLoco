@@ -424,8 +424,10 @@ namespace OpenLoco
         std::cout << "--help     -h     Print help" << std::endl;
         std::cout << "--version         Print version" << std::endl;
         std::cout << "--intro           Run the game intro" << std::endl;
-        std::cout << "--log_levels      Comma separated list of log levels, valid levels:" << std::endl;
+        std::cout << "--log_levels      Comma separated list of log levels, applying a minus prefix" << std::endl;
+        std::cout << "                  removes the level from a group such as 'all', valid levels:" << std::endl;
         std::cout << "                  - info, warning, error, verbose, all" << std::endl;
+        std::cout << "                  Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
         std::cout << "                  Default: \"info, warning, error\"" << std::endl;
     }
 
