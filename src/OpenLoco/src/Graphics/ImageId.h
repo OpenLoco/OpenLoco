@@ -57,27 +57,27 @@ namespace OpenLoco
 
         ImageId() = default;
 
-        explicit constexpr ImageId(ImageIndex index)
+        [[nodiscard]] explicit constexpr ImageId(ImageIndex index)
             : _index(index == kIndexUndefined ? kImageIndexUndefined : index)
         {
         }
 
-        constexpr ImageId(uint32_t index, ExtColour palette)
+        [[nodiscard]] constexpr ImageId(uint32_t index, ExtColour palette)
             : ImageId(ImageId(index).withRemap(palette))
         {
         }
 
-        constexpr ImageId(uint32_t index, Colour primaryColour)
+        [[nodiscard]] constexpr ImageId(uint32_t index, Colour primaryColour)
             : ImageId(ImageId(index).withPrimary(primaryColour))
         {
         }
 
-        constexpr ImageId(uint32_t index, Colour primaryColour, Colour secondaryColour)
+        [[nodiscard]] constexpr ImageId(uint32_t index, Colour primaryColour, Colour secondaryColour)
             : ImageId(ImageId(index).withPrimary(primaryColour).withSecondary(secondaryColour))
         {
         }
 
-        constexpr ImageId(uint32_t index, ColourScheme scheme)
+        [[nodiscard]] constexpr ImageId(uint32_t index, ColourScheme scheme)
             : ImageId(index, scheme.primary, scheme.secondary)
         {
         }
