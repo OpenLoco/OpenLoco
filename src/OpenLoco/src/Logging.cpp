@@ -28,18 +28,24 @@ namespace OpenLoco::Diagnostics::Logging
     static void cleanupLogFiles(const fs::path& logsFolderPath)
     {
         // Get all log files in the folder
-        std::vector<std::filesystem::path> logFiles;
-        for (const auto& file : std::filesystem::directory_iterator(logsFolderPath))
+        std::vector<fs::path> logFiles;
+        try
         {
-            if (file.path().extension() == ".log")
+            for (const auto& file : fs::directory_iterator(logsFolderPath))
             {
-                logFiles.push_back(file.path());
+                if (file.path().extension() == ".log")
+                {
+                    logFiles.push_back(file.path());
+                }
             }
+        }
+        catch (...)
+        {
         }
 
         // Sort log files by last write time in ascending order
         std::sort(logFiles.begin(), logFiles.end(), [](const auto& a, const auto& b) {
-            return std::filesystem::last_write_time(a) < std::filesystem::last_write_time(b);
+            return fs::last_write_time(a) < fs::last_write_time(b);
         });
 
         // Delete oldest log files
@@ -48,7 +54,7 @@ namespace OpenLoco::Diagnostics::Logging
             int numFilesToDelete = logFiles.size() - kMaxLogFiles;
             for (int i = 0; i < numFilesToDelete; i++)
             {
-                std::filesystem::remove(logFiles[i]);
+                fs::remove(logFiles[i]);
             }
         }
     }
