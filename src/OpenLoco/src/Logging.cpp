@@ -42,6 +42,7 @@ namespace OpenLoco::Diagnostics::Logging
         }
         catch (...)
         {
+            // Ignore all exceptions thrown by directory_iterator, the folder may not exist yet.
         }
 
         // Sort log files by last write time in ascending order
