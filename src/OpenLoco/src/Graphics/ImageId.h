@@ -48,7 +48,7 @@ namespace OpenLoco
         uint32_t _index = kImageIndexUndefined;
 
     public:
-        [[nodiscard]] static ImageId fromUInt32(uint32_t value)
+        static ImageId fromUInt32(uint32_t value)
         {
             ImageId result;
             result._index = value;
@@ -82,72 +82,72 @@ namespace OpenLoco
         {
         }
 
-        [[nodiscard]] constexpr uint32_t toUInt32() const
+        constexpr uint32_t toUInt32() const
         {
             return _index;
         }
 
-        [[nodiscard]] constexpr bool hasValue() const
+        constexpr bool hasValue() const
         {
             return getIndex() != kImageIndexUndefined;
         }
 
-        [[nodiscard]] constexpr bool hasPrimary() const
+        constexpr bool hasPrimary() const
         {
             return _index & kFlagPrimary;
         }
 
-        [[nodiscard]] constexpr bool hasSecondary() const
+        constexpr bool hasSecondary() const
         {
             return _index & kFlagSecondary;
         }
 
-        [[nodiscard]] constexpr bool hasNoiseMask() const
+        constexpr bool hasNoiseMask() const
         {
             return !isBlended() && !hasSecondary() && (getNoiseMask() != 0);
         }
 
-        [[nodiscard]] constexpr bool isRemap() const
+        constexpr bool isRemap() const
         {
             return hasPrimary() && !hasSecondary() && !isBlended();
         }
 
-        [[nodiscard]] constexpr bool isBlended() const
+        constexpr bool isBlended() const
         {
             return _index & kFlagBlend;
         }
 
-        [[nodiscard]] constexpr ImageIndex getIndex() const
+        constexpr ImageIndex getIndex() const
         {
             return _index & kMaskIndex;
         }
 
-        [[nodiscard]] constexpr ExtColour getTranslucency() const
+        constexpr ExtColour getTranslucency() const
         {
             return static_cast<ExtColour>((_index & kMaskTranslucent) >> kShiftTranslucent);
         }
 
-        [[nodiscard]] constexpr ExtColour getRemap() const
+        constexpr ExtColour getRemap() const
         {
             return static_cast<ExtColour>((_index & kMaskRemap) >> kShiftRemap);
         }
 
-        [[nodiscard]] constexpr Colour getPrimary() const
+        constexpr Colour getPrimary() const
         {
             return static_cast<Colour>((_index & kMaskPrimary) >> kShiftPrimary);
         }
 
-        [[nodiscard]] constexpr Colour getSecondary() const
+        constexpr Colour getSecondary() const
         {
             return static_cast<Colour>((_index & kMaskSecondary) >> kShiftSecondary);
         }
 
-        [[nodiscard]] constexpr uint8_t getNoiseMask() const
+        constexpr uint8_t getNoiseMask() const
         {
             return (_index & kMaskNoiseMask) >> kShiftNoiseMask;
         }
 
-        [[nodiscard]] constexpr ImageId withIndex(ImageIndex index) const
+        constexpr ImageId withIndex(ImageIndex index) const
         {
             ImageId result = *this;
             result._index &= ~kMaskIndex;
@@ -155,14 +155,14 @@ namespace OpenLoco
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withIndexOffset(ImageIndex offset) const
+        constexpr ImageId withIndexOffset(ImageIndex offset) const
         {
             ImageId result = *this;
             result._index += offset;
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withRemap(ExtColour paletteId) const
+        constexpr ImageId withRemap(ExtColour paletteId) const
         {
             ImageId result = *this;
             assert(enumValue(paletteId) <= 0x7F); // If larger then it eats into noiseMask
@@ -173,7 +173,7 @@ namespace OpenLoco
         }
 
         // Can be used withRemap or withPrimary or with None
-        [[nodiscard]] constexpr ImageId withNoiseMask(uint8_t noise) const
+        constexpr ImageId withNoiseMask(uint8_t noise) const
         {
             ImageId result = *this;
             result._index &= ~(kMaskNoiseMask | kFlagSecondary | kFlagBlend);
@@ -181,7 +181,7 @@ namespace OpenLoco
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withPrimary(Colour colour) const
+        constexpr ImageId withPrimary(Colour colour) const
         {
             ImageId result = *this;
             result._index &= ~kMaskPrimary;
@@ -190,7 +190,7 @@ namespace OpenLoco
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withSecondary(Colour colour) const
+        constexpr ImageId withSecondary(Colour colour) const
         {
             ImageId result = *this;
             result._index &= ~kMaskSecondary;
@@ -199,7 +199,7 @@ namespace OpenLoco
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withTranslucency(ExtColour colour) const
+        constexpr ImageId withTranslucency(ExtColour colour) const
         {
             ImageId result = *this;
             result._index &= ~(kMaskPrimary | kMaskSecondary | kFlagSecondary | kFlagPrimary);
