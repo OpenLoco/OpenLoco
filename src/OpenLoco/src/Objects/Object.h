@@ -81,9 +81,9 @@ namespace OpenLoco
             return getSourceGame() == 0;
         }
 
-        constexpr bool isEmpty() const;
+        bool isEmpty() const;
 
-        constexpr bool operator==(const ObjectHeader& rhs) const
+        bool operator==(const ObjectHeader& rhs) const
         {
             // Some vanilla objects reference other vanilla objects using a
             // ObjectHeader that is set as custom. To handle those we need
@@ -99,7 +99,7 @@ namespace OpenLoco
             }
         }
 
-        constexpr bool operator!=(const ObjectHeader& rhs) const
+        bool operator!=(const ObjectHeader& rhs) const
         {
             return !(*this == rhs);
         }
@@ -108,9 +108,9 @@ namespace OpenLoco
 #pragma pack(pop)
     constexpr ObjectHeader kEmptyObjectHeader = ObjectHeader{ 0xFFFFFFFFU, { '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF' }, 0xFFFFFFFFU };
 
-    constexpr bool ObjectHeader::isEmpty() const
+    inline bool ObjectHeader::isEmpty() const
     {
-        return *this == kEmptyObjectHeader;
+        return std::memcmp(this, &kEmptyObjectHeader, sizeof(ObjectHeader)) == 0;
     }
 
     /**
