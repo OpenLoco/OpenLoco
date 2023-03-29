@@ -49,13 +49,12 @@ namespace OpenLoco
     struct ObjectHeader
     {
     private:
-        static constexpr char cFF = static_cast<char>(0xFF);
         static constexpr uint32_t kFuzzyFlagsMask = 0xFFFE0000;
 
     public:
-        uint32_t flags = 0xFFFFFFFF;
-        char name[8] = { cFF, cFF, cFF, cFF, cFF, cFF, cFF, cFF };
-        uint32_t checksum = 0xFFFFFFFF;
+        uint32_t flags;
+        char name[8];
+        uint32_t checksum;
 
         std::string_view getName() const
         {
@@ -82,13 +81,9 @@ namespace OpenLoco
             return getSourceGame() == 0;
         }
 
-        bool isEmpty() const
-        {
-            auto ab = reinterpret_cast<const int64_t*>(this);
-            return ab[0] == -1 && ab[1] == -1;
-        }
+        constexpr bool isEmpty() const;
 
-        bool operator==(const ObjectHeader& rhs) const
+        constexpr bool operator==(const ObjectHeader& rhs) const
         {
             // Some vanilla objects reference other vanilla objects using a
             // ObjectHeader that is set as custom. To handle those we need
@@ -104,13 +99,19 @@ namespace OpenLoco
             }
         }
 
-        bool operator!=(const ObjectHeader& rhs) const
+        constexpr bool operator!=(const ObjectHeader& rhs) const
         {
             return !(*this == rhs);
         }
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
 #pragma pack(pop)
+    constexpr ObjectHeader kEmptyObjectHeader = ObjectHeader{ 0xFFFFFFFFU, { '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF' }, 0xFFFFFFFFU };
+
+    constexpr bool ObjectHeader::isEmpty() const
+    {
+        return *this == kEmptyObjectHeader;
+    }
 
     /**
      * Represents an index / ID of a specific object type.
