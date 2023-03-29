@@ -24,7 +24,7 @@ namespace OpenLoco
         static constexpr uint32_t kMaskTranslucent  = 0b00000111111110000000000000000000;
         static constexpr uint32_t kMaskPrimary      = 0b00000000111110000000000000000000;
         static constexpr uint32_t kMaskSecondary    = 0b00011111000000000000000000000000;
-        static constexpr uint32_t kMaskNoiseMask     = 0b00011100000000000000000000000000;
+        static constexpr uint32_t kMaskNoiseMask    = 0b00011100000000000000000000000000;
         static constexpr uint32_t kFlagPrimary      = 0b00100000000000000000000000000000;
         static constexpr uint32_t kFlagBlend        = 0b01000000000000000000000000000000;
         static constexpr uint32_t kFlagSecondary    = 0b10000000000000000000000000000000;
@@ -32,7 +32,7 @@ namespace OpenLoco
         static constexpr uint32_t kShiftPrimary     = 19;
         static constexpr uint32_t kShiftTranslucent = 19;
         static constexpr uint32_t kShiftSecondary   = 24;
-        static constexpr uint32_t kShiftNoiseMask    = 26;
+        static constexpr uint32_t kShiftNoiseMask   = 26;
         static constexpr uint32_t kIndexUndefined   = 0b00000000000001111111111111111111;
         static constexpr uint32_t kValueUndefined   = kIndexUndefined;
         // clang-format on
@@ -57,27 +57,27 @@ namespace OpenLoco
 
         ImageId() = default;
 
-        [[nodiscard]] explicit constexpr ImageId(ImageIndex index)
+        explicit constexpr ImageId(ImageIndex index)
             : _index(index == kIndexUndefined ? kImageIndexUndefined : index)
         {
         }
 
-        [[nodiscard]] constexpr ImageId(uint32_t index, ExtColour palette)
+        constexpr ImageId(uint32_t index, ExtColour palette)
             : ImageId(ImageId(index).withRemap(palette))
         {
         }
 
-        [[nodiscard]] constexpr ImageId(uint32_t index, Colour primaryColour)
+        constexpr ImageId(uint32_t index, Colour primaryColour)
             : ImageId(ImageId(index).withPrimary(primaryColour))
         {
         }
 
-        [[nodiscard]] constexpr ImageId(uint32_t index, Colour primaryColour, Colour secondaryColour)
+        constexpr ImageId(uint32_t index, Colour primaryColour, Colour secondaryColour)
             : ImageId(ImageId(index).withPrimary(primaryColour).withSecondary(secondaryColour))
         {
         }
 
-        [[nodiscard]] constexpr ImageId(uint32_t index, ColourScheme scheme)
+        constexpr ImageId(uint32_t index, ColourScheme scheme)
             : ImageId(index, scheme.primary, scheme.secondary)
         {
         }
