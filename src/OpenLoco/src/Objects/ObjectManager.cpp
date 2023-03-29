@@ -48,6 +48,7 @@
 #include "WallObject.h"
 #include "WaterObject.h"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
@@ -79,7 +80,7 @@ namespace OpenLoco::ObjectManager
     assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
-    static_assert(std::is_trivial_v<ObjectHeader>, "Object Header must be trivial for I/O purposes");
+    static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
     loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> _objectRepository;
 

@@ -81,7 +81,7 @@ namespace OpenLoco
             return getSourceGame() == 0;
         }
 
-        bool isEmpty() const;
+        constexpr bool isEmpty() const;
 
         bool operator==(const ObjectHeader& rhs) const
         {
@@ -108,9 +108,10 @@ namespace OpenLoco
 #pragma pack(pop)
     constexpr ObjectHeader kEmptyObjectHeader = ObjectHeader{ 0xFFFFFFFFU, { '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF', '\xFF' }, 0xFFFFFFFFU };
 
-    inline bool ObjectHeader::isEmpty() const
+    constexpr bool ObjectHeader::isEmpty() const
     {
-        return std::memcmp(this, &kEmptyObjectHeader, sizeof(ObjectHeader)) == 0;
+        // No point checking the name as its already invalid if flags is all 0xFFFFFFFFU
+        return this->flags == kEmptyObjectHeader.flags && this->checksum == kEmptyObjectHeader.checksum;
     }
 
     /**
