@@ -117,6 +117,11 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    bool Vehicle2::has73Flags(Flags73 flagsToTest) const
+    {
+        return (var_73 & flagsToTest) != Flags73::none;
+    }
+
     // 0x004A9B0B
     bool Vehicle2::update()
     {
@@ -198,6 +203,9 @@ namespace OpenLoco::Vehicles
         }
         if (isOnRackRail && dh == 0)
         {
+            // calculating power when it's broken down
+            const auto power = has73Flags(Flags73::isBrokenDown) ? totalPower / 4 : totalPower;
+
             if (train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
                 const auto manualSpeed = train.head->var_6E;
@@ -223,12 +231,10 @@ namespace OpenLoco::Vehicles
                         var_5A = 2;
                     }
                 }
-                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
                 ebp += ((power * 2048) * manualSpeed) / (totalWeight * 40);
             }
             else
             {
-                const auto power = (var_73 & (1 << 0)) ? totalPower / 4 : totalPower;
                 ebp += (power * 2048) / totalWeight;
             }
         }

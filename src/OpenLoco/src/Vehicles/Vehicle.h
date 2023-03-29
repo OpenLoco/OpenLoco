@@ -38,11 +38,13 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
 
-    namespace Flags73 // veh2 Train breakdown flags
+    enum class Flags73 : uint8_t // veh2 Train breakdown flags
     {
-        constexpr uint8_t isBrokenDown = 1 << 0;
-        constexpr uint8_t isStillPowered = 1 << 1;
-    }
+        none = 0U,
+        isBrokenDown = 1U << 0,
+        isStillPowered = 1U << 1
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags73);
 
     enum class WaterMotionFlags : uint32_t
     {
@@ -511,7 +513,9 @@ namespace OpenLoco::Vehicles
         currency32_t curMonthRevenue; // 0x5E monthly revenue
         currency32_t profit[4];       // 0x62 last 4 months net profit
         uint8_t reliability;          // 0x72
-        uint8_t var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        Flags73 var_73;               // 0x73 (bit 0 = broken down, bit 1 = still powered)
+
+        bool has73Flags(Flags73 flagsToTest) const;
 
         bool update();
         bool sub_4A9F20();
