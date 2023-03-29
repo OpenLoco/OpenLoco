@@ -176,9 +176,12 @@ namespace OpenLoco::Utility
         while (end != std::string_view::npos)
         {
             const auto subStr = str.substr(start, end - start);
-            res.push_back(subStr);
+            if (!subStr.empty())
+            {
+                res.push_back(subStr);
+            }
 
-            start = end + 1;
+            start = end + separator.size();
             end = str.find(separator, start);
         }
 
