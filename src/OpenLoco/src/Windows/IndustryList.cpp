@@ -727,8 +727,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458966
         static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scrollIndex)
         {
-            int16_t xPos = (x / kRowHeight);
-            int16_t yPos = (y / kRowHeight) * 5;
             auto index = getRowIndex(x, y);
 
             for (auto i = 0; i < self.var_83C; i++)
@@ -741,8 +739,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     LastGameOptionManager::setLastIndustry(rowInfo);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-                    Audio::playSound(Audio::SoundId::clickDown, loc, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, pan);
                     self.savedView.mapX = -16;
                     _dword_E0C39C = 0x80000000;
                     self.invalidate();

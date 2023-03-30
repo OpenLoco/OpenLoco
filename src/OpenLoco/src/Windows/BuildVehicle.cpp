@@ -740,7 +740,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C384B
-    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window& window, [[maybe_unused]] int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto pan = window.width / 2 + window.x;
-        Audio::playSound(Audio::SoundId::clickDown, World::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
+        Audio::playSound(Audio::SoundId::clickDown, pan);
         auto item = window.rowInfo[scrollItem];
         auto vehicleObj = ObjectManager::get<VehicleObject>(item);
         FormatArguments args{};

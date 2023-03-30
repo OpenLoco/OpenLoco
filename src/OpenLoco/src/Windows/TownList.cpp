@@ -1259,8 +1259,6 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AEFD
         static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
         {
-            int16_t xPos = (x / 112);
-            int16_t yPos = (y / 112) * 5;
             auto index = getRowIndex(x, y);
 
             for (auto i = 0; i < self.var_83C; i++)
@@ -1279,9 +1277,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     updateBuildingColours(&self);
 
                     int32_t pan = (self.width >> 1) + self.x;
-                    World::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-
-                    Audio::playSound(Audio::SoundId::clickDown, loc, pan);
+                    Audio::playSound(Audio::SoundId::clickDown, pan);
                     self.savedView.mapX = -16;
                     _dword_1135C34 = GameCommands::FAILURE;
                     _buildingVariation = 0;
