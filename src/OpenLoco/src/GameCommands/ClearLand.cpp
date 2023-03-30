@@ -39,14 +39,12 @@ namespace OpenLoco::GameCommands
             surface->setVar6SLR5(0);
             surface->setVar4SLR5(0);
 
-            // originally a call to 0x4CC098
             Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
         }
         if (surface->var_4_E0() > 0)
         {
             surface->setVar4SLR5(0);
 
-            // originally a call to 0x4CC098
             Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
         }
     }
