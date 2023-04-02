@@ -27,6 +27,8 @@ namespace OpenLoco::Config
         return _newConfig;
     }
 
+    constexpr ObjectHeader kDefaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
+
     constexpr LocoConfig kDefaultConfig = {
         /*flags*/ Flags::exportObjectsWithSaves,
         /*resolutionWidth*/ -1,
@@ -88,7 +90,7 @@ namespace OpenLoco::Config
         /*musicPlaylist*/ MusicPlaylistType::currentEra,
         /*heightMarkerOffset*/ 0x100,
         /*newsSettings*/ { NewsType::newsWindow, NewsType::newsWindow, NewsType::ticker, NewsType::newsWindow, NewsType::newsWindow },
-        /*preferredCurrency*/ { 0xFF },
+        /*preferredCurrency*/ kDefaultPreferredCurrency,
         /*enabledMusic*/ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         /*pad_A9*/ { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         /*volume*/ -1100,
@@ -99,10 +101,9 @@ namespace OpenLoco::Config
         /*preferredName*/ { 0 },
     };
 
-    constexpr uint8_t _defaultMaxVehicleSounds[3] = { 4, 8, 16 };
-    constexpr uint8_t _defaultMaxSoundInstances[3] = { 6, 8, 10 };
-    constexpr ObjectHeader _defaultPreferredCurrency = { 0x00000082u, { 'C', 'U', 'R', 'R', 'D', 'O', 'L', 'L' }, 0u };
-    constexpr uint32_t _legacyConfigMagicNumber = 0x62272;
+    constexpr uint8_t kDefaultMaxVehicleSounds[3] = { 4, 8, 16 };
+    constexpr uint8_t kDefaultMaxSoundInstances[3] = { 6, 8, 10 };
+    constexpr uint32_t kLegacyConfigMagicNumber = 0x62272;
 
     static void writeNewConfig();
 
@@ -124,9 +125,8 @@ namespace OpenLoco::Config
             getLegacy().soundQuality = 2;
             getLegacy().vehiclesMinScale = 2;
         }
-        getLegacy().maxVehicleSounds = _defaultMaxVehicleSounds[getLegacy().soundQuality];
-        getLegacy().maxSoundInstances = _defaultMaxSoundInstances[getLegacy().soundQuality];
-        getLegacy().preferredCurrency = _defaultPreferredCurrency;
+        getLegacy().maxVehicleSounds = kDefaultMaxVehicleSounds[getLegacy().soundQuality];
+        getLegacy().maxSoundInstances = kDefaultMaxSoundInstances[getLegacy().soundQuality];
     }
 
     // 0x00441A6C
@@ -144,7 +144,7 @@ namespace OpenLoco::Config
             {
                 uint32_t magicNumber{};
                 stream.read(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
-                if (magicNumber == _legacyConfigMagicNumber)
+                if (magicNumber == kLegacyConfigMagicNumber)
                 {
                     stream.read(reinterpret_cast<char*>(&getLegacy()), sizeof(LocoConfig));
                     return getLegacy();
@@ -166,7 +166,7 @@ namespace OpenLoco::Config
         stream.open(Environment::getPathNoWarning(Environment::PathId::gamecfg), std::ios::out | std::ios::binary);
         if (stream.is_open())
         {
-            uint32_t magicNumber = _legacyConfigMagicNumber;
+            uint32_t magicNumber = kLegacyConfigMagicNumber;
             stream.write(reinterpret_cast<char*>(&magicNumber), sizeof(magicNumber));
             stream.write(reinterpret_cast<char*>(&getLegacy()), sizeof(LocoConfig));
         }
