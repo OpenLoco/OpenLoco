@@ -197,7 +197,7 @@ namespace OpenLoco::Interop
         // WriteProcessMemory for specific addresses that we fully own, but skipping over failing entry would work.
         bool done = false;
         int retries = 10;
-        while (!done && retries > 0)
+        while (!done && retries > 0 && _hookTableOffset < kMaxHooks)
         {
             uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * kHookByteCount);
             uint8_t data[9];
