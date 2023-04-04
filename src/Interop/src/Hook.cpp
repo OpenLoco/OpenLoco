@@ -173,6 +173,12 @@ namespace OpenLoco::Interop
             size_t size = kMaxHooks * kHookByteCount;
 #ifdef _WIN32
             _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+            if (_hookTableAddress == nullptr)
+            {
+                const auto errCode = static_cast<uint32_t>(GetLastError());
+                fprintf(stderr, "VirtualAllocEx for registerHook failed! size = %zu, GetLastError() = 0x%08x\n", size, errCode);
+            }
+
 #else
             _hookTableAddress = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
             if (_hookTableAddress == MAP_FAILED)
@@ -253,6 +259,11 @@ namespace OpenLoco::Interop
             size_t size = 20 * 500;
 #ifdef _WIN32
             _smallHooks = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+            if (_smallHooks == nullptr)
+            {
+                const auto errCode = static_cast<uint32_t>(GetLastError());
+                fprintf(stderr, "VirtualAllocEx for makeJump failed! size = %zu, GetLastError() = 0x%08x\n", size, errCode);
+            }
 #else
             _smallHooks = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
             if (_smallHooks == MAP_FAILED)
