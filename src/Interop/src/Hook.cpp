@@ -156,7 +156,7 @@ namespace OpenLoco::Interop
         if (!done)
         {
             const auto errCode = static_cast<uint32_t>(GetLastError());
-            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %d, GetLastError() = 0x%08x", address, i, errCode);
+            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %d, GetLastError() = 0x%08x\n", address, i, errCode);
         }
 #else
         done = true;
@@ -184,7 +184,7 @@ namespace OpenLoco::Interop
         }
         if (_hookTableOffset > kMaxHooks)
         {
-            fprintf(stderr, "Failed registering hook for 0x%08x. Ran out of hook table space", address);
+            fprintf(stderr, "Failed registering hook for 0x%08x. Ran out of hook table space\n", address);
             return;
         }
         // Do a few retries here. This can fail on some versions of wine which inexplicably would fail on
@@ -210,7 +210,7 @@ namespace OpenLoco::Interop
             retries--;
             if (!done)
             {
-                fprintf(stderr, "Failed registering hook for 0x%08x. Retries left: %d", address, retries);
+                fprintf(stderr, "Failed registering hook for 0x%08x. Retries left: %d\n", address, retries);
             }
         }
     }
