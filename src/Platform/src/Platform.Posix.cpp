@@ -33,13 +33,13 @@ namespace OpenLoco::Platform
         return {};
     }
 
-#if !(defined(__APPLE__) && defined(__MACH__))
-    static std::string getEnvironmentVariable(const std::string& name)
+    std::string getEnvironmentVariable(const std::string& name)
     {
         auto result = getenv(name.c_str());
         return result == nullptr ? std::string() : result;
     }
 
+#if !(defined(__APPLE__) && defined(__MACH__))
     static fs::path getHomeDirectory()
     {
         auto pw = getpwuid(getuid());
@@ -121,15 +121,22 @@ namespace OpenLoco::Platform
 
     static bool hasTerminalVT100SupportImpl()
     {
-        char* term = std::getenv("TERM");
-        if (term == nullptr)
+        // See https://no-color.org/ for reference.
+        const auto noColorEnvVar = getEnvironmentVariable("NO_COLOR");
+        if (!noColorEnvVar.empty())
         {
             return false;
         }
 
-        return std::strcmp(term, "xterm") == 0
-            || std::strcmp(term, "xterm-256color") == 0
-            || std::strcmp(term, "rxvt-unicode-256color") == 0;
+        const auto termEnvVar = getEnvironmentVariable("TERM");
+        if (termEnvVar.empty())
+        {
+            return false;
+        }
+
+        return termEnvVar.compare("xterm") == 0
+            || termEnvVar.compare("xterm-256color") == 0
+            || termEnvVar.compare("rxvt-unicode-256color") == 0;
     }
 
     bool hasTerminalVT100Support()

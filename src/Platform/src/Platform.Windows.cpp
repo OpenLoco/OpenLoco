@@ -1,6 +1,10 @@
 #ifdef _WIN32
 
+#undef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 1
+
 #include "Platform.h"
+#include <cstdlib>
 #include <io.h>
 #include <iostream>
 
@@ -133,6 +137,12 @@ namespace OpenLoco::Platform
         return drives;
     }
 
+    std::string getEnvironmentVariable(const std::string& name)
+    {
+        auto result = std::getenv(name.c_str());
+        return result == nullptr ? std::string() : result;
+    }
+
     bool isRunningInWine()
     {
         HMODULE ntdllMod = GetModuleHandleW(L"ntdll.dll");
@@ -152,6 +162,13 @@ namespace OpenLoco::Platform
 
     static bool hasTerminalVT100SupportImpl()
     {
+        // See https://no-color.org/ for reference.
+        const auto noColorEnvVar = getEnvironmentVariable("NO_COLOR");
+        if (!noColorEnvVar.empty())
+        {
+            return false;
+        }
+
         const auto ntdllHandle = GetModuleHandleW(L"ntdll.dll");
         if (ntdllHandle == nullptr)
             return false;

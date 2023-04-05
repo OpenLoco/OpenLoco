@@ -1,6 +1,7 @@
 #if defined(__APPLE__) && defined(__MACH__)
 
 #include "Platform.h"
+#include <cstdlib>
 #include <limits.h>
 #include <mach-o/dyld.h>
 
@@ -69,7 +70,13 @@ namespace OpenLoco::Platform
             return fs::path();
         }
     }
-    
+
+    std::string getEnvironmentVariable(const std::string& name)
+    {
+        auto result = std::getenv(name.c_str());
+        return result == nullptr ? std::string() : result;
+    }
+
     bool isStdOutRedirected()
     {
         // TODO: Implement me
