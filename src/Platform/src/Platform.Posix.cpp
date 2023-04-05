@@ -2,6 +2,7 @@
 
 #include "Platform.h"
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
