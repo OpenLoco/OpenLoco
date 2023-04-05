@@ -13,7 +13,7 @@ namespace OpenLoco::Diagnostics::Logging
 
     LogTerminal::LogTerminal()
     {
-        _vt100Enabled = false; // Platform::enableVT100TerminalMode();
+        _vt100Enabled = Platform::enableVT100TerminalMode();
     }
 
     static FILE* getOutputStream(Level level)
@@ -71,9 +71,13 @@ namespace OpenLoco::Diagnostics::Logging
         const int intendSize = getIntendSize();
 
         if (_vt100Enabled)
+        {
             fmt::print(getOutputStream(level), getTextStyle(level), "{}{:>{}}\n", timestamp, message, intendSize);
+        }
         else
-            fmt::print(getOutputStream(level), "{}{:>{}}\n", timestamp, message, intendSize);
+        {
+            fmt::print(getOutputStream(level), "{}{}{:<{}}\n", timestamp, getLevelPrefix(level), message, intendSize);
+        }
     }
 
 }
