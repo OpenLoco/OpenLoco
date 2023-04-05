@@ -1,17 +1,19 @@
 #ifdef _WIN32
 
+#include "Platform.h"
+#include <io.h>
 #include <iostream>
 
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-// We can't use lean and mean if we want timeGetTime
-// #define WIN32_LEAN_AND_MEAN
-#include <io.h>
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <shlobj.h>
+#include <timeapi.h>
 #include <windows.h>
 
-#include "Platform.h"
 #include <OpenLoco/Utility/String.hpp>
 
 namespace OpenLoco::Platform
@@ -151,7 +153,7 @@ namespace OpenLoco::Platform
         if (ntdllHandle == nullptr)
             return false;
 
-        using RtlGetVersionFn = NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW);
+        using RtlGetVersionFn = LONG(WINAPI*)(PRTL_OSVERSIONINFOW);
 
         const auto RtlGetVersionFp = reinterpret_cast<RtlGetVersionFn>(GetProcAddress(ntdllHandle, "RtlGetVersion"));
         if (RtlGetVersionFp == nullptr)
