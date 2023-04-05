@@ -19,8 +19,6 @@
 #include <unistd.h>
 #endif
 
-using namespace OpenLoco::Diagnostics;
-
 namespace OpenLoco::Platform
 {
     uint32_t getTime()
