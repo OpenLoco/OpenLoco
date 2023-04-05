@@ -16,4 +16,7 @@ namespace OpenLoco::Platform
 #if defined(__APPLE__) && defined(__MACH__)
     fs::path GetBundlePath();
 #endif
+    bool isStdOutRedirected();
+    bool hasTerminalVT100Support();
+    bool enableVT100TerminalMode();
 }

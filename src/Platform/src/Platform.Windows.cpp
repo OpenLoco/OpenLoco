@@ -7,6 +7,7 @@
 #endif
 // We can't use lean and mean if we want timeGetTime
 // #define WIN32_LEAN_AND_MEAN
+#include <io.h>
 #include <shlobj.h>
 #include <windows.h>
 
@@ -136,6 +137,69 @@ namespace OpenLoco::Platform
             return true;
         }
         return false;
+    }
+
+    bool isStdOutRedirected()
+    {
+        // isatty returns a nonzero value if the descriptor is associated with a character device. Otherwise, isatty returns 0.
+        return _isatty(_fileno(stdout)) != 0;
+    }
+
+    static bool hasTerminalVT100SupportImpl()
+    {
+        const auto ntdllHandle = GetModuleHandleW(L"ntdll.dll");
+        if (ntdllHandle == nullptr)
+            return false;
+
+        using RtlGetVersionFn = NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW);
+
+        const auto RtlGetVersionFp = reinterpret_cast<RtlGetVersionFn>(GetProcAddress(ntdllHandle, "RtlGetVersion"));
+        if (RtlGetVersionFp == nullptr)
+            return false;
+
+        RTL_OSVERSIONINFOW info{};
+        info.dwOSVersionInfoSize = sizeof(info);
+
+        if (RtlGetVersionFp(&info) != 0)
+            return false;
+
+        // VT100 support was first introduced in 10.0.10586
+        if (info.dwMajorVersion >= 10 && info.dwMinorVersion >= 0 && info.dwBuildNumber >= 10586)
+            return true;
+
+        return false;
+    }
+
+    bool hasTerminalVT100Support()
+    {
+        static bool hasVT100Support = hasTerminalVT100SupportImpl();
+        return hasVT100Support;
+    }
+
+    bool enableVT100TerminalMode()
+    {
+        if (!isStdOutRedirected())
+            return false;
+
+        if (!hasTerminalVT100Support())
+            return false;
+
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        if (hOut == INVALID_HANDLE_VALUE)
+            return false;
+
+        DWORD dwMode = 0;
+
+        if (!GetConsoleMode(hOut, &dwMode))
+            return false;
+
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+        if (!SetConsoleMode(hOut, dwMode))
+            return false;
+
+        return true;
     }
 }
 

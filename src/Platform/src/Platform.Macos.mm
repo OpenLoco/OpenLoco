@@ -69,6 +69,35 @@ namespace OpenLoco::Platform
             return fs::path();
         }
     }
+    
+    bool isStdOutRedirected()
+    {
+        // TODO: Implement me
+        return false;
+    }
+
+    static bool hasTerminalVT100SupportImpl()
+    {
+        // TODO: Implement me.
+        return false;
+    }
+
+    bool hasTerminalVT100Support()
+    {
+        static bool hasVT100Support = hasTerminalVT100SupportImpl();
+        return hasVT100Support;
+    }
+    
+    bool enableVT100TerminalMode()
+    {
+        if (!isStdOutRedirected())
+            return false;
+
+        if (!hasTerminalVT100Support())
+            return false;
+
+        return true;
+    }
 }
 
 #endif
