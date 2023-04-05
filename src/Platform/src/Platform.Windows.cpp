@@ -10,9 +10,12 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+// clang-format off
+// Windows headers are quite sensitive to the include order.
 #include <shlobj.h>
-#include <timeapi.h>
 #include <windows.h>
+#include <mmsystem.h>
+// clang-format on
 
 #include <OpenLoco/Utility/String.hpp>
 
