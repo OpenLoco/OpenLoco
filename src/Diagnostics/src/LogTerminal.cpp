@@ -1,14 +1,8 @@
 #include "OpenLoco/Diagnostics/LogTerminal.h"
+#include <OpenLoco/Platform/Platform.h>
 #include <fmt/chrono.h>
 #include <fmt/color.h>
 #include <fmt/format.h>
-
-#ifdef _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-#endif
 
 namespace OpenLoco::Diagnostics::Logging
 {
@@ -19,14 +13,46 @@ namespace OpenLoco::Diagnostics::Logging
 
     LogTerminal::LogTerminal()
     {
-#ifdef _WIN32
-        // Enable colors.
-        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-        DWORD dwMode = 0;
-        GetConsoleMode(hOut, &dwMode);
-        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-        SetConsoleMode(hOut, dwMode);
-#endif
+        _vt100Enabled = false; // Platform::enableVT100TerminalMode();
+    }
+
+    static FILE* getOutputStream(Level level)
+    {
+        switch (level)
+        {
+            case Level::info:
+            case Level::warning:
+            case Level::verbose:
+                return stdout;
+            case Level::error:
+                return stderr;
+            default:
+                break;
+        }
+        return stdout;
+    }
+
+    static fmt::text_style getTextStyle(Level level)
+    {
+        fmt::text_style textStyle{};
+        switch (level)
+        {
+            case Level::info:
+                textStyle |= kColourInfo;
+                break;
+            case Level::warning:
+                textStyle |= kColourWarning;
+                break;
+            case Level::error:
+                textStyle |= kColourError;
+                break;
+            case Level::verbose:
+                textStyle |= kColourVerbose;
+                break;
+            default:
+                break;
+        }
+        return textStyle;
     }
 
     void LogTerminal::print(Level level, std::string_view message)
@@ -43,23 +69,11 @@ namespace OpenLoco::Diagnostics::Logging
         }
 
         const int intendSize = getIntendSize();
-        switch (level)
-        {
-            case Level::info:
-                fmt::print(stdout, kColourInfo, "{}{:>{}}\n", timestamp, message, intendSize);
-                return;
-            case Level::warning:
-                fmt::print(stdout, kColourWarning, "{}{:>{}}\n", timestamp, message, intendSize);
-                return;
-            case Level::error:
-                fmt::print(stderr, kColourError, "{}{:>{}}\n", timestamp, message, intendSize);
-                return;
-            case Level::verbose:
-                fmt::print(stdout, kColourVerbose, "{}{:>{}}\n", timestamp, message, intendSize);
-                return;
-            default:
-                break;
-        }
+
+        if (_vt100Enabled)
+            fmt::print(getOutputStream(level), getTextStyle(level), "{}{:>{}}\n", timestamp, message, intendSize);
+        else
+            fmt::print(getOutputStream(level), "{}{:>{}}\n", timestamp, message, intendSize);
     }
 
 }

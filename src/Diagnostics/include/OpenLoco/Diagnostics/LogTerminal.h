@@ -6,6 +6,8 @@ namespace OpenLoco::Diagnostics::Logging
 {
     class LogTerminal final : public LogSink
     {
+        bool _vt100Enabled{};
+
     public:
         LogTerminal();
 
