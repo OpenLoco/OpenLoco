@@ -302,7 +302,7 @@ namespace OpenLoco::Interop
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
         {
             const auto errCode = static_cast<uint32_t>(GetLastError());
-            fprintf(stderr, "ReadProcessMemory failed! address = 0x%08x, size = %zu, GetLastError() = 0x%08x", address, size, errCode);
+            fprintf(stderr, "ReadProcessMemory failed! address = 0x%08x, size = %zu, GetLastError() = 0x%08x\n", address, size, errCode);
             throw std::runtime_error("ReadProcessMemory failed");
         }
 #else
@@ -314,11 +314,20 @@ namespace OpenLoco::Interop
     void writeMemory(uint32_t address, const void* data, size_t size)
     {
 #ifdef _WIN32
-        if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
+        // Split writing memory into page-bound chunks. Assume page size is 4k. On some systems (e.g. Apple ARM) it can be larger, but still a multiple of 4k.
+        // This addresses issue where writing across page boundary fails.
+        size_t bytesWritten = 0;
+        while (bytesWritten != size)
         {
-            const auto errCode = static_cast<uint32_t>(GetLastError());
-            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %zu, GetLastError() = 0x%08x", address, size, errCode);
-            throw std::runtime_error("WriteProcessMemory failed");
+            uint32_t addressLocal = address + bytesWritten;
+            size_t sizeLocal = std::min<size_t>(size - bytesWritten, 4096 - (addressLocal & 0xFFF));
+            if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)addressLocal, reinterpret_cast<const uint8_t*>(data) + bytesWritten, sizeLocal, nullptr))
+            {
+                const auto errCode = static_cast<uint32_t>(GetLastError());
+                fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %zu, bytesWritten = %zu, addressLocal = 0x%08x, sizeLocal = %zu, GetLastError() = 0x%08x\n", address, size, bytesWritten, addressLocal, sizeLocal, errCode);
+                throw std::runtime_error("WriteProcessMemory failed");
+            }
+            bytesWritten += sizeLocal;
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
