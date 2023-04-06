@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <io.h>
 #include <iostream>
+#include <tuple>
 
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -175,7 +176,14 @@ namespace OpenLoco::Platform
 
         using RtlGetVersionFn = LONG(WINAPI*)(PRTL_OSVERSIONINFOW);
 
-        const auto RtlGetVersionFp = reinterpret_cast<RtlGetVersionFn>(GetProcAddress(ntdllHandle, "RtlGetVersion"));
+#if defined(__MINGW32__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+        auto RtlGetVersionFp = reinterpret_cast<RtlGetVersionFn>(GetProcAddress(ntdllHandle, "RtlGetVersion"));
+#if defined(__MINGW32__)
+#pragma GCC diagnostic pop
+#endif
         if (RtlGetVersionFp == nullptr)
             return false;
 
@@ -186,7 +194,7 @@ namespace OpenLoco::Platform
             return false;
 
         // VT100 support was first introduced in 10.0.10586
-        if (info.dwMajorVersion >= 10 && info.dwMinorVersion >= 0 && info.dwBuildNumber >= 10586)
+        if (std::tie(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber) >= std::make_tuple(10U, 0U, 10586U))
             return true;
 
         return false;
