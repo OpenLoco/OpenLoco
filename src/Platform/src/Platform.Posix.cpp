@@ -166,6 +166,5 @@ namespace OpenLoco::Platform
         }
         return argvStrs;
     }
-}
 
 #endif
