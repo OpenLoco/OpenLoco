@@ -46,4 +46,22 @@ namespace OpenLoco::Diagnostics::Logging
             return 0;
     }
 
+    constexpr std::string_view getLevelPrefix(Level level)
+    {
+        switch (level)
+        {
+            case Level::info:
+                return "[INF] ";
+            case Level::warning:
+                return "[WRN] ";
+            case Level::error:
+                return "[ERR] ";
+            case Level::verbose:
+                return "[VER] ";
+            default:
+                break;
+        }
+        return "[INVALID] ";
+    }
+
 }

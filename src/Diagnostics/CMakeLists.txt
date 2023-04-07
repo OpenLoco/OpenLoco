@@ -29,4 +29,5 @@ loco_add_library(Diagnostics STATIC
 target_link_libraries(Diagnostics 
     PUBLIC
         Core
+        Platform
 )

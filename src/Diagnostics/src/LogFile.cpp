@@ -32,23 +32,8 @@ namespace OpenLoco::Diagnostics::Logging
         }
 
         const int intendSize = getIntendSize();
-        switch (level)
-        {
-            case Level::info:
-                fmt::print(_file, "{}[INF] {:<{}}\n", timestamp, message, intendSize);
-                break;
-            case Level::warning:
-                fmt::print(_file, "{}[WRN] {:<{}}\n", timestamp, message, intendSize);
-                break;
-            case Level::error:
-                fmt::print(_file, "{}[ERR] {:<{}}\n", timestamp, message, intendSize);
-                break;
-            case Level::verbose:
-                fmt::print(_file, "{}[VER] {:<{}}\n", timestamp, message, intendSize);
-                break;
-            default:
-                break;
-        }
+
+        fmt::print(_file, "{}{}{:<{}}\n", timestamp, getLevelPrefix(level), message, intendSize);
 
         // Ensure we are not loosing anything because of buffering in case of a crash.
         _file.flush();

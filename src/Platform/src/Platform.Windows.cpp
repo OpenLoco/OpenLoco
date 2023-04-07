@@ -1,16 +1,27 @@
 #ifdef _WIN32
 
+#undef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 1
+
+#include "Platform.h"
+#include <cstdlib>
+#include <io.h>
 #include <iostream>
+#include <tuple>
 
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-// We can't use lean and mean if we want timeGetTime
-// #define WIN32_LEAN_AND_MEAN
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+// clang-format off
+// Windows headers are quite sensitive to the include order.
 #include <shlobj.h>
 #include <windows.h>
+#include <mmsystem.h>
+// clang-format on
 
-#include "Platform.h"
 #include <OpenLoco/Utility/String.hpp>
 
 namespace OpenLoco::Platform
@@ -127,6 +138,12 @@ namespace OpenLoco::Platform
         return drives;
     }
 
+    std::string getEnvironmentVariable(const std::string& name)
+    {
+        auto result = std::getenv(name.c_str());
+        return result == nullptr ? std::string() : result;
+    }
+
     bool isRunningInWine()
     {
         HMODULE ntdllMod = GetModuleHandleW(L"ntdll.dll");
@@ -136,6 +153,83 @@ namespace OpenLoco::Platform
             return true;
         }
         return false;
+    }
+
+    bool isStdOutRedirected()
+    {
+        // isatty returns a nonzero value if the descriptor is associated with a character device. Otherwise, isatty returns 0.
+        return _isatty(_fileno(stdout)) != 0;
+    }
+
+    static bool hasTerminalVT100SupportImpl()
+    {
+        // See https://no-color.org/ for reference.
+        const auto noColorEnvVar = getEnvironmentVariable("NO_COLOR");
+        if (!noColorEnvVar.empty())
+        {
+            return false;
+        }
+
+        const auto ntdllHandle = GetModuleHandleW(L"ntdll.dll");
+        if (ntdllHandle == nullptr)
+            return false;
+
+        using RtlGetVersionFn = LONG(WINAPI*)(PRTL_OSVERSIONINFOW);
+
+#if defined(__MINGW32__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+        auto RtlGetVersionFp = reinterpret_cast<RtlGetVersionFn>(GetProcAddress(ntdllHandle, "RtlGetVersion"));
+#if defined(__MINGW32__)
+#pragma GCC diagnostic pop
+#endif
+        if (RtlGetVersionFp == nullptr)
+            return false;
+
+        RTL_OSVERSIONINFOW info{};
+        info.dwOSVersionInfoSize = sizeof(info);
+
+        if (RtlGetVersionFp(&info) != 0)
+            return false;
+
+        // VT100 support was first introduced in 10.0.10586
+        if (std::tie(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber) >= std::make_tuple(10U, 0U, 10586U))
+            return true;
+
+        return false;
+    }
+
+    bool hasTerminalVT100Support()
+    {
+        static bool hasVT100Support = hasTerminalVT100SupportImpl();
+        return hasVT100Support;
+    }
+
+    bool enableVT100TerminalMode()
+    {
+        if (!isStdOutRedirected())
+            return false;
+
+        if (!hasTerminalVT100Support())
+            return false;
+
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        if (hOut == INVALID_HANDLE_VALUE)
+            return false;
+
+        DWORD dwMode = 0;
+
+        if (!GetConsoleMode(hOut, &dwMode))
+            return false;
+
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+        if (!SetConsoleMode(hOut, dwMode))
+            return false;
+
+        return true;
     }
 }
 

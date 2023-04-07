@@ -1,7 +1,8 @@
 #ifndef _WIN32
 
 #include "Platform.h"
-#include <OpenLoco/Diagnostics/Logging.h>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
@@ -18,8 +19,6 @@
 #include <unistd.h>
 #endif
 
-using namespace OpenLoco::Diagnostics;
-
 namespace OpenLoco::Platform
 {
     uint32_t getTime()
@@ -34,13 +33,13 @@ namespace OpenLoco::Platform
         return {};
     }
 
-#if !(defined(__APPLE__) && defined(__MACH__))
-    static std::string getEnvironmentVariable(const std::string& name)
+    std::string getEnvironmentVariable(const std::string& name)
     {
         auto result = getenv(name.c_str());
         return result == nullptr ? std::string() : result;
     }
 
+#if !(defined(__APPLE__) && defined(__MACH__))
     static fs::path getHomeDirectory()
     {
         auto pw = getpwuid(getuid());
@@ -81,14 +80,14 @@ namespace OpenLoco::Platform
         auto bytesRead = readlink("/proc/self/exe", exePath, sizeof(exePath));
         if (bytesRead == -1)
         {
-            Logging::error("failed to read /proc/self/exe");
+            fprintf(stderr, "failed to read /proc/self/exe");
         }
 #elif defined(__FreeBSD__)
         const int32_t mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
         auto exeLen = sizeof(exePath);
         if (sysctl(mib, 4, exePath, &exeLen, nullptr, 0) == -1)
         {
-            Logging::error("failed to get process path");
+            fprintf(stderr, "failed to get process path");
         }
 #elif defined(__OpenBSD__)
         // There is no way to get the path name of a running executable.
@@ -112,6 +111,49 @@ namespace OpenLoco::Platform
     bool isRunningInWine()
     {
         return false;
+    }
+
+    bool isStdOutRedirected()
+    {
+        // isatty returns a nonzero value if the descriptor is associated with a character device. Otherwise, isatty returns 0.
+        return isatty(fileno(stdout)) != 0;
+    }
+
+    static bool hasTerminalVT100SupportImpl()
+    {
+        // See https://no-color.org/ for reference.
+        const auto noColorEnvVar = getEnvironmentVariable("NO_COLOR");
+        if (!noColorEnvVar.empty())
+        {
+            return false;
+        }
+
+        const auto termEnvVar = getEnvironmentVariable("TERM");
+        if (termEnvVar.empty())
+        {
+            return false;
+        }
+
+        return termEnvVar.compare("xterm") == 0
+            || termEnvVar.compare("xterm-256color") == 0
+            || termEnvVar.compare("rxvt-unicode-256color") == 0;
+    }
+
+    bool hasTerminalVT100Support()
+    {
+        static bool hasVT100Support = hasTerminalVT100SupportImpl();
+        return hasVT100Support;
+    }
+
+    bool enableVT100TerminalMode()
+    {
+        if (!isStdOutRedirected())
+            return false;
+
+        if (!hasTerminalVT100Support())
+            return false;
+
+        return true;
     }
 }
 

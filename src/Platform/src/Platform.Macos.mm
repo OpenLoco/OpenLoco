@@ -1,6 +1,7 @@
 #if defined(__APPLE__) && defined(__MACH__)
 
 #include "Platform.h"
+#include <cstdlib>
 #include <limits.h>
 #include <mach-o/dyld.h>
 
@@ -68,6 +69,41 @@ namespace OpenLoco::Platform
             }
             return fs::path();
         }
+    }
+
+    std::string getEnvironmentVariable(const std::string& name)
+    {
+        auto result = std::getenv(name.c_str());
+        return result == nullptr ? std::string() : result;
+    }
+
+    bool isStdOutRedirected()
+    {
+        // TODO: Implement me
+        return false;
+    }
+
+    static bool hasTerminalVT100SupportImpl()
+    {
+        // TODO: Implement me.
+        return false;
+    }
+
+    bool hasTerminalVT100Support()
+    {
+        static bool hasVT100Support = hasTerminalVT100SupportImpl();
+        return hasVT100Support;
+    }
+    
+    bool enableVT100TerminalMode()
+    {
+        if (!isStdOutRedirected())
+            return false;
+
+        if (!hasTerminalVT100Support())
+            return false;
+
+        return true;
     }
 }
 
