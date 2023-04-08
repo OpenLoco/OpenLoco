@@ -841,7 +841,7 @@ namespace OpenLoco::ObjectManager
             {
                 // Insert empty headers for any unused objects (required for save compatibility)
                 // TODO: Move this into the S5 code.
-                entries.emplace_back();
+                entries.push_back(kEmptyObjectHeader);
             }
         }
         else
@@ -858,7 +858,7 @@ namespace OpenLoco::ObjectManager
                 {
                     // Insert empty headers for any unused objects (required for save compatibility)
                     // TODO: Move this into the S5 code.
-                    entries.emplace_back();
+                    entries.push_back(kEmptyObjectHeader);
                 }
             }
         }
