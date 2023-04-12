@@ -1,5 +1,4 @@
 #include "Construction.h"
-#include "ScenarioConstruction.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
