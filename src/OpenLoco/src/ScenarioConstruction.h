@@ -18,4 +18,5 @@ namespace OpenLoco::Scenario
 #pragma pack(pop)
     static_assert(sizeof(Construction) == 0x38);
     Construction& getConstruction();
+    void resetConstruction();
 }
