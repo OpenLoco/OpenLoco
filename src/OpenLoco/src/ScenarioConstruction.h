@@ -7,7 +7,7 @@ namespace OpenLoco::Scenario
 #pragma pack(push, 1)
     struct Construction
     {
-        uint8_t signals[8];       // 0x00015A (0x00525F72) 
+        uint8_t signals[8];       // 0x00015A (0x00525F72)
         uint8_t bridges[8];       // 0x000162 (0x00525F7A)
         uint8_t trainStations[8]; // 0x00016A (0x00525F82)
         uint8_t trackMods[8];     // 0x000172 (0x00525F8A)

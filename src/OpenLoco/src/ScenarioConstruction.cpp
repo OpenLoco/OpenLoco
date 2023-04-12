@@ -3,7 +3,8 @@
 
 namespace OpenLoco::Scenario
 {
-    Construction& getConstruction() {
+    Construction& getConstruction()
+    {
         return getGameState().scenarioConstruction;
     }
 }

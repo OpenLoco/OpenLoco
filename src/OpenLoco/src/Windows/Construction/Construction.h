@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ScenarioConstruction.h"
 #include "LastGameOptionManager.h"
 #include "Map/TileManager.h"
 #include "Objects/VehicleObject.h"
+#include "ScenarioConstruction.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
