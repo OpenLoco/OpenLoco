@@ -136,10 +136,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049B50C
     void reset()
     {
-        std::fill(std::begin(_scenarioSignals), std::end(_scenarioSignals), 0xFF);
-        std::fill(std::begin(_scenarioBridges), std::end(_scenarioBridges), 0xFF);
-        std::fill(std::begin(_scenarioTrainStations), std::end(_scenarioTrainStations), 0xFF);
-        std::fill(std::begin(_scenarioTrackMods), std::end(_scenarioTrackMods), 0xFF);
+        std::fill(std::begin(Scenario::getConstruction().signals), std::end(Scenario::getConstruction().signals), 0xFF);
+        std::fill(std::begin(Scenario::getConstruction().bridges), std::end(Scenario::getConstruction().bridges), 0xFF);
+        std::fill(std::begin(Scenario::getConstruction().trainStations), std::end(Scenario::getConstruction().trainStations), 0xFF);
+        std::fill(std::begin(Scenario::getConstruction().trackMods), std::end(Scenario::getConstruction().trackMods), 0xFF);
 
         LastGameOptionManager::setLastAirport(LastGameOptionManager::kNoLastOption);
         LastGameOptionManager::setLastShipPort(LastGameOptionManager::kNoLastOption);
@@ -1744,7 +1744,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 _lastSelectedBridge = bridge;
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting bridges for road/trams
-                _scenarioBridges[_trackType & ~(1 << 7)] = bridge;
+                Scenario::getConstruction().bridges[_trackType & ~(1 << 7)] = bridge;
                 removeConstructionGhosts();
                 _trackCost = 0x80000000;
                 activateSelectedConstructionWidgets();

@@ -153,11 +153,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             else if (_trackType & (1 << 7))
             {
                 auto trackType = _trackType & ~(1 << 7);
-                _scenarioRoadStations[trackType] = selectedStation;
+                Scenario::getConstruction().roadStations[trackType] = selectedStation;
             }
             else
             {
-                _scenarioTrainStations[_trackType] = selectedStation;
+                Scenario::getConstruction().trainStations[_trackType] = selectedStation;
             }
 
             self.invalidate();

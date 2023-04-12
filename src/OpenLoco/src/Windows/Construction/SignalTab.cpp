@@ -108,7 +108,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         if (itemIndex != -1)
         {
             _lastSelectedSignal = _signalList[itemIndex];
-            _scenarioSignals[_trackType] = _signalList[itemIndex];
+            Scenario::getConstruction().signals[_trackType] = _signalList[itemIndex];
             self.invalidate();
         }
     }

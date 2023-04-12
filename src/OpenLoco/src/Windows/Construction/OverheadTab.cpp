@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 _lastSelectedMods = _lastSelectedMods ^ (1 << checkboxIndex);
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting/deselecting overhead wires for trams
-                _scenarioTrackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
+                Scenario::getConstruction().trackMods[_trackType & ~(1 << 7)] = _lastSelectedMods;
 
                 self.invalidate();
                 break;

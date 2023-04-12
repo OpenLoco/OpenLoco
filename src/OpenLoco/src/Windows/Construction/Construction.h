@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ScenarioConstruction.h"
 #include "LastGameOptionManager.h"
 #include "Map/TileManager.h"
 #include "Objects/VehicleObject.h"
@@ -16,12 +17,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<uint8_t, 0x00522096> _byte_522096;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint8_t[8], 0x0525F72> _scenarioSignals;
-    static loco_global<uint8_t[8], 0x0525F7A> _scenarioBridges;
-    static loco_global<uint8_t[8], 0x0525F82> _scenarioTrainStations;
-    static loco_global<uint8_t[8], 0x0525F8A> _scenarioTrackMods;
-    static loco_global<uint8_t[8], 0x0525F9A> _scenarioRoadStations;
-    static loco_global<uint8_t[8], 0x0525FA2> _scenarioRoadMods;
     static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;

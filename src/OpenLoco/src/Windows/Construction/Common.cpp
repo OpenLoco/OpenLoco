@@ -1,4 +1,5 @@
 #include "Construction.h"
+#include "ScenarioConstruction.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
@@ -78,7 +79,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshSignalList(_signalList, _trackType);
 
-        auto lastSignal = _scenarioSignals[_trackType];
+        auto lastSignal = Scenario::getConstruction().signals[_trackType];
 
         if (lastSignal == 0xFF)
             lastSignal = _signalList[0];
@@ -87,7 +88,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
 
-        auto lastStation = _scenarioTrainStations[_trackType];
+        auto lastStation = Scenario::getConstruction().trainStations[_trackType];
 
         if (lastStation == 0xFF)
             lastStation = _stationList[0];
@@ -96,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
 
-        auto lastBridge = _scenarioBridges[_trackType];
+        auto lastBridge = Scenario::getConstruction().bridges[_trackType];
 
         if (lastBridge == 0xFF)
             lastBridge = _bridgeList[0];
@@ -105,7 +106,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshModList(_modList, _trackType, TransportMode::rail);
 
-        auto lastMod = _scenarioTrackMods[_trackType];
+        auto lastMod = Scenario::getConstruction().trackMods[_trackType];
 
         if (lastMod == 0xFF)
             lastMod = 0;
@@ -124,7 +125,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshStationList(_stationList, _trackType, TransportMode::road);
 
-        auto lastStation = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
+        auto lastStation = Scenario::getConstruction().roadStations[(_trackType & ~(1ULL << 7))];
 
         if (lastStation == 0xFF)
             lastStation = _stationList[0];
@@ -133,7 +134,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
 
-        auto lastBridge = _scenarioBridges[(_trackType & ~(1ULL << 7))];
+        auto lastBridge = Scenario::getConstruction().bridges[(_trackType & ~(1ULL << 7))];
 
         if (lastBridge == 0xFF)
             lastBridge = _bridgeList[0];
@@ -142,7 +143,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshModList(_modList, _trackType, TransportMode::road);
 
-        auto lastMod = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
+        auto lastMod = Scenario::getConstruction().roadMods[(_trackType & ~(1ULL << 7))];
 
         if (lastMod == 0xff)
             lastMod = 0;
@@ -259,7 +260,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _lastSelectedTrackGradient = 0;
 
         Common::refreshSignalList(_signalList, _trackType);
-        auto lastSignal = _scenarioSignals[_trackType];
+        auto lastSignal = Scenario::getConstruction().signals[_trackType];
 
         if (lastSignal == 0xFF)
             lastSignal = _signalList[0];
@@ -268,7 +269,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
 
-        auto lastStation = _scenarioTrainStations[_trackType];
+        auto lastStation = Scenario::getConstruction().trainStations[_trackType];
 
         if (lastStation == 0xFF)
             lastStation = _stationList[0];
@@ -277,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
 
-        auto lastBridge = _scenarioBridges[_trackType];
+        auto lastBridge = Scenario::getConstruction().bridges[_trackType];
 
         if (lastBridge == 0xFF)
             lastBridge = _bridgeList[0];
@@ -351,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshStationList(_stationList, _trackType, TransportMode::road);
 
-        auto lastStation = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
+        auto lastStation = Scenario::getConstruction().roadStations[(_trackType & ~(1ULL << 7))];
 
         if (lastStation == 0xFF)
             lastStation = _stationList[0];
@@ -360,7 +361,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
 
-        auto lastBridge = _scenarioBridges[(_trackType & ~(1ULL << 7))];
+        auto lastBridge = Scenario::getConstruction().bridges[(_trackType & ~(1ULL << 7))];
 
         if (lastBridge == 0xFF)
             lastBridge = _bridgeList[0];
@@ -1443,21 +1444,21 @@ namespace OpenLoco::Ui::Windows::Construction
             setTrackOptions(_trackType);
             refreshStationList(_stationList, _trackType, TransportMode::road);
 
-            auto lastStation = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
+            auto lastStation = Scenario::getConstruction().roadStations[(_trackType & ~(1ULL << 7))];
             if (lastStation == 0xFF)
                 lastStation = _stationList[0];
             _lastSelectedStationType = lastStation;
 
             refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
 
-            auto lastBridge = _scenarioBridges[(_trackType & ~(1ULL << 7))];
+            auto lastBridge = Scenario::getConstruction().bridges[(_trackType & ~(1ULL << 7))];
             if (lastBridge == 0xFF)
                 lastBridge = _bridgeList[0];
             _lastSelectedBridge = lastBridge;
 
             refreshModList(_modList, _trackType, TransportMode::road);
 
-            auto lastMod = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
+            auto lastMod = Scenario::getConstruction().roadMods[(_trackType & ~(1ULL << 7))];
             if (lastMod == 0xFF)
                 lastMod = 0;
             _lastSelectedMods = lastMod;
