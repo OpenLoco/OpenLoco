@@ -774,8 +774,7 @@ namespace OpenLoco
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
         Network::processGameCommands(ScenarioManager::getScenarioTicks());
 
-        addr<0x00525FCC, uint32_t>() = gPrng1().srand_0();
-        addr<0x00525FD0, uint32_t>() = gPrng1().srand_1();
+        recordTickStartPrng();
         call(0x004613F0); // Map::TileManager::reorg?
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();

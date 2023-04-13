@@ -12,4 +12,10 @@ namespace OpenLoco
     {
         return getGameState().unkRng;
     }
+
+    void recordTickStartPrng()
+    {
+        auto& gs = getGameState();
+        gs.var_1B4 = gs.rng;
+    }
 }
