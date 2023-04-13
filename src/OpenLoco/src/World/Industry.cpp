@@ -14,7 +14,7 @@
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "StationManager.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -364,7 +364,7 @@ namespace OpenLoco
         auto* indObj = getObject();
         return indObj->hasFlags(IndustryObjectFlags::unk18)
             && producedCargoPercentTransportedPreviousMonth[0] > 70
-            && gPrng().randNext(31) == 0
+            && gPrng1().randNext(31) == 0
             && productionRate[0] < 100
             && productionRate[1] < 100;
     }
@@ -378,10 +378,10 @@ namespace OpenLoco
         }
         return (producedCargoPercentTransportedPreviousMonth[0] > 50
                 && productionRate[0] > 20
-                && gPrng().randNext(31) == 0)
+                && gPrng1().randNext(31) == 0)
             || (producedCargoPercentTransportedPreviousMonth[0] <= 50
                 && productionRate[0] > 10
-                && gPrng().randNext(15) == 0);
+                && gPrng1().randNext(15) == 0);
     }
 
     bool Industry::isMonthlyProductionClosing()

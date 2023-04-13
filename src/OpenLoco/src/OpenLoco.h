@@ -1,7 +1,6 @@
 #pragma once
 
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Core/Prng.h>
 #include <cstdint>
 #include <functional>
 #include <string>
@@ -22,7 +21,6 @@ namespace OpenLoco
     std::string getVersionInfo();
 
     void* hInstance();
-    Core::Prng& gPrng();
     void initialiseViewports();
     void simulateGame(const fs::path& path, int32_t ticks);
 

@@ -23,8 +23,8 @@
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/VehicleObject.h"
-#include "OpenLoco.h"
 #include "Orders.h"
+#include "Random.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
@@ -228,7 +228,7 @@ namespace OpenLoco::Vehicles
                     car.front->var_6A = 5;
                     applyBreakdownToTrain();
 
-                    auto soundId = (Audio::SoundId)gPrng().randNext(26, 26 + 5);
+                    auto soundId = (Audio::SoundId)gPrng1().randNext(26, 26 + 5);
                     Audio::playSound(soundId, car.body->position + World::Pos3{ 0, 0, 22 });
                 }
             }
@@ -2249,7 +2249,7 @@ namespace OpenLoco::Vehicles
                 // remove the crossing whistle from available sounds to play
                 numSounds = std::max(numSounds - 1, 1);
             }
-            auto randSoundIndex = gPrng().randNext(numSounds - 1);
+            auto randSoundIndex = gPrng1().randNext(numSounds - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = _vehicleUpdate_2;
             auto tileHeight = TileManager::getHeight(veh2->position);
@@ -3140,7 +3140,7 @@ namespace OpenLoco::Vehicles
         const auto* vehObj = train.cars.firstCar.body->getObject();
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
-            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
+            auto randSoundIndex = gPrng1().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = _vehicleUpdate_2;
             Audio::playSound(randSoundId, veh2->position + World::Pos3{ 0, 0, 22 }, 0, 22050);
@@ -3166,7 +3166,7 @@ namespace OpenLoco::Vehicles
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
 
-            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
+            auto randSoundIndex = gPrng1().randNext((vehObj->numStartSounds & NumStartSounds::kMask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
             Vehicle2* veh2 = _vehicleUpdate_2;

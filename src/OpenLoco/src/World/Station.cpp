@@ -14,7 +14,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadStationObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -615,7 +615,7 @@ namespace OpenLoco
         var_3B0 = std::min(var_3B0 + 1, 255);
         var_3B1 = std::min(var_3B1 + 1, 255);
 
-        auto& rng = gPrng();
+        auto& rng = gPrng1();
         for (uint32_t i = 0; i < kMaxCargoStats; i++)
         {
             auto& stationCargo = cargoStats[i];

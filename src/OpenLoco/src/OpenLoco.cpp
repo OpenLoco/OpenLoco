@@ -58,6 +58,7 @@
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Random.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -120,11 +121,6 @@ namespace OpenLoco
     std::string getVersionInfo()
     {
         return version;
-    }
-
-    Core::Prng& gPrng()
-    {
-        return getGameState().rng;
     }
 
 #ifdef _NO_LOCO_WIN32_
@@ -465,7 +461,7 @@ namespace OpenLoco
             _updatingCompanyId = CompanyManager::getControllingId();
             if (!isTitleMode())
             {
-                auto edx = gPrng().srand_0();
+                auto edx = gPrng1().srand_0();
                 edx ^= CompanyManager::get(CompanyId(0))->cash.var_00;
                 edx ^= CompanyManager::get(CompanyId(1))->cash.var_00;
                 if (edx != eax)
@@ -778,8 +774,8 @@ namespace OpenLoco
         ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() + 1);
         Network::processGameCommands(ScenarioManager::getScenarioTicks());
 
-        addr<0x00525FCC, uint32_t>() = gPrng().srand_0();
-        addr<0x00525FD0, uint32_t>() = gPrng().srand_1();
+        addr<0x00525FCC, uint32_t>() = gPrng1().srand_0();
+        addr<0x00525FD0, uint32_t>() = gPrng1().srand_1();
         call(0x004613F0); // Map::TileManager::reorg?
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();

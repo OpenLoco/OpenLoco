@@ -12,7 +12,7 @@
 #include "Objects/ClimateObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -262,9 +262,9 @@ namespace OpenLoco::IndustryManager
         {
             // Replace the below with this after validating the function
             // Map::Pos2 randomPos{
-            //     Map::TilePos2(gPrng().randNext(Map::kMapRows), gPrng().randNext(Map::kMapColumns))
+            //     Map::TilePos2(gPrng1().randNext(Map::kMapRows), gPrng1().randNext(Map::kMapColumns))
             // };
-            const auto randomNum = gPrng().randNext();
+            const auto randomNum = gPrng1().randNext();
 
             World::Pos2 randomPos{
                 World::TilePos2(
@@ -429,7 +429,7 @@ namespace OpenLoco::IndustryManager
         const auto intermediate1 = ((getTotalIndustriesCap() + 1) * indObj->totalOfTypeInScenario) / 3;
         const auto staticPreferredTotalOfType = intermediate1 - intermediate1 / 4;
         // The preferred total can vary by up to a half of the static preffered total.
-        const auto randomPreferredTotalOfType = (staticPreferredTotalOfType / 2) * gPrng().randNext(0xFF) / 256;
+        const auto randomPreferredTotalOfType = (staticPreferredTotalOfType / 2) * gPrng1().randNext(0xFF) / 256;
         return staticPreferredTotalOfType + randomPreferredTotalOfType;
     }
 
@@ -460,10 +460,10 @@ namespace OpenLoco::IndustryManager
                 args.pos = *randomIndustryLoc;
                 // To match vanilla we will do this.
                 // TODO: Once match confirmed replace with two randNext() calls
-                const auto temp = gPrng().srand_0();
-                gPrng().randNext();
-                args.srand0 = gPrng().srand_0() - temp;
-                args.srand1 = gPrng().srand_1();
+                const auto temp = gPrng1().srand_0();
+                gPrng1().randNext();
+                args.srand0 = gPrng1().srand_0() - temp;
+                args.srand1 = gPrng1().srand_1();
 
                 auto res = GameCommands::doCommand(args, GameCommands::Flags::apply);
                 if (res != GameCommands::FAILURE)

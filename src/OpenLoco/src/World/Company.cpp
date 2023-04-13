@@ -15,7 +15,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "StationManager.h"
@@ -195,7 +195,7 @@ namespace OpenLoco
             pos = { town->x, town->y };
         }
 
-        auto& prng = gPrng();
+        auto& prng = gPrng1();
         const auto randPick = prng.randNext();
         // Random tile position 32x32 tiles centered on 0,0 i.e. +-16 tiles
         const auto randPos = World::Pos2{

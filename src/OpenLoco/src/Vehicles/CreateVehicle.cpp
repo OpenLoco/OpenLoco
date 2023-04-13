@@ -14,7 +14,7 @@
 #include "Objects/SoundObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
@@ -112,7 +112,7 @@ namespace OpenLoco::Vehicles
             reliabilityFactor *= reliabilityFactor;
             reliabilityFactor /= 16;
 
-            auto& prng = gPrng();
+            auto& prng = gPrng1();
             int32_t randVal = (prng.randNext(65535) * reliabilityFactor / 2) / 65536;
             reliabilityFactor -= reliabilityFactor / 4;
             reliabilityFactor += randVal;
@@ -137,7 +137,7 @@ namespace OpenLoco::Vehicles
         newBogie->routingHandle = lastVeh->getRoutingHandle();
         newBogie->objectId = vehicleTypeId;
 
-        auto& prng = gPrng();
+        auto& prng = gPrng1();
         newBogie->var_44 = prng.randNext();
         newBogie->creationDay = getCurrentDay();
         newBogie->var_46 = 0;
@@ -257,7 +257,7 @@ namespace OpenLoco::Vehicles
         newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->objectId = vehicleTypeId;
 
-        auto& prng = gPrng();
+        auto& prng = gPrng1();
         newBody->var_44 = prng.randNext();
         newBody->creationDay = getCurrentDay();
         newBody->var_46 = 0;
