@@ -16,6 +16,7 @@
 #include "Objects/IndustryObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
+#include "Random.h"
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
@@ -34,7 +35,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
     static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
     static loco_global<IndustryId, 0x00E0C3DB> _industryGhostId;
-    static loco_global<Core::Prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
 
@@ -1065,9 +1065,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 }
             }
 
-            _prng->randNext();
-            _dword_E0C394 = _prng->srand_0();
-            _dword_E0C398 = _prng->srand_1();
+            gPrng2().randNext();
+            _dword_E0C394 = gPrng2().srand_0();
+            _dword_E0C398 = gPrng2().srand_1();
         }
 
         // 0x004585AD
@@ -1175,9 +1175,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             updateBuildableIndustries(self);
 
-            _prng->randNext();
-            _dword_E0C394 = _prng->srand_0();
-            _dword_E0C398 = _prng->srand_1();
+            gPrng2().randNext();
+            _dword_E0C394 = gPrng2().srand_0();
+            _dword_E0C398 = gPrng2().srand_1();
         }
 
         // 0x004589E8

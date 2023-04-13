@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Random.h"
 #include "ScenarioManager.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
@@ -17,8 +18,6 @@ namespace OpenLoco::World::WaveManager
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::Ui;
-
-    static loco_global<Core::Prng, 0x00525E20> _prng; // not the gPrng1
 
     const static Pos2 _offsets[4] = {
         Pos2(+32, 0),
@@ -49,7 +48,7 @@ namespace OpenLoco::World::WaveManager
         if (w == nullptr)
             return;
 
-        uint16_t dx2 = _prng->randNext() & 0xFFFF;
+        uint16_t dx2 = gPrng2().randNext() & 0xFFFF;
         if (dx2 > 0x1745)
             return;
 

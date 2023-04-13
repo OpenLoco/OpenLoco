@@ -3,6 +3,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands.h"
 #include "Types.hpp"
+#include "Random.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Core/Prng.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -11,12 +12,10 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<Core::Prng, 0x00525E20> _prng;
-
     // 0x0048B15B
     void playPickupSound(Vehicles::Vehicle2* veh2)
     {
-        const auto frequency = _prng->randNext(20003, 24098);
+        const auto frequency = gPrng2().randNext(20003, 24098);
         Audio::playSound(Audio::SoundId::vehiclePickup, veh2->position, -1000, frequency);
     }
 }
