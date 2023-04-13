@@ -75,7 +75,7 @@ namespace OpenLoco
         uint8_t lastMiscBuildingOption;                                          // 0x0001B1 (0x00525FC9)
         uint8_t lastWallOption;                                                  // 0x0001B2 (0x00525FCA)
         uint8_t var_1B3;                                                         // 0x0001B3 (0x00525FCB)
-        Core::Prng var_1B4;                                                      // 0x0001B4 (0x00525FCC)
+        Core::Prng tickStartPrngState;                                           // 0x0001B4 (0x00525FCC)
         char scenarioFileName[256];                                              // 0x0001BC (0x00525FD4)
         char scenarioName[64];                                                   // 0x0002BC (0x005260D4)
         char scenarioDetails[256];                                               // 0x0002FC (0x00526114)
