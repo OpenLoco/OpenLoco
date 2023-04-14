@@ -12,6 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "QuarterTile.h"
+#include "Random.h"
 #include "RoadElement.h"
 #include "SurfaceElement.h"
 #include "TreeElement.h"
@@ -899,7 +900,7 @@ namespace OpenLoco::World::TileManager
     void createDestructExplosion(const World::Pos3& pos)
     {
         ExplosionSmoke::create(pos + World::Pos3{ 0, 0, 13 });
-        const auto randFreq = gPrng().randNext(20'003, 24'098);
+        const auto randFreq = gPrng1().randNext(20'003, 24'098);
         Audio::playSound(Audio::SoundId::demolishBuilding, pos, -1400, randFreq);
     }
 

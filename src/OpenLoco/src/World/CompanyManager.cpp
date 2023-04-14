@@ -19,7 +19,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -366,7 +366,7 @@ namespace OpenLoco::CompanyManager
                     activeCompanies++;
             }
 
-            auto& prng = gPrng();
+            auto& prng = gPrng1();
             if (prng.randNext(16) == 0)
             {
                 if (prng.randNext(getMaxCompetingCompanies()) + 1 > activeCompanies)

@@ -3,7 +3,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "Scenario.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
@@ -90,7 +90,7 @@ namespace OpenLoco::World
             return {};
         }
 
-        auto& rng = gPrng();
+        auto& rng = gPrng1();
         return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
     }
 
@@ -100,7 +100,7 @@ namespace OpenLoco::World
         args.quadrant = Ui::ViewportInteraction::getQuadrantFromPos(pos);
         args.pos = World::Pos2(pos.x & 0xFFE0, pos.y & 0xFFE0);
         // Note: this is not the same as the randomDirection above as it is the trees rotation
-        args.rotation = gPrng().randNext(3);
+        args.rotation = gPrng1().randNext(3);
         args.colour = Colour::black;
 
         // If not set by the caller then a random tree type is selected based on the surface type
@@ -138,7 +138,7 @@ namespace OpenLoco::World
         for (auto i = 0; i < numPlacements; ++i)
         {
             // Choose a random offset in a circle
-            auto& rng = gPrng();
+            auto& rng = gPrng1();
             auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
             auto randomDirection = rng.randNext(Math::Trigonometry::kDirectionPrecisionHigh - 1);
             World::Pos2 randomOffset(

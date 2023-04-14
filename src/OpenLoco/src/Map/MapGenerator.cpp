@@ -3,7 +3,7 @@
 #include "Localisation/StringIds.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "SurfaceElement.h"
@@ -479,7 +479,7 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // TODO: split into two randNext calls
-        uint16_t randVal = gPrng().randNext();
+        uint16_t randVal = gPrng1().randNext();
         if (landObj->variationLikelihood <= (randVal >> 8))
         {
             return 0;
@@ -634,9 +634,9 @@ namespace OpenLoco::World::MapGenerator
         // Place forests
         for (auto i = 0; i < options.numberOfForests; ++i)
         {
-            const auto randRadius = ((gPrng().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * kTileSize;
-            const auto randLoc = World::TilePos2(gPrng().randNext(kMapRows), gPrng().randNext(kMapColumns));
-            const auto randDensity = (gPrng().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
+            const auto randRadius = ((gPrng1().randNext(255) * std::max(options.maxForestRadius - options.minForestRadius, 0)) / 255 + options.minForestRadius) * kTileSize;
+            const auto randLoc = World::TilePos2(gPrng1().randNext(kMapRows), gPrng1().randNext(kMapColumns));
+            const auto randDensity = (gPrng1().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
             if (TileManager::numFreeElements() < 0x36000)
@@ -648,12 +648,12 @@ namespace OpenLoco::World::MapGenerator
         // Place a number of random trees
         for (auto i = 0; i < options.numberRandomTrees; ++i)
         {
-            const auto randLoc = World::Pos2(gPrng().randNext(kMapWidth), gPrng().randNext(kMapHeight));
+            const auto randLoc = World::Pos2(gPrng1().randNext(kMapWidth), gPrng1().randNext(kMapHeight));
             placeRandomTree(randLoc, std::nullopt);
         }
 
         // Cull trees that are too high / low
-        uint32_t randMask = gPrng().randNext();
+        uint32_t randMask = gPrng1().randNext();
         uint32_t i = 0;
         std::vector<TileElement*> toBeRemoved;
         for (auto& loc : TilePosRangeView({}, { kMapRows - 1, kMapColumns - 1 }))

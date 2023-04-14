@@ -8,7 +8,7 @@
 #include "Map/Track/TrackData.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -39,7 +39,7 @@ namespace OpenLoco
 
         static constexpr std::array<uint8_t, 12> kBuildSpeedToGrowthPerTick = { 0, 1, 3, 5, 7, 9, 12, 16, 22, 0, 0, 0 };
         auto growthPerTick = kBuildSpeedToGrowthPerTick[this->buildSpeed];
-        if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng().randNext() & 7)))
+        if (growthPerTick == 0 || (growthPerTick == 1 && (gPrng1().randNext() & 7)))
         {
             grow(0x07);
         }

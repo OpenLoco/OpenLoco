@@ -7,7 +7,7 @@
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "ScenarioManager.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Vehicles
 
         var_05 += 64;
 
-        if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 819)
+        if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 819)
             return;
 
         auto bogieDifference = backBogie->position - frontBogie->position;
@@ -1213,7 +1213,7 @@ namespace OpenLoco::Vehicles
 
         var_05 += 64;
 
-        if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 936)
+        if (gPrng1().randNext(std::numeric_limits<uint16_t>::max()) > 936)
             return;
 
         auto bogieDifference = backBogie->position - frontBogie->position;

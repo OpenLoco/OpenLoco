@@ -7,7 +7,7 @@
 #include "Map/TreeElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
-#include "OpenLoco.h"
+#include "Random.h"
 #include "S5/S5.h"
 #include "ViewportManager.h"
 #include "World/TownManager.h"
@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
     // 0x0048B089
     static void playDemolishTreeSound(const World::Pos3& loc)
     {
-        const auto frequency = _prng->randNext(20003, 24098);
+        const auto frequency = gPrng2().randNext(20003, 24098);
         Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
     }
 
