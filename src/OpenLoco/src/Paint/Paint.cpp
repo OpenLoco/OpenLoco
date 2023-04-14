@@ -926,6 +926,7 @@ namespace OpenLoco::Paint
             // Draw any children this might have
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
+                // assert(childPs->attachedPS == nullptr); Children can have attachments but we are skipping them to be investigated!
                 const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags, getRotation(), _foregroundCullingHeight);
 
                 if (shouldCullChild)
@@ -1077,21 +1078,28 @@ namespace OpenLoco::Paint
 
         for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
-            auto* tempPS = ps;
-            auto* nextPS = ps;
-            while (nextPS != nullptr)
+            // Check main paint struct
+            if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
             {
-                ps = nextPS;
-                if (isSpriteInteractedWith(getRenderTarget(), ps->imageId, ps->vpPos))
+                if (isPSSpriteTypeInFilter(ps->type, flags))
                 {
-                    if (isPSSpriteTypeInFilter(ps->type, flags))
-                    {
-                        info = { *ps };
-                    }
+                    info = { *ps };
                 }
-                nextPS = ps->children;
             }
 
+            // Check children paint structs
+            for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
+            {
+                if (isSpriteInteractedWith(getRenderTarget(), childPs->imageId, childPs->vpPos))
+                {
+                    if (isPSSpriteTypeInFilter(childPs->type, flags))
+                    {
+                        info = { *childPs };
+                    }
+                }
+            }
+
+            // Check attached to main paint struct
             for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
             {
                 if (isSpriteInteractedWith(getRenderTarget(), attachedPS->imageId, attachedPS->vpPos + ps->vpPos))
@@ -1102,8 +1110,6 @@ namespace OpenLoco::Paint
                     }
                 }
             }
-
-            ps = tempPS;
         }
         return info;
     }
