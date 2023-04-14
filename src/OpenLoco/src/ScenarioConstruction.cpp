@@ -10,9 +10,10 @@ namespace OpenLoco::Scenario
 
     void resetConstruction()
     {
-        std::fill(std::begin(Scenario::getConstruction().signals), std::end(Scenario::getConstruction().signals), 0xFF);
-        std::fill(std::begin(Scenario::getConstruction().bridges), std::end(Scenario::getConstruction().bridges), 0xFF);
-        std::fill(std::begin(Scenario::getConstruction().trainStations), std::end(Scenario::getConstruction().trainStations), 0xFF);
-        std::fill(std::begin(Scenario::getConstruction().trackMods), std::end(Scenario::getConstruction().trackMods), 0xFF);
+        auto& construction = getConstruction();
+        std::fill(std::begin(construction.signals), std::end(construction.signals), 0xFF);
+        std::fill(std::begin(construction.bridges), std::end(construction.bridges), 0xFF);
+        std::fill(std::begin(construction.trainStations), std::end(construction.trainStations), 0xFF);
+        std::fill(std::begin(construction.trackMods), std::end(construction.trackMods), 0xFF);
     }
 }
