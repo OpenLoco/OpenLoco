@@ -597,11 +597,24 @@ namespace OpenLoco::CompanyManager
         // First, set the owner name.
         GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
         {
-            const uint32_t* buffer = reinterpret_cast<uint32_t*>(Config::get().old.preferredName);
-            GameCommands::do_31(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
-            if (GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]))
+            GameCommands::ChangeCompanyOwnerNameArgs args{};
+
+            args.companyId = CompanyId(_updatingCompanyId);
+            args.bufferIndex = 1;
+            std::memcpy(args.newName, Config::get().old.preferredName, 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 0;
+
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply))
+            {
                 Ui::Windows::TextInput::cancel();
+            }
         }
 
         // Only continue if we've not set a custom company name yet.
