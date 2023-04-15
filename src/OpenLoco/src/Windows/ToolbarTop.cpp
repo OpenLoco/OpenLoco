@@ -229,10 +229,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         {
             case LoadSaveDropdownId::loadGame:
                 // Load game
-                GameCommands::LoadSaveQuitGameArgs loadGameArgs{};
-                loadGameArgs.option1 = 0;
-                loadGameArgs.option2 = 0;
-                GameCommands::doCommand(loadGameArgs, GameCommands::Flags::apply);
+                {
+                    GameCommands::LoadSaveQuitGameArgs loadGameArgs{};
+                    loadGameArgs.option1 = 0;
+                    loadGameArgs.option2 = 0;
+                    GameCommands::doCommand(loadGameArgs, GameCommands::Flags::apply);
+                }
                 break;
 
             case LoadSaveDropdownId::saveGame:
@@ -262,18 +264,22 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case LoadSaveDropdownId::quitToMenu:
                 // Return to title screen
-                GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
-                quitToMenuArgs.option1 = 0;
-                quitToMenuArgs.option2 = 1;
-                GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
+                {
+                    GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
+                    quitToMenuArgs.option1 = 0;
+                    quitToMenuArgs.option2 = 1;
+                    GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
+                }
                 break;
 
             case LoadSaveDropdownId::quitToDesktop:
                 // Exit to desktop
-                GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
-                quitToDesktopArgs.option1 = 0;
-                quitToDesktopArgs.option2 = 2;
-                GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
+                {
+                    GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
+                    quitToDesktopArgs.option1 = 0;
+                    quitToDesktopArgs.option2 = 2;
+                    GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
+                }
                 break;
         }
     }
