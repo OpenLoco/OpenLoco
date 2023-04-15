@@ -620,11 +620,24 @@ namespace OpenLoco::CompanyManager
             StringManager::formatString(companyName, StringIds::company_owner_name_transport, &args);
 
             // Now, set the company name.
-            const uint32_t* buffer = reinterpret_cast<uint32_t*>(companyName);
+
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
-            GameCommands::do_30(_updatingCompanyId, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
+
+            GameCommands::ChangeCompanyNameArgs changeCompanyNameArgs{};
+
+            changeCompanyNameArgs.companyId = CompanyId(_updatingCompanyId);
+            changeCompanyNameArgs.bufferIndex = 1;
+            std::memcpy(changeCompanyNameArgs.newName, companyName, 36);
+
+            GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
+
+            changeCompanyNameArgs.bufferIndex = 2;
+
+            GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
+
+            changeCompanyNameArgs.bufferIndex = 0;
+
+            GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
         }
     }
 

@@ -918,18 +918,35 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::lowerWater, regs);
     }
 
-    // Change company name
-    inline bool do_30(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    struct ChangeCompanyNameArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = enumValue(cx); // company id
-        regs.ax = ax;            // [ 0, 1, 2]
-        regs.edx = edx;          // part of name buffer
-        regs.ebp = ebp;          // part of name buffer
-        regs.edi = edi;          // part of name buffer
-        return doCommand(GameCommand::changeCompanyName, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::changeCompanyName;
+
+        ChangeCompanyNameArgs() = default;
+        explicit ChangeCompanyNameArgs(const registers& regs)
+            : companyId(CompanyId(regs.cx))
+            , bufferIndex(regs.ax)
+        {
+            memcpy(newName, &regs.edx, 4);
+            memcpy(newName + 4, &regs.ebp, 4);
+            memcpy(newName + 8, &regs.edi, 4);
+        }
+
+        CompanyId companyId;
+        uint16_t bufferIndex;
+        char newName[37];
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cl = enumValue(companyId);    // industry number or 0
+            regs.ax = bufferIndex;             // [ 0, 1, 2]
+            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
+            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
+            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
+            return regs;
+        }
+    };
 
     // Change company owner name
     inline bool do_31(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
