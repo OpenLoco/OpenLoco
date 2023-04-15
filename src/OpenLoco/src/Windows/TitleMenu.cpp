@@ -481,7 +481,10 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static void sub_4391E2()
     {
-        GameCommands::do_21(0, 0);
+        GameCommands::LoadSaveQuitGameArgs args{};
+        args.option1 = 0;
+        args.option2 = 0;
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     static void sub_46E328()

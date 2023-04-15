@@ -812,7 +812,10 @@ namespace OpenLoco::Ui
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
         {
-            GameCommands::do_21(2, 1);
+            GameCommands::LoadSaveQuitGameArgs args{};
+            args.option1 = 2;
+            args.option2 = 1;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_0) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_4))
@@ -845,7 +848,10 @@ namespace OpenLoco::Ui
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_1))
         {
-            GameCommands::do_21(0, 2);
+            GameCommands::LoadSaveQuitGameArgs args{};
+            args.option1 = 0;
+            args.option2 = 2;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         if (Ui::dirtyBlocksInitialised())

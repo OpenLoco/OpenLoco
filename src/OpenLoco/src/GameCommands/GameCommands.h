@@ -727,15 +727,28 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::pauseGame, regs);
     }
 
-    // Load/save/quit game
-    inline void do_21(uint8_t dl, uint8_t di)
+    struct LoadSaveQuitGameArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.dl = dl; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
-        regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
-        doCommand(GameCommand::loadSaveQuitGame, regs);
-    }
+        static constexpr auto command = GameCommand::loadSaveQuitGame;
+
+        LoadSaveQuitGameArgs() = default;
+        explicit LoadSaveQuitGameArgs(const registers& regs)
+            : option1(regs.dl)
+            , option2(regs.di)
+        {
+        }
+
+        uint8_t option1;
+        uint8_t option2;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dl = option1; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
+            regs.di = option2; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
+            return regs;
+        }
+    };
 
     struct TreeRemovalArgs
     {

@@ -130,7 +130,11 @@ namespace OpenLoco::Game
             Title::stop();
         }
 
-        GameCommands::do_21(1, 0);
+        GameCommands::LoadSaveQuitGameArgs args{};
+        args.option1 = 1;
+        args.option2 = 0;
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+
         Input::toolCancel();
 
         if (isEditorMode())
@@ -275,7 +279,10 @@ namespace OpenLoco::Game
                 if (saveLandscape())
                 {
                     // load landscape
-                    GameCommands::do_21(2, 0);
+                    GameCommands::LoadSaveQuitGameArgs args{};
+                    args.option1 = 2;
+                    args.option2 = 0;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
         }
@@ -289,12 +296,21 @@ namespace OpenLoco::Game
 
                 S5::SaveFlags flags = S5::SaveFlags::none;
                 if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+                {
                     flags = S5::SaveFlags::packCustomObjects;
+                }
 
                 if (!S5::exportGameStateToFile(path, flags))
+                {
                     Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
+                }
                 else
-                    GameCommands::do_21(2, 0);
+                {
+                    GameCommands::LoadSaveQuitGameArgs args{};
+                    args.option1 = 2;
+                    args.option2 = 0;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                }
             }
         }
         else

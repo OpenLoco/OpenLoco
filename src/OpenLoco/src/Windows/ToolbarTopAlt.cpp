@@ -135,7 +135,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         {
             case 0:
                 // Load Landscape
-                GameCommands::do_21(0, 0);
+                GameCommands::LoadSaveQuitGameArgs args{};
+                args.option1 = 0;
+                args.option2 = 0;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
 
             case 1:
@@ -178,12 +181,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
             case 8:
                 // Return to title screen
-                GameCommands::do_21(0, 1);
+                GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
+                quitToMenuArgs.option1 = 0;
+                quitToMenuArgs.option2 = 1;
+                GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
                 break;
 
             case 9:
                 // Exit to desktop
-                GameCommands::do_21(0, 2);
+                GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
+                quitToDesktopArgs.option1 = 0;
+                quitToDesktopArgs.option2 = 2;
+                GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
                 break;
         }
     }
