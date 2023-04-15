@@ -1418,7 +1418,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
 
-                    GameCommands::do_19(0, newMode, vehicleType, 1, CompanyId(self.number));
+                    GameCommands::ChangeCompanyColourSchemeArgs args{};
+
+                    args.isPrimary = 0;
+                    args.value = newMode;
+                    args.colourType = vehicleType;
+                    args.setColourMode = 1;
+                    args.companyId = CompanyId(self.number);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
 
                     break;
             }
@@ -1527,7 +1535,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
-                    GameCommands::do_19(0, colour, vehicleType, 0, CompanyId(self.number));
+                    GameCommands::ChangeCompanyColourSchemeArgs args{};
+
+                    args.isPrimary = 0;
+                    args.value = colour;
+                    args.colourType = vehicleType;
+                    args.setColourMode = 0;
+                    args.companyId = CompanyId(self.number);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+
                     break;
                 }
 
@@ -1551,7 +1568,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
-                    GameCommands::do_19(1, colour, vehicleType, 0, CompanyId(self.number));
+                    GameCommands::ChangeCompanyColourSchemeArgs args{};
+
+                    args.isPrimary = 1;
+                    args.value = colour;
+                    args.colourType = vehicleType;
+                    args.setColourMode = 0;
+                    args.companyId = CompanyId(self.number);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
                 }
             }
