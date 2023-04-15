@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Graphics/PaletteMap.h"
 #include "ImageId.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
