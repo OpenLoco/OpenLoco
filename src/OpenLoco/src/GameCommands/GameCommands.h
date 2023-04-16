@@ -719,13 +719,20 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::changeCompanyColourScheme, regs);
     }
 
-    // Pause game
-    inline void do_20()
+    struct PauseGameArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        doCommand(GameCommand::pauseGame, regs);
-    }
+        static constexpr auto command = GameCommand::pauseGame;
+
+        PauseGameArgs() = default;
+        explicit PauseGameArgs(const registers&)
+        {
+        }
+
+        explicit operator registers() const
+        {
+            return registers();
+        }
+    };
 
     // Load/save/quit game
     inline void do_21(uint8_t dl, uint8_t di)

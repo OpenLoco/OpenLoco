@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
                 MessageWindow::open();
                 break;
             case Widx::pause_btn:
-                GameCommands::do_20();
+                GameCommands::doCommand(GameCommands::PauseGameArgs{}, GameCommands::Flags::apply);
                 break;
             case Widx::normal_speed_btn:
                 GameCommands::doCommand(GameCommands::SetGameSpeedArgs{ GameSpeed::Normal }, GameCommands::Flags::apply);

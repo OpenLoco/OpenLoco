@@ -44,7 +44,7 @@ namespace OpenLoco::Input::Shortcuts
         if (isEditorMode())
             return;
 
-        GameCommands::do_20();
+        GameCommands::doCommand(GameCommands::PauseGameArgs{}, GameCommands::Flags::apply);
     }
 
     // 0x004BF0FE
