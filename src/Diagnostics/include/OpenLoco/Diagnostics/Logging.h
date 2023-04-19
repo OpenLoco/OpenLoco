@@ -20,8 +20,8 @@ namespace OpenLoco::Diagnostics::Logging
         bool passesLevelFilter(Level level);
 
         // Helper function to avoid code duplication.
-        template<typename TFmt, typename... TArgs>
-        void printLevel(Level level, const TFmt& fmt, TArgs&&... args)
+        template<typename... TArgs>
+        void printLevel(Level level, fmt::format_string<TArgs...> fmt, TArgs&&... args)
         {
             if (!passesLevelFilter(level))
                 return;
@@ -31,26 +31,26 @@ namespace OpenLoco::Diagnostics::Logging
         }
     }
 
-    template<typename TFmt, typename... TArgs>
-    void info(const TFmt& fmt, TArgs&&... args)
+    template<typename... TArgs>
+    void info(fmt::format_string<TArgs...> fmt, TArgs&&... args)
     {
         Detail::printLevel(Level::info, fmt, std::forward<TArgs>(args)...);
     }
 
-    template<typename TFmt, typename... TArgs>
-    void warn(const TFmt& fmt, TArgs&&... args)
+    template<typename... TArgs>
+    void warn(fmt::format_string<TArgs...> fmt, TArgs&&... args)
     {
         Detail::printLevel(Level::warning, fmt, std::forward<TArgs>(args)...);
     }
 
-    template<typename TFmt, typename... TArgs>
-    void error(const TFmt& fmt, TArgs&&... args)
+    template<typename... TArgs>
+    void error(fmt::format_string<TArgs...> fmt, TArgs&&... args)
     {
         Detail::printLevel(Level::error, fmt, std::forward<TArgs>(args)...);
     }
 
-    template<typename TFmt, typename... TArgs>
-    void verbose(const TFmt& fmt, TArgs&&... args)
+    template<typename... TArgs>
+    void verbose(fmt::format_string<TArgs...> fmt, TArgs&&... args)
     {
         Detail::printLevel(Level::verbose, fmt, std::forward<TArgs>(args)...);
     }

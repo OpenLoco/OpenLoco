@@ -13,26 +13,26 @@ namespace OpenLoco::Diagnostics::Logging
 
         virtual void print(Level level, std::string_view message) = 0;
 
-        template<typename TFmt, typename... TArgs>
-        void info(const TFmt& fmt, TArgs&&... args)
+        template<typename... TArgs>
+        void info(fmt::format_string<TArgs...> fmt, TArgs&&... args)
         {
             printLevel(Level::info, fmt, std::forward<TArgs>(args)...);
         }
 
-        template<typename TFmt, typename... TArgs>
-        void warn(const TFmt& fmt, TArgs&&... args)
+        template<typename... TArgs>
+        void warn(fmt::format_string<TArgs...> fmt, TArgs&&... args)
         {
             printLevel(Level::warning, fmt, std::forward<TArgs>(args)...);
         }
 
-        template<typename TFmt, typename... TArgs>
-        void error(const TFmt& fmt, TArgs&&... args)
+        template<typename... TArgs>
+        void error(fmt::format_string<TArgs...> fmt, TArgs&&... args)
         {
             printLevel(Level::error, fmt, std::forward<TArgs>(args)...);
         }
 
-        template<typename TFmt, typename... TArgs>
-        void verbose(const TFmt& fmt, TArgs&&... args)
+        template<typename... TArgs>
+        void verbose(fmt::format_string<TArgs...> fmt, TArgs&&... args)
         {
             printLevel(Level::verbose, fmt, std::forward<TArgs>(args)...);
         }
