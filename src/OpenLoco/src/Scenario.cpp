@@ -384,7 +384,7 @@ namespace OpenLoco::Scenario
         getObjectiveProgress().timeLimitUntilYear = getObjective().timeLimitYears - 1 + gameState.currentYear;
         getObjectiveProgress().monthsInChallenge = 0;
         call(0x0049B546);
-        gameState.lastMapWindowFlags = 0;
+        gameState.lastMapWindowAttributes.lastMapWindowFlags = WindowFlags::none;
 
         TownManager::updateLabels();
         StationManager::updateLabels();
