@@ -1892,6 +1892,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/VehiclePickup.cpp
     void vehiclePickup(registers& regs);
 
+    // Defined in GameCommands/VehicleReverse.cpp
+    void vehicleReverse(registers& regs);
+
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);
 

@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleRearrange,             nullptr,                   0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 nullptr,                   0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
-        { GameCommand::vehicleReverse,               nullptr,                   0x004ADAA8, true  },
+        { GameCommand::vehicleReverse,               vehicleReverse,            0x004ADAA8, true  },
         { GameCommand::vehiclePassSignal,            nullptr,                   0x004B0B50, true  },
         { GameCommand::vehicleCreate,                Vehicles::create,          0x004AE5E4, true  },
         { GameCommand::vehicleSell,                  Vehicles::sell,            0x004AED34, true  },

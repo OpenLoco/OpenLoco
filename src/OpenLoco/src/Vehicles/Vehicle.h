@@ -351,6 +351,7 @@ namespace OpenLoco::Vehicles
         void sub_4B7CC3();
         currency32_t calculateRunningCost() const;
         void sub_4AD93A();
+        void sub_4ADB47(bool unk);
         uint32_t getCarCount() const;
         void applyBreakdownToTrain();
         void sub_4AF7A4();
@@ -418,7 +419,6 @@ namespace OpenLoco::Vehicles
         StationId manualFindTrainStationAtLocation();
         bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
-        void sub_4ADB47(bool unk);
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
         void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
