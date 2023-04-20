@@ -152,6 +152,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/InterfaceSkinObject.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/LandObject.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/LevelCrossingObject.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/Object.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/ObjectImageTable.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/ObjectIndex.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/ObjectManager.cpp"
