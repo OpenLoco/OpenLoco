@@ -53,6 +53,7 @@ namespace OpenLoco::GameCommands
 
     void vehicleReverse(registers& regs)
     {
-        regs.ebx = vehicleReverse(EntityId(regs.dx), regs.bl);
+        VehicleReverseArgs args(regs);
+        regs.ebx = vehicleReverse(args.head, regs.bl);
     }
 }
