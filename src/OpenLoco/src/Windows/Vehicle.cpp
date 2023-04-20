@@ -436,11 +436,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 _pickupDirection = _pickupDirection ^ 1;
                 return;
             }
-            auto head = Common::getVehicle(self);
-            if (head == nullptr)
-            {
-                return;
-            }
             GameCommands::setErrorTitle(StringIds::cant_reverse_train);
             GameCommands::VehicleReverseArgs args{};
             args.head = static_cast<EntityId>(self->number);
