@@ -38,6 +38,15 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags38);
 
+    enum class Flags48 : uint8_t // veh1 Signal flags?
+    {
+        none = 0U,
+        passSignal = 1U << 0,
+        expressMode = 1U << 1,
+        flag2 = 1U << 1 // cargo related?
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(Flags48);
+
     enum class Flags73 : uint8_t // veh2 Train breakdown flags
     {
         none = 0U,
@@ -461,7 +470,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_43;
         Speed16 var_44;
         uint16_t timeAtSignal; // 0x46
-        uint8_t var_48;
+        Flags48 var_48;
         uint8_t var_49;
         uint32_t dayCreated; // 0x4A
         uint16_t var_4E;

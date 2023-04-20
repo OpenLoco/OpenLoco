@@ -1219,7 +1219,7 @@ namespace OpenLoco::Vehicles
             if (hasVehicleFlags(VehicleFlags::manualControl))
             {
                 var_5C = 2;
-                vehType1->var_48 |= 1 << 0;
+                vehType1->var_48 |= Flags48::passSignal;
                 return true;
             }
 
@@ -1236,7 +1236,7 @@ namespace OpenLoco::Vehicles
                     if (sub_4AC1C2())
                     {
                         var_5C = 2;
-                        vehType1->var_48 |= 1 << 0;
+                        vehType1->var_48 |= Flags48::passSignal;
                         return true;
                     }
                     return landReverseFromSignal();
@@ -1254,7 +1254,7 @@ namespace OpenLoco::Vehicles
                         if (sub_4AC1C2())
                         {
                             var_5C = 2;
-                            vehType1->var_48 |= 1 << 0;
+                            vehType1->var_48 |= Flags48::passSignal;
                             return true;
                         }
                     }
@@ -2817,7 +2817,7 @@ namespace OpenLoco::Vehicles
             Vehicle1* veh1 = _vehicleUpdate_1;
             if (cargoProfit != 0)
             {
-                veh1->var_48 |= (1 << 2);
+                veh1->var_48 |= Flags48::flag2;
             }
 
             CompanyManager::applyPaymentToCompany(owner, -cargoProfit, ExpenditureType(static_cast<uint8_t>(vehicleType) * 2));
@@ -3481,9 +3481,9 @@ namespace OpenLoco::Vehicles
             return;
 
         auto* veh1 = train.veh1;
-        if (veh1->var_48 & (1 << 2))
+        if ((veh1->var_48 & Flags48::flag2) != Flags48::none)
         {
-            veh1->var_48 &= ~(1 << 2);
+            veh1->var_48 &= ~Flags48::flag2;
             veh1->lastIncome.beginNewIncome();
         }
 
