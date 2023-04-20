@@ -226,19 +226,15 @@ namespace OpenLoco::GameCommands
         VehicleReverseArgs() = default;
         explicit VehicleReverseArgs(const registers& regs)
             : head(static_cast<EntityId>(regs.dx))
-            , headPtr(nullptr)
         {
         }
 
         EntityId head;
-        // Bug in GameCommand::vehicleReverse requires setting edi to a vehicle prior to calling
-        Vehicles::VehicleHead* headPtr;
 
         explicit operator registers() const
         {
             registers regs;
             regs.dx = enumValue(head);
-            regs.edi = X86Pointer(headPtr);
             return regs;
         }
     };

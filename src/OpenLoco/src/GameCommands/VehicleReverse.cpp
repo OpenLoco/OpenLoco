@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if (static_cast<uint16_t>(head2->tileX) == 0xFFFF)
+        if (head2->tileX == -1)
         {
             setErrorText(StringIds::empty);
             return FAILURE;

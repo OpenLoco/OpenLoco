@@ -444,7 +444,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::cant_reverse_train);
             GameCommands::VehicleReverseArgs args{};
             args.head = static_cast<EntityId>(self->number);
-            args.headPtr = head;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
