@@ -20,15 +20,6 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if (flags & Flags::apply)
-        {
-            uint8_t var_52_backup = head->var_52;
-            head->var_52 = 1;
-            head->sub_4ADB47(0);
-            head->var_52 = var_52_backup;
-            return 0;
-        }
-
         if (!sub_431E6A(head->owner))
         {
             return FAILURE;
@@ -46,7 +37,17 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
+        if (!(flags & Flags::apply))
+        {
+            return 0;
+        }
+
+        uint8_t var_52_backup = head->var_52;
+        head->var_52 = 1;
+        head->sub_4ADB47(0);
+        head->var_52 = var_52_backup;
         setPosition(head->position);
+
         return 0;
     }
 
