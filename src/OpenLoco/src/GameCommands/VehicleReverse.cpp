@@ -25,6 +25,11 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
+        if (!head->canBeModified())
+        {
+            return FAILURE;
+        }
+
         if (head->tileX == -1)
         {
             setErrorText(StringIds::empty);
