@@ -25,13 +25,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        auto* head2 = EntityManager::get<Vehicles::VehicleHead>(head->head);
-        if (!head2->canBeModified())
-        {
-            return FAILURE;
-        }
-
-        if (head2->tileX == -1)
+        if (head->tileX == -1)
         {
             setErrorText(StringIds::empty);
             return FAILURE;
