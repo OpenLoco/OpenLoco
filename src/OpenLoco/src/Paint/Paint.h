@@ -51,7 +51,7 @@ namespace OpenLoco::Paint
     enum class PaintStructFlags : uint8_t
     {
         none = 0U,
-        hasMaskedImage = 1 << 0,
+        hasMaskedImage = 1U << 0,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(PaintStructFlags);
 

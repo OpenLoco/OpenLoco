@@ -13,9 +13,21 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
+    enum class GhostFlags : uint8_t
+    {
+        none = 0U,
+        flag0 = 1U << 0,
+        flag1 = 1U << 1,
+        flag2 = 1U << 2,
+        flag3 = 1U << 3,
+        flag4 = 1U << 4,
+        flag5 = 1U << 5,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(GhostFlags);
+
     static loco_global<uint16_t[44], 0x004F891C> _trackPieceToFlags; // Roll into TrackData?
     static loco_global<uint8_t, 0x00522095> _byte_522095;
-    static loco_global<uint8_t, 0x00522096> _byte_522096;
+    static loco_global<GhostFlags, 0x00522096> _byte_522096;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
     constexpr uint16_t mapSelectedTilesSize = 300;
@@ -126,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawTabs(Window* self, Gfx::RenderTarget* rt);
         void initEvents();
         void onClose(Window& self);
-        void onUpdate(Window* self, uint8_t flag);
+        void onUpdate(Window* self, GhostFlags flag);
         void sub_4CD454();
         void setTrackOptions(const uint8_t trackType);
         void setDisabledWidgets(Window* self);

@@ -167,13 +167,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x0049E437
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, (1 << 3));
+        Common::onUpdate(&self, GhostFlags::flag3);
     }
 
     // 0x0049FF4B
     void removeStationGhost()
     {
-        if (_byte_522096 & (1 << 3))
+        if ((_byte_522096 & GhostFlags::flag3) != GhostFlags::none)
         {
             if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
             {
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.type = _stationGhostType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
-            _byte_522096 = _byte_522096 & ~(1 << 3);
+            _byte_522096 = _byte_522096 & ~GhostFlags::flag3;
         }
     }
 
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
 
-        if (_byte_522096 & (1U << 3))
+        if ((_byte_522096 & GhostFlags::flag3) != GhostFlags::none)
         {
             if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
             {
@@ -291,7 +291,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | (1U << 3);
+        _byte_522096 = _byte_522096 | GhostFlags::flag3;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -329,7 +329,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
 
-        if (_byte_522096 & (1U << 3))
+        if ((_byte_522096 & GhostFlags::flag3) != GhostFlags::none)
         {
             if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
             {
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | (1U << 3);
+        _byte_522096 = _byte_522096 | GhostFlags::flag3;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        if (_byte_522096 & (1U << 3))
+        if ((_byte_522096 & GhostFlags::flag3) != GhostFlags::none)
         {
             if (*_stationGhostPos == args->pos
                 && *_stationGhostRotation == args->rotation
@@ -413,7 +413,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | (1U << 3);
+        _byte_522096 = _byte_522096 | GhostFlags::flag3;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        if (_byte_522096 & (1U << 3))
+        if ((_byte_522096 & GhostFlags::flag3) != GhostFlags::none)
         {
             if (*_stationGhostPos == args->pos
                 && *_stationGhostRotation == args->rotation
@@ -485,7 +485,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | (1U << 3);
+        _byte_522096 = _byte_522096 | GhostFlags::flag3;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto width = self.width - 4;
         drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset);
 
-        if (!(_byte_522096 & (1 << 3)))
+        if ((_byte_522096 & GhostFlags::flag3) == GhostFlags::none)
             return;
 
         auto args = FormatArguments();
