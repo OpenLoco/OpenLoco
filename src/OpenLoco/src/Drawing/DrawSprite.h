@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/ImageId.h"
 #include "Graphics/PaletteMap.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/Ui/Size.hpp>
 
@@ -38,35 +39,34 @@ namespace OpenLoco::Drawing
         }
     };
 
-    using DrawBlendOp = uint8_t;
-
-    namespace BlendOp
+    enum class DrawBlendOp : uint8_t
     {
-        constexpr DrawBlendOp none = 0;
+        none = 0,
 
         /**
          * Only supported by BITMAP. RLE images always encode transparency via the encoding.
          * Pixel value of 0 represents transparent.
          */
-        constexpr DrawBlendOp transparent = 1 << 0;
+        transparent = 1 << 0,
 
         /**
          * Whether to use the pixel value from the source image.
          * This is usually only unset for glass images where there the src is only a transparency mask.
          */
-        constexpr DrawBlendOp src = 1 << 1;
+        src = 1 << 1,
 
         /**
          * Whether to use the pixel value of the destination image for blending.
          * This is used for any image that filters the target image, e.g. glass or water.
          */
-        constexpr DrawBlendOp dst = 1 << 2;
+        dst = 1 << 2,
 
         /**
          * Whether to use the noise image to prevent draws on certain parts of the image.
          */
-        constexpr DrawBlendOp noiseMask = 1 << 3;
-    }
+        noiseMask = 1 << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(DrawBlendOp);
 
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args);
 

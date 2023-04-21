@@ -81,7 +81,7 @@ namespace OpenLoco::Drawing
                 numPixels = std::min(numPixels, width - x);
 
                 auto dst = dstLineStart + (x >> TZoomLevel);
-                if constexpr ((TBlendOp & BlendOp::src) == 0 && (TBlendOp & BlendOp::dst) == 0 && TZoomLevel == 0)
+                if constexpr ((TBlendOp & DrawBlendOp::src) == DrawBlendOp::none && (TBlendOp & DrawBlendOp::dst) == DrawBlendOp::none && TZoomLevel == 0)
                 {
                     // Since we're sampling each pixel at this zoom level, just do a straight std::memcpy
                     if (numPixels > 0)
