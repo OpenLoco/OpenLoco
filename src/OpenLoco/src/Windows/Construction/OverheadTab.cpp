@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049ECD1
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, GhostFlags::flag5);
+        Common::onUpdate(&self, GhostFlags::flag4);
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
