@@ -93,6 +93,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/TogglePause.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/UpdateOwnerStatus.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehiclePickup.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleReverse.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameState.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Colour.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Gfx.cpp"
