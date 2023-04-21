@@ -21,7 +21,6 @@ namespace OpenLoco::Ui::Windows::Construction
         flag2 = 1U << 2,
         flag3 = 1U << 3,
         flag4 = 1U << 4,
-        flag5 = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostFlags);
 
