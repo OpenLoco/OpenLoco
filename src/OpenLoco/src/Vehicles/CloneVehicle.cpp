@@ -101,7 +101,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Copy express/local
-        if (existingTrain.veh1->var_48 & (1 << 1))
+        if ((existingTrain.veh1->var_48 & Flags48::expressMode) != Flags48::none)
         {
             GameCommands::do12(newHead->id, 2);
         }

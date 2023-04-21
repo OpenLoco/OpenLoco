@@ -2526,7 +2526,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         return;
 
                     Vehicles::Vehicle train(*head);
-                    if (train.veh1->var_48 & (1 << 1))
+                    if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
                         GameCommands::do12(head->id, 2);
@@ -2539,7 +2539,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         return;
 
                     Vehicles::Vehicle train(*head);
-                    if (!(train.veh1->var_48 & (1 << 1)))
+                    if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) == Vehicles::Flags48::none)
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
                         GameCommands::do12(head->id, 2);
@@ -3060,7 +3060,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Express / local
             self.activatedWidgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
             Vehicles::Vehicle train(*head);
-            if (train.veh1->var_48 & (1 << 1))
+            if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
                 self.activatedWidgets |= (1 << widx::expressMode);
             else
                 self.activatedWidgets |= (1 << widx::localMode);

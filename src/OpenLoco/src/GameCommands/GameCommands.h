@@ -1885,6 +1885,9 @@ namespace OpenLoco::GameCommands
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
 
+    // Defined in GameCommands/VehiclePassSignal.cpp
+    void vehiclePassSignal(registers& regs);
+
     // Defined in GameCommands/VehiclePickup.cpp
     void vehiclePickup(registers& regs);
 
