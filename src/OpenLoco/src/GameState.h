@@ -1,12 +1,12 @@
 #pragma once
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
-#include "LastMapWindowAttributes.h"
 #include "Map/Animation.h"
 #include "Map/Wave.h"
 #include "Message.h"
 #include "Scenario.h"
 #include "ScenarioObjective.h"
+#include "Ui/LastMapWindowAttributes.h"
 #include "World/Company.h"
 #include "World/CompanyRecords.h"
 #include "World/Industry.h"
@@ -108,7 +108,7 @@ namespace OpenLoco
         uint32_t var_460;                                                        // 0x000460 (0x00526278)
         uint32_t var_464;                                                        // 0x000464 (0x0052627C)
         uint32_t var_468;                                                        // 0x000468 (0x00526280)
-        LastMapWindow::LastMapWindowAttributes lastMapWindowAttributes;          // 0x00046C (0x00526284)
+        Ui::LastMapWindowAttributes lastMapWindowAttributes;                     // 0x00046C (0x00526284)
         uint32_t var_478;                                                        // 0x000478 (0x00526290)
         uint8_t pad_047C[0x13B6 - 0x47C];                                        // 0x00047C
         uint16_t numMessages;                                                    // 0x0013B6 (0x005271CE)

@@ -19,13 +19,13 @@
 #include "Objects/TrackObject.h"
 #include "SceneManager.h"
 #include "Types.hpp"
+#include "Ui/LastMapWindowAttributes.h"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "Widget.h"
-#include "../LastMapWindowAttributes.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
@@ -109,8 +109,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static WindowEventList events;
 
-    auto& lastMapWindowAttributes = LastMapWindow::getLastMapWindowAttributes();
-
     static Pos2 mapWindowPosToLocation(Point pos)
     {
         pos.x = ((pos.x + 8) - kMapColumns) / 2;
@@ -166,10 +164,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B8E6
     static void onClose(Window& self)
     {
-        lastMapWindowAttributes.lastMapWindowSize = Ui::Size(self.width, self.height);
-        lastMapWindowAttributes.lastMapWindowVar88A = self.var_88A;
-        lastMapWindowAttributes.lastMapWindowVar88C = self.var_88C;
-        lastMapWindowAttributes.lastMapWindowFlags = self.flags | WindowFlags::flag_31;
+        Ui::getLastMapWindowAttributes().size = Ui::Size(self.width, self.height);
+        Ui::getLastMapWindowAttributes().var88A = self.var_88A;
+        Ui::getLastMapWindowAttributes().var88C = self.var_88C;
+        Ui::getLastMapWindowAttributes().flags = self.flags | WindowFlags::flag_31;
 
         free(_dword_F253A8);
     }
@@ -1461,9 +1459,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
         Ui::Size size = { 350, 272 };
 
-        if (lastMapWindowAttributes.lastMapWindowFlags != WindowFlags::none)
+        if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {
-            size = lastMapWindowAttributes.lastMapWindowSize;
+            size = Ui::getLastMapWindowAttributes().size;
             size.width = std::clamp<uint16_t>(size.width, 350, Ui::width());
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
@@ -1477,11 +1475,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->initScrollWidgets();
         window->frameNo = 0;
 
-        if (lastMapWindowAttributes.lastMapWindowFlags != WindowFlags::none)
+        if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
         {
-            window->var_88A = lastMapWindowAttributes.lastMapWindowVar88A;
-            window->var_88C = lastMapWindowAttributes.lastMapWindowVar88C;
-            window->flags |= (lastMapWindowAttributes.lastMapWindowFlags & WindowFlags::flag_16);
+            window->var_88A = Ui::getLastMapWindowAttributes().var88A;
+            window->var_88C = Ui::getLastMapWindowAttributes().var88C;
+            window->flags |= (Ui::getLastMapWindowAttributes().flags & WindowFlags::flag_16);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
