@@ -623,7 +623,7 @@ namespace OpenLoco
         { "STEX029 ", 33 }, // "Yew Island"
     };
 
-    bool ObjectHeader::isCustom() const
+    bool ObjectHeader::isVanilla() const
     {
         auto search = _vanillaObjects.find(name);
         return search != _vanillaObjects.end();

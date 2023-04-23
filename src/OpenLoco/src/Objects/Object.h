@@ -76,9 +76,14 @@ namespace OpenLoco
             return flags & kFuzzyFlagsMask;
         }
 
-        bool isCustom() const;
+        constexpr bool isCustom() const
+        {
+            return getSourceGame() == 0;
+        }
 
         constexpr bool isEmpty() const;
+
+        bool isVanilla() const;
 
         bool operator==(const ObjectHeader& rhs) const
         {
