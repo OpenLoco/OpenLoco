@@ -1,3 +1,39 @@
+# OpenLoco version 23.03+ (???)
+
+## Refactor arg structs for game commands (#1893, #1916)
+
+As part of our ongoing efforts to reimplement all game commands in C++, we are refactoring the game command's argument structs to be higher-level. Currently, most are still passing registers into vanilla functions. We have devised a wrapper structure to make our C++ code more readable in the mean time, while at the same time preparing for command serialization for future multiplayer.
+This month, @duncanspumpkin and @reinaldorauch tackled a bunch of these refactors, even if not all of them have been merged yet.
+
+## Implement two more vehicle game commands (#1923, #1924)
+
+Related to the previous section, @AaronVanGeffen implemented two more vehicle game commands: the vehicle 'reverse' command, and the vehicle 'pass signal' command.
+
+## Improved diagnostics and tests (#1894, #1904)
+
+@ZehMatt reworked our console logging interfaces into a new Diagnostics module. This allows log messages to easily be saved to file for reference, and for easier extension and reuse in the future. In addition, more tests for our custom string functions were added. Hopefully, this will prevent regressions from popping up when we switch to Unicode for internal strings in the future.
+
+## Switching from Docker Hub to GitHub for CI images (#1896)
+
+To the unpleasant surprise of many open source projects, Docker Hub announced that they were ending their free tier for open source teams. This prompted us to look for an alternative, which we found close to our project's home on GitHub. @janisosaur steered this direction to a good end.
+
+## More vehicle flag refactors (#1898)
+
+For a healthy code base, and in anticipation of a future new save format, we have been working on using strict types as much as a we can. Owing to @ZehMatt's recent innovations for flag typing, we have been slowly replacing separate constants with *enum classes* over the past few months. This month, @reinaldorauch refactored more of the vehicle flags.
+
+## Allow hooking non-aligned function addresses (#1907)
+
+As a result of the implementation of last month's town growth functions, we discovered some processors had trouble with us hooking functions that would misalign address-wise on particular processors. Notably, our Windows builds were no longer working through Wine on macOS. Thanks to @janisosaur's detective work and swift fix, this is working once again.
+
+## GameState integration (#1911, #1912)
+
+OpenLoco's code base has been relatively good in its relatively small use of globals. Over the past months, we have been reducing them further back into a *game state*. This month, a few more globals were integrated into the game state struct once again.
+
+## Dealing with compiler warnings (#1913, #1920)
+
+For a healthy code base, we aim for our code to compile without warnings on the GCC, clang, and MSVC compilers. This month, a pesky warning in the paint routines was vanquished. We can compile without warnings, once again!
+
+
 # OpenLoco version 23.03 (2023-03-16)
 
 ## Implement remaining object loading functions [#1851, #1848]
