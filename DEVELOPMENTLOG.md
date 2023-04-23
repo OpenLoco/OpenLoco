@@ -11,7 +11,7 @@ Related to the previous section, @AaronVanGeffen implemented two more vehicle ga
 
 ## Improved diagnostics and tests (#1894, #1904)
 
-@ZehMatt reworked out console logging interfaces into a new Diagnostics module. This allows log messages to easily be saved to file for reference, and for easier extension and reuse in the future. In addition, more tests for our custom string functions were added. Hopefully, this will prevent regressions from popping up when we switch to Unicode for internal strings in the future.
+@ZehMatt reworked our console logging interfaces into a new Diagnostics module. This allows log messages to easily be saved to file for reference, and for easier extension and reuse in the future. In addition, more tests for our custom string functions were added. Hopefully, this will prevent regressions from popping up when we switch to Unicode for internal strings in the future.
 
 ## Switching from Docker Hub to GitHub for CI images (#1896)
 
