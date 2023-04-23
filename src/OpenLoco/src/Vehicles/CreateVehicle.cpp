@@ -518,7 +518,7 @@ namespace OpenLoco::Vehicles
         newVeh2->var_5B = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = -1;
-        newVeh2->var_4A = 0;
+        newVeh2->var_4A = Vehicles::SoundFlags::none;
         newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
         newVeh2->profit[1] = 0;
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
         newTail->var_38 = Flags38::none;
         newTail->drivingSoundId = SoundObjectId::null;
         newTail->objectId = -1;
-        newTail->var_4A = 0;
+        newTail->var_4A = Vehicles::SoundFlags::none;
         newTail->trainDanglingTimeout = 0;
         lastVeh->setNextCar(newTail->id);
         newTail->nextCarId = EntityId::null;
