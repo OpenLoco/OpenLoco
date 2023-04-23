@@ -1,4 +1,4 @@
-# OpenLoco version 23.03+ (???)
+# OpenLoco version 23.04 (2023-04-23)
 
 ## Refactor arg structs for game commands (#1893, #1916)
 

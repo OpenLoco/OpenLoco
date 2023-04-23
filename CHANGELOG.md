@@ -1,4 +1,4 @@
-23.03+ (???)
+23.04 (2023-04-23)
 ------------------------------------------------------------------------
 - Fix: [#1907] Hooks fail to install on ARM macOS with wine.
 - Change: [#1908] Detects if terminal is VT100 capable and uses colors for the output, can be disabled using [NO_COLOR](https://no-color.org/).
