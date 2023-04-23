@@ -554,11 +554,11 @@ namespace OpenLoco::Ui::Windows::Construction
     // 0x0049FEC7
     void removeConstructionGhosts()
     {
-        if ((_byte_522096 & GhostFlags::flag0) != GhostFlags::none)
+        if ((_byte_522096 & GhostFlags::constructArrowVisible) != GhostFlags::none)
         {
             World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
-            _byte_522096 = _byte_522096 & ~GhostFlags::flag0;
+            _byte_522096 = _byte_522096 & ~GhostFlags::constructArrowVisible;
         }
         Construction::removeTrackGhosts();
         Signal::removeSignalGhost();

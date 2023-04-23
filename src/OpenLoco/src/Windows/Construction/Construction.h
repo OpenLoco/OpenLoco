@@ -16,11 +16,11 @@ namespace OpenLoco::Ui::Windows::Construction
     enum class GhostFlags : uint8_t
     {
         none = 0U,
-        flag0 = 1U << 0,
-        flag1 = 1U << 1,
-        flag2 = 1U << 2,
-        flag3 = 1U << 3,
-        flag4 = 1U << 4,
+        constructArrowVisible = 1U << 0,
+        trackGhostVisible = 1U << 1,
+        signalGhostVisible = 1U << 2,
+        stationGhostVisible = 1U << 3,
+        overheadGhostVisible = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostFlags);
 
