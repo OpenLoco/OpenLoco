@@ -49,6 +49,8 @@ namespace OpenLoco::Drawing
     }
 #pragma warning(push)
 #pragma warning(disable : 4063) // not a valid value for a switch of this enum
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch" // not a valid value for a switch of this enum
     template<uint8_t TZoomLevel, bool TIsRLE>
     inline void drawSpriteToBufferHelper(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
@@ -110,6 +112,7 @@ namespace OpenLoco::Drawing
             }
         }
     }
+#pragma GCC diagnostic pop
 #pragma warning(pop)
 
     template<>
