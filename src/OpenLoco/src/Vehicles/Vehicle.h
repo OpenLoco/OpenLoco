@@ -43,7 +43,7 @@ namespace OpenLoco::Vehicles
         none = 0U,
         passSignal = 1U << 0,
         expressMode = 1U << 1,
-        flag2 = 1U << 1 // cargo related?
+        flag2 = 1U << 2 // cargo related?
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags48);
 
