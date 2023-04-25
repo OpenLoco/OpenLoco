@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049ECD1
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, GhostFlags::overheadGhostVisible);
+        Common::onUpdate(&self, GhostVisibilityFlags::overhead);
     }
 
     static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049FF0
     void removeTrackModsGhost()
     {
-        if ((_byte_522096 & GhostFlags::overheadGhostVisible) != GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
         {
             if (_modGhostTrackObjId & (1 << 7))
             {
@@ -211,7 +211,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 args.modSection = _lastSelectedTrackModSection;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
-            _byte_522096 = _byte_522096 & ~GhostFlags::overheadGhostVisible;
+            _byte_522096 = _byte_522096 & ~GhostVisibilityFlags::overhead;
         }
     }
 
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
         if (res != GameCommands::FAILURE)
         {
-            _byte_522096 = _byte_522096 | GhostFlags::overheadGhostVisible;
+            _byte_522096 = _byte_522096 | GhostVisibilityFlags::overhead;
             _modGhostPos = args.pos;
             _modGhostRotation = args.rotation;
             _modGhostTrackId = args.roadId;
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
         if (res != GameCommands::FAILURE)
         {
-            _byte_522096 = _byte_522096 | GhostFlags::overheadGhostVisible;
+            _byte_522096 = _byte_522096 | GhostVisibilityFlags::overhead;
             _modGhostPos = args.pos;
             _modGhostRotation = args.rotation;
             _modGhostTrackId = args.trackId;
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
 
-            if ((_byte_522096 & GhostFlags::overheadGhostVisible) != GhostFlags::none)
+            if ((_byte_522096 & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
             {
                 if (*_modGhostPos == placementArgs->pos
                     && _modGhostRotation == placementArgs->rotation
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
 
-            if ((_byte_522096 & GhostFlags::overheadGhostVisible) != GhostFlags::none)
+            if ((_byte_522096 & GhostVisibilityFlags::overhead) != GhostVisibilityFlags::none)
             {
                 if (*_modGhostPos == placementArgs->pos
                     && _modGhostRotation == placementArgs->rotation

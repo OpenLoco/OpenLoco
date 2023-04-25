@@ -167,13 +167,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x0049E437
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, GhostFlags::stationGhostVisible);
+        Common::onUpdate(&self, GhostVisibilityFlags::station);
     }
 
     // 0x0049FF4B
     void removeStationGhost()
     {
-        if ((_byte_522096 & GhostFlags::stationGhostVisible) != GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
             if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
             {
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.type = _stationGhostType;
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
-            _byte_522096 = _byte_522096 & ~GhostFlags::stationGhostVisible;
+            _byte_522096 = _byte_522096 & ~GhostVisibilityFlags::station;
         }
     }
 
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
 
-        if ((_byte_522096 & GhostFlags::stationGhostVisible) != GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
             if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
             {
@@ -291,7 +291,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | GhostFlags::stationGhostVisible;
+        _byte_522096 = _byte_522096 | GhostVisibilityFlags::station;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -329,7 +329,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
 
-        if ((_byte_522096 & GhostFlags::stationGhostVisible) != GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
             if (*_stationGhostPos == args->pos && *_stationGhostRotation == args->rotation && *_stationGhostTypeDockAirport == args->type)
             {
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | GhostFlags::stationGhostVisible;
+        _byte_522096 = _byte_522096 | GhostVisibilityFlags::station;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        if ((_byte_522096 & GhostFlags::stationGhostVisible) != GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
             if (*_stationGhostPos == args->pos
                 && *_stationGhostRotation == args->rotation
@@ -413,7 +413,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | GhostFlags::stationGhostVisible;
+        _byte_522096 = _byte_522096 | GhostVisibilityFlags::station;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        if ((_byte_522096 & GhostFlags::stationGhostVisible) != GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
             if (*_stationGhostPos == args->pos
                 && *_stationGhostRotation == args->rotation
@@ -485,7 +485,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        _byte_522096 = _byte_522096 | GhostFlags::stationGhostVisible;
+        _byte_522096 = _byte_522096 | GhostVisibilityFlags::station;
         Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         auto width = self.width - 4;
         drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset);
 
-        if ((_byte_522096 & GhostFlags::stationGhostVisible) == GhostFlags::none)
+        if ((_byte_522096 & GhostVisibilityFlags::station) == GhostVisibilityFlags::none)
             return;
 
         auto args = FormatArguments();
