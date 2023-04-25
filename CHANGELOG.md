@@ -1,5 +1,6 @@
 23.04+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1925] Not all custom objects are being exported into save files as expected.
 - Fix: [#1929] Vehicles report local/express status incorrectly.
 
 23.04 (2023-04-23)
