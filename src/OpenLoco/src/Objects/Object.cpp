@@ -625,7 +625,7 @@ namespace OpenLoco
 
     bool ObjectHeader::isVanilla() const
     {
-        auto search = _vanillaObjects.find(name);
-        return search != _vanillaObjects.end();
+        auto search = _vanillaObjects.find(getName());
+        return isVanilla = search != _vanillaObjects.end();
     }
 }

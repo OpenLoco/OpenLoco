@@ -279,7 +279,7 @@ namespace OpenLoco::S5
             if (shouldPackObjects(flags))
             {
                 std::copy_if(requiredObjects.begin(), requiredObjects.end(), std::back_inserter(packedObjects), [](ObjectHeader& header) {
-                    return header.isCustom();
+                    return !header.isEmpty() && !header.isVanilla();
                 });
             }
 
