@@ -11,6 +11,7 @@
 #include <iostream>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Environment
 {
@@ -57,12 +58,12 @@ namespace OpenLoco::Environment
             "C:/GOG Games/Locomotion",
         };
 
-        Diagnostics::Logging::info("Searching for Locomotion install path...\n");
+        Logging::info("Searching for Locomotion install path...");
         for (auto path : kSearchPaths)
         {
             if (validateLocoInstallPath(path))
             {
-                Diagnostics::Logging::info("  found: {}\n", path);
+                Logging::info("  found: {}", path);
                 return path;
             }
         }
@@ -201,7 +202,7 @@ namespace OpenLoco::Environment
             if (!fs::is_directory(path))
             {
                 auto path8 = path.u8string();
-                Diagnostics::Logging::info("Creating directory: {}\n", path8.c_str());
+                Logging::info("Creating directory: {}", path8.c_str());
                 fs::create_directories(path);
                 // clang-format off
                 fs::permissions(

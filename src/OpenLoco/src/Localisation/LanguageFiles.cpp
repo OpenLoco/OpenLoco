@@ -16,6 +16,7 @@
 #include <yaml-cpp/yaml.h>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Localisation
 {
@@ -117,7 +118,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        Diagnostics::Logging::error("{:{}}\n", (int)commands[1].length(), commands[1].data());
+                        Logging::error("{:{}}", (int)commands[1].length(), commands[1].data());
                     }
                 }
                 else if (commands[0] == "UINT16")
@@ -180,7 +181,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        Diagnostics::Logging::error("{:{}}\n", (int)commands[1].length(), commands[1].data());
+                        Logging::error("{:{}}", (int)commands[1].length(), commands[1].data());
                     }
                 }
                 else if (commands[0] == "MOVE_X")
@@ -208,7 +209,7 @@ namespace OpenLoco::Localisation
                 }
                 else
                 {
-                    Diagnostics::Logging::error("{:{}}\n", (int)commands[0].length(), commands[0].data());
+                    Logging::error("{:{}}", (int)commands[0].length(), commands[0].data());
                 }
 
                 continue;
