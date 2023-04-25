@@ -221,7 +221,7 @@ namespace OpenLoco
         if (fs::exists(tempFilePath))
         {
             auto path8 = tempFilePath.u8string();
-            printf("Removing temp file '%s'\n", path8.c_str());
+            Diagnostics::Logging::info("Removing temp file '{}'\n", path8.c_str());
             fs::remove(tempFilePath);
         }
         crashClose(_exHandler);
@@ -847,7 +847,7 @@ namespace OpenLoco
                     for (size_t i = 0; i < numToDelete; i++)
                     {
                         auto path8 = autosaveFiles[i].u8string();
-                        std::printf("Deleting old autosave: %s\n", path8.c_str());
+                        Diagnostics::Logging::info("Deleting old autosave: {}\n", path8.c_str());
                         fs::remove(autosaveFiles[i]);
                     }
                 }
@@ -855,7 +855,7 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            std::fprintf(stderr, "Unable to clean autosaves: %s\n", e.what());
+            Diagnostics::Logging::error("Unable to clean autosaves: {}\n", e.what());
         }
     }
 
@@ -885,12 +885,12 @@ namespace OpenLoco
             auto autosaveFullPath = autosaveDirectory / filename;
 
             auto autosaveFullPath8 = autosaveFullPath.u8string();
-            std::printf("Autosaving game to %s\n", autosaveFullPath8.c_str());
+            Diagnostics::Logging::info("Autosaving game to {}\n", autosaveFullPath8.c_str());
             S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::noWindowClose);
         }
         catch (const std::exception& e)
         {
-            std::fprintf(stderr, "Unable to autosave game: %s\n", e.what());
+            Diagnostics::Logging::error("Unable to autosave game: {}\n", e.what());
         }
     }
 

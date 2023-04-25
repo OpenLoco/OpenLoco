@@ -117,7 +117,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        printf("%.*s\n", (int)commands[1].length(), commands[1].data());
+                        Diagnostics::Logging::error("{:{}}\n", (int)commands[1].length(), commands[1].data());
                     }
                 }
                 else if (commands[0] == "UINT16")
@@ -180,7 +180,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        printf("%.*s\n", (int)commands[1].length(), commands[1].data());
+                        Diagnostics::Logging::error("{:{}}\n", (int)commands[1].length(), commands[1].data());
                     }
                 }
                 else if (commands[0] == "MOVE_X")
@@ -208,7 +208,7 @@ namespace OpenLoco::Localisation
                 }
                 else
                 {
-                    printf("%.*s\n", (int)commands[0].length(), commands[0].data());
+                    Diagnostics::Logging::error("{:{}}\n", (int)commands[0].length(), commands[0].data());
                 }
 
                 continue;
