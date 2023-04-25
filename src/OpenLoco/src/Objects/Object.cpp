@@ -1,10 +1,10 @@
 #include "Object.h"
-#include <map>
 #include <string_view>
+#include <unordered_map>
 
 namespace OpenLoco
 {
-    static std::map<std::string_view, uint8_t> _vanillaObjects = {
+    static const std::unordered_map<std::string_view, const uint8_t> _vanillaObjects = {
         // Type 0 (interfaceSkin)
         { "INTERDEF", 0 }, // "Default Interface Style"
 
