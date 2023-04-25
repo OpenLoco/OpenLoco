@@ -27,6 +27,16 @@ namespace OpenLoco::EntityManager
     static auto& rawListHeads() { return getGameState().entityListHeads; }
     static auto& rawListCounts() { return getGameState().entityListCounts; }
 
+    constexpr uint8_t getLinkedListOffset(EntityListType list)
+    {
+        return enumValue(list) * sizeof(uint16_t);
+    }
+
+    constexpr size_t getLinkedListIndex(uint8_t offset)
+    {
+        return offset / sizeof(uint16_t);
+    }
+
     // 0x0046FDFD
     void reset()
     {
@@ -45,11 +55,11 @@ namespace OpenLoco::EntityManager
             ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
             ent.nextThingId = EntityId::null;
-            ent.linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
+            ent.linkedListOffset = getLinkedListOffset(EntityListType::null);
             if (previous == nullptr)
             {
                 ent.llPreviousId = EntityId::null;
-                rawListHeads()[static_cast<uint8_t>(EntityListType::null)] = EntityId(id);
+                rawListHeads()[enumValue(EntityListType::null)] = EntityId(id);
             }
             else
             {
@@ -58,7 +68,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        rawListCounts()[static_cast<uint8_t>(EntityListType::null)] = Limits::maxNormalEntities;
+        rawListCounts()[enumValue(EntityListType::null)] = Limits::maxNormalEntities;
 
         // Remake null money entities (size kMaxMoneyEntities)
         previous = nullptr;
@@ -68,11 +78,11 @@ namespace OpenLoco::EntityManager
             ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
             ent.nextThingId = EntityId::null;
-            ent.linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
+            ent.linkedListOffset = getLinkedListOffset(EntityListType::nullMoney);
             if (previous == nullptr)
             {
                 ent.llPreviousId = EntityId::null;
-                rawListHeads()[static_cast<uint8_t>(EntityListType::nullMoney)] = EntityId(id);
+                rawListHeads()[enumValue(EntityListType::nullMoney)] = EntityId(id);
             }
             else
             {
@@ -81,7 +91,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        rawListCounts()[static_cast<uint8_t>(EntityListType::nullMoney)] = Limits::kMaxMoneyEntities;
+        rawListCounts()[enumValue(EntityListType::nullMoney)] = Limits::kMaxMoneyEntities;
 
         resetSpatialIndex();
         EntityTweener::get().reset();
@@ -89,12 +99,12 @@ namespace OpenLoco::EntityManager
 
     EntityId firstId(EntityListType list)
     {
-        return rawListHeads()[(size_t)list];
+        return rawListHeads()[enumValue(list)];
     }
 
     uint16_t getListCount(const EntityListType list)
     {
-        return rawListCounts()[static_cast<size_t>(list)];
+        return rawListCounts()[enumValue(list)];
     }
 
     template<>
@@ -245,7 +255,7 @@ namespace OpenLoco::EntityManager
             return nullptr;
         }
 
-        auto newId = rawListHeads()[static_cast<uint8_t>(EntityListType::null)];
+        auto newId = rawListHeads()[enumValue(EntityListType::null)];
         return createEntity(newId, EntityListType::misc);
     }
 
@@ -257,7 +267,7 @@ namespace OpenLoco::EntityManager
             return nullptr;
         }
 
-        auto newId = rawListHeads()[static_cast<uint8_t>(EntityListType::nullMoney)];
+        const auto newId = rawListHeads()[enumValue(EntityListType::nullMoney)];
         return createEntity(newId, EntityListType::misc);
     }
 
@@ -269,7 +279,7 @@ namespace OpenLoco::EntityManager
             return nullptr;
         }
 
-        auto newId = rawListHeads()[static_cast<uint8_t>(EntityListType::null)];
+        const auto newId = rawListHeads()[enumValue(EntityListType::null)];
         return createEntity(newId, EntityListType::vehicle);
     }
 
@@ -293,20 +303,22 @@ namespace OpenLoco::EntityManager
     // 0x0047019F
     void moveEntityToList(EntityBase* const entity, const EntityListType list)
     {
-        auto newListOffset = static_cast<uint8_t>(list) * 2;
+        const auto newListOffset = getLinkedListOffset(list);
         if (entity->linkedListOffset == newListOffset)
         {
             return;
         }
 
-        auto curList = entity->linkedListOffset / 2;
-        auto nextId = entity->nextThingId;
-        auto previousId = entity->llPreviousId;
+        const auto newListIndex = enumValue(list);
+        const auto oldListIndex = getLinkedListIndex(entity->linkedListOffset);
+
+        const auto nextId = entity->nextThingId;
+        const auto previousId = entity->llPreviousId;
 
         // Unlink previous entity from this entity
         if (previousId == EntityId::null)
         {
-            rawListHeads()[curList] = nextId;
+            rawListHeads()[oldListIndex] = nextId;
         }
         else
         {
@@ -336,8 +348,8 @@ namespace OpenLoco::EntityManager
 
         entity->llPreviousId = EntityId::null;
         entity->linkedListOffset = newListOffset;
-        entity->nextThingId = rawListHeads()[static_cast<uint8_t>(list)];
-        rawListHeads()[static_cast<uint8_t>(list)] = entity->id;
+        entity->nextThingId = rawListHeads()[newListIndex];
+        rawListHeads()[newListIndex] = entity->id;
         // Link next entity to this entity
         if (entity->nextThingId != EntityId::null)
         {
@@ -352,14 +364,14 @@ namespace OpenLoco::EntityManager
             }
         }
 
-        rawListCounts()[curList]--;
-        rawListCounts()[static_cast<uint8_t>(list)]++;
+        rawListCounts()[oldListIndex]--;
+        rawListCounts()[newListIndex]++;
     }
 
     // 0x00470188
     bool checkNumFreeEntities(const size_t numNewEntities)
     {
-        if (EntityManager::getListCount(EntityManager::EntityListType::null) <= numNewEntities)
+        if (getListCount(EntityListType::null) <= numNewEntities)
         {
             GameCommands::setErrorText(StringIds::too_many_objects_in_game);
             return false;
