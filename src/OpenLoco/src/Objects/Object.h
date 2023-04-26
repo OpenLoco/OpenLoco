@@ -83,6 +83,10 @@ namespace OpenLoco
 
         constexpr bool isEmpty() const;
 
+        // The original game would check whether an object was part of the base game by means of the sourceGame attribute.
+        // As many custom objects were being based on base game objects, most custom objects do not set this attribute
+        // correctly. Therefore those objects would not be packed by Locomotion. We change this behaviour by explicitly
+        // checking objects against a list of vanilla objects instead. The original logic is left in the isCustom method.
         bool isVanilla() const;
 
         bool operator==(const ObjectHeader& rhs) const
