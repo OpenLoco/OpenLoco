@@ -109,6 +109,11 @@ namespace OpenLoco
         {
             return !(*this == rhs);
         }
+
+        bool operator<(const ObjectHeader& rhs) const
+        {
+            return getName() < rhs.getName();
+        }
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
 #pragma pack(pop)

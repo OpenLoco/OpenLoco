@@ -586,7 +586,7 @@ namespace OpenLoco::ObjectManager
             if (!header.isEmpty() && !load(header, id))
             {
                 result.success = false;
-                result.problemObject = header;
+                result.problemObjects.push_back(header);
                 std::string str(header.getName());
                 Logging::error("Failed to load: {}", str);
                 // Could break early here but we want to list all of the failed objects

@@ -258,6 +258,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/Common.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/News.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/Ticker.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ObjectLoadError.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ObjectSelectionWindow.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Options.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/PlayerInfoPanel.cpp"

@@ -259,6 +259,11 @@ namespace OpenLoco::Ui::Windows
         void close(Ui::Window* window);
     }
 
+    namespace ObjectLoadError
+    {
+        Window* open(std::vector<ObjectHeader> list);
+    }
+
     namespace ObjectSelectionWindow
     {
         Window* open();

@@ -796,15 +796,18 @@ namespace OpenLoco
         S5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_loadErrorCode != 0)
         {
-            auto title = StringIds::error_unable_to_load_saved_game;
-            string_id message = _loadErrorMessage;
             if (_loadErrorCode == -2)
             {
-                title = _loadErrorMessage;
-                message = StringIds::null;
+                string_id title = _loadErrorMessage;
+                string_id message = StringIds::null;
+                Ui::Windows::showError(title, message);
+            }
+            else
+            {
+                auto objectList = S5::getObjectErrorList();
+                Ui::Windows::ObjectLoadError::open(objectList);
             }
             _loadErrorCode = 0;
-            Ui::Windows::showError(title, message);
         }
     }
 

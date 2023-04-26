@@ -67,6 +67,7 @@ namespace OpenLoco::Ui
         tileInspector = 57,
         cheats = 58,
         networkStatus = 59,
+        objectLoadError = 60,
 
         undefined = 255
     };

@@ -50,6 +50,9 @@ namespace OpenLoco::S5
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
     static loco_global<string_id, 0x0050C198> _loadErrorMessage;
 
+    // TODO: move this?
+    static std::vector<ObjectHeader> _loadErrorObjectsList;
+
     static bool exportGameState(Stream& stream, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
     constexpr bool hasSaveFlags(SaveFlags flags, SaveFlags flagsToTest)
@@ -508,6 +511,16 @@ namespace OpenLoco::S5
         _loadErrorMessage = StringIds::buffer_2040;
     }
 
+    static void setObjectErrorList(const std::vector<ObjectHeader> list)
+    {
+        _loadErrorObjectsList = list;
+    }
+
+    const std::vector<ObjectHeader> getObjectErrorList()
+    {
+        return _loadErrorObjectsList;
+    }
+
     class LoadException : public std::runtime_error
     {
     private:
@@ -629,7 +642,8 @@ namespace OpenLoco::S5
             auto loadObjectResult = ObjectManager::loadAll(file->requiredObjects);
             if (!loadObjectResult.success)
             {
-                setObjectErrorMessage(loadObjectResult.problemObject);
+                setObjectErrorMessage(loadObjectResult.problemObjects[0]);
+                setObjectErrorList(loadObjectResult.problemObjects);
                 if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();

@@ -142,7 +142,7 @@ namespace OpenLoco::ObjectManager
     struct LoadObjectsResult
     {
         bool success{};
-        ObjectHeader problemObject;
+        std::vector<ObjectHeader> problemObjects;
     };
 
     struct DependentObjects
