@@ -25,6 +25,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         close,
         panel,
         nameHeader,
+        typeHeader,
         checksumHeader,
         scrollview,
     };
@@ -34,8 +35,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::objectErrorWindowTitle),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
-        makeWidget({ 4, 43 }, { 176, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectId),
-        makeWidget({ 180, 43 }, { 176, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
+        makeWidget({ 4, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectId),
+        makeWidget({ 104, 43 }, { 152, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectType),
+        makeWidget({ 256, 43 }, { 100, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tableHeaderObjectChecksum),
         makeWidget({ 4, 57 }, { 352, 176 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         widgetEnd(),
     };
@@ -104,7 +106,83 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         drawingCtx.drawStringLeftWrapped(*rt, self.x + 3, self.y + 19, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
 
-    // 0x004C1663
+    static string_id objectTypeToString(ObjectType type)
+    {
+        switch (type)
+        {
+            case ObjectType::interfaceSkin:
+                return StringIds::object_interface_styles;
+            case ObjectType::sound:
+                return StringIds::object_sounds;
+            case ObjectType::currency:
+                return StringIds::object_currency;
+            case ObjectType::steam:
+                return StringIds::object_animation_effects;
+            case ObjectType::cliffEdge:
+                return StringIds::object_cliffs;
+            case ObjectType::water:
+                return StringIds::object_water;
+            case ObjectType::land:
+                return StringIds::object_land;
+            case ObjectType::townNames:
+                return StringIds::object_town_names;
+            case ObjectType::cargo:
+                return StringIds::object_cargo;
+            case ObjectType::wall:
+                return StringIds::object_walls;
+            case ObjectType::trackSignal:
+                return StringIds::object_signals;
+            case ObjectType::levelCrossing:
+                return StringIds::object_level_crossing;
+            case ObjectType::streetLight:
+                return StringIds::object_street_lights;
+            case ObjectType::tunnel:
+                return StringIds::object_tunnels;
+            case ObjectType::bridge:
+                return StringIds::object_bridges;
+            case ObjectType::trackStation:
+                return StringIds::object_track_stations;
+            case ObjectType::trackExtra:
+                return StringIds::object_track_extras;
+            case ObjectType::track:
+                return StringIds::object_tracks;
+            case ObjectType::roadStation:
+                return StringIds::object_road_stations;
+            case ObjectType::roadExtra:
+                return StringIds::object_road_extras;
+            case ObjectType::road:
+                return StringIds::object_roads;
+            case ObjectType::airport:
+                return StringIds::object_airports;
+            case ObjectType::dock:
+                return StringIds::object_docks;
+            case ObjectType::vehicle:
+                return StringIds::object_vehicles;
+            case ObjectType::tree:
+                return StringIds::object_trees;
+            case ObjectType::snow:
+                return StringIds::object_snow;
+            case ObjectType::climate:
+                return StringIds::object_climate;
+            case ObjectType::hillShapes:
+                return StringIds::object_map_generation_data;
+            case ObjectType::building:
+                return StringIds::object_buildings;
+            case ObjectType::scaffolding:
+                return StringIds::object_scaffolding;
+            case ObjectType::industry:
+                return StringIds::object_industries;
+            case ObjectType::region:
+                return StringIds::object_world_region;
+            case ObjectType::competitor:
+                return StringIds::object_company_owners;
+            case ObjectType::scenarioText:
+                return StringIds::object_scenario_descriptions;
+            default:
+                return StringIds::empty;
+        }
+    }
+
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
@@ -115,9 +193,10 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         // Acquire string buffer
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-        // Prepare format arguments to reuse
-        FormatArguments args;
-        args.push(StringIds::buffer_2039);
+        const auto namePos = 1;
+        const auto typePos = window.widgets[Widx::typeHeader].left - 4;
+        const auto typeWidth = window.widgets[Widx::typeHeader].width() - 6;
+        const auto checksumPos = window.widgets[Widx::checksumHeader].left - 4;
 
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)
@@ -133,12 +212,15 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             auto& header = _loadErrorObjectsList[i];
 
+            FormatArguments args;
+            args.push(StringIds::buffer_2039);
+
             // Copy object name to buffer
             std::memcpy(buffer, header.name, 8);
             buffer[8] = '\0';
 
             // Draw object name
-            drawingCtx.drawStringLeft(rt, 1, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
+            drawingCtx.drawStringLeft(rt, namePos, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
 
             // Copy object checksum to buffer
             std::stringstream ss;
@@ -148,7 +230,14 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             buffer[8] = '\0';
 
             // Draw object checksum
-            drawingCtx.drawStringLeft(rt, window.widgets[Widx::checksumHeader].left - 4, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
+            drawingCtx.drawStringLeft(rt, checksumPos, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
+
+            // Prepare object type for drawing
+            args.rewind();
+            args.push(objectTypeToString(header.getType()));
+
+            // Draw object type
+            drawingCtx.drawStringLeftWrapped(rt, typePos, y, typeWidth, window.getColour(WindowColour::secondary), text_colour_id, &args);
 
             y += kRowHeight;
         }

@@ -2330,4 +2330,5 @@ strings:
   2275: "Error loading objects"
   2276: "{COLOUR BLACK}The file could not be loaded as some of the objects referenced in it are missing or corrupt. A list of these objects is given below."
   2277: "{COLOUR BLACK}Object ID"
-  2278: "{COLOUR BLACK}Checksum"
+  2278: "{COLOUR BLACK}Type"
+  2279: "{COLOUR BLACK}Checksum"
