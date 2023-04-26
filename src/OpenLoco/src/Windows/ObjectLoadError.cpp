@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         _events.tooltip = tooltip;
     }
 
-    Window* open(std::vector<ObjectHeader> list)
+    Window* open(const std::vector<ObjectHeader>& list)
     {
         _loadErrorObjectsList = list;
         std::sort(_loadErrorObjectsList.begin(), _loadErrorObjectsList.end());

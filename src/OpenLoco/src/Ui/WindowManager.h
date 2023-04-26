@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace ObjectLoadError
     {
-        Window* open(std::vector<ObjectHeader> list);
+        Window* open(const std::vector<ObjectHeader>& list);
     }
 
     namespace ObjectSelectionWindow
