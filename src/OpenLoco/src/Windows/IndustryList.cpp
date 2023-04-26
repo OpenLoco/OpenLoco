@@ -912,6 +912,17 @@ namespace OpenLoco::Ui::Windows::IndustryList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
+                if (yPos + kRowHeight < rt.y || yPos > rt.y + rt.height)
+                {
+                    xPos += kRowHeight;
+                    if (xPos >= kRowHeight * 5) // full row
+                    {
+                        xPos = 0;
+                        yPos += kRowHeight;
+                    }
+                    continue;
+                }
+
                 _word_E0C3C6 = 0xFFFF;
                 if (self.rowInfo[i] != self.rowHover)
                 {
