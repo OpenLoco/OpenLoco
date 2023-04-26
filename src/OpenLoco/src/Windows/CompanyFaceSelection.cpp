@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<int32_t, 0x0113E72C> _cursorX;
 
     static constexpr Ui::Size kWindowSize = { 400, 272 };
-    static constexpr uint32_t kRowHeight = 10;
+    static constexpr int16_t kRowHeight = 10;
     static WindowEventList events;
 
     enum widx
@@ -268,8 +268,14 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
-            const auto y = index * kRowHeight;
+            const int16_t y = index * kRowHeight;
             uint8_t inlineColour = ControlCodes::Colour::black;
+
+            if (y + kRowHeight < rt.y || y > rt.y + rt.height)
+            {
+                index++;
+                continue;
+            }
 
             if (index == self.rowHover)
             {
