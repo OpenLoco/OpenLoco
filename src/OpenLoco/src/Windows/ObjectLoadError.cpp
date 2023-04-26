@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
     Window* open(const std::vector<ObjectHeader>& list)
     {
         _loadErrorObjectsList = list;
-        std::sort(_loadErrorObjectsList.begin(), _loadErrorObjectsList.end());
+        std::sort(_loadErrorObjectsList.begin(), _loadErrorObjectsList.end(), [](const auto& lhs, const auto& rhs) { return lhs.getName() < rhs.getName(); });
 
         Window* window = WindowManager::bringToFront(WindowType::objectLoadError);
         if (window != nullptr)
