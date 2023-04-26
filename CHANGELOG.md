@@ -1,5 +1,6 @@
 23.04+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1934] Present a list of objects that failed to load, instead of just the last one.
 - Fix: [#1925] Not all custom objects are being exported into save files as expected.
 - Fix: [#1929] Vehicles report local/express status incorrectly.
 
