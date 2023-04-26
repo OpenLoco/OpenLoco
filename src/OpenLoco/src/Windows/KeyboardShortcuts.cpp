@@ -167,6 +167,12 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         auto yPos = 0;
         for (auto i = 0; i < self.rowCount; i++)
         {
+            if (yPos + kRowHeight < rt.y || yPos > rt.y + rt.height)
+            {
+                yPos += kRowHeight;
+                continue;
+            }
+
             string_id format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
