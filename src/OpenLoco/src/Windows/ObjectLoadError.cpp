@@ -9,6 +9,7 @@
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
+#include <sstream>
 
 namespace OpenLoco::Ui::Windows::ObjectLoadError
 {
@@ -90,7 +91,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         window->setColour(WindowColour::primary, interface->colour_0B);
         window->setColour(WindowColour::secondary, interface->colour_10);
 
-        window->rowCount = _loadErrorObjectsList.size();
+        window->rowCount = static_cast<uint16_t>(_loadErrorObjectsList.size());
         window->rowHover = -1;
 
         return window;
