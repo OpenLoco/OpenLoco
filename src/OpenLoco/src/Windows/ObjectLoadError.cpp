@@ -202,6 +202,12 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
+            if (y + kRowHeight < rt.y || y > rt.y + rt.height)
+            {
+                y += kRowHeight;
+                continue;
+            }
+
             string_id text_colour_id = StringIds::black_stringid;
 
             // Draw hover rectangle
