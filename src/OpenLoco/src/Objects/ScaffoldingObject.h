@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/Span.hpp>
+#include <array>
 
 namespace OpenLoco
 {
