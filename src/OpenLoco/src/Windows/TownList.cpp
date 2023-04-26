@@ -1198,16 +1198,27 @@ namespace OpenLoco::Ui::Windows::TownList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
+                if (yPos + kRowHeight < rt.y || yPos > rt.y + rt.height)
+                {
+                    xPos += kRowHeight;
+                    if (xPos >= kRowHeight * 5) // full row
+                    {
+                        xPos = 0;
+                        yPos += kRowHeight;
+                    }
+                    continue;
+                }
+
                 if (self.rowInfo[i] != self.rowHover)
                 {
                     if (self.rowInfo[i] == self.var_846)
                     {
-                        drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::colourLight);
+                        drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::colourLight);
                     }
                 }
                 else
                 {
-                    drawingCtx.drawRectInset(rt, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), (Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::borderInset));
+                    drawingCtx.drawRectInset(rt, xPos, yPos, kRowHeight, kRowHeight, self.getColour(WindowColour::secondary), (Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::borderInset));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.rowInfo[i]);
@@ -1225,12 +1236,12 @@ namespace OpenLoco::Ui::Windows::TownList
                     buildingObj->drawBuilding(&*clipped, _buildingRotation, 56, 96, colour);
                 }
 
-                xPos += 112;
+                xPos += kRowHeight;
 
-                if (xPos >= 112 * 5) // full row
+                if (xPos >= kRowHeight * 5) // full row
                 {
                     xPos = 0;
-                    yPos += 112;
+                    yPos += kRowHeight;
                 }
             }
         }
