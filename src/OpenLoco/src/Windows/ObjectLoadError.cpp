@@ -73,10 +73,10 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             return window;
         }
 
-        window = WindowManager::createWindow(
+        window = WindowManager::createWindowCentred(
             WindowType::objectLoadError,
             kWindowSize,
-            WindowFlags::none,
+            WindowFlags::stickToFront,
             &_events);
 
         // TODO: only needs to be called once.
