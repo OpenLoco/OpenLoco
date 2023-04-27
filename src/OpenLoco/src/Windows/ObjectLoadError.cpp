@@ -188,11 +188,11 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
+        const auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, shade);
 
         // Acquire string buffer
-        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
         const auto namePos = 1;
         const auto typePos = window.widgets[Widx::typeHeader].left - 4;
@@ -208,13 +208,13 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
                 continue;
             }
 
-            string_id text_colour_id = StringIds::black_stringid;
+            string_id textColourId = StringIds::black_stringid;
 
             // Draw hover rectangle
             if (i == window.rowHover)
             {
                 drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
-                text_colour_id = StringIds::wcolour2_stringid;
+                textColourId = StringIds::wcolour2_stringid;
             }
 
             auto& header = _loadErrorObjectsList[i];
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             buffer[8] = '\0';
 
             // Draw object name
-            drawingCtx.drawStringLeft(rt, namePos, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
+            drawingCtx.drawStringLeft(rt, namePos, y, window.getColour(WindowColour::secondary), textColourId, &args);
 
             // Copy object checksum to buffer
             const auto checksum = fmt::format("{:08X}", header.checksum);
@@ -235,14 +235,14 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             buffer[8] = '\0';
 
             // Draw object checksum
-            drawingCtx.drawStringLeft(rt, checksumPos, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
+            drawingCtx.drawStringLeft(rt, checksumPos, y, window.getColour(WindowColour::secondary), textColourId, &args);
 
             // Prepare object type for drawing
             args.rewind();
             args.push(objectTypeToString(header.getType()));
 
             // Draw object type
-            drawingCtx.drawStringLeftWrapped(rt, typePos, y, typeWidth, window.getColour(WindowColour::secondary), text_colour_id, &args);
+            drawingCtx.drawStringLeftWrapped(rt, typePos, y, typeWidth, window.getColour(WindowColour::secondary), textColourId, &args);
 
             y += kRowHeight;
         }
