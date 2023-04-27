@@ -1,3 +1,15 @@
+# OpenLoco version 23.04.1 (2023-04-27)
+
+Whilst implementing one of the vehicle game commands for v23.04 a refactor went slightly wrong causing the local/express setting of a train to constantly be reset. Woops! Eventually we hope to have a proper testing system that would capture this sort of mistake but its hard to add such a testing system whilst we depend on the base game.
+
+## Pack all custom objects (#1925)
+
+Many custom objects for locomotion were made by modifying an existing vanilla object. Unfortunately most object makers did not modify the base game field to indicate that it was a custom object. This meant that the object would not be packed into the save even when the export objects option is used. We now check if an object is from the base game by comparing it to the complete list of base game objects ensuring that they are all packed.
+
+## Introduce object load error window (#1933)
+
+It can be incredibly frustrating when loading a save only to find out you don't have all the objects installed to load it. In the base game an error message was generated that told you of only one missing object. We now display a window for all the missing objects.
+
 # OpenLoco version 23.04 (2023-04-23)
 
 ## Refactor arg structs for game commands (#1893, #1916)

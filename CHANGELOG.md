@@ -1,4 +1,4 @@
-23.04+ (???)
+23.04.1 (2023-04-27)
 ------------------------------------------------------------------------
 - Feature: [#1934] Present a list of objects that failed to load, instead of just the last one.
 - Fix: [#1925] Not all custom objects are being exported into save files as expected.
