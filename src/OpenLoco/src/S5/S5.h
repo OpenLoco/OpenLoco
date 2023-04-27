@@ -456,6 +456,8 @@ namespace OpenLoco::S5
     bool exportGameStateToFile(Stream& stream, SaveFlags flags);
     void registerHooks();
 
+    const std::vector<ObjectHeader>& getObjectErrorList();
+
     bool importSaveToGameState(const fs::path& path, LoadFlags flags);
     bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);

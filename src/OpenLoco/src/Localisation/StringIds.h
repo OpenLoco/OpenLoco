@@ -1842,6 +1842,11 @@ namespace OpenLoco::StringIds
     constexpr string_id disableTownExpansion_tip = 2272;
     constexpr string_id completeChallenge = 2273;
     constexpr string_id clearInput = 2274;
+    constexpr string_id objectErrorWindowTitle = 2275;
+    constexpr string_id objectErrorExplanation = 2276;
+    constexpr string_id tableHeaderObjectId = 2277;
+    constexpr string_id tableHeaderObjectType = 2278;
+    constexpr string_id tableHeaderObjectChecksum = 2279;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;

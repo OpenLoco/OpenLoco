@@ -761,8 +761,8 @@ namespace OpenLoco
         addr<0x010E7D64, uint32_t>() = 0xD900BF;
     }
 
-    static loco_global<int8_t, 0x0050C197> _50C197;
-    static loco_global<string_id, 0x0050C198> _50C198;
+    static loco_global<int8_t, 0x0050C197> _loadErrorCode;
+    static loco_global<string_id, 0x0050C198> _loadErrorMessage;
 
     // 0x0046ABCB
     static void tickLogic()
@@ -794,17 +794,20 @@ namespace OpenLoco
         Title::update();
 
         S5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
-        if (_50C197 != 0)
+        if (_loadErrorCode != 0)
         {
-            auto title = StringIds::error_unable_to_load_saved_game;
-            string_id message = _50C198;
-            if (_50C197 == -2)
+            if (_loadErrorCode == -2)
             {
-                title = _50C198;
-                message = StringIds::null;
+                string_id title = _loadErrorMessage;
+                string_id message = StringIds::null;
+                Ui::Windows::showError(title, message);
             }
-            _50C197 = 0;
-            Ui::Windows::showError(title, message);
+            else
+            {
+                auto objectList = S5::getObjectErrorList();
+                Ui::Windows::ObjectLoadError::open(objectList);
+            }
+            _loadErrorCode = 0;
         }
     }
 
