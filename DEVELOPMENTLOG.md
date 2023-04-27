@@ -1,3 +1,5 @@
+# OpenLoco version 23.04.1+ (???)
+
 # OpenLoco version 23.04.1 (2023-04-27)
 
 Whilst implementing one of the vehicle game commands for v23.04 a refactor went slightly wrong causing the local/express setting of a train to constantly be reset. Woops! Eventually we hope to have a proper testing system that would capture this sort of mistake but its hard to add such a testing system whilst we depend on the base game.
