@@ -9,7 +9,7 @@
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
-#include <sstream>
+#include <fmt/format.h>
 
 namespace OpenLoco::Ui::Windows::ObjectLoadError
 {
@@ -230,9 +230,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             drawingCtx.drawStringLeft(rt, namePos, y, window.getColour(WindowColour::secondary), text_colour_id, &args);
 
             // Copy object checksum to buffer
-            std::stringstream ss;
-            ss << std::uppercase << std::setfill('0') << std::hex << std::setw(8) << header.checksum;
-            const auto checksum = ss.str();
+            const auto checksum = fmt::format("{:08X}", header.checksum);
             std::memcpy(buffer, checksum.c_str(), 8);
             buffer[8] = '\0';
 
