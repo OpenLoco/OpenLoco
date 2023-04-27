@@ -511,12 +511,12 @@ namespace OpenLoco::S5
         _loadErrorMessage = StringIds::buffer_2040;
     }
 
-    static void setObjectErrorList(const std::vector<ObjectHeader> list)
+    static void setObjectErrorList(const std::vector<ObjectHeader>& list)
     {
         _loadErrorObjectsList = list;
     }
 
-    const std::vector<ObjectHeader> getObjectErrorList()
+    const std::vector<ObjectHeader>& getObjectErrorList()
     {
         return _loadErrorObjectsList;
     }
