@@ -31,14 +31,11 @@ extern "C" __declspec(dllexport) int StartOpenLoco([[maybe_unused]] HINSTANCE hI
 
     for (auto i = 0; i < argc; ++i)
     {
-        const auto srcLen = wcslen(argw[i]);
-
-        int length = WideCharToMultiByte(CP_UTF8, 0, argw[i], srcLen, 0, 0, NULL, NULL);
-        argvStrs[i].resize(length + 1);
+        int length = WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, 0, 0, NULL, NULL);
+        argvStrs[i].resize(length);
         argv.get()[i] = argvStrs[i].data();
 
-        WideCharToMultiByte(CP_UTF8, 0, argw[i], srcLen, argvStrs[i].data(), length, NULL, NULL);
-        argvStrs[i].data()[length] = '\0';
+        WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, argvStrs[i].data(), length, NULL, NULL);
     }
     LocalFree(reinterpret_cast<HLOCAL>(argw));
     const auto res = OpenLoco::main(argc, const_cast<const char**>(argv.get()));
