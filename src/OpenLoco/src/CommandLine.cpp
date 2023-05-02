@@ -25,41 +25,6 @@ namespace OpenLoco
         _cmdlineOptions = options;
     }
 
-    static std::vector<std::string> splitArgs(const char* args)
-    {
-        std::vector<std::string> arguments;
-        arguments.push_back("");
-        auto ch = args;
-        auto arg = ch;
-        auto inQuotes = false;
-        while (*ch != '\0')
-        {
-            if (*ch == ' ' && !inQuotes)
-            {
-                if (ch != arg)
-                {
-                    arguments.emplace_back(arg, ch - arg);
-                }
-                arg = ch + 1;
-            }
-            else if (*ch == '"' && ch == arg)
-            {
-                inQuotes = true;
-                arg = ch + 1;
-            }
-            else if (*ch == '"' && (*(ch + 1) == ' ' || *(ch + 1) == '\0'))
-            {
-                arguments.emplace_back(arg, ch - arg);
-                arg = ch + 1;
-                inQuotes = false;
-            }
-            ch++;
-        }
-        if (*arg != '\0')
-            arguments.emplace_back(arg);
-        return arguments;
-    }
-
     class CommandLineParser
     {
     private:
@@ -390,17 +355,6 @@ namespace OpenLoco
             options.logLevels = "info, warning, error";
 
         return options;
-    }
-
-    std::optional<CommandLineOptions> parseCommandLine(const char* args)
-    {
-        auto argsV = splitArgs(args);
-        std::vector<const char*> argsC;
-        for (const auto& s : argsV)
-        {
-            argsC.push_back(s.c_str());
-        }
-        return parseCommandLine(argsC.size(), argsC.data());
     }
 
     void printVersion()

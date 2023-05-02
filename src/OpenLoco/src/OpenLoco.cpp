@@ -1211,17 +1211,4 @@ namespace OpenLoco
             return 1;
         }
     }
-
-    int main(const char* args)
-    {
-        auto options = parseCommandLine(args);
-        if (options)
-        {
-            return main(*options);
-        }
-        else
-        {
-            return 1;
-        }
-    }
 }

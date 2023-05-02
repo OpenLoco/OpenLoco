@@ -26,7 +26,6 @@ namespace OpenLoco
 
     void sub_431695(uint16_t var_F253A0);
     int main(int argc, const char** argv);
-    int main(const char* args);
     void promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
     [[noreturn]] void exitWithError(OpenLoco::string_id message, uint32_t errorCode);
