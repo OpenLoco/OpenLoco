@@ -25,7 +25,7 @@ namespace OpenLoco
     void simulateGame(const fs::path& path, int32_t ticks);
 
     void sub_431695(uint16_t var_F253A0);
-    int main(int argc, const char** argv);
+    int main(std::vector<std::string>&& argv);
     void promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
     [[noreturn]] void exitWithError(OpenLoco::string_id message, uint32_t errorCode);

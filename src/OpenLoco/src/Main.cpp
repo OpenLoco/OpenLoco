@@ -22,23 +22,18 @@ extern "C" __declspec(dllexport) int StartOpenLoco([[maybe_unused]] HINSTANCE hI
     auto* argw = CommandLineToArgvW(cmdline, &argc);
 
     // This will hold a utf8 string of the command line
-    // we are doing this convoluted method so that memory is
-    // cleaned up automatically
     std::vector<std::string> argvStrs;
     argvStrs.resize(argc);
-    // This will hold a utf8 c string of the command line
-    auto argv = std::make_unique<char*[]>(argc);
 
     for (auto i = 0; i < argc; ++i)
     {
         int length = WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, 0, 0, NULL, NULL);
         argvStrs[i].resize(length);
-        argv.get()[i] = argvStrs[i].data();
 
         WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, argvStrs[i].data(), length, NULL, NULL);
     }
     LocalFree(reinterpret_cast<HLOCAL>(argw));
-    const auto res = OpenLoco::main(argc, const_cast<const char**>(argv.get()));
+    const auto res = OpenLoco::main(std::move(argvStrs));
 
     return res;
 }
@@ -48,6 +43,12 @@ extern "C" __declspec(dllexport) int StartOpenLoco([[maybe_unused]] HINSTANCE hI
 int main(int argc, const char** argv)
 {
     OpenLoco::Interop::loadSections();
-    return OpenLoco::main(argc, argv);
+    std::vector<std::string> argvStrs;
+    argvStrs.resize(argc);
+    for (auto i = 0; i < argc; ++i)
+    {
+        argvStrs[i] = argv[i];
+    }
+    return OpenLoco::main(std::move(argvStrs));
 }
 #endif

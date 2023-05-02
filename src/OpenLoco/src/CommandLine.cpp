@@ -140,10 +140,10 @@ namespace OpenLoco
         }
 
     public:
-        CommandLineParser(int argc, const char** argv)
+        CommandLineParser(const std::vector<std::string>& argv)
         {
-            _args.resize(argc - 1);
-            for (int i = 1; i < argc; i++)
+            _args.resize(argv.size() - 1);
+            for (size_t i = 1; i < argv.size(); i++)
             {
                 _args[i - 1] = argv[i];
             }
@@ -283,9 +283,9 @@ namespace OpenLoco
         }
     };
 
-    std::optional<CommandLineOptions> parseCommandLine(int argc, const char** argv)
+    std::optional<CommandLineOptions> parseCommandLine(std::vector<std::string>&& argv)
     {
-        auto parser = CommandLineParser(argc, argv)
+        auto parser = CommandLineParser(argv)
                           .registerOption("--bind", 1)
                           .registerOption("--port", "-p", 1)
                           .registerOption("-o", 1)
