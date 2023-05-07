@@ -20,6 +20,7 @@
 #include "Objects/WaterObject.h"
 #include "Scenario.h"
 #include "SceneManager.h"
+#include "ToolManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/WindowManager.h"
@@ -85,7 +86,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
     static loco_global<int16_t, 0x0052337A> _dragLastY;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
@@ -332,7 +332,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasFlag(Input::Flags::toolActive))
                 WindowManager::close(&self);
 
-            if (_toolWindowType != WindowType::terraform)
+            if (ToolManager::getToolWindowType() != WindowType::terraform)
                 WindowManager::close(&self);
 
             if (!Input::hasFlag(Input::Flags::flag5))
@@ -1356,7 +1356,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             TileManager::mapInvalidateSelectionRect();
 
-            if (Ui::getToolCursor() != CursorId::upDownArrow)
+            if (ToolManager::getToolWindowCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                 auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
@@ -1450,7 +1450,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                         return;
 
-                    Ui::setToolCursor(CursorId::upDownArrow);
+                    ToolManager::setToolWindowCursor(CursorId::upDownArrow);
                     break;
             }
         }
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     TileManager::mapInvalidateSelectionRect();
 
                     Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                    Ui::setToolCursor(CursorId::landTool);
+                    ToolManager::setToolWindowCursor(CursorId::landTool);
                     break;
             }
         }
@@ -1715,7 +1715,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             TileManager::mapInvalidateSelectionRect();
 
-            if (Ui::getToolCursor() != CursorId::upDownArrow)
+            if (ToolManager::getToolWindowCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
@@ -1759,7 +1759,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                 return;
 
-            Ui::setToolCursor(CursorId::upDownArrow);
+            ToolManager::setToolWindowCursor(CursorId::upDownArrow);
         }
 
         static void raiseWater(uint8_t flags)
@@ -1836,7 +1836,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 TileManager::mapInvalidateSelectionRect();
 
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                Ui::setToolCursor(CursorId::waterTool);
+                ToolManager::setToolWindowCursor(CursorId::waterTool);
             }
         }
 
@@ -2026,7 +2026,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasFlag(Input::Flags::toolActive))
                 WindowManager::close(&self);
 
-            if (_toolWindowType != WindowType::terraform)
+            if (ToolManager::getToolWindowType() != WindowType::terraform)
                 WindowManager::close(&self);
 
             if (!Input::hasFlag(Input::Flags::flag5))
@@ -2414,7 +2414,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasFlag(Input::Flags::toolActive))
                 WindowManager::close(&self);
 
-            if (_toolWindowType != WindowType::terraform)
+            if (ToolManager::getToolWindowType() != WindowType::terraform)
                 WindowManager::close(&self);
 
             self.frameNo++;

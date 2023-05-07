@@ -14,6 +14,7 @@
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "SceneManager.h"
+#include "ToolManager.h"
 #include "Ui/Dropdown.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -453,7 +454,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             if (isNetworkHost())
             {
-                if (_toolWindowType == WindowType::construction)
+                if (ToolManager::getToolWindowType() == WindowType::construction)
                     self.widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
             }
         }

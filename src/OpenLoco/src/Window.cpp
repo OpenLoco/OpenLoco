@@ -9,6 +9,7 @@
 #include "Logging.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "ToolManager.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Widget.h"
@@ -1482,7 +1483,7 @@ namespace OpenLoco::Ui
         uint64_t tool_widget = 0;
         if (Input::isToolActive(this->type, this->number))
         {
-            tool_widget = 1ULL << addr<0x00523394, uint32_t>();
+            tool_widget = 1ULL << ToolManager::getToolWidgetIndex();
         }
 
         uint64_t hovered_widget = 0;

@@ -27,7 +27,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t[44], 0x004F891C> _trackPieceToFlags; // Roll into TrackData?
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;

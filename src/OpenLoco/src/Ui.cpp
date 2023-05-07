@@ -1,5 +1,6 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameStateFlags.h"
+#include "ToolManager.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -71,10 +72,6 @@ namespace OpenLoco::Ui
     // TODO: Move this into renderer.
     static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
     static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
-    static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
-    static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<uint8_t[256], 0x01140740> _keyboardState;
 
     bool _resolutionsAllowAnyAspectRatio = false;
@@ -314,16 +311,6 @@ namespace OpenLoco::Ui
     void showCursor()
     {
         SDL_ShowCursor(1);
-    }
-
-    void setToolCursor(CursorId id)
-    {
-        _currentToolCursor = id;
-    }
-
-    CursorId getToolCursor()
-    {
-        return *_currentToolCursor;
     }
 
     // 0x0040447F
@@ -779,10 +766,10 @@ namespace OpenLoco::Ui
             return;
         }
 
-        auto toolWindow = WindowManager::find(_toolWindowType, _toolWindowNumber);
+        auto toolWindow = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
         if (toolWindow != nullptr)
         {
-            toolWindow->callToolUpdate(_toolWidgetIdx, x, y);
+            toolWindow->callToolUpdate(ToolManager::getToolWidgetIndex(), x, y);
         }
         else
         {

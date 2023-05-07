@@ -27,8 +27,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MessageWindow
 {
-    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
 
     namespace Common

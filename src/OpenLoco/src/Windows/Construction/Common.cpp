@@ -22,6 +22,7 @@
 #include "Objects/TrainSignalObject.h"
 #include "Objects/TrainStationObject.h"
 #include "SceneManager.h"
+#include "ToolManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -32,8 +33,6 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
-    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
-
     static Window* nonTrackWindow()
     {
         auto window = WindowManager::find(WindowType::construction);
@@ -1023,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             if (isNetworkHost())
             {
-                auto window = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                auto window = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (window != nullptr)
                     Input::toolCancel();
             }
