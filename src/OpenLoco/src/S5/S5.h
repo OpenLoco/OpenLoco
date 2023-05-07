@@ -67,6 +67,7 @@ namespace OpenLoco::S5
     {
         Original,
         Simplex,
+        HeightMap,
     };
 
     enum class LandDistributionPattern : uint8_t

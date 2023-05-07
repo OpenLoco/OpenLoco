@@ -276,6 +276,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static const StringId generatorIds[] = {
             StringIds::generator_original,
             StringIds::generator_simplex,
+            StringIds::generator_heightmap,
         };
 
         // 0x0043DB76

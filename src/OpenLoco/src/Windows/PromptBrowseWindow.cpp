@@ -37,6 +37,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         savedGame,
         landscape,
+        heightmap,
     };
 
     enum widx
@@ -116,6 +117,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Utility::iequals(filter, S5::filterSC5))
         {
             *_fileType = BrowseFileType::landscape;
+        }
+        else if (Utility::iequals(filter, "*.png"))
+        {
+            *_fileType = BrowseFileType::heightmap;
         }
         Utility::strlcpy(_filter, filter, _filter.size());
 
@@ -428,6 +433,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     }
                 }
                 else if (*_fileType == BrowseFileType::landscape)
+                {
+                    if (_previewScenarioOptions != nullptr)
+                    {
+                        drawLandscapePreview(window, *rt, x, y, width, 129);
+                    }
+                }
+                else if (*_fileType == BrowseFileType::heightmap)
                 {
                     if (_previewScenarioOptions != nullptr)
                     {
@@ -811,6 +823,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             case BrowseFileType::savedGame:
                 return S5::extensionSV5;
+            case BrowseFileType::heightmap:
+                return ".png";
             case BrowseFileType::landscape:
             default:
                 return S5::extensionSC5;
@@ -931,6 +945,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 break;
             case BrowseFileType::landscape:
                 _previewScenarioOptions = S5::readScenarioOptions(path);
+                break;
+            case BrowseFileType::heightmap:
+                //_previewScenarioOptions = S5::readScenarioOptions(path);
                 break;
         }
     }

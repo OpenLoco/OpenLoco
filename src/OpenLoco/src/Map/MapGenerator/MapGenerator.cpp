@@ -16,6 +16,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "OriginalTerrainGenerator.h"
+#include "PngTerrainGenerator.h"
 #include "Random.h"
 #include "S5/S5.h"
 #include "Scenario.h"
@@ -46,10 +47,15 @@ namespace OpenLoco::World::MapGenerator
             OriginalTerrainGenerator generator;
             generator.generate(options, heightMap);
         }
-        else
+        else if (options.generator == LandGeneratorType::Simplex)
         {
             SimplexTerrainGenerator generator;
             generator.generate(options, heightMap, std::random_device{}());
+        }
+        else
+        {
+            PngTerrainGenerator generator;
+            generator.generate(heightMap);
         }
     }
 

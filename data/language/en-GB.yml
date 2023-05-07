@@ -2392,3 +2392,4 @@ strings:
   2337: Generator
   2338: "{COLOUR WINDOW_2}Current hill object: {COLOUR BLACK}{STRINGID}"
   2339: "{COLOUR WINDOW_2}Number of terrain smoothing passes:"
+  2340: "Heightmap"
