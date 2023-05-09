@@ -554,11 +554,11 @@ namespace OpenLoco::Ui::Windows::Construction
     // 0x0049FEC7
     void removeConstructionGhosts()
     {
-        if ((_byte_522096 & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
+        if ((_ghostVisibilityFlags & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
         {
             World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
-            _byte_522096 = _byte_522096 & ~GhostVisibilityFlags::constructArrow;
+            _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
         Construction::removeTrackGhosts();
         Signal::removeSignalGhost();
@@ -1004,7 +1004,7 @@ namespace OpenLoco::Ui::Windows::Construction
             if (Input::isToolActive(WindowType::construction, self->number))
                 return;
 
-            if ((_byte_522096 & flag) == GhostVisibilityFlags::none)
+            if ((_ghostVisibilityFlags & flag) == GhostVisibilityFlags::none)
                 return;
 
             removeConstructionGhosts();
