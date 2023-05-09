@@ -22,7 +22,7 @@
 #include "Objects/TrainSignalObject.h"
 #include "Objects/TrainStationObject.h"
 #include "SceneManager.h"
-#include "ToolManager.h"
+#include "Ui/ToolManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"

@@ -9,9 +9,9 @@
 #include "Logging.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
-#include "ToolManager.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Widget.h"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <OpenLoco/Interop/Interop.hpp>

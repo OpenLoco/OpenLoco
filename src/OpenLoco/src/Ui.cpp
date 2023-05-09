@@ -1,6 +1,5 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameStateFlags.h"
-#include "ToolManager.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -43,6 +42,7 @@
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
