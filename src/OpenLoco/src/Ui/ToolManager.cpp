@@ -42,7 +42,7 @@ namespace OpenLoco::ToolManager
     }
 
     // 0x00523394
-    uint16_t getToolWidgetIndex()
+    int16_t getToolWidgetIndex()
     {
         return _toolWidgetIndex;
     }

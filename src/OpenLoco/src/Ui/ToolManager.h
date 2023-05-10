@@ -21,6 +21,6 @@ namespace OpenLoco::ToolManager
     void setToolWindowCursor(Ui::CursorId toolWindowCursor);
 
     // 0x00523394
-    uint16_t getToolWidgetIndex();
+    int16_t getToolWidgetIndex();
     void setToolWidgetIndex(uint16_t toolWidgetIndex);
 }
