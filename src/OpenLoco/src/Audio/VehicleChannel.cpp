@@ -134,7 +134,7 @@ namespace OpenLoco::Audio
         }
 
         auto* veh26 = v->asVehicle2Or6();
-        if (veh26 == nullptr || ((veh26->var_4A & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
+        if (veh26 == nullptr || ((veh26->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
         {
             stop();
             return;
@@ -147,7 +147,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        veh26->var_4A &= ~Vehicles::SoundFlags::flag0;
+        veh26->soundFlags &= ~Vehicles::SoundFlags::flag0;
         const auto& attributes = _channel.getAttributes();
         if (attributes.volume != sa.volume)
         {
