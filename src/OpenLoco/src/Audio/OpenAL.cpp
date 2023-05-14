@@ -185,7 +185,7 @@ namespace OpenAL
                 format = AL_FORMAT_MONO16;
             }
         }
-        alBufferData(id, format, data.begin(), data.size(), sampleRate);
+        alBufferData(id, format, data.data(), data.size(), sampleRate);
         return id;
     }
 

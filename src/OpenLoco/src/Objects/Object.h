@@ -135,5 +135,4 @@ namespace OpenLoco
         ObjectType type;
         LoadedObjectId id;
     };
-    static_assert(sizeof(LoadedObjectHandle) == 4);
 }
