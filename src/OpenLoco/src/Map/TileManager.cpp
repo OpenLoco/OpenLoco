@@ -831,22 +831,29 @@ namespace OpenLoco::World::TileManager
                 }
             }
         } while (restartChecking);
-        return false;
+        return true;
     }
 
     // 0x00462926
     static bool canConstructWithClearAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction, uint8_t flags)
     {
+        auto functionWrapper = [clearFunction](const TileElement& el) -> ClearResult {
+            registers regs{};
+            regs.esi = X86Pointer(&el);
+            return !(call(reinterpret_cast<uint32_t>(clearFunction), regs) & Interop::X86_FLAG_CARRY) ? ClearResult::noCollision : ClearResult::collsionNoMessage;
+        };
+
         _F00138 = clearFunction != nullptr ? reinterpret_cast<uint32_t>(clearFunction) : 0xFFFFFFFF;
         _F00166 = flags;
 
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dl = baseZ;
-        regs.dh = clearZ;
-        regs.bl = qt.getBaseQuarterOccupied() | (qt.getZQuarterOccupied() << 4);
-        return !(call(0x00462937, regs) & Interop::X86_FLAG_CARRY);
+        if (clearFunction == nullptr)
+        {
+            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, std::nullopt);
+        }
+        else
+        {
+            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, functionWrapper);
+        }
     }
 
     // 0x00462908
