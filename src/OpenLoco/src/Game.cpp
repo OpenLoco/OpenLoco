@@ -131,7 +131,7 @@ namespace OpenLoco::Game
         }
 
         GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = 1;
+        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
         args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
 
@@ -280,7 +280,7 @@ namespace OpenLoco::Game
                 {
                     // load landscape
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = 2;
+                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
                     args.option2 = LoadOrQuitMode::loadGamePrompt;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
@@ -307,7 +307,7 @@ namespace OpenLoco::Game
                 else
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
-                    args.option1 = 2;
+                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
                     args.option2 = LoadOrQuitMode::loadGamePrompt;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }

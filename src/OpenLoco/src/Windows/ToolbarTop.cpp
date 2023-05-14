@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 // Load game
                 {
                     GameCommands::LoadSaveQuitGameArgs loadGameArgs{};
-                    loadGameArgs.option1 = 0;
+                    loadGameArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
                     loadGameArgs.option2 = LoadOrQuitMode::loadGamePrompt;
                     GameCommands::doCommand(loadGameArgs, GameCommands::Flags::apply);
                 }
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 // Return to title screen
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToMenuArgs{};
-                    quitToMenuArgs.option1 = 0;
+                    quitToMenuArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
                     quitToMenuArgs.option2 = LoadOrQuitMode::returnToTitlePrompt;
                     GameCommands::doCommand(quitToMenuArgs, GameCommands::Flags::apply);
                 }
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 // Exit to desktop
                 {
                     GameCommands::LoadSaveQuitGameArgs quitToDesktopArgs{};
-                    quitToDesktopArgs.option1 = 0;
+                    quitToDesktopArgs.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
                     quitToDesktopArgs.option2 = LoadOrQuitMode::quitGamePrompt;
                     GameCommands::doCommand(quitToDesktopArgs, GameCommands::Flags::apply);
                 }

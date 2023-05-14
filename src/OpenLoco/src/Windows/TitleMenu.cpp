@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_4391E2()
     {
         GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = 0;
+        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::save;
         args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }

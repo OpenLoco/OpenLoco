@@ -20,13 +20,13 @@ namespace OpenLoco::GameCommands
         if ((flags & Flags::apply) == 0)
             return 0;
 
-        if (args.option1 == 1)
+        if (args.option1 == LoadSaveQuitGameArgs::Options::closeSavePrompt)
         {
             Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
             return 0;
         }
 
-        if (args.option1 == 0)
+        if (args.option1 == LoadSaveQuitGameArgs::Options::save)
         {
             _savePromptType = args.option2;
             Ui::Windows::TextInput::cancel();
