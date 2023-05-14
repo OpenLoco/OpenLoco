@@ -843,10 +843,21 @@ namespace OpenLoco::Ui::Windows::Station
 
             GameCommands::setErrorTitle(StringIds::error_cant_rename_station);
 
-            uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_11(self.number, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_11(0, 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_11(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::RenameStationArgs args{};
+
+            args.stationId = StationId(self.number);
+            args.nameBufferIndex = 1;
+            std::memcpy(args.buffer, input, 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.nameBufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.nameBufferIndex = 0;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         // 0x0048E6F1
