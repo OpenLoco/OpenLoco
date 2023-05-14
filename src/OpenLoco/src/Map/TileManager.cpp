@@ -605,6 +605,7 @@ namespace OpenLoco::World::TileManager
     {
         allCollisionsRemoved,
         collision,
+        collisionErrorSet,
         keepChecking,
         restartChecking,
     };
@@ -622,7 +623,7 @@ namespace OpenLoco::World::TileManager
             if (clearFunc.has_value())
             {
                 _F0015C = nullptr;
-                if ((clearFunc.value())(el) != ClearResult::noCollision)
+                if ((clearFunc.value())(el) == ClearResult::noCollision)
                 {
                     if (_F0015C == nullptr)
                     {
@@ -631,7 +632,7 @@ namespace OpenLoco::World::TileManager
                     if (_F0015C == reinterpret_cast<TileElement*>(-1))
                     {
                         // This is a no collision as it has removed all the collisions
-                        return Sub462B4FResult::allCollisionsRemoved; 
+                        return Sub462B4FResult::allCollisionsRemoved;
                     }
                     // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
                     return Sub462B4FResult::restartChecking;
@@ -641,162 +642,195 @@ namespace OpenLoco::World::TileManager
             return Sub462B4FResult::collision;
         };
 
-        const auto tile = get(pos);
-        for (auto& el : tile)
-        {
-            const auto* elSurface = el.as<SurfaceElement>();
-            if (elSurface == nullptr)
+        auto checkSurfaceElement = [&clearFunc, &sub_462B4F, clearZ, baseZ, qt](const TileElement& el, const SurfaceElement& elSurface) -> Sub462B4FResult {
+            if (elSurface.isFlag5())
             {
-                if (flags & (1U << 7))
+                const TileElement* el2 = &el;
+                if (sub_462BB3(el2) != ClearResult::noCollision)
                 {
-                    if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
-                    {
-                        // 0x00462B4F
-                    }
-                    const auto* elStation = el.as<StationElement>();
-                    if (elStation != nullptr)
-                    {
-                        if (elStation->stationType() == StationType::airport || elStation->stationType() == StationType::docks)
-                        {
-                            // 0x00462B4F
-                        }
-                    }
+                    return el2 == reinterpret_cast<TileElement*>(-1) ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
                 }
-                if (baseZ >= el.clearZ())
-                {
-                    continue;
-                }
-                if (clearZ <= el.baseZ())
-                {
-                    continue;
-                }
-                if (el.isGhost())
-                {
-                    continue;
-                }
-                if ((el.occupiedQuarter() & qt.getBaseQuarterOccupied()) == 0)
-                {
-                    continue;
-                }
-                if (!el.isFlag5())
-                {
-                    // 0x00462B4F
-                }
-                if (clearFunc.has_value())
-                {
-                    _F0015C = nullptr;
-                    if ((clearFunc.value())(el) != ClearResult::noCollision)
-                    {
-                        if (_F0015C == nullptr)
-                        {
-                            continue;
-                        }
-                        if (_F0015C == reinterpret_cast<TileElement*>(-1))
-                        {
-                            // all collisions removed
-                            return true;
-                        }
-                        // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
-                        continue;
-                    }
-                }
-                // if (sub_462BB3()){ some stuff getCollideDetails() return false; }
             }
-            else
+            const auto waterZ = elSurface.water() * kMicroToSmallZStep;
+            if (waterZ != 0)
             {
-                if (elSurface->isFlag5())
+                if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
                 {
-                    // if (sub_462BB3()){ some stuff getCollideDetails() return false; }
-                }
-                const auto waterZ = elSurface->water() * kMicroToSmallZStep;
-                if (waterZ != 0)
-                {
-                    if (clearZ > elSurface->clearZ() && baseZ < waterZ + 4)
+                    _F00166 = _F00166 | (1 << 3);
+                    if (baseZ < waterZ)
                     {
-                        _F00166 = _F00166 | (1 << 3);
-                        if (baseZ < waterZ)
+                        _F00166 = _F00166 | (1 << 2);
+                        if (clearZ <= waterZ)
                         {
-                            _F00166 = _F00166 | (1 << 2);
-                            if (clearZ <= waterZ)
+                            if (clearFunc.has_value())
                             {
-                                if (clearFunc.has_value())
+                                _F0015C = nullptr;
+                                if (auto res = (clearFunc.value())(el); res != ClearResult::noCollision)
                                 {
-                                    _F0015C = nullptr;
-                                    if (auto res = (clearFunc.value())(el); res != ClearResult::noCollision)
+                                    if (res == ClearResult::collsionNoMessage)
                                     {
-                                        if (res == ClearResult::collsionNoMessage)
-                                        {
-                                            GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
-                                        }
-                                        return false;
+                                        GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
                                     }
+                                    return Sub462B4FResult::collisionErrorSet;
                                 }
-                                else
-                                {
-                                    GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
-                                    return false;
-                                }
+                            }
+                            else
+                            {
+                                GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
+                                return Sub462B4FResult::collisionErrorSet;
                             }
                         }
                     }
                 }
-                if (qt.getZQuarterOccupied() == 0xF)
-                {
-                    continue;
-                }
+            }
+            if (qt.getZQuarterOccupied() == 0xF)
+            {
+                return Sub462B4FResult::keepChecking;
+            }
 
-                if (clearZ <= elSurface->baseZ())
+            if (clearZ <= elSurface.baseZ())
+            {
+                _F00166 = _F00166 | (1u << 2);  // ELEMENT_IS_UNDERGROUND
+                _F00166 = _F00166 & ~(1u << 1); // ELEMENT_IS_ABOVE_GROUND
+                return Sub462B4FResult::keepChecking;
+            }
+            else
+            {
+                auto northZ = elSurface.baseZ();
+                auto eastZ = northZ;
+                auto southZ = northZ;
+                auto westZ = northZ;
+                const auto slope = elSurface.slope();
+                if (slope & SurfaceSlope::CornerUp::north)
                 {
-                    _F00166 = _F00166 | (1u << 2);  // ELEMENT_IS_UNDERGROUND
-                    _F00166 = _F00166 & ~(1u << 1); // ELEMENT_IS_ABOVE_GROUND
-                    continue;
-                }
-                else
-                {
-                    auto northZ = elSurface->baseZ();
-                    auto eastZ = northZ;
-                    auto southZ = northZ;
-                    auto westZ = northZ;
-                    const auto slope = elSurface->slope();
-                    if (slope & SurfaceSlope::CornerUp::north)
-                    {
+                    northZ += kSmallZStep;
+                    if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
                         northZ += kSmallZStep;
-                        if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
-                            northZ += kSmallZStep;
-                    }
-                    if (slope & SurfaceSlope::CornerUp::east)
-                    {
+                }
+                if (slope & SurfaceSlope::CornerUp::east)
+                {
+                    eastZ += kSmallZStep;
+                    if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
                         eastZ += kSmallZStep;
-                        if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
-                            eastZ += kSmallZStep;
-                    }
-                    if (slope & SurfaceSlope::CornerUp::south)
-                    {
+                }
+                if (slope & SurfaceSlope::CornerUp::south)
+                {
+                    southZ += kSmallZStep;
+                    if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
                         southZ += kSmallZStep;
-                        if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
-                            southZ += kSmallZStep;
-                    }
-                    if (slope & SurfaceSlope::CornerUp::west)
-                    {
+                }
+                if (slope & SurfaceSlope::CornerUp::west)
+                {
+                    westZ += kSmallZStep;
+                    if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
                         westZ += kSmallZStep;
-                        if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
-                            westZ += kSmallZStep;
-                    }
-                    const auto doublHeight = baseZ + 8;
+                }
+                const auto doublHeight = baseZ + 8;
 
-                    const auto baseQuarter = qt.getBaseQuarterOccupied();
-                    const auto zQuarter = qt.getZQuarterOccupied();
-                    if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doublHeight >= northZ))
-                        && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doublHeight >= eastZ))
-                        && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doublHeight >= southZ))
-                        && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doublHeight >= westZ)))
+                const auto baseQuarter = qt.getBaseQuarterOccupied();
+                const auto zQuarter = qt.getZQuarterOccupied();
+                if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doublHeight >= northZ))
+                    && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doublHeight >= eastZ))
+                    && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doublHeight >= southZ))
+                    && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doublHeight >= westZ)))
+                {
+                    return Sub462B4FResult::keepChecking;
+                }
+                return sub_462B4F(el);
+            } };
+
+        auto checkNonSurfaceElement = [&clearFunc, &sub_462B4F, clearZ, baseZ, qt, flags](const TileElement& el) -> Sub462B4FResult {
+            if (flags & (1U << 7))
+            {
+                if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
+                {
+                    return sub_462B4F(el);
+                }
+                const auto* elStation = el.as<StationElement>();
+                if (elStation != nullptr)
+                {
+                    if (elStation->stationType() == StationType::airport || elStation->stationType() == StationType::docks)
                     {
-                        continue;
+                        return sub_462B4F(el);
                     }
-                    // 0x00462B4F
                 }
             }
-        }
+            if (baseZ >= el.clearZ())
+            {
+                return Sub462B4FResult::keepChecking;
+            }
+            if (clearZ <= el.baseZ())
+            {
+                return Sub462B4FResult::keepChecking;
+            }
+            if (el.isGhost())
+            {
+                return Sub462B4FResult::keepChecking;
+            }
+            if ((el.occupiedQuarter() & qt.getBaseQuarterOccupied()) == 0)
+            {
+                return Sub462B4FResult::keepChecking;
+            }
+            if (!el.isFlag5())
+            {
+                return sub_462B4F(el);
+            }
+            if (clearFunc.has_value())
+            {
+                _F0015C = nullptr;
+                if ((clearFunc.value())(el) == ClearResult::noCollision)
+                {
+                    if (_F0015C == nullptr)
+                    {
+                        return Sub462B4FResult::keepChecking;
+                    }
+                    if (_F0015C == reinterpret_cast<TileElement*>(-1))
+                    {
+                        // all collisions removed
+                        return Sub462B4FResult::allCollisionsRemoved;
+                    }
+                    // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
+                    return Sub462B4FResult::restartChecking;
+                }
+            }
+            const TileElement* el2 = &el;
+            if (sub_462BB3(el2) != ClearResult::noCollision)
+            {
+                return el2 == reinterpret_cast<TileElement*>(-1) ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
+            }
+            return Sub462B4FResult::keepChecking;
+        };
+
+        bool restartChecking = false;
+        do
+        {
+            restartChecking = false;
+            const auto tile = get(pos);
+            for (auto& el : tile)
+            {
+                const auto* elSurface = el.as<SurfaceElement>();
+                const auto res = elSurface == nullptr ? checkNonSurfaceElement(el) : checkSurfaceElement(el, *elSurface);
+                switch (res)
+                {
+                    case Sub462B4FResult::keepChecking:
+                        break;
+                    case Sub462B4FResult::allCollisionsRemoved:
+                        return true;
+                    case Sub462B4FResult::collision:
+                        // get details sub_462C8E
+                        return false;
+                    case Sub462B4FResult::restartChecking:
+                        restartChecking = true;
+                        break;
+                    case Sub462B4FResult::collisionErrorSet:
+                        return false;
+                }
+                if (restartChecking)
+                {
+                    break;
+                }
+            }
+        } while (restartChecking);
         return false;
     }
 
