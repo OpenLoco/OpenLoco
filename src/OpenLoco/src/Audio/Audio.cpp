@@ -472,7 +472,7 @@ namespace OpenLoco::Audio
     // 0x0048A4BF
     void playSound(Vehicles::Vehicle2or6* v)
     {
-        if (v->var_4A & 1)
+        if ((v->soundFlags & Vehicles::SoundFlags::flag0) != Vehicles::SoundFlags::none)
         {
             Logging::verbose("playSound(vehicle #{})", enumValue(v->id));
             auto vc = getFreeVehicleChannel();
@@ -699,7 +699,7 @@ namespace OpenLoco::Audio
             {
                 // jump + return
                 _numActiveVehicleSounds += 1;
-                v->var_4A |= 1;
+                v->soundFlags |= Vehicles::SoundFlags::flag0;
                 v->soundWindowType = main->type;
                 v->soundWindowNumber = main->number;
                 return;
@@ -726,7 +726,7 @@ namespace OpenLoco::Audio
             if (viewport->contains(spritePosition))
             {
                 _numActiveVehicleSounds += 1;
-                v->var_4A |= 1;
+                v->soundFlags |= Vehicles::SoundFlags::flag0;
                 v->soundWindowType = w->type;
                 v->soundWindowNumber = w->number;
                 return;
@@ -739,16 +739,16 @@ namespace OpenLoco::Audio
         switch (x)
         {
             case 0:
-                v->var_4A &= ~1;
+                v->soundFlags &= ~Vehicles::SoundFlags::flag0;
                 break;
             case 1:
-                if (!(v->var_4A & 2))
+                if ((v->soundFlags & Vehicles::SoundFlags::flag1) == Vehicles::SoundFlags::none)
                 {
                     sub_48A274(v);
                 }
                 break;
             case 2:
-                if (v->var_4A & 2)
+                if ((v->soundFlags & Vehicles::SoundFlags::flag1) != Vehicles::SoundFlags::none)
                 {
                     sub_48A274(v);
                 }

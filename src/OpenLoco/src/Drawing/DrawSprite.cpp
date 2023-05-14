@@ -8,7 +8,7 @@ namespace OpenLoco::Drawing
 {
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args)
     {
-        DrawBlendOp op = BlendOp::none;
+        DrawBlendOp op = DrawBlendOp::none;
 
         // Image uses the palette pointer to remap the colours of the image
         if (image.hasPrimary())
@@ -16,38 +16,41 @@ namespace OpenLoco::Drawing
             if (image.isBlended())
             {
                 // Copy non-transparent bitmap data but blend src and dst pixel using the palette map.
-                op = BlendOp::transparent | BlendOp::src | BlendOp::dst;
+                op = DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst;
             }
             else
             {
                 // Copy non-transparent bitmap data but re-colour using the palette map.
-                op = BlendOp::transparent | BlendOp::src;
+                op = DrawBlendOp::transparent | DrawBlendOp::src;
             }
         }
         else if (image.isBlended())
         {
             // Image is only a transparency mask. Just colour the pixels using the palette map.
             // Used for glass.
-            op = BlendOp::transparent | BlendOp::dst;
+            op = DrawBlendOp::transparent | DrawBlendOp::dst;
         }
         else if (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::hasTransparancy))
         {
             // Copy raw bitmap data to target
-            op = BlendOp::none;
+            op = DrawBlendOp::none;
         }
         else
         {
             // Copy raw bitmap data to target but exclude transparent pixels
-            op = BlendOp::transparent;
+            op = DrawBlendOp::transparent;
         }
         // Vanilla did not handle noise image for rle compressed images
         if (args.noiseImage != nullptr && (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::isRLECompressed)))
         {
-            op |= BlendOp::noiseMask;
+            op |= DrawBlendOp::noiseMask;
         }
         return op;
     }
-
+#pragma warning(push)
+#pragma warning(disable : 4063) // not a valid value for a switch of this enum
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch" // not a valid value for a switch of this enum
     template<uint8_t TZoomLevel, bool TIsRLE>
     inline void drawSpriteToBufferHelper(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
@@ -55,29 +58,29 @@ namespace OpenLoco::Drawing
         {
             switch (op)
             {
-                case BlendOp::transparent | BlendOp::src | BlendOp::dst:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::src | BlendOp::dst, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
+                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent | BlendOp::src:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::src, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::src:
+                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent | BlendOp::dst:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::dst, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::dst:
+                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::dst, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::none:
-                    drawBMPSprite<BlendOp::none, TZoomLevel>(rt, args);
+                case DrawBlendOp::none:
+                    drawBMPSprite<DrawBlendOp::none, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent:
-                    drawBMPSprite<BlendOp::transparent, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent:
+                    drawBMPSprite<DrawBlendOp::transparent, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent | BlendOp::src | BlendOp::noiseMask:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::src | BlendOp::noiseMask, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask:
+                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::none | BlendOp::noiseMask:
-                    drawBMPSprite<BlendOp::none | BlendOp::noiseMask, TZoomLevel>(rt, args);
+                case DrawBlendOp::none | DrawBlendOp::noiseMask:
+                    drawBMPSprite<DrawBlendOp::none | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent | BlendOp::noiseMask:
-                    drawBMPSprite<BlendOp::transparent | BlendOp::noiseMask, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::noiseMask:
+                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
                     break;
                 default:
                     assert(false);
@@ -88,20 +91,20 @@ namespace OpenLoco::Drawing
         {
             switch (op)
             {
-                case BlendOp::transparent | BlendOp::src | BlendOp::dst:
-                    drawRLESprite<BlendOp::transparent | BlendOp::src | BlendOp::dst, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
+                    drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent | BlendOp::src:
-                    drawRLESprite<BlendOp::transparent | BlendOp::src, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::src:
+                    drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::src, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent | BlendOp::dst:
-                    drawRLESprite<BlendOp::transparent | BlendOp::dst, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent | DrawBlendOp::dst:
+                    drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::dst, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::none:
-                    drawRLESprite<BlendOp::none, TZoomLevel>(rt, args);
+                case DrawBlendOp::none:
+                    drawRLESprite<DrawBlendOp::none, TZoomLevel>(rt, args);
                     break;
-                case BlendOp::transparent:
-                    drawRLESprite<BlendOp::transparent, TZoomLevel>(rt, args);
+                case DrawBlendOp::transparent:
+                    drawRLESprite<DrawBlendOp::transparent, TZoomLevel>(rt, args);
                     break;
                 default:
                     assert(false);
@@ -109,6 +112,8 @@ namespace OpenLoco::Drawing
             }
         }
     }
+#pragma GCC diagnostic pop
+#pragma warning(pop)
 
     template<>
     void drawSpriteToBuffer<0, false>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)

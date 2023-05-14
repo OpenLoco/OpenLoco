@@ -65,6 +65,14 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WaterMotionFlags);
 
+    enum class SoundFlags : uint16_t
+    {
+        none = 0U,
+        flag0 = 1U << 0,
+        flag1 = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SoundFlags);
+
     enum class Status : uint8_t
     {
         unk_0 = 0, // no position (not placed)
@@ -274,7 +282,7 @@ namespace OpenLoco::Vehicles
         uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
         uint16_t objectId;                    // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                      // sound-related flag(s)
+        SoundFlags soundFlags;                // 0x4A
         Ui::WindowNumber_t soundWindowNumber; // 0x4C
         Ui::WindowType soundWindowType;       // 0x4E
         uint8_t pad_4F[0x56 - 0x4F];
@@ -508,7 +516,7 @@ namespace OpenLoco::Vehicles
         uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
         uint16_t objectId;                    // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                      // sound-related flag(s) common with tail
+        SoundFlags soundFlags;                // 0x4A common with tail
         Ui::WindowNumber_t soundWindowNumber; // 0x4C common with tail
         Ui::WindowType soundWindowType;       // 0x4E common with tail
         int8_t var_4F;
@@ -671,7 +679,7 @@ namespace OpenLoco::Vehicles
         uint8_t drivingSoundVolume;           // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;       // 0x46 channel attribute frequency
         uint16_t objectId;                    // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                      // sound-related flag(s) common with veh_2
+        SoundFlags soundFlags;                // 0x4A common with veh_2
         Ui::WindowNumber_t soundWindowNumber; // 0x4C common with veh_2
         Ui::WindowType soundWindowType;       // 0x4E common with veh_2
         uint16_t trainDanglingTimeout;        // 0x4F counts up when no cars on train

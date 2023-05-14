@@ -2,6 +2,7 @@
 
 #include "Objects/Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 #include <cstddef>
 #include <cstdint>
@@ -13,12 +14,14 @@ namespace OpenLoco::Scenario
 
 namespace OpenLoco::ScenarioManager
 {
-    enum ScenarioIndexFlags : uint8_t
+    enum class ScenarioIndexFlags : uint32_t
     {
-        flag_0 = 1 << 0,
-        completed = 1 << 1,
-        hasPreviewImage = 1 << 2,
+        none = 0U,
+        flag_0 = 1U << 0,
+        completed = 1U << 1,
+        hasPreviewImage = 1U << 2,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ScenarioIndexFlags);
 
     struct ScenarioIndexEntry
     {
@@ -31,7 +34,7 @@ namespace OpenLoco::ScenarioManager
         uint16_t completedMonths;       // 0x122
         char scenarioName[0x40];        // 0x124
         char description[0x100];        // 0x164
-        uint32_t flags;                 // 0x264
+        ScenarioIndexFlags flags;       // 0x264
         char highscoreName[0x100];      // 0x268
         char objective[0x100];          // 0x368
         ObjectHeader currency;          // 0x468
@@ -39,7 +42,7 @@ namespace OpenLoco::ScenarioManager
 
         bool hasFlag(ScenarioIndexFlags flag)
         {
-            return (flags & flag) != 0;
+            return (flags & flag) != ScenarioIndexFlags::none;
         }
     };
 

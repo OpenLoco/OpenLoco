@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E76F
     static void onUpdate(Window& self)
     {
-        Common::onUpdate(&self, (1 << 2));
+        Common::onUpdate(&self, GhostVisibilityFlags::signal);
     }
 
     // Reverse direction map?
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
         if (res != GameCommands::FAILURE)
         {
-            _byte_522096 = _byte_522096 | (1 << 2);
+            _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::signal;
             _signalGhostPos = args.pos;
             _signalGhostRotation = args.rotation;
             _signalGhostTrackId = args.trackId;
@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049FEF6
     void removeSignalGhost()
     {
-        if (_byte_522096 & (1 << 2))
+        if ((_ghostVisibilityFlags & GhostVisibilityFlags::signal) != GhostVisibilityFlags::none)
         {
             GameCommands::SignalRemovalArgs args;
             args.pos = _signalGhostPos;
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.type = _signalGhostTrackObjId;
             GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
 
-            _byte_522096 = _byte_522096 & ~(1 << 2);
+            _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::signal;
         }
     }
 
@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             return;
         }
 
-        if (_byte_522096 & (1 << 2))
+        if ((_ghostVisibilityFlags & GhostVisibilityFlags::signal) != GhostVisibilityFlags::none)
         {
             if (*_signalGhostPos == placementArgs->pos
                 && _signalGhostRotation == placementArgs->rotation

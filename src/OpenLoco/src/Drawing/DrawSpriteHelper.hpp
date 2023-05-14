@@ -23,12 +23,12 @@ namespace OpenLoco::Drawing
     template<DrawBlendOp TBlendOp>
     bool blitPixel(uint8_t src, uint8_t& dst, [[maybe_unused]] const Gfx::PaletteMap::View paletteMap, const uint8_t noiseMask)
     {
-        if constexpr ((TBlendOp & BlendOp::noiseMask) != 0)
+        if constexpr ((TBlendOp & DrawBlendOp::noiseMask) != DrawBlendOp::none)
         {
             // noiseMask is either 0 or 0xFF
             src &= noiseMask;
         }
-        if constexpr (TBlendOp & BlendOp::transparent)
+        if constexpr ((TBlendOp & DrawBlendOp::transparent) != DrawBlendOp::none)
         {
             // Ignore transparent pixels
             if (src == PaletteIndex::transparent)
@@ -37,10 +37,10 @@ namespace OpenLoco::Drawing
             }
         }
 
-        if constexpr (((TBlendOp & BlendOp::src) != 0) && ((TBlendOp & BlendOp::dst) != 0))
+        if constexpr (((TBlendOp & DrawBlendOp::src) != DrawBlendOp::none) && ((TBlendOp & DrawBlendOp::dst) != DrawBlendOp::none))
         {
             auto pixel = blend(paletteMap, src, dst);
-            if constexpr (TBlendOp & BlendOp::transparent)
+            if constexpr ((TBlendOp & DrawBlendOp::transparent) != DrawBlendOp::none)
             {
                 if (pixel == PaletteIndex::transparent)
                 {
@@ -50,10 +50,10 @@ namespace OpenLoco::Drawing
             dst = pixel;
             return true;
         }
-        else if constexpr ((TBlendOp & BlendOp::src) != 0)
+        else if constexpr ((TBlendOp & DrawBlendOp::src) != DrawBlendOp::none)
         {
             auto pixel = paletteMap[src];
-            if constexpr (TBlendOp & BlendOp::transparent)
+            if constexpr ((TBlendOp & DrawBlendOp::transparent) != DrawBlendOp::none)
             {
                 if (pixel == PaletteIndex::transparent)
                 {
@@ -63,10 +63,10 @@ namespace OpenLoco::Drawing
             dst = pixel;
             return true;
         }
-        else if constexpr ((TBlendOp & BlendOp::dst) != 0)
+        else if constexpr ((TBlendOp & DrawBlendOp::dst) != DrawBlendOp::none)
         {
             auto pixel = paletteMap[dst];
-            if constexpr (TBlendOp & BlendOp::transparent)
+            if constexpr ((TBlendOp & DrawBlendOp::transparent) != DrawBlendOp::none)
             {
                 if (pixel == PaletteIndex::transparent)
                 {

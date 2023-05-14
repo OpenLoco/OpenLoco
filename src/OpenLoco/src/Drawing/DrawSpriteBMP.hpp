@@ -22,7 +22,7 @@ namespace OpenLoco::Drawing
         dst += dstLineWidth * args.dstPos.y + args.dstPos.x;
 
         constexpr auto zoom = 1 << TZoomLevel;
-        if constexpr ((TBlendOp & BlendOp::noiseMask) != 0)
+        if constexpr ((TBlendOp & DrawBlendOp::noiseMask) != DrawBlendOp::none)
         {
             const auto* noiseMask = args.noiseImage->offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
             for (; height > 0; height -= zoom)
