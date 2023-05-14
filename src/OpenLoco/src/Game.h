@@ -5,6 +5,13 @@
 namespace OpenLoco
 {
     enum class GameStateFlags : uint32_t;
+
+    enum class LoadOrQuitMode : uint16_t
+    {
+        loadGamePrompt,
+        returnToTitlePrompt,
+        quitGamePrompt,
+    };
 }
 
 namespace OpenLoco::Game

@@ -814,7 +814,7 @@ namespace OpenLoco::Ui
         {
             GameCommands::LoadSaveQuitGameArgs args{};
             args.option1 = 2;
-            args.option2 = 1;
+            args.option2 = LoadOrQuitMode::returnToTitlePrompt;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
@@ -850,7 +850,7 @@ namespace OpenLoco::Ui
         {
             GameCommands::LoadSaveQuitGameArgs args{};
             args.option1 = 0;
-            args.option2 = 2;
+            args.option2 = LoadOrQuitMode::quitGamePrompt;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 

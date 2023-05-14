@@ -13,6 +13,7 @@ namespace OpenLoco
 {
     enum ExpenditureType : uint8_t;
     enum class GameSpeed : uint8_t;
+    enum class LoadOrQuitMode : uint16_t;
 }
 
 namespace OpenLoco::Vehicles
@@ -119,13 +120,6 @@ namespace OpenLoco::GameCommands
         vehicleClone = 80,
         cheat = 81,
         setGameSpeed = 82,
-    };
-
-    enum class LoadOrQuitMode : uint16_t
-    {
-        loadGamePrompt,
-        returnToTitlePrompt,
-        quitGamePrompt,
     };
 
     constexpr uint32_t FAILURE = 0x80000000;
@@ -734,18 +728,18 @@ namespace OpenLoco::GameCommands
         LoadSaveQuitGameArgs() = default;
         explicit LoadSaveQuitGameArgs(const registers& regs)
             : option1(regs.dl)
-            , option2(regs.di)
+            , option2(static_cast<LoadOrQuitMode>(regs.di))
         {
         }
 
         uint8_t option1;
-        uint8_t option2;
+        LoadOrQuitMode option2;
 
         explicit operator registers() const
         {
             registers regs;
-            regs.dl = option1; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
-            regs.di = option2; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
+            regs.dl = option1;            // [ 0 = save, 1 = close save prompt, 2 = don't save ]
+            regs.di = enumValue(option2); // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
             return regs;
         }
     };

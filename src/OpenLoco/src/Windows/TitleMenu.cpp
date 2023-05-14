@@ -1,6 +1,7 @@
 #include "Config.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "EditorController.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -483,7 +484,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         GameCommands::LoadSaveQuitGameArgs args{};
         args.option1 = 0;
-        args.option2 = 0;
+        args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 

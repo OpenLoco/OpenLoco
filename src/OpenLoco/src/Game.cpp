@@ -22,7 +22,7 @@
 namespace OpenLoco::Game
 {
     static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
-    static loco_global<GameCommands::LoadOrQuitMode, 0x0050A002> _savePromptType;
+    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     // TODO: make accessible from Environment
     static loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
@@ -132,7 +132,7 @@ namespace OpenLoco::Game
 
         GameCommands::LoadSaveQuitGameArgs args{};
         args.option1 = 1;
-        args.option2 = 0;
+        args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
 
         Input::toolCancel();
@@ -281,7 +281,7 @@ namespace OpenLoco::Game
                     // load landscape
                     GameCommands::LoadSaveQuitGameArgs args{};
                     args.option1 = 2;
-                    args.option2 = 0;
+                    args.option2 = LoadOrQuitMode::loadGamePrompt;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
@@ -308,7 +308,7 @@ namespace OpenLoco::Game
                 {
                     GameCommands::LoadSaveQuitGameArgs args{};
                     args.option1 = 2;
-                    args.option2 = 0;
+                    args.option2 = LoadOrQuitMode::loadGamePrompt;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
@@ -321,13 +321,13 @@ namespace OpenLoco::Game
 
             switch (_savePromptType)
             {
-                case GameCommands::LoadOrQuitMode::loadGamePrompt:
+                case LoadOrQuitMode::loadGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
                     break;
-                case GameCommands::LoadOrQuitMode::returnToTitlePrompt:
+                case LoadOrQuitMode::returnToTitlePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
                     break;
-                case GameCommands::LoadOrQuitMode::quitGamePrompt:
+                case LoadOrQuitMode::quitGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
                     break;
             }

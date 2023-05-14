@@ -1,4 +1,5 @@
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -100,7 +101,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
                 // Exit to desktop
                 GameCommands::LoadSaveQuitGameArgs args{};
                 args.option1 = 0;
-                args.option2 = 2;
+                args.option2 = LoadOrQuitMode::quitGamePrompt;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
         }

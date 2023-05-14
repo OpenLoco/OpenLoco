@@ -15,22 +15,22 @@ namespace OpenLoco::GameCommands
     static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     // 0x0043BFCB
-    static uint32_t loadSaveQuit(const uint8_t flags, uint8_t dl, uint8_t di)
+    static uint32_t loadSaveQuit(const LoadSaveQuitGameArgs& args, const uint8_t flags)
     {
         if ((flags & Flags::apply) == 0)
             return 0;
 
-        if (dl == 1)
+        if (args.option1 == 1)
         {
             Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
             return 0;
         }
 
-        if (dl == 0)
+        if (args.option1 == 0)
         {
-            _savePromptType = static_cast<LoadOrQuitMode>(di);
+            _savePromptType = args.option2;
             Ui::Windows::TextInput::cancel();
-            Ui::Windows::PromptSaveWindow::open(di);
+            Ui::Windows::PromptSaveWindow::open(args.option2);
 
             if (!isTitleMode())
             {
@@ -73,6 +73,6 @@ namespace OpenLoco::GameCommands
 
     void loadSaveQuit(registers& regs)
     {
-        regs.ebx = loadSaveQuit(regs.bl, regs.dl, regs.di);
+        regs.ebx = loadSaveQuit(LoadSaveQuitGameArgs(regs), regs.bl);
     }
 }
