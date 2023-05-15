@@ -509,13 +509,19 @@ namespace OpenLoco::World::TileManager
         {
             if (elStation->stationType() == StationType::trainStation)
             {
-                auto* prevElTrack = el.prev()->as<TrackElement>();
-                owner = prevElTrack->owner();
+                if (auto* prevElTrack = el.prev()->as<TrackElement>();
+                    prevElTrack != nullptr)
+                {
+                    owner = prevElTrack->owner();
+                }
             }
             else if (elStation->stationType() == StationType::roadStation)
             {
-                auto* prevElRoad = el.prev()->as<RoadElement>();
-                owner = prevElRoad->owner();
+                if (auto* prevElRoad = el.prev()->as<RoadElement>();
+                    prevElRoad != nullptr)
+                {
+                    owner = prevElRoad->owner();
+                }
             }
             else
             {
@@ -525,8 +531,11 @@ namespace OpenLoco::World::TileManager
         else if (auto* elSignal = el.as<SignalElement>();
                  elSignal != nullptr)
         {
-            auto* prevElTrack = el.prev()->as<TrackElement>();
-            owner = prevElTrack->owner();
+            if (auto* prevElTrack = el.prev()->as<TrackElement>();
+                prevElTrack != nullptr)
+            {
+                owner = prevElTrack->owner();
+            }
         }
         return owner;
     }
