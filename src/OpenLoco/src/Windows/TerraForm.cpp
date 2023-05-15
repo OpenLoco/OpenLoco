@@ -1356,7 +1356,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             TileManager::mapInvalidateSelectionRect();
 
-            if (ToolManager::getToolWindowCursor() != CursorId::upDownArrow)
+            if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                 auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
@@ -1450,7 +1450,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                         return;
 
-                    ToolManager::setToolWindowCursor(CursorId::upDownArrow);
+                    ToolManager::setToolCursor(CursorId::upDownArrow);
                     break;
             }
         }
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     TileManager::mapInvalidateSelectionRect();
 
                     Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                    ToolManager::setToolWindowCursor(CursorId::landTool);
+                    ToolManager::setToolCursor(CursorId::landTool);
                     break;
             }
         }
@@ -1715,7 +1715,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             TileManager::mapInvalidateSelectionRect();
 
-            if (ToolManager::getToolWindowCursor() != CursorId::upDownArrow)
+            if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
@@ -1759,7 +1759,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                 return;
 
-            ToolManager::setToolWindowCursor(CursorId::upDownArrow);
+            ToolManager::setToolCursor(CursorId::upDownArrow);
         }
 
         static void raiseWater(uint8_t flags)
@@ -1836,7 +1836,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 TileManager::mapInvalidateSelectionRect();
 
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                ToolManager::setToolWindowCursor(CursorId::waterTool);
+                ToolManager::setToolCursor(CursorId::waterTool);
             }
         }
 

@@ -309,7 +309,7 @@ namespace OpenLoco::Input
 
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
-        ToolManager::setToolWindowCursor(cursorId);
+        ToolManager::setToolCursor(cursorId);
         ToolManager::setToolWindowType(w->type);
         ToolManager::setToolWindowNumber(w->number);
         ToolManager::setToolWidgetIndex(widgetIndex);
@@ -2014,7 +2014,7 @@ namespace OpenLoco::Input
                         if (Input::hasFlag(Flags::toolActive))
                         {
                             // 3
-                            cursorId = ToolManager::getToolWindowCursor();
+                            cursorId = ToolManager::getToolCursor();
                             auto wnd = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                             if (wnd)
                             {

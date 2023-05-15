@@ -32,11 +32,11 @@ namespace OpenLoco::ToolManager
     }
 
     // 0x00523393
-    Ui::CursorId getToolWindowCursor()
+    Ui::CursorId getToolCursor()
     {
         return _toolWindowCursor;
     }
-    void setToolWindowCursor(Ui::CursorId toolWindowCursor)
+    void setToolCursor(Ui::CursorId toolWindowCursor)
     {
         _toolWindowCursor = toolWindowCursor;
     }
