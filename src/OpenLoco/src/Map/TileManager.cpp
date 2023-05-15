@@ -486,7 +486,7 @@ namespace OpenLoco::World::TileManager
         return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
     }
 
-    CompanyId getTileOwner(const World::TileElement& el)
+    static CompanyId getTileOwner(const World::TileElement& el)
     {
         CompanyId owner = CompanyId::null;
 
@@ -537,7 +537,7 @@ namespace OpenLoco::World::TileManager
     // 0x00462BB3
     // If return true input el not modified
     // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
-    ClearResult sub_462BB3(const World::TileElement*& el)
+    static ClearResult sub_462BB3(const World::TileElement*& el)
     {
         auto* elSurface = el->as<SurfaceElement>();
         auto* const initialEl = el;
@@ -606,12 +606,12 @@ namespace OpenLoco::World::TileManager
         allCollisionsRemoved,
         collision,
         collisionErrorSet,
-        keepChecking,
-        restartChecking,
+        noCollision,
+        collisionRemoved,
     };
 
     // 0x00462937
-    bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<ClearResult(const TileElement& el)>> clearFunc)
+    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<ClearResult(const TileElement& el)>> clearFunc)
     {
         if (!drawableCoords(pos))
         {
@@ -627,7 +627,7 @@ namespace OpenLoco::World::TileManager
                 {
                     if (_F0015C == nullptr)
                     {
-                        return Sub462B4FResult::keepChecking;
+                        return Sub462B4FResult::noCollision;
                     }
                     if (_F0015C == reinterpret_cast<TileElement*>(-1))
                     {
@@ -635,7 +635,7 @@ namespace OpenLoco::World::TileManager
                         return Sub462B4FResult::allCollisionsRemoved;
                     }
                     // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
-                    return Sub462B4FResult::restartChecking;
+                    return Sub462B4FResult::collisionRemoved;
                 }
             }
             // some stuff getCollideDetails()
@@ -685,14 +685,14 @@ namespace OpenLoco::World::TileManager
             }
             if (qt.getZQuarterOccupied() == 0xF)
             {
-                return Sub462B4FResult::keepChecking;
+                return Sub462B4FResult::noCollision;
             }
 
             if (clearZ <= elSurface.baseZ())
             {
                 _F00166 = _F00166 | (1u << 2);  // ELEMENT_IS_UNDERGROUND
                 _F00166 = _F00166 & ~(1u << 1); // ELEMENT_IS_ABOVE_GROUND
-                return Sub462B4FResult::keepChecking;
+                return Sub462B4FResult::noCollision;
             }
             else
             {
@@ -734,7 +734,7 @@ namespace OpenLoco::World::TileManager
                     && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doublHeight >= southZ))
                     && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doublHeight >= westZ)))
                 {
-                    return Sub462B4FResult::keepChecking;
+                    return Sub462B4FResult::noCollision;
                 }
                 return sub_462B4F(el);
             } };
@@ -757,19 +757,19 @@ namespace OpenLoco::World::TileManager
             }
             if (baseZ >= el.clearZ())
             {
-                return Sub462B4FResult::keepChecking;
+                return Sub462B4FResult::noCollision;
             }
             if (clearZ <= el.baseZ())
             {
-                return Sub462B4FResult::keepChecking;
+                return Sub462B4FResult::noCollision;
             }
             if (el.isGhost())
             {
-                return Sub462B4FResult::keepChecking;
+                return Sub462B4FResult::noCollision;
             }
             if ((el.occupiedQuarter() & qt.getBaseQuarterOccupied()) == 0)
             {
-                return Sub462B4FResult::keepChecking;
+                return Sub462B4FResult::noCollision;
             }
             if (!el.isFlag5())
             {
@@ -782,7 +782,7 @@ namespace OpenLoco::World::TileManager
                 {
                     if (_F0015C == nullptr)
                     {
-                        return Sub462B4FResult::keepChecking;
+                        return Sub462B4FResult::noCollision;
                     }
                     if (_F0015C == reinterpret_cast<TileElement*>(-1))
                     {
@@ -790,7 +790,7 @@ namespace OpenLoco::World::TileManager
                         return Sub462B4FResult::allCollisionsRemoved;
                     }
                     // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
-                    return Sub462B4FResult::restartChecking;
+                    return Sub462B4FResult::collisionRemoved;
                 }
             }
             const TileElement* el2 = &el;
@@ -798,13 +798,13 @@ namespace OpenLoco::World::TileManager
             {
                 return el2 == reinterpret_cast<TileElement*>(-1) ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
             }
-            return Sub462B4FResult::keepChecking;
+            return Sub462B4FResult::noCollision;
         };
 
-        bool restartChecking = false;
+        bool collisionRemoved = false;
         do
         {
-            restartChecking = false;
+            collisionRemoved = false;
             const auto tile = get(pos);
             for (auto& el : tile)
             {
@@ -812,25 +812,25 @@ namespace OpenLoco::World::TileManager
                 const auto res = elSurface == nullptr ? checkNonSurfaceElement(el) : checkSurfaceElement(el, *elSurface);
                 switch (res)
                 {
-                    case Sub462B4FResult::keepChecking:
+                    case Sub462B4FResult::noCollision:
                         break;
                     case Sub462B4FResult::allCollisionsRemoved:
                         return true;
                     case Sub462B4FResult::collision:
                         // get details sub_462C8E
                         return false;
-                    case Sub462B4FResult::restartChecking:
-                        restartChecking = true;
+                    case Sub462B4FResult::collisionRemoved:
+                        collisionRemoved = true;
                         break;
                     case Sub462B4FResult::collisionErrorSet:
                         return false;
                 }
-                if (restartChecking)
+                if (collisionRemoved)
                 {
                     break;
                 }
             }
-        } while (restartChecking);
+        } while (collisionRemoved);
         return true;
     }
 
