@@ -30,6 +30,7 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/VehicleManager.h"
@@ -3961,7 +3962,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            Ui::setToolCursor(kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
+            ToolManager::setToolCursor(kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
 
             switch (head->mode)
             {
@@ -4441,7 +4442,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     {
         if (Input::isToolActive(WindowType::vehicle))
         {
-            if (Input::getToolWidgetIndex() == Main::widx::pickup || Input::getToolWidgetIndex() == Details::widx::pickup)
+            if (ToolManager::getToolWidgetIndex() == Main::widx::pickup || ToolManager::getToolWidgetIndex() == Details::widx::pickup)
             {
                 _pickupDirection = _pickupDirection ^ 1;
                 return true;

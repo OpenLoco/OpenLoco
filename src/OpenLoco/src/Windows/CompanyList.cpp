@@ -12,6 +12,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/Company.h"
@@ -26,8 +27,6 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<Colour[32], 0x004F9442> _cargoLineColour;
-    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
     static loco_global<uint16_t, 0x0113DC7A> _graphLeft;
@@ -581,7 +580,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         if (window != nullptr)
         {
-            if (Input::isToolActive(_toolWindowType, _toolWindowNumber))
+            if (Input::isToolActive(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber()))
             {
                 Input::toolCancel();
                 window = WindowManager::bringToFront(WindowType::companyList);

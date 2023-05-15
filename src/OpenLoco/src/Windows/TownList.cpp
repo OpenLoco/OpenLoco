@@ -17,6 +17,7 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/Town.h"
@@ -37,8 +38,6 @@ namespace OpenLoco::Ui::Windows::TownList
     static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
     static loco_global<uint8_t, 0x01135C65> _buildingVariation;
     static loco_global<uint8_t, 0x01135C66> _townSize;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
 
     namespace Common
     {
@@ -672,7 +671,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
-            if ((!Input::hasFlag(Input::Flags::toolActive)) || self.type != _toolWindowType || self.number != _toolWindowNumber)
+            if ((!Input::hasFlag(Input::Flags::toolActive)) || self.type != ToolManager::getToolWindowType() || self.number != ToolManager::getToolWindowNumber())
             {
                 WindowManager::close(&self);
             }

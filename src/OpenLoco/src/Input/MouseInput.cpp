@@ -18,6 +18,7 @@
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -92,9 +93,6 @@ namespace OpenLoco::Input
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
-    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
-    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<int16_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<int16_t, 0x005233A4> _5233A4;
     static loco_global<int16_t, 0x005233A6> _5233A6;
@@ -263,12 +261,7 @@ namespace OpenLoco::Input
             return nullptr;
         }
 
-        return WindowManager::find(_toolWindowType, _toolWindowNumber);
-    }
-
-    int16_t getToolWidgetIndex()
-    {
-        return _toolWidgetIndex;
+        return WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
     }
 
     bool isToolActive(Ui::WindowType type)
@@ -276,7 +269,7 @@ namespace OpenLoco::Input
         if (!hasFlag(Flags::toolActive))
             return false;
 
-        return (*_toolWindowType == type);
+        return ToolManager::getToolWindowType() == type;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number)
@@ -284,14 +277,14 @@ namespace OpenLoco::Input
         if (!isToolActive(type))
             return false;
 
-        return _toolWindowNumber == number;
+        return ToolManager::getToolWindowNumber() == number;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number, int16_t widgetIndex)
     {
         if (!isToolActive(type, number))
             return false;
-        return _toolWidgetIndex == widgetIndex;
+        return ToolManager::getToolWidgetIndex() == widgetIndex;
     }
 
     // 0x004CE367
@@ -302,8 +295,8 @@ namespace OpenLoco::Input
     {
         if (Input::hasFlag(Input::Flags::toolActive))
         {
-            if (w->type == *_toolWindowType && w->number == _toolWindowNumber
-                && widgetIndex == _toolWidgetIndex)
+            if (w->type == ToolManager::getToolWindowType() && w->number == ToolManager::getToolWindowNumber()
+                && widgetIndex == ToolManager::getToolWidgetIndex())
             {
                 toolCancel();
                 return false;
@@ -316,10 +309,10 @@ namespace OpenLoco::Input
 
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
-        Ui::setToolCursor(cursorId);
-        _toolWindowType = w->type;
-        _toolWindowNumber = w->number;
-        _toolWidgetIndex = widgetIndex;
+        ToolManager::setToolCursor(cursorId);
+        ToolManager::setToolWindowType(w->type);
+        ToolManager::setToolWindowNumber(w->number);
+        ToolManager::setToolWidgetIndex(widgetIndex);
         return true;
     }
 
@@ -335,15 +328,15 @@ namespace OpenLoco::Input
 
             resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 
-            if (_toolWidgetIndex >= 0)
+            if (ToolManager::getToolWidgetIndex() >= 0)
             {
                 // Invalidate tool widget
-                Ui::WindowManager::invalidateWidget(_toolWindowType, _toolWindowNumber, _toolWidgetIndex);
+                Ui::WindowManager::invalidateWidget(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber(), ToolManager::getToolWidgetIndex());
 
                 // Abort tool event
-                Window* w = Ui::WindowManager::find(_toolWindowType, _toolWindowNumber);
+                Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (w != nullptr)
-                    w->callToolAbort(_toolWidgetIndex);
+                    w->callToolAbort(ToolManager::getToolWidgetIndex());
             }
         }
     }
@@ -511,10 +504,10 @@ namespace OpenLoco::Input
 
                     if (Input::hasFlag(Flags::toolActive))
                     {
-                        auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                        auto tool = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                         if (tool != nullptr)
                         {
-                            tool->callToolDragContinue(_toolWidgetIndex, x, y);
+                            tool->callToolDragContinue(ToolManager::getToolWidgetIndex(), x, y);
                         }
                     }
                 }
@@ -530,10 +523,10 @@ namespace OpenLoco::Input
 
                 if (hasFlag(Flags::toolActive))
                 {
-                    auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                    auto tool = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                     if (tool != nullptr)
                     {
-                        tool->callToolDragEnd(_toolWidgetIndex);
+                        tool->callToolDragEnd(ToolManager::getToolWidgetIndex());
                     }
                 }
                 else if (!hasFlag(Flags::flag4))
@@ -1743,10 +1736,10 @@ namespace OpenLoco::Input
                 _dragWindowNumber = window->number;
                 if (hasFlag(Flags::toolActive))
                 {
-                    auto w = WindowManager::find(_toolWindowType, _toolWindowNumber);
+                    auto w = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                     if (w != nullptr)
                     {
-                        w->callToolDown(_toolWidgetIndex, x, y);
+                        w->callToolDown(ToolManager::getToolWidgetIndex(), x, y);
                         setFlag(Flags::flag4);
                     }
                 }
@@ -2021,8 +2014,8 @@ namespace OpenLoco::Input
                         if (Input::hasFlag(Flags::toolActive))
                         {
                             // 3
-                            cursorId = Ui::getToolCursor();
-                            auto wnd = Ui::WindowManager::find(_toolWindowType, _toolWindowNumber);
+                            cursorId = ToolManager::getToolCursor();
+                            auto wnd = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                             if (wnd)
                             {
                                 bool out = false;

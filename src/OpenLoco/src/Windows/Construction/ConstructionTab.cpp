@@ -19,6 +19,7 @@
 #include "Paint/Paint.h"
 #include "Paint/PaintTile.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
@@ -34,8 +35,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00522090> _byte_522090;
     static loco_global<uint8_t, 0x00522091> _byte_522091;
     static loco_global<uint8_t, 0x00522092> _byte_522092;
-
-    static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<World::Pos3, 0x00F24942> _constructionArrowPos;
     static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
@@ -1829,7 +1828,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover == 1)
         {
-            if (!Input::isToolActive(WindowType::construction, self.number) || _toolWidgetIndex != widx::construct)
+            if (!Input::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
                 WindowManager::close(&self);
         }
         if (_constructionHover == 0)
