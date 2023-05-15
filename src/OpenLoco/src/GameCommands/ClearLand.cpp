@@ -18,8 +18,8 @@ namespace OpenLoco::GameCommands
     static loco_global<uint16_t, 0x00F00144> _F00144;
     static loco_global<uint8_t*, 0x00F0016C> _F0016C; // stack offset to -eventually- flags
     static loco_global<uint16_t, 0x00F00170> _F00170;
-    static loco_global<uint32_t, 0x00F0013C> _F003CE; // tile x?
-    static loco_global<uint32_t, 0x00F00140> _F003D0; // tile y?
+    static loco_global<uint32_t, 0x00F003CE> _F003CE; // tile x?
+    static loco_global<uint32_t, 0x00F003D0> _F003D0; // tile y?
     static loco_global<uint32_t, 0x00F25308> _sub469E07Cost;
 
     // 0x004690FC
