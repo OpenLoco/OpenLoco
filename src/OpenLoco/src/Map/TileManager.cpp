@@ -8,10 +8,14 @@
 #include "GameStateFlags.h"
 #include "IndustryElement.h"
 #include "Input.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
+#include "Objects/TreeObject.h"
 #include "OpenLoco.h"
 #include "QuarterTile.h"
 #include "Random.h"
@@ -534,6 +538,109 @@ namespace OpenLoco::World::TileManager
         collsionNoMessage
     };
 
+    // 0x00462C8E
+    static void setCollisionErrorMessage(const World::TileElement& el)
+    {
+        switch (el.type())
+        {
+            case ElementType::surface:
+                GameCommands::setErrorText(StringIds::raise_or_lower_land_first);
+                break;
+            case ElementType::track:
+            {
+                auto* elTrack = el.as<TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    return;
+                }
+                auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                FormatArguments::common(trackObj->name);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            }
+            case ElementType::station:
+            {
+                auto* elStation = el.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    return;
+                }
+                constexpr std::array<string_id, 4> kStationTypeNames = {
+                    StringIds::capt_station,
+                    StringIds::capt_station,
+                    StringIds::capt_airport,
+                    StringIds::capt_ship_port,
+                };
+                FormatArguments::common(kStationTypeNames[enumValue(elStation->stationType())]);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            }
+
+            case ElementType::signal:
+                FormatArguments::common(StringIds::capt_signal);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            case ElementType::building:
+            {
+                auto* elBuidling = el.as<BuildingElement>();
+                if (elBuidling == nullptr)
+                {
+                    return;
+                }
+                auto* buildingObj = elBuidling->getObject();
+                FormatArguments::common(buildingObj->name);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            }
+            case ElementType::tree:
+            {
+                auto* elTree = el.as<TreeElement>();
+                if (elTree == nullptr)
+                {
+                    return;
+                }
+                auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+                FormatArguments::common(treeObj->name);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            }
+            case ElementType::wall:
+                GameCommands::setErrorText(StringIds::object_in_the_way);
+                break;
+            case ElementType::road:
+            {
+                auto* elRoad = el.as<RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    return;
+                }
+                auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                FormatArguments::common(roadObj->name);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            }
+            case ElementType::industry:
+            {
+                auto* elIndustry = el.as<IndustryElement>();
+                if (elIndustry == nullptr)
+                {
+                    return;
+                }
+                auto* industry = elIndustry->industry();
+                FormatArguments::common(industry->name, industry->town);
+
+                GameCommands::setErrorText(StringIds::string_id_in_the_way);
+                break;
+            }
+        }
+    }
+
     // 0x00462BB3
     // If return true input el not modified
     // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
@@ -817,7 +924,7 @@ namespace OpenLoco::World::TileManager
                     case Sub462B4FResult::allCollisionsRemoved:
                         return true;
                     case Sub462B4FResult::collision:
-                        // get details sub_462C8E
+                        setCollisionErrorMessage(el);
                         return false;
                     case Sub462B4FResult::collisionRemoved:
                         collisionRemoved = true;
@@ -835,18 +942,33 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462926
-    static bool canConstructWithClearAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction, uint8_t flags)
+    static bool canConstructWithClearAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint32_t clearFunctionLegacy, uint8_t flags)
     {
-        auto functionWrapper = [clearFunction](const TileElement& el) -> ClearResult {
+        auto functionWrapper = [clearFunctionLegacy](const TileElement& el) -> ClearResult {
             registers regs{};
             regs.esi = X86Pointer(&el);
-            return !(call(reinterpret_cast<uint32_t>(clearFunction), regs) & Interop::X86_FLAG_CARRY) ? ClearResult::noCollision : ClearResult::collsionNoMessage;
+            bool hasCollision = call(clearFunctionLegacy, regs) & Interop::X86_FLAG_CARRY;
+            if (hasCollision)
+            {
+                if (regs.esi == -1)
+                {
+                    return ClearResult::collisionWithErrorMessage;
+                }
+                else
+                {
+                    return ClearResult::collsionNoMessage;
+                }
+            }
+            else
+            {
+                return ClearResult::noCollision;
+            }
         };
 
-        _F00138 = clearFunction != nullptr ? reinterpret_cast<uint32_t>(clearFunction) : 0xFFFFFFFF;
+        _F00138 = clearFunctionLegacy != 0 ? clearFunctionLegacy : 0xFFFFFFFF;
         _F00166 = flags;
 
-        if (clearFunction == nullptr)
+        if (clearFunctionLegacy == 0)
         {
             return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, std::nullopt);
         }
@@ -857,21 +979,21 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462908
-    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction)
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint32_t clearFunctionLegacy)
     {
-        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 7) | (1 << 0));
+        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunctionLegacy, (1 << 7) | (1 << 0));
     }
 
     // 0x00462917
-    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction)
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint32_t clearFunctionLegacy)
     {
-        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunction, (1 << 0));
+        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunctionLegacy, (1 << 0));
     }
 
     // 0x00462926
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
     {
-        return canConstructWithClearAt(pos, baseZ, clearZ, qt, nullptr, (1 << 0));
+        return canConstructWithClearAt(pos, baseZ, clearZ, qt, 0, (1 << 0));
     }
 
     // TODO: Return std::optional
@@ -1365,6 +1487,18 @@ namespace OpenLoco::World::TileManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 removeSurfaceIndustry({ regs.ax, regs.cx });
                 return 0;
+            });
+
+        registerHook(
+            0x00462937,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backupRegs = regs;
+                QuarterTile qt{ static_cast<uint8_t>(regs.bl) };
+                const uint32_t legacyFunction = _F00138;
+                const uint8_t flags = _F00166;
+                auto res = canConstructWithClearAt({ regs.ax, regs.cx }, regs.dl, regs.dh, qt, legacyFunction, flags);
+                regs = backupRegs;
+                return res ? 0 : X86_FLAG_CARRY;
             });
     }
 }

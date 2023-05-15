@@ -103,7 +103,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id error_cant_lower_land_here = 100;
     constexpr string_id error_cant_raise_land_here = 101;
-
+    constexpr string_id object_in_the_way = 102;
     constexpr string_id menu_load_game = 103;
     constexpr string_id menu_save_game = 104;
     constexpr string_id menu_quit_scenario_editor = 105;
@@ -144,7 +144,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_remove_signal = 141;
 
     constexpr string_id cant_build_pop3_string = 143;
-
+    constexpr string_id raise_or_lower_land_first = 144;
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
@@ -500,6 +500,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_vehicle_tab_finance = 578;
     constexpr string_id new_construction_position = 579;
     constexpr string_id rotate_90 = 580;
+    constexpr string_id string_id_in_the_way = 581;
 
     constexpr string_id error_cant_build_this_here = 583;
     constexpr string_id date_monthyear = 584;
