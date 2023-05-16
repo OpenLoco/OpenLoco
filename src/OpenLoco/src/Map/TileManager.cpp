@@ -768,10 +768,10 @@ namespace OpenLoco::World::TileManager
             {
                 if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
                 {
-                    _F00166 = _F00166 | (1 << 3);
+                    _F00166 = _F00166 | (1 << 3); // ELEMENT_PARTIALY_UNDERWATER
                     if (baseZ < waterZ)
                     {
-                        _F00166 = _F00166 | (1 << 2);
+                        _F00166 = _F00166 | (1 << 2); // ELEMENT_IS_UNDERWATER
                         if (clearZ <= waterZ)
                         {
                             if (clearFunc.has_value())
@@ -802,8 +802,8 @@ namespace OpenLoco::World::TileManager
 
             if (clearZ <= elSurface.baseZ())
             {
-                _F00166 = _F00166 | (1u << 2);  // ELEMENT_IS_UNDERGROUND
-                _F00166 = _F00166 & ~(1u << 1); // ELEMENT_IS_ABOVE_GROUND
+                _F00166 = _F00166 | (1u << 1);  // ELEMENT_IS_UNDERGROUND
+                _F00166 = _F00166 & ~(1u << 0); // ELEMENT_IS_ABOVE_GROUND
                 return Sub462B4FResult::noCollision;
             }
             else
