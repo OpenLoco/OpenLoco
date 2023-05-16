@@ -588,31 +588,40 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto lineHeight = window.rowHeight;
         for (const auto& entry : _files)
         {
-            if (y + lineHeight >= rt.y && y <= rt.y + rt.height)
+            if (y + lineHeight < rt.y)
             {
-                // Draw the row highlight
-                auto stringId = StringIds::black_stringid;
-                if (i == window.var_85A)
-                {
-                    drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
-                    stringId = StringIds::wcolour2_stringid;
-                }
-
-                // Draw the folder icon (TODO: draw a drive for rootPath)
-                auto x = 1;
-                if (isRootPath(entry) || fs::is_directory(entry))
-                {
-                    drawingCtx.drawImage(&rt, x, y, ImageIds::icon_folder);
-                    x += 14;
-                }
-
-                // Copy name to our work buffer (if drive letter use the full path)
-                const std::string nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
-
-                // Draw the name
-                auto args = getStringPtrFormatArgs(nameBuffer.c_str());
-                drawingCtx.drawStringLeft(rt, x, y, Colour::black, stringId, &args);
+                y += lineHeight;
+                i++;
+                continue;
             }
+            else if (y > rt.y + rt.height)
+            {
+                break;
+            }
+
+            // Draw the row highlight
+            auto stringId = StringIds::black_stringid;
+            if (i == window.var_85A)
+            {
+                drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                stringId = StringIds::wcolour2_stringid;
+            }
+
+            // Draw the folder icon (TODO: draw a drive for rootPath)
+            auto x = 1;
+            if (isRootPath(entry) || fs::is_directory(entry))
+            {
+                drawingCtx.drawImage(&rt, x, y, ImageIds::icon_folder);
+                x += 14;
+            }
+
+            // Copy name to our work buffer (if drive letter use the full path)
+            const std::string nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
+
+            // Draw the name
+            auto args = getStringPtrFormatArgs(nameBuffer.c_str());
+            drawingCtx.drawStringLeft(rt, x, y, Colour::black, stringId, &args);
+
             y += lineHeight;
             i++;
         }
