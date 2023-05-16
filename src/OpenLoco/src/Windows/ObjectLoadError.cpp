@@ -202,10 +202,14 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
-            if (y + kRowHeight < rt.y || y > rt.y + rt.height)
+            if (y + kRowHeight < rt.y)
             {
                 y += kRowHeight;
                 continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
             }
 
             string_id textColourId = StringIds::black_stringid;

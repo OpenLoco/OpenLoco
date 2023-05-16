@@ -840,6 +840,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if (entry.display == Visibility::hidden)
                 continue;
 
+            if (y + kRowHeight < rt.y)
+            {
+                y += kRowHeight;
+                continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
+            }
+
             Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::fillDarker | Drawing::RectInsetFlags::borderInset;
             drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 

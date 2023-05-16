@@ -720,10 +720,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
             const auto vehicleId = EntityId(self.rowInfo[i]);
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self.rowHeight < rt.y || yPos >= rt.y + rt.height + self.rowHeight || vehicleId == EntityId::null)
+            if (yPos + self.rowHeight < rt.y || vehicleId == EntityId::null)
             {
                 yPos += self.rowHeight;
                 continue;
+            }
+            else if (yPos >= rt.y + rt.height + self.rowHeight)
+            {
+                break;
             }
 
             auto head = EntityManager::get<VehicleHead>(vehicleId);

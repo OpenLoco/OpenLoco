@@ -15,6 +15,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::AboutMusic
 {
     static constexpr Ui::Size kWindowSize = { 500, 312 };
+    static constexpr uint8_t kRowHeight = 10; // CJK: 12
 
     constexpr uint16_t numSongs = 31;
 
@@ -80,7 +81,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     // 0x0043BFBB
     static void getScrollSize(Ui::Window&, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = numSongs * (10 + 10 + 14);
+        *scrollHeight = numSongs * (kRowHeight * 3 + 4);
     }
 
     // 0x0043BFC0
@@ -136,24 +137,32 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         };
 
         const int16_t x = 240;
-        int16_t y = 2;
+        uint16_t y = 2;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto& songStrings : stringsToDraw)
         {
-            // TODO: optimisation: don't draw past fold.
+            if (y + (kRowHeight * 3 + 4) < rt.y)
+            {
+                y += kRowHeight * 3 + 4;
+                continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
+            }
 
             // Song name
-            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.first, nullptr);
-            y += 10;
+            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.first);
+            y += kRowHeight;
 
             // Credit line
-            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.second, nullptr);
-            y += 10;
+            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.second);
+            y += kRowHeight;
 
             // Show CS' copyright after every two lines.
-            drawingCtx.drawStringCentred(rt, x, y, Colour::black, StringIds::music_copyright, nullptr);
-            y += 14;
+            drawingCtx.drawStringCentred(rt, x, y, Colour::black, StringIds::music_copyright);
+            y += kRowHeight + 4;
         }
     }
 

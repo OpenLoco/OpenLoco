@@ -462,10 +462,14 @@ namespace OpenLoco::Ui::Windows::StationList
             auto stationId = StationId(window.rowInfo[i]);
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (yPos + kRowHeight < rt.y || yPos >= yPos + kRowHeight + rt.height || stationId == StationId::null)
+            if (yPos + kRowHeight < rt.y || stationId == StationId::null)
             {
                 yPos += kRowHeight;
                 continue;
+            }
+            else if (yPos >= yPos + kRowHeight + rt.height)
+            {
+                break;
             }
 
             string_id text_colour_id = StringIds::black_stringid;

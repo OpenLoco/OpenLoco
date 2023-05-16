@@ -111,6 +111,16 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         uint16_t y = 0;
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
+            if (y + kRowHeight < rt.y)
+            {
+                y += kRowHeight;
+                continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
+            }
+
             string_id text_colour_id = StringIds::black_stringid;
 
             // Draw hovered track

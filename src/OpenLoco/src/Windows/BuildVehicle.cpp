@@ -1117,7 +1117,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                         if (y >= rt.y + rt.height + 30)
                         {
-                            continue;
+                            break;
                         }
 
                         auto vehicleType = window.rowInfo[i];

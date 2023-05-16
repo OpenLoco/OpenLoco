@@ -435,6 +435,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < kMaxLandObjects; i++)
             {
+                if (yPos + kRowHeight < rt.y)
+                {
+                    yPos += kRowHeight;
+                    continue;
+                }
+                else if (yPos > rt.y + rt.height)
+                {
+                    break;
+                }
+
                 auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
                     continue;

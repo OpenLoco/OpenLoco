@@ -357,10 +357,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             if (scenarioInfo == nullptr)
                 continue;
 
-            if (y + kRowHeight < rt.y || y > rt.y + rt.height)
+            if (y + kRowHeight < rt.y)
             {
                 y += kRowHeight;
                 continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
             }
 
             // Highlight selected item
