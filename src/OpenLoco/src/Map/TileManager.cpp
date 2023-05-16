@@ -653,18 +653,16 @@ namespace OpenLoco::World::TileManager
     // 0x00462BB3
     // If return true input el not modified
     // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
-    static ClearResult sub_462BB3(const World::TileElement*& el)
+    static ClearResult companyAboutToBuildCheck(const World::TileElement& el)
     {
-        auto* elSurface = el->as<SurfaceElement>();
-        auto* const initialEl = el;
+        auto* elSurface = el.as<SurfaceElement>();
 
         // 0x00462C02
-        auto returnFunc = [&el, initialEl](const CompanyId owner) -> ClearResult {
+        auto returnFunc = [](const CompanyId owner) -> ClearResult {
             const auto updatingId = GameCommands::getUpdatingCompanyId();
             if (updatingId == CompanyId::neutral || !CompanyManager::isPlayerCompany(updatingId))
             {
                 GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-                el = reinterpret_cast<const World::TileElement*>(0xFFFFFFFF);
                 return ClearResult::collisionWithErrorMessage;
             }
             if (owner == updatingId || CompanyManager::isPlayerCompany(owner))
@@ -675,18 +673,16 @@ namespace OpenLoco::World::TileManager
             if ((company->challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
             {
                 GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-                el = reinterpret_cast<const World::TileElement*>(0xFFFFFFFF);
                 return ClearResult::collisionWithErrorMessage;
             }
             // Modification from vanilla
-            el = initialEl;
             company->challengeFlags |= CompanyFlags::unk1;
             return ClearResult::noCollision;
         };
 
         if (elSurface == nullptr)
         {
-            CompanyId owner = getTileOwner(*el);
+            CompanyId owner = getTileOwner(el);
             if (owner == CompanyId::null)
             {
                 return ClearResult::noCollision;
@@ -696,14 +692,15 @@ namespace OpenLoco::World::TileManager
         }
         else
         {
-            while (!el->isLast())
+            auto* elp = &el;
+            while (!elp->isLast())
             {
-                el = el->next();
-                if (!el->isFlag5())
+                elp = elp->next();
+                if (!elp->isFlag5())
                 {
                     continue;
                 }
-                const auto owner = getTileOwner(*el);
+                const auto owner = getTileOwner(*elp);
                 if (owner == CompanyId::null)
                 {
                     continue;
@@ -712,7 +709,6 @@ namespace OpenLoco::World::TileManager
                 return returnFunc(owner);
             }
             GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-            el = reinterpret_cast<const World::TileElement*>(0xFFFFFFFF);
             return ClearResult::collisionWithErrorMessage;
         }
     }
@@ -761,10 +757,10 @@ namespace OpenLoco::World::TileManager
         auto checkSurfaceElement = [&clearFunc, &sub_462B4F, clearZ, baseZ, qt](const TileElement& el, const SurfaceElement& elSurface) -> Sub462B4FResult {
             if (elSurface.isFlag5())
             {
-                const TileElement* el2 = &el;
-                if (sub_462BB3(el2) != ClearResult::noCollision)
+                if (auto res = companyAboutToBuildCheck(el);
+                    res != ClearResult::noCollision)
                 {
-                    return el2 == reinterpret_cast<TileElement*>(-1) ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
+                    return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
                 }
             }
             const auto waterZ = elSurface.water() * kMicroToSmallZStep;
@@ -909,10 +905,10 @@ namespace OpenLoco::World::TileManager
                     return Sub462B4FResult::collisionRemoved;
                 }
             }
-            const TileElement* el2 = &el;
-            if (sub_462BB3(el2) != ClearResult::noCollision)
+            if (auto res = companyAboutToBuildCheck(el);
+                res != ClearResult::noCollision)
             {
-                return el2 == reinterpret_cast<TileElement*>(-1) ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
+                return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
             }
             return Sub462B4FResult::noCollision;
         };
