@@ -1198,7 +1198,7 @@ namespace OpenLoco::Ui::Windows::TownList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                if (yPos + kRowHeight < rt.y || yPos > rt.y + rt.height)
+                if (yPos + kRowHeight < rt.y)
                 {
                     xPos += kRowHeight;
                     if (xPos >= kRowHeight * 5) // full row
@@ -1207,6 +1207,10 @@ namespace OpenLoco::Ui::Windows::TownList
                         yPos += kRowHeight;
                     }
                     continue;
+                }
+                else if (yPos > rt.y + rt.height)
+                {
+                    break;
                 }
 
                 if (self.rowInfo[i] != self.rowHover)

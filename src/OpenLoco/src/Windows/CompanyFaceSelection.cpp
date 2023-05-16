@@ -271,10 +271,14 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const int16_t y = index * kRowHeight;
             uint8_t inlineColour = ControlCodes::Colour::black;
 
-            if (y + kRowHeight < rt.y || y > rt.y + rt.height)
+            if (y + kRowHeight < rt.y)
             {
                 index++;
                 continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
             }
 
             if (index == self.rowHover)

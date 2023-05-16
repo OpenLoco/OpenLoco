@@ -463,17 +463,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             for (auto i = 0; i < self.var_83C; i++, yBottom += 25)
             {
                 auto yTop = yBottom + 25;
-
                 if (yTop <= rt.y)
                     continue;
 
                 yTop = rt.y + rt.height;
-
                 if (yBottom >= yTop)
-                    continue;
+                    break;
 
                 auto rowItem = self.rowInfo[i];
-
                 if (rowItem == -1)
                     continue;
 

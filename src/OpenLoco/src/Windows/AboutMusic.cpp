@@ -142,10 +142,14 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto& songStrings : stringsToDraw)
         {
-            if (y + (kRowHeight * 3 + 4) < rt.y || y > rt.y + rt.height)
+            if (y + (kRowHeight * 3 + 4) < rt.y)
             {
                 y += kRowHeight * 3 + 4;
                 continue;
+            }
+            else if (y > rt.y + rt.height)
+            {
+                break;
             }
 
             // Song name

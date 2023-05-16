@@ -319,10 +319,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
         auto rowNum = 0;
         for (auto& element : tile)
         {
-            if (yPos + self.rowHeight < rt.y || yPos > rt.y + rt.height)
+            if (yPos + self.rowHeight < rt.y)
             {
                 yPos += self.rowHeight;
                 continue;
+            }
+            else if (yPos > rt.y + rt.height)
+            {
+                break;
             }
 
             string_id formatString;

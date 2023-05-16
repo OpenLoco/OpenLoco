@@ -229,12 +229,11 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     height += messageHeight;
                     continue;
                 }
-
-                if (height >= rt.y + rt.height)
+                else if (height >= rt.y + rt.height)
                 {
-                    height += messageHeight;
-                    continue;
+                    break;
                 }
+
                 auto message = MessageManager::get(MessageId(i));
                 char* buffer = message->messageString;
                 auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
