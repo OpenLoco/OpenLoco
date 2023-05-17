@@ -953,7 +953,7 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.cl = enumValue(companyId);
-            regs.ax = bufferIndex;             // [ 0, 1, 2]
+            regs.ax = bufferIndex; // [ 0, 1, 2]
             constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
             const auto offset = iToOffset[bufferIndex];
 
