@@ -3,6 +3,7 @@
 #include "Tile.h"
 #include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
+#include <functional>
 #include <tuple>
 
 namespace OpenLoco::World
@@ -15,6 +16,13 @@ namespace OpenLoco::World
 namespace OpenLoco::World::TileManager
 {
     constexpr size_t maxElements = 0x6C000;
+
+    enum class ClearResult
+    {
+        noCollision,
+        collisionWithErrorMessage,
+        collsionNoMessage
+    };
 
     void initialise();
     stdx::span<TileElement> getElements();
@@ -37,7 +45,9 @@ namespace OpenLoco::World::TileManager
     void reorganise();
     bool checkFreeElementsAndReorganise();
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy);
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc);
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy);
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc);
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
     uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType);
     uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant = false);

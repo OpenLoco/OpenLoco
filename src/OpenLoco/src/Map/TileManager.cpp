@@ -540,13 +540,6 @@ namespace OpenLoco::World::TileManager
         return owner;
     }
 
-    enum class ClearResult
-    {
-        noCollision,
-        collisionWithErrorMessage,
-        collsionNoMessage
-    };
-
     // 0x00462C8E
     static void setCollisionErrorMessage(const World::TileElement& el)
     {
@@ -947,7 +940,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462926
-    static bool canConstructWithClearAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy, uint8_t flags)
+    static bool canConstructAtWithClearLegacy(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, uintptr_t clearFunctionLegacy)
     {
         auto functionWrapper = [clearFunctionLegacy](const TileElement& el) -> ClearResult {
             registers regs{};
@@ -970,35 +963,41 @@ namespace OpenLoco::World::TileManager
             }
         };
 
-        _F00138 = clearFunctionLegacy != 0 ? clearFunctionLegacy : 0xFFFFFFFF;
+        _F00138 = clearFunctionLegacy;
         _F00166 = flags;
 
-        if (clearFunctionLegacy == 0)
-        {
-            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, {});
-        }
-        else
-        {
-            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, functionWrapper);
-        }
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, functionWrapper);
     }
 
     // 0x00462908
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
     {
-        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunctionLegacy, (1 << 7) | (1 << 0));
+        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, (1 << 7) | (1 << 0), clearFunctionLegacy);
+    }
+
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc)
+    {
+        _F00166 = (1 << 7) | (1 << 0);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 7) | (1 << 0), clearFunc);
     }
 
     // 0x00462917
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
     {
-        return canConstructWithClearAt(pos, baseZ, clearZ, qt, clearFunctionLegacy, (1 << 0));
+        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, (1 << 0), clearFunctionLegacy);
+    }
+
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc)
+    {
+        _F00166 = (1 << 0);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 0), clearFunc);
     }
 
     // 0x00462926
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
     {
-        return canConstructWithClearAt(pos, baseZ, clearZ, qt, 0, (1 << 0));
+        _F00166 = (1 << 0);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 0), {});
     }
 
     // TODO: Return std::optional
@@ -1501,7 +1500,7 @@ namespace OpenLoco::World::TileManager
                 QuarterTile qt{ static_cast<uint8_t>(regs.bl) };
                 const uint32_t legacyFunction = _F00138;
                 const uint8_t flags = _F00166;
-                auto res = canConstructWithClearAt({ regs.ax, regs.cx }, regs.dl, regs.dh, qt, legacyFunction, flags);
+                auto res = canConstructAtWithClearLegacy({ regs.ax, regs.cx }, regs.dl, regs.dh, qt, legacyFunction, flags);
                 regs = backupRegs;
                 return res ? 0 : X86_FLAG_CARRY;
             });
