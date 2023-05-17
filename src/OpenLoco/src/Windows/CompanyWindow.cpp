@@ -1420,7 +1420,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     GameCommands::ChangeCompanyColourSchemeArgs args{};
 
-                    args.isPrimary = 0;
                     args.value = newMode;
                     args.colourType = vehicleType;
                     args.setColourMode = 1;
@@ -1537,7 +1536,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     GameCommands::ChangeCompanyColourSchemeArgs args{};
 
-                    args.isPrimary = 0;
+                    args.isPrimary = false;
                     args.value = colour;
                     args.colourType = vehicleType;
                     args.setColourMode = 0;
@@ -1570,7 +1569,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     GameCommands::ChangeCompanyColourSchemeArgs args{};
 
-                    args.isPrimary = 1;
+                    args.isPrimary = true;
                     args.value = colour;
                     args.colourType = vehicleType;
                     args.setColourMode = 0;

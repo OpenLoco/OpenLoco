@@ -731,10 +731,6 @@ namespace OpenLoco::GameCommands
             {
                 isPrimary = regs.ah == 0;
             }
-            else if (setColourMode == 1)
-            {
-                isPrimary = regs.al;
-            }
         }
 
         CompanyId companyId;
