@@ -18,7 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptSaveWindow
 {
-    static loco_global<uint16_t, 0x0050A002> _savePromptType;
+    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     enum widx
     {
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     static void initEvents();
 
     // 0x0043C27E
-    Window* open(uint16_t savePromptType)
+    Window* open(LoadOrQuitMode savePromptType)
     {
         auto window = WindowManager::bringToFront(WindowType::saveGamePrompt);
         if (window == nullptr)
@@ -83,11 +83,11 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 StringIds::title_quit_game_alt,
             };
 
-            window->widgets[widx::caption].text = kTypeToType.at(savePromptType);
+            window->widgets[widx::caption].text = kTypeToType.at(enumValue(savePromptType));
         }
         else
         {
-            if (savePromptType == 0)
+            if (savePromptType == LoadOrQuitMode::loadGamePrompt)
                 window->widgets[widx::caption].text = StringIds::title_load_landscape;
             else
                 window->widgets[widx::caption].text = StringIds::title_quit_scenario_editor;
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             StringIds::prompt_save_before_quitting_alt,
         };
 
-        window->widgets[widx::promptLabel].text = kTypeToPrompt.at(savePromptType);
+        window->widgets[widx::promptLabel].text = kTypeToPrompt.at(enumValue(savePromptType));
 
         return window;
     }
@@ -117,7 +117,10 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             case widx::closeButton:
             case widx::cancelButton:
             {
-                GameCommands::do_21(1, 0);
+                GameCommands::LoadSaveQuitGameArgs args{};
+                args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
+                args.option2 = LoadOrQuitMode::loadGamePrompt;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
             }
 
@@ -129,7 +132,10 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
             case widx::dontSaveButton:
             {
-                GameCommands::do_21(2, 0);
+                GameCommands::LoadSaveQuitGameArgs args{};
+                args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
+                args.option2 = LoadOrQuitMode::loadGamePrompt;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
             }
         }

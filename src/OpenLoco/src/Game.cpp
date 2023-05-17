@@ -22,7 +22,7 @@
 namespace OpenLoco::Game
 {
     static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
-    static loco_global<GameCommands::LoadOrQuitMode, 0x0050A002> _savePromptType;
+    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     // TODO: make accessible from Environment
     static loco_global<char[257], 0x0050B1CF> _pathSavesSinglePlayer;
@@ -130,7 +130,11 @@ namespace OpenLoco::Game
             Title::stop();
         }
 
-        GameCommands::do_21(1, 0);
+        GameCommands::LoadSaveQuitGameArgs args{};
+        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
+        args.option2 = LoadOrQuitMode::loadGamePrompt;
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+
         Input::toolCancel();
 
         if (isEditorMode())
@@ -275,7 +279,10 @@ namespace OpenLoco::Game
                 if (saveLandscape())
                 {
                     // load landscape
-                    GameCommands::do_21(2, 0);
+                    GameCommands::LoadSaveQuitGameArgs args{};
+                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
+                    args.option2 = LoadOrQuitMode::loadGamePrompt;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                 }
             }
         }
@@ -289,12 +296,21 @@ namespace OpenLoco::Game
 
                 S5::SaveFlags flags = S5::SaveFlags::none;
                 if (Config::get().hasFlags(Config::Flags::exportObjectsWithSaves))
+                {
                     flags = S5::SaveFlags::packCustomObjects;
+                }
 
                 if (!S5::exportGameStateToFile(path, flags))
+                {
                     Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
+                }
                 else
-                    GameCommands::do_21(2, 0);
+                {
+                    GameCommands::LoadSaveQuitGameArgs args{};
+                    args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
+                    args.option2 = LoadOrQuitMode::loadGamePrompt;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                }
             }
         }
         else
@@ -305,13 +321,13 @@ namespace OpenLoco::Game
 
             switch (_savePromptType)
             {
-                case GameCommands::LoadOrQuitMode::loadGamePrompt:
+                case LoadOrQuitMode::loadGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
                     break;
-                case GameCommands::LoadOrQuitMode::returnToTitlePrompt:
+                case LoadOrQuitMode::returnToTitlePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
                     break;
-                case GameCommands::LoadOrQuitMode::quitGamePrompt:
+                case LoadOrQuitMode::quitGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
                     break;
             }

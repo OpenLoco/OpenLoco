@@ -7,6 +7,11 @@
 #include <functional>
 #include <string_view>
 
+namespace OpenLoco
+{
+    enum class LoadOrQuitMode : uint16_t;
+}
+
 namespace OpenLoco::Gfx
 {
     struct RenderTarget;
@@ -310,7 +315,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace PromptSaveWindow
     {
-        Window* open(uint16_t savePromptType);
+        Window* open(LoadOrQuitMode savePromptType);
     }
 
     namespace ScenarioOptions
