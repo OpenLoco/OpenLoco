@@ -715,6 +715,30 @@ namespace OpenLoco::World::TileManager
         collisionRemoved,
     };
 
+    Sub462B4FResult sub_462B4F(const TileElement& el, const std::function<ClearResult(const TileElement& el)>& clearFunc)
+    {
+        if (clearFunc)
+        {
+            _F0015C = nullptr;
+            if (clearFunc(el) == ClearResult::noCollision)
+            {
+                if (_F0015C == nullptr)
+                {
+                    return Sub462B4FResult::noCollision;
+                }
+                if (_F0015C == reinterpret_cast<TileElement*>(-1))
+                {
+                    // This is a no collision as it has removed all the collisions
+                    return Sub462B4FResult::allCollisionsRemoved;
+                }
+                // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
+                return Sub462B4FResult::collisionRemoved;
+            }
+        }
+        // Up to caller to get the error message? TODO: Check...
+        return Sub462B4FResult::collision;
+    };
+
     // 0x00462937
     static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
@@ -724,30 +748,7 @@ namespace OpenLoco::World::TileManager
             return false;
         }
 
-        auto sub_462B4F = [&clearFunc](const TileElement& el) -> Sub462B4FResult {
-            if (clearFunc)
-            {
-                _F0015C = nullptr;
-                if (clearFunc(el) == ClearResult::noCollision)
-                {
-                    if (_F0015C == nullptr)
-                    {
-                        return Sub462B4FResult::noCollision;
-                    }
-                    if (_F0015C == reinterpret_cast<TileElement*>(-1))
-                    {
-                        // This is a no collision as it has removed all the collisions
-                        return Sub462B4FResult::allCollisionsRemoved;
-                    }
-                    // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
-                    return Sub462B4FResult::collisionRemoved;
-                }
-            }
-            // some stuff getCollideDetails()
-            return Sub462B4FResult::collision;
-        };
-
-        auto checkSurfaceElement = [&clearFunc, &sub_462B4F, clearZ, baseZ, qt](const TileElement& el, const SurfaceElement& elSurface) -> Sub462B4FResult {
+        auto checkSurfaceElement = [&clearFunc, clearZ, baseZ, qt](const TileElement& el, const SurfaceElement& elSurface) -> Sub462B4FResult {
             if (elSurface.isFlag5())
             {
                 if (auto res = companyAboutToBuildCheck(el);
@@ -841,22 +842,22 @@ namespace OpenLoco::World::TileManager
                 {
                     return Sub462B4FResult::noCollision;
                 }
-                return sub_462B4F(el);
+                return sub_462B4F(el, clearFunc);
             } };
 
-        auto checkNonSurfaceElement = [&clearFunc, &sub_462B4F, clearZ, baseZ, qt, flags](const TileElement& el) -> Sub462B4FResult {
+        auto checkNonSurfaceElement = [&clearFunc, clearZ, baseZ, qt, flags](const TileElement& el) -> Sub462B4FResult {
             if (flags & (1U << 7))
             {
                 if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
                 {
-                    return sub_462B4F(el);
+                    return sub_462B4F(el, clearFunc);
                 }
                 const auto* elStation = el.as<StationElement>();
                 if (elStation != nullptr)
                 {
                     if (elStation->stationType() == StationType::airport || elStation->stationType() == StationType::docks)
                     {
-                        return sub_462B4F(el);
+                        return sub_462B4F(el, clearFunc);
                     }
                 }
             }
@@ -878,7 +879,7 @@ namespace OpenLoco::World::TileManager
             }
             if (!el.isFlag5())
             {
-                return sub_462B4F(el);
+                return sub_462B4F(el, clearFunc);
             }
             if (clearFunc)
             {
