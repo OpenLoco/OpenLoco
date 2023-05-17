@@ -12,36 +12,36 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x0043483D
-    static uint32_t changeCompanyColour(uint8_t flags, uint8_t type, bool toggleMode, CompanyId companyId, bool isSecondary, uint8_t value)
+    static uint32_t changeCompanyColour(ChangeCompanyColourSchemeArgs args, uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         GameCommands::setPosition({ static_cast<int16_t>(0x8000), 0, 0 });
 
-        auto* company = CompanyManager::get(companyId);
+        auto* company = CompanyManager::get(args.companyId);
 
         if (flags & Flags::apply)
         {
             // Toggling vehicle palette
-            if (toggleMode)
+            if (args.setColourMode)
             {
-                if (value)
-                    company->customVehicleColoursSet |= (1 << type);
+                if (args.value)
+                    company->customVehicleColoursSet |= (1 << args.colourType);
                 else
-                    company->customVehicleColoursSet &= ~(1 << type);
+                    company->customVehicleColoursSet &= ~(1 << args.colourType);
             }
             // Setting a colour
             else
             {
                 ColourScheme* colours;
-                if (type == 0)
+                if (args.colourType == 0)
                     colours = &company->mainColours;
                 else
-                    colours = &company->vehicleColours[type - 1];
+                    colours = &company->vehicleColours[args.colourType - 1];
 
-                if (!isSecondary)
-                    colours->primary = static_cast<Colour>(value);
+                if (args.isPrimary)
+                    colours->primary = static_cast<Colour>(args.value);
                 else
-                    colours->secondary = static_cast<Colour>(value);
+                    colours->secondary = static_cast<Colour>(args.value);
             }
 
             company->updateVehicleColours();
@@ -52,15 +52,15 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!sub_431E6A(companyId, nullptr))
+            if (!sub_431E6A(args.companyId, nullptr))
                 return GameCommands::FAILURE;
 
-            if (toggleMode || type > 0 || isSecondary)
+            if (args.setColourMode || args.colourType > 0 || !args.isPrimary)
                 return 0;
 
             // Check whether the requested colour is available
-            uint32_t unavailableColours = CompanyManager::competingColourMask(companyId);
-            if (unavailableColours & (1 << value))
+            uint32_t unavailableColours = CompanyManager::competingColourMask(args.companyId);
+            if (unavailableColours & (1 << args.value))
             {
                 setErrorText(StringIds::empty);
                 return GameCommands::FAILURE;
@@ -72,6 +72,6 @@ namespace OpenLoco::GameCommands
 
     void changeCompanyColour(registers& regs)
     {
-        regs.ebx = changeCompanyColour(regs.bl, regs.cl, regs.dh, CompanyId(regs.dl), regs.ah, regs.al);
+        regs.ebx = changeCompanyColour(ChangeCompanyColourSchemeArgs(regs), regs.bl);
     }
 }
