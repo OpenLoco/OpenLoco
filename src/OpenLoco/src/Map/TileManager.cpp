@@ -723,7 +723,7 @@ namespace OpenLoco::World::TileManager
     };
 
     // 0x00462937
-    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::optional<std::function<ClearResult(const TileElement& el)>> clearFunc)
+    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
         if (!drawableCoords(pos))
         {
@@ -732,10 +732,10 @@ namespace OpenLoco::World::TileManager
         }
 
         auto sub_462B4F = [&clearFunc](const TileElement& el) -> Sub462B4FResult {
-            if (clearFunc.has_value())
+            if (clearFunc)
             {
                 _F0015C = nullptr;
-                if ((clearFunc.value())(el) == ClearResult::noCollision)
+                if (clearFunc(el) == ClearResult::noCollision)
                 {
                     if (_F0015C == nullptr)
                     {
@@ -774,10 +774,10 @@ namespace OpenLoco::World::TileManager
                         _F00166 = _F00166 | (1 << 2); // ELEMENT_IS_UNDERWATER
                         if (clearZ > waterZ)
                         {
-                            if (clearFunc.has_value())
+                            if (clearFunc)
                             {
                                 _F0015C = nullptr;
-                                if (auto res = (clearFunc.value())(el); res != ClearResult::noCollision)
+                                if (auto res = clearFunc(el); res != ClearResult::noCollision)
                                 {
                                     if (res == ClearResult::collsionNoMessage)
                                     {
@@ -887,10 +887,10 @@ namespace OpenLoco::World::TileManager
             {
                 return sub_462B4F(el);
             }
-            if (clearFunc.has_value())
+            if (clearFunc)
             {
                 _F0015C = nullptr;
-                if ((clearFunc.value())(el) == ClearResult::noCollision)
+                if (clearFunc(el) == ClearResult::noCollision)
                 {
                     if (_F0015C == nullptr)
                     {
@@ -975,7 +975,7 @@ namespace OpenLoco::World::TileManager
 
         if (clearFunctionLegacy == 0)
         {
-            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, std::nullopt);
+            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, {});
         }
         else
         {
