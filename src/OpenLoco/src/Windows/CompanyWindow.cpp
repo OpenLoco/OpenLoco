@@ -332,10 +332,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             bool success = false;
             {
-                uint32_t* buffer = (uint32_t*)input;
-                GameCommands::do_31(CompanyId(self->number), 1, buffer[0], buffer[1], buffer[2]);
-                GameCommands::do_31(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
-                success = GameCommands::do_31(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
+                GameCommands::ChangeCompanyOwnerNameArgs args{};
+
+                args.companyId = CompanyId(self->number);
+                args.bufferIndex = 1;
+                std::memcpy(args.newName, input, 36);
+
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+                args.bufferIndex = 2;
+
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+                args.bufferIndex = 0;
+
+                success = GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
 
             // No need to propate the name if it could not be set.
