@@ -931,18 +931,39 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::lowerWater, regs);
     }
 
-    // Change company name
-    inline bool do_30(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
+    struct ChangeCompanyNameArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = enumValue(cx); // company id
-        regs.ax = ax;            // [ 0, 1, 2]
-        regs.edx = edx;          // part of name buffer
-        regs.ebp = ebp;          // part of name buffer
-        regs.edi = edi;          // part of name buffer
-        return doCommand(GameCommand::changeCompanyName, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::changeCompanyName;
+
+        ChangeCompanyNameArgs() = default;
+        explicit ChangeCompanyNameArgs(const registers& regs)
+            : companyId(CompanyId(regs.cx))
+            , bufferIndex(regs.ax)
+        {
+            memcpy(buffer, &regs.edx, 4);
+            memcpy(buffer + 4, &regs.ebp, 4);
+            memcpy(buffer + 8, &regs.edi, 4);
+        }
+
+        CompanyId companyId;
+        uint16_t bufferIndex;
+        char buffer[37];
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cl = enumValue(companyId);
+            regs.ax = bufferIndex; // [ 0, 1, 2]
+            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
+            const auto offset = iToOffset[bufferIndex];
+
+            std::memcpy(&regs.edx, buffer + offset, 4);
+            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
+            std::memcpy(&regs.edi, buffer + offset + 8, 4);
+
+            return regs;
+        }
+    };
 
     // Change company owner name
     inline bool do_31(CompanyId cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)

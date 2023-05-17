@@ -2659,10 +2659,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
 
-            uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_30(CompanyId(self->number), 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_30(CompanyId(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_30(CompanyId(0), 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::ChangeCompanyNameArgs args{};
+
+            args.companyId = CompanyId(self->number);
+            args.bufferIndex = 1;
+            std::memcpy(args.buffer, input, 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.bufferIndex = 0;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         static void drawCompanySelect(const Window* const self, Gfx::RenderTarget* const rt)
