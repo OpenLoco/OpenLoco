@@ -927,23 +927,27 @@ namespace OpenLoco::GameCommands
             : companyId(CompanyId(regs.cx))
             , bufferIndex(regs.ax)
         {
-            memcpy(newName, &regs.edx, 4);
-            memcpy(newName + 4, &regs.ebp, 4);
-            memcpy(newName + 8, &regs.edi, 4);
+            memcpy(buffer, &regs.edx, 4);
+            memcpy(buffer + 4, &regs.ebp, 4);
+            memcpy(buffer + 8, &regs.edi, 4);
         }
 
         CompanyId companyId;
         uint16_t bufferIndex;
-        char newName[37];
+        char buffer[37];
 
         explicit operator registers() const
         {
             registers regs;
             regs.cl = enumValue(companyId);    // industry number or 0
             regs.ax = bufferIndex;             // [ 0, 1, 2]
-            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
-            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
-            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
+            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
+            const auto offset = iToOffset[bufferIndex];
+
+            std::memcpy(&regs.edx, buffer + offset, 4);
+            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
+            std::memcpy(&regs.edi, buffer + offset + 8, 4);
+
             return regs;
         }
     };

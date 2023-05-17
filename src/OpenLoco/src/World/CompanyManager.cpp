@@ -627,7 +627,7 @@ namespace OpenLoco::CompanyManager
 
             changeCompanyNameArgs.companyId = CompanyId(_updatingCompanyId);
             changeCompanyNameArgs.bufferIndex = 1;
-            std::memcpy(changeCompanyNameArgs.newName, companyName, 36);
+            std::memcpy(changeCompanyNameArgs.buffer, companyName, 36);
 
             GameCommands::doCommand(changeCompanyNameArgs, GameCommands::Flags::apply);
 

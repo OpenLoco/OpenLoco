@@ -2663,7 +2663,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             args.companyId = CompanyId(self->number);
             args.bufferIndex = 1;
-            std::memcpy(args.newName, input, 36);
+            std::memcpy(args.buffer, input, 36);
 
             GameCommands::doCommand(args, GameCommands::Flags::apply);
 
