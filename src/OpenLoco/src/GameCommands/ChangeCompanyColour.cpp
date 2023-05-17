@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x0043483D
-    static uint32_t changeCompanyColour(ChangeCompanyColourSchemeArgs args, uint8_t flags)
+    static uint32_t changeCompanyColour(const ChangeCompanyColourSchemeArgs& args, uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         GameCommands::setPosition({ static_cast<int16_t>(0x8000), 0, 0 });
