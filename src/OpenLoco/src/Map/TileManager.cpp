@@ -772,7 +772,7 @@ namespace OpenLoco::World::TileManager
                     if (baseZ < waterZ)
                     {
                         _F00166 = _F00166 | (1 << 2); // ELEMENT_IS_UNDERWATER
-                        if (clearZ <= waterZ)
+                        if (clearZ > waterZ)
                         {
                             if (clearFunc.has_value())
                             {
@@ -837,14 +837,14 @@ namespace OpenLoco::World::TileManager
                     if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
                         westZ += kSmallZStep;
                 }
-                const auto doublHeight = baseZ + 8;
+                const auto doubleHeight = baseZ + 8;
 
                 const auto baseQuarter = qt.getBaseQuarterOccupied();
                 const auto zQuarter = qt.getZQuarterOccupied();
-                if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doublHeight >= northZ))
-                    && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doublHeight >= eastZ))
-                    && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doublHeight >= southZ))
-                    && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doublHeight >= westZ)))
+                if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doubleHeight >= northZ))
+                    && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doubleHeight >= eastZ))
+                    && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doubleHeight >= southZ))
+                    && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doubleHeight >= westZ)))
                 {
                     return Sub462B4FResult::noCollision;
                 }
