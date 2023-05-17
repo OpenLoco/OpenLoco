@@ -952,11 +952,15 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.cl = enumValue(companyId);    // industry number or 0
+            regs.cl = enumValue(companyId);
             regs.ax = bufferIndex;             // [ 0, 1, 2]
-            memcpy(&regs.edx, &newName[0], 4); // part of name buffer
-            memcpy(&regs.ebp, &newName[4], 4); // part of name buffer
-            memcpy(&regs.edi, &newName[8], 4); // part of name buffer
+            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
+            const auto offset = iToOffset[bufferIndex];
+
+            std::memcpy(&regs.edx, newName + offset, 4);
+            std::memcpy(&regs.ebp, newName + offset + 4, 4);
+            std::memcpy(&regs.edi, newName + offset + 8, 4);
+
             return regs;
         }
     };
