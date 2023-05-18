@@ -155,6 +155,17 @@ namespace OpenLoco::Platform
 
         return true;
     }
+
+    std::vector<std::string> getCmdLineVector(int argc, const char** argv)
+    {
+        std::vector<std::string> argvStrs;
+        argvStrs.resize(argc);
+        for (auto i = 0; i < argc; ++i)
+        {
+            argvStrs[i] = argv[i];
+        }
+        return argvStrs;
+    }
 }
 
 #endif

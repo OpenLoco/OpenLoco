@@ -20,6 +20,7 @@
 #include <shlobj.h>
 #include <windows.h>
 #include <mmsystem.h>
+#include <shellapi.h>
 // clang-format on
 
 #include <OpenLoco/Utility/String.hpp>
@@ -230,6 +231,47 @@ namespace OpenLoco::Platform
             return false;
 
         return true;
+    }
+
+    std::vector<std::string> getCmdLineVector(int, const char**)
+    {
+        // Discard the input as it will either be ASCII or not available
+
+        // We need to get the Wide command line and convert it to utf8 command line parameters
+        const auto cmdline = GetCommandLineW();
+
+        int argc{};
+        auto* argw = CommandLineToArgvW(cmdline, &argc);
+        if (argw == nullptr)
+        {
+            std::cerr << "CommandLineToArgvW failed to convert commandline";
+            // We will continue but just ignore the command line args.
+            argc = 0;
+        }
+
+        // This will hold a utf8 string of the command line
+        std::vector<std::string> argvStrs;
+        argvStrs.resize(argc);
+
+        for (auto i = 0; i < argc; ++i)
+        {
+            int length = WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, 0, 0, NULL, NULL);
+
+            if (length == 0)
+            {
+                // Sadly can't print what the argument is that is causing the issue as it needs to be in utf8...
+                std::cerr << "Failed to get cmdline argument utf8 length.";
+                continue;
+            }
+            argvStrs[i].resize(length);
+
+            if (WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, argvStrs[i].data(), length, NULL, NULL) == 0)
+            {
+                std::cerr << "Failed to convert cmdline argument to utf8.";
+            }
+        }
+        LocalFree(reinterpret_cast<HLOCAL>(argw));
+        return argvStrs;
     }
 }
 

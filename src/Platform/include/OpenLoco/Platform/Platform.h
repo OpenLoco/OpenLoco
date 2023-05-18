@@ -21,4 +21,5 @@ namespace OpenLoco::Platform
     bool isStdOutRedirected();
     bool hasTerminalVT100Support();
     bool enableVT100TerminalMode();
+    std::vector<std::string> getCmdLineVector(int argc, const char** argv);
 }
