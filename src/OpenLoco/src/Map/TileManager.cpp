@@ -715,7 +715,7 @@ namespace OpenLoco::World::TileManager
         collisionRemoved,
     };
 
-    Sub462B4FResult sub_462B4F(const TileElement& el, const std::function<ClearResult(const TileElement& el)>& clearFunc)
+    static Sub462B4FResult sub_462B4F(const TileElement& el, const std::function<ClearResult(const TileElement& el)>& clearFunc)
     {
         if (clearFunc)
         {
@@ -742,6 +742,7 @@ namespace OpenLoco::World::TileManager
     // 0x00462937
     static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
+        _F00166 = (1 << 0); // ELEMENT_IS_ABOVE_GROUND
         if (!drawableCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
@@ -964,41 +965,35 @@ namespace OpenLoco::World::TileManager
             }
         };
 
-        _F00138 = clearFunctionLegacy;
-        _F00166 = flags;
-
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, functionWrapper);
     }
 
     // 0x00462908
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
     {
-        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, (1 << 7) | (1 << 0), clearFunctionLegacy);
+        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, (1 << 7), clearFunctionLegacy);
     }
 
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
-        _F00166 = (1 << 7) | (1 << 0);
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 7) | (1 << 0), clearFunc);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 7), clearFunc);
     }
 
     // 0x00462917
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
     {
-        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, (1 << 0), clearFunctionLegacy);
+        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, 0, clearFunctionLegacy);
     }
 
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
-        _F00166 = (1 << 0);
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 0), clearFunc);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, 0, clearFunc);
     }
 
     // 0x00462926
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
     {
-        _F00166 = (1 << 0);
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 0), {});
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, 0, {});
     }
 
     // TODO: Return std::optional
