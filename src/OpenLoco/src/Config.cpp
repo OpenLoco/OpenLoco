@@ -180,7 +180,7 @@ namespace OpenLoco::Config
         writeNewConfig();
     }
 
-    static void readShortcutConfig(YAML::Node scNode)
+    static void readShortcutConfig(const YAML::Node& scNode)
     {
         const auto& shortcutDefs = Input::ShortcutManager::getList();
         auto& shortcuts = _newConfig.shortcuts;
@@ -279,8 +279,8 @@ namespace OpenLoco::Config
             _newConfig.cashPopupRendering = config["cashPopupRendering"].as<bool>();
 
         auto& scNode = config["shortcuts"];
-        readShortcutConfig(scNode);
-
+        // Protect from empty shortcuts
+        readShortcutConfig(scNode ? scNode : YAML::Node{});
         return _newConfig;
     }
 
