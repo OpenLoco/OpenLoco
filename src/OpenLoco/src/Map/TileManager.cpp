@@ -57,7 +57,7 @@ namespace OpenLoco::World::TileManager
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
-    static TileElement* InvalidTile = reinterpret_cast<TileElement*>(static_cast<intptr_t>(-1));
+    static TileElement* const kInvalidTile = reinterpret_cast<TileElement*>(static_cast<intptr_t>(-1));
 
     // 0x0046902E
     void removeSurfaceIndustry(const Pos2& pos)
@@ -155,7 +155,7 @@ namespace OpenLoco::World::TileManager
         {
             if (element.isLast())
             {
-                *_F00158 = reinterpret_cast<TileElement*>(-1);
+                *_F00158 = kInvalidTile;
             }
         }
 
@@ -202,7 +202,7 @@ namespace OpenLoco::World::TileManager
     {
         size_t index = (pos.y << 9) | pos.x;
         auto data = _tiles[index];
-        if (data == InvalidTile)
+        if (data == kInvalidTile)
         {
             data = nullptr;
         }
@@ -408,7 +408,7 @@ namespace OpenLoco::World::TileManager
 
     static void clearTilePointers()
     {
-        std::fill(_tiles.begin(), _tiles.end(), InvalidTile);
+        std::fill(_tiles.begin(), _tiles.end(), kInvalidTile);
     }
 
     static void set(TilePos2 pos, TileElement* elements)
@@ -726,7 +726,7 @@ namespace OpenLoco::World::TileManager
                 {
                     return Sub462B4FResult::noCollision;
                 }
-                if (_F0015C == reinterpret_cast<TileElement*>(-1))
+                if (_F0015C == kInvalidTile)
                 {
                     // This is a no collision as it has removed all the collisions
                     return Sub462B4FResult::allCollisionsRemoved;
@@ -891,7 +891,7 @@ namespace OpenLoco::World::TileManager
                     {
                         return Sub462B4FResult::noCollision;
                     }
-                    if (_F0015C == reinterpret_cast<TileElement*>(-1))
+                    if (_F0015C == kInvalidTile)
                     {
                         // all collisions removed
                         return Sub462B4FResult::allCollisionsRemoved;
