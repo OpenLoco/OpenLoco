@@ -44,7 +44,7 @@ namespace OpenLoco::World::TileManager
     static loco_global<uint32_t, 0x00F00138> _F00138;
     static loco_global<TileElement*, 0x00F00158> _F00158;
     static loco_global<TileElement*, 0x00F0015C> _F0015C;
-    static loco_global<uint8_t, 0x00F00166> _F00166;
+    static loco_global<ElementPositionFlags, 0x00F00166> _constructAtElementPositionFlags;
     static loco_global<uint32_t, 0x00F00168> _F00168;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
@@ -739,10 +739,16 @@ namespace OpenLoco::World::TileManager
         return Sub462B4FResult::collision;
     };
 
-    // 0x00462937
-    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, std::function<ClearResult(const TileElement& el)> clearFunc)
+    enum class BuildingCollisionType : bool
     {
-        _F00166 = (1 << 0); // ELEMENT_IS_ABOVE_GROUND
+        standard,
+        anyHeight, // If the building/industry/tree/dock/airport is at any height on the tile this is a collision
+    };
+
+    // 0x00462937
+    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, std::function<ClearResult(const TileElement& el)> clearFunc)
+    {
+        _constructAtElementPositionFlags = ElementPositionFlags::aboveGround;
         if (!drawableCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);
@@ -763,10 +769,10 @@ namespace OpenLoco::World::TileManager
             {
                 if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
                 {
-                    _F00166 = _F00166 | (1 << 3); // ELEMENT_PARTIALY_UNDERWATER
+                    _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::partiallyUnderwater;
                     if (baseZ < waterZ)
                     {
-                        _F00166 = _F00166 | (1 << 2); // ELEMENT_IS_UNDERWATER
+                        _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underwater;
                         if (clearZ > waterZ)
                         {
                             if (clearFunc)
@@ -797,8 +803,8 @@ namespace OpenLoco::World::TileManager
 
             if (clearZ <= elSurface.baseZ())
             {
-                _F00166 = _F00166 | (1u << 1);  // ELEMENT_IS_UNDERGROUND
-                _F00166 = _F00166 & ~(1u << 0); // ELEMENT_IS_ABOVE_GROUND
+                _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underground;
+                _constructAtElementPositionFlags = _constructAtElementPositionFlags & ~(ElementPositionFlags::aboveGround);
                 return Sub462B4FResult::noCollision;
             }
             else
@@ -847,7 +853,7 @@ namespace OpenLoco::World::TileManager
             } };
 
         auto checkNonSurfaceElement = [&clearFunc, clearZ, baseZ, qt, flags](const TileElement& el) -> Sub462B4FResult {
-            if (flags & (1U << 7))
+            if (flags == BuildingCollisionType::anyHeight)
             {
                 if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
                 {
@@ -942,7 +948,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462926
-    static bool canConstructAtWithClearLegacy(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uint8_t flags, uintptr_t clearFunctionLegacy)
+    static bool canConstructAtWithClearLegacy(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, uintptr_t clearFunctionLegacy)
     {
         auto functionWrapper = [clearFunctionLegacy](const TileElement& el) -> ClearResult {
             registers regs{};
@@ -971,29 +977,29 @@ namespace OpenLoco::World::TileManager
     // 0x00462908
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
     {
-        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, (1 << 7), clearFunctionLegacy);
+        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunctionLegacy);
     }
 
     bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, (1 << 7), clearFunc);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunc);
     }
 
     // 0x00462917
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy)
     {
-        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, 0, clearFunctionLegacy);
+        return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunctionLegacy);
     }
 
     bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, 0, clearFunc);
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunc);
     }
 
     // 0x00462926
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt)
     {
-        return canConstructAtWithClear(pos, baseZ, clearZ, qt, 0, {});
+        return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, {});
     }
 
     // TODO: Return std::optional
@@ -1495,8 +1501,8 @@ namespace OpenLoco::World::TileManager
                 registers backupRegs = regs;
                 QuarterTile qt{ static_cast<uint8_t>(regs.bl) };
                 const uint32_t legacyFunction = _F00138;
-                const uint8_t flags = _F00166;
-                auto res = canConstructAtWithClearLegacy({ regs.ax, regs.cx }, regs.dl, regs.dh, qt, legacyFunction, flags);
+                const auto flags = ((_constructAtElementPositionFlags & ElementPositionFlags::anyHeightBuildingCollisions) != ElementPositionFlags::none) ? BuildingCollisionType::anyHeight : BuildingCollisionType::standard;
+                auto res = canConstructAtWithClearLegacy({ regs.ax, regs.cx }, regs.dl, regs.dh, qt, flags, legacyFunction);
                 regs = backupRegs;
                 return res ? 0 : X86_FLAG_CARRY;
             });

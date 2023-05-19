@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tile.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 #include <functional>
@@ -23,6 +24,18 @@ namespace OpenLoco::World::TileManager
         collisionWithErrorMessage,
         collsionNoMessage
     };
+
+    enum class ElementPositionFlags : uint8_t
+    {
+        none = 0U,
+        aboveGround = 1U << 0,
+        underground = 1U << 1,
+        partiallyUnderwater = 1U << 2,
+        underwater = 1U << 3,
+
+        anyHeightBuildingCollisions = 1U << 7, // Do not use only for interop
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ElementPositionFlags);
 
     void initialise();
     stdx::span<TileElement> getElements();
