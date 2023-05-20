@@ -646,31 +646,31 @@ namespace OpenLoco::World::TileManager
     // 0x00462BB3
     // If return true input el not modified
     // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
-    static ClearResult companyAboutToBuildCheck(const World::TileElement& el)
+    static Sub462B4FResult companyAboutToBuildCheck(const World::TileElement& el)
     {
         auto* elSurface = el.as<SurfaceElement>();
 
         // 0x00462C02
-        auto returnFunc = [](const CompanyId owner) -> ClearResult {
+        auto returnFunc = [](const CompanyId owner) -> Sub462B4FResult {
             const auto updatingId = GameCommands::getUpdatingCompanyId();
             if (updatingId == CompanyId::neutral || !CompanyManager::isPlayerCompany(updatingId))
             {
                 GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-                return ClearResult::collisionWithErrorMessage;
+                return Sub462B4FResult::collisionErrorSet;
             }
             if (owner == updatingId || CompanyManager::isPlayerCompany(owner))
             {
-                return ClearResult::collsionNoMessage;
+                return Sub462B4FResult::collision;
             }
             auto* company = CompanyManager::get(owner);
             if ((company->challengeFlags & CompanyFlags::unk2) != CompanyFlags::none)
             {
                 GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-                return ClearResult::collisionWithErrorMessage;
+                return Sub462B4FResult::collisionErrorSet;
             }
             // Modification from vanilla
             company->challengeFlags |= CompanyFlags::unk1;
-            return ClearResult::noCollision;
+            return Sub462B4FResult::noCollision;
         };
 
         if (elSurface == nullptr)
@@ -678,7 +678,7 @@ namespace OpenLoco::World::TileManager
             CompanyId owner = getTileOwner(el);
             if (owner == CompanyId::null)
             {
-                return ClearResult::noCollision;
+                return Sub462B4FResult::noCollision;
             }
 
             return returnFunc(owner);
@@ -702,7 +702,7 @@ namespace OpenLoco::World::TileManager
                 return returnFunc(owner);
             }
             GameCommands::setErrorText(StringIds::another_company_is_about_to_build_here);
-            return ClearResult::collisionWithErrorMessage;
+            return Sub462B4FResult::collisionErrorSet;
         }
     }
 
@@ -741,9 +741,9 @@ namespace OpenLoco::World::TileManager
         if (elSurface.isFlag5())
         {
             if (auto res = companyAboutToBuildCheck(el);
-                res != ClearResult::noCollision)
+                res != Sub462B4FResult::noCollision)
             {
-                return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
+                return res;
             }
         }
         const auto waterZ = elSurface.water() * kMicroToSmallZStep;
@@ -890,12 +890,7 @@ namespace OpenLoco::World::TileManager
                 return Sub462B4FResult::collisionRemoved;
             }
         }
-        if (auto res = companyAboutToBuildCheck(el);
-            res != ClearResult::noCollision)
-        {
-            return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
-        }
-        return Sub462B4FResult::noCollision;
+        return companyAboutToBuildCheck(el);
     }
 
     // 0x00462937
@@ -962,12 +957,7 @@ namespace OpenLoco::World::TileManager
                     return Sub462B4FResult::collisionRemoved;
                 }
             }
-            if (auto res = companyAboutToBuildCheck(el);
-                res != ClearResult::noCollision)
-            {
-                return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
-            }
-            return Sub462B4FResult::noCollision;
+            return companyAboutToBuildCheck(el);
         };
 
         bool collisionRemoved = false;
