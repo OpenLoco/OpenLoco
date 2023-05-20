@@ -644,9 +644,9 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462BB3
-    // If return true input el not modified
-    // If return false input el set to 0xFFFFFFFF if error text set or problem el if not set
-    static Sub462B4FResult companyAboutToBuildCheck(const World::TileElement& el)
+    // Vanilla function would return true with input esi not modified
+    // Vanilla function would return false with esi set to 0xFFFFFFFF if error text set or problem element if not set
+    static Sub462B4FResult aiCompanyAboutToBuildCheck(const World::TileElement& el)
     {
         auto* elSurface = el.as<SurfaceElement>();
 
@@ -740,7 +740,7 @@ namespace OpenLoco::World::TileManager
     {
         if (elSurface.isFlag5())
         {
-            if (auto res = companyAboutToBuildCheck(el);
+            if (auto res = aiCompanyAboutToBuildCheck(el);
                 res != Sub462B4FResult::noCollision)
             {
                 return res;
@@ -890,7 +890,7 @@ namespace OpenLoco::World::TileManager
                 return Sub462B4FResult::collisionRemoved;
             }
         }
-        return companyAboutToBuildCheck(el);
+        return aiCompanyAboutToBuildCheck(el);
     }
 
     // 0x00462937
@@ -957,7 +957,7 @@ namespace OpenLoco::World::TileManager
                     return Sub462B4FResult::collisionRemoved;
                 }
             }
-            return companyAboutToBuildCheck(el);
+            return aiCompanyAboutToBuildCheck(el);
         };
 
         bool collisionRemoved = false;
