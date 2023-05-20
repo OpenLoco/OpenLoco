@@ -1199,22 +1199,9 @@ namespace OpenLoco
         }
     }
 
-    int main(int argc, const char** argv)
+    int main(std::vector<std::string>&& argv)
     {
-        auto options = parseCommandLine(argc, argv);
-        if (options)
-        {
-            return main(*options);
-        }
-        else
-        {
-            return 1;
-        }
-    }
-
-    int main(const char* args)
-    {
-        auto options = parseCommandLine(args);
+        auto options = parseCommandLine(std::move(argv));
         if (options)
         {
             return main(*options);

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <vector>
 
 namespace OpenLoco
 {
@@ -30,8 +31,7 @@ namespace OpenLoco
         std::string logLevels;
     };
 
-    std::optional<CommandLineOptions> parseCommandLine(int argc, const char** argv);
-    std::optional<CommandLineOptions> parseCommandLine(const char* args);
+    std::optional<CommandLineOptions> parseCommandLine(std::vector<std::string>&& argv);
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options);
     const CommandLineOptions& getCommandLineOptions();
     void setCommandLineOptions(const CommandLineOptions& options);
