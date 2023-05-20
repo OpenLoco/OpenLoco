@@ -25,6 +25,15 @@ namespace OpenLoco::World::TileManager
         collsionNoMessage
     };
 
+    enum class Sub462B4FResult
+    {
+        allCollisionsRemoved,
+        collision,
+        collisionErrorSet,
+        noCollision,
+        collisionRemoved,
+    };
+
     enum class ElementPositionFlags : uint8_t
     {
         none = 0U,

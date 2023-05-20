@@ -706,15 +706,6 @@ namespace OpenLoco::World::TileManager
         }
     }
 
-    enum class Sub462B4FResult
-    {
-        allCollisionsRemoved,
-        collision,
-        collisionErrorSet,
-        noCollision,
-        collisionRemoved,
-    };
-
     static Sub462B4FResult sub_462B4F(const TileElement& el, const std::function<ClearResult(const TileElement& el)>& clearFunc)
     {
         if (clearFunc)
@@ -745,6 +736,168 @@ namespace OpenLoco::World::TileManager
         anyHeight, // If the building/industry/tree/dock/airport is at any height on the tile this is a collision
     };
 
+    Sub462B4FResult canConstructAtCheckSurfaceElement(uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearResult(const TileElement& el)>& clearFunc, const TileElement& el, const SurfaceElement& elSurface)
+    {
+        if (elSurface.isFlag5())
+        {
+            if (auto res = companyAboutToBuildCheck(el);
+                res != ClearResult::noCollision)
+            {
+                return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
+            }
+        }
+        const auto waterZ = elSurface.water() * kMicroToSmallZStep;
+        if (waterZ != 0)
+        {
+            if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
+            {
+                _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::partiallyUnderwater;
+                if (baseZ < waterZ)
+                {
+                    _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underwater;
+                    if (clearZ > waterZ)
+                    {
+                        if (clearFunc)
+                        {
+                            _F0015C = nullptr;
+                            if (auto res = clearFunc(el); res != ClearResult::noCollision)
+                            {
+                                if (res == ClearResult::collsionNoMessage)
+                                {
+                                    GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
+                                }
+                                return Sub462B4FResult::collisionErrorSet;
+                            }
+                        }
+                        else
+                        {
+                            GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
+                            return Sub462B4FResult::collisionErrorSet;
+                        }
+                    }
+                }
+            }
+        }
+        if (qt.getZQuarterOccupied() == 0xF)
+        {
+            return Sub462B4FResult::noCollision;
+        }
+
+        if (clearZ <= elSurface.baseZ())
+        {
+            _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underground;
+            _constructAtElementPositionFlags = _constructAtElementPositionFlags & ~(ElementPositionFlags::aboveGround);
+            return Sub462B4FResult::noCollision;
+        }
+        else
+        {
+            auto northZ = elSurface.baseZ();
+            auto eastZ = northZ;
+            auto southZ = northZ;
+            auto westZ = northZ;
+            const auto slope = elSurface.slope();
+            if (slope & SurfaceSlope::CornerUp::north)
+            {
+                northZ += kSmallZStep;
+                if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
+                    northZ += kSmallZStep;
+            }
+            if (slope & SurfaceSlope::CornerUp::east)
+            {
+                eastZ += kSmallZStep;
+                if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
+                    eastZ += kSmallZStep;
+            }
+            if (slope & SurfaceSlope::CornerUp::south)
+            {
+                southZ += kSmallZStep;
+                if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
+                    southZ += kSmallZStep;
+            }
+            if (slope & SurfaceSlope::CornerUp::west)
+            {
+                westZ += kSmallZStep;
+                if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
+                    westZ += kSmallZStep;
+            }
+            const auto doubleHeight = baseZ + 8;
+
+            const auto baseQuarter = qt.getBaseQuarterOccupied();
+            const auto zQuarter = qt.getZQuarterOccupied();
+            if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doubleHeight >= northZ))
+                && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doubleHeight >= eastZ))
+                && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doubleHeight >= southZ))
+                && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doubleHeight >= westZ)))
+            {
+                return Sub462B4FResult::noCollision;
+            }
+            return sub_462B4F(el, clearFunc);
+        }
+    }
+
+    Sub462B4FResult canConstructAtCheckNonSurfaceElement(const uint8_t baseZ, const uint8_t clearZ, const QuarterTile& qt, const BuildingCollisionType flags, const std::function<ClearResult(const TileElement& el)>& clearFunc, const TileElement& el)
+    {
+        if (flags == BuildingCollisionType::anyHeight)
+        {
+            if (el.type() == ElementType::tree || el.type() == ElementType::building || el.type() == ElementType::industry)
+            {
+                return sub_462B4F(el, clearFunc);
+            }
+            const auto* elStation = el.as<StationElement>();
+            if (elStation != nullptr)
+            {
+                if (elStation->stationType() == StationType::airport || elStation->stationType() == StationType::docks)
+                {
+                    return sub_462B4F(el, clearFunc);
+                }
+            }
+        }
+        if (baseZ >= el.clearZ())
+        {
+            return Sub462B4FResult::noCollision;
+        }
+        if (clearZ <= el.baseZ())
+        {
+            return Sub462B4FResult::noCollision;
+        }
+        if (el.isGhost())
+        {
+            return Sub462B4FResult::noCollision;
+        }
+        if ((el.occupiedQuarter() & qt.getBaseQuarterOccupied()) == 0)
+        {
+            return Sub462B4FResult::noCollision;
+        }
+        if (!el.isFlag5())
+        {
+            return sub_462B4F(el, clearFunc);
+        }
+        if (clearFunc)
+        {
+            _F0015C = nullptr;
+            if (clearFunc(el) == ClearResult::noCollision)
+            {
+                if (_F0015C == nullptr)
+                {
+                    return Sub462B4FResult::noCollision;
+                }
+                if (_F0015C == kInvalidTile)
+                {
+                    // all collisions removed
+                    return Sub462B4FResult::allCollisionsRemoved;
+                }
+                // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
+                return Sub462B4FResult::collisionRemoved;
+            }
+        }
+        if (auto res = companyAboutToBuildCheck(el);
+            res != ClearResult::noCollision)
+        {
+            return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
+        }
+        return Sub462B4FResult::noCollision;
+    }
+
     // 0x00462937
     static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, std::function<ClearResult(const TileElement& el)> clearFunc)
     {
@@ -754,103 +907,6 @@ namespace OpenLoco::World::TileManager
             GameCommands::setErrorText(StringIds::off_edge_of_map);
             return false;
         }
-
-        auto checkSurfaceElement = [&clearFunc, clearZ, baseZ, qt](const TileElement& el, const SurfaceElement& elSurface) -> Sub462B4FResult {
-            if (elSurface.isFlag5())
-            {
-                if (auto res = companyAboutToBuildCheck(el);
-                    res != ClearResult::noCollision)
-                {
-                    return res == ClearResult::collisionWithErrorMessage ? Sub462B4FResult::collisionErrorSet : Sub462B4FResult::collision;
-                }
-            }
-            const auto waterZ = elSurface.water() * kMicroToSmallZStep;
-            if (waterZ != 0)
-            {
-                if (clearZ > elSurface.clearZ() && baseZ < waterZ + 4)
-                {
-                    _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::partiallyUnderwater;
-                    if (baseZ < waterZ)
-                    {
-                        _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underwater;
-                        if (clearZ > waterZ)
-                        {
-                            if (clearFunc)
-                            {
-                                _F0015C = nullptr;
-                                if (auto res = clearFunc(el); res != ClearResult::noCollision)
-                                {
-                                    if (res == ClearResult::collsionNoMessage)
-                                    {
-                                        GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
-                                    }
-                                    return Sub462B4FResult::collisionErrorSet;
-                                }
-                            }
-                            else
-                            {
-                                GameCommands::setErrorText(StringIds::cannot_build_partly_above_below_water);
-                                return Sub462B4FResult::collisionErrorSet;
-                            }
-                        }
-                    }
-                }
-            }
-            if (qt.getZQuarterOccupied() == 0xF)
-            {
-                return Sub462B4FResult::noCollision;
-            }
-
-            if (clearZ <= elSurface.baseZ())
-            {
-                _constructAtElementPositionFlags = _constructAtElementPositionFlags | ElementPositionFlags::underground;
-                _constructAtElementPositionFlags = _constructAtElementPositionFlags & ~(ElementPositionFlags::aboveGround);
-                return Sub462B4FResult::noCollision;
-            }
-            else
-            {
-                auto northZ = elSurface.baseZ();
-                auto eastZ = northZ;
-                auto southZ = northZ;
-                auto westZ = northZ;
-                const auto slope = elSurface.slope();
-                if (slope & SurfaceSlope::CornerUp::north)
-                {
-                    northZ += kSmallZStep;
-                    if (slope == (SurfaceSlope::CornerDown::south | SurfaceSlope::doubleHeight))
-                        northZ += kSmallZStep;
-                }
-                if (slope & SurfaceSlope::CornerUp::east)
-                {
-                    eastZ += kSmallZStep;
-                    if (slope == (SurfaceSlope::CornerDown::west | SurfaceSlope::doubleHeight))
-                        eastZ += kSmallZStep;
-                }
-                if (slope & SurfaceSlope::CornerUp::south)
-                {
-                    southZ += kSmallZStep;
-                    if (slope == (SurfaceSlope::CornerDown::north | SurfaceSlope::doubleHeight))
-                        southZ += kSmallZStep;
-                }
-                if (slope & SurfaceSlope::CornerUp::west)
-                {
-                    westZ += kSmallZStep;
-                    if (slope == (SurfaceSlope::CornerDown::east | SurfaceSlope::doubleHeight))
-                        westZ += kSmallZStep;
-                }
-                const auto doubleHeight = baseZ + 8;
-
-                const auto baseQuarter = qt.getBaseQuarterOccupied();
-                const auto zQuarter = qt.getZQuarterOccupied();
-                if ((!(baseQuarter & 0b0001) || ((zQuarter & 0b0001 || baseZ >= northZ) && doubleHeight >= northZ))
-                    && (!(baseQuarter & 0b0010) || ((zQuarter & 0b0010 || baseZ >= eastZ) && doubleHeight >= eastZ))
-                    && (!(baseQuarter & 0b0100) || ((zQuarter & 0b0100 || baseZ >= southZ) && doubleHeight >= southZ))
-                    && (!(baseQuarter & 0b1000) || ((zQuarter & 0b1000 || baseZ >= westZ) && doubleHeight >= westZ)))
-                {
-                    return Sub462B4FResult::noCollision;
-                }
-                return sub_462B4F(el, clearFunc);
-            } };
 
         auto checkNonSurfaceElement = [&clearFunc, clearZ, baseZ, qt, flags](const TileElement& el) -> Sub462B4FResult {
             if (flags == BuildingCollisionType::anyHeight)
@@ -922,7 +978,8 @@ namespace OpenLoco::World::TileManager
             for (auto& el : tile)
             {
                 const auto* elSurface = el.as<SurfaceElement>();
-                const auto res = elSurface == nullptr ? checkNonSurfaceElement(el) : checkSurfaceElement(el, *elSurface);
+                const auto res = elSurface == nullptr ? canConstructAtCheckNonSurfaceElement(baseZ, clearZ, qt, flags, clearFunc, el)
+                                                      : canConstructAtCheckSurfaceElement(baseZ, clearZ, qt, clearFunc, el, *elSurface);
                 switch (res)
                 {
                     case Sub462B4FResult::noCollision:
