@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Tile.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
+#include <functional>
 #include <tuple>
 
 namespace OpenLoco::World
@@ -15,6 +17,27 @@ namespace OpenLoco::World
 namespace OpenLoco::World::TileManager
 {
     constexpr size_t maxElements = 0x6C000;
+
+    enum class ClearFuncResult
+    {
+        allCollisionsRemoved,
+        collision,
+        collisionErrorSet,
+        noCollision,
+        collisionRemoved,
+    };
+
+    enum class ElementPositionFlags : uint8_t
+    {
+        none = 0U,
+        aboveGround = 1U << 0,
+        underground = 1U << 1,
+        partiallyUnderwater = 1U << 2,
+        underwater = 1U << 3,
+
+        anyHeightBuildingCollisions = 1U << 7, // Do not use only for interop
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(ElementPositionFlags);
 
     void initialise();
     stdx::span<TileElement> getElements();
@@ -36,8 +59,10 @@ namespace OpenLoco::World::TileManager
     void updateTilePointers();
     void reorganise();
     bool checkFreeElementsAndReorganise();
-    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction = nullptr);
-    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, void* clearFunction = nullptr);
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy);
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(const TileElement& el)> clearFunc);
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, uintptr_t clearFunctionLegacy);
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(const TileElement& el)> clearFunc);
     bool canConstructAt(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt);
     uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType);
     uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant = false);

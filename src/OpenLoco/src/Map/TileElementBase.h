@@ -55,6 +55,7 @@ namespace OpenLoco::World
         SmallZ clearZ() const { return _clearZ; }
         int16_t clearHeight() const { return _clearZ * kSmallZStep; }
 
+        uint8_t occupiedQuarter() const { return _flags & 0xF; }
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         void setGhost(bool state)
         {

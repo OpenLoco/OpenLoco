@@ -84,7 +84,7 @@ namespace OpenLoco::GameCommands
 
         // TODO: implement 0x00469E07 as a real function after canConstructAt is implemented
         auto tileHeight = World::TileManager::getHeight(pos);
-        if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, (void*)0x00469E07))
+        if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, 0x00469E07))
             return _sub469E07Cost;
         else
             return GameCommands::FAILURE;

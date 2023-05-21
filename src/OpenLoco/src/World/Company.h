@@ -16,6 +16,8 @@ namespace OpenLoco
     {
         none = 0U,
         unk0 = (1U << 0),                      // 0x01
+        unk1 = (1U << 1),                      // 0x02
+        unk2 = (1U << 2),                      // 0x04
         sorted = (1U << 3),                    // 0x08
         increasedPerformance = (1U << 4),      // 0x10
         decreasedPerformance = (1U << 5),      // 0x20

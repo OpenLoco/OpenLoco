@@ -103,7 +103,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id error_cant_lower_land_here = 100;
     constexpr string_id error_cant_raise_land_here = 101;
-
+    constexpr string_id object_in_the_way = 102;
     constexpr string_id menu_load_game = 103;
     constexpr string_id menu_save_game = 104;
     constexpr string_id menu_quit_scenario_editor = 105;
@@ -144,7 +144,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_remove_signal = 141;
 
     constexpr string_id cant_build_pop3_string = 143;
-
+    constexpr string_id raise_or_lower_land_first = 144;
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
@@ -345,6 +345,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_select_track_mod = 354;
     constexpr string_id move_main_view_to_show_this = 355;
     constexpr string_id off_edge_of_map = 356;
+    constexpr string_id cannot_build_partly_above_below_water = 357;
 
     constexpr string_id error_can_only_build_above_ground = 360;
 
@@ -499,6 +500,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_vehicle_tab_finance = 578;
     constexpr string_id new_construction_position = 579;
     constexpr string_id rotate_90 = 580;
+    constexpr string_id string_id_in_the_way = 581;
 
     constexpr string_id error_cant_build_this_here = 583;
     constexpr string_id date_monthyear = 584;
@@ -1106,7 +1108,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_station_cargo = 1448;
     constexpr string_id tooltip_station_cargo_ratings = 1449;
     constexpr string_id demolition_not_allowed = 1450;
-
+    constexpr string_id another_company_is_about_to_build_here = 1451;
     constexpr string_id vehicle_too_long = 1452;
     constexpr string_id tooltip_build_or_move_headquarters = 1453;
     constexpr string_id tooltip_change_owner_name = 1454;
