@@ -260,7 +260,7 @@ namespace OpenLoco::Localisation
         }
         catch (const std::exception& e)
         {
-            std::cerr << e.what() << "\n";
+            Logging::error(e.what());
             Ui::showMessageBox("Exception", e.what());
             return false;
         }

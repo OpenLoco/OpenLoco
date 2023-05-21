@@ -302,7 +302,7 @@ namespace OpenLoco::Interop
         if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)address, data, size, nullptr))
         {
             const auto errCode = static_cast<uint32_t>(GetLastError());
-            fprintf(stderr, "ReadProcessMemory failed! address = 0x%08x, size = %zu, GetLastError() = 0x%08x\n", address, size, errCode);
+            Logging::error("ReadProcessMemory failed! address = {:#08x}, size = {}, GetLastError() = {:#08x}", address, size, errCode);
             throw std::runtime_error("ReadProcessMemory failed");
         }
 #else
@@ -324,7 +324,7 @@ namespace OpenLoco::Interop
             if (!WriteProcessMemory(GetCurrentProcess(), (LPVOID)addressLocal, reinterpret_cast<const uint8_t*>(data) + bytesWritten, sizeLocal, nullptr))
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
-                fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %zu, bytesWritten = %zu, addressLocal = 0x%08x, sizeLocal = %zu, GetLastError() = 0x%08x\n", address, size, bytesWritten, addressLocal, sizeLocal, errCode);
+                Logging::error("WriteProcessMemory failed! address = {:#08x}, size = {}, bytesWritten = {}, addressLocal = {:#08x}, sizeLocal = {}, GetLastError() = {:#08x}", address, size, bytesWritten, addressLocal, sizeLocal, errCode);
                 throw std::runtime_error("WriteProcessMemory failed");
             }
             bytesWritten += sizeLocal;

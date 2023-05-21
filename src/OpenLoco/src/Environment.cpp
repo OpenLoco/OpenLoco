@@ -84,7 +84,7 @@ namespace OpenLoco::Environment
                 Config::write();
                 return path;
             }
-            std::cerr << "Configured Locomotion game folder is missing Data/g1.DAT." << std::endl;
+            Logging::error("Configured Locomotion game folder is missing Data/g1.DAT.");
         }
 
         // Try to detect the Locomotion install path
@@ -96,8 +96,8 @@ namespace OpenLoco::Environment
             return path;
         }
 
-        std::cerr << "Unable to automatically find the Locomotion game folder." << std::endl
-                  << "Please provide the location manually." << std::endl;
+        Logging::error("Unable to automatically find the Locomotion game folder.\n"
+                       "Please provide the location manually.");
         Ui::showMessageBox("OpenLoco", "Unable to automatically detect the Locomotion game folder.\n"
                                        "Please locate the Locomotion game folder manually.");
 
@@ -114,7 +114,7 @@ namespace OpenLoco::Environment
         }
 
         // Files could not be located -- bail with a helpful error message
-        std::cerr << "The selected folder does not contain Data/g1.DAT" << std::endl;
+        Logging::error("The selected folder does not contain Data/g1.DAT");
         Ui::showMessageBox("OpenLoco", "The selected folder does not contain Data/g1.DAT, suggesting it is not a Locomotion\n"
                                        "install folder. Please verify the folder contains the original Locomotion game files,\n"
                                        "then restart OpenLoco to try again.");
@@ -168,14 +168,14 @@ namespace OpenLoco::Environment
             auto similarResult = findSimilarFile(result);
             if (similarResult.empty())
             {
-                std::cerr << "Warning: file " << result << " could not be not found" << std::endl;
+                Logging::error("Warning: file {} could not be not found", result.u8string());
             }
             else
             {
                 result = similarResult;
             }
 #else
-            std::cerr << "Warning: file " << result << " could not be not found" << std::endl;
+            Logging::error("Warning: file {} could not be not found", result.u8string());
 #endif
         }
         return result;
@@ -215,7 +215,7 @@ namespace OpenLoco::Environment
         }
         catch (const std::exception& e)
         {
-            std::fprintf(stderr, "Unable to create directory: %s\n", e.what());
+            Logging::error("Unable to create directory: {}", e.what());
             Ui::showMessageBox("Unable to create directory", e.what());
         }
     }
