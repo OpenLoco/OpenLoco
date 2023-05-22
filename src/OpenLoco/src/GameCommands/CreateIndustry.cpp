@@ -10,7 +10,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    static bool sub_454C91(uint8_t type, const World::Pos2& pos, const Core::Prng& prng)
+    static IndustryId sub_454C91(uint8_t type, const World::Pos2& pos, const Core::Prng& prng)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(type);
 
@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
             if (distance < tooClose)
             {
                 GameCommands::setErrorText(StringIds::too_close_to_another_industry);
-                return false;
+                return IndustryId::null;
             }
         }
 
@@ -116,7 +116,7 @@ namespace OpenLoco::GameCommands
             if (!res.has_value())
             {
                 GameCommands::setErrorText(StringIds::town_must_be_built_nearby_first);
-                return false;
+                return IndustryId::null;
             }
             industry->town = res->first;
             industry->name = indObj->var_02;
@@ -151,10 +151,10 @@ namespace OpenLoco::GameCommands
                     break;
                 }
             }
-            return true;
+            return id;
         }
 
         GameCommands::setErrorText(StringIds::too_many_industries);
-        return false;
+        return IndustryId::null;
     }
 }
