@@ -184,11 +184,13 @@ namespace OpenLoco
                 dst = strRes.str;
                 remainingData = remainingData.subspan(strRes.tableLength);
             };
+
+            // This is actually used for initial name of the industry when two industries in same town
             string_id notUsed{};
 
             loadString(name, 0);
             loadString(var_02, 1);
-            loadString(notUsed, 2);
+            loadString(notUsed, 2); 
             loadString(nameClosingDown, 3);
             loadString(nameUpProduction, 4);
             loadString(nameDownProduction, 5);

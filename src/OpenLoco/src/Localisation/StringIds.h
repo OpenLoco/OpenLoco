@@ -1007,7 +1007,7 @@ namespace OpenLoco::StringIds
     constexpr string_id catchment_area_accepts = 1314;
     constexpr string_id catchment_area_produces = 1315;
     constexpr string_id catchment_area_nothing = 1316;
-
+    constexpr string_id too_many_industries = 1317;
     constexpr string_id title_industries = 1318;
     constexpr string_id title_fund_new_industries = 1319;
     constexpr string_id title_build_new_industries = 1320;
@@ -1075,8 +1075,8 @@ namespace OpenLoco::StringIds
     constexpr string_id town_size_label = 1407;
     constexpr string_id select_town_size = 1408;
     constexpr string_id expand_this_town = 1409;
-    constexpr string_id too_close_to_another_industry = 1409;
-
+    constexpr string_id too_close_to_another_industry = 1410;
+    constexpr string_id town_must_be_built_nearby_first = 1410;
     constexpr string_id plant_cluster_selected_tree = 1412;
     constexpr string_id plant_cluster_random_tree = 1413;
     constexpr string_id tooltip_statistics = 1414;
