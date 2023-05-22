@@ -42,35 +42,6 @@ namespace OpenLoco
         }
     }
 
-    // Obsolete class, use new Stream APIs
-    template<typename CharT, typename TraitsT = std::char_traits<CharT>>
-    class SpanStream final : public std::istream
-    {
-    private:
-        class SpanStreamBuffer : public std::streambuf
-        {
-        public:
-            SpanStreamBuffer(stdx::span<CharT>& span)
-            {
-                this->setg((char*)span.data(), (char*)span.data(), (char*)(span.data() + span.size()));
-            }
-        };
-
-        std::unique_ptr<SpanStreamBuffer> _buffer;
-
-        SpanStream(std::unique_ptr<SpanStreamBuffer>&& buffer)
-            : std::istream(buffer.get())
-        {
-            _buffer = std::move(buffer);
-        }
-
-    public:
-        SpanStream(stdx::span<CharT> data)
-            : SpanStream(std::make_unique<SpanStreamBuffer>(data))
-        {
-        }
-    };
-
     enum class StreamMode
     {
         read,
