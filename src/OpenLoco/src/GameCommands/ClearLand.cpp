@@ -82,9 +82,22 @@ namespace OpenLoco::GameCommands
         _F003D0 = pos.y;
         _F0016C = flagStackHack;
 
+        currency32_t cost{};
+        auto clearFunc = [flags, pos, &cost](const World::TileElement& el) -> World::TileManager::ClearFuncResult {
+            switch (el.type())
+            {
+                case ElementType::tree:
+                    break;
+                case ElementType::building:
+                    break;
+                default:
+                    return TileManager::ClearFuncResult::collision;
+            }
+
+        };
         // TODO: implement 0x00469E07 as a real function after canConstructAt is implemented
         auto tileHeight = World::TileManager::getHeight(pos);
-        if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, 0x00469E07))
+        if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, clearFunc))
             return _sub469E07Cost;
         else
             return GameCommands::FAILURE;
