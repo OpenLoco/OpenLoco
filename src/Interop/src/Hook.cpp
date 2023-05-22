@@ -12,6 +12,9 @@
 #endif // _WIN32
 
 #include "Interop.hpp"
+#include <OpenLoco/Diagnostics/Logging.h>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Interop
 {
@@ -156,7 +159,7 @@ namespace OpenLoco::Interop
         if (!done)
         {
             const auto errCode = static_cast<uint32_t>(GetLastError());
-            fprintf(stderr, "WriteProcessMemory failed! address = 0x%08x, size = %d, GetLastError() = 0x%08x\n", address, i, errCode);
+            Logging::error("WriteProcessMemory failed! address = {:#08x}, size = {}, GetLastError() = {:#08x}", address, i, errCode);
         }
 #else
         done = true;
@@ -176,7 +179,7 @@ namespace OpenLoco::Interop
             if (_hookTableAddress == nullptr)
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
-                fprintf(stderr, "VirtualAllocEx for registerHook failed! size = %zu, GetLastError() = 0x%08x\n", size, errCode);
+                Logging::error("VirtualAllocEx for registerHook failed! size = {}, GetLastError() = {:#08x}", size, errCode);
             }
 
 #else
@@ -190,7 +193,7 @@ namespace OpenLoco::Interop
         }
         if (_hookTableOffset > kMaxHooks)
         {
-            fprintf(stderr, "Failed registering hook for 0x%08x. Ran out of hook table space\n", address);
+            Logging::error("Failed registering hook for {:#08x}. Ran out of hook table space", address);
             return;
         }
         // Do a few retries here. This can fail on some versions of wine which inexplicably would fail on
@@ -209,7 +212,7 @@ namespace OpenLoco::Interop
             if (page0Address != page1Address)
             {
                 uint8_t nopCount = 4096 - (address & 0xFFF);
-                fprintf(stdout, "Address 0x%08x straddles page boundary (page0 = 0x%08x, page1 = 0x%08x), injecting %u nops\n", address, page0Address, page1Address, nopCount);
+                Logging::info("Address {:#08x} straddles page boundary (page0 = {:#08x}, page1 = {:#08x}), injecting {} nops", address, page0Address, page1Address, nopCount);
                 for (; nopCount > 0; nopCount--)
                 {
                     data[i++] = 0x90; // nop
@@ -230,7 +233,7 @@ namespace OpenLoco::Interop
                 if (!protectResult)
                 {
                     const auto errCode = static_cast<uint32_t>(GetLastError());
-                    fprintf(stderr, "VirtualProtect(rw) for registerHook failed! address = 0x%08x, size = %lu, GetLastError() = 0x%08x\n", address, protectSize, errCode);
+                    Logging::error("VirtualProtect(rw) for registerHook failed! address = {:#08x}, size = {}, GetLastError() = {:#08x}", address, protectSize, errCode);
                 }
             }
 #endif
@@ -243,7 +246,7 @@ namespace OpenLoco::Interop
                 if (!protectResult)
                 {
                     const auto errCode = static_cast<uint32_t>(GetLastError());
-                    fprintf(stderr, "VirtualProtect(x) for registerHook failed! address = 0x%08x, size = %lu, GetLastError() = 0x%08x\n", address, protectSize, errCode);
+                    Logging::error("VirtualProtect(x) for registerHook failed! address = {:#08x}, size = {}, GetLastError() = {:#08x}", address, protectSize, errCode);
                 }
             }
 #endif
@@ -253,7 +256,7 @@ namespace OpenLoco::Interop
             retries--;
             if (!done)
             {
-                fprintf(stderr, "Failed registering hook for 0x%08x. Retries left: %d\n", address, retries);
+                Logging::error("Failed registering hook for {:#08x}. Retries left: {}", address, retries);
             }
         }
     }
@@ -299,7 +302,7 @@ namespace OpenLoco::Interop
             if (_smallHooks == nullptr)
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
-                fprintf(stderr, "VirtualAllocEx for makeJump failed! size = %zu, GetLastError() = 0x%08x\n", size, errCode);
+                Logging::error("VirtualAllocEx for makeJump failed! size = {}, GetLastError() = {:#08x}", size, errCode);
             }
 #else
             _smallHooks = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -319,7 +322,7 @@ namespace OpenLoco::Interop
             if (!protectResult)
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
-                fprintf(stderr, "VirtualProtect(rw) for makeJump failed! _offset = %p, size = %lu, GetLastError() = 0x%08x\n", static_cast<void*>(_offset), protectSize, errCode);
+                Logging::error("VirtualProtect(rw) for makeJump failed! _offset = {:#08x}, size = {}, GetLastError() = {:#08x}", reinterpret_cast<uintptr_t>(_offset), protectSize, errCode);
             }
         }
 #endif
@@ -352,7 +355,7 @@ namespace OpenLoco::Interop
             if (!protectResult)
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
-                fprintf(stderr, "VirtualProtect(x) for makeJump failed! _offset = %p, size = %lu, GetLastError() = 0x%08x\n", static_cast<void*>(_offset), protectSize, errCode);
+                Logging::error("VirtualProtect(x) for makeJump failed! _offset = {:#08x}, size = {}, GetLastError() = {:#08x}", reinterpret_cast<uintptr_t>(_offset), protectSize, errCode);
             }
         }
 #endif

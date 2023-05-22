@@ -26,6 +26,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Exception.hpp>
 #include <OpenLoco/Utility/Stream.hpp>
@@ -36,6 +37,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::S5
 {
@@ -356,7 +358,7 @@ namespace OpenLoco::S5
         }
         catch (const std::exception& e)
         {
-            std::fprintf(stderr, "Unable to save S5: %s\n", e.what());
+            Logging::error("Unable to save S5: {}", e.what());
             return false;
         }
     }
@@ -738,14 +740,14 @@ namespace OpenLoco::S5
         }
         catch (const LoadException& e)
         {
-            std::fprintf(stderr, "Unable to load S5: %s\n", e.what());
+            Logging::error("Unable to load S5: {}", e.what());
             _loadErrorCode = 255;
             _loadErrorMessage = e.getLocalisedMessage();
             return false;
         }
         catch (const std::exception& e)
         {
-            std::fprintf(stderr, "Unable to load S5: %s\n", e.what());
+            Logging::error("Unable to load S5: {}", e.what());
             _loadErrorCode = 255;
             _loadErrorMessage = StringIds::null;
             return false;

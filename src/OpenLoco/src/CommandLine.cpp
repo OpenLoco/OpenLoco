@@ -3,10 +3,13 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "S5/SawyerStream.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <iostream>
 #include <optional>
 #include <string_view>
 #include <vector>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
 {
@@ -296,7 +299,7 @@ namespace OpenLoco
 
         if (!parser.parse())
         {
-            std::cerr << parser.getErrorMessage() << std::endl;
+            Logging::error("{}", parser.getErrorMessage());
             return {};
         }
 
@@ -410,7 +413,7 @@ namespace OpenLoco
 
         if (options.path.empty())
         {
-            std::fprintf(stderr, "No file specified.\n");
+            Logging::error("No file specified.");
             return 2;
         }
 
@@ -482,7 +485,7 @@ namespace OpenLoco
         }
         catch (const std::exception& e)
         {
-            std::fprintf(stderr, "Unable to uncompress S5 file: %s\n", e.what());
+            Logging::error("Unable to uncompress S5 file: {}", e.what());
             return 2;
         }
     }
@@ -491,7 +494,7 @@ namespace OpenLoco
     {
         if (!options.ticks)
         {
-            std::fprintf(stderr, "Number of ticks to simulate not specified\n");
+            Logging::error("Number of ticks to simulate not specified");
             return 2;
         }
 
@@ -504,7 +507,7 @@ namespace OpenLoco
         }
         catch (...)
         {
-            std::fprintf(stderr, "Unable to load and simulate %s\n", inPath.u8string().c_str());
+            Logging::error("Unable to load and simulate {}", inPath.u8string());
         }
 
         auto& gameState = getGameState();
@@ -527,7 +530,7 @@ namespace OpenLoco
             }
             catch (...)
             {
-                std::fprintf(stderr, "Unable to save game to %s\n", outPath.u8string().c_str());
+                Logging::error("Unable to save game to {}", outPath.u8string());
             }
         }
 
