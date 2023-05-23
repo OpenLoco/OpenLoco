@@ -61,19 +61,10 @@ namespace OpenLoco::GameCommands
             uint16_t maxPrimaryCargo = vehObj->maxCargo[0];
             auto cargoTypes = vehObj->cargoTypes[0];
             auto primaryCargoId = Utility::bitScanForward(cargoTypes);
-
-            // TODO: check invocation -- not implemented with primaryCargoId == cargoId in mind, perhaps?
-            // TODO: the result of this function appears to be unused? (called at 0x0042F789)
-            auto units = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, primaryCargoId);
+            uint16_t maxCargoUnits = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, args.cargoType);
 
             vehBody.body->primaryCargo.type = args.cargoType;
-
-            if (maxPrimaryCargo > 0xFF)
-            {
-                maxPrimaryCargo = 0xFF;
-            }
-
-            vehBody.body->primaryCargo.maxQty = maxPrimaryCargo;
+            vehBody.body->primaryCargo.maxQty = std::min<uint8_t>(maxCargoUnits, 0xFF);
             vehBody.body->primaryCargo.qty = 0;
 
             auto primaryCargoObj = ObjectManager::get<CargoObject>(primaryCargoId);
