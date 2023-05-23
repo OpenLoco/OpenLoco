@@ -31,18 +31,18 @@ Feel free to join our Discord server to talk about developing the game, or for h
 
 # 1 Introduction
 
-**OpenLoco** is an open-source re-implementation of Chris Sawyer's Locomotion (CSL). CSL is the spiritual successor to Transport Tycoon and OpenLoco aims to improve the game similar to how [OpenTTD](https://openttd.org) improved Transport Tycoon and [OpenRCT2](https://openrct2.io) improved RollerCoaster Tycoon.
+**OpenLoco** is an open-source re-implementation of *Chris Sawyer's Locomotion* (CSL), the spiritual successor to Transport Tycoon. OpenLoco aims to improve the game similar to how [OpenTTD](https://openttd.org) improved *Transport Tycoon*, and [OpenRCT2](https://openrct2.io) improved *RollerCoaster Tycoon*.
 
-Chris Sawyer's Locomotion was originally written by Chris Sawyer in x86 assembly, building on top of his RollerCoaster Tycoon 2 engine. Much of the code is 1:1 with RollerCoaster Tycoon 2. However, the engine has changed substantially enough that OpenLoco currently does not share its codebase with OpenRCT2.
+CSL was originally written in x86 assembly, building on top of the RollerCoaster Tycoon 2 engine. However, the engine has changed substantially enough that OpenLoco currently does not share its codebase with OpenRCT2.
 
-Recent implementation efforts have focussed on re-implementing the UI, so that the data structures involved may be better understood. Once this is done, it is our hope the game logic will be easier to understand and implement.
+The reimplementation efforts of OpenLoco are gradual, aiming to ultimately rewrite the entire game in C++. In the earlier years of the project, the in-game UI has been completely reimplemented, and most of the underlying data and object structures have been uncovered. Recent efforts have focussed on reimplementing the game (command) logic. Once this has been completed, it is our goal to get a solid multiplayer experience working in OpenLoco. It is also our goal to increase the map and vehicle limits. However, until all logic has been reimplemented, we are bound to the limits imposed by the CSL save format (SV5/SC5).
 
 ---
 
 # 2 Downloading the game (pre-built)
 
-The latest releases can be [downloaded from GitHub](https://github.com/OpenLoco/OpenLoco/releases). Releases are currently provided for Windows and macOS (32-bit only).
-For Linux and BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually.
+The latest releases can be [downloaded from GitHub](https://github.com/OpenLoco/OpenLoco/releases). Releases are currently provided only for Windows.
+For Linux and BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually. For macOS, we recommend [using Wine](https://github.com/OpenLoco/OpenLoco/wiki/Running-OpenLoco-on-macOS).
 
 Please note that OpenLoco requires the asset files of the original Chris Sawyer's Locomotion to play the game.
 It can be bought at e.g. [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
@@ -65,7 +65,7 @@ If you would like to contribute code to OpenLoco, please follow the instructions
 Alternatively, we have platform-specific guides for [Ubuntu](https://github.com/OpenLoco/OpenLoco/wiki/Building-on-Ubuntu) and [macOS](https://github.com/OpenLoco/OpenLoco/wiki/Building-on-macOS).
 
 If you just want to play the game, you can just [download the latest release](https://github.com/OpenLoco/OpenLoco/releases) from GitHub.
-Releases are currently provided for Windows and macOS (32-bit only).
+Releases are currently only provided for Windows (32-bit only).
 
 ## 4.1 Building prerequisites
 
@@ -91,8 +91,10 @@ The following libraries/dependencies are required:
 ---
 
 ## 4.2 Compiling and running
-### Windows:
+
 Note: The game can currently only be built for 32-bit architectures.
+
+### Windows:
 
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
 2. With VS 2022 use the "Open a local folder" option to start the project file generation. This may take some time as it downloads dependencies.
@@ -106,7 +108,6 @@ Alternatively using CMake use the following commands.
 2. Run `cmake --build --preset windows-msvc-release`
 
 ### Linux:
-Due to issues with yaml-cpp package we download it during CMake generation.
 
 The standard CMake build procedure is to install the required libraries, then:
 ```
@@ -114,7 +115,9 @@ cmake --preset linux
 cmake --build --preset linux-release
 ```
 
-Note that installing some packages can be problematic on desktop AMD64 distributions, you can use our docker images for compilation.
+Installing some packages can be problematic on desktop AMD64 distributions. To work around this, you can use [our Docker images](https://github.com/OpenLoco/openloco-docker-build) for compilation.
+    
+Note: Due to issues with distro yaml-cpp packages, its source release is downloaded during CMake generation.
 
 Running the game will need the data directory from the root of the source code next to the binary. Assuming you're in `$SRC/build`, 
 ```
