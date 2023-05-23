@@ -1,9 +1,11 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands.h"
+#include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Types.hpp"
+#include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
@@ -13,13 +15,13 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x004B0B50
-    static uint32_t vehicleRefit(EntityId headId, const uint8_t flags)
+    static uint32_t vehicleRefit(const VehicleRefitArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
         try
         {
-            Vehicles::Vehicle train(headId);
+            Vehicles::Vehicle train(args.head);
             auto& head = train.head;
 
             if (!head->canBeModified())
@@ -49,21 +51,50 @@ namespace OpenLoco::GameCommands
 
             auto carIter = train.cars.begin();
             carIter++;
-            car = *carIter;
+            auto& vehBody = *carIter;
 
             if (!(flags & Flags::apply))
             {
                 return 0;
             }
 
-            auto maxPrimaryCargo = vehObj->maxCargo[0];
+            uint16_t maxPrimaryCargo = vehObj->maxCargo[0];
             auto cargoTypes = vehObj->cargoTypes[0];
             auto primaryCargoId = Utility::bitScanForward(cargoTypes);
 
             // TODO: check invocation -- not implemented with primaryCargoId == cargoId in mind, perhaps?
-            // auto units = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, primaryCargoId);
+            // TODO: the result of this function appears to be unused? (called at 0x0042F789)
+            auto units = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, primaryCargoId);
 
-            // TODO: finish
+            vehBody.body->primaryCargo.type = args.cargoType;
+
+            if (maxPrimaryCargo > 0xFF)
+            {
+                maxPrimaryCargo = 0xFF;
+            }
+
+            vehBody.body->primaryCargo.maxQty = maxPrimaryCargo;
+            vehBody.body->primaryCargo.qty = 0;
+
+            auto primaryCargoObj = ObjectManager::get<CargoObject>(primaryCargoId);
+            auto acceptedTypes = 0;
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); cargoId++)
+            {
+                auto cargoObject = ObjectManager::get<CargoObject>(cargoId);
+                if (cargoObject == nullptr)
+                {
+                    continue;
+                }
+
+                if (cargoObject->matchFlags == primaryCargoObj->matchFlags)
+                {
+                    acceptedTypes |= 1 << cargoId;
+                }
+            }
+            vehBody.body->primaryCargo.acceptedTypes = acceptedTypes;
+
+            head->sub_4B7CC3();
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(head->id));
 
             return 0;
         }
@@ -75,7 +106,6 @@ namespace OpenLoco::GameCommands
 
     void vehicleRefit(registers& regs)
     {
-        VehiclePassSignalArgs args(regs);
-        regs.ebx = vehicleRefit(args.head, regs.bl);
+        regs.ebx = vehicleRefit(VehicleRefitArgs(regs), regs.bl);
     }
 }
