@@ -1,10 +1,17 @@
+#include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
 #include "Localisation/StringIds.h"
+#include "Map/BuildingElement.h"
 #include "Map/QuarterTile.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
+#include "Map/TreeElement.h"
+#include "Objects/BuildingObject.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/TreeObject.h"
+#include "S5/S5.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 
@@ -87,13 +94,49 @@ namespace OpenLoco::GameCommands
             switch (el.type())
             {
                 case ElementType::tree:
-                    break;
-                case ElementType::building:
-                    break;
-                default:
-                    return TileManager::ClearFuncResult::collision;
-            }
+                {
+                    auto* elTree = el.as<TreeElement>();
+                    if (elTree == nullptr)
+                    {
+                        return TileManager::ClearFuncResult::noCollision;
+                    }
+                    auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+                    cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
+                    if (flags & GameCommands::Flags::flag_6 || !(flags & GameCommands::Flags::apply))
+                    {
+                        return TileManager::ClearFuncResult::noCollision;
+                    }
+
+                    _F00158 = &el;
+                    removeTree(*elTree, GameCommands::Flags::apply, pos);
+                    S5::getOptions().madeAnyChanges = 1;
+                    if (_F00158 == kInvalidTile)
+                    {
+                        return TileManager::ClearFuncResult::allCollisionsRemoved;
+                    }
+                    return TileManager::ClearFuncResult::collisionRemoved;
+                }
+                case ElementType::building:
+                {
+                    auto* elBuilding = el.as<BuildingElement>();
+                    if (elBuilding == nullptr)
+                    {
+                        return TileManager::ClearFuncResult::noCollision;
+                    }
+                    auto* buildingObj = elBuilding->getObject();
+                    if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+                    {
+                        return TileManager::ClearFuncResult::collision;
+                    }
+
+                    const auto buildingStart = pos - kBuildingOffset[elBuilding->multiTileIndex()];
+                    _F00170;
+                    break;
+                }
+                default:
+                    return TileManager::ClearFuncResult::noCollision;
+            }
         };
         // TODO: implement 0x00469E07 as a real function after canConstructAt is implemented
         auto tileHeight = World::TileManager::getHeight(pos);
