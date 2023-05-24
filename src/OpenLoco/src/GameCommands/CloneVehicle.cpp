@@ -106,9 +106,9 @@ namespace OpenLoco::GameCommands
         // Copy express/local
         if ((existingTrain.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
         {
-            GameCommands::VehicleLocalExpressArgs args{};
+            GameCommands::VehicleChangeRunningModeArgs args{};
             args.head = newHead->id;
-            args.mode = 2;
+            args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::toggleLocalExpress;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 

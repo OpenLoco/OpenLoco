@@ -47,6 +47,8 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 using namespace OpenLoco::Literals;
 
+using OpenLoco::GameCommands::VehicleChangeRunningModeArgs;
+
 namespace OpenLoco::Ui::Windows::Vehicle
 {
     namespace Common
@@ -659,11 +661,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            static const std::pair<string_id, uint8_t> itemToGameCommandInfo[3] = {
-                { StringIds::cant_stop_string_id, 0 },
-                { StringIds::cant_start_string_id, 1 },
-                { StringIds::cant_select_manual_mode_string_id, 3 },
+            static const std::pair<string_id, VehicleChangeRunningModeArgs::Mode> itemToGameCommandInfo[3] = {
+                { StringIds::cant_stop_string_id, VehicleChangeRunningModeArgs::Mode::stopVehicle },
+                { StringIds::cant_start_string_id, VehicleChangeRunningModeArgs::Mode::startVehicle },
+                { StringIds::cant_select_manual_mode_string_id, VehicleChangeRunningModeArgs::Mode::driveManually },
             };
+
             auto [errorTitle, mode] = itemToGameCommandInfo[item];
             GameCommands::setErrorTitle(errorTitle);
             FormatArguments args{};
@@ -676,7 +679,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->name);
             args.push(head->ordinalNumber);
 
-            GameCommands::VehicleLocalExpressArgs vargs{};
+            VehicleChangeRunningModeArgs vargs{};
             vargs.head = EntityId(self->number);
             vargs.mode = mode;
             GameCommands::doCommand(vargs, GameCommands::Flags::apply);
@@ -2546,9 +2549,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
-                        GameCommands::VehicleLocalExpressArgs args{};
+                        VehicleChangeRunningModeArgs args{};
                         args.head = head->id;
-                        args.mode = 2;
+                        args.mode = VehicleChangeRunningModeArgs::Mode::toggleLocalExpress;
                         GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
@@ -2562,9 +2565,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) == Vehicles::Flags48::none)
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
-                        GameCommands::VehicleLocalExpressArgs args{};
+                        VehicleChangeRunningModeArgs args{};
                         args.head = head->id;
-                        args.mode = 2;
+                        args.mode = VehicleChangeRunningModeArgs::Mode::toggleLocalExpress;
                         GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
@@ -4020,9 +4023,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (Input::hasKeyModifier(Input::KeyModifier::shift))
             {
-                GameCommands::VehicleLocalExpressArgs args{};
+                VehicleChangeRunningModeArgs args{};
                 args.head = vehicleHead;
-                args.mode = 1;
+                args.mode = VehicleChangeRunningModeArgs::Mode::startVehicle;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
 

@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
         changeLoan = 9,
         vehicleRename = 10,
         changeStationName = 11,
-        vehicleLocalExpress = 12,
+        vehicleChangeRunningMode = 12,
         createSignal = 13,
         removeSignal = 14,
         createTrainStation = 15,
@@ -480,25 +480,33 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct VehicleLocalExpressArgs
+    struct VehicleChangeRunningModeArgs
     {
-        static constexpr auto command = GameCommand::vehicleLocalExpress;
+        enum class Mode : uint8_t
+        {
+            stopVehicle,
+            startVehicle,
+            toggleLocalExpress,
+            driveManually,
+        };
 
-        VehicleLocalExpressArgs() = default;
-        explicit VehicleLocalExpressArgs(const registers& regs)
+        static constexpr auto command = GameCommand::vehicleChangeRunningMode;
+
+        VehicleChangeRunningModeArgs() = default;
+        explicit VehicleChangeRunningModeArgs(const registers& regs)
             : head(static_cast<EntityId>(regs.di))
-            , mode(regs.bh)
+            , mode(static_cast<Mode>(regs.bh))
         {
         }
 
         EntityId head;
-        uint8_t mode;
+        Mode mode;
 
         explicit operator registers() const
         {
             registers regs;
             regs.di = enumValue(head);
-            regs.bh = mode;
+            regs.bh = enumValue(mode);
             return regs;
         }
     };
