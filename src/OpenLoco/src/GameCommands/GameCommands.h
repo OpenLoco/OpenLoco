@@ -494,7 +494,7 @@ namespace OpenLoco::GameCommands
 
         VehicleChangeRunningModeArgs() = default;
         explicit VehicleChangeRunningModeArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.di))
+            : head(static_cast<EntityId>(regs.dx))
             , mode(static_cast<Mode>(regs.bh))
         {
         }
