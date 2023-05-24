@@ -5,6 +5,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
+#include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -21,6 +22,11 @@ namespace OpenLoco::GameCommands
         return regs.eax != 0;
     }
 
+    static void invalidateWindow(EntityId headId)
+    {
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(headId));
+    }
+
     // 0x004B6AEE
     static uint32_t changeLocalExpressMode(const Vehicles::Vehicle& train, const uint8_t flags)
     {
@@ -30,13 +36,27 @@ namespace OpenLoco::GameCommands
         }
 
         train.veh1->var_48 ^= Vehicles::Flags48::expressMode;
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(train.head->id));
+        invalidateWindow(train.head->head);
         return 0;
     }
 
-    static uint32_t startVehicle([[maybe_unused]] const Vehicles::Vehicle& train, const uint8_t flags)
+    // 0x004B6A08
+    static uint32_t startStopVehicle(const Vehicles::Vehicle& train, bool startVehicle, const uint8_t flags)
     {
-        if (train.head->status != Vehicles::Status::stopped)
+        // Starting this vehicle -- can we?
+        if (startVehicle && !sub_4B6B0C(train.head))
+        {
+            return FAILURE;
+        }
+
+        // Stopping this vehicle, but vehicle is already stopped?
+        if (!startVehicle && train.head->hasVehicleFlags(VehicleFlags::commandStop))
+        {
+            return 0;
+        }
+
+        // Starting this vehicle, but vehicle is already travelling?
+        if (startVehicle && !train.head->hasVehicleFlags(VehicleFlags::commandStop))
         {
             return 0;
         }
@@ -46,28 +66,27 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        // TODO: finish -- combine with stopVehicle?
-        return 0;
-    }
-
-    static uint32_t stopVehicle(const Vehicles::Vehicle& train, [[maybe_unused]] const uint8_t flags)
-    {
-        if (!sub_4B6B0C(train.head))
+        train.head->vehicleFlags ^= VehicleFlags::commandStop;
+        if (train.head->hasVehicleFlags(VehicleFlags::commandStop))
         {
-            return FAILURE;
+            train.head->vehicleFlags &= ~VehicleFlags::manualControl;
         }
 
-        if (train.head->status == Vehicles::Status::stopped)
+        if (!(train.head->hasVehicleFlags(VehicleFlags::unk_2) || !CompanyManager::isPlayerCompany(train.head->owner)))
         {
-            return 0;
+            auto madeProfit = train.veh2->profit[0] | train.veh2->profit[1] | train.veh2->profit[2] | train.veh2->profit[3];
+            if (madeProfit != 0)
+            {
+                StationManager::sub_437F29(getUpdatingCompanyId(), 1);
+            }
         }
 
-        // TODO: finish -- combine with startVehicle?
+        invalidateWindow(train.head->head);
         return 0;
     }
 
     // 0x004B6AAF
-    static uint32_t driveManually(const Vehicles::Vehicle& train, const uint8_t flags)
+    static uint32_t toggleManualDriving(const Vehicles::Vehicle& train, const uint8_t flags)
     {
         if (!(flags & Flags::apply))
         {
@@ -84,7 +103,7 @@ namespace OpenLoco::GameCommands
             train.head->status = Vehicles::Status::travelling;
         }
 
-        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(train.head->id));
+        invalidateWindow(train.head->head);
 
         return 0;
     }
@@ -106,8 +125,7 @@ namespace OpenLoco::GameCommands
             }
 
             // If a vehicle is stuck or crashed, immediately sell the vehicle instead.
-            if ((train.head->status == Vehicles::Status::stuck || train.head->status == Vehicles::Status::crashed) &&
-                CompanyManager::isPlayerCompany(train.head->owner))
+            if ((train.head->status == Vehicles::Status::stuck || train.head->status == Vehicles::Status::crashed) && CompanyManager::isPlayerCompany(train.head->owner))
             {
                 if (flags & Flags::apply)
                 {
@@ -118,17 +136,12 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            switch (args.mode)
-            {
-                case VehicleChangeRunningModeArgs::Mode::stopVehicle:
-                    return stopVehicle(train, flags);
-                case VehicleChangeRunningModeArgs::Mode::startVehicle:
-                    return startVehicle(train, flags);
-                case VehicleChangeRunningModeArgs::Mode::driveManually:
-                    return driveManually(train, flags);
-                default:
-                    return FAILURE;
-            }
+            // Switching to manual driving?
+            if (args.mode == VehicleChangeRunningModeArgs::Mode::driveManually)
+                return toggleManualDriving(train, flags);
+
+            bool startVehicle = args.mode == VehicleChangeRunningModeArgs::Mode::startVehicle;
+            return startStopVehicle(train, startVehicle, flags);
         }
         catch (std::runtime_error&)
         {

@@ -39,7 +39,8 @@ namespace OpenLoco
         none = 0U,
         unk_0 = 1U << 0,
         commandStop = 1U << 1, // commanded to stop??
-        sorted = 1U << 3,      // vehicle list
+        unk_2 = 1U << 2,
+        sorted = 1U << 3, // vehicle list
         unk_5 = 1U << 5,
         manualControl = 1U << 6,
         shuntCheat = 1U << 7,
