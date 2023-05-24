@@ -627,7 +627,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto speed = pos.y - (self->y + self->widgets[widx::speedControl].top + 58);
             speed = -(std::clamp(speed, -40, 40));
 
-            GameCommands::do_74(EntityId(self->number), speed);
+            GameCommands::VehicleSpeedControlArgs args{};
+            args.head = EntityId(self->number);
+            args.speed = speed;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         // 0x004B251A
