@@ -2041,6 +2041,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/VehicleReverse.cpp
     void vehicleReverse(registers& regs);
 
+    // Defined in GameCommands/VehicleSpeedControl.cpp
+    void vehicleSpeedControl(registers& regs);
+
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);
 
