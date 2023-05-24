@@ -58,7 +58,7 @@ namespace OpenLoco::GameCommands
 
         train.head->vehicleFlags ^= VehicleFlags::manualControl;
         train.head->vehicleFlags |= VehicleFlags::commandStop;
-        train.head->var_6E = 0xD8;
+        train.head->var_6E = -40;
 
         if (train.head->status == Vehicles::Status::approaching)
         {
