@@ -1990,12 +1990,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (i)
             {
                 case widx::refit:
+                {
                     if (dropdownIndex == -1)
                         break;
 
+                    GameCommands::VehicleRefitArgs args{};
+                    args.head = static_cast<EntityId>(self.number);
+                    args.cargoType = Dropdown::getItemArgument(dropdownIndex, 3);
+
                     GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
-                    GameCommands::do_64(EntityId(self.number), Dropdown::getItemArgument(dropdownIndex, 3));
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
+                }
             }
         }
 

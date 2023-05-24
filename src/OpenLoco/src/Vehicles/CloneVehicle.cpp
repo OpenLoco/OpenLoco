@@ -44,6 +44,7 @@ namespace OpenLoco::Vehicles
             return totalCost;
         }
 
+        uint16_t cargoType = 0;
         uint32_t totalCost = 0;
         for (auto& car : existingTrain.cars)
         {
@@ -55,6 +56,7 @@ namespace OpenLoco::Vehicles
                 args.vehicleType = car.front->objectId;
 
                 cost = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                cargoType = car.body->primaryCargo.type;
 
                 auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVeh == nullptr)
@@ -105,6 +107,16 @@ namespace OpenLoco::Vehicles
         {
             GameCommands::do12(newHead->id, 2);
         }
+
+        // Copy cargo refit status (only applies to boats and airplanes)
+        if (newHead->vehicleType == VehicleType::ship || newHead->vehicleType == VehicleType::aircraft)
+        {
+            GameCommands::VehicleRefitArgs args{};
+            args.head = newHead->head;
+            args.cargoType = cargoType;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+
         return totalCost;
     }
 

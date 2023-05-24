@@ -1713,15 +1713,28 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
     }
 
-    // Refit vehicle
-    inline void do_64(EntityId vehicleHead, uint16_t option)
+    struct VehicleRefitArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(vehicleHead);
-        regs.dx = option;
-        doCommand(GameCommand::vehicleRefit, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleRefit;
+
+        VehicleRefitArgs() = default;
+        explicit VehicleRefitArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+            , cargoType(regs.dx)
+        {
+        }
+
+        EntityId head;
+        uint16_t cargoType;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.dx = cargoType;
+            return regs;
+        }
+    };
 
     // Change company face
     inline bool do_65(const ObjectHeader& object, CompanyId company)
