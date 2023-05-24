@@ -1,4 +1,16 @@
-# OpenLoco version 23.04.1+ (???)
+# OpenLoco version 23.05 (???)
+
+## Construct With Clear (#1899)
+@duncanspumpkin started this two months ago with the comment "This is going to take a little while". And indeed it did. The construct with clear function is a core part of many Game Commands. This function is a bit of a swiss army knife. It can tell you if the location you are trying to construct: is underwater/underground/overground/clash with ground; if there are tile elements in the way;. It can also be further customised to remove elements as its checking for clearance. Getting this to interop with the existing game was a challange and now that its done it opens up implementing many of the placement Game Commands e.g. CreateBuilding.
+
+## Fix C++20 Issues (#1932)
+Currently the codebase is built with C++17 in mind. Eventually we would like to move to C++20 as there are some great new features in the newer standard. This PR addressed many of the compile issues. There is now only one area left to address but unfortunately its the biggest problem `char8_t` and `std::u8string`. We will need to make a number of UTF-8 related changes to really be ready for C++20 but it is getting nearer. Expect a number of UTF-8 related changes over the next month (#1937 for example brings UTF-8 to Windows command line).
+
+## Refactoring Game Command Args (#1914, #1915, #1917, #1918, #1919)
+Continuing from last month @reinaldorauch split up his big argument refactor into a number of bite size chunks. We are now starting to have a consistent interface for Game Commands. There is still a good many left to refactor though contributions are always welcome.
+
+## Misc. Refactors (#1926, #1921, #1940, #1943, #1950, #1951)
+@memellis and the rest of the team contributed a handful of changes this month were minor refactors enforcing our newer styles: enum class flags, removal of loco_globals, using logging library. #1940 by @LeftofZen deserves special notice for managing to accidentally fix a very vexxing bug caused by missusing a loco_global whilst refactoring.
 
 # OpenLoco version 23.04.1 (2023-04-27)
 
