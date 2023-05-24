@@ -263,7 +263,8 @@ namespace OpenLoco::Platform
                 std::cerr << "Failed to get cmdline argument utf8 length.";
                 continue;
             }
-            argvStrs[i].resize(length);
+            // When resizing a std::string the null termination is handled implicitly. i.e. resize to true length not null terminated length.
+            argvStrs[i].resize(length - 1);
 
             if (WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, argvStrs[i].data(), length, NULL, NULL) == 0)
             {
