@@ -14,6 +14,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
+#include <set>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -23,8 +24,7 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00F0013C> _F0013C;
     static loco_global<uint32_t, 0x00F00140> _F00140;
     static loco_global<uint16_t, 0x00F00144> _F00144;
-    static loco_global<uint8_t*, 0x00F0016C> _F0016C; // stack offset to -eventually- flags
-    static loco_global<uint16_t, 0x00F00170> _F00170;
+    static loco_global<uint8_t*, 0x00F0016C> _F0016C;     // stack offset to -eventually- flags
     static loco_global<tile_coord_t, 0x00F003CE> _F003CE; // tile x?
     static loco_global<tile_coord_t, 0x00F003D0> _F003D0; // tile y?
     static loco_global<uint32_t, 0x00F25308> _sub469E07Cost;
@@ -57,7 +57,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00469D76
-    static uint32_t clearTile(World::Pos2 pos, const uint8_t flags)
+    static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3>& removedBuildings, const uint8_t flags)
     {
         // This shoudn't happen due to using TilePosRangeView
         if (!World::validCoords(pos))
@@ -90,7 +90,7 @@ namespace OpenLoco::GameCommands
         _F0016C = flagStackHack;
 
         currency32_t cost{};
-        auto clearFunc = [flags, pos, &cost](const World::TileElement& el) -> World::TileManager::ClearFuncResult {
+        auto clearFunc = [flags, pos, &cost, &removedBuildings](const World::TileElement& el) -> World::TileManager::ClearFuncResult {
             switch (el.type())
             {
                 case ElementType::tree:
@@ -130,9 +130,49 @@ namespace OpenLoco::GameCommands
                         return TileManager::ClearFuncResult::collision;
                     }
 
-                    const auto buildingStart = pos - kBuildingOffset[elBuilding->multiTileIndex()];
-                    _F00170;
-                    break;
+                    const auto buildingStart = World::Pos3{
+                        pos - kBuildingOffset[elBuilding->multiTileIndex()], elBuilding->baseHeight()
+                    };
+                    if (removedBuildings.count(buildingStart) != 0)
+                    {
+                        return TileManager::ClearFuncResult::noCollision;
+                    }
+                    removedBuildings.insert(buildingStart);
+
+                    _F00158 = &el;
+                    uint8_t removeBuildingFlags = flags;
+                    if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
+                    {
+                        removeBuildingFlags |= GameCommands::Flags::flag_7;
+                    }
+                    if (flags & GameCommands::Flags::flag_6)
+                    {
+                        removeBuildingFlags &= ~(GameCommands::Flags::flag_6 | GameCommands::Flags::apply);
+                    }
+                    GameCommands::BuildingRemovalArgs args{};
+                    args.pos = buildingStart;
+                    Interop::registers regs = static_cast<Interop::registers>(args);
+                    regs.bl = removeBuildingFlags;
+                    removeBuilding(regs);
+                    if (regs.ebx == GameCommands::FAILURE)
+                    {
+                        return TileManager::ClearFuncResult::collisionErrorSet;
+                    }
+                    if (flags & GameCommands::Flags::apply)
+                    {
+                        S5::getOptions().madeAnyChanges = 1;
+                    }
+                    cost += regs.ebx;
+
+                    if (!(flags & GameCommands::Flags::apply) || flags & GameCommands::Flags::flag_6)
+                    {
+                        return TileManager::ClearFuncResult::noCollision;
+                    }
+                    if (_F00158 == kInvalidTile)
+                    {
+                        return TileManager::ClearFuncResult::allCollisionsRemoved;
+                    }
+                    return TileManager::ClearFuncResult::collisionRemoved;
                 }
                 default:
                     return TileManager::ClearFuncResult::noCollision;
@@ -149,16 +189,17 @@ namespace OpenLoco::GameCommands
     // 0x00469CCB
     static uint32_t clearLand(const ClearLandArgs& args, const uint8_t flags)
     {
-        _F00170 = 0xFFFF;
         _F0013C = args.pointB.x << 16 | args.pointA.x;
         _F00140 = args.pointB.y << 16 | args.pointA.y;
         _F00144 = flags;
 
         World::TilePosRangeView tileLoop{ World::toTileSpace(args.pointA), World::toTileSpace(args.pointB) };
         uint32_t totalCost = 0;
+        std::set<World::Pos3> removedBuildings{};
+
         for (const auto& tilePos : tileLoop)
         {
-            uint32_t tileRes = clearTile(World::toWorldSpace(tilePos), flags);
+            uint32_t tileRes = clearTile(World::toWorldSpace(tilePos), removedBuildings, flags);
             if (tileRes == GameCommands::FAILURE)
             {
                 return GameCommands::FAILURE;
