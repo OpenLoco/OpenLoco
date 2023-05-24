@@ -675,7 +675,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.skip(6);
             args.push(head->name);
             args.push(head->ordinalNumber);
-            GameCommands::do12(head->id, mode);
+
+            GameCommands::VehicleLocalExpressArgs vargs{};
+            vargs.head = EntityId(self->number);
+            vargs.mode = mode;
+            GameCommands::doCommand(vargs, GameCommands::Flags::apply);
         }
 
         static void onCentreViewportDropdown(Window* const self, const int16_t itemIndex)
@@ -2542,7 +2546,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
-                        GameCommands::do12(head->id, 2);
+                        GameCommands::VehicleLocalExpressArgs args{};
+                        args.head = head->id;
+                        args.mode = 2;
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
                 }
@@ -2555,7 +2562,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     if ((train.veh1->var_48 & Vehicles::Flags48::expressMode) == Vehicles::Flags48::none)
                     {
                         GameCommands::setErrorTitle(StringIds::empty);
-                        GameCommands::do12(head->id, 2);
+                        GameCommands::VehicleLocalExpressArgs args{};
+                        args.head = head->id;
+                        args.mode = 2;
+                        GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
                 }
@@ -4010,7 +4020,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (Input::hasKeyModifier(Input::KeyModifier::shift))
             {
-                GameCommands::do12(vehicleHead, 1);
+                GameCommands::VehicleLocalExpressArgs args{};
+                args.head = vehicleHead;
+                args.mode = 1;
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
 
             Input::toolCancel();

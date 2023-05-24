@@ -480,14 +480,28 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline void do12(EntityId head, uint8_t bh)
+    struct VehicleLocalExpressArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.bh = bh;
-        regs.dx = enumValue(head);
-        doCommand(GameCommand::vehicleLocalExpress, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleLocalExpress;
+
+        VehicleLocalExpressArgs() = default;
+        explicit VehicleLocalExpressArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+            , mode(regs.bh)
+        {
+        }
+
+        EntityId head;
+        uint8_t mode;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.bh = mode;
+            return regs;
+        }
+    };
 
     struct SignalPlacementArgs
     {
