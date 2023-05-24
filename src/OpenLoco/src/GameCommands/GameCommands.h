@@ -505,7 +505,7 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.di = enumValue(head);
+            regs.dx = enumValue(head);
             regs.bh = enumValue(mode);
             return regs;
         }
