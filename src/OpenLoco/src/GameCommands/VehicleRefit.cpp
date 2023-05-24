@@ -14,7 +14,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    // 0x004B0B50
+    // 0x0042F6DB
     static uint32_t vehicleRefit(const VehicleRefitArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
