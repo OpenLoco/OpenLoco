@@ -24,10 +24,6 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00F0013C> _F0013C;
     static loco_global<uint32_t, 0x00F00140> _F00140;
     static loco_global<uint16_t, 0x00F00144> _F00144;
-    static loco_global<uint8_t*, 0x00F0016C> _F0016C;     // stack offset to -eventually- flags
-    static loco_global<tile_coord_t, 0x00F003CE> _F003CE; // tile x?
-    static loco_global<tile_coord_t, 0x00F003D0> _F003D0; // tile y?
-    static loco_global<uint32_t, 0x00F25308> _sub469E07Cost;
 
     // 0x004690FC
     static void setTerrainStyleAsCleared(World::Pos2 pos)
@@ -56,8 +52,18 @@ namespace OpenLoco::GameCommands
         }
     }
 
+    struct LessThanPos3
+    {
+        bool operator()(World::Pos3 const& lhs, World::Pos3 const& rhs) const
+        {
+            uint64_t lhs64 = lhs.x | (static_cast<uint64_t>(static_cast<uint16_t>(lhs.y)) << 16) | (static_cast<uint64_t>(static_cast<uint16_t>(lhs.z)) << 32);
+            uint64_t rhs64 = rhs.x | (static_cast<uint64_t>(static_cast<uint16_t>(rhs.y)) << 16) | (static_cast<uint64_t>(static_cast<uint16_t>(rhs.z)) << 32);
+            return lhs64 < rhs64;
+        }
+    };
+
     // 0x00469D76
-    static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3>& removedBuildings, const uint8_t flags)
+    static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
     {
         // This shoudn't happen due to using TilePosRangeView
         if (!World::validCoords(pos))
@@ -66,7 +72,6 @@ namespace OpenLoco::GameCommands
             return GameCommands::FAILURE;
         }
 
-        _sub469E07Cost = 0;
         if (flags & GameCommands::Flags::apply)
         {
             if (!isEditorMode())
@@ -80,17 +85,8 @@ namespace OpenLoco::GameCommands
 
         World::QuarterTile qt(0xF, 0);
 
-        // TODO: for 0x00469E07 -- remove this hack when no longer needed
-        uint8_t flagStackHack[10] = { 0 };
-        flagStackHack[8] = flags;
-
-        // These are part of the parameters for 0x00469E07
-        _F003CE = pos.x;
-        _F003D0 = pos.y;
-        _F0016C = flagStackHack;
-
         currency32_t cost{};
-        auto clearFunc = [flags, pos, &cost, &removedBuildings](const World::TileElement& el) -> World::TileManager::ClearFuncResult {
+        auto clearFunc = [flags, pos, &cost, &removedBuildings](World::TileElement& el) -> World::TileManager::ClearFuncResult {
             switch (el.type())
             {
                 case ElementType::tree:
@@ -108,10 +104,10 @@ namespace OpenLoco::GameCommands
                         return TileManager::ClearFuncResult::noCollision;
                     }
 
-                    _F00158 = &el;
-                    removeTree(*elTree, GameCommands::Flags::apply, pos);
+                    World::TileManager::setRemoveElementPointerChecker(el);
+                    World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
                     S5::getOptions().madeAnyChanges = 1;
-                    if (_F00158 == kInvalidTile)
+                    if (World::TileManager::wasRemoveOnLastElement())
                     {
                         return TileManager::ClearFuncResult::allCollisionsRemoved;
                     }
@@ -131,7 +127,7 @@ namespace OpenLoco::GameCommands
                     }
 
                     const auto buildingStart = World::Pos3{
-                        pos - kBuildingOffset[elBuilding->multiTileIndex()], elBuilding->baseHeight()
+                        pos - World::offsets[elBuilding->multiTileIndex()], elBuilding->baseHeight()
                     };
                     if (removedBuildings.count(buildingStart) != 0)
                     {
@@ -139,7 +135,7 @@ namespace OpenLoco::GameCommands
                     }
                     removedBuildings.insert(buildingStart);
 
-                    _F00158 = &el;
+                    World::TileManager::setRemoveElementPointerChecker(el);
                     uint8_t removeBuildingFlags = flags;
                     if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
                     {
@@ -168,7 +164,7 @@ namespace OpenLoco::GameCommands
                     {
                         return TileManager::ClearFuncResult::noCollision;
                     }
-                    if (_F00158 == kInvalidTile)
+                    if (World::TileManager::wasRemoveOnLastElement())
                     {
                         return TileManager::ClearFuncResult::allCollisionsRemoved;
                     }
@@ -178,10 +174,10 @@ namespace OpenLoco::GameCommands
                     return TileManager::ClearFuncResult::noCollision;
             }
         };
-        // TODO: implement 0x00469E07 as a real function after canConstructAt is implemented
+
         auto tileHeight = World::TileManager::getHeight(pos);
         if (TileManager::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, clearFunc))
-            return _sub469E07Cost;
+            return cost;
         else
             return GameCommands::FAILURE;
     }
@@ -195,7 +191,7 @@ namespace OpenLoco::GameCommands
 
         World::TilePosRangeView tileLoop{ World::toTileSpace(args.pointA), World::toTileSpace(args.pointB) };
         uint32_t totalCost = 0;
-        std::set<World::Pos3> removedBuildings{};
+        std::set<World::Pos3, LessThanPos3> removedBuildings{};
 
         for (const auto& tilePos : tileLoop)
         {

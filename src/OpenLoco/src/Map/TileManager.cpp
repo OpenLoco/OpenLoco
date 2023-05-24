@@ -179,6 +179,16 @@ namespace OpenLoco::World::TileManager
         }
     }
 
+    void setRemoveElementPointerChecker(TileElement& element)
+    {
+        *_F00158 = &element;
+    }
+
+    bool wasRemoveOnLastElement()
+    {
+        return *_F00158 == kInvalidTile;
+    }
+
     // 0x004616D6
     TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
     {
@@ -717,7 +727,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462B4F
-    static ClearFuncResult callClearFunction(const TileElement& el, const std::function<ClearFuncResult(const TileElement& el)>& clearFunc)
+    static ClearFuncResult callClearFunction(TileElement& el, const std::function<ClearFuncResult(TileElement& el)>& clearFunc)
     {
         if (!clearFunc)
         {
@@ -734,7 +744,7 @@ namespace OpenLoco::World::TileManager
     };
 
     // 0x0046297D
-    static ClearFuncResult canConstructAtCheckSurfaceElement(uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(const TileElement& el)>& clearFunc, const TileElement& el, const SurfaceElement& elSurface)
+    static ClearFuncResult canConstructAtCheckSurfaceElement(uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(TileElement& el)>& clearFunc, TileElement& el, const SurfaceElement& elSurface)
     {
         if (elSurface.isFlag5())
         {
@@ -834,7 +844,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462AA4
-    static ClearFuncResult canConstructAtCheckNonSurfaceElement(const uint8_t baseZ, const uint8_t clearZ, const QuarterTile& qt, const BuildingCollisionType flags, const std::function<ClearFuncResult(const TileElement& el)>& clearFunc, const TileElement& el)
+    static ClearFuncResult canConstructAtCheckNonSurfaceElement(const uint8_t baseZ, const uint8_t clearZ, const QuarterTile& qt, const BuildingCollisionType flags, const std::function<ClearFuncResult(TileElement& el)>& clearFunc, TileElement& el)
     {
         if (flags == BuildingCollisionType::anyHeight)
         {
@@ -884,7 +894,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00462937
-    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, std::function<ClearFuncResult(const TileElement& el)> clearFunc)
+    static bool canConstructAtWithClear(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, std::function<ClearFuncResult(TileElement& el)> clearFunc)
     {
         _constructAtElementPositionFlags = ElementPositionFlags::aboveGround;
         if (!drawableCoords(pos))
@@ -936,7 +946,7 @@ namespace OpenLoco::World::TileManager
         }
         // NOTE: When implementing a clear function you should ensure you follow all of this!
         // especially the collisionRemoved/allCollisionsRemoved parts
-        auto functionWrapper = [clearFunctionLegacy](const TileElement& el) -> ClearFuncResult {
+        auto functionWrapper = [clearFunctionLegacy](TileElement& el) -> ClearFuncResult {
             registers regs{};
             regs.esi = X86Pointer(&el);
             bool hasCollision = call(clearFunctionLegacy, regs) & Interop::X86_FLAG_CARRY;
@@ -976,7 +986,7 @@ namespace OpenLoco::World::TileManager
         return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunctionLegacy);
     }
 
-    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(const TileElement& el)> clearFunc)
+    bool sub_462908(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc)
     {
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::anyHeight, clearFunc);
     }
@@ -987,7 +997,7 @@ namespace OpenLoco::World::TileManager
         return canConstructAtWithClearLegacy(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunctionLegacy);
     }
 
-    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(const TileElement& el)> clearFunc)
+    bool sub_462917(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, std::function<ClearFuncResult(TileElement& el)> clearFunc)
     {
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, clearFunc);
     }
@@ -1380,6 +1390,41 @@ namespace OpenLoco::World::TileManager
         {
             IndustryManager::updateProducedCargoStats();
         }
+    }
+
+    // 0x0048B089
+    static void playDemolishTreeSound(const World::Pos3& loc)
+    {
+        const auto frequency = gPrng2().randNext(20003, 24098);
+        Audio::playSound(Audio::SoundId::demolishTree, loc, -1100, frequency);
+    }
+
+    // 0x004BB432
+    // bl = flags;
+    // esi = X86Pointer(&element);
+    // ax = pos.x;
+    // cx = pos.y;
+    void removeTree(World::TreeElement& element, const uint8_t flags, const World::Pos2& pos)
+    {
+        if ((!element.isGhost() && !element.isFlag5())
+            && GameCommands::getUpdatingCompanyId() != CompanyId::neutral)
+        {
+            auto loc = World::Pos3(pos.x, pos.y, element.baseHeight());
+            playDemolishTreeSound(loc);
+        }
+
+        if ((flags & GameCommands::Flags::flag_6) == 0)
+        {
+            auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
+            auto ratingReduction = treeObj->demolishRatingReduction;
+            TownManager::updateTownInfo(pos, 0, 0, ratingReduction, 0);
+        }
+
+        auto zMin = element.baseHeight();
+        auto zMax = element.clearHeight();
+        Ui::ViewportManager::invalidate(pos, zMin, zMax, ZoomLevel::eighth, 56);
+
+        World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(&element));
     }
 
     // 0x0048B0C7
