@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::changeLoan,                   changeLoan,                0x0046DE88, false },
         { GameCommand::vehicleRename,                renameVehicle,             0x004B6572, false },
         { GameCommand::changeStationName,            renameStation,             0x00490756, false },
-        { GameCommand::vehicleChangeRunningMode,     nullptr,                   0x004B694B, true  },
+        { GameCommand::vehicleChangeRunningMode,     vehicleChangeRunningMode,  0x004B694B, true  },
         { GameCommand::createSignal,                 nullptr,                   0x00488BDB, true  },
         { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
         { GameCommand::createTrainStation,           nullptr,                   0x0048BB20, true  },

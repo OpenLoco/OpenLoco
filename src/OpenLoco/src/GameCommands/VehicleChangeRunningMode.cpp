@@ -20,10 +20,16 @@ namespace OpenLoco::GameCommands
 
         train.veh1->var_48 ^= Vehicles::Flags48::expressMode;
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(train.head->id));
+        return 0;
     }
 
-    static uint32_t startVehicle(const Vehicles::Vehicle& train, const uint8_t flags)
+    static uint32_t startVehicle([[maybe_unused]] const Vehicles::Vehicle& train, const uint8_t flags)
     {
+        if (!(flags & Flags::apply))
+        {
+            return 0;
+        }
+
         return 0;
     }
 
@@ -33,17 +39,40 @@ namespace OpenLoco::GameCommands
         {
         }
 
+        if (!(flags & Flags::apply))
+        {
+            return 0;
+        }
+
         return 0;
     }
 
     // 0x004B6AAF
     static uint32_t driveManually(const Vehicles::Vehicle& train, const uint8_t flags)
     {
+        // NB: vanilla did not perform this check for this mode
+        if (!(flags & Flags::apply))
+        {
+            return 0;
+        }
+
+        train.head->vehicleFlags ^= VehicleFlags::manualControl;
+        train.head->vehicleFlags |= VehicleFlags::commandStop;
+        train.head->var_6E = 0xD8;
+
+        if (train.head->status == Vehicles::Status::approaching)
+        {
+            train.head->stationId = StationId::null;
+            train.head->status = Vehicles::Status::travelling;
+        }
+
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(train.head->id));
+
         return 0;
     }
 
     // 0x004B6B0C
-    static bool sub_4B6B0C(Vehicles::VehicleHead* head)
+    [[maybe_unused]] static bool sub_4B6B0C(Vehicles::VehicleHead* head)
     {
         // Looks like a variant of Vehicles::VehicleHead::canBeModified?
         registers regs;
@@ -53,16 +82,16 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004B694B
-    static uint32_t vehicleChangeRunningMode(const EntityId headId, const uint8_t mode, const uint8_t flags)
+    static uint32_t vehicleChangeRunningMode(const VehicleChangeRunningModeArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
 
         try
         {
-            Vehicles::Vehicle train(headId);
+            Vehicles::Vehicle train(args.head);
             setPosition(train.veh2->position);
 
-            switch (mode)
+            switch (args.mode)
             {
                 case VehicleChangeRunningModeArgs::Mode::stopVehicle:
                     return stopVehicle(train, flags);
@@ -84,7 +113,6 @@ namespace OpenLoco::GameCommands
 
     void vehicleChangeRunningMode(registers& regs)
     {
-        VehicleChangeRunningModeArgs args(regs);
-        regs.ebx = vehicleChangeRunningMode(args.head, args.mode, regs.bl);
+        regs.ebx = vehicleChangeRunningMode(VehicleChangeRunningModeArgs(regs), regs.bl);
     }
 }
