@@ -161,5 +161,5 @@ namespace OpenLoco::Vehicles
 
 #pragma pack(pop)
 
-    void swapAdjacentOrders(Order* a, Order* b);
+    void swapAdjacentOrders(Order& a, Order& b);
 }
