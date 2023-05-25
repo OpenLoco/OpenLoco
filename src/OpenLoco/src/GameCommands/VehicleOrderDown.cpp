@@ -41,21 +41,19 @@ namespace OpenLoco::GameCommands
         // Before we proceed, we keep track of the currently active order
         bool currentOrderIsActive = head->currentOrder == currentOrder.getOffset() - head->orderTableOffset;
         bool nextOrderIsActive = head->currentOrder == nextOrder.getOffset() - head->orderTableOffset;
-
-        printf("currentOrderIsActive: %d\n", currentOrderIsActive);
-        printf("nextOrderIsActive: %d\n", nextOrderIsActive);
+        auto oldOffsetDiff = nextOrder.getOffset() - currentOrder.getOffset();
 
         // Actually swap the two orders
-        const auto offsetDiff = Vehicles::swapAdjacentOrders(currentOrder, nextOrder);
+        const auto newOffsetDiff = Vehicles::swapAdjacentOrders(currentOrder, nextOrder);
 
         // Compensate if we swapped the current order around
         if (currentOrderIsActive)
         {
-            head->currentOrder += offsetDiff;
+            head->currentOrder += newOffsetDiff;
         }
         else if (nextOrderIsActive)
         {
-            head->currentOrder -= offsetDiff;
+            head->currentOrder -= oldOffsetDiff;
         }
 
         return 0;
