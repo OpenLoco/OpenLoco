@@ -145,23 +145,22 @@ namespace OpenLoco::Vehicles
         return ret;
     }
 
-    void swapAdjacentOrders(Order& a, Order& b)
+    uint8_t swapAdjacentOrders(Order& a, Order& b)
     {
+        const auto rawOrderA = a.getRaw();
+        const auto rawOrderB = b.getRaw();
         const auto lengthOrderA = kOrderSizes[enumValue(a.getType())];
         const auto lengthOrderB = kOrderSizes[enumValue(b.getType())];
 
         // Ensure the two orders are indeed adjacent
         assert(&a + lengthOrderA == &b);
 
-        // Resolve types
-        auto& orderA = a.as<a.getType()>();
-        auto& orderB = b.as<b.getType()>();
+        // Copy B over A, and append B right after
+        const auto dest = reinterpret_cast<uint8_t*>(&a);
+        std::memcpy(dest, &rawOrderB, lengthOrderB);
+        std::memcpy(dest + lengthOrderB, &rawOrderA, lengthOrderA);
 
-        // Make a copy of order A, then copy order B over it
-        a = orderB;
-
-        // Now copy the original order A just after to make the new order B
-        auto newB = *(&a + lengthOrderB);
-        newB = orderA;
+        // Return the length with which to offset
+        return lengthOrderB;
     }
 }
