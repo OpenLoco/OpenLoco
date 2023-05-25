@@ -2448,9 +2448,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4C14
         static bool orderUpCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
+            GameCommands::VehicleOrderUpArgs args{};
+            args.head = head->id;
+            args.orderOffset = orderOffset - head->orderTableOffset;
+
             GameCommands::setErrorTitle(StringIds::empty);
-            auto result = GameCommands::do_75(head->id, orderOffset - head->orderTableOffset);
-            Vehicles::OrderManager::generateNumDisplayFrames(head); // Note order changed check if this matters.
+            auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            Vehicles::OrderManager::generateNumDisplayFrames(head); // Note: order changed, check if this matters.
             return result != GameCommands::FAILURE;
         }
 

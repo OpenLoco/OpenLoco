@@ -1867,14 +1867,28 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline uint32_t do_75(EntityId head, uint32_t orderOffset)
+    struct VehicleOrderUpArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(head);
-        regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicleOrderUp, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleOrderDown;
+
+        VehicleOrderUpArgs() = default;
+        explicit VehicleOrderUpArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.edx = orderOffset;
+            return regs;
+        }
+    };
 
     struct VehicleOrderDownArgs
     {
