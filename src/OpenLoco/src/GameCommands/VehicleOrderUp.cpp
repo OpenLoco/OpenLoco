@@ -42,8 +42,7 @@ namespace OpenLoco::GameCommands
         {
             prevOrder = &*iterator;
             iterator++;
-        }
-        while ((*iterator).getOffset() - head->orderTableOffset != args.orderOffset);
+        } while ((*iterator).getOffset() - head->orderTableOffset != args.orderOffset);
 
         auto& currentOrder = *(iterator);
 
