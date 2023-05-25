@@ -10,7 +10,7 @@ Currently the codebase is built with C++17 in mind. Eventually we would like to 
 Continuing from last month @reinaldorauch split up his big argument refactor into a number of bite size chunks. We are now starting to have a consistent interface for Game Commands. There is still a good many left to refactor though contributions are always welcome.
 
 ## Misc. Refactors (#1926, #1921, #1940, #1943, #1950, #1951)
-@memellis and the rest of the team contributed a handful of changes this month were minor refactors enforcing our newer styles: enum class flags, removal of loco_globals, using logging library. #1940 by @LeftofZen deserves special notice for managing to accidentally fix a very vexxing bug caused by missusing a loco_global whilst refactoring.
+@memellis and the rest of the team contributed a handful of minor refactors enforcing our newer styles: enum class flags, removal of loco_globals, using logging library. #1940 by @LeftofZen deserves special notice for managing to accidentally fix a very vexxing bug that made placing track impossible under certain situations. It was caused by missusing a loco_global which disappeared after the refactoring.
 
 # OpenLoco version 23.04.1 (2023-04-27)
 
