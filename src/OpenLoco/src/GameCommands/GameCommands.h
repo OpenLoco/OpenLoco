@@ -1869,7 +1869,7 @@ namespace OpenLoco::GameCommands
 
     struct VehicleOrderUpArgs
     {
-        static constexpr auto command = GameCommand::vehicleOrderDown;
+        static constexpr auto command = GameCommand::vehicleOrderUp;
 
         VehicleOrderUpArgs() = default;
         explicit VehicleOrderUpArgs(const registers& regs)
@@ -2059,6 +2059,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehicleOrderSkip.cpp
     void vehicleOrderSkip(registers& regs);
+
+    // Defined in GameCommands/VehicleOrderUp.cpp
+    void vehicleOrderUp(registers& regs);
 
     // Defined in GameCommands/VehiclePassSignal.cpp
     void vehiclePassSignal(registers& regs);
