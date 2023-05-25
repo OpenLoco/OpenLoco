@@ -144,4 +144,25 @@ namespace OpenLoco::Vehicles
         }
         return ret;
     }
+
+    void swapAdjacentOrders(Order* a, Order* b)
+    {
+        const auto rawOrderA = a->getRaw();
+        const auto rawOrderB = b->getRaw();
+        const auto lengthOrderA = kOrderSizes[enumValue(a->getType())];
+        const auto lengthOrderB = kOrderSizes[enumValue(b->getType())];
+
+        // Ensure the two orders are indeed adjacent
+        assert(a + lengthOrderA == b);
+
+        // Copy B over A, and append B right after
+        const auto c = *a;
+        *a = *b;
+        b = a + lengthOrderB;
+        b = *c;
+
+        // Copy B over A, and append B right after
+        // std::memcpy(a, &rawOrderB, lengthOrderB);
+        // std::memcpy(a + lengthOrderB, &rawOrderA, lengthOrderA);
+    }
 }

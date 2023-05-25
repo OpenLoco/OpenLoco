@@ -2040,6 +2040,9 @@ namespace OpenLoco::GameCommands
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
 
+    // Defined in GameCommands/VehicleOrderDown.cpp
+    void vehicleOrderDown(registers& regs);
+
     // Defined in GameCommands/VehicleOrderSkip.cpp
     void vehicleOrderSkip(registers& regs);
 
