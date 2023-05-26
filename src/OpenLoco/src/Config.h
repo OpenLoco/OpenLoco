@@ -152,6 +152,7 @@ namespace OpenLoco::Config
     {
         std::string device;
         bool playTitleMusic = true;
+        bool playNewsSounds = true;
     };
 
     struct KeyboardShortcut
