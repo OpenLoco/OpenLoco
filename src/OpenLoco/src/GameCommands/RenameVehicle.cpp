@@ -6,14 +6,14 @@
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Types.hpp"
-#include "Vehicle.h"
+#include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <unordered_map>
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Vehicles
+namespace OpenLoco::GameCommands
 {
     /**
      * 0x004B6572
@@ -26,11 +26,11 @@ namespace OpenLoco::Vehicles
      * @param buffer0 @<edx> - First group of 4 characters of a 12 character update buffer
      * @param buffer1 @<dx> - Second group of 4 characters of a 12 character update buffer
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
-     * @return @<ebx> - if rename is successful, return 0, if failed, return GameCommands::FAILURE
+     * @return @<ebx> - if rename is successful, return 0, if failed, return FAILURE
      */
-    static uint32_t rename(const GameCommands::VehicleRenameArgs& args, const uint8_t flags)
+    static uint32_t renameVehicle(const VehicleRenameArgs& args, const uint8_t flags)
     {
-        GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
+        setExpenditureType(ExpenditureType::TrainRunningCosts);
 
         static loco_global<EntityId, 0x0113621D> _headId_113621D;
         if (args.i == 1)
@@ -40,7 +40,7 @@ namespace OpenLoco::Vehicles
 
         static char staticRenameBuffer[37]{};
 
-        if ((flags & GameCommands::Flags::apply) != 0)
+        if ((flags & Flags::apply) != 0)
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
             int arrayIndex = kTransformTable.at(args.i);
@@ -57,7 +57,7 @@ namespace OpenLoco::Vehicles
 
         if (vehicleHead == nullptr)
         {
-            return GameCommands::FAILURE;
+            return FAILURE;
         }
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
@@ -77,9 +77,9 @@ namespace OpenLoco::Vehicles
             allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
             if (allocatedStringId == StringIds::empty)
             {
-                return GameCommands::FAILURE;
+                return FAILURE;
             }
-            if ((flags & GameCommands::Flags::apply) == 0)
+            if ((flags & Flags::apply) == 0)
             {
                 StringManager::emptyUserString(allocatedStringId);
                 return 0;
@@ -87,7 +87,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if ((flags & GameCommands::Flags::apply) == 0)
+            if ((flags & Flags::apply) == 0)
             {
                 return 0;
             }
@@ -110,9 +110,9 @@ namespace OpenLoco::Vehicles
         return 0;
     }
 
-    void rename(registers& regs)
+    void renameVehicle(registers& regs)
     {
-        regs.ebx = rename(GameCommands::VehicleRenameArgs(regs), regs.bl);
+        regs.ebx = renameVehicle(VehicleRenameArgs(regs), regs.bl);
     }
 
 }

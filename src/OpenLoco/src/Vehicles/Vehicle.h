@@ -19,13 +19,6 @@ namespace OpenLoco::Vehicles
 
     constexpr auto kMaxVehicleLength = 176; // TODO: Units?
 
-    void create(OpenLoco::Interop::registers& regs);
-    void orderSkip(OpenLoco::Interop::registers& regs);
-    void cloneVehicle(OpenLoco::Interop::registers& regs);
-    void rename(OpenLoco::Interop::registers& regs);
-    void vehiclePickupWater(OpenLoco::Interop::registers& regs);
-    void sell(OpenLoco::Interop::registers& regs);
-
     enum class Flags38 : uint8_t
     {
         none = 0U,

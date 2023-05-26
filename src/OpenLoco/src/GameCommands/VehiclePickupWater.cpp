@@ -2,32 +2,34 @@
 #include "GameCommands/GameCommands.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
-#include "Vehicle.h"
+#include "Vehicles/Vehicle.h"
 
-namespace OpenLoco::Vehicles
+using namespace OpenLoco::Vehicles;
+
+namespace OpenLoco::GameCommands
 {
     // 0x004279CC
     static uint32_t vehiclePickupWater(EntityId head, uint8_t flags)
     {
-        GameCommands::setExpenditureType(ExpenditureType::ShipRunningCosts);
+        setExpenditureType(ExpenditureType::ShipRunningCosts);
         Vehicle train(head);
-        GameCommands::setPosition(train.veh2->position);
-        if (!GameCommands::sub_431E6A(train.head->owner))
+        setPosition(train.veh2->position);
+        if (!sub_431E6A(train.head->owner))
         {
-            return GameCommands::FAILURE;
+            return FAILURE;
         }
 
         if (!train.head->canBeModified())
         {
-            return GameCommands::FAILURE;
+            return FAILURE;
         }
 
-        if (!(flags & GameCommands::Flags::apply))
+        if (!(flags & Flags::apply))
         {
             return 0;
         }
 
-        if (!(flags & GameCommands::Flags::flag_6))
+        if (!(flags & Flags::flag_6))
             Vehicles::playPickupSound(train.veh2);
 
         if (train.head->stationId != StationId::null)
