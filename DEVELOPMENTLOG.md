@@ -1,4 +1,19 @@
-# OpenLoco version 23.04.1+ (???)
+# OpenLoco version 23.05 (???)
+
+## Construct With Clear (#1899)
+Two months ago, @duncanspumpkin started working on this with the comment "This is going to take a little while" -- and indeed it did! The construct with clear function is a core part of many Game Commands. This function is a bit of a swiss army knife. It can tell you if the location you are trying to construct is underwater/underground/overground/clashes with ground, or if there are tile elements in the way. It can also be further customised to remove elements as it's checking for clearance. Getting this to interop with the existing game was a challange, but now that it's done, it opens up implementing many of the placement Game Commands, e.g. CreateBuilding.
+
+## Fix C++20 Issues (#1932)
+Currently the codebase is built using the C++17 standard. We would like to move to C++20 in the short-term, as there are some great new features in the newer standard. This PR addressed many of the compile issues. There is now only one area left to address, but unfortunately it's the biggest problem: moving to `char8_t` and `std::u8string`. We will need to make a number of UTF-8 related changes to really be ready for C++20, but it is getting nearer. Expect a number of UTF-8 related changes over the next month. #1937, for example, brings UTF-8 to the Windows command-line.
+
+## Refactoring Game Command Args (#1914, #1915, #1917, #1918, #1919)
+Continuing from last month, @reinaldorauch split up his big argument refactor into a number of bite size chunks. We are now starting to have a consistent interface for Game Commands. There is still a good many left to refactor, though. This is a good area for newcomers, so contributions are always welcome.
+
+## Construction window bug (#1940)
+We'd like to bring special attention to #1940 by @LeftofZen. While it started out as a refactor PR, centralising some memory handling, it accidentally fixed a very vexxing bug that made using the construction window impossible under certain situations. It was caused by a type issue in a `loco_global`, which was refactored out by this PR. This goes to show how important strict types are while interopting with vanilla code! We're glad to fixed at last, as it had been bugging us for too long.
+
+## Misc. Refactors (#1926, #1921, #1943, #1950, #1951)
+A handful of minor refactors were contributed by @memellis and other team members, enforcing our newer code styles: enum class flags, and using our new logging library.
 
 # OpenLoco version 23.04.1 (2023-04-27)
 
