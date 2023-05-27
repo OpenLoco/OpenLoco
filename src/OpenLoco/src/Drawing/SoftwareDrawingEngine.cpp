@@ -33,10 +33,32 @@ namespace OpenLoco::Drawing
             SDL_FreePalette(_palette);
             _palette = nullptr;
         }
+        if (_screenTexture != nullptr)
+        {
+            SDL_DestroyTexture(_screenTexture);
+            _screenTexture = nullptr;
+        }
+        if (_scaledScreenTexture != nullptr)
+        {
+            SDL_DestroyTexture(_scaledScreenTexture);
+            _screenTexture = nullptr;
+        }
+        if (_screenTextureFormat != nullptr)
+        {
+            SDL_FreeFormat(_screenTextureFormat);
+            _screenTextureFormat = nullptr;
+        }
     }
 
     void SoftwareDrawingEngine::initialize(SDL_Window* window)
     {
+        _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        if (_renderer == nullptr)
+        {
+            // Try to fallback to software renderer.
+            Logging::warn("Hardware acceleration not available, trying to fallback to software renderer.");
+            _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+        }
         _window = window;
         createPalette();
     }
@@ -110,6 +132,42 @@ namespace OpenLoco::Drawing
 
         SDL_SetSurfacePalette(_screenSurface, Gfx::getDrawingEngine().getPalette());
 
+        if (_screenTexture != nullptr)
+        {
+            SDL_DestroyTexture(_screenTexture);
+            _screenTexture = nullptr;
+        }
+
+        if (_screenTextureFormat != nullptr)
+        {
+            SDL_FreeFormat(_screenTextureFormat);
+            _screenTextureFormat = nullptr;
+        }
+
+        SDL_RendererInfo rendererInfo{};
+        int32_t result = SDL_GetRendererInfo(_renderer, &rendererInfo);
+        if (result < 0)
+        {
+            Logging::warn("HWDisplayDrawingEngine::Resize error: {}", SDL_GetError());
+            return;
+        }
+        uint32_t pixelFormat = SDL_PIXELFORMAT_UNKNOWN;
+        for (uint32_t i = 0; i < rendererInfo.num_texture_formats; i++)
+        {
+            uint32_t format = rendererInfo.texture_formats[i];
+            if (!SDL_ISPIXELFORMAT_FOURCC(format) && !SDL_ISPIXELFORMAT_INDEXED(format)
+                && (pixelFormat == SDL_PIXELFORMAT_UNKNOWN || SDL_BYTESPERPIXEL(format) < SDL_BYTESPERPIXEL(pixelFormat)))
+            {
+                pixelFormat = format;
+            }
+        }
+
+        _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, width, height);
+
+        uint32_t format;
+        SDL_QueryTexture(_screenTexture, &format, nullptr, nullptr, nullptr);
+        _screenTextureFormat = SDL_AllocFormat(format);
+
         int32_t pitch = _screenSurface->pitch;
 
         auto& rt = Gfx::getScreenRT();
@@ -117,7 +175,7 @@ namespace OpenLoco::Drawing
         {
             delete[] rt.bits;
         }
-        rt.bits = new uint8_t[_screenSurface->pitch * height];
+        rt.bits = new uint8_t[pitch * height];
         rt.width = width;
         rt.height = height;
         rt.pitch = pitch - width;
@@ -287,6 +345,7 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::present()
     {
+
         // Lock the surface before setting its pixels
         if (SDL_MUSTLOCK(_screenSurface))
         {
@@ -312,11 +371,18 @@ namespace OpenLoco::Drawing
         auto scaleFactor = Config::get().scaleFactor;
         if (scaleFactor == 1 || scaleFactor <= 0)
         {
-            if (SDL_BlitSurface(_screenSurface, nullptr, SDL_GetWindowSurface(_window), nullptr))
+            // SDL_Surface* windowSurface = SDL_GetWindowSurface(_window);
+            if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
             {
                 Logging::error("SDL_BlitSurface {}", SDL_GetError());
                 exit(1);
             }
+
+            void* pixels;
+            int pitch;
+            SDL_LockTexture(_screenTexture, NULL, &pixels, &pitch);
+            SDL_ConvertPixels(_screenRGBASurface->w, _screenRGBASurface->h, _screenRGBASurface->format->format, _screenRGBASurface->pixels, _screenRGBASurface->pitch, _screenTextureFormat->format, pixels, pitch);
+            SDL_UnlockTexture(_screenTexture);
         }
         else
         {
@@ -335,7 +401,10 @@ namespace OpenLoco::Drawing
             }
         }
 
-        SDL_UpdateWindowSurface(_window);
+        SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
+        SDL_RenderPresent(_renderer);
+
+        // SDL_UpdateWindowSurface(_window);
     }
 
     SoftwareDrawingContext& SoftwareDrawingEngine::getDrawingContext()
