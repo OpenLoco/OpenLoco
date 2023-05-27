@@ -1,4 +1,4 @@
-# OpenLoco version 23.05 (???)
+# OpenLoco version 23.05 (2023-05-27)
 
 ## Construct With Clear (#1899)
 Two months ago, @duncanspumpkin started working on this with the comment "This is going to take a little while" -- and indeed it did! The construct with clear function is a core part of many Game Commands. This function is a bit of a swiss army knife. It can tell you if the location you are trying to construct is underwater/underground/overground/clashes with ground, or if there are tile elements in the way. It can also be further customised to remove elements as it's checking for clearance. Getting this to interop with the existing game was a challange, but now that it's done, it opens up implementing many of the placement Game Commands, e.g. CreateBuilding.

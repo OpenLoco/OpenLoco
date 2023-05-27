@@ -1,4 +1,4 @@
-23.04.1+ (???)
+23.05 (2023-05-27)
 ------------------------------------------------------------------------
 - Fix: [#1281] The construction window won't open under some circumstances.
 - Fix: [#1942] Crash when attempting to clear a building with the clear construction tool.
