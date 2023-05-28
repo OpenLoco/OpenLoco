@@ -6,6 +6,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
+#include <cstdlib>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
@@ -56,8 +57,13 @@ namespace OpenLoco::Drawing
         if (_renderer == nullptr)
         {
             // Try to fallback to software renderer.
-            Logging::warn("Hardware acceleration not available, trying to fallback to software renderer.");
+            Logging::warn("Hardware acceleration not available, falling back to software renderer.");
             _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+            if (_renderer == nullptr)
+            {
+                Logging::error("Unable to create hardware or software renderer: {}", SDL_GetError());
+                std::abort();
+            }
         }
         _window = window;
         createPalette();
@@ -116,6 +122,7 @@ namespace OpenLoco::Drawing
         int32_t heightShift = 3;
         int16_t blockHeight = 1 << heightShift;
 
+        // Release old resources.
         if (_screenSurface != nullptr)
         {
             SDL_FreeSurface(_screenSurface);
@@ -124,13 +131,6 @@ namespace OpenLoco::Drawing
         {
             SDL_FreeSurface(_screenRGBASurface);
         }
-
-        _screenSurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 8, 0, 0, 0, 0);
-
-        _screenRGBASurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 32, 0, 0, 0, 0);
-        SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
-
-        SDL_SetSurfacePalette(_screenSurface, Gfx::getDrawingEngine().getPalette());
 
         if (_screenTexture != nullptr)
         {
@@ -150,11 +150,29 @@ namespace OpenLoco::Drawing
             _screenTextureFormat = nullptr;
         }
 
+        // Surfaces.
+        _screenSurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 8, 0, 0, 0, 0);
+        if (_screenSurface == nullptr)
+        {
+            Logging::error("SDL_CreateRGBSurface (_screenSurface) failed: {}", SDL_GetError());
+            return;
+        }
+
+        _screenRGBASurface = SDL_CreateRGBSurface(0, scaledWidth, scaledHeight, 32, 0, 0, 0, 0);
+        if (_screenRGBASurface == nullptr)
+        {
+            Logging::error("SDL_CreateRGBSurface (_screenRGBASurface) failed: {}", SDL_GetError());
+            return;
+        }
+
+        SDL_SetSurfaceBlendMode(_screenRGBASurface, SDL_BLENDMODE_NONE);
+        SDL_SetSurfacePalette(_screenSurface, _palette);
+
         SDL_RendererInfo rendererInfo{};
         int32_t result = SDL_GetRendererInfo(_renderer, &rendererInfo);
         if (result < 0)
         {
-            Logging::warn("HWDisplayDrawingEngine::Resize error: {}", SDL_GetError());
+            Logging::error("HWDisplayDrawingEngine::Resize error: {}", SDL_GetError());
             return;
         }
 
@@ -171,12 +189,22 @@ namespace OpenLoco::Drawing
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
         _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
+        if (_screenTexture == nullptr)
+        {
+            Logging::error("SDL_CreateTexture (_screenTexture) failed: {}", SDL_GetError());
+            return;
+        }
 
         if (scaleFactor > 1.0f)
         {
             // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
             _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width, height);
+            if (_scaledScreenTexture == nullptr)
+            {
+                Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
+                return;
+            }
         }
 
         uint32_t format;
@@ -386,7 +414,7 @@ namespace OpenLoco::Drawing
         if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
         {
             Logging::error("SDL_BlitSurface {}", SDL_GetError());
-            exit(1);
+            return;
         }
 
         // Stream the RGBA pixels into screen texture.
