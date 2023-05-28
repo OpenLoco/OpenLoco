@@ -53,6 +53,8 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::initialize(SDL_Window* window)
     {
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
         _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (_renderer == nullptr)
         {
@@ -187,7 +189,7 @@ namespace OpenLoco::Drawing
             }
         }
 
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
         _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
         if (_screenTexture == nullptr)
         {
@@ -197,9 +199,10 @@ namespace OpenLoco::Drawing
 
         if (scaleFactor > 1.0f)
         {
+            const auto scale = std::ceil(scaleFactor);
             // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width, height);
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width * scale, height * scale);
             if (_scaledScreenTexture == nullptr)
             {
                 Logging::error("SDL_CreateTexture (_scaledScreenTexture) failed: {}", SDL_GetError());
