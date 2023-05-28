@@ -52,7 +52,7 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::initialize(SDL_Window* window)
     {
-        _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        _renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (_renderer == nullptr)
         {
             // Try to fallback to software renderer.
@@ -172,8 +172,12 @@ namespace OpenLoco::Drawing
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
         _screenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_STREAMING, scaledWidth, scaledHeight);
 
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-        _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width, height);
+        if (scaleFactor > 1.0f)
+        {
+            // We only need this texture when we have a scale above 1x, this texture uses the actual canvas size.
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+            _scaledScreenTexture = SDL_CreateTexture(_renderer, pixelFormat, SDL_TEXTUREACCESS_TARGET, width, height);
+        }
 
         uint32_t format;
         SDL_QueryTexture(_screenTexture, &format, nullptr, nullptr, nullptr);
@@ -385,20 +389,27 @@ namespace OpenLoco::Drawing
             exit(1);
         }
 
-        // Stream the RGBA pixels into unscaled screen texture.
+        // Stream the RGBA pixels into screen texture.
         void* pixels;
         int pitch;
         SDL_LockTexture(_screenTexture, NULL, &pixels, &pitch);
         SDL_ConvertPixels(_screenRGBASurface->w, _screenRGBASurface->h, _screenRGBASurface->format->format, _screenRGBASurface->pixels, _screenRGBASurface->pitch, _screenTextureFormat->format, pixels, pitch);
         SDL_UnlockTexture(_screenTexture);
 
-        // Copy screen texture to the scaled texture.
-        SDL_SetRenderTarget(_renderer, _scaledScreenTexture);
-        SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
+        if (Config::get().scaleFactor > 1.0f)
+        {
+            // Copy screen texture to the scaled texture.
+            SDL_SetRenderTarget(_renderer, _scaledScreenTexture);
+            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
 
-        // Copy scaled texture to primary render target.
-        SDL_SetRenderTarget(_renderer, nullptr);
-        SDL_RenderCopy(_renderer, _scaledScreenTexture, nullptr, nullptr);
+            // Copy scaled texture to primary render target.
+            SDL_SetRenderTarget(_renderer, nullptr);
+            SDL_RenderCopy(_renderer, _scaledScreenTexture, nullptr, nullptr);
+        }
+        else
+        {
+            SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
+        }
 
         // Display buffers.
         SDL_RenderPresent(_renderer);
