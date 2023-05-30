@@ -108,7 +108,7 @@ namespace OpenLoco::Ui
     {
         const float min = 1.0f;
         const float max = 4.0f;
-        const float step = 1.0f;
+        const float step = 0.25f;
     };
 
     void* hwnd();

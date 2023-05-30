@@ -9,6 +9,9 @@
 struct SDL_Palette;
 struct SDL_Surface;
 struct SDL_Window;
+struct SDL_Renderer;
+struct SDL_Texture;
+struct SDL_PixelFormat;
 
 namespace OpenLoco::Drawing
 {
@@ -52,10 +55,18 @@ namespace OpenLoco::Drawing
     private:
         void render(size_t x, size_t y, size_t dx, size_t dy);
 
+        SDL_Renderer* _renderer{};
         SDL_Window* _window{};
         SDL_Palette* _palette{};
         SDL_Surface* _screenSurface{};
         SDL_Surface* _screenRGBASurface{};
+
+        SDL_Texture* _screenTexture{};
+        SDL_Texture* _scaledScreenTexture{};
+        SDL_PixelFormat* _screenTextureFormat{};
+
+        SDL_Texture* _screenRGBATexture{};
+
         SoftwareDrawingContext _ctx;
     };
 }
