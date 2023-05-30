@@ -1,3 +1,8 @@
+23.05+ (???)
+------------------------------------------------------------------------
+- Feature: [#376] Allow fractional UI scaling in addition to integer scaling.
+- Feature: [#418] Use hardware-backed SDL canvas when available for better performance.
+
 23.05 (2023-05-27)
 ------------------------------------------------------------------------
 - Fix: [#1281] The construction window won't open under some circumstances.
