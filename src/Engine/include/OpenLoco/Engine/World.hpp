@@ -62,4 +62,19 @@ namespace OpenLoco::World
     {
         return drawableCoord(coords.x) && drawableCoord(coords.y);
     }
+
+    constexpr TilePos2 toTileSpace(const Pos2& coords)
+    {
+        return TilePos2{ static_cast<tile_coord_t>(coords.x / kTileSize), static_cast<tile_coord_t>(coords.y / kTileSize) };
+    }
+
+    constexpr TilePos2 toTileSpace(const Pos3& coords)
+    {
+        return TilePos2{ static_cast<tile_coord_t>(coords.x / kTileSize), static_cast<tile_coord_t>(coords.y / kTileSize) };
+    }
+
+    constexpr Pos2 toWorldSpace(const TilePos2& coords)
+    {
+        return Pos2{ static_cast<coord_t>(coords.x * kTileSize), static_cast<coord_t>(coords.y * kTileSize) };
+    }
 }
