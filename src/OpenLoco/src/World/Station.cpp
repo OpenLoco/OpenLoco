@@ -525,7 +525,7 @@ namespace OpenLoco
                 break;
                 case StationType::docks:
                 {
-                    TilePos2 minPos(pos);
+                    auto minPos = World::toTileSpace(pos);
                     auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
@@ -539,7 +539,7 @@ namespace OpenLoco
                 break;
                 default:
                 {
-                    TilePos2 minPos(pos);
+                    auto minPos = World::toTileSpace(pos);
                     auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
@@ -861,7 +861,7 @@ namespace OpenLoco
     // 0x00491BF5
     void sub_491BF5(const Pos2& pos, const CatchmentFlags flag)
     {
-        TilePos2 minPos(pos);
+        auto minPos = World::toTileSpace(pos);
         auto maxPos = minPos;
         maxPos.x += catchmentSize;
         maxPos.y += catchmentSize;
@@ -893,7 +893,7 @@ namespace OpenLoco
     // 0x00491D20
     void sub_491D20(const Pos2& pos, const CatchmentFlags flag)
     {
-        TilePos2 minPos(pos);
+        auto minPos = World::toTileSpace(pos);
         auto maxPos = minPos + TilePos2{ 1, 1 };
         maxPos.x += catchmentSize;
         maxPos.y += catchmentSize;

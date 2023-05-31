@@ -842,7 +842,7 @@ namespace OpenLoco::Audio
         {
             maxVolume = getAmbientMaxVolume(mainViewport->zoom);
             const auto centre = mainViewport->getCentreMapPosition();
-            const auto topLeft = World::TilePos2{ centre } - World::TilePos2{ 5, 5 };
+            const auto topLeft = World::toTileSpace(centre) - World::TilePos2{ 5, 5 };
             const auto bottomRight = topLeft + World::TilePos2{ 11, 11 };
             World::TilePosRangeView searchRange(topLeft, bottomRight);
             size_t waterCount = 0;      // bl

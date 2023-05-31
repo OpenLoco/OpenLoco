@@ -2579,7 +2579,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto baseZ = trackPos.z / kSmallZStep;
             const auto clearZ = baseZ + (trackPiece.clearZ + 32) / kSmallZStep;
 
-            const auto centreTileCoords = World::TilePos2{ trackPos };
+            const auto centreTileCoords = World::toTileSpace(trackPos);
             const auto eastTileCoords = centreTileCoords + World::offsets[1];
             const auto westTileCoords = centreTileCoords - World::offsets[1];
             const auto northTileCoords = centreTileCoords + World::offsets[3];

@@ -1206,7 +1206,7 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
@@ -1232,7 +1232,7 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingDesertTiles = 0;
 
@@ -1267,7 +1267,7 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)

@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
-        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::toTileSpace(*_1135F7C), World::toTileSpace(*_1135F90)));
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
@@ -327,7 +327,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
-        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::toTileSpace(*_1135F7C), World::toTileSpace(*_1135F90)));
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {

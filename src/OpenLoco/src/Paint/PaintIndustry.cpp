@@ -100,7 +100,7 @@ namespace OpenLoco::Paint
                 auto tickThing = ticks >> cl;
                 if (buildingAnimation.animationSpeed & (1 << 7))
                 {
-                    auto pos = World::TilePos2(session.getUnkPosition());
+                    auto pos = World::toTileSpace(session.getUnkPosition());
                     tickThing += pos.x * 5;
                     tickThing += pos.y * 3;
                 }
