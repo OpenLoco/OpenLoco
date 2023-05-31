@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
 
         World::StationElement* station = nullptr;
-        World::Tile tile{ interaction.pos, tileElement };
+        World::Tile tile{ World::toTileSpace(interaction.pos), tileElement };
         for (auto& t : tile)
         {
             station = t.as<StationElement>();

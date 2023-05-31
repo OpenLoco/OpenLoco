@@ -2788,7 +2788,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->unkDirection());
                     auto firstTilePos = args.pos - offsetToFirstTile;
-                    TilePos2 tPos{ firstTilePos };
+                    const auto tPos = World::toTileSpace(firstTilePos);
                     height -= trackPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
@@ -2806,10 +2806,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         height = heights.waterHeight;
                     }
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
-                    TilePos2 tPos{
-                        args.pos
-                    };
 
+                    const auto tPos = World::toTileSpace(args.pos);
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
                     addNewOrder(&self, waypoint);
                     break;
@@ -2836,7 +2834,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->unkDirection());
                     auto firstTilePos = args.pos - offsetToFirstTile;
-                    TilePos2 tPos{ firstTilePos };
+                    const auto tPos = World::toTileSpace(firstTilePos);
                     height -= roadPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->unkDirection(), roadId);
@@ -3444,15 +3442,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             // Search 8x8 area centerd on mouse pos
             const auto centerPos = *pos + World::Pos2(16, 16);
-            World::Pos2 initialPos = *pos - World::TilePos2(4, 4);
+            World::Pos2 initialPos = *pos - World::toWorldSpace(World::TilePos2(4, 4));
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
-            World::Pos3 bestLoc;
+            World::Pos3 bestLoc{};
 
-            for (auto i = 0; i < 8; ++i)
+            for (tile_coord_t i = 0; i < 8; ++i)
             {
-                for (auto j = 0; j < 8; ++j)
+                for (tile_coord_t j = 0; j < 8; ++j)
                 {
-                    const auto loc = initialPos + World::TilePos2(i, j);
+                    const auto loc = initialPos + World::toWorldSpace(World::TilePos2{ i, j });
                     if (!World::validCoords(loc))
                     {
                         continue;
@@ -3479,7 +3477,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                         auto firstTile = loc - World::offsets[elStation->multiTileIndex()];
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
-                        auto boatLoc = firstTile + TilePos2{ 1, 1 } + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
+                        auto boatLoc = firstTile + World::toWorldSpace(TilePos2{ 1, 1 }) + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
 
                         auto distance = Math::Vector::manhattanDistance(boatLoc, centerPos);
                         if (distance < bestDistance)

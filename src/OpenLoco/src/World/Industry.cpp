@@ -519,7 +519,7 @@ namespace OpenLoco
         surface->setIndustry(industryId);
         surface->setVar5SLR5((var_EA & 0xE0) >> 5);
         surface->setVar6SLR5((var_EA & 0x7));
-        Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32);
+        Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
         World::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
 
         return true;
@@ -530,8 +530,9 @@ namespace OpenLoco
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
-        TilePos2 topRight = TilePos2{ pos } - TilePos2{ 2, 2 };
-        TilePos2 bottomLeft = TilePos2{ pos } + TilePos2{ 2, 2 };
+        const auto initialTilePos = World::toTileSpace(pos);
+        const auto topRight = initialTilePos - TilePos2{ 2, 2 };
+        const auto bottomLeft = initialTilePos + TilePos2{ 2, 2 };
         for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
             if (isSurfaceClaimed(tilePos))
@@ -592,7 +593,7 @@ namespace OpenLoco
             }
             auto getWallPlacementArgs = [randWallTypeFlags, &i, secondaryWallType, primaryWallType, &tilePos](const uint8_t rotation) {
                 GameCommands::WallPlacementArgs args;
-                args.pos = World::Pos3(World::Pos2(tilePos), 0);
+                args.pos = World::Pos3(World::toWorldSpace(tilePos), 0);
                 args.rotation = rotation;
                 args.type = randWallTypeFlags & (1 << i) ? secondaryWallType : primaryWallType;
                 i++;

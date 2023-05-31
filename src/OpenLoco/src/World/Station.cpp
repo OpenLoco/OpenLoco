@@ -513,7 +513,7 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
-                    auto [minPos, maxPos] = airportObject->getAirportExtents(pos, stationElement->rotation());
+                    auto [minPos, maxPos] = airportObject->getAirportExtents(World::toTileSpace(pos), stationElement->rotation());
 
                     minPos.x -= catchmentSize;
                     minPos.y -= catchmentSize;
@@ -878,7 +878,7 @@ namespace OpenLoco
     {
         auto airportObject = ObjectManager::get<AirportObject>(type);
 
-        auto [minPos, maxPos] = airportObject->getAirportExtents(pos, rotation);
+        auto [minPos, maxPos] = airportObject->getAirportExtents(World::toTileSpace(pos), rotation);
 
         minPos.x -= catchmentSize;
         minPos.y -= catchmentSize;

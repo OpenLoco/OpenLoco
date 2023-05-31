@@ -229,7 +229,7 @@ namespace OpenLoco::Title
                            [](MoveStep step) {
                                if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
                                {
-                                   auto pos = World::Pos2(step) + World::Pos2(16, 16);
+                                   auto pos = World::toWorldSpace(step) + World::Pos2(16, 16);
                                    auto height = World::TileManager::getHeight(pos);
                                    auto main = Ui::WindowManager::getMainWindow();
                                    if (main != nullptr)

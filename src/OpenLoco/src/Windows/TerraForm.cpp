@@ -540,7 +540,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
-                        if (World::placeTreeCluster(placementArgs->pos, 320, 3, placementArgs->type))
+                        if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 320, 3, placementArgs->type))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
                             Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
-                        if (World::placeTreeCluster(placementArgs->pos, 384, 4, std::nullopt))
+                        if (World::placeTreeCluster(World::toTileSpace(placementArgs->pos), 384, 4, std::nullopt))
                         {
                             auto height = TileManager::getHeight(placementArgs->pos);
                             Audio::playSound(Audio::SoundId::construct, World::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });

@@ -201,7 +201,7 @@ namespace OpenLoco
         const auto randPos = World::Pos2{
             static_cast<coord_t>(randPick & 0x3E0),
             static_cast<coord_t>(Utility::ror<uint32_t>(randPick, 5) & 0x3E0)
-        } - World::TilePos2{ 16, 16 };
+        } - World::toWorldSpace(World::TilePos2{ 16, 16 });
 
         const auto selectedPos = randPos + pos;
         if (World::validCoords(selectedPos))
@@ -500,7 +500,7 @@ namespace OpenLoco
             return;
 
         const auto colour = mainColours.primary;
-        auto hqPos = World::TilePos2(World::Pos2(headquartersX, headquartersY));
+        auto hqPos = World::toTileSpace(World::Pos2(headquartersX, headquartersY));
         updateHeadquartersColourAtTile(hqPos + World::TilePos2(0, 0), headquartersZ, colour);
         updateHeadquartersColourAtTile(hqPos + World::TilePos2(1, 0), headquartersZ, colour);
         updateHeadquartersColourAtTile(hqPos + World::TilePos2(1, 1), headquartersZ, colour);
@@ -596,7 +596,7 @@ namespace OpenLoco
         {
             return;
         }
-        World::TilePos2 headPos = World::Pos2{ headquartersX, headquartersY };
+        const auto headPos = World::toTileSpace({ headquartersX, headquartersY });
         for (const auto& pos : World::TilePosRangeView(headPos, headPos + World::TilePos2{ 1, 1 }))
         {
             setHeadquartersVariation(variation, pos);
@@ -628,7 +628,7 @@ namespace OpenLoco
             elBuilding->setConstructed(false);
             elBuilding->setUnk5u(0);
 
-            Ui::ViewportManager::invalidate(pos, elBuilding->baseHeight(), elBuilding->clearHeight());
+            Ui::ViewportManager::invalidate(World::toWorldSpace(pos), elBuilding->baseHeight(), elBuilding->clearHeight());
 
             const auto* buildingObj = elBuilding->getObject();
             auto totalHeight = 0;
@@ -638,7 +638,7 @@ namespace OpenLoco
             }
             elBuilding->setClearZ((totalHeight / 4) + elBuilding->baseZ());
 
-            Ui::ViewportManager::invalidate(pos, elBuilding->baseHeight(), elBuilding->clearHeight());
+            Ui::ViewportManager::invalidate(World::toWorldSpace(pos), elBuilding->baseHeight(), elBuilding->clearHeight());
             break;
         }
     }

@@ -468,7 +468,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         {
             return;
         }
-        _currentPosition = res->first;
+        _currentPosition = World::toTileSpace(res->first);
         auto tile = TileManager::get(_currentPosition);
 
         self.rowCount = static_cast<uint16_t>(tile.size());

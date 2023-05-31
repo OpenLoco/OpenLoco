@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        World::TilePosRangeView tileLoop{ { pointA }, { pointB } };
+        World::TilePosRangeView tileLoop{ World::toTileSpace(pointA), World::toTileSpace(pointB) };
         for (const auto& tilePos : tileLoop)
         {
             auto surface = World::TileManager::get(tilePos).surface();
@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
                     surface->setVar6SLR5(landObj->var_03 - 1);
                 }
             }
-            World::TileManager::mapInvalidateTileFull(tilePos);
+            World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
             auto& options = S5::getOptions();
             options.madeAnyChanges = 1;
         }
