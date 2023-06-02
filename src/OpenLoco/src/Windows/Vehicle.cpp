@@ -3077,18 +3077,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.widgets[widx::routeList].right = self.width - 26;
             self.widgets[widx::routeList].bottom = self.height - 14;
+
             self.widgets[widx::orderForceUnload].right = self.width - 2;
             self.widgets[widx::orderWait].right = self.width - 2;
             self.widgets[widx::orderSkip].right = self.width - 2;
             self.widgets[widx::orderDelete].right = self.width - 2;
             self.widgets[widx::orderUp].right = self.width - 2;
             self.widgets[widx::orderDown].right = self.width - 2;
+            self.widgets[widx::orderReverse].right = self.width - 2;
+
             self.widgets[widx::orderForceUnload].left = self.width - 25;
             self.widgets[widx::orderWait].left = self.width - 25;
             self.widgets[widx::orderSkip].left = self.width - 25;
             self.widgets[widx::orderDelete].left = self.width - 25;
             self.widgets[widx::orderUp].left = self.width - 25;
             self.widgets[widx::orderDown].left = self.width - 25;
+            self.widgets[widx::orderReverse].left = self.width - 25;
 
             self.disabledWidgets |= (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete);
             if (head->sizeOfOrderTable != 1)
@@ -3115,6 +3119,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::orderDelete].type = type;
             self.widgets[widx::orderUp].type = type;
             self.widgets[widx::orderDown].type = type;
+            self.widgets[widx::orderReverse].type = type;
+
             if (type == WidgetType::none)
             {
                 self.widgets[widx::routeList].right += 22;
