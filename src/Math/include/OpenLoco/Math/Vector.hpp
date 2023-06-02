@@ -26,8 +26,6 @@ namespace OpenLoco::Math::Vector
         {
         }
 
-        constexpr TVector2(const TVector2& other) = default;
-
         constexpr bool operator==(const TVector2& rhs) const noexcept
         {
             return x == rhs.x && y == rhs.y;
@@ -114,8 +112,6 @@ namespace OpenLoco::Math::Vector
             , z(_z)
         {
         }
-
-        constexpr TVector3(const TVector3& other) = default;
 
         constexpr TVector3(const Base& other, T z) noexcept
             : TVector3(other.x, other.y, z)
