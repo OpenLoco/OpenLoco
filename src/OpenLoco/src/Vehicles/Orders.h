@@ -160,4 +160,6 @@ namespace OpenLoco::Vehicles
     };
 
 #pragma pack(pop)
+
+    uint8_t reverseVehicleOrderTable(uint32_t tableOffset);
 }

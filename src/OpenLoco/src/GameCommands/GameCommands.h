@@ -120,6 +120,7 @@ namespace OpenLoco::GameCommands
         vehicleClone = 80,
         cheat = 81,
         setGameSpeed = 82,
+        vehicleOrderReverse = 83,
     };
 
     constexpr uint32_t FAILURE = 0x80000000;
@@ -2004,6 +2005,26 @@ namespace OpenLoco::GameCommands
         return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
     }
 
+    struct VehicleOrderReverseArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderReverse;
+
+        VehicleOrderReverseArgs() = default;
+        explicit VehicleOrderReverseArgs(const registers& regs)
+            : head(EntityId(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
+
     // Defined in GameCommands/ChangeCompanyColour.cpp
     void changeCompanyColour(registers& regs);
 
@@ -2081,6 +2102,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehicleOrderDown.cpp
     void vehicleOrderDown(registers& regs);
+
+    // Defined in GameCommands/VehicleOrderReverse.cpp
+    void vehicleOrderReverse(registers& regs);
 
     // Defined in GameCommands/VehicleOrderSkip.cpp
     void vehicleOrderSkip(registers& regs);

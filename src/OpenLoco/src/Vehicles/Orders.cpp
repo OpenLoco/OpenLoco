@@ -144,4 +144,31 @@ namespace OpenLoco::Vehicles
         }
         return ret;
     }
+
+    uint8_t reverseVehicleOrderTable(uint32_t tableOffset)
+    {
+        // Retrieve list of raw orders
+        std::vector<uint64_t> rawOrders{};
+        Vehicles::OrderRingView orders(tableOffset);
+        for (auto& order : orders)
+        {
+            rawOrders.push_back(order.getRaw());
+        }
+
+        // Figure out where the order table starts in memory
+        auto dest = reinterpret_cast<uint8_t*>(orders.atIndex(0));
+
+        // Write reversed list over existing list
+        for (auto it = rawOrders.rbegin(); it != rawOrders.rend(); ++it)
+        {
+            auto rawOrder = *it;
+            auto orderType = rawOrder & 0x7;
+            auto orderLength = kOrderSizes[orderType];
+            std::memcpy(dest, &rawOrder, orderLength);
+            dest += orderLength;
+        }
+
+        // TODO: return new location of currentOrder
+        return tableOffset * 0;
+    }
 }

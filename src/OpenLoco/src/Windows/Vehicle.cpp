@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static constexpr Ui::Size kMinWindowSize = { 265, 178 };
+        static constexpr Ui::Size kMinWindowSize = { 265, 202 };
         static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
@@ -193,12 +193,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             orderSkip,
             orderDelete,
             orderUp,
-            orderDown
+            orderDown,
+            orderReverse
         };
 
         // 0x00500554
         static WindowEventList events;
-        constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | (1 << widx::orderReverse) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
@@ -214,6 +215,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
             makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
             makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            makeWidget({ 240, 164 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround),
             widgetEnd(),
         };
     }
@@ -2480,6 +2482,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return result != GameCommands::FAILURE;
         }
 
+        static bool orderReverseCommand(Vehicles::VehicleHead* const head)
+        {
+            GameCommands::VehicleOrderReverseArgs args{};
+            args.head = head->id;
+
+            GameCommands::setErrorTitle(StringIds::empty);
+            auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            Vehicles::OrderManager::generateNumDisplayFrames(head); // Note: order changed, check if this matters.
+            return result != GameCommands::FAILURE;
+        }
+
         // 0x004B4BC1 / 0x004B4C78 based on
         static bool onOrderMove(Vehicles::VehicleHead* const head, const int16_t orderId, bool(orderMoveFunc)(Vehicles::VehicleHead*, uint32_t))
         {
@@ -2600,6 +2614,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         }
                     }
                     break;
+                case widx::orderReverse:
+                {
+                    orderReverseCommand(head);
+                    break;
+                }
             }
         }
 
