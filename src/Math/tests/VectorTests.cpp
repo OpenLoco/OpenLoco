@@ -3,8 +3,9 @@
 
 using namespace OpenLoco::Math;
 
-using Point2D = Vector::TVector2<int32_t, 1>;
+using Point2D = Vector::TVector2<int32_t>;
 using Point3D = Vector::TVector3<int32_t>;
+
 TEST(VectorTest, fastSquareRoot)
 {
     ASSERT_EQ(Vector::fastSquareRoot(0), 0);

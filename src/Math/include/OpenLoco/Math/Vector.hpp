@@ -7,223 +7,185 @@
 namespace OpenLoco::Math::Vector
 {
 #pragma pack(push, 1)
-    template<typename T, T TResolution, bool TIsGameSpace = true>
+    struct Vector2Tag
+    {
+    };
+
+    template<typename T, typename TTypeTag = Vector2Tag>
     struct TVector2
     {
-        static constexpr auto Resolution = TResolution;
-        static constexpr auto IsGameSpace = TIsGameSpace;
+        using TypeTag = TTypeTag;
 
-        T x = 0;
-        T y = 0;
+        T x{};
+        T y{};
 
-        constexpr TVector2() = default;
-        constexpr TVector2(T _x, T _y)
+        constexpr TVector2() noexcept = default;
+        constexpr TVector2(T _x, T _y) noexcept
             : x(_x)
             , y(_y)
         {
         }
 
-        template<T TResolution2>
-        constexpr TVector2(const TVector2<T, TResolution2>& other)
-            : TVector2(other.x, other.y)
-        {
-            if constexpr (TResolution < TVector2<T, TResolution2>::Resolution)
-            {
-                x *= TVector2<T, TResolution2>::Resolution;
-                y *= TVector2<T, TResolution2>::Resolution;
-            }
-            if constexpr (TResolution > TVector2<T, TResolution2>::Resolution)
-            {
-                x /= TResolution;
-                y /= TResolution;
-            }
-        }
+        constexpr TVector2(const TVector2& other) = default;
 
-        constexpr bool operator==(const TVector2& rhs) const
+        constexpr bool operator==(const TVector2& rhs) const noexcept
         {
             return x == rhs.x && y == rhs.y;
         }
 
-        constexpr bool operator!=(const TVector2& rhs) const
+        constexpr bool operator!=(const TVector2& rhs) const noexcept
         {
             return !(*this == rhs);
         }
 
-        constexpr TVector2& operator+=(const TVector2& rhs)
+        constexpr TVector2& operator+=(const TVector2& rhs) noexcept
         {
             x += rhs.x;
             y += rhs.y;
             return *this;
         }
 
-        constexpr TVector2& operator-=(const TVector2& rhs)
+        constexpr TVector2& operator-=(const TVector2& rhs) noexcept
         {
             x -= rhs.x;
             y -= rhs.y;
             return *this;
         }
 
-        constexpr TVector2& operator*=(const T rhs)
+        constexpr TVector2& operator*=(const T rhs) noexcept
         {
             x *= rhs;
             y *= rhs;
             return *this;
         }
 
-        constexpr TVector2& operator/=(const T rhs)
+        constexpr TVector2& operator/=(const T rhs) noexcept
         {
             x /= rhs;
             y /= rhs;
             return *this;
         }
 
-        constexpr const TVector2 operator+(const TVector2& rhs) const
+        constexpr const TVector2 operator+(const TVector2& rhs) const noexcept
         {
             return { static_cast<T>(x + rhs.x), static_cast<T>(y + rhs.y) };
         }
 
-        constexpr const TVector2 operator-(const TVector2& rhs) const
+        constexpr const TVector2 operator-(const TVector2& rhs) const noexcept
         {
             return { static_cast<T>(x - rhs.x), static_cast<T>(y - rhs.y) };
         }
 
-        constexpr const TVector2 operator*(const int32_t rhs) const
+        constexpr const TVector2 operator*(const int32_t rhs) const noexcept
         {
             return { static_cast<T>(x * rhs), static_cast<T>(y * rhs) };
         }
 
-        constexpr const TVector2 operator/(const int32_t rhs) const
+        constexpr const TVector2 operator/(const int32_t rhs) const noexcept
         {
             return { static_cast<T>(x / rhs), static_cast<T>(y / rhs) };
         }
 
-        constexpr const TVector2 operator<<(const uint8_t rhs) const
+        constexpr const TVector2 operator<<(const uint8_t rhs) const noexcept
         {
             return { static_cast<T>(x << rhs), static_cast<T>(y << rhs) };
         }
 
-        constexpr const TVector2 operator>>(const uint8_t rhs) const
+        constexpr const TVector2 operator>>(const uint8_t rhs) const noexcept
         {
             return { static_cast<T>(x >> rhs), static_cast<T>(y >> rhs) };
         }
     };
 
-    template<typename T, T TResolution = 1>
-    struct TVector3 : TVector2<T, TResolution>
+    struct Vector3Tag
     {
-        static constexpr auto NumberBase = TResolution;
+    };
 
-        using Base = TVector2<T, TResolution>;
+    template<typename T, typename TTypeTag = Vector3Tag>
+    struct TVector3 : TVector2<T, TTypeTag>
+    {
+        using Base = TVector2<T, TTypeTag>;
 
-        T z = 0;
+        T z{};
 
-        constexpr TVector3() = default;
-        constexpr TVector3(T _x, T _y, T _z)
+        constexpr TVector3() noexcept = default;
+        constexpr TVector3(T _x, T _y, T _z) noexcept
             : Base(_x, _y)
             , z(_z)
         {
         }
 
-        template<T TResolution2>
-        constexpr TVector3(const TVector3<T, TResolution2>& other)
-            : TVector3(other.x, other.y, other.z)
+        constexpr TVector3(const TVector3& other) = default;
+
+        constexpr TVector3(const Base& other, T z) noexcept
+            : TVector3(other.x, other.y, z)
         {
-            if constexpr (TResolution < TVector3<T, TResolution2>::Resolution)
-            {
-                Base::x *= TVector3<T, TResolution2>::Resolution;
-                Base::y *= TVector3<T, TResolution2>::Resolution;
-                z *= TResolution;
-            }
-            if constexpr (TResolution > TVector3<T, TResolution2>::Resolution)
-            {
-                Base::x /= TResolution;
-                Base::y /= TResolution;
-                z /= TResolution;
-            }
         }
 
-        template<T TResolution2>
-        explicit constexpr TVector3(const TVector2<T, TResolution2>& other, T _z)
-            : TVector3(other.x, other.y, _z)
-        {
-            if constexpr (TResolution < TVector2<T, TResolution2>::Resolution)
-            {
-                Base::x *= TVector3<T, TResolution2>::Resolution;
-                Base::y *= TVector3<T, TResolution2>::Resolution;
-                z *= TResolution;
-            }
-            if constexpr (TResolution > TVector2<T, TResolution2>::Resolution)
-            {
-                Base::x /= TResolution;
-                Base::y /= TResolution;
-                z /= TResolution;
-            }
-        }
-
-        constexpr bool operator==(const TVector3& rhs) const
+        constexpr bool operator==(const TVector3& rhs) const noexcept
         {
             return Base::operator==(rhs) && z == rhs.z;
         }
 
-        constexpr bool operator!=(const TVector3& rhs) const
+        constexpr bool operator!=(const TVector3& rhs) const noexcept
         {
             return !(*this == rhs);
         }
 
-        constexpr TVector3& operator+=(const TVector3& rhs)
+        constexpr TVector3& operator+=(const TVector3& rhs) noexcept
         {
             Base::operator+=(rhs);
             z += rhs.z;
             return *this;
         }
 
-        constexpr TVector3& operator-=(const TVector3& rhs)
+        constexpr TVector3& operator-=(const TVector3& rhs) noexcept
         {
             Base::operator-=(rhs);
             z -= rhs.z;
             return *this;
         }
 
-        constexpr TVector3& operator*=(const T rhs)
+        constexpr TVector3& operator*=(const T rhs) noexcept
         {
             Base::operator*=(rhs);
             z *= rhs.z;
             return *this;
         }
 
-        constexpr TVector3& operator/=(const T rhs)
+        constexpr TVector3& operator/=(const T rhs) noexcept
         {
             Base::operator/=(rhs);
             z /= rhs.z;
             return *this;
         }
 
-        constexpr const TVector3 operator+(const TVector3& rhs) const
+        constexpr const TVector3 operator+(const TVector3& rhs) const noexcept
         {
             return { static_cast<T>(Base::x + rhs.x), static_cast<T>(Base::y + rhs.y), static_cast<T>(z + rhs.z) };
         }
 
-        constexpr const TVector3 operator-(const TVector3& rhs) const
+        constexpr const TVector3 operator-(const TVector3& rhs) const noexcept
         {
             return { static_cast<T>(Base::x - rhs.x), static_cast<T>(Base::y - rhs.y), static_cast<T>(z - rhs.z) };
         }
 
-        constexpr const TVector3 operator*(const T rhs) const
+        constexpr const TVector3 operator*(const T rhs) const noexcept
         {
             return { static_cast<T>(Base::x * rhs), static_cast<T>(Base::y * rhs), static_cast<T>(z * rhs) };
         }
 
-        constexpr const TVector3 operator/(const T rhs) const
+        constexpr const TVector3 operator/(const T rhs) const noexcept
         {
             return { static_cast<T>(Base::x / rhs), static_cast<T>(Base::y / rhs), static_cast<T>(z / rhs) };
         }
     };
 #pragma pack(pop)
 
-    template<typename T, T TResolution>
-    static constexpr auto rotate(const TVector2<T, TResolution>& vec, int32_t direction)
+    template<typename T, typename TTypeTag>
+    static constexpr auto rotate(const TVector2<T, TTypeTag>& vec, int32_t direction) noexcept
     {
-        TVector2<T, TResolution> res;
+        TVector2<T, TTypeTag> res;
         switch (direction & 3)
         {
             default:
@@ -247,34 +209,34 @@ namespace OpenLoco::Math::Vector
         return res;
     }
 
-    template<typename T, T TResolution, bool TIsGameSpace>
-    static constexpr auto manhattanDistance(const TVector2<T, TResolution, TIsGameSpace>& lhs, const TVector2<T, TResolution, TIsGameSpace>& rhs)
+    template<typename T, typename TTypeTag>
+    static constexpr auto manhattanDistance(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
     }
 
-    template<typename T, T TResolution>
-    static constexpr auto manhattanDistance(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    template<typename T, typename TTypeTag>
+    static constexpr auto manhattanDistance(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y) + std::abs(lhs.z - rhs.z);
     }
 
-    template<typename T, T TResolution>
-    static constexpr auto dot(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    template<typename T, typename TTypeTag>
+    static constexpr auto dot(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
     {
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
-    template<typename T, T TResolution>
-    static constexpr auto dot(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    template<typename T, typename TTypeTag>
+    static constexpr auto dot(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
     {
         return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
     }
 
-    template<typename T, T TResolution>
-    static constexpr auto cross(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    template<typename T, typename TTypeTag>
+    static constexpr auto cross(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
     {
-        return TVector3<T, TResolution>{
+        return TVector3<T>{
             lhs.y * rhs.z - lhs.z * rhs.y,
             lhs.z * rhs.x - lhs.x * rhs.z,
             lhs.x * rhs.y - lhs.y * rhs.x
@@ -283,8 +245,8 @@ namespace OpenLoco::Math::Vector
 
     uint16_t fastSquareRoot(uint32_t distance);
 
-    template<typename T, T TResolution>
-    auto distance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    template<typename T, typename TTypeTag>
+    auto distance(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
     {
         auto x = lhs.x - rhs.x;
         auto y = lhs.y - rhs.y;
