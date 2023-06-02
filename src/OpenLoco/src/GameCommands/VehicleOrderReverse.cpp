@@ -25,9 +25,9 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::sub_4B93A5(enumValue(head->id));
 
-        // TODO: Have this return the current order offset after reversing
-        Vehicles::reverseVehicleOrderTable(head->orderTableOffset);
-        head->currentOrder = 0;
+        printf("currentOrder before: %d\n", head->currentOrder);
+        head->currentOrder = Vehicles::reverseVehicleOrderTable(head->orderTableOffset, head->currentOrder);
+        printf("currentOrder after: %d\n", head->currentOrder);
 
         return 0;
     }
