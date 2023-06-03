@@ -147,14 +147,12 @@ namespace OpenLoco::Vehicles
 
     uint16_t reverseVehicleOrderTable(uint32_t tableOffset, uint32_t orderOfInterest)
     {
-        printf("Orders before:\n");
         // Retrieve list of raw orders
         std::vector<uint64_t> rawOrders{};
         Vehicles::OrderRingView orders(tableOffset);
         for (auto& order : orders)
         {
             rawOrders.push_back(order.getRaw());
-            printOrder(&order);
         }
 
         // Nothing to do? Bail early
@@ -170,7 +168,6 @@ namespace OpenLoco::Vehicles
         auto firstOrder = reinterpret_cast<uint8_t*>(orders.atIndex(0));
         auto dest = firstOrder;
 
-        printf("\nOrders after:\n");
         // Write reversed list over existing list
         for (auto it = rawOrders.rbegin(); it != rawOrders.rend(); ++it)
         {
@@ -178,21 +175,11 @@ namespace OpenLoco::Vehicles
             auto orderType = rawOrder & 0x7;
             auto orderLength = kOrderSizes[orderType];
             std::memcpy(dest, &rawOrder, orderLength);
-
-            printOrder((Order*)dest);
-
             dest += orderLength;
         }
 
         // Figure out the new position of the order of interest
         auto newOOIOffset = dest - orderOfInterest - kOrderSizes[enumValue(ooiType)];
-
-        printf("\nFirst order @ %p\n", firstOrder);
-        printf("End of table @ %p\n", dest);
-
-        printf("Calculated OOI @ %p\n", newOOIOffset);
-        printf("OOI length = %d\n", kOrderSizes[enumValue(ooiType)]);
-        printf("End of OOI @ %p\n", dest - orderOfInterest);
 
         return newOOIOffset - firstOrder;
     }
