@@ -145,7 +145,7 @@ namespace OpenLoco::Vehicles
         return ret;
     }
 
-    uint16_t reverseVehicleOrderTable(uint32_t tableOffset, uint32_t orderOfInterest)
+    uint16_t reverseVehicleOrderTable(uint16_t tableOffset, uint16_t orderOfInterest)
     {
         // Retrieve list of raw orders
         std::vector<uint64_t> rawOrders{};
