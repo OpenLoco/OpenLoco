@@ -164,7 +164,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Keep track of the type of the order of interest
-        auto ooiType = orders.atIndex(orderOfInterest)->getType();
+        auto ooiType = _orderTable[tableOffset + orderOfInterest].getType();
 
         // Figure out where the order table starts in memory
         auto firstOrder = reinterpret_cast<uint8_t*>(orders.atIndex(0));
