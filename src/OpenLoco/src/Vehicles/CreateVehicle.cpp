@@ -19,6 +19,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
+#include "Vehicles/OrderManager.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 #include <numeric>

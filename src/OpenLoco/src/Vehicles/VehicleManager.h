@@ -1,9 +1,7 @@
 #pragma once
 #include "Entities/EntityManager.h"
-#include "LabelFrame.h"
 #include "Routing.h"
 #include "Types.hpp"
-#include <OpenLoco/Engine/World.hpp>
 #include <iterator>
 #include <optional>
 #include <string>
@@ -35,21 +33,6 @@ namespace OpenLoco::VehicleManager
     void vehiclePickupWater(EntityId head, uint8_t flags);
     void vehiclePickupAir(EntityId head, uint8_t flags);
     void placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2);
-}
-
-namespace OpenLoco::Vehicles::OrderManager
-{
-    struct NumDisplayFrame
-    {
-        uint32_t orderOffset; // 0x0
-        LabelFrame frame;     // 0x4
-        uint8_t lineNumber;   // 0x24
-    };
-
-    void freeOrders(VehicleHead* const head);
-    std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
-    void generateNumDisplayFrames(Vehicles::VehicleHead* head);
-    const std::vector<NumDisplayFrame>& displayFrames();
 }
 
 namespace OpenLoco::Vehicles::RoutingManager

@@ -32,6 +32,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"

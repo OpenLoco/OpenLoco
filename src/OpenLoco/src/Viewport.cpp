@@ -11,6 +11,7 @@
 #include "Paint/Paint.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/VehicleManager.h"
 #include "Window.h"
