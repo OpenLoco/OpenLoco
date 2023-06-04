@@ -12,7 +12,7 @@
 #include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
 
-#include <vector>
+#include <sstream>
 
 namespace OpenLoco::Vehicles::OrderManager
 {

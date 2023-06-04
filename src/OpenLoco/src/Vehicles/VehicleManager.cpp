@@ -14,7 +14,6 @@
 #include "World/CompanyManager.h"
 
 #include <OpenLoco/Interop/Interop.hpp>
-#include <sstream>
 
 using namespace OpenLoco::Interop;
 
