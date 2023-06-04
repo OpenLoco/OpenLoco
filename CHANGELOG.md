@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#376] Allow fractional UI scaling in addition to integer scaling.
 - Feature: [#418] Use hardware-backed SDL canvas when available for better performance.
+- Fix: [#1966] Unable to select terrain type for terrain painting.
 
 23.05 (2023-05-27)
 ------------------------------------------------------------------------
