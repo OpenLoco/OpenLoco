@@ -67,7 +67,7 @@ namespace OpenLoco::GameCommands
             vehBody.body->primaryCargo.maxQty = std::min<uint8_t>(maxCargoUnits, 0xFF);
             vehBody.body->primaryCargo.qty = 0;
 
-            auto primaryCargoObj = ObjectManager::get<CargoObject>(primaryCargoId);
+            auto primaryCargoObj = ObjectManager::get<CargoObject>(args.cargoType);
             auto acceptedTypes = 0;
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); cargoId++)
             {
