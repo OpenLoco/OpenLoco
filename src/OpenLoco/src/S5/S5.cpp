@@ -20,7 +20,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include "Vehicles/Orders.h"
+#include "Vehicles/OrderManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -274,7 +274,7 @@ namespace OpenLoco::S5
             EntityManager::resetSpatialIndex();
             EntityManager::zeroUnused();
             StationManager::zeroUnused();
-            Vehicles::zeroOrderTable();
+            Vehicles::OrderManager::zeroOrderTable();
         }
 
         bool saveResult;

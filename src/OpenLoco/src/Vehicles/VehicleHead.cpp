@@ -23,6 +23,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
 #include "Objects/VehicleObject.h"
+#include "OrderManager.h"
 #include "Orders.h"
 #include "Random.h"
 #include "ScenarioManager.h"
