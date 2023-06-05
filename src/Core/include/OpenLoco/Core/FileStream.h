@@ -18,6 +18,10 @@ namespace OpenLoco
     public:
         FileStream(const std::filesystem::path path, StreamMode mode);
 
+        bool isOpen() const noexcept;
+
+        void close();
+
         uint64_t getLength() const noexcept override;
 
         uint64_t getPosition() const noexcept override;

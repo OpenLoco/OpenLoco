@@ -21,6 +21,7 @@ set(private_files
 
 set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/EnumFlagsTests.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/FileStreamTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/MemoryStreamTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/PrngTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TraitsTest.cpp"

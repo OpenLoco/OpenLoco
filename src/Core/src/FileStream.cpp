@@ -27,8 +27,23 @@ namespace OpenLoco
         }
     }
 
+    bool FileStream::isOpen() const noexcept
+    {
+        return _fstream.is_open();
+    }
+
+    void FileStream::close()
+    {
+        _fstream.close();
+    }
+
     uint64_t FileStream::getLength() const noexcept
     {
+        if (!isOpen())
+        {
+            return 0;
+        }
+
         auto* fs = const_cast<std::fstream*>(&_fstream);
         if (_writing)
         {
@@ -50,6 +65,11 @@ namespace OpenLoco
 
     uint64_t FileStream::getPosition() const noexcept
     {
+        if (!isOpen())
+        {
+            return 0;
+        }
+
         auto* fs = const_cast<std::fstream*>(&_fstream);
         if (_writing)
         {
@@ -63,6 +83,11 @@ namespace OpenLoco
 
     void FileStream::setPosition(uint64_t position)
     {
+        if (!isOpen())
+        {
+            throw std::runtime_error("Invalid operation");
+        }
+
         if (_reading)
             _fstream.seekg(position);
         if (_writing)
