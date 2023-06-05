@@ -6,7 +6,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Core/Stream.hpp>
+#include <OpenLoco/Core/BinaryStream.h>
 #include <OpenLoco/Platform/Platform.h>
 
 using namespace OpenLoco;
