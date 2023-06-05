@@ -2,7 +2,7 @@
 
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Utility/Stream.hpp>
+#include <OpenLoco/Core/Stream.hpp>
 #include <cstdint>
 #include <memory>
 

@@ -7,8 +7,8 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Platform/Platform.h>
-#include <OpenLoco/Utility/Stream.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
 using namespace OpenLoco;

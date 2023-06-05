@@ -48,10 +48,10 @@
 #include "WallObject.h"
 #include "WaterObject.h"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/Numeric.hpp>
-#include <OpenLoco/Utility/Stream.hpp>
 #include <vector>
 
 using namespace OpenLoco::Interop;
