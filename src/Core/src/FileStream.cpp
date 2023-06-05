@@ -1,4 +1,5 @@
 #include "FileStream.h"
+#include <stdexcept>
 
 namespace OpenLoco
 {

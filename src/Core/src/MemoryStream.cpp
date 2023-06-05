@@ -1,8 +1,9 @@
 #include "MemoryStream.h"
+#include <cstring>
+#include <stdexcept>
 
 namespace OpenLoco
 {
-
     void MemoryStream::ensureLength(size_t len)
     {
         if (_data.size() < len)

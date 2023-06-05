@@ -5,11 +5,6 @@
 #include <cstdio>
 #include <vector>
 
-namespace stdx
-{
-    using nonstd::span;
-}
-
 namespace OpenLoco
 {
 

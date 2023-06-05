@@ -2,18 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
 #include <istream>
-#include <nonstd/span.hpp>
-#include <stdexcept>
-#include <vector>
-
-namespace stdx
-{
-    using nonstd::span;
-}
 
 namespace OpenLoco
 {
@@ -63,9 +52,6 @@ namespace OpenLoco
         {
             setPosition(getPosition() + pos);
         }
-
-    protected:
-        [[noreturn]] static void throwInvalidOperation(...) { throw std::runtime_error("Invalid operation"); }
     };
 
 }

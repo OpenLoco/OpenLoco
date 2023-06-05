@@ -1,8 +1,9 @@
 #include "BinaryStream.h"
+#include <cstring>
+#include <stdexcept>
 
 namespace OpenLoco
 {
-
     BinaryStream::BinaryStream(const void* data, size_t len)
         : _data(data)
         , _len(len)
@@ -37,7 +38,6 @@ namespace OpenLoco
 
     void BinaryStream::write([[maybe_unused]] const void* buffer, [[maybe_unused]] size_t len)
     {
-        throwInvalidOperation();
+        throw std::runtime_error("Invalid operation");
     }
-
 }
