@@ -930,6 +930,10 @@ namespace OpenLoco::World::TileManager
     // 0x00462926
     static bool canConstructAtWithClearLegacy(const World::Pos2& pos, uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, BuildingCollisionType flags, uintptr_t clearFunctionLegacy)
     {
+        if (clearFunctionLegacy == 0xFFFFFFFFU)
+        {
+            return canConstructAtWithClear(pos, baseZ, clearZ, qt, flags, {});
+        }
         // NOTE: When implementing a clear function you should ensure you follow all of this!
         // especially the collisionRemoved/allCollisionsRemoved parts
         auto functionWrapper = [clearFunctionLegacy](const TileElement& el) -> ClearFuncResult {
