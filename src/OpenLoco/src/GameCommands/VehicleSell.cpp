@@ -1,25 +1,27 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Vehicle.h"
-#include "VehicleManager.h"
+#include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 
-namespace OpenLoco::Vehicles
+using namespace OpenLoco::Vehicles;
+
+namespace OpenLoco::GameCommands
 {
-    static currency32_t sell(EntityId id, uint8_t flags)
+    static currency32_t sellVehicle(EntityId id, uint8_t flags)
     {
-        GameCommands::setExpenditureType(ExpenditureType::VehicleDisposals);
+        setExpenditureType(ExpenditureType::VehicleDisposals);
 
         currency32_t refundCost = 0;
         auto* vehBase = EntityManager::get<VehicleBase>(id);
         if (vehBase == nullptr)
         {
-            return GameCommands::FAILURE;
+            return FAILURE;
         }
 
         auto* head = EntityManager::get<VehicleHead>(vehBase->getHead());
         if (head == nullptr)
         {
-            return GameCommands::FAILURE;
+            return FAILURE;
         }
         Vehicle train(*head);
         if (head == vehBase)
@@ -34,12 +36,12 @@ namespace OpenLoco::Vehicles
             auto* bogie = vehBase->asVehicleBogie();
             if (bogie == nullptr)
             {
-                return GameCommands::FAILURE;
+                return FAILURE;
             }
             refundCost = bogie->refundCost;
         }
 
-        if (flags & GameCommands::Flags::apply)
+        if (flags & Flags::apply)
         {
             if (head == vehBase)
             {
@@ -66,10 +68,10 @@ namespace OpenLoco::Vehicles
                             head->liftUpVehicle();
                             break;
                         case TransportMode::air:
-                            VehicleManager::vehiclePickupAir(head->id, GameCommands::Flags::apply);
+                            VehicleManager::vehiclePickupAir(head->id, Flags::apply);
                             break;
                         case TransportMode::water:
-                            VehicleManager::vehiclePickupWater(head->id, GameCommands::Flags::apply);
+                            VehicleManager::vehiclePickupWater(head->id, Flags::apply);
                             break;
                     }
                 }
@@ -94,23 +96,23 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (!GameCommands::sub_431E6A(vehBase->owner))
+            if (!sub_431E6A(vehBase->owner))
             {
-                return GameCommands::FAILURE;
+                return FAILURE;
             }
             if (!head->canBeModified())
             {
                 // Error message set by canBeModified
-                return GameCommands::FAILURE;
+                return FAILURE;
             }
-            GameCommands::setPosition(head->position);
+            setPosition(head->position);
         }
         return -refundCost;
     }
 
     // 0x004AED34
-    void sell(Interop::registers& regs)
+    void sellVehicle(Interop::registers& regs)
     {
-        regs.ebx = sell(EntityId(regs.dx), regs.bl);
+        regs.ebx = sellVehicle(EntityId(regs.dx), regs.bl);
     }
 }

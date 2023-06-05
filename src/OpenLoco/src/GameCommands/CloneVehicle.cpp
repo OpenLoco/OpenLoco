@@ -1,13 +1,13 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
-#include "Orders.h"
 #include "Ui/WindowManager.h"
-#include "Vehicle.h"
+#include "Vehicles/Orders.h"
+#include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Vehicles
+namespace OpenLoco::GameCommands
 {
     static uint32_t cloneVehicle(EntityId head, uint8_t flags)
     {
@@ -16,19 +16,19 @@ namespace OpenLoco::Vehicles
         Vehicles::VehicleHead* newHead = nullptr;
 
         // Get total cost for a new vehicle
-        if (!(flags & GameCommands::Flags::apply))
+        if (!(flags & Flags::apply))
         {
             uint32_t totalCost = 0;
             for (auto& car : existingTrain.cars)
             {
-                GameCommands::VehicleCreateArgs args{};
+                VehicleCreateArgs args{};
                 args.vehicleId = EntityId::null;
                 args.vehicleType = car.front->objectId;
 
-                const auto cost = GameCommands::doCommand(args, 0);
-                if (cost == GameCommands::FAILURE)
+                const auto cost = doCommand(args, 0);
+                if (cost == FAILURE)
                 {
-                    totalCost = GameCommands::FAILURE;
+                    totalCost = FAILURE;
                     break;
                 }
                 else
@@ -37,9 +37,9 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (totalCost == GameCommands::FAILURE)
+            if (totalCost == FAILURE)
             {
-                return GameCommands::FAILURE;
+                return FAILURE;
             }
             return totalCost;
         }
@@ -51,31 +51,31 @@ namespace OpenLoco::Vehicles
             uint32_t cost = 0;
             if (newHead == nullptr)
             {
-                GameCommands::VehicleCreateArgs args{};
+                VehicleCreateArgs args{};
                 args.vehicleId = EntityId::null;
                 args.vehicleType = car.front->objectId;
 
-                cost = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                cost = doCommand(args, Flags::apply);
                 cargoType = car.body->primaryCargo.type;
 
                 auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVeh == nullptr)
                 {
-                    return GameCommands::FAILURE;
+                    return FAILURE;
                 }
                 newHead = EntityManager::get<Vehicles::VehicleHead>(newVeh->getHead());
             }
             else
             {
-                GameCommands::VehicleCreateArgs args{};
+                VehicleCreateArgs args{};
                 args.vehicleId = newHead->head;
                 args.vehicleType = car.front->objectId;
 
-                cost = GameCommands::doCommand(args, GameCommands::Flags::apply);
+                cost = doCommand(args, Flags::apply);
             }
-            if (cost == GameCommands::FAILURE)
+            if (cost == FAILURE)
             {
-                totalCost = GameCommands::FAILURE;
+                totalCost = FAILURE;
                 break;
             }
             else
@@ -83,9 +83,9 @@ namespace OpenLoco::Vehicles
                 totalCost += cost;
             }
         }
-        if (totalCost == GameCommands::FAILURE || newHead == nullptr)
+        if (totalCost == FAILURE || newHead == nullptr)
         {
-            return GameCommands::FAILURE;
+            return FAILURE;
         }
 
         // Copy orders
@@ -99,22 +99,22 @@ namespace OpenLoco::Vehicles
         {
             // Do not cache this as it will be a different value every iteration
             auto chosenOffset = newHead->sizeOfOrderTable - 1;
-            GameCommands::do_35(newHead->id, order->getRaw(), chosenOffset);
+            do_35(newHead->id, order->getRaw(), chosenOffset);
         }
 
         // Copy express/local
-        if ((existingTrain.veh1->var_48 & Flags48::expressMode) != Flags48::none)
+        if ((existingTrain.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
         {
-            GameCommands::do12(newHead->id, 2);
+            do12(newHead->id, 2);
         }
 
         // Copy cargo refit status (only applies to boats and airplanes)
         if (newHead->vehicleType == VehicleType::ship || newHead->vehicleType == VehicleType::aircraft)
         {
-            GameCommands::VehicleRefitArgs args{};
+            VehicleRefitArgs args{};
             args.head = newHead->head;
             args.cargoType = cargoType;
-            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            doCommand(args, Flags::apply);
         }
 
         return totalCost;

@@ -1960,6 +1960,12 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/ClearLand.cpp
     void clearLand(registers& regs);
 
+    // Defined in GameCommands/CloneVehicle.cpp
+    void cloneVehicle(registers& regs);
+
+    // Defined in GameCommands/CreateVehicle.cpp
+    void createVehicle(registers& regs);
+
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
@@ -1993,6 +1999,12 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RenameTown.cpp
     void renameTown(registers& regs);
 
+    // Defined in GameCommands/RenameVehicle.cpp
+    void renameVehicle(registers& regs);
+
+    // Defined in GameCommands/SellVehicle.cpp
+    void sellVehicle(registers& regs);
+
     // Defined in GameCommands/SetGameSpeed.cpp
     void setGameSpeed(registers& regs);
 
@@ -2000,11 +2012,17 @@ namespace OpenLoco::GameCommands
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
 
+    // Defined in GameCommands/VehicleOrderSkip.cpp
+    void vehicleOrderSkip(registers& regs);
+
     // Defined in GameCommands/VehiclePassSignal.cpp
     void vehiclePassSignal(registers& regs);
 
     // Defined in GameCommands/VehiclePickup.cpp
     void vehiclePickup(registers& regs);
+
+    // Defined in GameCommands/VehiclePickupWater.cpp
+    void vehiclePickupWater(registers& regs);
 
     // Defined in GameCommands/VehicleReverse.cpp
     void vehicleReverse(registers& regs);

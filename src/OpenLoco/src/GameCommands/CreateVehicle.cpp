@@ -17,10 +17,10 @@
 #include "Random.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
-#include "Vehicle.h"
-#include "VehicleManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/RoutingManager.h"
+#include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 #include <numeric>
@@ -28,10 +28,10 @@
 #include <utility>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::GameCommands;
 using namespace OpenLoco::Literals;
+using namespace OpenLoco::Vehicles;
 
-namespace OpenLoco::Vehicles
+namespace OpenLoco::GameCommands
 {
     constexpr auto kMaxAiVehicles = 500;
     constexpr auto kMaxNumCarComponentsInCar = 4;           // TODO: Move to VehicleObject
@@ -70,7 +70,7 @@ namespace OpenLoco::Vehicles
 
         if (totalAiVehicles > kMaxAiVehicles)
         {
-            GameCommands::setErrorText(StringIds::too_many_vehicles);
+            setErrorText(StringIds::too_many_vehicles);
             return false;
         }
 
@@ -89,7 +89,7 @@ namespace OpenLoco::Vehicles
         {
             return true;
         }
-        GameCommands::setErrorText(StringIds::too_many_vehicles);
+        setErrorText(StringIds::too_many_vehicles);
         return false;
     }
 
@@ -572,7 +572,7 @@ namespace OpenLoco::Vehicles
             return res;
         }
 
-        GameCommands::setErrorText(StringIds::too_many_vehicles);
+        setErrorText(StringIds::too_many_vehicles);
         return std::nullopt;
     }
 
@@ -586,7 +586,7 @@ namespace OpenLoco::Vehicles
 
         if (_orderTableLength >= Limits::kMaxOrders)
         {
-            GameCommands::setErrorText(StringIds::no_space_for_more_vehicle_orders);
+            setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
         }
 
@@ -639,7 +639,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE74E
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
-        GameCommands::setPosition({ Location::null, 0, 0 });
+        setPosition({ Location::null, 0, 0 });
         if (!EntityManager::checkNumFreeEntities(kMaxNumVehicleComponentsInCar + kNumVehicleComponentsInBase))
         {
             return FAILURE;
@@ -650,7 +650,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (flags & GameCommands::Flags::apply)
+        if (flags & Flags::apply)
         {
             auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
 
@@ -702,7 +702,7 @@ namespace OpenLoco::Vehicles
     static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
     {
         Vehicle train(vehicleThingId);
-        GameCommands::setPosition(train.veh2->position);
+        setPosition(train.veh2->position);
 
         if (!sub_431E6A(train.head->owner))
         {
@@ -724,7 +724,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (flags & GameCommands::Flags::apply)
+        if (flags & Flags::apply)
         {
             if (train.head->tileX != -1)
             {
@@ -766,9 +766,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE5E4
-    static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
+    static uint32_t createVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
     {
-        GameCommands::setExpenditureType(ExpenditureType::VehiclePurchases);
+        setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
 
         const auto* company = CompanyManager::get(CompanyManager::getUpdatingCompanyId());
@@ -776,8 +776,8 @@ namespace OpenLoco::Vehicles
 
         if (vehicleIsLocked && !Config::get().buildLockedVehicles)
         {
-            GameCommands::setErrorText(StringIds::vehicle_is_locked);
-            return GameCommands::FAILURE;
+            setErrorText(StringIds::vehicle_is_locked);
+            return FAILURE;
         }
 
         if (vehicleThingId == EntityId::null)
@@ -790,8 +790,8 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    void create(registers& regs)
+    void createVehicle(registers& regs)
     {
-        regs.ebx = create(regs.bl, regs.dx, EntityId(regs.di));
+        regs.ebx = createVehicle(regs.bl, regs.dx, EntityId(regs.di));
     }
 }
