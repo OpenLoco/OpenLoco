@@ -2102,6 +2102,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/VehicleChangeRunningMode.cpp
     void vehicleChangeRunningMode(registers& regs);
 
+    // Defined in GameCommands/VehicleOrderDelete.cpp
+    void vehicleOrderDelete(registers& regs);
+
     // Defined in GameCommands/VehicleOrderDown.cpp
     void vehicleOrderDown(registers& regs);
 

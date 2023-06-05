@@ -123,10 +123,12 @@ namespace OpenLoco::Vehicles::OrderManager
     Order* orders();
     uint32_t& numOrders();
 
+    void shiftOrdersUp(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy);
+    void shiftOrdersDown(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy);
+    void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable);
     void zeroOrderTable();
     void freeOrders(VehicleHead* const head);
 
-    void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable);
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
     void generateNumDisplayFrames(Vehicles::VehicleHead* head);
     const std::vector<NumDisplayFrame>& displayFrames();

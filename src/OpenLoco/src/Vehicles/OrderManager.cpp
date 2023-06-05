@@ -7,6 +7,7 @@
 #include "Localisation/Formatting.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
+#include "S5/Limits.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
@@ -87,7 +88,23 @@ namespace OpenLoco::Vehicles::OrderManager
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& numOrders() { return getGameState().numOrders; }
 
-    void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
+    void shiftOrdersUp(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
+    {
+        auto* dest = orders() + offsetToShiftTowards;
+        auto* src = dest + sizeToShiftBy;
+        auto size = S5::Limits::kMaxOrders - offsetToShiftTowards - sizeToShiftBy;
+        std::memmove(dest, src, size);
+    }
+
+    void shiftOrdersDown(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
+    {
+        auto* src = orders() + offsetToShiftFrom;
+        auto* dest = src - sizeToShiftBy;
+        auto size = S5::Limits::kMaxOrders - offsetToShiftFrom - sizeToShiftBy;
+        std::memmove(dest, src, size);
+    }
+
+    void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
         for (auto head : VehicleManager::VehicleList())
         {
@@ -112,7 +129,7 @@ namespace OpenLoco::Vehicles::OrderManager
         const auto offset = head->orderTableOffset;
         const auto size = head->sizeOfOrderTable;
 
-        sub_470795(offset, -size);
+        reoffsetVehicleOrderTables(offset, -size);
 
         // Fold orders table left to remove empty orders
         std::rotate(&orders()[offset], &orders()[offset + size], &orders()[numOrders()]);

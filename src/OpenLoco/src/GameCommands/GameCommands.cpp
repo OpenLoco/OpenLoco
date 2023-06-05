@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeWall,                   removeWall,                0x004C466C, true  },
         { GameCommand::gc_unk_34,                    nullptr,                   0x004C4717, false },
         { GameCommand::vehicleOrderInsert,           nullptr,                   0x0047036E, false },
-        { GameCommand::vehicleOrderDelete,           nullptr,                   0x0047057A, false },
+        { GameCommand::vehicleOrderDelete,           vehicleOrderDelete,        0x0047057A, false },
         { GameCommand::vehicleOrderSkip,             vehicleOrderSkip,          0x0047071A, false },
         { GameCommand::createRoad,                   nullptr,                   0x00475FBC, true  },
         { GameCommand::removeRoad,                   nullptr,                   0x004775A5, true  },
