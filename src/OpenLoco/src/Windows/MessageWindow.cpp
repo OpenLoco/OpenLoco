@@ -376,7 +376,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Settings
     {
-        static constexpr Ui::Size kWindowSize = { 366, 139 };
+        static constexpr Ui::Size kWindowSize = { 366, 155 };
 
         enum widx
         {
@@ -392,18 +392,20 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             general_news_dropdown,
             advice,
             advice_dropdown,
+            playSoundEffects,
         };
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown) |  (1 << widx::playSoundEffects);
 
         Widget widgets[] = {
-            commonWidgets(366, 217, StringIds::title_messages),
+            commonWidgets(366, 155, StringIds::title_messages),
             makeDropdownWidgets({ 236, 47 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 62 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 77 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 92 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 107 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeDropdownWidgets({ 236, 122 }, { 124, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip),
             widgetEnd(),
         };
 
@@ -422,6 +424,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 case Common::widx::tab_settings:
                     Common::switchTab(&self, widgetIndex);
                     break;
+
+                case widx::playSoundEffects:
+                {
+                    Config::get().audio.playNewsSounds ^= 1;
+                    WindowManager::invalidateWidget(WindowType::messages, self.number, widgetIndex);
+                    break;
+                }
             }
         }
 
@@ -498,6 +507,16 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             }
         }
 
+        static void prepareDraw(Window& self)
+        {
+            Common::prepareDraw(self);
+
+            if (Config::get().audio.playNewsSounds)
+                self.activatedWidgets |= (1 << widx::playSoundEffects);
+            else
+                self.activatedWidgets &= ~(1 << widx::playSoundEffects);
+        }
+
         // 0x0042AA02
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
@@ -559,7 +578,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             events.onMouseDown = onMouseDown;
             events.onDropdown = onDropdown;
             events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
+            events.prepareDraw = prepareDraw;
             events.draw = draw;
         }
     }

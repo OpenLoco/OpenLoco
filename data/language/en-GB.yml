@@ -2332,3 +2332,5 @@ strings:
   2277: "{COLOUR BLACK}Object ID"
   2278: "{COLOUR BLACK}Type"
   2279: "{COLOUR BLACK}Checksum"
+  2280: "Play sound effects for new messages"
+  2281: "{SMALLFONT}{COLOUR BLACK}When enabled, new messages will be accompanied by a sound effect of an appropriately cheering crowd."
