@@ -6,8 +6,8 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
+#include <OpenLoco/Core/MemoryStream.h>
 #include <OpenLoco/Core/Span.hpp>
-#include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
 
