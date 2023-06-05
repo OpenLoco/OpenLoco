@@ -39,7 +39,7 @@ namespace OpenLoco
             }
         }
 
-        uint64_t getLength() const override
+        uint64_t getLength() const noexcept override
         {
             auto* fs = const_cast<std::fstream*>(&_fstream);
             if (_writing)
@@ -60,7 +60,7 @@ namespace OpenLoco
             }
         }
 
-        uint64_t getPosition() const override
+        uint64_t getPosition() const noexcept override
         {
             auto* fs = const_cast<std::fstream*>(&_fstream);
             if (_writing)

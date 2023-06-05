@@ -27,12 +27,12 @@ namespace OpenLoco
         {
         }
 
-        uint64_t getLength() const override
+        uint64_t getLength() const noexcept override
         {
             return _len;
         }
 
-        uint64_t getPosition() const override
+        uint64_t getPosition() const noexcept override
         {
             return _index;
         }
@@ -51,6 +51,11 @@ namespace OpenLoco
                 throw std::runtime_error("Failed to read data");
             std::memcpy(buffer, reinterpret_cast<const void*>(reinterpret_cast<size_t>(_data) + _index), len);
             _index += len;
+        }
+
+        void write([[maybe_unused]] const void* buffer, [[maybe_unused]] size_t len) override
+        {
+            Stream::throwInvalidOperation();
         }
     };
 

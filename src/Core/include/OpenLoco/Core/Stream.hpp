@@ -51,19 +51,20 @@ namespace OpenLoco
     class Stream
     {
     public:
-        virtual ~Stream() {}
-        virtual uint64_t getLength() const { throwInvalidOperation(); }
-        virtual uint64_t getPosition() const { throwInvalidOperation(); }
-        virtual void setPosition(uint64_t) { throwInvalidOperation(); }
-        virtual void read(void*, size_t) { throwInvalidOperation(); }
-        virtual void write(const void*, size_t) { throwInvalidOperation(); }
+        virtual ~Stream() = default;
+
+        virtual uint64_t getLength() const noexcept = 0;
+        virtual uint64_t getPosition() const noexcept = 0;
+        virtual void setPosition(uint64_t) = 0;
+        virtual void read(void*, size_t) = 0;
+        virtual void write(const void*, size_t) = 0;
 
         void seek(int64_t pos)
         {
             setPosition(getPosition() + pos);
         }
 
-    private:
+    protected:
         [[noreturn]] static void throwInvalidOperation(...) { throw std::runtime_error("Invalid operation"); }
     };
 

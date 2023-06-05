@@ -32,12 +32,12 @@ namespace OpenLoco
             return _data.data();
         }
 
-        uint64_t getLength() const override
+        uint64_t getLength() const noexcept override
         {
             return _data.size();
         }
 
-        uint64_t getPosition() const override
+        uint64_t getPosition() const noexcept override
         {
             return _index;
         }
