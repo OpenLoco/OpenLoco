@@ -22,9 +22,7 @@ namespace OpenLoco
 
     void BinaryStream::setPosition(uint64_t position)
     {
-        if (position > _len)
-            throw std::out_of_range("Position too large");
-        _index = static_cast<size_t>(position);
+        _index = std::min(_len, static_cast<size_t>(position));
     }
 
     void BinaryStream::read(void* buffer, size_t len)

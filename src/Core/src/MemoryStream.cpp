@@ -34,7 +34,7 @@ namespace OpenLoco
 
     void MemoryStream::setPosition(uint64_t position)
     {
-        _index = static_cast<size_t>(position);
+        _index = std::min(_data.size(), static_cast<size_t>(position));
     }
 
     void MemoryStream::read(void* buffer, size_t len)
