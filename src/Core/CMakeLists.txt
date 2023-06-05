@@ -1,8 +1,11 @@
 set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/BitSet.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/ByteStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/EnumFlags.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileSystem.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/LocoFixedVector.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/MemoryStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Prng.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Span.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Stream.hpp"
@@ -10,7 +13,11 @@ set(public_files
 )
 
 set(private_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Prng.cpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/ByteStream.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/FileStream.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/MemoryStream.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Prng.cpp"
+)
 
 set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/EnumFlagsTests.cpp"
