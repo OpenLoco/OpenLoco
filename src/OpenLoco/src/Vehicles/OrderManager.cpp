@@ -68,7 +68,7 @@ namespace OpenLoco::Vehicles
 
     OrderRingView::Iterator OrderRingView::begin() const
     {
-        auto* orderTable = reinterpret_cast<Order*>(OrderManager::orders());
+        auto* orderTable = OrderManager::orders();
         return Iterator(&orderTable[_beginTableOffset], &orderTable[_beginTableOffset + _currentOrderOffset]);
     }
 
@@ -84,7 +84,7 @@ namespace OpenLoco::Vehicles::OrderManager
     std::vector<NumDisplayFrame> _displayFrames;
     const std::vector<NumDisplayFrame>& displayFrames() { return _displayFrames; }
 
-    uint8_t* orders() { return getGameState().orders; }
+    Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& numOrders() { return getGameState().numOrders; }
 
     void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)

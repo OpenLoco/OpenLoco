@@ -96,7 +96,7 @@ namespace OpenLoco::Vehicles
 
     uint32_t Order::getOffset() const
     {
-        return this - reinterpret_cast<Order*>(OrderManager::orders());
+        return this - OrderManager::orders();
     }
 
     uint64_t Order::getRaw() const

@@ -120,7 +120,7 @@ namespace OpenLoco::Vehicles::OrderManager
         uint8_t lineNumber;   // 0x24
     };
 
-    uint8_t* orders();
+    Order* orders();
     uint32_t& numOrders();
 
     void zeroOrderTable();
