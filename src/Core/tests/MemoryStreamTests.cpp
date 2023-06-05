@@ -67,3 +67,18 @@ TEST(MemoryStreamTest, testPosition)
     ms.setPosition(100);
     ASSERT_EQ(ms.getPosition(), ms.getLength());
 }
+
+TEST(MemoryStreamTest, testWrite100MiB)
+{
+    MemoryStream ms;
+
+    const auto k100MiB = (1024U * 1024U) * 100U;
+    const std::array<uint8_t, 1> writeBuffer{ 0xFF };
+
+    for (size_t i = 0; i < k100MiB; i++)
+    {
+        ms.write(writeBuffer.data(), writeBuffer.size());
+    }
+
+    ASSERT_EQ(ms.getLength(), k100MiB);
+}
