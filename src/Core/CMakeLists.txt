@@ -1,6 +1,6 @@
 set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/BitSet.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/ByteStream.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/BinaryStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/EnumFlags.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileSystem.hpp"
@@ -13,7 +13,7 @@ set(public_files
 )
 
 set(private_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/ByteStream.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/BinaryStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/FileStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/MemoryStream.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Prng.cpp"
