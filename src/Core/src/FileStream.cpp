@@ -47,6 +47,7 @@ namespace OpenLoco
             _length = getFileLength(_fstream);
         }
 
+        _offset = 0;
         _mode = mode;
         return true;
     }
@@ -60,6 +61,7 @@ namespace OpenLoco
     {
         _mode = StreamMode::none;
         _length = 0;
+        _offset = 0;
         _fstream.close();
     }
 
@@ -75,17 +77,7 @@ namespace OpenLoco
 
     uint64_t FileStream::getPosition() const noexcept
     {
-        auto& fs = const_cast<std::fstream&>(_fstream);
-        if (_mode == StreamMode::write)
-        {
-            return static_cast<uint64_t>(fs.tellp());
-        }
-        if (_mode == StreamMode::read)
-        {
-            return static_cast<uint64_t>(fs.tellg());
-        }
-        // File not open.
-        return 0;
+        return static_cast<uint64_t>(_offset);
     }
 
     void FileStream::setPosition(uint64_t position)
@@ -94,10 +86,12 @@ namespace OpenLoco
         {
             throw std::runtime_error("Invalid operation");
         }
+        position = std::min(_length, static_cast<size_t>(position));
         if (_mode == StreamMode::read)
             _fstream.seekg(position);
         if (_mode == StreamMode::write)
             _fstream.seekp(position);
+        _offset = position;
     }
 
     void FileStream::read(void* buffer, size_t len)
@@ -106,9 +100,12 @@ namespace OpenLoco
         {
             throw std::runtime_error("Invalid operation");
         }
+
         _fstream.read(static_cast<char*>(buffer), len);
         if (_fstream.fail())
             throw std::runtime_error("Failed to read data");
+
+        _offset += len;
     }
 
     void FileStream::write(const void* buffer, size_t len)
@@ -123,9 +120,10 @@ namespace OpenLoco
         }
 
         _fstream.write(static_cast<const char*>(buffer), len);
-        _length = std::max(_length, static_cast<size_t>(_fstream.tellp()));
-
         if (_fstream.fail())
             throw std::runtime_error("Failed to write data");
+
+        _offset += len;
+        _length = std::max(_length, _offset);
     }
 }

@@ -14,6 +14,7 @@ namespace OpenLoco
         std::fstream _fstream;
         StreamMode _mode{};
         size_t _length{};
+        size_t _offset{};
 
     public:
         FileStream(const std::filesystem::path& path, StreamMode mode);
