@@ -121,7 +121,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         {
             Audio::SoundId soundId = Audio::SoundId::notification;
 
-            if (news->companyId == CompanyId::null || news->companyId == CompanyManager::getControllingId())
+            if (!Config::get().audio.playNewsSounds)
+            {
+                soundId = Audio::SoundId::null;
+            }
+            else if (news->companyId == CompanyId::null || news->companyId == CompanyManager::getControllingId())
             {
                 soundId = mtd.sound;
             }

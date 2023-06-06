@@ -230,6 +230,8 @@ namespace OpenLoco::Config
             audioConfig.device = audioNode["device"].as<std::string>("");
             if (audioNode["play_title_music"])
                 audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>();
+            if (audioNode["play_news_sounds"])
+                audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>();
         }
 
         auto& networkNode = config["network"];
