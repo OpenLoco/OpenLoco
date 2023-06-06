@@ -1876,14 +1876,28 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicleOrderUp, regs);
     }
 
-    inline uint32_t do_76(EntityId head, uint32_t orderOffset)
+    struct VehicleOrderDownArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(head);
-        regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicleOrderDown, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleOrderDown;
+
+        VehicleOrderDownArgs() = default;
+        explicit VehicleOrderDownArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.edx = orderOffset;
+            return regs;
+        }
+    };
 
     struct VehicleApplyShuntCheatArgs
     {
@@ -2025,6 +2039,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/TogglePause.cpp
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
+
+    // Defined in GameCommands/VehicleOrderDown.cpp
+    void vehicleOrderDown(registers& regs);
 
     // Defined in GameCommands/VehicleOrderSkip.cpp
     void vehicleOrderSkip(registers& regs);
