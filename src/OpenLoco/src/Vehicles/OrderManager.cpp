@@ -122,11 +122,23 @@ namespace OpenLoco::Vehicles::OrderManager
         OrderRingView orders(head->orderTableOffset, orderOffset);
         auto& selectedOrder = *(orders.begin());
 
-        // Bookkeeping: change order table sizes
+        // Bookkeeping: change order table size
         // TODO: this should probably be done after shifting orders? Following original sub for now
         auto removeOrderSize = kOrderSizes[enumValue(selectedOrder.getType())];
         head->sizeOfOrderTable -= removeOrderSize;
         numOrders() -= removeOrderSize;
+
+        // Are we removing an order that appears before the current order? Move back a bit
+        if (head->currentOrder > orderOffset)
+        {
+            head->currentOrder -= removeOrderSize;
+        }
+
+        // Ensure we don't move beyond the order table size
+        if (head->currentOrder + 1 >= head->sizeOfOrderTable)
+        {
+            head->currentOrder = 0;
+        }
 
         // Move orders in the order table, effectively removing the order
         shiftOrdersDown(head->orderTableOffset + orderOffset, removeOrderSize);
