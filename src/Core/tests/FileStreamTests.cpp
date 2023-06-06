@@ -34,6 +34,8 @@ TEST(FileStreamTest, testWriteRead)
     ASSERT_EQ(streamOut.getLength(), sizeof(writeBuffer));
     ASSERT_EQ(streamOut.getPosition(), sizeof(writeBuffer));
 
+    streamOut.close();
+
     FileStream streamIn(filePath, StreamMode::read);
     ASSERT_EQ(streamIn.getLength(), sizeof(writeBuffer));
     ASSERT_EQ(streamIn.getPosition(), 0);
@@ -43,7 +45,6 @@ TEST(FileStreamTest, testWriteRead)
 
     ASSERT_EQ(readBuffer, writeBuffer);
 
-    streamOut.close();
     streamIn.close();
     std::filesystem::remove(filePath);
 }
