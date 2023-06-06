@@ -104,11 +104,11 @@ namespace OpenLoco::GameCommands
 
         if ((train.head->vehicleFlags & VehicleFlags::manualControl) != VehicleFlags::none)
         {
-            train.head->vehicleFlags |= VehicleFlags::commandStop;
+            train.head->vehicleFlags &= ~VehicleFlags::commandStop;
         }
         else
         {
-            train.head->vehicleFlags &= ~VehicleFlags::commandStop;
+            train.head->vehicleFlags |= VehicleFlags::commandStop;
         }
 
         if (train.head->status == Vehicles::Status::approaching)
