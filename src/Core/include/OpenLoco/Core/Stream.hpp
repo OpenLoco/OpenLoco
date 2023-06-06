@@ -33,6 +33,7 @@ namespace OpenLoco
 
     enum class StreamMode
     {
+        none = 0,
         read,
         write,
     };

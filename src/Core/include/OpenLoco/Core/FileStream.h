@@ -12,15 +12,19 @@ namespace OpenLoco
     {
     private:
         std::fstream _fstream;
-        bool _reading{};
-        bool _writing{};
+        StreamMode _mode{};
+        size_t _length{};
 
     public:
         FileStream(const std::filesystem::path path, StreamMode mode);
 
+        bool open(const std::filesystem::path path, StreamMode mode);
+
         bool isOpen() const noexcept;
 
         void close();
+
+        StreamMode getMode() const noexcept;
 
         uint64_t getLength() const noexcept override;
 
