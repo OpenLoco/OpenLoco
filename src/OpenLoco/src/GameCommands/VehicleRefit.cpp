@@ -49,10 +49,6 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            auto carIter = train.cars.begin();
-            carIter++;
-            auto& vehBody = *carIter;
-
             if (!(flags & Flags::apply))
             {
                 return 0;
@@ -63,9 +59,9 @@ namespace OpenLoco::GameCommands
             auto primaryCargoId = Utility::bitScanForward(cargoTypes);
             uint16_t maxCargoUnits = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, args.cargoType);
 
-            vehBody.body->primaryCargo.type = args.cargoType;
-            vehBody.body->primaryCargo.maxQty = std::min<uint8_t>(maxCargoUnits, 0xFF);
-            vehBody.body->primaryCargo.qty = 0;
+            car.body->primaryCargo.type = args.cargoType;
+            car.body->primaryCargo.maxQty = std::min<uint8_t>(maxCargoUnits, 0xFF);
+            car.body->primaryCargo.qty = 0;
 
             auto primaryCargoObj = ObjectManager::get<CargoObject>(args.cargoType);
             auto acceptedTypes = 0;
@@ -82,7 +78,7 @@ namespace OpenLoco::GameCommands
                     acceptedTypes |= 1 << cargoId;
                 }
             }
-            vehBody.body->primaryCargo.acceptedTypes = acceptedTypes;
+            car.body->primaryCargo.acceptedTypes = acceptedTypes;
 
             head->sub_4B7CC3();
             Ui::WindowManager::invalidate(Ui::WindowType::vehicle, static_cast<Ui::WindowNumber_t>(head->id));
