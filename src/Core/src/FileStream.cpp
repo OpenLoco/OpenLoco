@@ -13,12 +13,12 @@ namespace OpenLoco
         return len;
     }
 
-    FileStream::FileStream(const std::filesystem::path path, StreamMode mode)
+    FileStream::FileStream(const std::filesystem::path& path, StreamMode mode)
     {
         open(path, mode);
     }
 
-    bool FileStream::open(const std::filesystem::path path, StreamMode mode)
+    bool FileStream::open(const std::filesystem::path& path, StreamMode mode)
     {
         if (mode == StreamMode::none)
         {

@@ -16,9 +16,9 @@ namespace OpenLoco
         size_t _length{};
 
     public:
-        FileStream(const std::filesystem::path path, StreamMode mode);
+        FileStream(const std::filesystem::path& path, StreamMode mode);
 
-        bool open(const std::filesystem::path path, StreamMode mode);
+        bool open(const std::filesystem::path& path, StreamMode mode);
 
         bool isOpen() const noexcept;
 
