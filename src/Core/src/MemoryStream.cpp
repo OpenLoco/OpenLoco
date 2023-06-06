@@ -42,7 +42,7 @@ namespace OpenLoco
         auto maxReadLen = _data.size() - _index;
         if (len > maxReadLen)
             throw std::runtime_error("Failed to read data");
-        std::memcpy(buffer, reinterpret_cast<const void*>(reinterpret_cast<size_t>(_data.data()) + _index), len);
+        std::memcpy(buffer, _data.data() + _index, len);
         _index += len;
     }
 
@@ -51,7 +51,7 @@ namespace OpenLoco
         if (len != 0)
         {
             ensureLength(_index + len);
-            std::memcpy(reinterpret_cast<void*>(reinterpret_cast<size_t>(_data.data()) + _index), buffer, len);
+            std::memcpy(_data.data() + _index, buffer, len);
             _index += len;
         }
     }
