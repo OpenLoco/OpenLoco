@@ -463,7 +463,7 @@ namespace OpenLoco::StationManager
     // 0x0042F2FE
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size)
     {
-        const auto initialLoc = TilePos2(pos) - TilePos2(4, 4);
+        const auto initialLoc = World::toTileSpace(pos) - TilePos2(4, 4);
         const auto catchmentSize = size + TilePos2(8, 8);
         // TODO: Use a fixed size array (max size 15)
         std::vector<std::pair<StationId, uint8_t>> foundStations;

@@ -2019,7 +2019,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
             if (mapPos)
             {
-                return { std::make_pair(World::TilePos2(*mapPos), existingHeight) };
+                return { std::make_pair(World::toTileSpace(*mapPos), existingHeight) };
             }
         }
         return std::nullopt;
@@ -2037,7 +2037,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
                 if (mapPos)
                 {
-                    return { std::make_pair(World::TilePos2(*mapPos), existingHeight) };
+                    return { std::make_pair(World::toTileSpace(*mapPos), existingHeight) };
                 }
             }
         }
@@ -2059,7 +2059,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto height = std::min(tileHeight->landHeight, baseHeight);
         height = std::max(height, tileHeight->waterHeight);
 
-        return { std::make_pair(World::TilePos2(*mapPos), height) };
+        return { std::make_pair(World::toTileSpace(*mapPos), height) };
     }
 
     static int16_t getMaxPieceHeight(const stdx::span<const TrackData::PreviewTrack> piece)
@@ -2330,7 +2330,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto junctionRes = tryMakeJunction(x, y);
         if (junctionRes)
         {
-            constructPos = junctionRes->first;
+            constructPos = World::toWorldSpace(junctionRes->first);
             constructHeight = junctionRes->second;
 
             _makeJunction = 1;
@@ -2342,7 +2342,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 return;
             }
-            constructPos = constRes->first;
+            constructPos = World::toWorldSpace(constRes->first);
             constructHeight = constRes->second;
 
             _makeJunction = 0;
@@ -2426,7 +2426,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         const auto junctionRes = tryMakeJunction(x, y);
         if (junctionRes)
         {
-            constructPos = junctionRes->first;
+            constructPos = World::toWorldSpace(junctionRes->first);
             _makeJunction = 1;
             _word_1135FFE = junctionRes->second;
         }
@@ -2437,7 +2437,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 return;
             }
-            constructPos = constRes->first;
+            constructPos = World::toWorldSpace(constRes->first);
             constructHeight = constRes->second;
 
             _makeJunction = 0;
@@ -2579,11 +2579,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto baseZ = trackPos.z / kSmallZStep;
             const auto clearZ = baseZ + (trackPiece.clearZ + 32) / kSmallZStep;
 
-            const auto centreTileCoords = World::TilePos2{ trackPos };
-            const auto eastTileCoords = centreTileCoords + World::offsets[1];
-            const auto westTileCoords = centreTileCoords - World::offsets[1];
-            const auto northTileCoords = centreTileCoords + World::offsets[3];
-            const auto southTileCoords = centreTileCoords - World::offsets[3];
+            const auto centreTileCoords = World::toTileSpace(trackPos);
+            const auto eastTileCoords = centreTileCoords + World::toTileSpace(World::offsets[1]);
+            const auto westTileCoords = centreTileCoords - World::toTileSpace(World::offsets[1]);
+            const auto northTileCoords = centreTileCoords + World::toTileSpace(World::offsets[3]);
+            const auto southTileCoords = centreTileCoords - World::toTileSpace(World::offsets[3]);
 
             // Copy map elements which will be replaced with temporary ones containing track
             backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];

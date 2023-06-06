@@ -59,7 +59,7 @@ namespace OpenLoco::World
             return {};
         }
         mustNotTreeFlags |= TreeObjectFlags::requiresWater;
-        const uint16_t numSameTypeSurfaces = TileManager::countSurroundingWaterTiles(loc);
+        const uint16_t numSameTypeSurfaces = TileManager::countSurroundingWaterTiles(World::toWorldSpace(loc));
         if (numSameTypeSurfaces >= 8)
         {
             mustNotTreeFlags &= ~TreeObjectFlags::requiresWater;
@@ -107,7 +107,7 @@ namespace OpenLoco::World
         std::optional<uint8_t> randTreeType = treeType;
         if (!randTreeType.has_value())
         {
-            randTreeType = getRandomTreeTypeFromSurface(args.pos, false);
+            randTreeType = getRandomTreeTypeFromSurface(World::toTileSpace(args.pos), false);
             // It is possible that there are no valid tree types for the surface
             if (!randTreeType.has_value())
             {
@@ -145,7 +145,7 @@ namespace OpenLoco::World
                 Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
                 Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
 
-            if (!placeRandomTree(randomOffset + centreLoc, treeType))
+            if (!placeRandomTree(randomOffset + World::toWorldSpace(centreLoc), treeType))
             {
                 numErrors++;
             }

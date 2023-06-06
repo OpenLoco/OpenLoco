@@ -38,8 +38,9 @@ namespace OpenLoco::World::WaveManager
     // 0x0046956E
     void createWave(SurfaceElement& surface, const World::Pos2& pos)
     {
-        const auto waveIndex = getWaveIndex(pos);
-        if (!rawWaves()[getWaveIndex(pos)].empty())
+        const auto waveIndex = getWaveIndex(World::toTileSpace(pos));
+        auto wave = rawWaves()[waveIndex];
+        if (!wave.empty())
         {
             return;
         }
@@ -69,8 +70,8 @@ namespace OpenLoco::World::WaveManager
                 return;
         }
 
-        rawWaves()[waveIndex].loc = pos;
-        rawWaves()[waveIndex].frame = 0;
+        wave.loc = pos;
+        wave.frame = 0;
         surface.setFlag6(true);
 
         ViewportManager::invalidate(pos, surface.waterHeight(), surface.waterHeight(), ZoomLevel::full);

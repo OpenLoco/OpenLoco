@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
             }
 
             auto tileHeight = World::TileManager::getHeight(pos);
-            TileManager::removeAllWallsOnTile(pos, tileHeight.landHeight / 4);
+            TileManager::removeAllWallsOnTile(World::toTileSpace(pos), tileHeight.landHeight / 4);
         }
 
         World::QuarterTile qt(0xF, 0);
@@ -98,11 +98,11 @@ namespace OpenLoco::GameCommands
         _F00140 = args.pointB.y << 16 | args.pointA.y;
         _F00144 = flags;
 
-        World::TilePosRangeView tileLoop{ { args.pointA }, { args.pointB } };
+        World::TilePosRangeView tileLoop{ World::toTileSpace(args.pointA), World::toTileSpace(args.pointB) };
         uint32_t totalCost = 0;
         for (const auto& tilePos : tileLoop)
         {
-            uint32_t tileRes = clearTile(tilePos, flags);
+            uint32_t tileRes = clearTile(World::toWorldSpace(tilePos), flags);
             if (tileRes == GameCommands::FAILURE)
             {
                 return GameCommands::FAILURE;

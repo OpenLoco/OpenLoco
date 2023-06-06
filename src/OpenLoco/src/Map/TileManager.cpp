@@ -1175,8 +1175,9 @@ namespace OpenLoco::World::TileManager
         // (Its just the heighest point - the lowest point)
         int16_t lowest = std::numeric_limits<int16_t>::max();
         int16_t highest = 0;
+        const auto initialTilePos = World::toTileSpace(loc);
         World::TilePosRangeView range{
-            loc - World::TilePos2{ 5, 5 }, loc + World::TilePos2{ 5, 5 }
+            initialTilePos - World::TilePos2{ 5, 5 }, initialTilePos + World::TilePos2{ 5, 5 }
         };
         for (auto& tilePos : range)
         {
@@ -1206,7 +1207,7 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
@@ -1232,7 +1233,7 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingDesertTiles = 0;
 
@@ -1267,7 +1268,7 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::TilePos2(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
@@ -1368,9 +1369,9 @@ namespace OpenLoco::World::TileManager
         }
         pos.y -= World::kMapHeight;
 
-        const TilePos2 tilePos(pos);
+        const auto tilePos = World::toTileSpace(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
-        _startUpdateLocation = TilePos2(shift & 0xF, shift >> 4);
+        _startUpdateLocation = World::toWorldSpace(TilePos2(shift & 0xF, shift >> 4));
         if (shift == 0)
         {
             IndustryManager::updateProducedCargoStats();
@@ -1452,7 +1453,7 @@ namespace OpenLoco::World::TileManager
         }
         // Remove in reverse order to prevent pointer invalidation
         std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](World::TileElement* el) {
-            Ui::ViewportManager::invalidate(pos, el->baseHeight(), el->baseHeight() + 72, ZoomLevel::half);
+            Ui::ViewportManager::invalidate(World::toWorldSpace(pos), el->baseHeight(), el->baseHeight() + 72, ZoomLevel::half);
             removeElement(*el);
         });
     }

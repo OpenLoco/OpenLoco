@@ -111,7 +111,7 @@ namespace OpenLoco::TownManager
                 {
                     population = producedQuantity;
                 }
-                auto* town = updateTownInfo(tilePos, population, producedQuantity, 0, 1);
+                auto* town = updateTownInfo(World::toWorldSpace(tilePos), population, producedQuantity, 0, 1);
                 if (town != nullptr)
                 {
                     if (buildingObj->var_AC != 0xFF)

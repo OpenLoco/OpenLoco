@@ -264,7 +264,7 @@ namespace OpenLoco
         assert(searchSize == 9);
         for (auto& offset : kSquareSearchRange<9>)
         {
-            const World::Pos2 pos = offset + centre;
+            const World::Pos2 pos = World::toWorldSpace(offset) + centre;
             if (World::validCoords(pos))
             {
                 if (!predicate(pos))

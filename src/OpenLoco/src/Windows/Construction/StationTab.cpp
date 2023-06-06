@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         size_t i = 0;
         for (const auto& pos : range)
         {
-            _mapSelectedTiles[i++] = pos;
+            _mapSelectedTiles[i++] = World::toWorldSpace(pos);
         }
 
         _mapSelectedTiles[i].x = -1;
@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
-        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::toTileSpace(*_1135F7C), World::toTileSpace(*_1135F90)));
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
@@ -327,7 +327,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
-        setMapSelectedTilesFromRange(World::TilePosRangeView(World::TilePos2(*_1135F7C), World::TilePos2(*_1135F90)));
+        setMapSelectedTilesFromRange(World::TilePosRangeView(World::toTileSpace(*_1135F7C), World::toTileSpace(*_1135F90)));
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
@@ -544,10 +544,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         placementArgs.rotation = _constructionRotation;
 
         const auto airportObj = ObjectManager::get<AirportObject>(placementArgs.type);
-        const auto [minPos, maxPos] = airportObj->getAirportExtents(*pos, placementArgs.rotation);
+        const auto [minPos, maxPos] = airportObj->getAirportExtents(World::toTileSpace(*pos), placementArgs.rotation);
 
-        _1135F7C = minPos;
-        _1135F90 = maxPos;
+        _1135F7C = World::toWorldSpace(minPos);
+        _1135F90 = World::toWorldSpace(maxPos);
         auto maxBaseZ = 0;
         for (auto checkPos = minPos; checkPos.y <= maxPos.y; ++checkPos.y)
         {
@@ -607,7 +607,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         uint8_t directionOfIndustry = 0xFF;
         uint8_t waterHeight = 0;
         _1135F7C = *pos;
-        _1135F90 = *pos + TilePos2(1, 1);
+        _1135F90 = World::toWorldSpace(World::toTileSpace(*pos) + TilePos2(1, 1));
 
         constexpr std::array<std::array<TilePos2, 2>, 4> searchArea = {
             std::array<TilePos2, 2>{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             for (const auto& offset : searchArea[side])
             {
-                const auto searchPos = offset + *pos;
+                const auto searchPos = offset + World::toTileSpace(*pos);
                 if (!validCoords(searchPos))
                 {
                     continue;

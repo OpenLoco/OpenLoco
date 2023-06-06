@@ -23,9 +23,20 @@ namespace OpenLoco::World
         return coord & (kTileSize - 1);
     }
 
-    using Pos2 = Math::Vector::TVector2<coord_t, 1>;
-    using Pos3 = Math::Vector::TVector3<coord_t, 1>;
-    using TilePos2 = Math::Vector::TVector2<tile_coord_t, kTileSize>;
+    struct WorldSpaceTag
+    {
+    };
+    using Pos2 = Math::Vector::TVector2<coord_t, WorldSpaceTag>;
+    static_assert(std::is_trivially_copyable_v<Pos2>, "Pos2 must be POD");
+
+    using Pos3 = Math::Vector::TVector3<coord_t, WorldSpaceTag>;
+    static_assert(std::is_trivially_copyable_v<Pos3>, "Pos2 must be POD");
+
+    struct TileSpaceTag
+    {
+    };
+    using TilePos2 = Math::Vector::TVector2<tile_coord_t, TileSpaceTag>;
+    static_assert(std::is_trivially_copyable_v<TilePos2>, "Pos2 must be POD");
 
     // Until interop is removed this is a requirement.
     static_assert(sizeof(Pos2) == 4);
@@ -61,5 +72,20 @@ namespace OpenLoco::World
     constexpr bool drawableCoords(const Pos2& coords)
     {
         return drawableCoord(coords.x) && drawableCoord(coords.y);
+    }
+
+    constexpr TilePos2 toTileSpace(const Pos2& coords)
+    {
+        return TilePos2{ static_cast<tile_coord_t>(coords.x / kTileSize), static_cast<tile_coord_t>(coords.y / kTileSize) };
+    }
+
+    constexpr TilePos2 toTileSpace(const Pos3& coords)
+    {
+        return TilePos2{ static_cast<tile_coord_t>(coords.x / kTileSize), static_cast<tile_coord_t>(coords.y / kTileSize) };
+    }
+
+    constexpr Pos2 toWorldSpace(const TilePos2& coords)
+    {
+        return Pos2{ static_cast<coord_t>(coords.x * kTileSize), static_cast<coord_t>(coords.y * kTileSize) };
     }
 }

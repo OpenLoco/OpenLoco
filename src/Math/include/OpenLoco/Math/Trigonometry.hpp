@@ -13,7 +13,7 @@ namespace OpenLoco::Math::Trigonometry
     // ROUND(COS((32/64+(L1/64))*(2*PI()))*256,0), ROUND(SIN(((L1/64))*(2*PI())) * 256,0)
     // Where L1 represents an incrementing column 0 - 63
     // Note: Must be at least 32bit to ensure all users do not overflow
-    static constexpr Vector::TVector2<int32_t, 1> kYawToDirectionVector[64] = {
+    static constexpr Vector::TVector2<int32_t> kYawToDirectionVector[64] = {
         { -256, 0 },
         { -255, 25 },
         { -251, 50 },
