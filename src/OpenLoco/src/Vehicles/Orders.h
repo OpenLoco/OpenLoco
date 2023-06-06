@@ -160,6 +160,4 @@ namespace OpenLoco::Vehicles
     };
 
 #pragma pack(pop)
-
-    uint8_t swapAdjacentOrders(Order& a, Order& b);
 }

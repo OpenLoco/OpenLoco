@@ -130,4 +130,5 @@ namespace OpenLoco::Vehicles::OrderManager
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
     void generateNumDisplayFrames(Vehicles::VehicleHead* head);
     const std::vector<NumDisplayFrame>& displayFrames();
+    uint8_t swapAdjacentOrders(Order& a, Order& b);
 }
