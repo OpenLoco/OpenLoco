@@ -29,30 +29,30 @@ namespace OpenLoco
 
     uint64_t MemoryStream::getPosition() const noexcept
     {
-        return _index;
+        return _offset;
     }
 
     void MemoryStream::setPosition(uint64_t position)
     {
-        _index = std::min(_data.size(), static_cast<size_t>(position));
+        _offset = std::min(_data.size(), static_cast<size_t>(position));
     }
 
     void MemoryStream::read(void* buffer, size_t len)
     {
-        auto maxReadLen = _data.size() - _index;
+        auto maxReadLen = _data.size() - _offset;
         if (len > maxReadLen)
             throw std::runtime_error("Failed to read data");
-        std::memcpy(buffer, _data.data() + _index, len);
-        _index += len;
+        std::memcpy(buffer, _data.data() + _offset, len);
+        _offset += len;
     }
 
     void MemoryStream::write(const void* buffer, size_t len)
     {
         if (len != 0)
         {
-            ensureLength(_index + len);
-            std::memcpy(_data.data() + _index, buffer, len);
-            _index += len;
+            ensureLength(_offset + len);
+            std::memcpy(_data.data() + _offset, buffer, len);
+            _offset += len;
         }
     }
 }

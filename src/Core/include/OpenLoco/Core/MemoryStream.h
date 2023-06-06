@@ -10,7 +10,7 @@ namespace OpenLoco
     class MemoryStream final : public Stream
     {
         std::vector<std::byte> _data{};
-        size_t _index{};
+        size_t _offset{};
 
     public:
         void ensureLength(size_t len);
