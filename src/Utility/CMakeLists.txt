@@ -19,6 +19,3 @@ loco_add_library(Utility STATIC
         ${private_files}
     TEST_FILES
         ${test_files})
-
-target_link_libraries(Utility PUBLIC
-    nonstd::span-lite)
