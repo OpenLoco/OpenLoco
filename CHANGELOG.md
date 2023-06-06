@@ -4,6 +4,7 @@
 - Feature: [#418] Use hardware-backed SDL canvas when available for better performance.
 - Feature: [#1963] Make news sound effects optional through message settings window.
 - Fix: [#1966] Unable to select terrain type for terrain painting.
+- Fix: [#1968] Crash when game tries to plant trees during natural growth.
 
 23.05 (2023-05-27)
 ------------------------------------------------------------------------
