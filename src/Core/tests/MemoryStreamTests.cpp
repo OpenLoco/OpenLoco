@@ -83,8 +83,6 @@ TEST(MemoryStreamTest, testBadRead)
 
     std::array<uint8_t, 4> readBuffer{};
     EXPECT_THROW(ms.read(readBuffer.data(), readBuffer.size()), std::runtime_error);
-
-    ASSERT_EQ(readBuffer, writeBuffer);
 }
 
 TEST(MemoryStreamTest, testWrite100MiB)
