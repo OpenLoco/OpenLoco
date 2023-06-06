@@ -2038,6 +2038,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/VehiclePickupWater.cpp
     void vehiclePickupWater(registers& regs);
 
+    // Defined in GameCommands/VehicleRefit.cpp
+    void vehicleRefit(registers& regs);
+
     // Defined in GameCommands/VehicleReverse.cpp
     void vehicleReverse(registers& regs);
 

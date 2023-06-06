@@ -933,4 +933,7 @@ namespace OpenLoco::Vehicles
             func(*tail);
         }
     };
+
+    // TODO: move this?
+    uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
 }

@@ -5,6 +5,7 @@
 #include "Graphics/Gfx.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
+#include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Random.h"
@@ -1326,5 +1327,14 @@ namespace OpenLoco::Vehicles
             var_47 = spriteIndex;
             invalidateSprite();
         }
+    }
+
+    // 0x0042F6B6
+    // TODO: move this?
+    uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId)
+    {
+        auto cargoObjA = ObjectManager::get<CargoObject>(primaryCargoId);
+        auto cargoObjB = ObjectManager::get<CargoObject>(newCargoId);
+        return (cargoObjA->unitSize * maxPrimaryCargo) / cargoObjB->unitSize;
     }
 }

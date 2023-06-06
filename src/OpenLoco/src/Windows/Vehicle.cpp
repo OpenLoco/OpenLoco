@@ -2009,14 +2009,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 0x0042F6B6
-        static uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId)
-        {
-            auto cargoObjA = ObjectManager::get<CargoObject>(primaryCargoId);
-            auto cargoObjB = ObjectManager::get<CargoObject>(newCargoId);
-            return (cargoObjA->unitSize * maxPrimaryCargo) / cargoObjB->unitSize;
-        }
-
         static void onRefitButton(Window* const self, const WidgetIndex_t wi)
         {
             auto* head = Common::getVehicle(self);
@@ -2047,7 +2039,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 auto args = FormatArguments();
                 args.push<string_id>(cargoObject->unitNamePlural);
-                args.push<uint32_t>(getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, cargoId));
+                args.push<uint32_t>(Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, cargoId));
                 args.push<uint16_t>(cargoId);
                 Dropdown::add(index, format, args);
                 index++;
