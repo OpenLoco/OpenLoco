@@ -104,6 +104,7 @@ namespace OpenLoco::Vehicles::OrderManager
         std::memmove(dest, src, size);
     }
 
+    // 0x00470795
     void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
         for (auto head : VehicleManager::VehicleList())
