@@ -1,6 +1,7 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands.h"
+#include "Speed.hpp"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -9,6 +10,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::GameCommands
 {
@@ -143,8 +145,10 @@ namespace OpenLoco::GameCommands
             {
                 if (flags & Flags::apply)
                 {
+                    // 0x004B69C7
                     train.head->sub_4AD778();
                     train.head->status = Vehicles::Status::stopped;
+                    train.veh2->currentSpeed = 0_mph;
 
                     GameCommands::VehicleSellArgs sargs{};
                     sargs.car = args.head;
