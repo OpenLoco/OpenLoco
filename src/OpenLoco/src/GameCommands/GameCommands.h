@@ -1844,14 +1844,28 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline uint32_t do_74(EntityId head, int16_t speed)
+    struct VehicleSpeedControlArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = enumValue(head);
-        regs.dx = speed;
-        return doCommand(GameCommand::vehicleSpeedControl, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleSpeedControl;
+
+        VehicleSpeedControlArgs() = default;
+        explicit VehicleSpeedControlArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.cx))
+            , speed(regs.dx)
+        {
+        }
+
+        EntityId head;
+        int16_t speed;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.cx = enumValue(head);
+            regs.dx = speed;
+            return regs;
+        }
+    };
 
     inline uint32_t do_75(EntityId head, uint32_t orderOffset)
     {
@@ -2026,6 +2040,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehicleReverse.cpp
     void vehicleReverse(registers& regs);
+
+    // Defined in GameCommands/VehicleSpeedControl.cpp
+    void vehicleSpeedControl(registers& regs);
 
     // Defined in GameCommands/UpdateOwnerStatus.cpp
     void updateOwnerStatus(registers& regs);

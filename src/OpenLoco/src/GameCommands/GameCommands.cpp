@@ -124,7 +124,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::sendChatMessage,              nullptr,                   0x0046F976, false },
         { GameCommand::multiplayerSave,              nullptr,                   0x004A0ACD, false },
         { GameCommand::updateOwnerStatus,            updateOwnerStatus,         0x004383CA, false },
-        { GameCommand::vehicleSpeedControl,          nullptr,                   0x004BAB63, true  },
+        { GameCommand::vehicleSpeedControl,          vehicleSpeedControl,       0x004BAB63, true  },
         { GameCommand::vehicleOrderUp,               nullptr,                   0x00470CD2, false },
         { GameCommand::vehicleOrderDown,             nullptr,                   0x00470E06, false },
         { GameCommand::vehicleApplyShuntCheat,       vehicleShuntCheat,         0x004BAC53, false },

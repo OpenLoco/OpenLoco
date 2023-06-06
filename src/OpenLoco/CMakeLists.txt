@@ -101,6 +101,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehiclePickupWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleReverse.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleSell.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleSpeedControl.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameState.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Colour.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Gfx.cpp"
