@@ -107,7 +107,8 @@ TEST(FileStreamTest, testPosition)
     ASSERT_EQ(streamOut.getPosition(), 0);
 
     streamOut.setPosition(100);
-    ASSERT_EQ(streamOut.getPosition(), 100);
+    // Sparse files are not supported, the position is always clamped.
+    ASSERT_EQ(streamOut.getPosition(), 4);
 
     streamOut.close();
     std::filesystem::remove(filePath);
