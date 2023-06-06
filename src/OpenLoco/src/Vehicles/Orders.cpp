@@ -1,8 +1,8 @@
 #include "Orders.h"
-#include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
+#include "Vehicles/OrderManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -10,18 +10,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<Order[Limits::kMaxOrders], 0x00987C5C> _orderTable;
-
-    // 0x004FE070
-    static constexpr uint8_t kOrderSizes[] = {
-        sizeof(OrderEnd),
-        sizeof(OrderStopAt),
-        sizeof(OrderRouteThrough),
-        sizeof(OrderRouteWaypoint),
-        sizeof(OrderUnloadAll),
-        sizeof(OrderWaitFor),
-    };
-
     // 0x004FE088 TODO: Rework into class
     static constexpr OrderFlags kOrderFlags[] = {
         OrderFlags::none,
@@ -108,7 +96,7 @@ namespace OpenLoco::Vehicles
 
     uint32_t Order::getOffset() const
     {
-        return this - _orderTable;
+        return this - OrderManager::orders();
     }
 
     uint64_t Order::getRaw() const
@@ -155,60 +143,5 @@ namespace OpenLoco::Vehicles
                 break;
         }
         return ret;
-    }
-
-    // 0x004B49F8
-    void OrderStation::setFormatArguments(FormatArguments& args) const
-    {
-        auto station = StationManager::get(getStation());
-        args.push(station->name);
-        args.push(station->town);
-    }
-
-    // 0x004B4A31
-    void OrderCargo::setFormatArguments(FormatArguments& args) const
-    {
-        auto cargoObj = ObjectManager::get<CargoObject>(getCargo());
-        args.push(cargoObj->name);
-        args.push(cargoObj->unitInlineSprite);
-    }
-
-    Order* OrderRingView::atIndex(const uint8_t index) const
-    {
-        auto size = std::distance(begin(), end());
-        if (index >= size)
-        {
-            return nullptr;
-        }
-        auto chosenOrder = std::next(begin(), index);
-        return &(*chosenOrder);
-    }
-
-    OrderRingView::Iterator& OrderRingView::Iterator::operator++()
-    {
-        auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + kOrderSizes[static_cast<uint8_t>(_currentOrder->getType())];
-        _currentOrder = reinterpret_cast<Order*>(newOrders);
-        if (_currentOrder->getType() == OrderType::End)
-        {
-            _currentOrder = _beginOrderTable;
-            _hasLooped = true;
-        }
-        return *this;
-    }
-
-    OrderRingView::Iterator OrderRingView::begin() const
-    {
-        return Iterator(&_orderTable[_beginTableOffset], &_orderTable[_beginTableOffset + _currentOrderOffset]);
-    }
-
-    OrderRingView::Iterator OrderRingView::end() const
-    {
-        return begin();
-    }
-
-    // 0x004702F7
-    void zeroOrderTable()
-    {
-        call(0x004702F7);
     }
 }
