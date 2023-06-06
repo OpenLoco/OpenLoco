@@ -1,7 +1,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
-#include "Vehicles/Orders.h"
+#include "Vehicles/OrderManager.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
         auto oldOffsetDiff = currentOrder.getOffset() - prevOrder->getOffset();
 
         // Actually swap the two orders
-        const auto newOffsetDiff = Vehicles::swapAdjacentOrders(*prevOrder, currentOrder);
+        const auto newOffsetDiff = Vehicles::OrderManager::swapAdjacentOrders(*prevOrder, currentOrder);
 
         // Compensate if we swapped the current order around
         if (prevOrderIsActive)
