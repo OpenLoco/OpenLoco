@@ -144,43 +144,4 @@ namespace OpenLoco::Vehicles
         }
         return ret;
     }
-
-    uint16_t reverseVehicleOrderTable(uint16_t tableOffset, uint16_t orderOfInterest)
-    {
-        // Retrieve list of raw orders
-        std::vector<uint64_t> rawOrders{};
-        Vehicles::OrderRingView orders(tableOffset);
-        for (auto& order : orders)
-        {
-            rawOrders.push_back(order.getRaw());
-        }
-
-        // Nothing to do? Bail early
-        if (rawOrders.size() == 0)
-        {
-            return orderOfInterest;
-        }
-
-        // Keep track of the type of the order of interest
-        auto ooiType = _orderTable[tableOffset + orderOfInterest].getType();
-
-        // Figure out where the order table starts in memory
-        auto firstOrder = reinterpret_cast<uint8_t*>(orders.atIndex(0));
-        auto dest = firstOrder;
-
-        // Write reversed list over existing list
-        for (auto it = rawOrders.rbegin(); it != rawOrders.rend(); ++it)
-        {
-            auto rawOrder = *it;
-            auto orderType = rawOrder & 0x7;
-            auto orderLength = kOrderSizes[orderType];
-            std::memcpy(dest, &rawOrder, orderLength);
-            dest += orderLength;
-        }
-
-        // Figure out the new position of the order of interest
-        auto newOOIOffset = dest - orderOfInterest - kOrderSizes[enumValue(ooiType)];
-
-        return newOOIOffset - firstOrder;
-    }
 }

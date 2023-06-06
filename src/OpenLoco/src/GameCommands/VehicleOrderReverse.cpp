@@ -1,7 +1,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
-#include "Vehicles/Orders.h"
+#include "Vehicles/OrderManager.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::sub_4B93A5(enumValue(head->id));
 
-        head->currentOrder = Vehicles::reverseVehicleOrderTable(head->orderTableOffset, head->currentOrder);
+        head->currentOrder = Vehicles::OrderManager::reverseVehicleOrderTable(head->orderTableOffset, head->currentOrder);
 
         return 0;
     }
