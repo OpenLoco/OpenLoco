@@ -113,6 +113,49 @@ TEST(FileStreamTest, testPosition)
     std::filesystem::remove(filePath);
 }
 
+TEST(FileStreamTest, testModeWriteRead)
+{
+    const auto testDataSize = 4;
+    const auto testData = generateData(testDataSize);
+    const auto filePath = getTempFilePath();
+
+    FileStream streamOut(filePath, StreamMode::write);
+    ASSERT_EQ(streamOut.getLength(), 0);
+    ASSERT_EQ(streamOut.getPosition(), 0);
+
+    streamOut.write(testData.data(), testData.size());
+
+    ASSERT_EQ(streamOut.getLength(), testData.size());
+    ASSERT_EQ(streamOut.getPosition(), testData.size());
+
+    streamOut.setPosition(0);
+    ASSERT_EQ(streamOut.getPosition(), 0);
+
+    DataBuffer readBuffer(testDataSize);
+    EXPECT_THROW(streamOut.read(readBuffer.data(), readBuffer.size()), std::runtime_error);
+
+    streamOut.close();
+    std::filesystem::remove(filePath);
+}
+
+TEST(FileStreamTest, testModeReadWrite)
+{
+    const auto testDataSize = 4;
+    const auto testData = generateData(testDataSize);
+    const auto filePath = getTempFilePath();
+
+    generateFile(filePath, testData);
+
+    FileStream streamIn(filePath, StreamMode::read);
+    ASSERT_EQ(streamIn.getLength(), testData.size());
+    ASSERT_EQ(streamIn.getPosition(), 0);
+
+    EXPECT_THROW(streamIn.write(testData.data(), testData.size()), std::runtime_error);
+
+    streamIn.close();
+    std::filesystem::remove(filePath);
+}
+
 TEST(FileStreamTest, testWrite100MiB)
 {
     const auto filePath = getTempFilePath();
