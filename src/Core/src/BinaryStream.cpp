@@ -10,19 +10,19 @@ namespace OpenLoco
     {
     }
 
-    uint64_t BinaryStream::getLength() const noexcept
+    size_t BinaryStream::getLength() const noexcept
     {
         return _len;
     }
 
-    uint64_t BinaryStream::getPosition() const noexcept
+    size_t BinaryStream::getPosition() const noexcept
     {
         return _index;
     }
 
-    void BinaryStream::setPosition(uint64_t position)
+    void BinaryStream::setPosition(size_t position)
     {
-        _index = std::min(_len, static_cast<size_t>(position));
+        _index = std::min(_len, position);
     }
 
     void BinaryStream::read(void* buffer, size_t len)

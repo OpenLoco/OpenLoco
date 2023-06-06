@@ -43,16 +43,10 @@ namespace OpenLoco
     public:
         virtual ~Stream() = default;
 
-        virtual uint64_t getLength() const noexcept = 0;
-        virtual uint64_t getPosition() const noexcept = 0;
-        virtual void setPosition(uint64_t) = 0;
+        virtual size_t getLength() const noexcept = 0;
+        virtual size_t getPosition() const noexcept = 0;
+        virtual void setPosition(size_t) = 0;
         virtual void read(void*, size_t) = 0;
         virtual void write(const void*, size_t) = 0;
-
-        void seek(int64_t pos)
-        {
-            setPosition(getPosition() + pos);
-        }
     };
-
 }

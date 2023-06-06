@@ -178,7 +178,7 @@ bool SawyerStreamReader::validateChecksum()
     {
         // Read checksum
         uint32_t checksum;
-        _stream->seek(fileLength - 4);
+        _stream->setPosition(fileLength - 4);
         _stream->read(&checksum, sizeof(checksum));
 
         // Calculate checksum

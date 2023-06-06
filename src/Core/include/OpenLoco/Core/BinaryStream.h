@@ -18,11 +18,11 @@ namespace OpenLoco
     public:
         BinaryStream(const void* data, size_t len);
 
-        uint64_t getLength() const noexcept override;
+        size_t getLength() const noexcept override;
 
-        uint64_t getPosition() const noexcept override;
+        size_t getPosition() const noexcept override;
 
-        void setPosition(uint64_t position) override;
+        void setPosition(size_t position) override;
 
         void read(void* buffer, size_t len) override;
 

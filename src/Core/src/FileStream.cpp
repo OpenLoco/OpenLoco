@@ -70,17 +70,17 @@ namespace OpenLoco
         return _mode;
     }
 
-    uint64_t FileStream::getLength() const noexcept
+    size_t FileStream::getLength() const noexcept
     {
-        return static_cast<uint64_t>(_length);
+        return _length;
     }
 
-    uint64_t FileStream::getPosition() const noexcept
+    size_t FileStream::getPosition() const noexcept
     {
-        return static_cast<uint64_t>(_offset);
+        return _offset;
     }
 
-    void FileStream::setPosition(uint64_t position)
+    void FileStream::setPosition(size_t position)
     {
         if (_mode == StreamMode::none)
         {

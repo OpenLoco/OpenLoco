@@ -22,19 +22,19 @@ namespace OpenLoco
         return _data.data();
     }
 
-    uint64_t MemoryStream::getLength() const noexcept
+    size_t MemoryStream::getLength() const noexcept
     {
         return _data.size();
     }
 
-    uint64_t MemoryStream::getPosition() const noexcept
+    size_t MemoryStream::getPosition() const noexcept
     {
         return _offset;
     }
 
-    void MemoryStream::setPosition(uint64_t position)
+    void MemoryStream::setPosition(size_t position)
     {
-        _offset = std::min(_data.size(), static_cast<size_t>(position));
+        _offset = std::min(_data.size(), position);
     }
 
     void MemoryStream::read(void* buffer, size_t len)
