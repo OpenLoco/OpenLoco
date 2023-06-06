@@ -106,7 +106,10 @@ namespace OpenLoco::GameCommands
         // Copy express/local
         if ((existingTrain.veh1->var_48 & Vehicles::Flags48::expressMode) != Vehicles::Flags48::none)
         {
-            do12(newHead->id, 2);
+            GameCommands::VehicleChangeRunningModeArgs args{};
+            args.head = newHead->id;
+            args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::toggleLocalExpress;
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         // Copy cargo refit status (only applies to boats and airplanes)

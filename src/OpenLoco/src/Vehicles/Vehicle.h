@@ -360,6 +360,7 @@ namespace OpenLoco::Vehicles
         void liftUpVehicle();
         void sub_4B7CC3();
         currency32_t calculateRunningCost() const;
+        void sub_4AD778();
         void sub_4AD93A();
         void sub_4ADB47(bool unk);
         uint32_t getCarCount() const;
@@ -420,7 +421,6 @@ namespace OpenLoco::Vehicles
         std::tuple<StationId, World::Pos2, World::Pos3> sub_427FC9();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
-        void sub_4AD778();
         void sub_4AA625();
         std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();

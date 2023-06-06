@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
         changeLoan = 9,
         vehicleRename = 10,
         changeStationName = 11,
-        vehicleLocalExpress = 12,
+        vehicleChangeRunningMode = 12,
         createSignal = 13,
         removeSignal = 14,
         createTrainStation = 15,
@@ -480,14 +480,36 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline void do12(EntityId head, uint8_t bh)
+    struct VehicleChangeRunningModeArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.bh = bh;
-        regs.dx = enumValue(head);
-        doCommand(GameCommand::vehicleLocalExpress, regs);
-    }
+        enum class Mode : uint8_t
+        {
+            stopVehicle,
+            startVehicle,
+            toggleLocalExpress,
+            driveManually,
+        };
+
+        static constexpr auto command = GameCommand::vehicleChangeRunningMode;
+
+        VehicleChangeRunningModeArgs() = default;
+        explicit VehicleChangeRunningModeArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.dx))
+            , mode(static_cast<Mode>(regs.bh))
+        {
+        }
+
+        EntityId head;
+        Mode mode;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.dx = enumValue(head);
+            regs.bh = enumValue(mode);
+            return regs;
+        }
+    };
 
     struct SignalPlacementArgs
     {
@@ -2053,6 +2075,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/TogglePause.cpp
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
+
+    // Defined in GameCommands/VehicleChangeRunningMode.cpp
+    void vehicleChangeRunningMode(registers& regs);
 
     // Defined in GameCommands/VehicleOrderDown.cpp
     void vehicleOrderDown(registers& regs);
