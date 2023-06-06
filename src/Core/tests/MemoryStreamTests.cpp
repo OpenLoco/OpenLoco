@@ -68,6 +68,25 @@ TEST(MemoryStreamTest, testPosition)
     ASSERT_EQ(ms.getPosition(), ms.getLength());
 }
 
+TEST(MemoryStreamTest, testBadRead)
+{
+    MemoryStream ms;
+
+    const std::array<uint8_t, 4> writeBuffer{ 0x01, 0x02, 0x03, 0x04 };
+    ms.write(writeBuffer.data(), writeBuffer.size());
+
+    ASSERT_EQ(ms.getLength(), sizeof(writeBuffer));
+    ASSERT_EQ(ms.getPosition(), sizeof(writeBuffer));
+
+    ms.setPosition(2);
+    ASSERT_EQ(ms.getPosition(), 2);
+
+    std::array<uint8_t, 4> readBuffer{};
+    EXPECT_THROW(ms.read(readBuffer.data(), readBuffer.size()), std::runtime_error);
+
+    ASSERT_EQ(readBuffer, writeBuffer);
+}
+
 TEST(MemoryStreamTest, testWrite100MiB)
 {
     MemoryStream ms;
