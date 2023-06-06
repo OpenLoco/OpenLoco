@@ -47,8 +47,6 @@ namespace OpenLoco::Vehicles
         uint64_t getRaw() const;
         bool hasFlags(const OrderFlags flag) const;
 
-        uint8_t getSize() const;
-
         template<typename T>
         constexpr bool is() const { return getType() == T::kType; }
 

@@ -144,9 +144,4 @@ namespace OpenLoco::Vehicles
         }
         return ret;
     }
-
-    uint8_t Order::getSize() const
-    {
-        return kOrderSizes[enumValue(this->getType())];
-    }
 }

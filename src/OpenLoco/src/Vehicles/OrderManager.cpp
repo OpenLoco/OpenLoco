@@ -115,6 +115,25 @@ namespace OpenLoco::Vehicles::OrderManager
         }
     }
 
+    void deleteOrder(VehicleHead* head, uint16_t orderOffset)
+    {
+        // Find out what type the selected order is
+        OrderRingView orders(head->orderTableOffset, orderOffset);
+        auto& selectedOrder = *(orders.begin());
+
+        // Bookkeeping: change order table sizes
+        // TODO: this should probably be done after shifting orders? Following original sub for now
+        auto removeOrderSize = kOrderSizes[enumValue(selectedOrder.getType())];
+        head->sizeOfOrderTable -= removeOrderSize;
+        numOrders() -= removeOrderSize;
+
+        // Move orders in the order table, effectively removing the order
+        shiftOrdersDown(head->orderTableOffset + orderOffset, removeOrderSize);
+
+        // Compensate other vehicles to use new table offsets
+        reoffsetVehicleOrderTables(head->orderTableOffset + orderOffset, -removeOrderSize);
+    }
+
     // 0x004702F7
     void zeroOrderTable()
     {

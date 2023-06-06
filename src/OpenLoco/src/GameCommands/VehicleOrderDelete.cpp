@@ -27,21 +27,7 @@ namespace OpenLoco::GameCommands
 
         Ui::WindowManager::sub_4B93A5(enumValue(head->id));
 
-        // Find out what type the selected order is
-        Vehicles::OrderRingView orders(head->orderTableOffset, args.orderOffset);
-        auto& selectedOrder = *(orders.begin());
-
-        // Bookkeeping: change order table sizes
-        // TODO: this should probably be done after shifting orders? Following original sub for now
-        auto removeOrderSize = selectedOrder.getSize();
-        head->sizeOfOrderTable -= removeOrderSize;
-        Vehicles::OrderManager::numOrders() -= removeOrderSize;
-
-        // Move orders in the order table, effectively removing the order
-        Vehicles::OrderManager::shiftOrdersDown(head->orderTableOffset + args.orderOffset, removeOrderSize);
-
-        // Compensate other vehicles to use new table offsets
-        Vehicles::OrderManager::reoffsetVehicleOrderTables(head->orderTableOffset + args.orderOffset, -removeOrderSize);
+        Vehicles::OrderManager::deleteOrder(head, args.orderOffset);
 
         return 0;
     }

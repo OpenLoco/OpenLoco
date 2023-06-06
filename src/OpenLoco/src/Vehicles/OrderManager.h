@@ -126,6 +126,8 @@ namespace OpenLoco::Vehicles::OrderManager
     void shiftOrdersUp(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy);
     void shiftOrdersDown(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy);
     void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable);
+    void deleteOrder(VehicleHead* head, uint16_t orderOffset);
+
     void zeroOrderTable();
     void freeOrders(VehicleHead* const head);
 
