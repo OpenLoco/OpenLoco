@@ -88,14 +88,28 @@ namespace OpenLoco::GameCommands
     // 0x004B6AAF
     static uint32_t toggleManualDriving(const Vehicles::Vehicle& train, const uint8_t flags)
     {
+        // Can we change driving modes?
+        if (!sub_4B6B0C(train.head))
+        {
+            return FAILURE;
+        }
+
         if (!(flags & Flags::apply))
         {
             return 0;
         }
 
         train.head->vehicleFlags ^= VehicleFlags::manualControl;
-        train.head->vehicleFlags |= VehicleFlags::commandStop;
         train.head->var_6E = -40;
+
+        if ((train.head->vehicleFlags & VehicleFlags::manualControl) != VehicleFlags::none)
+        {
+            train.head->vehicleFlags |= VehicleFlags::commandStop;
+        }
+        else
+        {
+            train.head->vehicleFlags &= ~VehicleFlags::commandStop;
+        }
 
         if (train.head->status == Vehicles::Status::approaching)
         {
@@ -129,6 +143,9 @@ namespace OpenLoco::GameCommands
             {
                 if (flags & Flags::apply)
                 {
+                    train.head->sub_4AD778();
+                    train.head->status = Vehicles::Status::stopped;
+
                     GameCommands::VehicleSellArgs sargs{};
                     sargs.car = args.head;
                     GameCommands::doCommand(sargs, GameCommands::Flags::apply);
