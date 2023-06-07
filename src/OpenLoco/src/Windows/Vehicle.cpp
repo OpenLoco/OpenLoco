@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x00500554
         static WindowEventList events;
-        constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | (1 << widx::orderReverse) | Common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = (1ULL << widx::routeList) | (1ULL << widx::orderForceUnload) | (1ULL << widx::orderWait) | (1ULL << widx::orderSkip) | (1ULL << widx::orderDelete) | (1ULL << widx::orderUp) | (1ULL << widx::orderDown) | (1ULL << widx::orderReverse) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
@@ -2490,7 +2490,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::setErrorTitle(StringIds::empty);
             auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
-            Vehicles::OrderManager::generateNumDisplayFrames(head); // Note: order changed, check if this matters.
+            Vehicles::OrderManager::generateNumDisplayFrames(head);
             return result != GameCommands::FAILURE;
         }
 

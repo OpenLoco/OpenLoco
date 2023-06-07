@@ -282,6 +282,9 @@ namespace OpenLoco::Vehicles::OrderManager
 
     uint16_t reverseVehicleOrderTable(uint16_t tableOffset, uint16_t orderOfInterest)
     {
+        // Currently the use of std:: algorithms is not feasible due to variable order lengths
+        // TODO: simplify this after the changing the data structure for the order table
+
         // Retrieve list of raw orders
         std::vector<uint64_t> rawOrders{};
         Vehicles::OrderRingView orderTable(tableOffset);
@@ -321,6 +324,9 @@ namespace OpenLoco::Vehicles::OrderManager
 
     uint8_t swapAdjacentOrders(Order& a, Order& b)
     {
+        // Currently the use of std:: algorithms is not feasible due to variable order lengths
+        // TODO: simplify this after the changing the data structure for the order table
+
         const auto rawOrderA = a.getRaw();
         const auto rawOrderB = b.getRaw();
         const auto lengthOrderA = kOrderSizes[enumValue(a.getType())];
