@@ -110,17 +110,15 @@ namespace OpenLoco::Vehicles::OrderManager
         }
     }
 
+    // 0x004705C0
     void deleteOrder(VehicleHead* head, uint16_t orderOffset)
     {
         // Find out what type the selected order is
         OrderRingView orders(head->orderTableOffset, orderOffset);
         auto& selectedOrder = *(orders.begin());
 
-        // Bookkeeping: change order table size
-        // TODO: this should probably be done after shifting orders? Following original sub for now
         auto removeOrderSize = kOrderSizes[enumValue(selectedOrder.getType())];
         head->sizeOfOrderTable -= removeOrderSize;
-        numOrders() -= removeOrderSize;
 
         // Are we removing an order that appears before the current order? Move back a bit
         if (head->currentOrder > orderOffset)
@@ -136,6 +134,9 @@ namespace OpenLoco::Vehicles::OrderManager
 
         // Move orders in the order table, effectively removing the order
         shiftOrdersDown(head->orderTableOffset + orderOffset, removeOrderSize);
+
+        // Bookkeeping: change order table size
+        numOrders() -= removeOrderSize;
 
         // Compensate other vehicles to use new table offsets
         reoffsetVehicleOrderTables(head->orderTableOffset + orderOffset, -removeOrderSize);
