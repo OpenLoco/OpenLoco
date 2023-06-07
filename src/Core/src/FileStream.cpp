@@ -15,7 +15,11 @@ namespace OpenLoco
 
     FileStream::FileStream(const std::filesystem::path& path, StreamMode mode)
     {
-        open(path, mode);
+        if (!open(path, mode))
+        {
+            // TODO: Make this work like fstream which is not throwing for failing to open the file.
+            throw std::runtime_error("Failed to open '" + path.u8string() + "' for writing");
+        }
     }
 
     bool FileStream::open(const std::filesystem::path& path, StreamMode mode)
