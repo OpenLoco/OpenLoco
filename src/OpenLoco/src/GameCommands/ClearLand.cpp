@@ -62,6 +62,97 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    // 0x00469E07
+    static TileManager::ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    {
+        switch (el.type())
+        {
+            case ElementType::tree:
+            {
+                auto* elTree = el.as<TreeElement>();
+                if (elTree == nullptr)
+                {
+                    return TileManager::ClearFuncResult::noCollision;
+                }
+                auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+                cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
+
+                if (flags & GameCommands::Flags::flag_6 || !(flags & GameCommands::Flags::apply))
+                {
+                    return TileManager::ClearFuncResult::noCollision;
+                }
+
+                World::TileManager::setRemoveElementPointerChecker(el);
+                World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
+                S5::getOptions().madeAnyChanges = 1;
+                if (World::TileManager::wasRemoveOnLastElement())
+                {
+                    return TileManager::ClearFuncResult::allCollisionsRemoved;
+                }
+                return TileManager::ClearFuncResult::collisionRemoved;
+            }
+            case ElementType::building:
+            {
+                auto* elBuilding = el.as<BuildingElement>();
+                if (elBuilding == nullptr)
+                {
+                    return TileManager::ClearFuncResult::noCollision;
+                }
+                auto* buildingObj = elBuilding->getObject();
+                if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+                {
+                    return TileManager::ClearFuncResult::collision;
+                }
+
+                const auto buildingStart = World::Pos3{
+                    pos - World::offsets[elBuilding->multiTileIndex()], elBuilding->baseHeight()
+                };
+                if (removedBuildings.count(buildingStart) != 0)
+                {
+                    return TileManager::ClearFuncResult::noCollision;
+                }
+                removedBuildings.insert(buildingStart);
+
+                World::TileManager::setRemoveElementPointerChecker(el);
+                uint8_t removeBuildingFlags = flags;
+                if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
+                {
+                    removeBuildingFlags |= GameCommands::Flags::flag_7;
+                }
+                if (flags & GameCommands::Flags::flag_6)
+                {
+                    removeBuildingFlags &= ~(GameCommands::Flags::flag_6 | GameCommands::Flags::apply);
+                }
+                GameCommands::BuildingRemovalArgs args{};
+                args.pos = buildingStart;
+                Interop::registers regs = static_cast<Interop::registers>(args);
+                regs.bl = removeBuildingFlags;
+                removeBuilding(regs);
+                if (regs.ebx == GameCommands::FAILURE)
+                {
+                    return TileManager::ClearFuncResult::collisionErrorSet;
+                }
+                if (flags & GameCommands::Flags::apply)
+                {
+                    S5::getOptions().madeAnyChanges = 1;
+                }
+                cost += regs.ebx;
+
+                if (!(flags & GameCommands::Flags::apply) || flags & GameCommands::Flags::flag_6)
+                {
+                    return TileManager::ClearFuncResult::noCollision;
+                }
+                if (World::TileManager::wasRemoveOnLastElement())
+                {
+                    return TileManager::ClearFuncResult::allCollisionsRemoved;
+                }
+                return TileManager::ClearFuncResult::collisionRemoved;
+            }
+            default:
+                return TileManager::ClearFuncResult::noCollision;
+        }
+    };
+
     // 0x00469D76
     static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
     {
@@ -86,93 +177,9 @@ namespace OpenLoco::GameCommands
         World::QuarterTile qt(0xF, 0);
 
         currency32_t cost{};
-        auto clearFunc = [flags, pos, &cost, &removedBuildings](World::TileElement& el) -> World::TileManager::ClearFuncResult {
-            switch (el.type())
-            {
-                case ElementType::tree:
-                {
-                    auto* elTree = el.as<TreeElement>();
-                    if (elTree == nullptr)
-                    {
-                        return TileManager::ClearFuncResult::noCollision;
-                    }
-                    auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
-                    cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
-
-                    if (flags & GameCommands::Flags::flag_6 || !(flags & GameCommands::Flags::apply))
-                    {
-                        return TileManager::ClearFuncResult::noCollision;
-                    }
-
-                    World::TileManager::setRemoveElementPointerChecker(el);
-                    World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
-                    S5::getOptions().madeAnyChanges = 1;
-                    if (World::TileManager::wasRemoveOnLastElement())
-                    {
-                        return TileManager::ClearFuncResult::allCollisionsRemoved;
-                    }
-                    return TileManager::ClearFuncResult::collisionRemoved;
-                }
-                case ElementType::building:
-                {
-                    auto* elBuilding = el.as<BuildingElement>();
-                    if (elBuilding == nullptr)
-                    {
-                        return TileManager::ClearFuncResult::noCollision;
-                    }
-                    auto* buildingObj = elBuilding->getObject();
-                    if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
-                    {
-                        return TileManager::ClearFuncResult::collision;
-                    }
-
-                    const auto buildingStart = World::Pos3{
-                        pos - World::offsets[elBuilding->multiTileIndex()], elBuilding->baseHeight()
-                    };
-                    if (removedBuildings.count(buildingStart) != 0)
-                    {
-                        return TileManager::ClearFuncResult::noCollision;
-                    }
-                    removedBuildings.insert(buildingStart);
-
-                    World::TileManager::setRemoveElementPointerChecker(el);
-                    uint8_t removeBuildingFlags = flags;
-                    if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
-                    {
-                        removeBuildingFlags |= GameCommands::Flags::flag_7;
-                    }
-                    if (flags & GameCommands::Flags::flag_6)
-                    {
-                        removeBuildingFlags &= ~(GameCommands::Flags::flag_6 | GameCommands::Flags::apply);
-                    }
-                    GameCommands::BuildingRemovalArgs args{};
-                    args.pos = buildingStart;
-                    Interop::registers regs = static_cast<Interop::registers>(args);
-                    regs.bl = removeBuildingFlags;
-                    removeBuilding(regs);
-                    if (regs.ebx == GameCommands::FAILURE)
-                    {
-                        return TileManager::ClearFuncResult::collisionErrorSet;
-                    }
-                    if (flags & GameCommands::Flags::apply)
-                    {
-                        S5::getOptions().madeAnyChanges = 1;
-                    }
-                    cost += regs.ebx;
-
-                    if (!(flags & GameCommands::Flags::apply) || flags & GameCommands::Flags::flag_6)
-                    {
-                        return TileManager::ClearFuncResult::noCollision;
-                    }
-                    if (World::TileManager::wasRemoveOnLastElement())
-                    {
-                        return TileManager::ClearFuncResult::allCollisionsRemoved;
-                    }
-                    return TileManager::ClearFuncResult::collisionRemoved;
-                }
-                default:
-                    return TileManager::ClearFuncResult::noCollision;
-            }
+        // Bind our local vars to the tile clear function
+        auto clearFunc = [pos, &removedBuildings, flags, &cost](World::TileElement& el) {
+            return tileClearFunction(el, pos, removedBuildings, flags, cost);
         };
 
         auto tileHeight = World::TileManager::getHeight(pos);
@@ -191,6 +198,10 @@ namespace OpenLoco::GameCommands
 
         World::TilePosRangeView tileLoop{ World::toTileSpace(args.pointA), World::toTileSpace(args.pointB) };
         uint32_t totalCost = 0;
+
+        // We keep track of removed buildings for each tile visited
+        // this prevents accidentally double counting their removal
+        // cost if they span across multiple tiles.
         std::set<World::Pos3, LessThanPos3> removedBuildings{};
 
         for (const auto& tilePos : tileLoop)
