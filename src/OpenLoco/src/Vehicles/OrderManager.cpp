@@ -90,18 +90,12 @@ namespace OpenLoco::Vehicles::OrderManager
 
     void shiftOrdersUp(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
     {
-        auto* dest = orders() + offsetToShiftTowards;
-        auto* src = dest + sizeToShiftBy;
-        auto size = S5::Limits::kMaxOrders - offsetToShiftTowards - sizeToShiftBy;
-        std::memmove(dest, src, size);
+        std::rotate(&orders()[offsetToShiftTowards], &orders()[offsetToShiftTowards + sizeToShiftBy], &orders()[numOrders()]);
     }
 
     void shiftOrdersDown(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
     {
-        auto* src = orders() + offsetToShiftFrom;
-        auto* dest = src - sizeToShiftBy;
-        auto size = S5::Limits::kMaxOrders - offsetToShiftFrom - sizeToShiftBy;
-        std::memmove(dest, src, size);
+        std::rotate(&orders()[offsetToShiftFrom - sizeToShiftBy], &orders()[offsetToShiftFrom], &orders()[numOrders()]);
     }
 
     // 0x00470795
@@ -163,8 +157,8 @@ namespace OpenLoco::Vehicles::OrderManager
 
         reoffsetVehicleOrderTables(offset, -size);
 
-        // Fold orders table left to remove empty orders
-        std::rotate(&orders()[offset], &orders()[offset + size], &orders()[numOrders()]);
+        // Shift orders table left to remove empty orders
+        shiftOrdersUp(offset, size);
 
         numOrders() -= head->sizeOfOrderTable;
     }
