@@ -139,7 +139,7 @@ namespace OpenLoco::Vehicles::OrderManager
         numOrders() -= removeOrderSize;
 
         // Compensate other vehicles to use new table offsets
-        reoffsetVehicleOrderTables(head->orderTableOffset + orderOffset, -removeOrderSize);
+        reoffsetVehicleOrderTables(head->orderTableOffset + orderOffset + 1, -removeOrderSize);
     }
 
     // 0x004702F7
