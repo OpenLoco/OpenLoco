@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static constexpr Ui::Size kMinWindowSize = { 265, 178 };
+        static constexpr Ui::Size kMinWindowSize = { 265, 202 };
         static constexpr Ui::Size kMaxWindowSize = { 600, 440 };
 
         enum widx
@@ -193,12 +193,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             orderSkip,
             orderDelete,
             orderUp,
-            orderDown
+            orderDown,
+            orderReverse
         };
 
         // 0x00500554
         static WindowEventList events;
-        constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = (1ULL << widx::routeList) | (1ULL << widx::orderForceUnload) | (1ULL << widx::orderWait) | (1ULL << widx::orderSkip) | (1ULL << widx::orderDelete) | (1ULL << widx::orderUp) | (1ULL << widx::orderDown) | (1ULL << widx::orderReverse) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
@@ -214,6 +215,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
             makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
             makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            makeWidget({ 240, 164 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::reverseOrderTableTooltip),
             widgetEnd(),
         };
     }
@@ -2480,6 +2482,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return result != GameCommands::FAILURE;
         }
 
+        static bool orderReverseCommand(Vehicles::VehicleHead* const head)
+        {
+            GameCommands::VehicleOrderReverseArgs args{};
+            args.head = head->id;
+
+            GameCommands::setErrorTitle(StringIds::empty);
+            auto result = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            Vehicles::OrderManager::generateNumDisplayFrames(head);
+            return result != GameCommands::FAILURE;
+        }
+
         // 0x004B4BC1 / 0x004B4C78 based on
         static bool onOrderMove(Vehicles::VehicleHead* const head, const int16_t orderId, bool(orderMoveFunc)(Vehicles::VehicleHead*, uint32_t))
         {
@@ -2600,6 +2614,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         }
                     }
                     break;
+                case widx::orderReverse:
+                {
+                    orderReverseCommand(head);
+                    break;
+                }
             }
         }
 
@@ -3058,18 +3077,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self.widgets[widx::routeList].right = self.width - 26;
             self.widgets[widx::routeList].bottom = self.height - 14;
+
             self.widgets[widx::orderForceUnload].right = self.width - 2;
             self.widgets[widx::orderWait].right = self.width - 2;
             self.widgets[widx::orderSkip].right = self.width - 2;
             self.widgets[widx::orderDelete].right = self.width - 2;
             self.widgets[widx::orderUp].right = self.width - 2;
             self.widgets[widx::orderDown].right = self.width - 2;
+            self.widgets[widx::orderReverse].right = self.width - 2;
+
             self.widgets[widx::orderForceUnload].left = self.width - 25;
             self.widgets[widx::orderWait].left = self.width - 25;
             self.widgets[widx::orderSkip].left = self.width - 25;
             self.widgets[widx::orderDelete].left = self.width - 25;
             self.widgets[widx::orderUp].left = self.width - 25;
             self.widgets[widx::orderDown].left = self.width - 25;
+            self.widgets[widx::orderReverse].left = self.width - 25;
 
             self.disabledWidgets |= (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete);
             if (head->sizeOfOrderTable != 1)
@@ -3096,6 +3119,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.widgets[widx::orderDelete].type = type;
             self.widgets[widx::orderUp].type = type;
             self.widgets[widx::orderDown].type = type;
+            self.widgets[widx::orderReverse].type = type;
+
             if (type == WidgetType::none)
             {
                 self.widgets[widx::routeList].right += 22;

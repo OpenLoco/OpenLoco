@@ -1851,6 +1851,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tableHeaderObjectChecksum = 2279;
     constexpr string_id playNewsSoundEffects = 2280;
     constexpr string_id playNewsSoundEffectsTip = 2281;
+    constexpr string_id reverseOrderTableTooltip = 2282;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;

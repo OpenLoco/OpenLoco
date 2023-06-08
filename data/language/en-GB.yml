@@ -2334,3 +2334,4 @@ strings:
   2279: "{COLOUR BLACK}Checksum"
   2280: "Play sound effects for new messages"
   2281: "{SMALLFONT}{COLOUR BLACK}When enabled, new messages will be accompanied by a sound effect of an appropriately cheering crowd."
+  2282: "{SMALLFONT}{COLOUR BLACK}Reverse the route order table"
