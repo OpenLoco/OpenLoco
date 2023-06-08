@@ -127,8 +127,11 @@ namespace OpenLoco::GameCommands
                 args.pos = buildingStart;
                 Interop::registers regs = static_cast<Interop::registers>(args);
                 regs.bl = removeBuildingFlags;
+                // We should probably call doCommand here but then it gets messy with the costs
+                // look into changing this in the future.
                 removeBuilding(regs);
-                if (regs.ebx == GameCommands::FAILURE)
+                const auto buildingCost = static_cast<currency32_t>(regs.ebx);
+                if (static_cast<uint32_t>(buildingCost) == GameCommands::FAILURE)
                 {
                     return TileManager::ClearFuncResult::collisionErrorSet;
                 }
@@ -136,7 +139,7 @@ namespace OpenLoco::GameCommands
                 {
                     S5::getOptions().madeAnyChanges = 1;
                 }
-                cost += regs.ebx;
+                cost += buildingCost;
 
                 if (!(flags & GameCommands::Flags::apply) || flags & GameCommands::Flags::flag_6)
                 {
