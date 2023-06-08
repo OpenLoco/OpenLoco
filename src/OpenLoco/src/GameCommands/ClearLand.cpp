@@ -56,9 +56,7 @@ namespace OpenLoco::GameCommands
     {
         bool operator()(World::Pos3 const& lhs, World::Pos3 const& rhs) const
         {
-            uint64_t lhs64 = lhs.x | (static_cast<uint64_t>(static_cast<uint16_t>(lhs.y)) << 16) | (static_cast<uint64_t>(static_cast<uint16_t>(lhs.z)) << 32);
-            uint64_t rhs64 = rhs.x | (static_cast<uint64_t>(static_cast<uint16_t>(rhs.y)) << 16) | (static_cast<uint64_t>(static_cast<uint16_t>(rhs.z)) << 32);
-            return lhs64 < rhs64;
+            return std::tie(lhs.x, lhs.y, lhs.z) < std::tie(rhs.x, rhs.y, rhs.z);
         }
     };
 
