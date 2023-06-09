@@ -4,13 +4,31 @@
 
 namespace OpenLoco
 {
-    static size_t getFileLength(std::fstream& fs)
+    static size_t getFileLength(FILE* fs)
     {
-        auto backup = fs.tellg();
-        fs.seekg(0, std::ios_base::end);
-        auto len = fs.tellg();
-        fs.seekg(backup);
+        auto pos = ftell(fs);
+        fseek(fs, 0, SEEK_END);
+        auto len = ftell(fs);
+        fseek(fs, pos, SEEK_SET);
         return len;
+    }
+
+    static size_t readFile(void* buffer, size_t len, FILE* fs)
+    {
+#ifdef _MSC_VER
+        return _fread_nolock(buffer, 1, len, fs);
+#else
+        return std::fread(buffer, 1, len, fs);
+#endif
+    }
+
+    static size_t writeFile(const void* buffer, size_t len, FILE* fs)
+    {
+#ifdef _MSC_VER
+        return _fwrite_nolock(buffer, 1, len, fs);
+#else
+        return std::fwrite(buffer, 1, len, fs);
+#endif
     }
 
     FileStream::FileStream(const std::filesystem::path& path, StreamMode mode)
@@ -20,6 +38,11 @@ namespace OpenLoco
             // TODO: Make this work like fstream which is not throwing for failing to open the file.
             throw std::runtime_error("Failed to open '" + path.u8string() + "' for writing");
         }
+    }
+
+    FileStream::~FileStream()
+    {
+        close();
     }
 
     bool FileStream::open(const std::filesystem::path& path, StreamMode mode)
@@ -33,14 +56,22 @@ namespace OpenLoco
 
         if (mode == StreamMode::write)
         {
-            _fstream.open(path, std::ios::out | std::ios::binary);
+#ifdef _WIN32
+            _wfopen_s(&_file, path.wstring().c_str(), L"wb");
+#else
+            _file = fopen(path.u8string().c_str(), "wb");
+#endif
         }
         if (mode == StreamMode::read)
         {
-            _fstream.open(path, std::ios::in | std::ios::binary);
+#ifdef _WIN32
+            _wfopen_s(&_file, path.wstring().c_str(), L"rb");
+#else
+            _file = fopen(path.u8string().c_str(), "rb");
+#endif
         }
 
-        if (!_fstream.is_open())
+        if (_file == nullptr)
         {
             return false;
         }
@@ -48,7 +79,7 @@ namespace OpenLoco
         // Get the length if we are reading an existing file.
         if (mode == StreamMode::read)
         {
-            _length = getFileLength(_fstream);
+            _length = getFileLength(_file);
         }
 
         _offset = 0;
@@ -58,15 +89,21 @@ namespace OpenLoco
 
     bool FileStream::isOpen() const noexcept
     {
-        return _fstream.is_open();
+        return _file != nullptr;
     }
 
     void FileStream::close()
     {
+        if (_file == nullptr)
+        {
+            return;
+        }
         _mode = StreamMode::none;
         _length = 0;
         _offset = 0;
-        _fstream.close();
+
+        fclose(_file);
+        _file = nullptr;
     }
 
     StreamMode FileStream::getMode() const noexcept
@@ -91,10 +128,7 @@ namespace OpenLoco
             throw std::runtime_error("Invalid operation");
         }
         position = std::min(_length, static_cast<size_t>(position));
-        if (_mode == StreamMode::read)
-            _fstream.seekg(position);
-        if (_mode == StreamMode::write)
-            _fstream.seekp(position);
+        std::fseek(_file, position, SEEK_SET);
         _offset = position;
     }
 
@@ -105,11 +139,13 @@ namespace OpenLoco
             throw std::runtime_error("Invalid operation");
         }
 
-        _fstream.read(static_cast<char*>(buffer), len);
-        if (_fstream.fail())
+        const auto bytesRead = readFile(buffer, len, _file);
+        if (bytesRead != len)
+        {
             throw std::runtime_error("Failed to read data");
+        }
 
-        _offset += len;
+        _offset += bytesRead;
     }
 
     void FileStream::write(const void* buffer, size_t len)
@@ -123,11 +159,13 @@ namespace OpenLoco
             return;
         }
 
-        _fstream.write(static_cast<const char*>(buffer), len);
-        if (_fstream.fail())
+        const auto bytesWriten = writeFile(buffer, len, _file);
+        if (bytesWriten != len)
+        {
             throw std::runtime_error("Failed to write data");
+        }
 
-        _offset += len;
+        _offset += bytesWriten;
         _length = std::max(_length, _offset);
     }
 }
