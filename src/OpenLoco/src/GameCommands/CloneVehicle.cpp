@@ -100,7 +100,12 @@ namespace OpenLoco::GameCommands
         {
             // Do not cache this as it will be a different value every iteration
             auto chosenOffset = newHead->sizeOfOrderTable - 1;
-            do_35(newHead->id, order->getRaw(), chosenOffset);
+
+            VehicleOrderInsertArgs args{};
+            args.head = newHead->id;
+            args.orderOffset = chosenOffset;
+            args.rawOrder = order->getRaw();
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         // Copy express/local
