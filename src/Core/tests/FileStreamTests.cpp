@@ -178,3 +178,28 @@ TEST(FileStreamTest, testWrite100MiB)
     streamOut.close();
     std::filesystem::remove(filePath);
 }
+
+TEST(FileStreamTest, testRead100MiB)
+{
+    const auto k100MiB = (1024U * 1024U) * 100U;
+    const auto testData = generateData(k100MiB);
+    const auto filePath = getTempFilePath();
+
+    generateFile(filePath, testData);
+
+    FileStream streamIn(filePath, StreamMode::read);
+    ASSERT_EQ(streamIn.getLength(), k100MiB);
+    ASSERT_EQ(streamIn.getPosition(), 0);
+
+    DataBuffer readBuffer(k100MiB);
+    for (size_t i = 0; i < k100MiB; i++)
+    {
+        streamIn.read(readBuffer.data() + i, 1);
+    }
+
+    ASSERT_EQ(streamIn.getPosition(), k100MiB);
+    ASSERT_EQ(testData, readBuffer);
+
+    streamIn.close();
+    std::filesystem::remove(filePath);
+}
