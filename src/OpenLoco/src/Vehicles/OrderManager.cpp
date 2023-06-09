@@ -88,12 +88,12 @@ namespace OpenLoco::Vehicles::OrderManager
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& numOrders() { return getGameState().numOrders; }
 
-    void shiftOrdersUp(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
+    void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
     {
         std::rotate(&orders()[offsetToShiftTowards], &orders()[offsetToShiftTowards + sizeToShiftBy], &orders()[numOrders()]);
     }
 
-    void shiftOrdersDown(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
+    void shiftOrdersRight(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
     {
         std::rotate(&orders()[offsetToShiftFrom], &orders()[numOrders()], &orders()[numOrders() + sizeToShiftBy]);
     }
@@ -133,7 +133,7 @@ namespace OpenLoco::Vehicles::OrderManager
         }
 
         // Move orders in the order table, effectively removing the order
-        shiftOrdersUp(head->orderTableOffset + orderOffset, removeOrderSize);
+        shiftOrdersLeft(head->orderTableOffset + orderOffset, removeOrderSize);
 
         // Bookkeeping: change order table size
         numOrders() -= removeOrderSize;
@@ -159,7 +159,7 @@ namespace OpenLoco::Vehicles::OrderManager
         reoffsetVehicleOrderTables(offset, -size);
 
         // Shift orders table left to remove empty orders
-        shiftOrdersUp(offset, size);
+        shiftOrdersLeft(offset, size);
 
         numOrders() -= head->sizeOfOrderTable;
     }
