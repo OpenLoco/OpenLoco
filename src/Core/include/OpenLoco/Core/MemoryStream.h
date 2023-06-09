@@ -9,11 +9,17 @@ namespace OpenLoco
 {
     class MemoryStream final : public Stream
     {
-        std::vector<std::byte> _data{};
+        std::byte* _data{};
         size_t _offset{};
+        size_t _length{};
+        size_t _capacity{};
 
     public:
-        void ensureLength(size_t len);
+        ~MemoryStream();
+
+        void reserve(size_t len);
+
+        void clear();
 
         const void* data() const;
 
