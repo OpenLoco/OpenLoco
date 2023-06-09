@@ -95,7 +95,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
     void shiftOrdersDown(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
     {
-        std::rotate(&orders()[offsetToShiftFrom - sizeToShiftBy], &orders()[offsetToShiftFrom], &orders()[numOrders()]);
+        std::rotate(&orders()[offsetToShiftFrom], &orders()[numOrders()], &orders()[numOrders() + sizeToShiftBy]);
     }
 
     // 0x00470795
@@ -133,7 +133,7 @@ namespace OpenLoco::Vehicles::OrderManager
         }
 
         // Move orders in the order table, effectively removing the order
-        shiftOrdersDown(head->orderTableOffset + orderOffset, removeOrderSize);
+        shiftOrdersUp(head->orderTableOffset + orderOffset, removeOrderSize);
 
         // Bookkeeping: change order table size
         numOrders() -= removeOrderSize;
