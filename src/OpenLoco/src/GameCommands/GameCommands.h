@@ -2145,6 +2145,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/VehicleOrderDown.cpp
     void vehicleOrderDown(registers& regs);
 
+    // Defined in GameCommands/VehicleOrderInsert.cpp
+    void vehicleOrderInsert(registers& regs);
+
     // Defined in GameCommands/VehicleOrderReverse.cpp
     void vehicleOrderReverse(registers& regs);
 

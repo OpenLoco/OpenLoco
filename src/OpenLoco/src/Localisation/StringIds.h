@@ -904,7 +904,7 @@ namespace OpenLoco::StringIds
     constexpr string_id station_cargo_en_route_start = 1212;
     constexpr string_id station_cargo_en_route_end = 1213;
     constexpr string_id no_space_for_more_vehicle_orders = 1214;
-
+    constexpr string_id tooManyOrdersForThisVehicle = 1215;
     constexpr string_id local_mode_button = 1216;
     constexpr string_id express_mode_button = 1217;
     constexpr string_id no_route_defined = 1218;
@@ -1167,6 +1167,9 @@ namespace OpenLoco::StringIds
     constexpr string_id forbid_ships = 1523;
     constexpr string_id title_airport = 1524;
     constexpr string_id title_ship_port = 1525;
+    constexpr string_id orderTypeNotValidForAircraft = 1526;
+    constexpr string_id orderTypeNotValidForShips = 1527;
+    constexpr string_id stationOwnedByAnotherCompany = 1528;
 
     constexpr string_id refit_vehicle_tip = 1532;
     constexpr string_id cant_refit_vehicle = 1533;
