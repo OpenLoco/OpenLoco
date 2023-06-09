@@ -3,6 +3,7 @@
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "S5/SawyerStream.h"
+#include <OpenLoco/Core/MemoryStream.h>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <iostream>
 #include <optional>

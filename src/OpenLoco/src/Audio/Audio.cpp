@@ -20,8 +20,8 @@
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
+#include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Stream.hpp>
 #include <array>
 #include <cassert>
 #include <fstream>
