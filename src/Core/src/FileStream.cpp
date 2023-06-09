@@ -1,16 +1,26 @@
 #include "FileStream.h"
 #include <algorithm>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace OpenLoco
 {
-    static size_t getFileLength(FILE* fs)
+    static size_t fileTell(FILE* fs)
     {
-        auto pos = ftell(fs);
-        fseek(fs, 0, SEEK_END);
-        auto len = ftell(fs);
-        fseek(fs, pos, SEEK_SET);
-        return len;
+#ifdef _MSC_VER
+        return _ftelli64_nolock(fs);
+#else
+        return ftello(fs);
+#endif
+    }
+
+    static void fileSeek(FILE* fs, size_t offset, int origin)
+    {
+#ifdef _MSC_VER
+        _fseeki64_nolock(fs, offset, origin);
+#else
+        fseeko(fs, offset, origin);
+#endif
     }
 
     static size_t readFile(void* buffer, size_t len, FILE* fs)
@@ -29,6 +39,15 @@ namespace OpenLoco
 #else
         return std::fwrite(buffer, 1, len, fs);
 #endif
+    }
+
+    static size_t getFileLength(FILE* fs)
+    {
+        const auto current = fileTell(fs);
+        fileSeek(fs, 0, SEEK_END);
+        const auto length = fileTell(fs);
+        fileSeek(fs, current, SEEK_SET);
+        return length;
     }
 
     FileStream::FileStream(const std::filesystem::path& path, StreamMode mode)
