@@ -7,6 +7,7 @@
 #include "Localisation/Formatting.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
+#include "S5/Limits.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
@@ -87,7 +88,18 @@ namespace OpenLoco::Vehicles::OrderManager
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
     uint32_t& numOrders() { return getGameState().numOrders; }
 
-    void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
+    void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
+    {
+        std::rotate(&orders()[offsetToShiftTowards], &orders()[offsetToShiftTowards + sizeToShiftBy], &orders()[numOrders()]);
+    }
+
+    void shiftOrdersRight(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
+    {
+        std::rotate(&orders()[offsetToShiftFrom], &orders()[numOrders()], &orders()[numOrders() + sizeToShiftBy]);
+    }
+
+    // 0x00470795
+    void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
         for (auto head : VehicleManager::VehicleList())
         {
@@ -96,6 +108,38 @@ namespace OpenLoco::Vehicles::OrderManager
                 head->orderTableOffset += sizeOfRemovedOrderTable;
             }
         }
+    }
+
+    // 0x004705C0
+    void deleteOrder(VehicleHead* head, uint16_t orderOffset)
+    {
+        // Find out what type the selected order is
+        OrderRingView orders(head->orderTableOffset, orderOffset);
+        auto& selectedOrder = *(orders.begin());
+
+        auto removeOrderSize = kOrderSizes[enumValue(selectedOrder.getType())];
+        head->sizeOfOrderTable -= removeOrderSize;
+
+        // Are we removing an order that appears before the current order? Move back a bit
+        if (head->currentOrder > orderOffset)
+        {
+            head->currentOrder -= removeOrderSize;
+        }
+
+        // Ensure we don't move beyond the order table size
+        if (head->currentOrder + 1 >= head->sizeOfOrderTable)
+        {
+            head->currentOrder = 0;
+        }
+
+        // Move orders in the order table, effectively removing the order
+        shiftOrdersLeft(head->orderTableOffset + orderOffset, removeOrderSize);
+
+        // Bookkeeping: change order table size
+        numOrders() -= removeOrderSize;
+
+        // Compensate other vehicles to use new table offsets
+        reoffsetVehicleOrderTables(head->orderTableOffset + orderOffset + 1, -removeOrderSize);
     }
 
     // 0x004702F7
@@ -112,10 +156,10 @@ namespace OpenLoco::Vehicles::OrderManager
         const auto offset = head->orderTableOffset;
         const auto size = head->sizeOfOrderTable;
 
-        sub_470795(offset, -size);
+        reoffsetVehicleOrderTables(offset, -size);
 
-        // Fold orders table left to remove empty orders
-        std::rotate(&orders()[offset], &orders()[offset + size], &orders()[numOrders()]);
+        // Shift orders table left to remove empty orders
+        shiftOrdersLeft(offset, size);
 
         numOrders() -= head->sizeOfOrderTable;
     }

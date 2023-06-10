@@ -96,6 +96,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/TogglePause.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/UpdateOwnerStatus.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleChangeRunningMode.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleOrderDelete.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleOrderDown.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleOrderReverse.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleOrderSkip.cpp"

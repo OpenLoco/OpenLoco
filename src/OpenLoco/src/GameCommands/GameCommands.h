@@ -1118,6 +1118,29 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicleOrderInsert, regs);
     }
 
+    struct VehicleOrderDeleteArgs
+    {
+        static constexpr auto command = GameCommand::vehicleOrderDelete;
+
+        VehicleOrderDeleteArgs() = default;
+        explicit VehicleOrderDeleteArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.edx = orderOffset;
+            return regs;
+        }
+    };
+
     inline bool do_36(EntityId head, uint32_t orderOffset)
     {
         registers regs;
@@ -2099,6 +2122,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehicleChangeRunningMode.cpp
     void vehicleChangeRunningMode(registers& regs);
+
+    // Defined in GameCommands/VehicleOrderDelete.cpp
+    void vehicleOrderDelete(registers& regs);
 
     // Defined in GameCommands/VehicleOrderDown.cpp
     void vehicleOrderDown(registers& regs);
