@@ -1,3 +1,33 @@
+# OpenLoco version 23.06 (???)
+
+## Hardware backed window scaling (#1965)
+
+OpenLoco has had integer window for a few years now. A frequent request was to allow scaling at half or other fractional scales, however. This was already possible if players cleverly manipulated their config files, but the resulting scaling didn't look very nice -- which is why the game UI did not expose it. Making it look nice, however, meant reimplementing the SDL canvas backend to use GPU hardware display for our software renderer. @ZehMatt was up for the task, and made it work very nicely indeed. Check it out!
+
+## Regressions from new clear command (#1967, #1980)
+
+Our last release saw us implementing the 'swiss army knife' of construction functions. Our testing didn't reveal any problems, but shortly after the release, it became clear that this was too good to be true. In fact, there were two. Players could no longer change land textures -- thankfully a minor problem -- but certain 'clear' functions would crash the game entirely. Some debugging, both problems have been eliminated. Hopefully, v23.06 will prove to be more stable!
+
+## Clear tile function (#1959)
+
+Having implemented the 'swiss army knife' of construction functions, @duncanspumpkin implemented the bulldozer tool's clear tile function. Many game commands use instructions like this, so it is great to have a good, working example for implementing the rest.
+
+## Make the news sound optional (#1963)
+
+Locomotion's sound effects have a lot of charm to it, including the sounds associated with the monthly news messages that come in on occassion. Admittedly, though, after hours of "testing" the game the 'oooh's and 'aaah's can get on ones nerves. We've finally introduced an option to disable these sound effects entirely. The option can be found in the news options tab in the messages window.
+
+## Vehicle route order command reimplementation (#1961, #1962, #1977, #1981)
+
+The game commands dealing with the vehicle route order table have all been reimplemented. This means inserting, deleting, and moving up/down of vehicle orders now happens entirely in C++. Reimplementing these game commands is all working towards a unified interface with multiplayer games in mind.
+
+## Vehicle speed control and refit command reimplementation (#1954, #1958)
+
+Similarly, we have reimplemented the game commands dealing with vehicle speed control (manual driving) and refitting of ships and aircraft (cargo). Nice!
+
+## Stream class refactors (#1979, #1982)
+
+Many parts of OpenLoco use custom stream classes for interacting with binary game data. The initial implementations, a few years old at this point, sufficed for what they were doing, but were not very optimised. @ZehMatt set off to split them into separate unit files, streamlined their interfaces, added tests, and has started work on optimising them. The initial benchmarks look very promising. To be continued!
+
 # OpenLoco version 23.05 (2023-05-27)
 
 ## Construct With Clear (#1899)
