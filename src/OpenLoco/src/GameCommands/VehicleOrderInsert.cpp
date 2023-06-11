@@ -41,14 +41,16 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // Waypoint orders can't be used by ships or aircraft
+        // Certain orders can't be used by ships or aircraft
         if (order->is<OrderRouteThrough>() || order->is<OrderRouteWaypoint>())
         {
-            if (head->mode == TransportMode::water)
+            // Ships can have route waypoints, but not route through orders.
+            if (head->mode == TransportMode::water && order->is<OrderRouteThrough>())
             {
                 setErrorText(StringIds::orderTypeNotValidForShips);
                 return FAILURE;
             }
+            // Aircraft can't have either order
             else if (head->mode == TransportMode::air)
             {
                 setErrorText(StringIds::orderTypeNotValidForAircraft);
