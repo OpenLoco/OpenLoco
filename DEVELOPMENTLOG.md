@@ -24,6 +24,10 @@ The game commands dealing with the vehicle route order table have all been reimp
 
 Similarly, we have reimplemented the game commands dealing with vehicle speed control (manual driving) and refitting of ships and aircraft (cargo). Nice!
 
+## Allow reversing a vehicle's route order table (#1973)
+
+Sometimes your complicated traffic network could do with a vehicle going in the exact opposite direction from how you originally planned it to. No longer do you need to carefully mark each waypoint again: now you can reverse a vehicle's order table with one click. Simply press the yellow arrow button at the bottom of the route tab. Of course, this works for cloned vehicles as well.
+
 ## Stream class refactors (#1979, #1982)
 
 Many parts of OpenLoco use custom stream classes for interacting with binary game data. The initial implementations, a few years old at this point, sufficed for what they were doing, but were not very optimised. @ZehMatt set off to split them into separate unit files, streamlined their interfaces, added tests, and has started work on optimising them. The initial benchmarks look very promising. To be continued!
