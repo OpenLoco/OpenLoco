@@ -23,10 +23,6 @@ namespace OpenLoco::GameCommands
         }
 
         GameCommands::setPosition(head->position);
-        if (!(flags & GameCommands::Flags::apply))
-        {
-            return 0;
-        }
 
         auto* order = reinterpret_cast<const Order*>(&args.rawOrder);
 
@@ -70,6 +66,11 @@ namespace OpenLoco::GameCommands
         {
             setErrorText(StringIds::tooManyOrdersForThisVehicle);
             return FAILURE;
+        }
+
+        if (!(flags & GameCommands::Flags::apply))
+        {
+            return 0;
         }
 
         Ui::WindowManager::sub_4B93A5(enumValue(head->id));
