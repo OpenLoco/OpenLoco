@@ -115,9 +115,12 @@ namespace OpenLoco::Vehicles::OrderManager
         return numOrders() + kOrderSizes[enumValue(order->getType())] <= Limits::kMaxOrders;
     }
 
-    bool spaceLeftInVehicleOrderTableForOrder(VehicleHead* head, const Order* order)
+    bool spaceLeftInVehicleOrderTable(VehicleHead* head)
     {
-        return head->sizeOfOrderTable + kOrderSizes[enumValue(order->getType())] < Limits::kMaxOrdersPerVehicle;
+        auto ring = head->getCurrentOrders();
+        size_t size = std::distance(ring.begin(), ring.end());
+
+        return size < Limits::kMaxOrdersPerVehicle;
     }
 
     // 0x004704AB

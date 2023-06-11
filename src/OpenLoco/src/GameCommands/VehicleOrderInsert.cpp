@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return FAILURE;
         }
-        if (!OrderManager::spaceLeftInVehicleOrderTableForOrder(head, order))
+        if (!OrderManager::spaceLeftInVehicleOrderTable(head))
         {
             setErrorText(StringIds::tooManyOrdersForThisVehicle);
             return FAILURE;

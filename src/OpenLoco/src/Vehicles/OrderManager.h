@@ -128,7 +128,7 @@ namespace OpenLoco::Vehicles::OrderManager
     void reoffsetVehicleOrderTables(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable);
 
     bool spaceLeftInGlobalOrderTableForOrder(const Order* order);
-    bool spaceLeftInVehicleOrderTableForOrder(VehicleHead* head, const Order* order);
+    bool spaceLeftInVehicleOrderTable(VehicleHead* head);
     void insertOrder(VehicleHead* head, uint16_t orderOffset, const Order* order);
 
     void deleteOrder(VehicleHead* head, uint16_t orderOffset);
