@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return FAILURE;
         }
-        else if (!OrderManager::spaceLeftInVehicleOrderTableForOrder(head, order))
+        if (!OrderManager::spaceLeftInVehicleOrderTableForOrder(head, order))
         {
             setErrorText(StringIds::tooManyOrdersForThisVehicle);
             return FAILURE;
@@ -80,8 +80,8 @@ namespace OpenLoco::GameCommands
         {
             // 0x004704AB
             auto orderTable = OrderRingView(head->orderTableOffset, args.orderOffset);
-            auto* existingOrder = (*orderTable.begin()).as<OrderStation>();
-            auto* newOrder = order->as<OrderStation>();
+            auto* existingOrder = (*orderTable.begin()).as<OrderStopAt>();
+            auto* newOrder = order->as<OrderStopAt>();
 
             if (existingOrder != nullptr && newOrder != nullptr && existingOrder->getStation() == newOrder->getStation())
             {
