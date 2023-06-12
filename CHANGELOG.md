@@ -1,4 +1,4 @@
-23.05+ (???)
+23.06 (2023-06-12)
 ------------------------------------------------------------------------
 - Feature: [#376] Allow fractional UI scaling in addition to integer scaling.
 - Feature: [#418] Use hardware-backed SDL canvas when available for better performance.
