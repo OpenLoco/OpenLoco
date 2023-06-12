@@ -128,7 +128,8 @@ namespace OpenLoco::Vehicles::OrderManager
     {
         auto insOrderLength = kOrderSizes[enumValue(order->getType())];
 
-        // Shift current order to compensate for the new order?
+        // Shift current order to compensate for the new order.
+        // For empty order tables, let current order point to the first order.
         if (head->sizeOfOrderTable > 1 && head->currentOrder >= orderOffset)
         {
             head->currentOrder += insOrderLength;

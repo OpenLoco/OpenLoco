@@ -15,7 +15,8 @@ namespace OpenLoco::S5::Limits
     constexpr size_t kMaxUserStrings = 2048;
     constexpr size_t kMaxVehicles = 1000;
     constexpr size_t kMaxRoutingsPerVehicle = 64;
-    constexpr size_t kMaxOrdersPerVehicle = 63;
+    // The number of orders appears to be the number of routings minus a null byte (OrderEnd)
+    constexpr size_t kMaxOrdersPerVehicle = kMaxRoutingsPerVehicle - 1;
     constexpr size_t kMaxOrders = 256000;
     constexpr size_t kNumEntityLists = 7;
     // There is a seperate pool of 200 entities dedicated for money
