@@ -2701,10 +2701,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     chosenOffset = chosenOrder->getOffset() - head->orderTableOffset;
                 }
             }
+
             GameCommands::setErrorTitle(StringIds::orders_cant_insert);
             auto previousSize = head->sizeOfOrderTable;
-            GameCommands::do_35(head->id, order.getRaw(), chosenOffset);
+
+            GameCommands::VehicleOrderInsertArgs args{};
+            args.head = head->id;
+            args.orderOffset = chosenOffset;
+            args.rawOrder = order.getRaw();
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
             Vehicles::OrderManager::generateNumDisplayFrames(head);
+
             if (head->sizeOfOrderTable == previousSize)
             {
                 return;

@@ -1107,16 +1107,32 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_35(EntityId head, uint64_t rawOrder, uint32_t orderOffset)
+    struct VehicleOrderInsertArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.eax = rawOrder & 0xFFFFFFFF;
-        regs.cx = rawOrder >> 32;
-        regs.di = enumValue(head);
-        regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicleOrderInsert, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleOrderInsert;
+
+        VehicleOrderInsertArgs() = default;
+        explicit VehicleOrderInsertArgs(const registers& regs)
+            : head(EntityId(regs.di))
+            , orderOffset(regs.edx)
+            , rawOrder((uint64_t(regs.cx) << 32ULL) | regs.eax)
+        {
+        }
+
+        EntityId head;
+        uint32_t orderOffset;
+        uint64_t rawOrder;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            regs.edx = orderOffset;
+            regs.eax = rawOrder & 0xFFFFFFFF;
+            regs.cx = rawOrder >> 32;
+            return regs;
+        }
+    };
 
     struct VehicleOrderDeleteArgs
     {
@@ -2128,6 +2144,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehicleOrderDown.cpp
     void vehicleOrderDown(registers& regs);
+
+    // Defined in GameCommands/VehicleOrderInsert.cpp
+    void vehicleOrderInsert(registers& regs);
 
     // Defined in GameCommands/VehicleOrderReverse.cpp
     void vehicleOrderReverse(registers& regs);

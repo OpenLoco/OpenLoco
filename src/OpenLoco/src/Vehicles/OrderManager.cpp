@@ -110,6 +110,45 @@ namespace OpenLoco::Vehicles::OrderManager
         }
     }
 
+    bool spaceLeftInGlobalOrderTableForOrder(const Order* order)
+    {
+        return numOrders() + kOrderSizes[enumValue(order->getType())] <= Limits::kMaxOrders;
+    }
+
+    bool spaceLeftInVehicleOrderTable(VehicleHead* head)
+    {
+        auto ring = head->getCurrentOrders();
+        size_t size = std::distance(ring.begin(), ring.end());
+
+        return size < Limits::kMaxOrdersPerVehicle;
+    }
+
+    // 0x004704AB
+    void insertOrder(VehicleHead* head, uint16_t orderOffset, const Order* order)
+    {
+        auto insOrderLength = kOrderSizes[enumValue(order->getType())];
+
+        // Shift current order to compensate for the new order.
+        // For empty order tables, let current order point to the first order.
+        if (head->sizeOfOrderTable > 1 && head->currentOrder >= orderOffset)
+        {
+            head->currentOrder += insOrderLength;
+        }
+
+        head->sizeOfOrderTable += insOrderLength;
+
+        // Shift existing orders to make room for the new one
+        shiftOrdersRight(head->orderTableOffset + orderOffset, insOrderLength);
+
+        // Calculate destination offset and copy data
+        auto rawOrder = order->getRaw();
+        auto dest = reinterpret_cast<uint8_t*>(orders() + head->orderTableOffset + orderOffset);
+        std::memcpy(dest, &rawOrder, insOrderLength);
+
+        // Recalculate order offsets for other vehicles
+        reoffsetVehicleOrderTables(head->orderTableOffset + 1, insOrderLength);
+    }
+
     // 0x004705C0
     void deleteOrder(VehicleHead* head, uint16_t orderOffset)
     {
