@@ -3,8 +3,10 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "SceneManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 
@@ -156,5 +158,50 @@ namespace OpenLoco::GameCommands
 
         GameCommands::setErrorText(StringIds::too_many_industries);
         return IndustryId::null;
+    }
+
+    // 0x0045436B
+    currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
+    {
+        GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
+        {
+            const auto centrePos = World::Pos2{ args.pos.x + 16, args.pos.y + 16 };
+            const auto centreHeight = World::TileManager::getHeight(centrePos);
+            GameCommands::setPosition({ args.pos.x, args.pos.y, centreHeight.landHeight });
+        }
+
+        Core::Prng prng{ args.srand0, args.srand1 };
+        const auto newIndustryId = sub_454C91(args.type, args.pos, prng);
+        if (newIndustryId == IndustryId::null)
+        {
+            return FAILURE;
+        }
+        //_industryLastPlacedId = newIndustryId;
+        auto* newIndustry = IndustryManager::get(newIndustryId);
+        auto* indObj = newIndustry->getObject();
+        if (args.buildImmediately)
+        {
+            newIndustry->under_construction = 0xFF;
+        }
+        if (flags & Flags::flag_6)
+        {
+            newIndustry->flags |= IndustryFlags::isGhost;
+        }
+        if (!isEditorMode() && getUpdatingCompanyId() != CompanyId::neutral)
+        {
+            newIndustry->flags |= IndustryFlags::flag_04;
+            newIndustry->owner = getUpdatingCompanyId();
+        }
+        // 0x0045443C
+        // Get all colours from var_C2
+
+        // Select random colour into E0C3D3
+        // 0x0045447B
+    }
+
+    void createIndustry(registers& regs)
+    {
+        IndustryPlacementArgs args(regs);
+        regs.ebx = createIndustry(args, regs.bl);
     }
 }

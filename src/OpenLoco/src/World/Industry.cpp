@@ -140,7 +140,7 @@ namespace OpenLoco
     // 0x00453275
     void Industry::update()
     {
-        if (!hasFlags(IndustryFlags::flag_01) && under_construction == 0xFF)
+        if (!hasFlags(IndustryFlags::isGhost) && under_construction == 0xFF)
         {
             // Run tile loop for 100 iterations
             for (int i = 0; i < 100; i++)
@@ -160,7 +160,7 @@ namespace OpenLoco
     // 0x004534BD
     void Industry::updateDaily()
     {
-        if (hasFlags(IndustryFlags::flag_01))
+        if (hasFlags(IndustryFlags::isGhost))
         {
             return;
         }
@@ -260,7 +260,7 @@ namespace OpenLoco
     // 0x00453868
     void Industry::updateMonthly()
     {
-        if (hasFlags(IndustryFlags::flag_01))
+        if (hasFlags(IndustryFlags::isGhost))
         {
             return;
         }

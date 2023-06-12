@@ -97,7 +97,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createBuilding,               nullptr,                   0x0042D133, true  },
         { GameCommand::removeBuilding,               removeBuilding,            0x0042D74E, true  },
         { GameCommand::renameTown,                   renameTown,                0x0049B11E, false },
-        { GameCommand::createIndustry,               nullptr,                   0x0045436B, true  },
+        { GameCommand::createIndustry,               createIndustry,            0x0045436B, true  },
         { GameCommand::removeIndustry,               removeIndustry,            0x00455943, true  },
         { GameCommand::createTown,                   createTown,                0x00496C22, true  },
         { GameCommand::removeTown,                   removeTown,                0x0049711F, true  },
