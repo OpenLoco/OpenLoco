@@ -30,6 +30,24 @@ namespace OpenLoco
         _capacity = len;
     }
 
+    void MemoryStream::resize(size_t len)
+    {
+        if (len == 0)
+        {
+            clear();
+            return;
+        }
+
+        if (len < _capacity)
+        {
+            _length = len;
+            return;
+        }
+
+        reserve(len);
+        _length = len;
+    }
+
     void MemoryStream::clear()
     {
         _offset = 0;

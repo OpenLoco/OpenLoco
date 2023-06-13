@@ -19,6 +19,8 @@ namespace OpenLoco
 
         void reserve(size_t len);
 
+        void resize(size_t len);
+
         void clear();
 
         const std::byte* data() const;
@@ -35,5 +37,4 @@ namespace OpenLoco
 
         void write(const void* buffer, size_t len) override;
     };
-
 }

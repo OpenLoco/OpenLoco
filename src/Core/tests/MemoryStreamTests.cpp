@@ -99,3 +99,22 @@ TEST(MemoryStreamTest, testWrite100MiB)
 
     ASSERT_EQ(ms.getLength(), k100MiB);
 }
+
+TEST(MemoryStreamTest, testResize)
+{
+    MemoryStream ms;
+
+    const auto kResizeSize = 100;
+
+    ms.resize(kResizeSize);
+
+    ASSERT_EQ(ms.getLength(), 100);
+    ASSERT_EQ(ms.getPosition(), 0);
+
+    // Write to the buffer to ensure it's writable
+    std::byte* data = ms.data();
+    for (size_t i = 0; i < kResizeSize; i++)
+    {
+        data[i] = std::byte{ 0xCC };
+    }
+}
