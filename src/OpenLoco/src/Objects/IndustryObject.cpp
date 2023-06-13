@@ -190,7 +190,7 @@ namespace OpenLoco
 
             loadString(name, 0);
             loadString(var_02, 1);
-            loadString(notUsed, 2); 
+            loadString(notUsed, 2);
             loadString(nameClosingDown, 3);
             loadString(nameUpProduction, 4);
             loadString(nameDownProduction, 5);
