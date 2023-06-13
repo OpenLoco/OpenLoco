@@ -36,12 +36,12 @@ namespace OpenLoco
         _length = 0;
     }
 
-    const void* MemoryStream::data() const
+    const std::byte* MemoryStream::data() const
     {
         return _data;
     }
 
-    void* MemoryStream::data()
+    std::byte* MemoryStream::data()
     {
         return _data;
     }

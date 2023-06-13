@@ -21,9 +21,9 @@ namespace OpenLoco
 
         void clear();
 
-        const void* data() const;
+        const std::byte* data() const;
 
-        void* data();
+        std::byte* data();
 
         size_t getLength() const noexcept override;
 
