@@ -2,6 +2,7 @@
 
 #include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Core/MemoryStream.h>
 #include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 #include <memory>
@@ -52,8 +53,7 @@ namespace OpenLoco
     class SawyerStreamReader
     {
     private:
-        Stream* _stream;
-        std::unique_ptr<FileStream> _fstream;
+        Stream& _stream;
         FastBuffer _decodeBuffer;
         FastBuffer _decodeBuffer2;
 
@@ -64,20 +64,17 @@ namespace OpenLoco
 
     public:
         SawyerStreamReader(Stream& stream);
-        SawyerStreamReader(const fs::path& path);
 
         stdx::span<const std::byte> readChunk();
         size_t readChunk(void* data, size_t maxDataLen);
         void read(void* data, size_t dataLen);
         bool validateChecksum();
-        void close();
     };
 
     class SawyerStreamWriter
     {
     private:
-        Stream* _stream;
-        std::unique_ptr<FileStream> _fstream;
+        Stream& _stream;
         uint32_t _checksum{};
         FastBuffer _encodeBuffer;
         FastBuffer _encodeBuffer2;
@@ -90,12 +87,10 @@ namespace OpenLoco
 
     public:
         SawyerStreamWriter(Stream& stream);
-        SawyerStreamWriter(const fs::path& path);
 
         void writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen);
         void write(const void* data, size_t dataLen);
         void writeChecksum();
-        void close();
 
         template<typename T>
         void writeChunk(SawyerEncoding chunkType, const T& data)

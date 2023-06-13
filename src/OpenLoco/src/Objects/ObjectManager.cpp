@@ -390,7 +390,8 @@ namespace OpenLoco::ObjectManager
 
         const auto filePath = Environment::getPath(Environment::PathId::objects) / fs::u8path(installedObject->_filename);
 
-        SawyerStreamReader stream(filePath);
+        FileStream fs(filePath, StreamMode::read);
+        SawyerStreamReader stream(fs);
         PreLoadedObject preLoadObj{};
         stream.read(&preLoadObj.header, sizeof(preLoadObj.header));
         if (preLoadObj.header != header)
@@ -694,15 +695,14 @@ namespace OpenLoco::ObjectManager
         // Get new file path
         std::string filename = objectname;
         sanatiseObjectFilename(filename);
-        auto objPath = findObjectPath(filename);
+        const auto objPath = findObjectPath(filename);
 
         // Create new file and output object file
         Ui::ProgressBar::setProgress(180);
-        SawyerStreamWriter stream(objPath);
+        FileStream fs(objPath, StreamMode::write);
+        SawyerStreamWriter stream(fs);
         writePackedObjects(stream, { objectHeader });
 
-        // Free file
-        stream.close();
         Ui::ProgressBar::setProgress(240);
         Ui::ProgressBar::setProgress(255);
         Ui::ProgressBar::end();

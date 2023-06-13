@@ -126,14 +126,8 @@ stdx::span<const std::byte> FastBuffer::getSpan() const
 }
 
 SawyerStreamReader::SawyerStreamReader(Stream& stream)
+    : _stream(stream)
 {
-    _stream = &stream;
-}
-
-SawyerStreamReader::SawyerStreamReader(const fs::path& path)
-{
-    _fstream = std::make_unique<FileStream>(path, StreamMode::read);
-    _stream = _fstream.get();
 }
 
 stdx::span<const std::byte> SawyerStreamReader::readChunk()
@@ -161,7 +155,7 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
 {
     try
     {
-        _stream->read(data, dataLen);
+        _stream.read(data, dataLen);
     }
     catch (...)
     {
@@ -172,23 +166,23 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
 bool SawyerStreamReader::validateChecksum()
 {
     auto valid = false;
-    auto backupPos = _stream->getPosition();
-    auto fileLength = static_cast<uint32_t>(_stream->getLength());
+    auto backupPos = _stream.getPosition();
+    auto fileLength = static_cast<uint32_t>(_stream.getLength());
     if (fileLength >= 4)
     {
         // Read checksum
         uint32_t checksum;
-        _stream->setPosition(fileLength - 4);
-        _stream->read(&checksum, sizeof(checksum));
+        _stream.setPosition(fileLength - 4);
+        _stream.read(&checksum, sizeof(checksum));
 
         // Calculate checksum
         uint32_t actualChecksum = 0;
-        _stream->setPosition(0);
+        _stream.setPosition(0);
         uint8_t buffer[2048];
         for (uint32_t i = 0; i < fileLength - 4; i += sizeof(buffer))
         {
             auto readLength = std::min<size_t>(sizeof(buffer), fileLength - 4 - i);
-            _stream->read(buffer, readLength);
+            _stream.read(buffer, readLength);
             for (size_t j = 0; j < readLength; j++)
             {
                 actualChecksum += buffer[j];
@@ -199,15 +193,9 @@ bool SawyerStreamReader::validateChecksum()
     }
 
     // Restore position
-    _stream->setPosition(backupPos);
+    _stream.setPosition(backupPos);
 
     return valid;
-}
-
-void SawyerStreamReader::close()
-{
-    _fstream = {};
-    _stream = nullptr;
 }
 
 stdx::span<const std::byte> SawyerStreamReader::decode(SawyerEncoding encoding, stdx::span<const std::byte> data)
@@ -316,14 +304,8 @@ void SawyerStreamReader::decodeRotate(FastBuffer& buffer, stdx::span<const std::
 }
 
 SawyerStreamWriter::SawyerStreamWriter(Stream& stream)
+    : _stream(stream)
 {
-    _stream = &stream;
-}
-
-SawyerStreamWriter::SawyerStreamWriter(const fs::path& path)
-{
-    _fstream = std::make_unique<FileStream>(path, StreamMode::write);
-    _stream = _fstream.get();
 }
 
 void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
@@ -353,18 +335,12 @@ void SawyerStreamWriter::writeStream(const void* data, size_t dataLen)
 {
     try
     {
-        _stream->write(data, dataLen);
+        _stream.write(data, dataLen);
     }
     catch (...)
     {
         throw std::runtime_error(exceptionWriteError);
     }
-}
-
-void SawyerStreamWriter::close()
-{
-    _fstream = {};
-    _stream = nullptr;
 }
 
 stdx::span<const std::byte> SawyerStreamWriter::encode(SawyerEncoding encoding, stdx::span<const std::byte> data)
