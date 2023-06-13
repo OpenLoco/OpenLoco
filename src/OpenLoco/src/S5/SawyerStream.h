@@ -45,8 +45,8 @@ namespace OpenLoco
         void reserve(size_t len);
         void clear();
         void push_back(std::byte value);
-        void push_back(std::byte value, size_t len);
-        void push_back(const std::byte* src, size_t len);
+        void write(const std::byte* src, size_t len);
+        void fill(std::byte value, size_t len);
         stdx::span<const std::byte> getSpan() const;
     };
 

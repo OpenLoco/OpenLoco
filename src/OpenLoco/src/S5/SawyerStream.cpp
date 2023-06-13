@@ -106,17 +106,17 @@ void FastBuffer::push_back(std::byte value)
     _data[_len++] = value;
 }
 
-void FastBuffer::push_back(std::byte value, size_t len)
+void FastBuffer::fill(std::byte value, size_t len)
 {
     reserve(_len + len);
     std::memset(_data + _len, static_cast<int>(value), len);
     _len += len;
 }
 
-void FastBuffer::push_back(const std::byte* src, size_t len)
+void FastBuffer::write(const std::byte* src, size_t len)
 {
     reserve(_len + len);
-    std::memcpy(_data + _len, src, len);
+    std::memcpy(&_data[_len], src, len);
     _len += len;
 }
 
@@ -243,7 +243,7 @@ void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<co
 
             auto copyLen = static_cast<size_t>(257 - rleCodeByte);
             auto copyByte = data[i];
-            buffer.push_back(copyByte, copyLen);
+            buffer.fill(copyByte, copyLen);
         }
         else
         {
@@ -253,7 +253,7 @@ void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<co
             }
 
             auto copyLen = static_cast<size_t>(rleCodeByte + 1);
-            buffer.push_back(&data[i + 1], copyLen);
+            buffer.write(&data[i + 1], copyLen);
             i += rleCodeByte + 1;
         }
     }
@@ -288,7 +288,7 @@ void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<con
             std::byte copyBuffer[32];
             assert(copyLen <= sizeof(copyBuffer));
             std::memcpy(copyBuffer, copySrc, copyLen);
-            buffer.push_back(copyBuffer, copyLen);
+            buffer.write(copyBuffer, copyLen);
         }
     }
 }
@@ -385,7 +385,7 @@ void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<co
         if ((count != 0 && src[0] == src[1]) || count > 125)
         {
             buffer.push_back(static_cast<std::byte>(count - 1));
-            buffer.push_back(srcNormStart, count);
+            buffer.write(srcNormStart, count);
             srcNormStart += count;
             count = 0;
         }
@@ -417,7 +417,7 @@ void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<co
     if (count != 0)
     {
         buffer.push_back(static_cast<std::byte>(count - 1));
-        buffer.push_back(srcNormStart, count);
+        buffer.write(srcNormStart, count);
     }
 }
 
