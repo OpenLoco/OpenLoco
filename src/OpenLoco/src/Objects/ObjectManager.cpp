@@ -333,27 +333,27 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472754
-    static uint32_t computeChecksum(stdx::span<const uint8_t> data, uint32_t seed)
+    static uint32_t computeChecksum(stdx::span<const std::byte> data, uint32_t seed)
     {
         auto checksum = seed;
         for (auto d : data)
         {
-            checksum = Utility::rol(checksum ^ d, 11);
+            checksum = Utility::rol(checksum ^ static_cast<uint8_t>(d), 11);
         }
         return checksum;
     }
 
     // 0x0047270B
-    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
+    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const std::byte> data)
     {
         // Compute the checksum of header and data
 
         // Annoyingly the header you need to only compute the first byte of the flags
-        stdx::span<const uint8_t> headerFlag(reinterpret_cast<const uint8_t*>(&object), 1);
+        const auto headerFlag = stdx::span(reinterpret_cast<const std::byte*>(&object), 1);
         auto checksum = computeChecksum(headerFlag, objectChecksumMagic);
 
         // And then the name
-        stdx::span<const uint8_t> headerName(reinterpret_cast<const uint8_t*>(&object.name), sizeof(ObjectHeader::name));
+        const auto headerName = stdx::span(reinterpret_cast<const std::byte*>(&object.name), sizeof(ObjectHeader::name));
         checksum = computeChecksum(headerName, checksum);
 
         // Finally compute the datas checksum
@@ -417,7 +417,7 @@ namespace OpenLoco::ObjectManager
         {
             return std::nullopt;
         }
-        std::copy(std::begin(data), std::end(data), reinterpret_cast<uint8_t*>(preLoadObj.object));
+        std::copy(std::begin(data), std::end(data), reinterpret_cast<std::byte*>(preLoadObj.object));
 
         preLoadObj.objectData = stdx::span<std::byte>(reinterpret_cast<std::byte*>(preLoadObj.object), data.size());
 
@@ -600,7 +600,7 @@ namespace OpenLoco::ObjectManager
         return result;
     }
 
-    static bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData)
+    static bool partialLoad(const ObjectHeader& header, stdx::span<std::byte> objectData)
     {
         auto type = header.getType();
         size_t index = 0;
@@ -710,7 +710,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472687 based on
-    bool tryInstallObject(const ObjectHeader& objectHeader, stdx::span<const uint8_t> data)
+    bool tryInstallObject(const ObjectHeader& objectHeader, stdx::span<const std::byte> data)
     {
         unloadAll();
         if (!computeObjectChecksum(objectHeader, data))
@@ -718,7 +718,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
         // Copy the object into Loco freeable memory (required for when partialLoad loads the object)
-        uint8_t* objectData = static_cast<uint8_t*>(malloc(data.size()));
+        std::byte* objectData = static_cast<std::byte*>(malloc(data.size()));
         if (objectData == nullptr)
         {
             return false;

@@ -174,7 +174,7 @@ namespace OpenLoco::ObjectManager
     void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
 
-    bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
+    bool tryInstallObject(const ObjectHeader& object, stdx::span<const std::byte> data);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 

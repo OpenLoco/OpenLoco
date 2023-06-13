@@ -21,25 +21,25 @@ constexpr const char* exceptionWriteError = "Failed to write data to stream";
 constexpr const char* exceptionInvalidRLE = "Invalid RLE run";
 constexpr const char* exceptionUnknownEncoding = "Unknown encoding";
 
-uint8_t* FastBuffer::alloc(size_t len)
+std::byte* FastBuffer::alloc(size_t len)
 {
 #ifdef _WIN32
-    return reinterpret_cast<uint8_t*>(HeapAlloc(GetProcessHeap(), 0, len));
+    return static_cast<std::byte*>(HeapAlloc(GetProcessHeap(), 0, len));
 #else
-    return reinterpret_cast<uint8_t*>(std::malloc(len));
+    return static_cast<std::byte*>(std::malloc(len));
 #endif
 }
 
-uint8_t* FastBuffer::realloc(uint8_t* ptr, size_t len)
+std::byte* FastBuffer::realloc(std::byte* ptr, size_t len)
 {
 #ifdef _WIN32
-    return reinterpret_cast<uint8_t*>(HeapReAlloc(GetProcessHeap(), 0, ptr, len));
+    return static_cast<std::byte*>(HeapReAlloc(GetProcessHeap(), 0, ptr, len));
 #else
-    return reinterpret_cast<uint8_t*>(std::realloc(ptr, len));
+    return static_cast<std::byte*>(std::realloc(ptr, len));
 #endif
 }
 
-void FastBuffer::free(uint8_t* ptr)
+void FastBuffer::free(std::byte* ptr)
 {
 #ifdef _WIN32
     HeapFree(GetProcessHeap(), 0, ptr);
@@ -59,7 +59,7 @@ FastBuffer::~FastBuffer()
     }
 }
 
-uint8_t* FastBuffer::data()
+std::byte* FastBuffer::data()
 {
     return _data;
 }
@@ -90,7 +90,7 @@ void FastBuffer::reserve(size_t len)
         }
         else
         {
-            _data = reinterpret_cast<uint8_t*>(newData);
+            _data = static_cast<std::byte*>(newData);
         }
     }
 }
@@ -100,29 +100,29 @@ void FastBuffer::clear()
     _len = 0;
 }
 
-void FastBuffer::push_back(uint8_t value)
+void FastBuffer::push_back(std::byte value)
 {
     reserve(_len + 1);
     _data[_len++] = value;
 }
 
-void FastBuffer::push_back(uint8_t value, size_t len)
+void FastBuffer::push_back(std::byte value, size_t len)
 {
     reserve(_len + len);
-    std::memset(&_data[_len], value, len);
+    std::memset(_data + _len, static_cast<int>(value), len);
     _len += len;
 }
 
-void FastBuffer::push_back(const uint8_t* src, size_t len)
+void FastBuffer::push_back(const std::byte* src, size_t len)
 {
     reserve(_len + len);
-    std::memcpy(&_data[_len], src, len);
+    std::memcpy(_data + _len, src, len);
     _len += len;
 }
 
-stdx::span<uint8_t const> FastBuffer::getSpan() const
+stdx::span<const std::byte> FastBuffer::getSpan() const
 {
-    return stdx::span<uint8_t const>(_data, _len);
+    return stdx::span<const std::byte>(_data, _len);
 }
 
 SawyerStreamReader::SawyerStreamReader(Stream& stream)
@@ -136,7 +136,7 @@ SawyerStreamReader::SawyerStreamReader(const fs::path& path)
     _stream = _fstream.get();
 }
 
-stdx::span<uint8_t const> SawyerStreamReader::readChunk()
+stdx::span<const std::byte> SawyerStreamReader::readChunk()
 {
     SawyerEncoding encoding;
     read(&encoding, sizeof(encoding));
@@ -210,7 +210,7 @@ void SawyerStreamReader::close()
     _stream = nullptr;
 }
 
-stdx::span<uint8_t const> SawyerStreamReader::decode(SawyerEncoding encoding, stdx::span<uint8_t const> data)
+stdx::span<const std::byte> SawyerStreamReader::decode(SawyerEncoding encoding, stdx::span<const std::byte> data)
 {
     switch (encoding)
     {
@@ -240,11 +240,11 @@ stdx::span<uint8_t const> SawyerStreamReader::decode(SawyerEncoding encoding, st
     }
 }
 
-void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<const std::byte> data)
 {
     for (size_t i = 0; i < data.size(); i++)
     {
-        uint8_t rleCodeByte = data[i];
+        uint8_t rleCodeByte = static_cast<uint8_t>(data[i]);
         if (rleCodeByte & 128)
         {
             i++;
@@ -271,11 +271,11 @@ void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<ui
     }
 }
 
-void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<const std::byte> data)
 {
     for (size_t i = 0; i < data.size(); i++)
     {
-        if (data[i] == 0xFF)
+        if (data[i] == std::byte{ 0xFF })
         {
             i++;
             if (i >= data.size())
@@ -293,11 +293,11 @@ void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<uin
                 throw std::runtime_error(exceptionInvalidRLE);
             }
             auto copySrc = buffer.data() + buffer.size() + offset;
-            auto copyLen = static_cast<size_t>((data[i] & 7) + 1);
+            auto copyLen = (static_cast<size_t>(data[i]) & 7) + 1;
 
             // Copy it to temp buffer first as we can't copy buffer to itself due to potential
             // realloc in between reserve and push
-            uint8_t copyBuffer[32];
+            std::byte copyBuffer[32];
             assert(copyLen <= sizeof(copyBuffer));
             std::memcpy(copyBuffer, copySrc, copyLen);
             buffer.push_back(copyBuffer, copyLen);
@@ -305,7 +305,7 @@ void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<uin
     }
 }
 
-void SawyerStreamReader::decodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamReader::decodeRotate(FastBuffer& buffer, stdx::span<const std::byte> data)
 {
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
@@ -328,7 +328,7 @@ SawyerStreamWriter::SawyerStreamWriter(const fs::path& path)
 
 void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
 {
-    auto encodedData = encode(chunkType, stdx::span(reinterpret_cast<const uint8_t*>(data), dataLen));
+    auto encodedData = encode(chunkType, stdx::span(static_cast<const std::byte*>(data), dataLen));
     write(&chunkType, sizeof(chunkType));
     write(static_cast<uint32_t>(encodedData.size()));
     write(encodedData.data(), encodedData.size());
@@ -367,7 +367,7 @@ void SawyerStreamWriter::close()
     _stream = nullptr;
 }
 
-stdx::span<uint8_t const> SawyerStreamWriter::encode(SawyerEncoding encoding, stdx::span<uint8_t const> data)
+stdx::span<const std::byte> SawyerStreamWriter::encode(SawyerEncoding encoding, stdx::span<const std::byte> data)
 {
     switch (encoding)
     {
@@ -397,7 +397,7 @@ stdx::span<uint8_t const> SawyerStreamWriter::encode(SawyerEncoding encoding, st
     }
 }
 
-void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<const std::byte> data)
 {
     auto src = data.data();
     auto srcEnd = src + data.size();
@@ -408,7 +408,7 @@ void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<ui
     {
         if ((count != 0 && src[0] == src[1]) || count > 125)
         {
-            buffer.push_back(count - 1);
+            buffer.push_back(static_cast<std::byte>(count - 1));
             buffer.push_back(srcNormStart, count);
             srcNormStart += count;
             count = 0;
@@ -422,7 +422,7 @@ void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<ui
                     break;
                 }
             }
-            buffer.push_back(257 - count);
+            buffer.push_back(static_cast<std::byte>(257 - count));
             buffer.push_back(src[0]);
             src += count;
             srcNormStart = src;
@@ -440,12 +440,12 @@ void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<ui
     }
     if (count != 0)
     {
-        buffer.push_back(count - 1);
+        buffer.push_back(static_cast<std::byte>(count - 1));
         buffer.push_back(srcNormStart, count);
     }
 }
 
-void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, stdx::span<const std::byte> data)
 {
     auto src = data.data();
     auto srcLen = data.size();
@@ -453,7 +453,7 @@ void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uin
         return;
 
     // Need to emit at least one byte, otherwise there is nothing to repeat
-    buffer.push_back(255);
+    buffer.push_back(std::byte{ 0xFF });
     buffer.push_back(src[0]);
 
     // Iterate through remainder of the source buffer
@@ -495,19 +495,19 @@ void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uin
 
         if (bestRepeatCount == 0)
         {
-            buffer.push_back(255);
+            buffer.push_back(std::byte{ 0xFF });
             buffer.push_back(src[i]);
             i++;
         }
         else
         {
-            buffer.push_back(static_cast<uint8_t>((bestRepeatCount - 1) | ((32 - (i - bestRepeatIndex)) << 3)));
+            buffer.push_back(static_cast<std::byte>((bestRepeatCount - 1) | ((32 - (i - bestRepeatIndex)) << 3)));
             i += bestRepeatCount;
         }
     }
 }
 
-void SawyerStreamWriter::encodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamWriter::encodeRotate(FastBuffer& buffer, stdx::span<const std::byte> data)
 {
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
