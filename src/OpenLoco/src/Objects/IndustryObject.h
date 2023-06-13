@@ -62,6 +62,13 @@ namespace OpenLoco
     };
     static_assert(sizeof(IndustryObjectUnk38) == 0x2);
 
+    struct IndustryObjectProductionRateRange
+    {
+        uint16_t min;
+        uint16_t max;
+    };
+    static_assert(sizeof(IndustryObjectProductionRateRange) == 0x4);
+
     struct IndustryObject
     {
         static constexpr auto kObjectType = ObjectType::industry;
@@ -84,29 +91,26 @@ namespace OpenLoco
         const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
         const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
         const uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
-        uint8_t var_BC;
-        uint8_t var_BD;
-        const uint8_t* var_BE;
-        uint32_t var_C2;
-        uint32_t buildingSizeFlags; // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
-        uint16_t designedYear;      // 0xCA start year
-        uint16_t obsoleteYear;      // 0xCC end year
+        uint8_t minNumBuildings;                             // 0xBC
+        uint8_t maxNumBuildings;                             // 0xBD
+        const uint8_t* buildings;                            // 0xBE
+        uint32_t availableColours;                           // 0xC2 bitset
+        uint32_t buildingSizeFlags;                          // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
+        uint16_t designedYear;                               // 0xCA start year
+        uint16_t obsoleteYear;                               // 0xCC end year
         // Total industries of this type that can be created in a scenario
         // Note: this is not directly comparabile to total industries and vaires based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the
         // amount of industries in a scenario.
-        uint8_t totalOfTypeInScenario;  // 0xCE
-        uint8_t costIndex;              // 0xCF
-        int16_t costFactor;             // 0xD0
-        int16_t clearCostFactor;        // 0xD2
-        uint8_t scaffoldingSegmentType; // 0xD4
-        Colour scaffoldingColour;       // 0xD5
-        uint16_t var_D6;
-        uint8_t pad_D8[0xDA - 0xD8];
-        uint16_t var_DA;
-        uint8_t pad_DC[0xDE - 0xDC];
-        uint8_t producedCargoType[2]; // 0xDE (0xFF = null)
-        uint8_t requiredCargoType[3]; // 0xE0 (0xFF = null)
+        uint8_t totalOfTypeInScenario;                              // 0xCE
+        uint8_t costIndex;                                          // 0xCF
+        int16_t costFactor;                                         // 0xD0
+        int16_t clearCostFactor;                                    // 0xD2
+        uint8_t scaffoldingSegmentType;                             // 0xD4
+        Colour scaffoldingColour;                                   // 0xD5
+        IndustryObjectProductionRateRange initialProductionRate[2]; // 0xD6
+        uint8_t producedCargoType[2];                               // 0xDE (0xFF = null)
+        uint8_t requiredCargoType[3];                               // 0xE0 (0xFF = null)
         uint8_t pad_E3;
         IndustryObjectFlags flags; // 0xE4
         uint8_t var_E8;

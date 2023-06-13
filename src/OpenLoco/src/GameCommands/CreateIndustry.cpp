@@ -1,5 +1,6 @@
 #include "Date.h"
 #include "GameCommands.h"
+#include "Graphics/Colour.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -9,6 +10,7 @@
 #include "SceneManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Utility/Numeric.hpp>
 
 namespace OpenLoco::GameCommands
 {
@@ -192,11 +194,52 @@ namespace OpenLoco::GameCommands
             newIndustry->flags |= IndustryFlags::flag_04;
             newIndustry->owner = getUpdatingCompanyId();
         }
-        // 0x0045443C
-        // Get all colours from var_C2
 
-        // Select random colour into E0C3D3
-        // 0x0045447B
+        // Note: Could use a fixed size vector as max size is Colour::max
+        std::vector<Colour> availableColours;
+        auto colourBitSet = indObj->availableColours;
+        for (auto colourI32 = Utility::bitScanForward(colourBitSet); colourI32 != -1; colourI32 = Utility::bitScanForward(colourBitSet))
+        {
+            colourBitSet &= ~(1ULL << colourI32);
+            availableColours.push_back(static_cast<Colour>(colourI32));
+        }
+
+        // 0x00E0C3D3
+        const auto randColour = [&availableColours, &newIndustry]() {
+            if (availableColours.empty())
+            {
+                return Colour::black;
+            }
+            return availableColours[newIndustry->prng.randNext(availableColours.size())];
+        }();
+
+        // 0x00E0C3BE - C0
+        const auto posUnk = World::Pos2{ newIndustry->x, newIndustry->y };
+
+        // used also for 0x00454552 break up into two when function allowed to diverge
+        const auto randVal = newIndustry->prng.randNext() & 0xFF;
+
+        auto prodRateRand = randVal;
+        for (auto i = 0; i < 2; ++i)
+        {
+            newIndustry->var_17D[i] = 0;
+            newIndustry->productionRate[i] = (((indObj->initialProductionRate[i].max - indObj->initialProductionRate[i].min) * randVal) / 256) + indObj->initialProductionRate[i].min;
+            if (isEditorMode())
+            {
+                newIndustry->var_17D[i] = newIndustry->productionRate[i];
+                newIndustry->producedCargoQuantityPreviousMonth[i] = newIndustry->var_17D[i] * 30;
+            }
+            // This is odd but follows vanilla
+            prodRateRand = newIndustry->productionRate[i] & 0xFF;
+        }
+
+        // 0x00454552
+        const auto numBuildings = (((indObj->maxNumBuildings - indObj->minNumBuildings + 1) * randVal) / 256) + indObj->minNumBuildings;
+        for (auto i = 0U; i < numBuildings; ++i)
+        {
+            const auto building = indObj->buildings[i];
+            // 0x00454563
+        }
     }
 
     void createIndustry(registers& regs)
