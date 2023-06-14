@@ -223,7 +223,7 @@ namespace OpenLoco::GameCommands
         for (auto i = 0; i < 2; ++i)
         {
             newIndustry->var_17D[i] = 0;
-            newIndustry->productionRate[i] = (((indObj->initialProductionRate[i].max - indObj->initialProductionRate[i].min) * randVal) / 256) + indObj->initialProductionRate[i].min;
+            newIndustry->productionRate[i] = (((indObj->initialProductionRate[i].max - indObj->initialProductionRate[i].min) * prodRateRand) / 256) + indObj->initialProductionRate[i].min;
             if (isEditorMode())
             {
                 newIndustry->var_17D[i] = newIndustry->productionRate[i];
@@ -238,6 +238,79 @@ namespace OpenLoco::GameCommands
         for (auto i = 0U; i < numBuildings; ++i)
         {
             const auto building = indObj->buildings[i];
+            // 0x00E0C3D2 (bit 0)
+            const bool isMultiTile = indObj->buildingSizeFlags & (1ULL << building);
+
+            // Attempt to place
+            for (auto j = 0U; j < 25; ++j)
+            {
+                const auto randVal2 = newIndustry->prng.randNext();
+                // bh
+                const uint8_t direction = indObj->hasFlags(IndustryObjectFlags::notRotatable) ? 0 : randVal2 & 0x3;
+
+                const auto [distanceRange, minDistance] = [j]() -> std::pair<tile_coord_t, tile_coord_t> {
+                    if (j == 0)
+                    {
+                        return { 1, 0 };
+                    }
+                    else if (j < 8)
+                    {
+                        return { 3, -1 };
+                    }
+                    else
+                    {
+                        return { 5, -2 };
+                    }
+                }();
+
+                const auto randTileX = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 2) & 0xFF)) / 256) + minDistance;
+                const auto randTileY = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 10) & 0xFF)) / 256) + minDistance;
+
+                const auto randPos = posUnk + World::toWorldSpace(World::TilePos2(randTileX, randTileY));
+                const auto minRandPos = randPos;
+                const auto maxRandPos = isMultiTile ? randPos + World::toWorldSpace(World::TilePos2{ 1, 1 }) : randPos;
+
+                // TODO: Yank this out into a function
+                bool placementFailure = false;
+                for (auto k = 0U; k < newIndustry->numTiles; ++k)
+                {
+                    const auto minTileLoc = World::Pos2{ newIndustry->tiles[k].x, newIndustry->tiles[k].y };
+                    const auto maxTileLoc = (newIndustry->tiles[k].z & (1U << 15)) ? minTileLoc + World::toWorldSpace(World::TilePos2{ 1, 1 }) : minTileLoc;
+
+                    if (minRandPos.x > maxTileLoc.x)
+                    {
+                        continue;
+                    }
+                    if (minRandPos.y > maxTileLoc.y)
+                    {
+                        continue;
+                    }
+
+                    if (maxRandPos.x < minTileLoc.x)
+                    {
+                        continue;
+                    }
+                    if (maxRandPos.y < minTileLoc.y)
+                    {
+                        continue;
+                    }
+                    placementFailure = true;
+                    break;
+                }
+                if (placementFailure)
+                {
+                    continue;
+                }
+
+                // bh bit 7 is buildImmediately
+                // edi = randColour << 16
+                // dl = building
+                // dh = industryId
+                if (flags & Flags::apply)
+                {
+                    // do test placement
+                }
+            }
             // 0x00454563
         }
     }

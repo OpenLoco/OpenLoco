@@ -34,6 +34,7 @@ namespace OpenLoco
         builtRequiresOpenSpace = 1U << 12,
         oilfield = 1U << 13,
         mines = 1U << 14,
+        notRotatable = 1U << 15,
         canBeFoundedByPlayer = 1U << 16,
         requiresAllCargo = 1U << 17,
         unk18 = 1U << 18,

@@ -43,7 +43,7 @@ namespace OpenLoco
         uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint16_t foundingYear;      // 0x12
         uint8_t numTiles;           // 0x14
-        World::Pos3 tiles[32];      // 0x15
+        World::Pos3 tiles[32];      // 0x15 bit 15 of z indicates if multiTile (2x2)
         TownId town;                // 0xD5
         World::TileLoop tileLoop;   // 0xD7
         int16_t var_DB;
