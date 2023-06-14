@@ -421,7 +421,7 @@ namespace OpenLoco::S5
         ObjectHeader requiredObjects[859];
         GameState gameState;
         std::vector<TileElement> tileElements;
-        std::vector<std::pair<ObjectHeader, std::vector<uint8_t>>> packedObjects;
+        std::vector<std::pair<ObjectHeader, std::vector<std::byte>>> packedObjects;
     };
 
     enum class LoadFlags : uint32_t

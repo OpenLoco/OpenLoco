@@ -435,7 +435,7 @@ namespace OpenLoco::S5
                 ObjectHeader object;
                 fs.read(&object, sizeof(ObjectHeader));
                 auto unownedObjectData = fs.readChunk();
-                std::vector<uint8_t> objectData;
+                std::vector<std::byte> objectData;
                 objectData.resize(unownedObjectData.size());
                 std::copy(std::begin(unownedObjectData), std::end(unownedObjectData), std::begin(objectData));
                 file->packedObjects.push_back(std::make_pair(object, std::move(objectData)));
