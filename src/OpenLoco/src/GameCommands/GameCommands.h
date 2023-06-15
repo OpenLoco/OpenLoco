@@ -1782,18 +1782,18 @@ namespace OpenLoco::GameCommands
         VehicleRefitArgs() = default;
         explicit VehicleRefitArgs(const registers& regs)
             : head(static_cast<EntityId>(regs.di))
-            , cargoType(regs.dx)
+            , cargoType(regs.dl)
         {
         }
 
         EntityId head;
-        uint16_t cargoType;
+        uint8_t cargoType;
 
         explicit operator registers() const
         {
             registers regs;
             regs.di = enumValue(head);
-            regs.dx = cargoType;
+            regs.dl = cargoType;
             return regs;
         }
     };
