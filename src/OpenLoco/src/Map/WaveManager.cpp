@@ -39,7 +39,7 @@ namespace OpenLoco::World::WaveManager
     void createWave(SurfaceElement& surface, const World::Pos2& pos)
     {
         const auto waveIndex = getWaveIndex(World::toTileSpace(pos));
-        auto wave = rawWaves()[waveIndex];
+        auto& wave = rawWaves()[waveIndex];
         if (!wave.empty())
         {
             return;
