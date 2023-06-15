@@ -951,6 +951,7 @@ namespace OpenLoco::ObjectManager
     void sub_4748FA()
     {
         call(0x004697A1);
+        // determine trafficHandedness
         call(0x0047D9F2);
         call(0x004C57A6);
         call(0x00469F90);

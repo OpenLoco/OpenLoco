@@ -32,7 +32,6 @@ namespace OpenLoco::Vehicles
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;
     static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C;    // cargoType related?
     static loco_global<bool[44], 0x004F8A7C> _trackIdToSparkDirection; // bools true for right false for left
-    static loco_global<bool, 0x00525FAE> _trafficHandedness;           // boolean true for right false for left
 
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
@@ -1141,7 +1140,7 @@ namespace OpenLoco::Vehicles
         auto yaw = (spriteYaw + 16) & 0x3F;
 
         auto unkFactor = 5;
-        if (_trafficHandedness != 0)
+        if (getGameState().trafficHandedness != 0)
         {
             unkFactor = -5;
         }
