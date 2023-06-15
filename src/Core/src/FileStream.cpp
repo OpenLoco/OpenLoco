@@ -5,6 +5,21 @@
 
 namespace OpenLoco
 {
+    static FILE* fileOpen(const std::filesystem::path& path, StreamMode mode)
+    {
+        if (mode == StreamMode::none)
+        {
+            throw std::invalid_argument("Invalid mode argument");
+        }
+#ifdef _WIN32
+        FILE* fs;
+        _wfopen_s(&fs, path.wstring().c_str(), mode == StreamMode::read ? L"rb" : L"wb");
+        return fs;
+#else
+        return fopen(path.u8string().c_str(), mode == StreamMode::read ? "rb" : "wb");
+#endif
+    }
+
     static size_t fileTell(FILE* fs)
     {
 #ifdef _MSC_VER
@@ -41,6 +56,15 @@ namespace OpenLoco
 #endif
     }
 
+    static void fileClose(FILE* fs)
+    {
+#ifdef _MSC_VER
+        _fclose_nolock(fs);
+#else
+        fclose(fs);
+#endif
+    }
+
     static size_t getFileLength(FILE* fs)
     {
         const auto current = fileTell(fs);
@@ -66,30 +90,9 @@ namespace OpenLoco
 
     bool FileStream::open(const std::filesystem::path& path, StreamMode mode)
     {
-        if (mode == StreamMode::none)
-        {
-            throw std::invalid_argument("Invalid mode argument");
-        }
-
         close();
 
-        if (mode == StreamMode::write)
-        {
-#ifdef _WIN32
-            _wfopen_s(&_file, path.wstring().c_str(), L"wb");
-#else
-            _file = fopen(path.u8string().c_str(), "wb");
-#endif
-        }
-        if (mode == StreamMode::read)
-        {
-#ifdef _WIN32
-            _wfopen_s(&_file, path.wstring().c_str(), L"rb");
-#else
-            _file = fopen(path.u8string().c_str(), "rb");
-#endif
-        }
-
+        _file = fileOpen(path, mode);
         if (_file == nullptr)
         {
             return false;
@@ -121,7 +124,7 @@ namespace OpenLoco
         _length = 0;
         _offset = 0;
 
-        fclose(_file);
+        fileClose(_file);
         _file = nullptr;
     }
 
@@ -147,7 +150,7 @@ namespace OpenLoco
             throw std::runtime_error("Invalid operation");
         }
         position = std::min(_length, static_cast<size_t>(position));
-        std::fseek(_file, position, SEEK_SET);
+        fileSeek(_file, position, SEEK_SET);
         _offset = position;
     }
 
