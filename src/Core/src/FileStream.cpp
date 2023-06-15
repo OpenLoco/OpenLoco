@@ -98,6 +98,9 @@ namespace OpenLoco
             return false;
         }
 
+        // Increase the buffer size to 1MiB.
+        std::setvbuf(_file, nullptr, _IOFBF, 1024 * 1024);
+
         // Get the length if we are reading an existing file.
         if (mode == StreamMode::read)
         {
