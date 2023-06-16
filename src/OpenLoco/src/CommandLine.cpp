@@ -5,6 +5,8 @@
 #include "S5/SawyerStream.h"
 #include <OpenLoco/Core/MemoryStream.h>
 #include <OpenLoco/Diagnostics/Logging.h>
+#include <chrono>
+#include <fmt/chrono.h>
 #include <iostream>
 #include <optional>
 #include <string_view>
@@ -502,6 +504,8 @@ namespace OpenLoco
         auto inPath = fs::u8path(options.path);
         auto outPath = fs::u8path(options.outputPath);
 
+        const auto timeStarted = std::chrono::high_resolution_clock::now();
+
         try
         {
             OpenLoco::simulateGame(inPath, *options.ticks);
@@ -511,16 +515,19 @@ namespace OpenLoco
             Logging::error("Unable to load and simulate {}", inPath.u8string());
         }
 
+        const auto timeElapsed = std::chrono::high_resolution_clock::now() - timeStarted;
+
         auto& gameState = getGameState();
-        std::printf("--------------------------------\n");
-        std::printf("- Simulate\n");
-        std::printf("--------------------------------\n");
-        std::printf("Input:\n");
-        std::printf("  path:  %s\n", inPath.u8string().c_str());
-        std::printf("  ticks: %d ticks\n", *options.ticks);
-        std::printf("Output:\n");
-        std::printf("  scenario ticks: %u\n", gameState.scenarioTicks);
-        std::printf("  rng:            { 0x%X, 0x%X }\n", gameState.rng.srand_0(), gameState.rng.srand_1());
+        Logging::info("--------------------------------");
+        Logging::info("- Simulate");
+        Logging::info("--------------------------------");
+        Logging::info("Input:");
+        Logging::info("  path: {}", inPath.u8string());
+        Logging::info("  ticks: {} ticks", *options.ticks);
+        Logging::info("Output:");
+        Logging::info("  scenario ticks: {}", gameState.scenarioTicks);
+        Logging::info("  rng:            {{ {}, {} }}", gameState.rng.srand_0(), gameState.rng.srand_1());
+        Logging::info("Duration: {:%S} sec", timeElapsed);
 
         if (!outPath.empty())
         {
