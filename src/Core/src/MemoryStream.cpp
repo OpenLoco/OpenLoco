@@ -119,11 +119,11 @@ namespace OpenLoco
         // Check if we have to expand the current buffer.
         if (len > spaceLeft)
         {
-            constexpr auto growthFactor = 2.0f;
-            constexpr auto pageSize = 0x1000U;
+            constexpr auto kGrowthFactor = 2.0f;
+            constexpr auto kPageSize = 0x1000U;
 
             const auto newCapacity = _capacity + len;
-            const auto finalCapacity = alignTo(static_cast<std::size_t>(newCapacity * growthFactor), pageSize);
+            const auto finalCapacity = alignTo(static_cast<std::size_t>(newCapacity * kGrowthFactor), kPageSize);
 
             auto* newData = static_cast<std::byte*>(std::realloc(_data, finalCapacity));
             if (newData == nullptr)
