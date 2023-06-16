@@ -1276,8 +1276,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                auto corner = World::TileManager::getMapSelectionCorner();
-                cost = GameCommands::do_26(centre, pointA, pointB, corner, flags);
+                GameCommands::LowerLandArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                args.corner = World::TileManager::getMapSelectionCorner();
+                cost = GameCommands::doCommand(args, flags);
             }
             return cost;
         }
@@ -1300,8 +1304,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                uint16_t corner = World::TileManager::getMapSelectionCorner();
-                cost = GameCommands::do_25(centre, pointA, pointB, corner, flags);
+                GameCommands::RaiseLandArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                args.corner = World::TileManager::getMapSelectionCorner();
+                cost = GameCommands::doCommand(args, flags);
             }
             return cost;
         }

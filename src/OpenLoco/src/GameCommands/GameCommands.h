@@ -915,31 +915,63 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Raise Land
-    inline uint32_t do_25(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
+    struct RaiseLandArgs
     {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        regs.di = di;
-        return doCommand(GameCommand::raiseLand, regs);
-    }
+        static constexpr auto command = GameCommand::raiseLand;
+        RaiseLandArgs() = default;
+        explicit RaiseLandArgs(const registers& regs)
+            : centre(regs.ax, regs.cx)
+            , pointA(regs.dx, regs.bp)
+            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            , corner(regs.di)
+        {
+        }
 
-    // Lower Land
-    inline uint32_t do_26(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = pointB.x << 16 | pointA.x;
+            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.di = corner;
+            return regs;
+        }
+    };
+
+    struct LowerLandArgs
     {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        regs.di = di;
-        return doCommand(GameCommand::lowerLand, regs);
-    }
+        static constexpr auto command = GameCommand::lowerLand;
+        LowerLandArgs() = default;
+        explicit LowerLandArgs(const registers& regs)
+            : centre(regs.ax, regs.cx)
+            , pointA(regs.dx, regs.bp)
+            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            , corner(regs.di)
+        {
+        }
+
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = pointB.x << 16 | pointA.x;
+            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.di = corner;
+            return regs;
+        }
+    };
 
     // Lower/Raise Land Mountain
     inline uint32_t do_27(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
