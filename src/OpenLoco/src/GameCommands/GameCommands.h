@@ -1157,22 +1157,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_36(EntityId head, uint32_t orderOffset)
+    struct VehicleOrderSkipArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(head);
-        regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicleOrderDelete, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleOrderSkip;
 
-    inline bool do_37(EntityId head)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehicleOrderSkip, regs);
-    }
+        VehicleOrderSkipArgs() = default;
+        explicit VehicleOrderSkipArgs(const registers& regs)
+            : head(EntityId(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     struct RoadPlacementArgs
     {

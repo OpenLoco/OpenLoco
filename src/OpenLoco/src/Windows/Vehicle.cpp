@@ -2592,9 +2592,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case widx::orderSkip:
+                {
                     GameCommands::setErrorTitle(StringIds::empty);
-                    GameCommands::do_37(EntityId(self.number));
+                    GameCommands::VehicleOrderSkipArgs args{};
+                    args.head = EntityId(self.number);
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
+                }
                 case widx::orderUp:
                     if (onOrderMove(head, self.var_842, orderUpCommand))
                     {
