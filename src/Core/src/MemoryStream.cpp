@@ -9,7 +9,7 @@ namespace OpenLoco
     {
         if (_data != nullptr)
         {
-            free(_data);
+            std::free(_data);
         }
     }
 
