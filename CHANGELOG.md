@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#1970] Water waves don't animate.
 - Fix: [#1992] Crash when the AI uses vehicle refit command.
+- Technical: [#1982] Performance improvements for file I/O and general cleanup of the stream interfaces.
 
 23.06 (2023-06-12)
 ------------------------------------------------------------------------
