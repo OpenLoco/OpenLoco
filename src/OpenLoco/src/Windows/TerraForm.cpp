@@ -1271,8 +1271,12 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (_adjustToolSize == 0)
             {
-                uint16_t di = 0xFFFF;
-                cost = GameCommands::do_27(centre, pointA, pointB, di, flags);
+                GameCommands::LowerRaiseLandMountainArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                args.di = 0xFFFF;
+                cost = GameCommands::doCommand(args, flags);
             }
             else
             {
@@ -1299,8 +1303,12 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (_adjustToolSize == 0)
             {
-                uint16_t di = 1;
-                cost = GameCommands::do_27(centre, pointA, pointB, di, flags);
+                GameCommands::LowerRaiseLandMountainArgs args{};
+                args.centre = centre;
+                args.pointA = pointA;
+                args.pointB = pointB;
+                args.di = 1;
+                cost = GameCommands::doCommand(args, flags);
             }
             else
             {

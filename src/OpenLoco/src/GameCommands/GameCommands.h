@@ -973,18 +973,34 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Lower/Raise Land Mountain
-    inline uint32_t do_27(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
+    struct LowerRaiseLandMountainArgs
     {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        regs.di = di;
-        return doCommand(GameCommand::lowerRaiseLandMountain, regs);
-    }
+        static constexpr auto command = GameCommand::lowerRaiseLandMountain;
+        LowerRaiseLandMountainArgs() = default;
+        explicit LowerRaiseLandMountainArgs(const registers& regs)
+            : centre(regs.ax, regs.cx)
+            , pointA(regs.dx, regs.bp)
+            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            , di(regs.di)
+        {
+        }
+
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t di;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = pointB.x << 16 | pointA.x;
+            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.di = di;
+            return regs;
+        }
+    };
 
     // Raise Water
     inline uint32_t do_28(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
