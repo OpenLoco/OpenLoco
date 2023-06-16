@@ -1724,6 +1724,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform);
         }
 
+        static uint32_t raiseWater(uint8_t flags);
+        static uint32_t lowerWater(uint8_t flags);
+
         // 0x004BCDB4
         static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
@@ -1760,10 +1763,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
-                auto lowerCost = GameCommands::do_29(pointA, pointB, 0);
-                auto raiseCost = GameCommands::do_28(pointA, pointB, 0);
-                setAdjustCost(raiseCost, lowerCost);
+                setAdjustCost(raiseWater(0), lowerWater(0));
             }
         }
 
@@ -1778,22 +1778,34 @@ namespace OpenLoco::Ui::Windows::Terraform
             ToolManager::setToolCursor(CursorId::upDownArrow);
         }
 
-        static void raiseWater(uint8_t flags)
+        static uint32_t raiseWater(uint8_t flags)
         {
-            Common::sub_4A69DD();
-            GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            if (flags & GameCommands::Flags::apply)
+            {
+                Common::sub_4A69DD();
+                GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
+            }
 
-            GameCommands::do_28(pointA, pointB, flags);
+            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            GameCommands::RaiseWaterArgs args{};
+            args.pointA = pointA;
+            args.pointB = pointB;
+            return GameCommands::doCommand(args, flags);
         }
 
-        static void lowerWater(uint8_t flags)
+        static uint32_t lowerWater(uint8_t flags)
         {
-            Common::sub_4A69DD();
-            GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            if (flags & GameCommands::Flags::apply)
+            {
+                Common::sub_4A69DD();
+                GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
+            }
 
-            GameCommands::do_29(pointA, pointB, flags);
+            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            GameCommands::LowerWaterArgs args{};
+            args.pointA = pointA;
+            args.pointB = pointB;
+            return GameCommands::doCommand(args, flags);
         }
 
         // 0x004BCDBF

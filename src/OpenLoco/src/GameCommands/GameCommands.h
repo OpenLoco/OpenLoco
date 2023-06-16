@@ -1002,29 +1002,53 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Raise Water
-    inline uint32_t do_28(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
+    struct RaiseWaterArgs
     {
-        registers regs;
-        regs.ax = pointA.x;
-        regs.cx = pointA.y;
-        regs.di = pointB.x;
-        regs.bp = pointB.y;
-        regs.bl = flags;
-        return doCommand(GameCommand::raiseWater, regs);
-    }
+        static constexpr auto command = GameCommand::raiseWater;
+        RaiseWaterArgs() = default;
+        explicit RaiseWaterArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+        {
+        }
 
-    // Lower Water
-    inline uint32_t do_29(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            return regs;
+        }
+    };
+
+    struct LowerWaterArgs
     {
-        registers regs;
-        regs.ax = pointA.x;
-        regs.cx = pointA.y;
-        regs.di = pointB.x;
-        regs.bp = pointB.y;
-        regs.bl = flags;
-        return doCommand(GameCommand::lowerWater, regs);
-    }
+        static constexpr auto command = GameCommand::lowerWater;
+        LowerWaterArgs() = default;
+        explicit LowerWaterArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+        {
+        }
+
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            return regs;
+        }
+    };
 
     struct ChangeCompanyNameArgs
     {
