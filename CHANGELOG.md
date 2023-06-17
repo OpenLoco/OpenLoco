@@ -1,4 +1,4 @@
-23.06+ (???)
+23.06.1 (2023-06-17)
 ------------------------------------------------------------------------
 - Fix: [#1970] Water waves don't animate.
 - Fix: [#1992] Crash when the AI uses vehicle refit command.
