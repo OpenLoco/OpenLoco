@@ -1,5 +1,5 @@
 #include "Prng.h"
-#include <OpenLoco/Utility/Numeric.hpp>
+#include "Numeric.hpp"
 
 namespace OpenLoco::Core
 {
