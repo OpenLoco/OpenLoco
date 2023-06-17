@@ -73,7 +73,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>

@@ -48,7 +48,7 @@
 #include "WallObject.h"
 #include "WaterObject.h"
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>

@@ -26,7 +26,7 @@
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>

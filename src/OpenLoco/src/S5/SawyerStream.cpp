@@ -1,5 +1,5 @@
 #include "SawyerStream.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <algorithm>
 #include <cassert>
 #include <cstring>

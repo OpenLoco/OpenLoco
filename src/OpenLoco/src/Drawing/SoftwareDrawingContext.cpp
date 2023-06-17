@@ -5,7 +5,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>

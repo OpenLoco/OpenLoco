@@ -5,7 +5,7 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco

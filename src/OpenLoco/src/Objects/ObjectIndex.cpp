@@ -6,7 +6,7 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>

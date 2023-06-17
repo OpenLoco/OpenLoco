@@ -11,7 +11,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;

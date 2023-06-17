@@ -13,7 +13,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Widget.h"
-#include <OpenLoco/Core/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
