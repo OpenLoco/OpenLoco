@@ -8,8 +8,8 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Core/Numeric.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -100,7 +100,7 @@ namespace OpenLoco
     // 0x00458C7F
     void IndustryObject::drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const
     {
-        auto firstColour = Utility::bitScanReverse(var_C2);
+        auto firstColour = Numerics::bitScanReverse(var_C2);
         Colour c = firstColour != -1 ? static_cast<Colour>(firstColour)
                                      : Colour::black;
         ImageId baseImage(var_12, c);

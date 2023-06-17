@@ -22,8 +22,8 @@
 #include "Widget.h"
 #include "World/Town.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Numeric.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 
@@ -1233,7 +1233,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     auto colour = *_buildingColour;
                     if (self.rowHover != self.rowInfo[i])
                     {
-                        auto bit = Utility::bitScanReverse(buildingObj->colours);
+                        auto bit = Numerics::bitScanReverse(buildingObj->colours);
                         colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     }
 
@@ -1258,7 +1258,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->rowHover);
                 if (buildingObj->colours != 0)
                 {
-                    auto bit = Utility::bitScanReverse(buildingObj->colours);
+                    auto bit = Numerics::bitScanReverse(buildingObj->colours);
                     auto colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     _buildingColour = colour;
                 }

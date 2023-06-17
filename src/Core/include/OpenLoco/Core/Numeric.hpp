@@ -6,7 +6,7 @@
 #include <limits>
 #include <type_traits>
 
-namespace OpenLoco::Utility
+namespace OpenLoco::Numerics
 {
     int32_t bitScanForward(uint32_t source);
 

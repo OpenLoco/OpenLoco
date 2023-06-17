@@ -8,7 +8,7 @@
 #include <intrin.h>
 #endif
 
-namespace OpenLoco::Utility
+namespace OpenLoco::Numerics
 {
     // Finds the first bit set in a 32-bits numeral and returns its index, or -1 if no bit is set.
     int32_t bitScanForward(uint32_t source)

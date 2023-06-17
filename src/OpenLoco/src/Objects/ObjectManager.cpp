@@ -338,7 +338,7 @@ namespace OpenLoco::ObjectManager
         auto checksum = seed;
         for (auto d : data)
         {
-            checksum = Utility::rol(checksum ^ static_cast<uint8_t>(d), 11);
+            checksum = Numerics::rol(checksum ^ static_cast<uint8_t>(d), 11);
         }
         return checksum;
     }

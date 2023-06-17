@@ -230,7 +230,7 @@ namespace OpenLoco::Paint
 
             if (session.get525CF8() != 0)
             {
-                for (auto bit = Utility::bitScanForward(session.get525CF8()); bit != -1; bit = Utility::bitScanForward(session.get525CF8()))
+                for (auto bit = Numerics::bitScanForward(session.get525CF8()); bit != -1; bit = Numerics::bitScanForward(session.get525CF8()))
                 {
                     session.set525CF8(session.get525CF8() & ~(1 << bit));
                     session.setSegmentSupportHeight(static_cast<SegmentFlags>(1 << bit), 0xFFFF, 0);

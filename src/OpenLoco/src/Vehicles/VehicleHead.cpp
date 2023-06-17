@@ -2880,7 +2880,7 @@ namespace OpenLoco::Vehicles
             uint16_t highestQty = 0;
             for (; acceptedCargo != 0;)
             {
-                auto possibleCargo = Utility::bitScanForward(acceptedCargo);
+                auto possibleCargo = Numerics::bitScanForward(acceptedCargo);
                 acceptedCargo &= ~(1 << possibleCargo);
 
                 if (!(allPossibleCargoToWaitFor & (1 << possibleCargo)))

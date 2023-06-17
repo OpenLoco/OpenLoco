@@ -26,10 +26,10 @@
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/Numeric.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Trigonometry.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto treeObj = ObjectManager::get<TreeObject>(self->rowHover);
                 if (treeObj->colours != 0)
                 {
-                    auto bit = Utility::bitScanReverse(treeObj->colours);
+                    auto bit = Numerics::bitScanReverse(treeObj->colours);
                     auto colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                     _treeColour = colour;
                 }
@@ -750,7 +750,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto colour = *_treeColour;
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
-                    auto bit = Utility::bitScanReverse(colourOptions);
+                    auto bit = Numerics::bitScanReverse(colourOptions);
                     colour = bit == -1 ? Colour::black : static_cast<Colour>(bit);
                 }
                 image = Gfx::recolour(image, colour);

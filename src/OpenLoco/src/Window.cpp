@@ -13,9 +13,9 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Widget.h"
+#include <OpenLoco/Core/Numeric.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <cassert>
 #include <cinttypes>
 
@@ -509,7 +509,7 @@ namespace OpenLoco::Ui
         }
         disabledWidgets = _disabledWidgets;
         auto changedWidgets = oldDisabled ^ _disabledWidgets;
-        for (auto widx = Utility::bitScanForward(changedWidgets); widx != -1; widx = Utility::bitScanForward(changedWidgets))
+        for (auto widx = Numerics::bitScanForward(changedWidgets); widx != -1; widx = Numerics::bitScanForward(changedWidgets))
         {
             changedWidgets &= ~(1ULL << widx);
             WindowManager::invalidateWidget(type, number, widx);

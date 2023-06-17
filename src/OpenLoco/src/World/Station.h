@@ -48,7 +48,7 @@ namespace OpenLoco
 
         void isAccepted(bool value)
         {
-            flags = Utility::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
+            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
         }
     };
 

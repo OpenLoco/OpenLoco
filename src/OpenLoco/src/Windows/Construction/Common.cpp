@@ -1479,7 +1479,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto signals = trackObj->signals;
             while (signals > 0)
             {
-                const auto signalId = Utility::bitScanForward(signals);
+                const auto signalId = Numerics::bitScanForward(signals);
                 if (signalId == -1)
                     break;
                 signals &= ~(1 << signalId);
