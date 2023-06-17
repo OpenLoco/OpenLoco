@@ -1,4 +1,4 @@
-#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Core/Numeric.hpp>
 #include <gtest/gtest.h>
 
 using namespace OpenLoco;

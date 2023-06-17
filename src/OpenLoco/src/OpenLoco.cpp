@@ -73,10 +73,10 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Numeric.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Crash.h>
 #include <OpenLoco/Platform/Platform.h>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable

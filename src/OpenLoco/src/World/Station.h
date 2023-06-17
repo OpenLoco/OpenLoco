@@ -6,7 +6,7 @@
 #include "Speed.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Core/Numeric.hpp>
 #include <cstdint>
 #include <limits>
 
