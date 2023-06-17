@@ -1,3 +1,6 @@
+# OpenLoco version 23.06.1+ (???)
+
+
 # OpenLoco version 23.06 (2023-06-12)
 
 ## Hardware backed window scaling (#1965)
