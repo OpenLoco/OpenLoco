@@ -48,5 +48,19 @@ namespace OpenLoco
         virtual void setPosition(size_t) = 0;
         virtual void read(void*, size_t) = 0;
         virtual void write(const void*, size_t) = 0;
+
+        template<typename T>
+        void readValue(T& dst)
+        {
+            // TODO: Ensure the type is a primitive.
+            read(&dst, sizeof(T));
+        }
+
+        template<typename T>
+        void writeValue(const T& src)
+        {
+            // TODO: Ensure the type is a primitive.
+            write(&src, sizeof(T));
+        }
     };
 }

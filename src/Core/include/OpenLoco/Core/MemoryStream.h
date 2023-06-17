@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Span.hpp"
 #include "Stream.hpp"
 #include <cstdint>
 #include <cstdio>
@@ -9,15 +10,27 @@ namespace OpenLoco
 {
     class MemoryStream final : public Stream
     {
-        std::vector<std::byte> _data{};
+        std::byte* _data{};
         size_t _offset{};
+        size_t _length{};
+        size_t _capacity{};
 
     public:
-        void ensureLength(size_t len);
+        ~MemoryStream();
 
-        const void* data() const;
+        void reserve(size_t len);
 
-        void* data();
+        void resize(size_t len);
+
+        void clear();
+
+        const std::byte* data() const;
+
+        std::byte* data();
+
+        stdx::span<std::byte> getSpan();
+
+        stdx::span<const std::byte> getSpan() const;
 
         size_t getLength() const noexcept override;
 
@@ -29,5 +42,4 @@ namespace OpenLoco
 
         void write(const void* buffer, size_t len) override;
     };
-
 }

@@ -1,16 +1,77 @@
 #include "FileStream.h"
 #include <algorithm>
 #include <stdexcept>
+#include <stdio.h>
 
 namespace OpenLoco
 {
-    static size_t getFileLength(std::fstream& fs)
+    static FILE* fileOpen(const std::filesystem::path& path, StreamMode mode)
     {
-        auto backup = fs.tellg();
-        fs.seekg(0, std::ios_base::end);
-        auto len = fs.tellg();
-        fs.seekg(backup);
-        return len;
+        if (mode == StreamMode::none)
+        {
+            throw std::invalid_argument("Invalid mode argument");
+        }
+#ifdef _WIN32
+        FILE* fs;
+        _wfopen_s(&fs, path.wstring().c_str(), mode == StreamMode::read ? L"rb" : L"wb");
+        return fs;
+#else
+        return fopen(path.u8string().c_str(), mode == StreamMode::read ? "rb" : "wb");
+#endif
+    }
+
+    static size_t fileTell(FILE* fs)
+    {
+#ifdef _MSC_VER
+        return _ftelli64_nolock(fs);
+#else
+        return ftello(fs);
+#endif
+    }
+
+    static void fileSeek(FILE* fs, size_t offset, int origin)
+    {
+#ifdef _MSC_VER
+        _fseeki64_nolock(fs, offset, origin);
+#else
+        fseeko(fs, offset, origin);
+#endif
+    }
+
+    static size_t readFile(void* buffer, size_t len, FILE* fs)
+    {
+#ifdef _MSC_VER
+        return _fread_nolock(buffer, 1, len, fs);
+#else
+        return std::fread(buffer, 1, len, fs);
+#endif
+    }
+
+    static size_t writeFile(const void* buffer, size_t len, FILE* fs)
+    {
+#ifdef _MSC_VER
+        return _fwrite_nolock(buffer, 1, len, fs);
+#else
+        return std::fwrite(buffer, 1, len, fs);
+#endif
+    }
+
+    static void fileClose(FILE* fs)
+    {
+#ifdef _MSC_VER
+        _fclose_nolock(fs);
+#else
+        fclose(fs);
+#endif
+    }
+
+    static size_t getFileLength(FILE* fs)
+    {
+        const auto current = fileTell(fs);
+        fileSeek(fs, 0, SEEK_END);
+        const auto length = fileTell(fs);
+        fileSeek(fs, current, SEEK_SET);
+        return length;
     }
 
     FileStream::FileStream(const std::filesystem::path& path, StreamMode mode)
@@ -22,33 +83,28 @@ namespace OpenLoco
         }
     }
 
+    FileStream::~FileStream()
+    {
+        close();
+    }
+
     bool FileStream::open(const std::filesystem::path& path, StreamMode mode)
     {
-        if (mode == StreamMode::none)
-        {
-            throw std::invalid_argument("Invalid mode argument");
-        }
-
         close();
 
-        if (mode == StreamMode::write)
-        {
-            _fstream.open(path, std::ios::out | std::ios::binary);
-        }
-        if (mode == StreamMode::read)
-        {
-            _fstream.open(path, std::ios::in | std::ios::binary);
-        }
-
-        if (!_fstream.is_open())
+        _file = fileOpen(path, mode);
+        if (_file == nullptr)
         {
             return false;
         }
 
+        // Increase the buffer size to 1MiB.
+        std::setvbuf(_file, nullptr, _IOFBF, 1024 * 1024);
+
         // Get the length if we are reading an existing file.
         if (mode == StreamMode::read)
         {
-            _length = getFileLength(_fstream);
+            _length = getFileLength(_file);
         }
 
         _offset = 0;
@@ -58,15 +114,21 @@ namespace OpenLoco
 
     bool FileStream::isOpen() const noexcept
     {
-        return _fstream.is_open();
+        return _file != nullptr;
     }
 
     void FileStream::close()
     {
+        if (_file == nullptr)
+        {
+            return;
+        }
         _mode = StreamMode::none;
         _length = 0;
         _offset = 0;
-        _fstream.close();
+
+        fileClose(_file);
+        _file = nullptr;
     }
 
     StreamMode FileStream::getMode() const noexcept
@@ -91,10 +153,7 @@ namespace OpenLoco
             throw std::runtime_error("Invalid operation");
         }
         position = std::min(_length, static_cast<size_t>(position));
-        if (_mode == StreamMode::read)
-            _fstream.seekg(position);
-        if (_mode == StreamMode::write)
-            _fstream.seekp(position);
+        fileSeek(_file, position, SEEK_SET);
         _offset = position;
     }
 
@@ -105,11 +164,13 @@ namespace OpenLoco
             throw std::runtime_error("Invalid operation");
         }
 
-        _fstream.read(static_cast<char*>(buffer), len);
-        if (_fstream.fail())
+        const auto bytesRead = readFile(buffer, len, _file);
+        if (bytesRead != len)
+        {
             throw std::runtime_error("Failed to read data");
+        }
 
-        _offset += len;
+        _offset += bytesRead;
     }
 
     void FileStream::write(const void* buffer, size_t len)
@@ -123,11 +184,13 @@ namespace OpenLoco
             return;
         }
 
-        _fstream.write(static_cast<const char*>(buffer), len);
-        if (_fstream.fail())
+        const auto bytesWriten = writeFile(buffer, len, _file);
+        if (bytesWriten != len)
+        {
             throw std::runtime_error("Failed to write data");
+        }
 
-        _offset += len;
+        _offset += bytesWriten;
         _length = std::max(_length, _offset);
     }
 }

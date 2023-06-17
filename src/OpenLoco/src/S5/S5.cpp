@@ -353,7 +353,6 @@ namespace OpenLoco::S5
             }
 
             fs.writeChecksum();
-            fs.close();
             return true;
         }
         catch (const std::exception& e)

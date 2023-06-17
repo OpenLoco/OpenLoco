@@ -424,9 +424,17 @@ namespace OpenLoco
         {
             auto path = fs::u8path(options.path);
 
-            MemoryStream ms;
-            SawyerStreamReader reader(path);
-            SawyerStreamWriter writer(ms);
+            FileStream fsInput(path, StreamMode::read);
+            SawyerStreamReader reader(fsInput);
+
+            auto outputPath = options.outputPath;
+            if (outputPath.empty())
+            {
+                outputPath = options.path;
+            }
+
+            FileStream fsOutput(outputPath, StreamMode::write);
+            SawyerStreamWriter writer(fsOutput);
 
             if (!reader.validateChecksum())
             {
@@ -473,16 +481,6 @@ namespace OpenLoco
             }
 
             writer.writeChecksum();
-            writer.close();
-            reader.close();
-
-            auto outputPath = options.outputPath;
-            if (outputPath.empty())
-            {
-                outputPath = options.path;
-            }
-            FileStream fs(outputPath, StreamMode::write);
-            fs.write(ms.data(), ms.getLength());
 
             return 0;
         }
