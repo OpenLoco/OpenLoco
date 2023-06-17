@@ -1,14 +1,12 @@
 #include "Numeric.hpp"
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 #include <cstddef>
 #include <cstdint>
 #include <limits.h>
 #include <type_traits>
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 
 namespace OpenLoco::Utility
 {
@@ -16,7 +14,7 @@ namespace OpenLoco::Utility
     int32_t bitScanForward(uint32_t source)
     {
 #if defined(_MSC_VER) && (_MSC_VER >= 1400) // Visual Studio 2005
-        DWORD i;
+        unsigned long i;
         uint8_t success = _BitScanForward(&i, source);
         return success != 0 ? i : -1;
 #elif defined(__GNUC__)
@@ -41,7 +39,7 @@ namespace OpenLoco::Utility
     int32_t bitScanReverse(uint32_t source)
     {
 #if defined(_MSC_VER) && (_MSC_VER >= 1400) // Visual Studio 2005
-        DWORD i;
+        unsigned long i;
         uint8_t success = _BitScanReverse(&i, source);
         return success != 0 ? i : -1;
 #elif defined(__GNUC__)
