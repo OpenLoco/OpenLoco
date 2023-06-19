@@ -18,6 +18,7 @@ namespace OpenLoco::World
         }
 
         constexpr uint8_t doubleHeight = (1 << 4);
+        constexpr uint8_t requiresHeightAdjustment = (1 << 5);
 
         namespace CornerDown
         {
@@ -70,6 +71,11 @@ namespace OpenLoco::World
         bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::doubleHeight; }
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
+        void setSlope(uint8_t slope)
+        {
+            uint8_t var = var_4_E0();
+            _slope = var | (slope & 0x1F);
+        }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
         void setVar4SLR5(uint8_t var4)
         {

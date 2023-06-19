@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeTree,                   removeTree,                0x004BB392, true  },
         { GameCommand::createTree,                   createTree,                0x004BB138, true  },
         { GameCommand::changeLandMaterial,           changeLandMaterial,        0x00468EDD, true  },
-        { GameCommand::raiseLand,                    nullptr,                   0x00463702, true  },
+        { GameCommand::raiseLand,                    raiseLand,                 0x00463702, true  },
         { GameCommand::lowerLand,                    nullptr,                   0x004638C6, true  },
         { GameCommand::lowerRaiseLandMountain,       nullptr,                   0x00462DCE, true  },
         { GameCommand::raiseWater,                   nullptr,                   0x004C4F19, true  },
@@ -504,5 +504,10 @@ namespace OpenLoco::GameCommands
     void setUpdatingCompanyId(const CompanyId companyId)
     {
         _updatingCompanyId = companyId;
+    }
+
+    uint8_t getCommandNestLevel()
+    {
+        return _gameCommandNestLevel;
     }
 }

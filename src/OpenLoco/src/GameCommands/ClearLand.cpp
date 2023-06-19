@@ -19,37 +19,8 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
-using OpenLoco::World::TileClearance::LessThanPos3;
-
 namespace OpenLoco::GameCommands
 {
-    // 0x004690FC
-    static void setTerrainStyleAsCleared(World::Pos2 pos)
-    {
-        auto* surface = World::TileManager::get(pos).surface();
-        if (surface == nullptr)
-        {
-            return;
-        }
-        if (surface->isIndustrial())
-        {
-            return;
-        }
-        if (surface->var_6_SLR5() > 0)
-        {
-            surface->setVar6SLR5(0);
-            surface->setVar4SLR5(0);
-
-            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
-        }
-        if (surface->var_4_E0() > 0)
-        {
-            surface->setVar4SLR5(0);
-
-            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
-        }
-    }
-
     // 0x00469D76
     static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
     {
@@ -64,7 +35,7 @@ namespace OpenLoco::GameCommands
         {
             if (!isEditorMode())
             {
-                setTerrainStyleAsCleared(pos);
+                TileManager::setTerrainStyleAsCleared(pos);
             }
 
             auto tileHeight = World::TileManager::getHeight(pos);
@@ -76,7 +47,7 @@ namespace OpenLoco::GameCommands
         currency32_t cost{};
         // Bind our local vars to the tile clear function
         auto clearFunc = [pos, &removedBuildings, flags, &cost](World::TileElement& el) {
-            return TileClearance::tileClearFunction(el, pos, removedBuildings, flags, cost);
+            return TileClearance::clearWithoutDefaultCollision(el, pos, removedBuildings, flags, cost);
         };
 
         auto tileHeight = World::TileManager::getHeight(pos);
