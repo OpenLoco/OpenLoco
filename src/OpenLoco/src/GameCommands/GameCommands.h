@@ -2168,6 +2168,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
+    // Defined in GameCommands/LowerLand.cpp
+    void lowerLand(registers& regs);
+
     // Defined in GameCommands/RaiseLand.cpp
     void raiseLand(registers& regs);
 

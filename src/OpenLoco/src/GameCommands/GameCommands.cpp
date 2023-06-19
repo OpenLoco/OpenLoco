@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createTree,                   createTree,                0x004BB138, true  },
         { GameCommand::changeLandMaterial,           changeLandMaterial,        0x00468EDD, true  },
         { GameCommand::raiseLand,                    raiseLand,                 0x00463702, true  },
-        { GameCommand::lowerLand,                    nullptr,                   0x004638C6, true  },
+        { GameCommand::lowerLand,                    lowerLand,                 0x004638C6, true  },
         { GameCommand::lowerRaiseLandMountain,       nullptr,                   0x00462DCE, true  },
         { GameCommand::raiseWater,                   nullptr,                   0x004C4F19, true  },
         { GameCommand::lowerWater,                   nullptr,                   0x004C5126, true  },

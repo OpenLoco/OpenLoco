@@ -82,6 +82,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CreateVehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/LoadSaveQuit.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/LowerLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RaiseLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveBuilding.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveIndustry.cpp"
