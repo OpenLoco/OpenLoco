@@ -915,68 +915,140 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Raise Land
-    inline uint32_t do_25(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
+    struct RaiseLandArgs
     {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        regs.di = di;
-        return doCommand(GameCommand::raiseLand, regs);
-    }
+        static constexpr auto command = GameCommand::raiseLand;
+        RaiseLandArgs() = default;
+        explicit RaiseLandArgs(const registers& regs)
+            : centre(regs.ax, regs.cx)
+            , pointA(regs.dx, regs.bp)
+            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            , corner(regs.di)
+        {
+        }
 
-    // Lower Land
-    inline uint32_t do_26(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
-    {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        regs.di = di;
-        return doCommand(GameCommand::lowerLand, regs);
-    }
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
 
-    // Lower/Raise Land Mountain
-    inline uint32_t do_27(World::Pos2 centre, World::Pos2 pointA, World::Pos2 pointB, uint16_t di, uint8_t flags)
-    {
-        registers regs;
-        regs.ax = centre.x;
-        regs.cx = centre.y;
-        regs.edx = pointB.x << 16 | pointA.x;
-        regs.ebp = pointB.y << 16 | pointA.y;
-        regs.bl = flags;
-        regs.di = di;
-        return doCommand(GameCommand::lowerRaiseLandMountain, regs);
-    }
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
+            regs.di = corner;
+            return regs;
+        }
+    };
 
-    // Raise Water
-    inline uint32_t do_28(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
+    struct LowerLandArgs
     {
-        registers regs;
-        regs.ax = pointA.x;
-        regs.cx = pointA.y;
-        regs.di = pointB.x;
-        regs.bp = pointB.y;
-        regs.bl = flags;
-        return doCommand(GameCommand::raiseWater, regs);
-    }
+        static constexpr auto command = GameCommand::lowerLand;
+        LowerLandArgs() = default;
+        explicit LowerLandArgs(const registers& regs)
+            : centre(regs.ax, regs.cx)
+            , pointA(regs.dx, regs.bp)
+            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            , corner(regs.di)
+        {
+        }
 
-    // Lower Water
-    inline uint32_t do_29(World::Pos2 pointA, World::Pos2 pointB, uint8_t flags)
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t corner;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
+            regs.di = corner;
+            return regs;
+        }
+    };
+
+    struct LowerRaiseLandMountainArgs
     {
-        registers regs;
-        regs.ax = pointA.x;
-        regs.cx = pointA.y;
-        regs.di = pointB.x;
-        regs.bp = pointB.y;
-        regs.bl = flags;
-        return doCommand(GameCommand::lowerWater, regs);
-    }
+        static constexpr auto command = GameCommand::lowerRaiseLandMountain;
+        LowerRaiseLandMountainArgs() = default;
+        explicit LowerRaiseLandMountainArgs(const registers& regs)
+            : centre(regs.ax, regs.cx)
+            , pointA(regs.dx, regs.bp)
+            , pointB(regs.edx >> 16, regs.ebp >> 16)
+            , di(regs.di)
+        {
+        }
+
+        World::Pos2 centre;
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+        uint16_t di;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = centre.x;
+            regs.cx = centre.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
+            regs.di = di;
+            return regs;
+        }
+    };
+
+    struct RaiseWaterArgs
+    {
+        static constexpr auto command = GameCommand::raiseWater;
+        RaiseWaterArgs() = default;
+        explicit RaiseWaterArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+        {
+        }
+
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            return regs;
+        }
+    };
+
+    struct LowerWaterArgs
+    {
+        static constexpr auto command = GameCommand::lowerWater;
+        LowerWaterArgs() = default;
+        explicit LowerWaterArgs(const registers& regs)
+            : pointA(regs.ax, regs.cx)
+            , pointB(regs.di, regs.bp)
+        {
+        }
+
+        World::Pos2 pointA;
+        World::Pos2 pointB;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pointA.x;
+            regs.cx = pointA.y;
+            regs.di = pointB.x;
+            regs.bp = pointB.y;
+            return regs;
+        }
+    };
 
     struct ChangeCompanyNameArgs
     {
@@ -1157,22 +1229,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_36(EntityId head, uint32_t orderOffset)
+    struct VehicleOrderSkipArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(head);
-        regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicleOrderDelete, regs);
-    }
+        static constexpr auto command = GameCommand::vehicleOrderSkip;
 
-    inline bool do_37(EntityId head)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehicleOrderSkip, regs);
-    }
+        VehicleOrderSkipArgs() = default;
+        explicit VehicleOrderSkipArgs(const registers& regs)
+            : head(EntityId(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     struct RoadPlacementArgs
     {
@@ -1832,8 +1907,8 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = centre.x;
             regs.cx = centre.y;
-            regs.edx = pointB.x << 16 | pointA.x;
-            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
             return regs;
         }
     };
