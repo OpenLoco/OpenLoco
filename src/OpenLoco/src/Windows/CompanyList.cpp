@@ -18,8 +18,8 @@
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
@@ -1105,7 +1105,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             if (self.var_854 != 0)
             {
                 auto i = 0;
-                while (Utility::bitScanForward(self.var_854) != _graphItemId[i])
+                while (Numerics::bitScanForward(self.var_854) != _graphItemId[i])
                 {
                     i++;
                 }
@@ -1689,7 +1689,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             if (self->var_854 != 0)
             {
                 auto i = 0;
-                auto bitScan = Utility::bitScanForward(self->var_854);
+                auto bitScan = Numerics::bitScanForward(self->var_854);
                 while (bitScan != _graphItemId[i] && bitScan != -1)
                 {
                     i++;

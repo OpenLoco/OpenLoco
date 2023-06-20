@@ -202,7 +202,7 @@ namespace OpenLoco::GameCommands
             {
                 newBogie->secondaryCargo.maxQty = vehObject.maxCargo[1];
                 newBogie->secondaryCargo.acceptedTypes = vehObject.cargoTypes[1];
-                auto cargoType = Utility::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
+                auto cargoType = Numerics::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
                     newBogie->secondaryCargo.type = cargoType;
@@ -281,7 +281,7 @@ namespace OpenLoco::GameCommands
             {
                 newBody->primaryCargo.maxQty = vehObject.maxCargo[0];
                 newBody->primaryCargo.acceptedTypes = vehObject.cargoTypes[0];
-                auto cargoType = Utility::bitScanForward(newBody->primaryCargo.acceptedTypes);
+                auto cargoType = Numerics::bitScanForward(newBody->primaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
                     newBody->primaryCargo.type = cargoType;

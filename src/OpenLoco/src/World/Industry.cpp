@@ -17,9 +17,9 @@
 #include "Random.h"
 #include "StationManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;

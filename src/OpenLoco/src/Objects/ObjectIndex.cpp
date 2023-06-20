@@ -6,9 +6,9 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>
@@ -74,7 +74,7 @@ namespace OpenLoco::ObjectManager
             currentState.numObjects++;
             const auto lastWrite = file.last_write_time().time_since_epoch().count();
             currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
-            currentState.dateHash = Utility::ror(currentState.dateHash, 5);
+            currentState.dateHash = Numerics::ror(currentState.dateHash, 5);
             currentState.totalFileSize += file.file_size();
         }
         currentState.numObjects |= (1 << 24);

@@ -4,8 +4,8 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 
@@ -14,7 +14,7 @@ namespace OpenLoco
     // 0x0042DE40
     void BuildingObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto bit = Utility::bitScanReverse(colours);
+        auto bit = Numerics::bitScanReverse(colours);
 
         const auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 

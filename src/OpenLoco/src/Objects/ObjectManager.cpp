@@ -48,10 +48,10 @@
 #include "WallObject.h"
 #include "WaterObject.h"
 #include <OpenLoco/Core/FileSystem.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <vector>
 
 using namespace OpenLoco::Interop;
@@ -338,7 +338,7 @@ namespace OpenLoco::ObjectManager
         auto checksum = seed;
         for (auto d : data)
         {
-            checksum = Utility::rol(checksum ^ static_cast<uint8_t>(d), 11);
+            checksum = Numerics::rol(checksum ^ static_cast<uint8_t>(d), 11);
         }
         return checksum;
     }

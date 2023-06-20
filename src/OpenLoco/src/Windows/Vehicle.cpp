@@ -2028,7 +2028,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Vehicles::Vehicle train(*head);
             auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             auto maxPrimaryCargo = vehicleObject->maxCargo[0];
-            auto primaryCargoId = Utility::bitScanForward(vehicleObject->cargoTypes[0]);
+            auto primaryCargoId = Numerics::bitScanForward(vehicleObject->cargoTypes[0]);
 
             int32_t index = 0;
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); cargoId++)
@@ -2111,7 +2111,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 while (availableCargoTypes != 0)
                 {
-                    auto type = Utility::bitScanForward(availableCargoTypes);
+                    auto type = Numerics::bitScanForward(availableCargoTypes);
                     availableCargoTypes &= ~(1 << type);
 
                     auto cargoObj = ObjectManager::get<CargoObject>(type);

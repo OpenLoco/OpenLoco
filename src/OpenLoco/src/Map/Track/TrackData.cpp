@@ -1,6 +1,6 @@
 #include "TrackData.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <array>
 #include <cassert>
 
@@ -10,9 +10,9 @@ namespace OpenLoco::World::TrackData
     {
         return {
             connection,
-            Utility::rol(connection, 2),
-            Utility::rol(connection, 4),
-            Utility::rol(connection, 6),
+            Numerics::rol(connection, 2),
+            Numerics::rol(connection, 4),
+            Numerics::rol(connection, 6),
         };
     }
 

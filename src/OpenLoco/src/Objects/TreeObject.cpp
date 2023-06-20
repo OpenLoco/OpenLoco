@@ -5,8 +5,8 @@
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 
 namespace OpenLoco
 {
@@ -22,7 +22,7 @@ namespace OpenLoco
         if (colourOptions != 0)
         {
 
-            auto bit = Utility::bitScanReverse(colourOptions);
+            auto bit = Numerics::bitScanReverse(colourOptions);
 
             auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
@@ -40,7 +40,7 @@ namespace OpenLoco
 
             if (colourOptions != 0)
             {
-                auto bit = Utility::bitScanReverse(colourOptions);
+                auto bit = Numerics::bitScanReverse(colourOptions);
 
                 auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 

@@ -7,8 +7,8 @@
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 
 using namespace OpenLoco::Interop;
 
@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
 
             uint16_t maxPrimaryCargo = vehObj->maxCargo[0];
             auto cargoTypes = vehObj->cargoTypes[0];
-            auto primaryCargoId = Utility::bitScanForward(cargoTypes);
+            auto primaryCargoId = Numerics::bitScanForward(cargoTypes);
             uint16_t maxCargoUnits = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, args.cargoType);
 
             car.body->primaryCargo.type = args.cargoType;

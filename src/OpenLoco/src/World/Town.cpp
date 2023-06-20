@@ -11,8 +11,8 @@
 #include "Random.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -129,7 +129,7 @@ namespace OpenLoco
         uint32_t cargoFlags = cargoInfluenceFlags;
         while (cargoFlags != 0)
         {
-            uint32_t cargoId = Utility::bitScanForward(cargoFlags);
+            uint32_t cargoId = Numerics::bitScanForward(cargoFlags);
             cargoFlags &= ~(1 << cargoId);
 
             minCargoDelivered = std::min(minCargoDelivered, monthlyCargoDelivered[cargoId]);
@@ -324,7 +324,7 @@ namespace OpenLoco
                 if (res.has_value())
                 {
                     bool bitRes = randVal & 1;
-                    randVal = Utility::ror(randVal, 1);
+                    randVal = Numerics::ror(randVal, 1);
                     if (bitRes)
                     {
                         return true;

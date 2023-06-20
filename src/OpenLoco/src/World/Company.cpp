@@ -24,9 +24,9 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 #include <array>
 #include <map>
@@ -200,7 +200,7 @@ namespace OpenLoco
         // Random tile position 32x32 tiles centered on 0,0 i.e. +-16 tiles
         const auto randPos = World::Pos2{
             static_cast<coord_t>(randPick & 0x3E0),
-            static_cast<coord_t>(Utility::ror<uint32_t>(randPick, 5) & 0x3E0)
+            static_cast<coord_t>(Numerics::ror<uint32_t>(randPick, 5) & 0x3E0)
         } - World::toWorldSpace(World::TilePos2{ 16, 16 });
 
         const auto selectedPos = randPos + pos;
@@ -213,7 +213,7 @@ namespace OpenLoco
             if (surface->slope() != 0)
                 z += 16;
 
-            const auto rot = (Utility::ror<uint32_t>(randPick, 10)) & 0x3;
+            const auto rot = (Numerics::ror<uint32_t>(randPick, 10)) & 0x3;
             const auto buildingType = CompanyManager::getHeadquarterBuildingType();
 
             GameCommands::HeadquarterPlacementArgs args;

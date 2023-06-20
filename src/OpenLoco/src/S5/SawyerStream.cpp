@@ -1,5 +1,5 @@
 #include "SawyerStream.h"
-#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <algorithm>
 #include <cassert>
 #include <cstring>
@@ -194,7 +194,7 @@ void SawyerStreamReader::decodeRotate(MemoryStream& buffer, stdx::span<const std
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
     {
-        buffer.writeValue(OpenLoco::Utility::ror(data[i], code));
+        buffer.writeValue(Numerics::ror(data[i], code));
         code = (code + 2) & 7;
     }
 }
@@ -384,7 +384,7 @@ void SawyerStreamWriter::encodeRotate(MemoryStream& buffer, stdx::span<const std
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
     {
-        buffer.writeValue(Utility::rol(data[i], code));
+        buffer.writeValue(Numerics::rol(data[i], code));
         code = (code + 2) & 7;
     }
 }

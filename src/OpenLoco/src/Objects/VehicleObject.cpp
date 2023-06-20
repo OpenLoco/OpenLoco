@@ -11,7 +11,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
@@ -94,7 +94,7 @@ namespace OpenLoco
         if (numSimultaneousCargoTypes != 0)
         {
             {
-                auto cargoType = Utility::bitScanForward(cargoTypes[0]);
+                auto cargoType = Numerics::bitScanForward(cargoTypes[0]);
                 if (cargoType != -1)
                 {
                     auto primaryCargoTypes = cargoTypes[0] & ~(1 << cargoType);
@@ -110,12 +110,12 @@ namespace OpenLoco
                         args.push<uint32_t>(maxCargo[0]);
                         buffer = StringManager::formatString(buffer, StringIds::stats_capacity, &args);
                     }
-                    cargoType = Utility::bitScanForward(primaryCargoTypes);
+                    cargoType = Numerics::bitScanForward(primaryCargoTypes);
                     if (cargoType != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargoType != -1; cargoType = Utility::bitScanForward(primaryCargoTypes))
+                        for (; cargoType != -1; cargoType = Numerics::bitScanForward(primaryCargoTypes))
                         {
                             primaryCargoTypes &= ~(1 << cargoType);
                             if (buffer[-1] != '(')
@@ -143,7 +143,7 @@ namespace OpenLoco
 
             if (numSimultaneousCargoTypes > 1)
             {
-                auto cargoType = Utility::bitScanForward(cargoTypes[1]);
+                auto cargoType = Numerics::bitScanForward(cargoTypes[1]);
                 if (cargoType != -1)
                 {
                     auto secondaryCargoTypes = cargoTypes[1] & ~(1 << cargoType);
@@ -160,12 +160,12 @@ namespace OpenLoco
                         buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, &args);
                     }
 
-                    cargoType = Utility::bitScanForward(secondaryCargoTypes);
+                    cargoType = Numerics::bitScanForward(secondaryCargoTypes);
                     if (cargoType != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargoType != -1; cargoType = Utility::bitScanForward(secondaryCargoTypes))
+                        for (; cargoType != -1; cargoType = Numerics::bitScanForward(secondaryCargoTypes))
                         {
                             secondaryCargoTypes &= ~(1 << cargoType);
                             if (buffer[-1] != '(')

@@ -24,9 +24,9 @@
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -1190,7 +1190,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->cargoTypes[0] | vehicleObj->cargoTypes[1];
 
-                for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))
+                for (auto cargoTypes = Numerics::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Numerics::bitScanForward(usableCargoTypes))
                 {
                     usableCargoTypes &= ~(1 << cargoTypes);
                     auto cargoObj = ObjectManager::get<CargoObject>(cargoTypes);
@@ -1258,7 +1258,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         WidgetIndex_t trackTypeTab = tab_track_type_0;
         auto trackType = 0;
-        for (trackType = Utility::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(railTrackTypes))
+        for (trackType = Numerics::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Numerics::bitScanForward(railTrackTypes))
         {
             railTrackTypes &= ~(1 << trackType);
             window->widgets[trackTypeTab].type = WidgetType::tab;
@@ -1268,7 +1268,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (trackType == -1 && trackTypeTab <= tab_track_type_7)
         {
-            for (trackType = Utility::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(roadTrackTypes))
+            for (trackType = Numerics::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Numerics::bitScanForward(roadTrackTypes))
             {
                 roadTrackTypes &= ~(1 << trackType);
                 window->widgets[trackTypeTab].type = WidgetType::tab;

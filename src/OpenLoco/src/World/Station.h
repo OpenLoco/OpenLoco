@@ -6,7 +6,7 @@
 #include "Speed.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 #include <cstdint>
 #include <limits>
 
@@ -48,7 +48,7 @@ namespace OpenLoco
 
         void isAccepted(bool value)
         {
-            flags = Utility::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
+            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
         }
     };
 
