@@ -937,8 +937,8 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = centre.x;
             regs.cx = centre.y;
-            regs.edx = pointB.x << 16 | pointA.x;
-            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
             regs.di = corner;
             return regs;
         }
@@ -966,8 +966,8 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = centre.x;
             regs.cx = centre.y;
-            regs.edx = pointB.x << 16 | pointA.x;
-            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
             regs.di = corner;
             return regs;
         }
@@ -995,8 +995,8 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = centre.x;
             regs.cx = centre.y;
-            regs.edx = pointB.x << 16 | pointA.x;
-            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
             regs.di = di;
             return regs;
         }
@@ -1907,8 +1907,8 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = centre.x;
             regs.cx = centre.y;
-            regs.edx = pointB.x << 16 | pointA.x;
-            regs.ebp = pointB.y << 16 | pointA.y;
+            regs.edx = (pointB.x << 16) | pointA.x;
+            regs.ebp = (pointB.y << 16) | pointA.y;
             return regs;
         }
     };
