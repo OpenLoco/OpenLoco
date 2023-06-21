@@ -4,6 +4,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/QuarterTile.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
 #include "Objects/LandObject.h"
@@ -85,7 +86,7 @@ namespace OpenLoco::GameCommands
         }
 
         World::QuarterTile qt(1 << (args.quadrant ^ (1 << 1)), 0xF);
-        if (!World::TileManager::canConstructAt(args.pos, baseZ, clearanceZ, qt))
+        if (!World::TileClearance::canConstructAt(args.pos, baseZ, clearanceZ, qt))
         {
             // Error message set in canConstructAt
             return FAILURE;
