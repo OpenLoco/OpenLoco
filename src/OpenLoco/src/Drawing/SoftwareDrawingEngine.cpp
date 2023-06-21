@@ -221,7 +221,7 @@ namespace OpenLoco::Drawing
         {
             delete[] rt.bits;
         }
-        rt.bits = new uint8_t[pitch * scaledWidth];
+        rt.bits = new uint8_t[pitch * scaledHeight];
         rt.width = scaledWidth;
         rt.height = scaledHeight;
         rt.pitch = pitch - scaledWidth;
