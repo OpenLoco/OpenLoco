@@ -22,6 +22,7 @@
 #include "Logging.h"
 #include "Map/AnimationManager.h"
 #include "Map/Tile.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
 #include "Objects/ObjectManager.h"
@@ -761,6 +762,7 @@ void OpenLoco::Interop::registerHooks()
         });
 
     Ui::ProgressBar::registerHooks();
+    World::TileClearance::registerHooks();
     World::TileManager::registerHooks();
     World::AnimationManager::registerHooks();
     Ui::Windows::TextInput::registerHooks();
