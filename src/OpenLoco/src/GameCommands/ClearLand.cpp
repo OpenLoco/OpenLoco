@@ -80,7 +80,7 @@ namespace OpenLoco::GameCommands
         };
 
         auto tileHeight = World::TileManager::getHeight(pos);
-        if (TileClearance::sub_462908(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, clearFunc))
+        if (TileClearance::applyClearAtAllHeights(pos, tileHeight.landHeight / 4, tileHeight.landHeight / 4, qt, clearFunc))
             return cost;
         else
             return GameCommands::FAILURE;
