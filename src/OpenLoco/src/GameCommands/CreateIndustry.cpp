@@ -10,7 +10,7 @@
 #include "SceneManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Utility/Numeric.hpp>
+#include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands
 {
@@ -198,7 +198,7 @@ namespace OpenLoco::GameCommands
         // Note: Could use a fixed size vector as max size is Colour::max
         std::vector<Colour> availableColours;
         auto colourBitSet = indObj->availableColours;
-        for (auto colourI32 = Utility::bitScanForward(colourBitSet); colourI32 != -1; colourI32 = Utility::bitScanForward(colourBitSet))
+        for (auto colourI32 = Numerics::bitScanForward(colourBitSet); colourI32 != -1; colourI32 = Numerics::bitScanForward(colourBitSet))
         {
             colourBitSet &= ~(1ULL << colourI32);
             availableColours.push_back(static_cast<Colour>(colourI32));
