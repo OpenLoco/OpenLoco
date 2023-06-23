@@ -12,16 +12,6 @@
 
 #ifdef _WIN32
 #include <OpenLoco/Resources/Resource.h>
-
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
-
-// `small` is used as a type in `windows.h`
-#undef small
 #endif
 
 #include <SDL2/SDL.h>
@@ -80,7 +70,6 @@ namespace OpenLoco::Ui
     static SDL_Window* window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
 
-    static void setWindowIcon();
     static void resize(int32_t width, int32_t height);
     static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
 
@@ -144,6 +133,10 @@ namespace OpenLoco::Ui
     // 0x00405409
     void createWindow(const Config::Display& cfg)
     {
+#ifdef _WIN32
+        SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL, std::to_string(IDI_ICON).c_str());
+#endif
+
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             throw std::runtime_error("Unable to initialise SDL2 video subsystem.");
@@ -168,31 +161,10 @@ namespace OpenLoco::Ui
         _hwnd = wmInfo.info.win.window;
 #endif
 
-        setWindowIcon();
-
         // Create a palette for the window
         auto& drawingEngine = Gfx::getDrawingEngine();
         drawingEngine.initialize(window);
         drawingEngine.resize(desc.width, desc.height);
-    }
-
-    static void setWindowIcon()
-    {
-#ifdef _WIN32
-        auto win32module = GetModuleHandleA("openloco.dll");
-        if (win32module != nullptr)
-        {
-            auto icon = LoadIconA(win32module, MAKEINTRESOURCEA(IDI_ICON));
-            if (icon != nullptr)
-            {
-                auto hwnd = (HWND)*_hwnd;
-                if (hwnd != nullptr)
-                {
-                    SendMessageA(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
-                }
-            }
-        }
-#endif
     }
 
     // 0x0045235D
