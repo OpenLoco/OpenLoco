@@ -2174,6 +2174,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RaiseLand.cpp
     void raiseLand(registers& regs);
 
+    // Defined in GameCommands/RaiseWater.cpp
+    void raiseWater(registers& regs);
+
     // Defined in GameCommands/RemoveBuilding.cpp
     void removeBuilding(registers& regs);
 

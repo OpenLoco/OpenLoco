@@ -119,6 +119,8 @@ namespace OpenLoco::World
             _type |= state ? 0x80 : 0;
         }
         void removeIndustry(const World::Pos2& pos);
+
+        void setVar7(uint8_t value) { _7 = value; }
     };
 #pragma pack(pop)
     static_assert(sizeof(SurfaceElement) == kTileElementSize);
