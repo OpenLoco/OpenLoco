@@ -83,6 +83,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/LoadSaveQuit.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/LowerLand.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/LowerWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RaiseLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RaiseWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveBuilding.cpp"
