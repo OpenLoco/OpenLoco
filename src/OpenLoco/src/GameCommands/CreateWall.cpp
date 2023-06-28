@@ -16,46 +16,59 @@
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
     // clang-format off
-    constexpr std::array<std::array<uint8_t, 4>, 32> edgeWallMapping = {
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x40, 0x80, 0x00 },
-        { 0x00, 0x00, 0x40, 0x80 },
-        { 0x00, 0x40, 0x01, 0x80 },
-        { 0x80, 0x00, 0x00, 0x40 },
-        { 0x80, 0x40, 0x80, 0x40 },
-        { 0x80, 0x00, 0x40, 0x01 },
-        { 0x80, 0x40, 0x01, 0x01 },
-        { 0x40, 0x80, 0x00, 0x00 },
-        { 0x40, 0x01, 0x80, 0x00 },
-        { 0x40, 0x80, 0x40, 0x80 },
-        { 0x40, 0x01, 0x01, 0x80 },
-        { 0x01, 0x80, 0x00, 0x40 },
-        { 0x01, 0x01, 0x80, 0x40 },
-        { 0x01, 0x80, 0x40, 0x01 },
-        { 0x01, 0x01, 0x01, 0x01 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x80, 0x40, 0x41, 0x81 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x40, 0x41, 0x81, 0x80 },
-        { 0x00, 0x00, 0x00, 0x00 },
-        { 0x41, 0x81, 0x80, 0x40 },
-        { 0x81, 0x80, 0x40, 0x41 },
-        { 0x00, 0x00, 0x00, 0x00 },
+    enum class EdgeSlope : uint8_t
+    {
+        none              = 0U,
+        elevated          = (1 << 0),
+        upwards           = (1 << 6),
+        downwards         = (1 << 7),
+        upwardsElevated   = EdgeSlope::upwards | EdgeSlope::elevated,
+        downwardsElevated = EdgeSlope::downwards | EdgeSlope::elevated,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(EdgeSlope);
+
+    constexpr std::array<std::array<EdgeSlope, 4>, 32> edgeWallMapping = { {
+        // top-right                    bottom-right                  bottom-left                   top-left
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::downwards         },
+        { EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::downwards         },
+        { EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::upwards           },
+        { EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::upwards           },
+        { EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::elevated          },
+        { EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::elevated          },
+        { EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::none              },
+        { EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::downwards         },
+        { EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::downwards         },
+        { EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::upwards           },
+        { EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::upwards           },
+        { EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::elevated          },
+        { EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::elevated          },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::upwardsElevated,   EdgeSlope::downwardsElevated },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::upwards,           EdgeSlope::upwardsElevated,   EdgeSlope::downwardsElevated, EdgeSlope::downwards         },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+        { EdgeSlope::upwardsElevated,   EdgeSlope::downwardsElevated, EdgeSlope::downwards,         EdgeSlope::upwards           },
+        { EdgeSlope::downwardsElevated, EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::upwardsElevated   },
+        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+    } };
     // clang-format on
 
     // 0x004C436C
