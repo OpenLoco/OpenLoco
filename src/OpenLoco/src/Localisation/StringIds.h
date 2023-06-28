@@ -350,7 +350,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cannot_build_partly_above_below_water = 357;
 
     constexpr string_id error_can_only_build_above_ground = 360;
-
+    constexpr string_id can_only_build_this_on_level_land = 361;
     constexpr string_id title_prompt_load_game = 362;
     constexpr string_id title_prompt_load_landscape = 363;
     constexpr string_id title_prompt_save_landscape = 364;
