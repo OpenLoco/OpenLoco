@@ -23,7 +23,7 @@ namespace OpenLoco
     static size_t fileTell(FILE* fs)
     {
 #ifdef _MSC_VER
-        return _ftelli64_nolock(fs);
+        return static_cast<size_t>(_ftelli64_nolock(fs));
 #else
         return ftello(fs);
 #endif
