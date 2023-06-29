@@ -33,7 +33,7 @@ namespace OpenLoco::World::TileClearance
     static loco_global<ElementPositionFlags, 0x00F00166> _constructAtElementPositionFlags;
 
     // 0x00462C8E
-    static void setCollisionErrorMessage(const World::TileElement& el)
+    void setCollisionErrorMessage(const World::TileElement& el)
     {
         switch (el.type())
         {

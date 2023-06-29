@@ -7,6 +7,7 @@
 #include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/TreeElement.h"
+#include "Map/WallElement.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/WallObject.h"
@@ -19,6 +20,7 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
@@ -71,6 +73,57 @@ namespace OpenLoco::GameCommands
     } };
     // clang-format on
 
+    // 0x004C4A3B
+    static bool canConstructWall(World::Pos3 pos, SmallZ baseZ, SmallZ clearZ, uint8_t targetEdge)
+    {
+        if (!validCoords(pos) || (pos.x < kTileSize || pos.y < kTileSize))
+        {
+            setErrorText(StringIds::off_edge_of_map);
+            return false;
+        }
+
+        for (auto& el : TileManager::get(pos))
+        {
+            if (el.type() == ElementType::surface)
+            {
+                continue;
+            }
+            if (clearZ >= el.clearZ())
+            {
+                continue;
+            }
+            if (baseZ <= el.baseZ())
+            {
+                continue;
+            }
+
+            if (el.type() == ElementType::wall)
+            {
+                auto* wallEl = el.as<WallElement>();
+                if (wallEl != nullptr && wallEl->rotation() == targetEdge)
+                {
+                    TileClearance::setCollisionErrorMessage(el);
+                    return false;
+                }
+            }
+
+            if (!el.occupiedQuarter())
+            {
+                continue;
+            }
+
+            if (el.type() == ElementType::tree)
+            {
+                continue;
+            }
+
+            TileClearance::setCollisionErrorMessage(el);
+            return false;
+        }
+
+        return true;
+    }
+
     // 0x004C436C
     static uint32_t createWall(const WallPlacementArgs& args, const uint8_t flags)
     {
@@ -89,8 +142,8 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        auto* surfaceEl = World::TileManager::get(args.pos).surface();
-        if (surfaceEl == nullptr)
+        auto* surface = World::TileManager::get(args.pos).surface();
+        if (surface == nullptr)
         {
             return FAILURE;
         }
@@ -99,10 +152,10 @@ namespace OpenLoco::GameCommands
         auto edge = args.rotation & 3;
         auto wallFlags = edgeWallMapping[surface->slope()][edge];
 
-        if (wallFlags & (1 << 0))
+        if ((wallFlags & EdgeSlope::elevated) != EdgeSlope::none)
         {
             targetHeight += kSmallZStep;
-            wallFlags &= ~(1 << 0);
+            wallFlags &= ~EdgeSlope::elevated;
         }
 
         if (surface->water() && surface->water() * kMicroToSmallZStep > targetHeight)
@@ -117,12 +170,73 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if (wallFlags & 0x90)
+        if ((wallFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
         {
-            // to 0x004C463F
+            auto testHeight = targetHeight + kSmallZStep;
+
+            // Test placement edges to ensure we don't build partially underground
+            for (auto i = 2; i <= 3; i++)
+            {
+                auto testEdge = (args.rotation + i) & 3;
+                if (surface->slope() & (1 << testEdge))
+                {
+                    if (args.pos.z < surface->baseZ())
+                    {
+                        setErrorText(StringIds::error_can_only_build_above_ground);
+                        return FAILURE;
+                    }
+
+                    if (surface->isSlopeDoubleHeight())
+                    {
+                        testEdge = (testEdge - 1) & 3;
+                        if (surface->slope() & (1 << testEdge))
+                        {
+                            testEdge = (testEdge + 2) & 3;
+                            if (surface->slope() & (1 << testEdge))
+                            {
+                                if (args.pos.z < testHeight + kSmallZStep)
+                                {
+                                    setErrorText(StringIds::error_can_only_build_above_ground);
+                                    return FAILURE;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        // continue from 0x004C44A1
+        // TODO: fold into previous block; left for now to match IDA
+        auto* wallObj = ObjectManager::get<WallObject>(args.type);
+        if ((wallFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
+        {
+            if ((wallObj->flags & WallObjectFlags::onlyOnLevelLand) != WallObjectFlags::none)
+            {
+                setErrorText(StringIds::can_only_build_this_on_level_land);
+                return FAILURE;
+            }
+
+            targetHeight += kSmallZStep;
+        }
+
+        auto clearZ = targetHeight + wallObj->var_08;
+        if (!canConstructWall(args.pos, targetHeight, clearZ, args.rotation))
+        {
+            return FAILURE;
+        }
+
+        if (!World::TileManager::checkFreeElementsAndReorganise())
+        {
+            // Error message set in checkFreeElementsAndReorganise
+            return FAILURE;
+        }
+
+        if (!(flags & Flags::apply))
+        {
+            return 0;
+        }
+
+        // TODO: actually insert the element 0x004C4594 onwards
 
         return 0;
     }

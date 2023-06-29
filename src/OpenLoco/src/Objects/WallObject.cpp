@@ -38,7 +38,7 @@ namespace OpenLoco
     void WallObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto image = sprite;
-        if (flags & (1 << 6))
+        if ((flags & WallObjectFlags::unk6) != WallObjectFlags::none)
         {
             image = Gfx::recolour2(sprite, Colour::mutedDarkRed, Colour::yellow);
         }
@@ -49,13 +49,13 @@ namespace OpenLoco
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image);
-        if (flags & (1 << 1))
+        if ((flags & WallObjectFlags::unk1) != WallObjectFlags::none)
         {
             drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
         }
         else
         {
-            if (flags & (1 << 4))
+            if ((flags & WallObjectFlags::unk4) != WallObjectFlags::none)
             {
                 drawingCtx.drawImage(&rt, x + 14, y + 16 + (var_08 * 2), image + 1);
             }
