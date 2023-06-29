@@ -236,7 +236,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        auto* wall = TileManager::insertElement<WallElement>(args.pos, targetHeight, 0);
+        auto* wall = TileManager::insertElement<WallElement>(args.pos, targetHeight / kSmallZStep, 0);
         if (wall == nullptr)
         {
             return FAILURE;
