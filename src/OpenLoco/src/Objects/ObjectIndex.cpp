@@ -312,7 +312,7 @@ namespace OpenLoco::ObjectManager
 
             // Cheap calculation of (curObjectCount / totalObjectCount) * 256
             const auto newProgress = (header.state.numObjects << 8) / ((currentState.numObjects & 0xFFFFFF) + 1);
-            if (progress != newProgress)
+            if (progress != static_cast<int32_t>(newProgress))
             {
                 progress = newProgress;
                 Ui::ProgressBar::setProgress(newProgress);
