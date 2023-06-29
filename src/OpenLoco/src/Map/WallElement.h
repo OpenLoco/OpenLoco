@@ -17,7 +17,7 @@ namespace OpenLoco::World
         uint8_t _7;
 
     public:
-        uint8_t wallObjectId() const { return _4; }      // _4
+        uint8_t wallObjectId() const { return _4; } // _4
         void setWallObjectId(uint8_t id)
         {
             _4 = id;
