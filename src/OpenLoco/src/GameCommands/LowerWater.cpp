@@ -69,7 +69,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        if (flags & Flags::apply && totalCost > 0)
+        if ((flags & Flags::apply) && totalCost > 0)
         {
             auto centre = (args.pointA + args.pointB) / 2;
             auto tileHeight = World::TileManager::getHeight(centre);

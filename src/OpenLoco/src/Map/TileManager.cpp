@@ -1298,7 +1298,7 @@ namespace OpenLoco::World::TileManager
             }
 
             auto clearHeight = getHeight(pos).landHeight;
-            removeAllWallsOnTile(toTileSpace(pos), clearHeight / 4);
+            removeAllWallsOnTile(toTileSpace(pos), clearHeight / kSmallZStep);
         }
 
         auto tile = get(pos);
@@ -1308,13 +1308,11 @@ namespace OpenLoco::World::TileManager
         auto water = surface->water();
         if (water > 0)
         {
-            referenceZ = surface->waterHeight();
+            referenceZ = water * kMicroToSmallZStep;
         }
 
-        if (targetHeight < referenceZ)
-        {
-            targetHeight = referenceZ;
-        }
+        const auto baseTargetZ = std::min(targetHeight, referenceZ);
+        const auto clearTargetZ = std::max(targetHeight, referenceZ);
 
         // Bind our local vars to the tile clear function
         auto clearFunc = [pos, &removedBuildings, flags, &totalCost](TileElement& el) {
@@ -1322,13 +1320,12 @@ namespace OpenLoco::World::TileManager
         };
 
         QuarterTile qt(0xF, 0);
-        auto testHeight = TileManager::getSurfaceCornerHeight(surface);
-        if (!TileClearance::applyClearAtAllHeights(pos, testHeight / 4, testHeight / 4, qt, clearFunc))
+        if (!TileClearance::applyClearAtAllHeights(pos, baseTargetZ, clearTargetZ, qt, clearFunc))
         {
             return GameCommands::FAILURE;
         }
 
-        if (surface->isFlag6())
+        if (surface->hasType6Flag())
         {
             GameCommands::setErrorText(StringIds::water_channel_currently_needed_by_ships);
             return GameCommands::FAILURE;
@@ -1337,14 +1334,21 @@ namespace OpenLoco::World::TileManager
         auto* waterObj = ObjectManager::get<WaterObject>();
         totalCost += Economy::getInflationAdjustedCost(waterObj->costFactor, waterObj->costIndex, 10);
 
-        if (flags & GameCommands::Flags::apply && surface->baseZ() < targetHeight)
+        if (flags & GameCommands::Flags::apply)
         {
-            surface->setWater(targetHeight / kMicroToSmallZStep);
-            surface->setFlag6(false);
+            if (targetHeight <= surface->baseZ())
+            {
+                surface->setWater(0);
+            }
+            else
+            {
+                surface->setWater(targetHeight / kMicroToSmallZStep);
+            }
+            surface->setType6Flag(false);
             surface->setVar7(0);
-        }
 
-        mapInvalidateTileFull(pos);
+            mapInvalidateTileFull(pos);
+        }
         return totalCost;
     }
 
