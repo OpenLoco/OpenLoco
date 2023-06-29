@@ -19,14 +19,14 @@ namespace OpenLoco
     enum class WallObjectFlags : uint8_t
     {
         none = 0U,
-        unk0 = 1U << 0,
+        hasPrimaryColour = 1U << 0,
         unk1 = 1U << 1,
         onlyOnLevelLand = 1U << 2,
         unk3 = 1U << 3,
         unk4 = 1U << 4,
         unk5 = 1U << 5,
-        unk6 = 1U << 6,
-        unk7 = 1U << 7,
+        hasSecondaryColour = 1U << 6,
+        hasTertiaryColour = 1U << 7,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WallObjectFlags);
 

@@ -249,9 +249,9 @@ namespace OpenLoco::GameCommands
         wall->setSecondaryColour(args.secondaryColour);
         wall->setWallObjectId(args.type);
 
-        if ((wallObj->flags & WallObjectFlags::unk7) != WallObjectFlags::none)
+        if ((wallObj->flags & WallObjectFlags::hasTertiaryColour) != WallObjectFlags::none)
         {
-            wall->setSecondaryColourAlt(args.secondaryColour);
+            wall->setTertiaryColour(args.secondaryColour);
         }
 
         if (flags & Flags::flag_6)

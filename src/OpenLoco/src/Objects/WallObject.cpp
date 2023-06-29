@@ -38,7 +38,7 @@ namespace OpenLoco
     void WallObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
         auto image = sprite;
-        if ((flags & WallObjectFlags::unk6) != WallObjectFlags::none)
+        if ((flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
         {
             image = Gfx::recolour2(sprite, Colour::mutedDarkRed, Colour::yellow);
         }

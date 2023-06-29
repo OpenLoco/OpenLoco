@@ -39,7 +39,7 @@ namespace OpenLoco::World
         {
             _flags = (enumValue(colour) & 0x18) << 2 | (_flags & 0xE7);
         }
-        void setSecondaryColourAlt(Colour colour)
+        void setTertiaryColour(Colour colour)
         {
             _5 = enumValue(colour);
         }
