@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static TilePos2 _currentPosition{};
 
-    static constexpr Ui::Size kWindowSize = { 250, 182 };
+    static constexpr Ui::Size kWindowSize = { 350, 200 };
 
     namespace widx
     {
@@ -62,6 +62,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
             yPosDecrease,
             yPosIncrease,
             select,
+            nameTypeHeader,
+            baseHeightHeader,
+            clearHeightHeader,
+            directionHeader,
+            ghostHeader,
             scrollview,
             detailsGroup,
         };
@@ -75,12 +80,19 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ kWindowSize.width - 26, 18 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { kWindowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 148 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
+        makeWidget({ 4, 46 }, { kWindowSize.width - 98, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderNameType, StringIds::tileInspectorHeaderNameTypeTip), // name
+        makeWidget({ kWindowSize.width - 109, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderBaseHeight, StringIds::tileInspectorHeaderBaseHeightTip),
+        makeWidget({ kWindowSize.width - 79, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderClearHeight, StringIds::tileInspectorHeaderClearHeightTip),
+        makeWidget({ kWindowSize.width - 49, 46 }, { 15, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderDirection, StringIds::tileInspectorHeaderDirectionTip),
+        makeWidget({ kWindowSize.width - 34, 46 }, { 30, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, StringIds::tileInspectorHeaderGhost, StringIds::tileInspectorHeaderGhostTip),
+        makeWidget({ 4, 60 }, { kWindowSize.width - 8, 103 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
+        makeWidget({ 4, 165 }, { kWindowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
         widgetEnd(),
     };
 
     static WindowEventList _events;
+
+    static loco_global<char[2], 0x005045F8> _strCheckmark;
 
     static void initEvents();
 
@@ -366,7 +378,38 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 args.push(elementName);
             }
 
-            drawingCtx.drawStringLeft(rt, 0, yPos, Colour::black, formatString, &args);
+            // Draw name and type
+            auto* widget = &self.widgets[widx::nameTypeHeader];
+            drawingCtx.drawStringLeftClipped(rt, 0, yPos, widget->width(), Colour::black, formatString, &args);
+
+            // Draw base height
+            widget = &self.widgets[widx::baseHeightHeader];
+            args.rewind();
+            args.push(StringIds::uint16_raw);
+            args.push<uint16_t>(element.baseZ());
+            drawingCtx.drawStringLeftClipped(rt, widget->left - 4, yPos, widget->width(), Colour::black, formatString, &args);
+
+            // Draw clear height
+            widget = &self.widgets[widx::clearHeightHeader];
+            args.rewind();
+            args.push(StringIds::uint16_raw);
+            args.push<uint16_t>(element.clearZ());
+            drawingCtx.drawStringLeftClipped(rt, widget->left - 4, yPos, widget->width(), Colour::black, formatString, &args);
+
+            // Draw direction
+            widget = &self.widgets[widx::directionHeader];
+            args.rewind();
+            args.push(StringIds::uint16_raw);
+            args.push<uint16_t>(element.data()[0] & 0x03);
+            drawingCtx.drawStringLeftClipped(rt, widget->left - 4, yPos, widget->width(), Colour::black, formatString, &args);
+
+            // Draw ghost flag
+            widget = &self.widgets[widx::ghostHeader];
+            if (element.isGhost())
+            {
+                drawingCtx.drawString(rt, widget->left - 4, yPos, Colour::white, _strCheckmark);
+            }
+
             rowNum++;
             yPos += self.rowHeight;
         }
