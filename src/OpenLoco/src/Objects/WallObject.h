@@ -26,6 +26,7 @@ namespace OpenLoco
         unk4 = 1U << 4,
         unk5 = 1U << 5,
         unk6 = 1U << 6,
+        unk7 = 1U << 7,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(WallObjectFlags);
 
@@ -38,7 +39,7 @@ namespace OpenLoco
         uint32_t sprite; // 0x02
         uint8_t var_06;
         WallObjectFlags flags; // 0x07
-        uint8_t var_08;        // clearZ?
+        uint8_t height;
         uint8_t var_09;
 
         // 0x004C4AF0

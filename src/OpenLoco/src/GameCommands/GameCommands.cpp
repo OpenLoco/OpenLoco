@@ -82,7 +82,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::lowerWater,                   lowerWater,                0x004C5126, true  },
         { GameCommand::changeCompanyName,            changeCompanyName,         0x00434914, false },
         { GameCommand::changeCompanyOwnerName,       changeCompanyOwnerName,    0x00434A58, false },
-        { GameCommand::createWall,                   nullptr,                   0x004C436C, true  },
+        { GameCommand::createWall,                   createWall,                0x004C436C, true  },
         { GameCommand::removeWall,                   removeWall,                0x004C466C, true  },
         { GameCommand::gc_unk_34,                    nullptr,                   0x004C4717, false },
         { GameCommand::vehicleOrderInsert,           vehicleOrderInsert,        0x0047036E, false },

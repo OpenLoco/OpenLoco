@@ -219,13 +219,13 @@ namespace OpenLoco::GameCommands
             targetHeight += kSmallZStep;
         }
 
-        auto clearZ = targetHeight + wallObj->var_08;
+        auto clearZ = targetHeight + wallObj->height;
         if (!canConstructWall(args.pos, targetHeight, clearZ, args.rotation))
         {
             return FAILURE;
         }
 
-        if (!World::TileManager::checkFreeElementsAndReorganise())
+        if (!TileManager::checkFreeElementsAndReorganise())
         {
             // Error message set in checkFreeElementsAndReorganise
             return FAILURE;
@@ -236,7 +236,36 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        // TODO: actually insert the element 0x004C4594 onwards
+        auto* wall = TileManager::insertElement<WallElement>(args.pos, targetHeight, 0);
+        if (wall == nullptr)
+        {
+            return FAILURE;
+        }
+
+        wall->setClearZ(clearZ);
+        wall->setRotation(args.rotation); // original had wallFlags in here as well, but that interferes with type?? check
+        wall->setSlope(surface->slope());
+        wall->setPrimaryColour(args.primaryColour);
+        wall->setSecondaryColour(args.secondaryColour);
+        wall->setWallObjectId(args.type);
+
+        if ((wallObj->flags & WallObjectFlags::unk7) != WallObjectFlags::none)
+        {
+            wall->setSecondaryColourAlt(args.secondaryColour);
+        }
+
+        if (flags & Flags::flag_6)
+        {
+            wall->setGhost(true);
+        }
+
+        // TODO: manager?
+        static loco_global<World::WallElement*, 0x01136470> _lastPlacedWall;
+        *_lastPlacedWall = wall;
+
+        Ui::ViewportManager::invalidate(args.pos, wall->baseHeight(), wall->baseHeight() + 72, ZoomLevel::half);
+
+        S5::getOptions().madeAnyChanges = 1;
 
         return 0;
     }

@@ -2185,6 +2185,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/CreateVehicle.cpp
     void createVehicle(registers& regs);
 
+    // Defined in GameCommands/CreateWall.cpp
+    void createWall(registers& regs);
+
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
