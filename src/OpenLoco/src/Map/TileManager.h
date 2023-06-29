@@ -4,12 +4,14 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
+#include <set>
 
 namespace OpenLoco::World
 {
     class QuarterTile;
     struct BuildingElement;
     struct TreeElement;
+    struct SurfaceElement;
     enum class ElementType;
 }
 
@@ -51,6 +53,7 @@ namespace OpenLoco::World::TileManager
         return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
     }
     TileHeight getHeight(const Pos2& pos);
+    SmallZ getSurfaceCornerHeight(SurfaceElement* surface);
     void updateTilePointers();
     void reorganise();
     bool checkFreeElementsAndReorganise();
@@ -77,4 +80,6 @@ namespace OpenLoco::World::TileManager
     void removeBuildingElement(BuildingElement& element, const World::Pos2& pos);
     void removeTree(TreeElement& element, const uint8_t flags, const World::Pos2& pos);
     void removeAllWallsOnTile(const World::TilePos2& pos, SmallZ baseZ);
+    void setTerrainStyleAsCleared(const Pos2& pos);
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
 }

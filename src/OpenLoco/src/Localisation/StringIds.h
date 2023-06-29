@@ -101,6 +101,8 @@ namespace OpenLoco::StringIds
     constexpr string_id arg20_stringid = 95;
     constexpr string_id dropdown = 96;
 
+    constexpr string_id error_too_low = 98;
+    constexpr string_id error_too_high = 99;
     constexpr string_id error_cant_lower_land_here = 100;
     constexpr string_id error_cant_raise_land_here = 101;
     constexpr string_id object_in_the_way = 102;
@@ -365,6 +367,8 @@ namespace OpenLoco::StringIds
     constexpr string_id prompt_enter_new_vehicle_name = 376;
     constexpr string_id cant_rename_this_vehicle = 377;
 
+    constexpr string_id bridge_already_at_maximum_height = 380;
+    constexpr string_id stringid_requires_a_bridge = 381;
     constexpr string_id bridge_type_unsuitable_for_this_configuration = 382;
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
@@ -1170,6 +1174,8 @@ namespace OpenLoco::StringIds
     constexpr string_id orderTypeNotValidForAircraft = 1526;
     constexpr string_id orderTypeNotValidForShips = 1527;
     constexpr string_id stationOwnedByAnotherCompany = 1528;
+
+    constexpr string_id water_channel_currently_needed_by_ships = 1530;
 
     constexpr string_id refit_vehicle_tip = 1532;
     constexpr string_id cant_refit_vehicle = 1533;

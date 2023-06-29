@@ -2168,6 +2168,12 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
+    // Defined in GameCommands/LowerLand.cpp
+    void lowerLand(registers& regs);
+
+    // Defined in GameCommands/RaiseLand.cpp
+    void raiseLand(registers& regs);
+
     // Defined in GameCommands/RemoveBuilding.cpp
     void removeBuilding(registers& regs);
 
@@ -2262,4 +2268,5 @@ namespace OpenLoco::GameCommands
     void setExpenditureType(const ExpenditureType type);
     CompanyId getUpdatingCompanyId();
     void setUpdatingCompanyId(CompanyId companyId);
+    uint8_t getCommandNestLevel();
 }

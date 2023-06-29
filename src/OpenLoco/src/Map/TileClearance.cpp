@@ -490,11 +490,13 @@ namespace OpenLoco::World::TileClearance
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, {});
     }
 
-    // 0x00469E07
-    ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    // 0x00469E07, 0x00468949
+    static ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost, bool defaultCollision)
     {
         switch (el.type())
         {
+            case ElementType::surface:
+                return ClearFuncResult::noCollision;
             case ElementType::tree:
             {
                 auto* elTree = el.as<TreeElement>();
@@ -580,9 +582,19 @@ namespace OpenLoco::World::TileClearance
                 return ClearFuncResult::collisionRemoved;
             }
             default:
-                return ClearFuncResult::noCollision;
+                return defaultCollision ? ClearFuncResult::collision : ClearFuncResult::noCollision;
         }
     };
+
+    ClearFuncResult clearWithDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    {
+        return tileClearFunction(el, pos, removedBuildings, flags, cost, true);
+    }
+
+    ClearFuncResult clearWithoutDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    {
+        return tileClearFunction(el, pos, removedBuildings, flags, cost, false);
+    }
 
     void registerHooks()
     {

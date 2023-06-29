@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <tuple>
 
 namespace OpenLoco::Ui
 {
@@ -28,6 +29,14 @@ namespace OpenLoco::World
 
     // 0x004F9296, 0x4F9298
     constexpr Pos2 offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
+
+    struct LessThanPos3
+    {
+        bool operator()(World::Pos3 const& lhs, World::Pos3 const& rhs) const
+        {
+            return std::tie(lhs.x, lhs.y, lhs.z) < std::tie(rhs.x, rhs.y, rhs.z);
+        }
+    };
 
     Ui::viewport_pos gameToScreen(const Pos3& loc, int rotation);
 

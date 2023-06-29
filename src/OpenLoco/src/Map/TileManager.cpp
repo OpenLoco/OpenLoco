@@ -1,6 +1,7 @@
 #include "TileManager.h"
 #include "Audio/Audio.h"
 #include "BuildingElement.h"
+#include "Economy/Economy.h"
 #include "Entities/Misc.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -10,6 +11,7 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Objects/BridgeObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -19,9 +21,11 @@
 #include "OpenLoco.h"
 #include "Random.h"
 #include "RoadElement.h"
+#include "SceneManager.h"
 #include "SignalElement.h"
 #include "StationElement.h"
 #include "SurfaceElement.h"
+#include "TileClearance.h"
 #include "TrackElement.h"
 #include "TreeElement.h"
 #include "Ui.h"
@@ -32,6 +36,7 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <set>
 
 using namespace OpenLoco::Interop;
 
@@ -408,6 +413,21 @@ namespace OpenLoco::World::TileManager
                 break;
         }
         return height;
+    }
+
+    SmallZ getSurfaceCornerHeight(SurfaceElement* surface)
+    {
+        auto baseZ = surface->baseZ();
+        if (surface->slope())
+        {
+            baseZ += kSmallZStep;
+        }
+        if (surface->isSlopeDoubleHeight())
+        {
+            baseZ += kSmallZStep;
+        }
+
+        return baseZ;
     }
 
     static void clearTilePointers()
@@ -1041,6 +1061,210 @@ namespace OpenLoco::World::TileManager
             Ui::ViewportManager::invalidate(World::toWorldSpace(pos), el->baseHeight(), el->baseHeight() + 72, ZoomLevel::half);
             removeElement(*el);
         });
+    }
+
+    // 0x004690FC
+    void setTerrainStyleAsCleared(const Pos2& pos)
+    {
+        auto* surface = World::TileManager::get(pos).surface();
+        if (surface == nullptr)
+        {
+            return;
+        }
+        if (surface->isIndustrial())
+        {
+            return;
+        }
+        if (surface->var_6_SLR5() > 0)
+        {
+            surface->setVar6SLR5(0);
+            surface->setVar4SLR5(0);
+
+            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
+        }
+        if (surface->var_4_E0() > 0)
+        {
+            surface->setVar4SLR5(0);
+
+            Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
+        }
+    }
+
+    // 0x00468651
+    uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags)
+    {
+        if (!validCoords(pos))
+        {
+            GameCommands::setErrorText(StringIds::off_edge_of_map);
+            return GameCommands::FAILURE;
+        }
+
+        if (targetBaseZ < 4)
+        {
+            GameCommands::setErrorText(StringIds::error_too_low);
+            return GameCommands::FAILURE;
+        }
+        if (targetBaseZ > 160
+            || (targetBaseZ == 160 && (slopeFlags & 0x1F) != 0)
+            || (targetBaseZ == 156 && (slopeFlags & 0x10) != 0))
+        {
+            GameCommands::setErrorText(StringIds::error_too_high);
+            return GameCommands::FAILURE;
+        }
+
+        currency32_t totalCost = 0;
+
+        if (flags & GameCommands::Flags::apply)
+        {
+            removeSurfaceIndustry(pos);
+
+            if (!isEditorMode())
+            {
+                setTerrainStyleAsCleared(pos);
+            }
+
+            auto clearHeight = getHeight(pos).landHeight;
+            removeAllWallsOnTile(toTileSpace(pos), clearHeight / 4);
+        }
+
+        // Compute cost of landscape operation
+        auto tile = get(pos);
+        auto* surface = tile.surface();
+        auto landObj = ObjectManager::get<LandObject>(surface->terrain());
+        totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10);
+
+        auto targetClearZ = targetBaseZ;
+        if (slopeFlags & 0x1F)
+        {
+            targetClearZ += kSmallZStep;
+        }
+        if (slopeFlags & SurfaceSlope::doubleHeight)
+        {
+            targetClearZ += kSmallZStep;
+        }
+
+        // If surface is in use as a water(route), and has water, ensure we don't remove it
+        if (surface->hasType6Flag() && surface->water() > 0)
+        {
+            auto waterHeight = (surface->water() - 1) * kMicroToSmallZStep;
+
+            if (waterHeight < targetClearZ)
+            {
+                GameCommands::setErrorText(StringIds::water_channel_currently_needed_by_ships);
+                return GameCommands::FAILURE;
+            }
+        }
+
+        // Bind our local vars to the tile clear function
+        auto clearFunc = [pos, &removedBuildings, flags, &totalCost](TileElement& el) {
+            return TileClearance::clearWithDefaultCollision(el, pos, removedBuildings, flags, totalCost);
+        };
+
+        QuarterTile qt(0xF, 0);
+        if (!TileClearance::applyClearAtAllHeights(pos, targetBaseZ, targetClearZ, qt, clearFunc))
+        {
+            return GameCommands::FAILURE;
+        }
+
+        // Check bridge requirements for track and road elements
+        const auto tileIt = get(pos);
+        for (auto& el : tileIt)
+        {
+            if (!(el.type() == ElementType::track || el.type() == ElementType::road))
+            {
+                continue;
+            }
+
+            if (el.isGhost())
+            {
+                continue;
+            }
+
+            auto height = el.baseZ() - targetBaseZ;
+            if (height < 0)
+            {
+                continue;
+            }
+
+            if (el.type() == ElementType::track)
+            {
+                auto* trackEl = el.as<TrackElement>();
+                if (trackEl != nullptr)
+                {
+                    if (trackEl->hasBridge())
+                    {
+                        auto* bridgeObj = ObjectManager::get<BridgeObject>(trackEl->bridge());
+                        if (height > bridgeObj->maxHeight)
+                        {
+                            GameCommands::setErrorText(StringIds::bridge_already_at_maximum_height);
+                            return GameCommands::FAILURE;
+                        }
+                    }
+                    else
+                    {
+                        auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
+                        FormatArguments args{};
+                        args.push(trackObj->name);
+                        GameCommands::setErrorText(StringIds::stringid_requires_a_bridge);
+                        return GameCommands::FAILURE;
+                    }
+                }
+            }
+            else if (el.type() == ElementType::road)
+            {
+                auto* roadEl = el.as<RoadElement>();
+                if (roadEl != nullptr)
+                {
+                    if (roadEl->hasBridge())
+                    {
+                        auto* bridgeObj = ObjectManager::get<BridgeObject>(roadEl->bridge());
+                        if (height > bridgeObj->maxHeight)
+                        {
+                            GameCommands::setErrorText(StringIds::bridge_already_at_maximum_height);
+                            return GameCommands::FAILURE;
+                        }
+                    }
+                    else
+                    {
+                        auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
+                        FormatArguments args{};
+                        args.push(roadObj->name);
+                        GameCommands::setErrorText(StringIds::stringid_requires_a_bridge);
+                        return GameCommands::FAILURE;
+                    }
+                }
+            }
+        }
+
+        if (!(flags & GameCommands::Flags::apply))
+        {
+            return totalCost;
+        }
+
+        surface = tileIt.surface();
+        if (!isEditorMode())
+        {
+            // Reset terrain growth when not in editor
+            surface->setTerrain(surface->terrain());
+        }
+
+        surface->setBaseZ(targetBaseZ);
+        surface->setClearZ(targetBaseZ);
+        surface->setSlope(slopeFlags);
+
+        landObj = ObjectManager::get<LandObject>(surface->terrain());
+        if (landObj->hasFlags(LandObjectFlags::unk1) && !isEditorMode())
+        {
+            surface->setTerrain(landObj->var_07);
+        }
+
+        if (surface->water() * kMicroToSmallZStep <= targetBaseZ)
+        {
+            surface->setWater(0);
+        }
+
+        mapInvalidateTileFull(pos);
+        return totalCost;
     }
 
     // 0x0047AB9B
