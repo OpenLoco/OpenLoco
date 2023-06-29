@@ -1280,7 +1280,7 @@ namespace OpenLoco::World::TileManager
             return GameCommands::FAILURE;
         }
 
-        if (targetHeight > 116)
+        if (targetHeight >= 116)
         {
             GameCommands::setErrorText(StringIds::error_too_high);
             return GameCommands::FAILURE;
