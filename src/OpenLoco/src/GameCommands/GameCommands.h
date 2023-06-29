@@ -343,7 +343,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
             , index(regs.dh)
-            , trackObjectId(regs.ebp)
+            , trackObjectId(static_cast<uint8_t>(regs.ebp)) // TODO: Validate this.
         {
         }
 
@@ -452,7 +452,7 @@ namespace OpenLoco::GameCommands
         RenameStationArgs() = default;
         explicit RenameStationArgs(const registers& regs)
             : stationId(StationId(regs.cx))
-            , nameBufferIndex(regs.ax)
+            , nameBufferIndex(static_cast<uint8_t>(regs.ax)) // TODO: Validate this.
             , buffer{}
         {
             std::memcpy(buffer, &regs.edx, 4);
@@ -596,8 +596,8 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0xF)
             , index(regs.dh & 0x3)
-            , trackObjectId(regs.bp)
-            , type(regs.edi >> 16)
+            , trackObjectId(static_cast<uint8_t>(regs.bp)) // TODO: Validate this.
+            , type(static_cast<uint8_t>(regs.edi >> 16))
         {
         }
 
@@ -844,7 +844,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dl = pos.z / World::kSmallZStep;
+            regs.dl = static_cast<int8_t>(pos.z / World::kSmallZStep);
             regs.dh = type;
             regs.bh = elementType;
             return regs;
@@ -1173,7 +1173,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dh = pos.z / World::kSmallZStep;
+            regs.dh = static_cast<int8_t>(pos.z / World::kSmallZStep);
             regs.dl = rotation;
             return regs;
         }
@@ -1201,7 +1201,7 @@ namespace OpenLoco::GameCommands
             regs.di = enumValue(head);
             regs.dx = orderOffset;
             regs.eax = rawOrder & 0xFFFFFFFF;
-            regs.cx = rawOrder >> 32;
+            regs.cx = static_cast<int16_t>(rawOrder >> 32);
             return regs;
         }
     };
@@ -1403,8 +1403,8 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , roadId(regs.dl & 0xF)
             , index(regs.dh & 0x3)
-            , roadObjectId(regs.bp)
-            , type(regs.edi >> 16)
+            , roadObjectId(static_cast<uint8_t>(regs.bp)) // TODO: Validate this.
+            , type(static_cast<uint8_t>(regs.edi >> 16))
         {
         }
 
@@ -1978,7 +1978,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.ax = ax;
+        regs.ax = static_cast<int16_t>(ax); // Should the argument be int16_t rather?
         memcpy(&regs.ecx, &string[0], 4);
         memcpy(&regs.edx, &string[4], 4);
         memcpy(&regs.ebp, &string[8], 4);
