@@ -1855,6 +1855,16 @@ namespace OpenLoco::StringIds
     constexpr string_id playNewsSoundEffects = 2280;
     constexpr string_id playNewsSoundEffectsTip = 2281;
     constexpr string_id reverseOrderTableTooltip = 2282;
+    constexpr string_id tileInspectorHeaderNameType = 2283;
+    constexpr string_id tileInspectorHeaderBaseHeight = 2284;
+    constexpr string_id tileInspectorHeaderClearHeight = 2285;
+    constexpr string_id tileInspectorHeaderDirection = 2286;
+    constexpr string_id tileInspectorHeaderGhost = 2287;
+    constexpr string_id tileInspectorHeaderNameTypeTip = 2288;
+    constexpr string_id tileInspectorHeaderBaseHeightTip = 2289;
+    constexpr string_id tileInspectorHeaderClearHeightTip = 2290;
+    constexpr string_id tileInspectorHeaderDirectionTip = 2291;
+    constexpr string_id tileInspectorHeaderGhostTip = 2292;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;
