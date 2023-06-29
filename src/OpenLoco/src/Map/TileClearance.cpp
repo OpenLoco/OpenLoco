@@ -490,7 +490,7 @@ namespace OpenLoco::World::TileClearance
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, {});
     }
 
-    // 0x00469E07, 0x00468949
+    // 0x00469E07, 0x00468949, 0x004C4DAD
     static ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost, bool defaultCollision)
     {
         switch (el.type())

@@ -18,6 +18,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/TreeObject.h"
+#include "Objects/WaterObject.h"
 #include "OpenLoco.h"
 #include "Random.h"
 #include "RoadElement.h"
@@ -1264,6 +1265,90 @@ namespace OpenLoco::World::TileManager
         }
 
         mapInvalidateTileFull(pos);
+        return totalCost;
+    }
+
+    // 0x004C4C28
+    uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags)
+    {
+        GameCommands::setExpenditureType(ExpenditureType::Construction);
+        GameCommands::setPosition(World::Pos3(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2, targetHeight * kMicroToSmallZStep));
+
+        if (targetHeight < 4)
+        {
+            GameCommands::setErrorText(StringIds::error_too_low);
+            return GameCommands::FAILURE;
+        }
+
+        if (targetHeight >= 116)
+        {
+            GameCommands::setErrorText(StringIds::error_too_high);
+            return GameCommands::FAILURE;
+        }
+
+        currency32_t totalCost = 0;
+
+        if (flags & GameCommands::Flags::apply)
+        {
+            removeSurfaceIndustry(pos);
+
+            if (!isEditorMode())
+            {
+                setTerrainStyleAsCleared(pos);
+            }
+
+            auto clearHeight = getHeight(pos).landHeight;
+            removeAllWallsOnTile(toTileSpace(pos), clearHeight / kSmallZStep);
+        }
+
+        auto tile = get(pos);
+        auto* surface = tile.surface();
+
+        auto referenceZ = surface->baseZ();
+        auto water = surface->water();
+        if (water > 0)
+        {
+            referenceZ = water * kMicroToSmallZStep;
+        }
+
+        const auto baseTargetZ = std::min(targetHeight, referenceZ);
+        const auto clearTargetZ = std::max(targetHeight, referenceZ);
+
+        // Bind our local vars to the tile clear function
+        auto clearFunc = [pos, &removedBuildings, flags, &totalCost](TileElement& el) {
+            return TileClearance::clearWithDefaultCollision(el, pos, removedBuildings, flags, totalCost);
+        };
+
+        QuarterTile qt(0xF, 0);
+        if (!TileClearance::applyClearAtAllHeights(pos, baseTargetZ, clearTargetZ, qt, clearFunc))
+        {
+            return GameCommands::FAILURE;
+        }
+
+        if (surface->hasType6Flag())
+        {
+            GameCommands::setErrorText(StringIds::water_channel_currently_needed_by_ships);
+            return GameCommands::FAILURE;
+        }
+
+        auto* waterObj = ObjectManager::get<WaterObject>();
+        totalCost += Economy::getInflationAdjustedCost(waterObj->costFactor, waterObj->costIndex, 10);
+
+        if (flags & GameCommands::Flags::apply)
+        {
+            if (targetHeight <= surface->baseZ())
+            {
+                surface->setWater(0);
+            }
+            else
+            {
+                surface->setWater(targetHeight / kMicroToSmallZStep);
+            }
+            surface->setType6Flag(false);
+            surface->setVar7(0);
+
+            mapInvalidateTileFull(pos);
+        }
         return totalCost;
     }
 
