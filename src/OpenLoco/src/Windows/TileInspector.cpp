@@ -90,14 +90,6 @@ namespace OpenLoco::Ui::Windows::TileInspector
         widgetEnd(),
     };
 
-    constexpr string_id tileInspectorHeaderBaseHeight = 2283;
-    constexpr string_id tileInspectorHeaderClearHeight = 2284;
-    constexpr string_id tileInspectorHeaderDirection = 2285;
-    constexpr string_id tileInspectorHeaderGhost = 2286;
-    constexpr string_id tileInspectorHeaderBaseHeightTip = 2287;
-    constexpr string_id tileInspectorHeaderClearHeightTip = 2288;
-    constexpr string_id tileInspectorHeaderDirectionTip = 2289;
-    constexpr string_id tileInspectorHeaderGhostTip = 2290;
     static WindowEventList _events;
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
