@@ -14,6 +14,7 @@
 
 namespace OpenLoco::GameCommands
 {
+    // 0x00454C91
     static IndustryId sub_454C91(uint8_t type, const World::Pos2& pos, const Core::Prng& prng)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(type);
@@ -162,6 +163,35 @@ namespace OpenLoco::GameCommands
         return IndustryId::null;
     }
 
+    /* 0x004551CC
+       bh:7 = buildImmediately
+       bh:0-3 = rotation
+       edi = randColour << 16
+       dl = buildingType
+       dh = industryId
+       ax = pos.x
+       cx = pos.y
+       bl = flags
+    */
+    static currency32_t placeIndustryBuilding(const IndustryId industryId, const World::Pos2& pos, const uint8_t direction, const uint8_t buildingType, const Colour colour, const bool buildImmediate, const uint8_t flags)
+    {
+        auto* industry = IndustryManager::get(industryId);
+        auto* indObj = industry->getObject();
+        if (!World::TileManager::checkFreeElementsAndReorganise())
+        {
+            return FAILURE;
+        }
+
+        // 0x00455246
+        // Workout the max surface height for building footprint
+        // Workout clearance height of building (including scaffolding if required)
+        // Next 3 in a loop over footprint
+        // ..Perform clearance
+        // ..Perform additional object specific restriction checks
+        // ..Create new tile
+        // Update industry
+    }
+
     // 0x0045436B
     currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
     {
@@ -214,7 +244,7 @@ namespace OpenLoco::GameCommands
         }();
 
         // 0x00E0C3BE - C0
-        const auto posUnk = World::Pos2{ newIndustry->x, newIndustry->y };
+        auto lastPlacedBuildingPos = World::Pos2{ newIndustry->x, newIndustry->y };
 
         // used also for 0x00454552 break up into two when function allowed to diverge
         const auto randVal = newIndustry->prng.randNext() & 0xFF;
@@ -233,6 +263,8 @@ namespace OpenLoco::GameCommands
             prodRateRand = newIndustry->productionRate[i] & 0xFF;
         }
 
+        currency32_t totalCost = 0;
+
         // 0x00454552
         const auto numBuildings = (((indObj->maxNumBuildings - indObj->minNumBuildings + 1) * randVal) / 256) + indObj->minNumBuildings;
         for (auto i = 0U; i < numBuildings; ++i)
@@ -241,6 +273,7 @@ namespace OpenLoco::GameCommands
             // 0x00E0C3D2 (bit 0)
             const bool isMultiTile = indObj->buildingSizeFlags & (1ULL << building);
 
+            bool hasBuildingPlaced = false;
             // Attempt to place
             for (auto j = 0U; j < 25; ++j)
             {
@@ -266,7 +299,7 @@ namespace OpenLoco::GameCommands
                 const auto randTileX = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 2) & 0xFF)) / 256) + minDistance;
                 const auto randTileY = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 10) & 0xFF)) / 256) + minDistance;
 
-                const auto randPos = posUnk + World::toWorldSpace(World::TilePos2(randTileX, randTileY));
+                const auto randPos = lastPlacedBuildingPos + World::toWorldSpace(World::TilePos2(randTileX, randTileY));
                 const auto minRandPos = randPos;
                 const auto maxRandPos = isMultiTile ? randPos + World::toWorldSpace(World::TilePos2{ 1, 1 }) : randPos;
 
@@ -309,10 +342,40 @@ namespace OpenLoco::GameCommands
                 if (flags & Flags::apply)
                 {
                     // do test placement
+                    const auto cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags & ~(Flags::apply));
+                    if (cost == FAILURE)
+                    {
+                        continue;
+                    }
+                    // Why are we incrementing this even on test?
+                    newIndustry->numTiles--;
                 }
+
+                const auto cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags);
+                if (cost == FAILURE)
+                {
+                    continue;
+                }
+                totalCost += cost;
+                lastPlacedBuildingPos = randPos;
+                hasBuildingPlaced = true;
+                break;
             }
-            // 0x00454563
+            if (!hasBuildingPlaced)
+            {
+                StringManager::emptyUserString(newIndustry->name);
+                // Free the industry slot
+                newIndustry->name = StringIds::null;
+                return FAILURE;
+            }
         }
+        // 0x004546EF
+        // find centre of tiles placed set this as x,y of ind
+        // Claim surrounding surfaces
+        // Place fences
+        // Expand grounds
+        // Cleanup
+        // Send message post
     }
 
     void createIndustry(registers& regs)
