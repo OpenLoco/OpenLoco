@@ -2019,7 +2019,7 @@ namespace OpenLoco::Input
                             if (wnd)
                             {
                                 bool out = false;
-                                cursorId = wnd->call_15(x, y, cursorId, &out);
+                                cursorId = wnd->callToolCursor(x, y, cursorId, &out);
                                 if (out)
                                 {
                                     skipItem = true;

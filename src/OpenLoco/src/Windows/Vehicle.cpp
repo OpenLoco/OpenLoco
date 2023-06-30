@@ -2904,7 +2904,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B50CE
-        static Ui::CursorId event15(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
+        static Ui::CursorId toolCursor(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
             auto typeP = sub_4B5A1A(self, x, y);
             out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
@@ -3376,7 +3376,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             events.event_09 = Common::event9;
             events.onToolDown = onToolDown;
             events.onToolAbort = toolCancel;
-            events.event_15 = event15;
+            events.toolCursor = toolCursor;
             events.getScrollSize = getScrollSize;
             events.scrollMouseDown = scrollMouseDown;
             events.scrollMouseOver = scrollMouseOver;

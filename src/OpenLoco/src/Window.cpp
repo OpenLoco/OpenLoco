@@ -1049,14 +1049,14 @@ namespace OpenLoco::Ui
         eventHandlers->onToolAbort(*this, widgetIndex);
     }
 
-    Ui::CursorId Window::call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
+    Ui::CursorId Window::callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
     {
-        if (eventHandlers->event_15 == nullptr)
+        if (eventHandlers->toolCursor == nullptr)
             return fallback;
 
-        assert(!isInteropEvent(eventHandlers->event_15));
+        assert(!isInteropEvent(eventHandlers->toolCursor));
 
-        return eventHandlers->event_15(*this, xPos, yPos, fallback, *out);
+        return eventHandlers->toolCursor(*this, xPos, yPos, fallback, *out);
     }
 
     Ui::CursorId Window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)

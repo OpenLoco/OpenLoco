@@ -116,7 +116,7 @@ namespace OpenLoco::Ui
         void (*toolDragContinue)(Window&, const WidgetIndex_t, const int16_t, const int16_t) = nullptr;
         void (*toolDragEnd)(Window&, const WidgetIndex_t) = nullptr;
         void (*onToolAbort)(Window&, const WidgetIndex_t) = nullptr;
-        Ui::CursorId (*event_15)(Window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&) = nullptr;
+        Ui::CursorId (*toolCursor)(Window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&) = nullptr;
         void (*getScrollSize)(Window&, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight) = nullptr;
         void (*scrollMouseDown)(Ui::Window&, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
         void (*scrollMouseDrag)(Ui::Window&, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui
         void callToolDragContinue(const int16_t widgetIndex, const int16_t xPos, const int16_t yPos);  // 12
         void callToolDragEnd(const int16_t widgetIndex);                                               // 13
         void callToolAbort(int16_t widgetIndex);                                                       // 14
-        Ui::CursorId call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);            // 15
+        Ui::CursorId callToolCursor(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out);     // 15
         void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);   // 16
         void callScrollMouseDown(int16_t x, int16_t y, uint8_t scrollIndex);                           // 17
         void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scrollIndex);                           // 18
