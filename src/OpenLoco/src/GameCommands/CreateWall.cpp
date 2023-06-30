@@ -105,6 +105,7 @@ namespace OpenLoco::GameCommands
                     TileClearance::setCollisionErrorMessage(el);
                     return false;
                 }
+                continue;
             }
 
             if (!el.occupiedQuarter())
@@ -206,6 +207,9 @@ namespace OpenLoco::GameCommands
             }
         }
 
+        auto targetBaseZ = targetHeight / kSmallZStep;
+        auto clearZ = targetBaseZ;
+
         // TODO: fold into previous block; left for now to match IDA
         auto* wallObj = ObjectManager::get<WallObject>(args.type);
         if ((wallFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
@@ -216,11 +220,10 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            targetHeight += kSmallZStep;
+            clearZ += kSmallZStep;
         }
 
-        auto clearZ = targetHeight + wallObj->height;
-        if (!canConstructWall(args.pos, targetHeight, clearZ, args.rotation))
+        if (!canConstructWall(args.pos, targetBaseZ, clearZ, args.rotation))
         {
             return FAILURE;
         }
@@ -236,7 +239,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        auto* wall = TileManager::insertElement<WallElement>(args.pos, targetHeight / kSmallZStep, 0);
+        auto* wall = TileManager::insertElement<WallElement>(args.pos, targetBaseZ, 0);
         if (wall == nullptr)
         {
             return FAILURE;
