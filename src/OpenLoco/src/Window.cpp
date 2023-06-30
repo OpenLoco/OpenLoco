@@ -1052,7 +1052,7 @@ namespace OpenLoco::Ui
     Ui::CursorId Window::call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
     {
         if (eventHandlers->event_15 == nullptr)
-            return CursorId::pointer;
+            return fallback;
 
         assert(!isInteropEvent(eventHandlers->event_15));
 
