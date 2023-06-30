@@ -25,6 +25,12 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui
 {
+    template<typename T>
+    static bool isInteropEvent(T e)
+    {
+        return (uint32_t)e < 0x004D7000;
+    }
+
     Window::Window(Ui::Point position, Ui::Size size)
         : x(position.x)
         , y(position.y)
@@ -948,6 +954,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->onClose == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->onClose));
+
         eventHandlers->onClose(*this);
     }
 
@@ -955,6 +963,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->onPeriodicUpdate == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->onPeriodicUpdate));
 
         eventHandlers->onPeriodicUpdate(*this);
     }
@@ -964,6 +974,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->onUpdate == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->onUpdate));
+
         eventHandlers->onUpdate(*this);
     }
 
@@ -971,6 +983,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->event_08 == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->event_08));
 
         eventHandlers->event_08(*this);
     }
@@ -980,6 +994,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->event_09 == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->event_09));
+
         eventHandlers->event_09(*this);
     }
 
@@ -987,6 +1003,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->onToolUpdate == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->onToolUpdate));
 
         eventHandlers->onToolUpdate(*this, widgetIndex, xPos, yPos);
     }
@@ -996,6 +1014,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->onToolDown == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->onToolDown));
+
         eventHandlers->onToolDown(*this, widgetIndex, xPos, yPos);
     }
 
@@ -1003,6 +1023,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->toolDragContinue == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->toolDragContinue));
 
         eventHandlers->toolDragContinue(*this, widgetIndex, xPos, yPos);
     }
@@ -1012,6 +1034,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->toolDragEnd == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->toolDragEnd));
+
         eventHandlers->toolDragEnd(*this, widgetIndex);
     }
 
@@ -1019,6 +1043,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->onToolAbort == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->onToolAbort));
 
         eventHandlers->onToolAbort(*this, widgetIndex);
     }
@@ -1028,6 +1054,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->event_15 == nullptr)
             return CursorId::pointer;
 
+        assert(!isInteropEvent(eventHandlers->event_15));
+
         return eventHandlers->event_15(*this, xPos, yPos, fallback, *out);
     }
 
@@ -1035,6 +1063,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->cursor == nullptr)
             return fallback;
+
+        assert(!isInteropEvent(eventHandlers->cursor));
 
         return eventHandlers->cursor(*this, widgetIdx, xPos, yPos, fallback);
     }
@@ -1044,6 +1074,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->onMouseUp == nullptr)
             return;
 
+        assert(!isInteropEvent(&eventHandlers->onMouseUp));
+
         eventHandlers->onMouseUp(*this, widgetIndex);
     }
 
@@ -1051,6 +1083,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->onResize == nullptr)
             return this;
+
+        assert(!isInteropEvent(eventHandlers->onResize));
 
         eventHandlers->onResize(*this);
         return this;
@@ -1061,6 +1095,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->event_03 == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->event_03));
+
         eventHandlers->event_03(*this, widgetIndex);
     }
 
@@ -1068,6 +1104,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->onMouseDown == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->onMouseDown));
 
         eventHandlers->onMouseDown(*this, widgetIndex);
     }
@@ -1077,6 +1115,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->onDropdown == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->onDropdown));
+
         eventHandlers->onDropdown(*this, widgetIndex, itemIndex);
     }
 
@@ -1084,6 +1124,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->getScrollSize == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->getScrollSize));
 
         eventHandlers->getScrollSize(*this, scrollIndex, scrollWidth, scrollHeight);
     }
@@ -1093,6 +1135,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->scrollMouseDown == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->scrollMouseDown));
+
         this->eventHandlers->scrollMouseDown(*this, xPos, yPos, scrollIndex);
     }
 
@@ -1100,6 +1144,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->scrollMouseDrag == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->scrollMouseDrag));
 
         this->eventHandlers->scrollMouseDrag(*this, xPos, yPos, scrollIndex);
     }
@@ -1109,6 +1155,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->scrollMouseOver == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->scrollMouseOver));
+
         this->eventHandlers->scrollMouseOver(*this, xPos, yPos, scrollIndex);
     }
 
@@ -1117,6 +1165,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->textInput == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->textInput));
+
         this->eventHandlers->textInput(*this, caller, buffer);
     }
 
@@ -1124,6 +1174,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->viewportRotate == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->viewportRotate));
 
         this->eventHandlers->viewportRotate(*this);
     }
@@ -1134,6 +1186,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->tooltip == nullptr)
             return FormatArguments();
 
+        assert(!isInteropEvent(eventHandlers->tooltip));
+
         return eventHandlers->tooltip(*this, widgetIndex);
     }
 
@@ -1141,6 +1195,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->onMove == nullptr)
             return;
+
+        assert(!isInteropEvent(eventHandlers->onMove));
 
         this->eventHandlers->onMove(*this, xPos, yPos);
     }
@@ -1150,6 +1206,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->prepareDraw == nullptr)
             return;
 
+        assert(!isInteropEvent(eventHandlers->prepareDraw));
+
         eventHandlers->prepareDraw(*this);
     }
 
@@ -1158,6 +1216,8 @@ namespace OpenLoco::Ui
         if (eventHandlers->draw == nullptr)
             return;
 
+        assert(!isInteropEvent(this->eventHandlers->draw));
+
         eventHandlers->draw(*this, rt);
     }
 
@@ -1165,6 +1225,8 @@ namespace OpenLoco::Ui
     {
         if (eventHandlers->drawScroll == nullptr)
             return;
+
+        assert(!isInteropEvent(this->eventHandlers->drawScroll));
 
         eventHandlers->drawScroll(*this, *rt, scrollIndex);
     }
