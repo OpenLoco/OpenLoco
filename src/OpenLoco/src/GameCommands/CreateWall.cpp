@@ -28,9 +28,9 @@ namespace OpenLoco::GameCommands
     enum class EdgeSlope : uint8_t
     {
         none              = 0U,
-        elevated          = (1 << 0),
-        upwards           = (1 << 6),
-        downwards         = (1 << 7),
+        elevated          = 1U << 0,
+        upwards           = 1U << 6,
+        downwards         = 1U << 7,
         upwardsElevated   = EdgeSlope::upwards | EdgeSlope::elevated,
         downwardsElevated = EdgeSlope::downwards | EdgeSlope::elevated,
     };
@@ -149,15 +149,22 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        auto targetHeight = surface->baseHeight();
-        auto edge = args.rotation & 3;
-        auto wallFlags = edgeWallMapping[surface->slope()][edge];
-
-        if ((wallFlags & EdgeSlope::elevated) != EdgeSlope::none)
+        auto slopeFlags = EdgeSlope::none;
+        auto targetHeight = args.pos.z;
+        if (targetHeight == 0)
         {
-            targetHeight += kSmallZStep;
-            wallFlags &= ~EdgeSlope::elevated;
+            targetHeight = surface->baseZ();
+            auto edge = args.rotation & 3;
+            slopeFlags = edgeWallMapping[surface->slope()][edge];
+
+            if ((slopeFlags & EdgeSlope::elevated) != EdgeSlope::none)
+            {
+                targetHeight += 16;
+                slopeFlags &= ~EdgeSlope::elevated;
+            }
         }
+
+        // targetHeight /= kSmallZStep;
 
         if (surface->water() && surface->water() * kMicroToSmallZStep > targetHeight)
         {
@@ -165,13 +172,13 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if (targetHeight < surface->baseHeight())
+        if (targetHeight < surface->baseZ())
         {
             setErrorText(StringIds::error_can_only_build_above_ground);
             return FAILURE;
         }
 
-        if ((wallFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
+        if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
         {
             auto testHeight = targetHeight + kSmallZStep;
 
@@ -207,12 +214,12 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        auto targetBaseZ = targetHeight / kSmallZStep;
+        auto targetBaseZ = targetHeight; // / kSmallZStep;
         auto clearZ = targetBaseZ;
 
         // TODO: fold into previous block; left for now to match IDA
         auto* wallObj = ObjectManager::get<WallObject>(args.type);
-        if ((wallFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
+        if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
         {
             if ((wallObj->flags & WallObjectFlags::onlyOnLevelLand) != WallObjectFlags::none)
             {
@@ -246,7 +253,7 @@ namespace OpenLoco::GameCommands
         }
 
         wall->setClearZ(clearZ);
-        wall->setRotation(args.rotation); // original had wallFlags in here as well, but that interferes with type?? check
+        wall->setRotation(args.rotation); // original had slopeFlags in here as well, but that interferes with type?? check
         wall->setSlope(surface->slope());
         wall->setPrimaryColour(args.primaryColour);
         wall->setSecondaryColour(args.secondaryColour);
