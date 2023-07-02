@@ -4,12 +4,15 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/IndustryElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ScaffoldingObject.h"
 #include "SceneManager.h"
 #include "World/IndustryManager.h"
-#include "World/TownManager.h"
+#include "World/TownManager.h"`
 #include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands
@@ -182,9 +185,46 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        // 0x00455246
+        const auto isMultiTile = indObj->buildingSizeFlags & (1U << buildingType);
+
         // Workout the max surface height for building footprint
+        const auto buildingFootprint = getBuildingTileOffsets(isMultiTile);
+        World::TilePosRangeView tileLoop{ toTileSpace(pos), toTileSpace(pos + buildingFootprint.back().pos) };
+
+        // 0x00E0C3CB (note this is smallZ)
+        World::SmallZ highestBaseZ = 0;
+        for (const auto& tilePos : tileLoop)
+        {
+            auto tile = World::TileManager::get(tilePos);
+            auto* surface = tile.surface();
+
+            auto baseZ = World::TileManager::getSurfaceCornerHeight(surface);
+            highestBaseZ = std::max<World::SmallZ>(highestBaseZ, baseZ);
+            if (surface->water())
+            {
+                highestBaseZ = std::max<World::SmallZ>(highestBaseZ, surface->water() * World::kMicroToSmallZStep);
+            }
+        }
+
         // Workout clearance height of building (including scaffolding if required)
+        const auto buildingParts = indObj->getBuildingParts(buildingType);
+        // 0x00E0C3BC (note this is bigZ)
+        auto clearHeight = 0;
+        for (auto part : buildingParts)
+        {
+            clearHeight += indObj->buildingPartHeight[part];
+        }
+        if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
+        {
+            auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
+            const auto numSegments = std::min(1, clearHeight / scaffObj->segmentHeights[indObj->scaffoldingSegmentType]);
+            clearHeight = (numSegments * scaffObj->segmentHeights[indObj->scaffoldingSegmentType]) + scaffObj->roofHeights[indObj->scaffoldingSegmentType];
+        }
+        // ceil to 4
+        clearHeight += 3;
+        clearHeight &= ~3;
+
+        // 0x00455357
         // Next 3 in a loop over footprint
         // ..Perform clearance
         // ..Perform additional object specific restriction checks
