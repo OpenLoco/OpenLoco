@@ -195,6 +195,10 @@ namespace OpenLoco::GameCommands
         World::SmallZ highestBaseZ = 0;
         for (const auto& tilePos : tileLoop)
         {
+            if (!World::validCoords(tilePos))
+            {
+                continue;
+            }
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
 
@@ -208,7 +212,7 @@ namespace OpenLoco::GameCommands
 
         // Workout clearance height of building (including scaffolding if required)
         const auto buildingParts = indObj->getBuildingParts(buildingType);
-        // 0x00E0C3BC (note this is bigZ)
+        // 0x00E0C3BC (note this is bigZ and does not include the base height)
         auto clearHeight = 0;
         for (auto part : buildingParts)
         {
@@ -224,11 +228,23 @@ namespace OpenLoco::GameCommands
         clearHeight += 3;
         clearHeight &= ~3;
 
-        // 0x00455357
-        // Next 3 in a loop over footprint
-        // ..Perform clearance
-        // ..Perform additional object specific restriction checks
-        // ..Create new tile
+        // Loop over footprint
+        for (const auto& tilePos : tileLoop)
+        {
+            if (!World::validCoords(tilePos))
+            {
+                return FAILURE;
+            }
+
+            if ((flags & Flags::apply) && !(flags & Flags::flag_6))
+            {
+                World::TileManager::removeAllWallsOnTileBelow(tilePos, highestBaseZ + clearHeight / World::kSmallZStep);
+            }
+            // ..Perform clearance
+            // ..Perform additional object specific restriction checks
+            // ..Create new tile
+        }
+        // 0x00455690
         // Update industry
     }
 
