@@ -1186,7 +1186,7 @@ namespace OpenLoco::GameCommands
         VehicleOrderInsertArgs() = default;
         explicit VehicleOrderInsertArgs(const registers& regs)
             : head(EntityId(regs.di))
-            , orderOffset(regs.edx)
+            , orderOffset(regs.dx)
             , rawOrder((uint64_t(regs.cx) << 32ULL) | regs.eax)
         {
         }
@@ -1199,7 +1199,7 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.di = enumValue(head);
-            regs.edx = orderOffset;
+            regs.dx = orderOffset;
             regs.eax = rawOrder & 0xFFFFFFFF;
             regs.cx = rawOrder >> 32;
             return regs;
