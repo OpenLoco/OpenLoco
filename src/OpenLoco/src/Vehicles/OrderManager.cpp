@@ -139,6 +139,8 @@ namespace OpenLoco::Vehicles::OrderManager
 
         // Shift existing orders to make room for the new one
         shiftOrdersRight(head->orderTableOffset + orderOffset, insOrderLength);
+        // Bookkeeping: change order table size
+        numOrders() += insOrderLength;
 
         // Calculate destination offset and copy data
         auto rawOrder = order->getRaw();
