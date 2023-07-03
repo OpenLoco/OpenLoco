@@ -5,15 +5,21 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/AnimationManager.h"
 #include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
+#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileClearance.h"
 #include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "SceneManager.h"
+#include "ViewportManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -236,8 +242,10 @@ namespace OpenLoco::GameCommands
         currency32_t totalCost = 0;
 
         // Loop over footprint
+        int8_t index = -1;
         for (const auto& tilePos : tileLoop)
         {
+            index++;
             if (!World::validCoords(tilePos))
             {
                 return FAILURE;
@@ -248,54 +256,152 @@ namespace OpenLoco::GameCommands
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, highestBaseZ + clearHeight / World::kSmallZStep);
             }
 
-            auto tile = World::TileManager::get(tilePos);
-            auto* surface = tile.surface();
-
-            // Perform clearance checks
-            if (indObj->hasFlags(IndustryObjectFlags::builtOnWater))
             {
-                if (surface->water() * World::kMicroToSmallZStep != highestBaseZ)
-                {
-                    setErrorText(StringIds::can_only_be_built_on_water);
-                    return FAILURE;
-                }
+                auto tile = World::TileManager::get(tilePos);
+                auto* surface = tile.surface();
 
-                if (surface->hasType6Flag())
+                // Perform clearance checks
+                if (indObj->hasFlags(IndustryObjectFlags::builtOnWater))
                 {
-                    setErrorText(StringIds::water_channel_currently_needed_by_ships);
-                    return FAILURE;
+                    if (surface->water() * World::kMicroToSmallZStep != highestBaseZ)
+                    {
+                        setErrorText(StringIds::can_only_be_built_on_water);
+                        return FAILURE;
+                    }
+
+                    if (surface->hasType6Flag())
+                    {
+                        setErrorText(StringIds::water_channel_currently_needed_by_ships);
+                        return FAILURE;
+                    }
+                    World::QuarterTile qt(0xF, 0xF);
+                    if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), highestBaseZ, clearZ, qt, { /*0x0045572D*/ }))
+                    {
+                        return FAILURE;
+                    }
                 }
-                World::QuarterTile qt(0xF, 0xF);
-                if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), highestBaseZ, clearZ, qt, { /*0x0045572D*/ }))
+                else
                 {
-                    return FAILURE;
+                    if (surface->water())
+                    {
+                        setErrorText(StringIds::cant_build_this_underwater);
+                        return FAILURE;
+                    }
+                    World::QuarterTile qt(0xF, 0xF);
+                    if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), surface->baseZ(), clearZ, qt, { /*0x0045572D*/ }))
+                    {
+                        return FAILURE;
+                    }
+                    // TODO: This is dangerous pointer might be invalid?
+                    if (surface->slope() || surface->baseZ() != highestBaseZ)
+                    {
+                        const auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+                        totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10);
+                    }
                 }
             }
-            else
+
+            // Perform additional validation ?for ghosts? and flatten surfaces
+            if (!(flags & Flags::flag_6) && !indObj->hasFlags(IndustryObjectFlags::builtOnWater))
             {
-                if (surface->water())
+                auto tile = World::TileManager::get(tilePos);
+                auto* surface = tile.surface();
+
+                if (surface->slope() || highestBaseZ != surface->baseZ())
                 {
-                    setErrorText(StringIds::cant_build_this_underwater);
-                    return FAILURE;
-                }
-                World::QuarterTile qt(0xF, 0xF);
-                if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), surface->baseZ(), clearZ, qt, { /*0x0045572D*/ }))
-                {
-                    return FAILURE;
-                }
-                // TODO: This is dangerous pointer might be invalid?
-                if (surface->slope() || surface->baseZ() != highestBaseZ)
-                {
-                    const auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
-                    totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10);
+                    if (highestBaseZ < surface->baseZ())
+                    {
+                        bool hasPassedSurface = false;
+                        for (auto& el : tile)
+                        {
+                            if (el.type() == World::ElementType::surface)
+                            {
+                                hasPassedSurface = true;
+                                continue;
+                            }
+
+                            if (hasPassedSurface)
+                            {
+                                auto* elTrack = el.as<World::TrackElement>();
+                                auto* elRoad = el.as<World::RoadElement>();
+                                auto* elStation = el.as<World::StationElement>();
+                                auto* elBuilding = el.as<World::BuildingElement>();
+                                auto* elIndustry = el.as<World::IndustryElement>();
+                                auto* elTree = el.as<World::TreeElement>();
+                                if (elTrack != nullptr && !elTrack->isGhost() && elTrack->hasBridge())
+                                {
+                                    setErrorText(StringIds::empty);
+                                    return FAILURE;
+                                }
+                                else if (elRoad != nullptr && !elRoad->isGhost() && elRoad->hasBridge())
+                                {
+                                    setErrorText(StringIds::empty);
+                                    return FAILURE;
+                                }
+                                else if (elStation != nullptr && elStation->unk5SLR5() == 2)
+                                {
+                                    setErrorText(StringIds::empty);
+                                    return FAILURE;
+                                }
+                                else if (elBuilding != nullptr)
+                                {
+                                    setErrorText(StringIds::empty);
+                                    return FAILURE;
+                                }
+                                else if (elIndustry != nullptr)
+                                {
+                                    setErrorText(StringIds::empty);
+                                    return FAILURE;
+                                }
+                                else if (elTree != nullptr && clearZ <= elTree->baseZ())
+                                {
+                                    setErrorText(StringIds::empty);
+                                    return FAILURE;
+                                }
+                            }
+                        }
+                    }
+                    if (flags & Flags::apply)
+                    {
+                        World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
+                        surface->setBaseZ(highestBaseZ);
+                        surface->setClearZ(highestBaseZ);
+                        surface->setSlope(0);
+                        surface->setVar4SLR5(0);
+                        surface->setVar6SLR5(0);
+                    }
                 }
             }
-            // 0x004554EF
-            // ..Perform additional object specific restriction checks
-            // ..Create new tile
+
+            // Create new tile
+            if (flags & Flags::apply)
+            {
+                if (!(flags & Flags::flag_6))
+                {
+                    World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
+                    World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
+                }
+                auto* elIndustry = World::TileManager::insertElement<World::IndustryElement>(World::toWorldSpace(tilePos), highestBaseZ, 0xF);
+                elIndustry->setClearZ(clearZ);
+                elIndustry->setRotation(direction);
+                elIndustry->setIsConstructed(buildImmediate);
+                elIndustry->setIndustryId(industryId);
+                elIndustry->setSequenceIndex(index);
+                // TODO: If it turns out there are more vars in _5 they should be cleared here
+                elIndustry->setSectionProgress(0);
+                elIndustry->setColour(colour);
+                elIndustry->setBuildingType(buildingType);
+                elIndustry->setVar_6_003F(0);
+                World::AnimationManager::createAnimation(3, World::toWorldSpace(tilePos), elIndustry->baseZ());
+                elIndustry->setGhost(flags & Flags::flag_6);
+                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elIndustry->baseHeight(), elIndustry->clearHeight());
+            }
         }
-        // 0x00455690
-        // Update industry
+
+        auto& tileRef = industry->tiles[industry->numTiles];
+        tileRef = World::Pos3(pos, (highestBaseZ * World::kSmallZStep | (isMultiTile ? 0x8000 : 0)));
+        industry->numTiles++;
+        return totalCost;
     }
 
     // 0x0045436B
