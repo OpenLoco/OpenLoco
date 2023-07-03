@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::ScrollView
 
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            int32_t viewSize = widget.width() - 21;
+            int32_t viewSize = widget.width() - 22;
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
                 viewSize -= 11;
 
@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::ScrollView
 
             scrollArea.hThumbLeft = x + 11;
 
-            x = widget.width() - 2;
+            x = widget.width() - 3;
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
                 x -= 11;
 
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::ScrollView
 
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            int32_t viewSize = widget.height() - 21;
+            int32_t viewSize = widget.height() - 22;
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
                 viewSize -= 11;
 
@@ -345,7 +345,7 @@ namespace OpenLoco::Ui::ScrollView
 
             scrollArea.vThumbTop = y + 11;
 
-            y = widget.height() - 2;
+            y = widget.height() - 3;
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
                 y -= 11;
 
