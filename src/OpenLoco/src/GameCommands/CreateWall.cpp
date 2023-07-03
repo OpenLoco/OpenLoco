@@ -88,11 +88,11 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (clearZ >= el.clearZ())
+            if (baseZ >= el.clearZ())
             {
                 continue;
             }
-            if (baseZ <= el.baseZ())
+            if (clearZ <= el.baseZ())
             {
                 continue;
             }
@@ -153,7 +153,7 @@ namespace OpenLoco::GameCommands
         auto targetHeight = args.pos.z;
         if (targetHeight == 0)
         {
-            targetHeight = surface->baseZ();
+            targetHeight = surface->baseHeight();
             auto edge = args.rotation & 3;
             slopeFlags = edgeWallMapping[surface->slope()][edge];
 
@@ -164,7 +164,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // targetHeight /= kSmallZStep;
+        targetHeight /= kSmallZStep;
 
         if (surface->water() && surface->water() * kMicroToSmallZStep > targetHeight)
         {
@@ -178,7 +178,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) != EdgeSlope::none)
+        if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) == EdgeSlope::none)
         {
             auto testHeight = targetHeight + kSmallZStep;
 
