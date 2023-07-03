@@ -349,6 +349,7 @@ namespace OpenLoco::StringIds
     constexpr string_id off_edge_of_map = 356;
     constexpr string_id cannot_build_partly_above_below_water = 357;
 
+    constexpr string_id cant_build_this_underwater = 359;
     constexpr string_id error_can_only_build_above_ground = 360;
     constexpr string_id can_only_build_this_on_level_land = 361;
     constexpr string_id title_prompt_load_game = 362;
@@ -362,6 +363,7 @@ namespace OpenLoco::StringIds
     constexpr string_id error_game_save_failed = 370;
 
     constexpr string_id menu_hide_foreground_scenery_buildings = 372;
+    constexpr string_id can_only_be_built_on_water = 372;
 
     constexpr string_id title_name_vehicle = 375;
     constexpr string_id prompt_enter_new_vehicle_name = 376;
@@ -470,7 +472,7 @@ namespace OpenLoco::StringIds
     constexpr string_id audio_device_none = 479;
     constexpr string_id stringptr = 480;
 
-    constexpr string_id cant_build_this_underwater = 484;
+    constexpr string_id cant_build_this_underwater_duplicate = 484; // This is a duplicate and could be deleted
     constexpr string_id land_type_not_suitable = 485;
     constexpr string_id spinner_up = 486;
     constexpr string_id spinner_down = 487;

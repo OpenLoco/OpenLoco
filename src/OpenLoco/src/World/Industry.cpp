@@ -520,7 +520,7 @@ namespace OpenLoco
         surface->setVar5SLR5((var_EA & 0xE0) >> 5);
         surface->setVar6SLR5((var_EA & 0x7));
         Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
-        World::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
+        World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
 
         return true;
     }

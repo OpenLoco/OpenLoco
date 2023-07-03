@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
             }
 
             auto tileHeight = World::TileManager::getHeight(pos);
-            TileManager::removeAllWallsOnTile(World::toTileSpace(pos), tileHeight.landHeight / 4);
+            TileManager::removeAllWallsOnTileAbove(World::toTileSpace(pos), tileHeight.landHeight / 4);
         }
 
         World::QuarterTile qt(0xF, 0);

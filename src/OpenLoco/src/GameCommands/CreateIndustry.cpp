@@ -1,4 +1,5 @@
 #include "Date.h"
+#include "Economy/Economy.h"
 #include "GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Localisation/FormatArguments.hpp"
@@ -6,13 +7,15 @@
 #include "Localisation/StringIds.h"
 #include "Map/IndustryElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "SceneManager.h"
 #include "World/IndustryManager.h"
-#include "World/TownManager.h"`
+#include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands
@@ -228,6 +231,10 @@ namespace OpenLoco::GameCommands
         clearHeight += 3;
         clearHeight &= ~3;
 
+        const auto clearZ = (clearHeight / World::kSmallZStep) + highestBaseZ;
+
+        currency32_t totalCost = 0;
+
         // Loop over footprint
         for (const auto& tilePos : tileLoop)
         {
@@ -240,7 +247,50 @@ namespace OpenLoco::GameCommands
             {
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, highestBaseZ + clearHeight / World::kSmallZStep);
             }
-            // ..Perform clearance
+
+            auto tile = World::TileManager::get(tilePos);
+            auto* surface = tile.surface();
+
+            // Perform clearance checks
+            if (indObj->hasFlags(IndustryObjectFlags::builtOnWater))
+            {
+                if (surface->water() * World::kMicroToSmallZStep != highestBaseZ)
+                {
+                    setErrorText(StringIds::can_only_be_built_on_water);
+                    return FAILURE;
+                }
+
+                if (surface->hasType6Flag())
+                {
+                    setErrorText(StringIds::water_channel_currently_needed_by_ships);
+                    return FAILURE;
+                }
+                World::QuarterTile qt(0xF, 0xF);
+                if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), highestBaseZ, clearZ, qt, { /*0x0045572D*/ }))
+                {
+                    return FAILURE;
+                }
+            }
+            else
+            {
+                if (surface->water())
+                {
+                    setErrorText(StringIds::cant_build_this_underwater);
+                    return FAILURE;
+                }
+                World::QuarterTile qt(0xF, 0xF);
+                if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), surface->baseZ(), clearZ, qt, { /*0x0045572D*/ }))
+                {
+                    return FAILURE;
+                }
+                // TODO: This is dangerous pointer might be invalid?
+                if (surface->slope() || surface->baseZ() != highestBaseZ)
+                {
+                    const auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+                    totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10);
+                }
+            }
+            // 0x004554EF
             // ..Perform additional object specific restriction checks
             // ..Create new tile
         }

@@ -81,7 +81,8 @@ namespace OpenLoco::World::TileManager
     void createDestructExplosion(const World::Pos3& pos);
     void removeBuildingElement(BuildingElement& element, const World::Pos2& pos);
     void removeTree(TreeElement& element, const uint8_t flags, const World::Pos2& pos);
-    void removeAllWallsOnTile(const World::TilePos2& pos, SmallZ baseZ);
+    void removeAllWallsOnTileAbove(const World::TilePos2& pos, SmallZ baseZ);
+    void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ);
     void setTerrainStyleAsCleared(const Pos2& pos);
     uint32_t adjustSurfaceHeight(World::Pos2 pos, SmallZ targetBaseZ, uint8_t slopeFlags, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
     uint32_t adjustWaterHeight(World::Pos2 pos, SmallZ targetHeight, std::set<World::Pos3, LessThanPos3>& removedBuildings, uint8_t flags);
