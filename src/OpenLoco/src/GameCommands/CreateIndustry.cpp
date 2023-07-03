@@ -6,6 +6,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
+#include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
@@ -588,6 +589,7 @@ namespace OpenLoco::GameCommands
         // Expand grounds
         // Cleanup
         // Send message post
+        return totalCost;
     }
 
     void createIndustry(registers& regs)
