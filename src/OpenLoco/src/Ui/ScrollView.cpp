@@ -297,12 +297,74 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004CA1ED
     void updateThumbs(Window* window, WidgetIndex_t widgetIndex)
     {
-        registers regs;
+        const auto& widget = window->widgets[widgetIndex];
+        auto& scrollArea = window->scrollAreas[window->getScrollDataIndex(widgetIndex)];
 
-        regs.esi = X86Pointer(window);
-        regs.ebx = window->getScrollDataIndex(widgetIndex) * sizeof(ScrollArea);
-        regs.edi = X86Pointer(&window->widgets[widgetIndex]);
-        call(0x4CA1ED, regs);
+        if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+        {
+            int32_t viewSize = widget.width() - 21;
+            if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+                viewSize -= 11;
+
+            int32_t x = scrollArea.contentOffsetX * viewSize;
+            if (scrollArea.contentWidth != 0)
+                x /= scrollArea.contentWidth;
+
+            scrollArea.hThumbLeft = x + 11;
+
+            x = widget.width() - 2;
+            if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+                x -= 11;
+
+            x += scrollArea.contentOffsetX;
+            if (scrollArea.contentWidth != 0)
+                x = (x * viewSize) / scrollArea.contentWidth;
+
+            x += 11;
+            viewSize += 10;
+            scrollArea.hThumbRight = std::min(x, viewSize);
+
+            if (scrollArea.hThumbRight - scrollArea.hThumbLeft < 20)
+            {
+                double barPosition = (scrollArea.hThumbRight * 1.0) / viewSize;
+
+                scrollArea.hThumbLeft = std::lround(scrollArea.hThumbLeft - (20 * barPosition));
+                scrollArea.hThumbRight = std::lround(scrollArea.hThumbRight + (20 * (1 - barPosition)));
+            }
+        }
+
+        if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+        {
+            int32_t viewSize = widget.height() - 21;
+            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+                viewSize -= 11;
+
+            int32_t y = scrollArea.contentOffsetY * viewSize;
+            if (scrollArea.contentHeight != 0)
+                y /= scrollArea.contentHeight;
+
+            scrollArea.vThumbTop = y + 11;
+
+            y = widget.height() - 2;
+            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+                y -= 11;
+
+            y += scrollArea.contentOffsetY;
+            if (scrollArea.contentHeight != 0)
+                y = (y * viewSize) / scrollArea.contentHeight;
+
+            y += 11;
+            viewSize += 10;
+            scrollArea.vThumbBottom = std::min(y, viewSize);
+
+            if (scrollArea.vThumbBottom - scrollArea.vThumbTop < 20)
+            {
+                double barPosition = (scrollArea.vThumbBottom * 1.0) / viewSize;
+
+                scrollArea.vThumbTop = std::lround(scrollArea.vThumbTop - (20 * barPosition));
+                scrollArea.vThumbBottom = std::lround(scrollArea.vThumbBottom + (20 * (1 - barPosition)));
+            }
+        }
     }
 
     // 0x004C894F
