@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
         if ((flags & Flags::apply) && !(flags & Flags::flag_6))
         {
             auto* company = CompanyManager::get(targetCompanyId);
-            company->headquartersX = 0xFFFF;
+            company->headquartersX = -1;
             Ui::WindowManager::invalidate(Ui::WindowType::company, Ui::WindowNumber_t(targetCompanyId));
         }
 
