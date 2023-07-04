@@ -72,7 +72,7 @@ namespace OpenLoco::World
         {
             auto* elIndustry = &el0;
             const auto pos = loc + offset.pos;
-            if (offset.unk != 0)
+            if (offset.index != 0)
             {
                 auto tile = World::TileManager::get(pos);
                 for (auto& el : tile)

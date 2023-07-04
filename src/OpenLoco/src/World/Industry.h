@@ -17,7 +17,7 @@ namespace OpenLoco
     struct Unk4F9274
     {
         World::Pos2 pos;
-        uint8_t unk;
+        uint8_t index;
     };
     const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type);
 

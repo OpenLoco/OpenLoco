@@ -195,16 +195,16 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto isMultiTile = indObj->buildingSizeFlags & (1U << buildingType);
+        const bool isMultiTile = indObj->buildingSizeFlags & (1U << buildingType);
 
         // Workout the max surface height for building footprint
         const auto buildingFootprint = getBuildingTileOffsets(isMultiTile);
-        World::TilePosRangeView tileLoop{ toTileSpace(pos), toTileSpace(pos + buildingFootprint.back().pos) };
 
         // 0x00E0C3CB (note this is smallZ)
         World::SmallZ highestBaseZ = 0;
-        for (const auto& tilePos : tileLoop)
+        for (const auto& offset : buildingFootprint)
         {
+            const auto tilePos = World::toTileSpace(pos + offset.pos);
             if (!World::validCoords(tilePos))
             {
                 continue;
@@ -243,10 +243,9 @@ namespace OpenLoco::GameCommands
         currency32_t totalCost = 0;
 
         // Loop over footprint
-        int8_t index = -1;
-        for (const auto& tilePos : tileLoop)
+        for (const auto& offset : buildingFootprint)
         {
-            index++;
+            const auto tilePos = World::toTileSpace(pos + offset.pos);
             if (!World::validCoords(tilePos))
             {
                 return FAILURE;
@@ -387,7 +386,7 @@ namespace OpenLoco::GameCommands
                 elIndustry->setRotation(direction);
                 elIndustry->setIsConstructed(buildImmediate);
                 elIndustry->setIndustryId(industryId);
-                elIndustry->setSequenceIndex(index);
+                elIndustry->setSequenceIndex(offset.index);
                 // TODO: If it turns out there are more vars in _5 they should be cleared here
                 elIndustry->setSectionProgress(0);
                 elIndustry->setColour(colour);
@@ -453,7 +452,7 @@ namespace OpenLoco::GameCommands
             {
                 return Colour::black;
             }
-            return availableColours[newIndustry->prng.randNext(availableColours.size())];
+            return availableColours[newIndustry->prng.randNext(availableColours.size() - 1)];
         }();
 
         // 0x00E0C3BE - C0
