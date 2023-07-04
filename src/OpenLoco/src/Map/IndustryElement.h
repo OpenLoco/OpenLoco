@@ -27,7 +27,8 @@ namespace OpenLoco::World
         Industry* industry() const;
         // var_6_07C0
         uint8_t buildingType() const;
-        void setBuildingType(uint8_t type) {
+        void setBuildingType(uint8_t type)
+        {
             _6 &= ~0x7C0;
             _6 |= type << 6;
         }
@@ -39,7 +40,8 @@ namespace OpenLoco::World
         }
         // var_5_03
         uint8_t sequenceIndex() const;
-        void setSequenceIndex(const uint8_t index){
+        void setSequenceIndex(const uint8_t index)
+        {
             _5 &= ~0x3;
             _5 |= index & 0x3;
         }
@@ -48,7 +50,8 @@ namespace OpenLoco::World
         void setSectionProgress(uint8_t val);
 
         Colour var_6_F800() const;
-        void setColour(Colour c) {
+        void setColour(Colour c)
+        {
             _6 &= ~0xF800;
             _6 |= enumValue(c) << 11;
         }
