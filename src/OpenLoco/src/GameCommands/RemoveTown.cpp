@@ -2,14 +2,18 @@
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
 #include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
 #include "Map/TileElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
+#include "MessageManager.h"
 #include "Objects/ObjectManager.h"
 #include "S5/S5.h"
+#include "Ui/WindowManager.h"
 #include "ViewportManager.h"
+#include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
@@ -18,6 +22,7 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
+    // 0x0049711F
     static uint32_t removeTown(const TownRemovalArgs& args, const uint8_t flags)
     {
         for (auto& station : StationManager::stations())
@@ -116,6 +121,31 @@ namespace OpenLoco::GameCommands
                 }
             }
         }
+
+        Ui::WindowManager::close(Ui::WindowType::town, enumValue(args.townId));
+
+        auto* town = TownManager::get(args.townId);
+        auto oldTownCentre = Pos2(town->x, town->y);
+
+        StringManager::emptyUserString(town->name);
+        town->name = StringIds::null;
+
+        Ui::Windows::TownList::removeTown(args.townId);
+
+        MessageManager::removeAllSubjectRefs(enumValue(args.townId), MessageItemArgumentType::town);
+
+        for (auto& industry : IndustryManager::industries())
+        {
+            if (industry.town == args.townId)
+            {
+                IndustryRemovalArgs rmArgs{};
+                rmArgs.industryId = industry.id();
+                doCommand(rmArgs, flags);
+            }
+        }
+
+        auto tileHeight = TileManager::getHeight(oldTownCentre);
+        setPosition({ oldTownCentre.x, oldTownCentre.y, tileHeight.landHeight });
 
         auto& options = S5::getOptions();
         options.madeAnyChanges = 1;
