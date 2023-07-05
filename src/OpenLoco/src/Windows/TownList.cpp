@@ -593,6 +593,7 @@ namespace OpenLoco::Ui::Windows::TownList
         _townSize = 3;
     }
 
+    // 0x00499DAE
     void removeTown(TownId townId)
     {
         auto* window = WindowManager::find(WindowType::townList);
