@@ -76,9 +76,9 @@ namespace OpenLoco::GameCommands
                         }
                     }
 
-                    BuildingRemovalArgs args{};
-                    args.pos = Pos3(worldPos.x, worldPos.y, buildingEl->baseHeight());
-                    if (doCommand(args, flags) == FAILURE)
+                    BuildingRemovalArgs rmArgs{};
+                    rmArgs.pos = Pos3(worldPos.x, worldPos.y, buildingEl->baseHeight());
+                    if (doCommand(rmArgs, flags) == FAILURE)
                     {
                         // Stop processing this tile
                         break;
@@ -106,13 +106,13 @@ namespace OpenLoco::GameCommands
                         }
                     }
 
-                    RoadRemovalArgs args{};
-                    args.pos = Pos3(worldPos.x, worldPos.y, roadEl->baseHeight());
-                    args.unkDirection = roadEl->unkDirection();
-                    args.roadId = roadEl->roadId();
-                    args.sequenceIndex = roadEl->sequenceIndex();
-                    args.objectId = roadEl->roadObjectId();
-                    doCommand(args, flags);
+                    RoadRemovalArgs rmArgs{};
+                    rmArgs.pos = Pos3(worldPos.x, worldPos.y, roadEl->baseHeight());
+                    rmArgs.unkDirection = roadEl->unkDirection();
+                    rmArgs.roadId = roadEl->roadId();
+                    rmArgs.sequenceIndex = roadEl->sequenceIndex();
+                    rmArgs.objectId = roadEl->roadObjectId();
+                    doCommand(rmArgs, flags);
                 }
             }
         }
