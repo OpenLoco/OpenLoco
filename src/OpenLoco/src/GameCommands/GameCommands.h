@@ -1613,14 +1613,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Remove town
-    inline bool do_50(uint8_t townId)
+    struct TownRemovalArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.edi = townId;
-        return doCommand(GameCommand::removeTown, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::removeTown;
+
+        TownRemovalArgs() = default;
+        explicit TownRemovalArgs(const registers& regs)
+            : townId(TownId(regs.edi))
+        {
+        }
+
+        TownId townId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.edi = enumValue(townId);
+            return regs;
+        }
+    };
 
     struct HeadquarterPlacementArgs
     {
