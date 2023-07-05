@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
 
         // Iterate over the entire map to find town tiles
         // TODO: can't we do better than vanilla for this? e.g. a radius around the town centre?
-        TilePosRangeView tileLoop{ TilePos2{ 0, 0 }, TilePos2{ kMapColumns, kMapRows } };
+        TilePosRangeView tileLoop{ { 1, 1 }, { kMapColumns - 1, kMapRows - 1 } };
 
         for (auto& tilePos : tileLoop)
         {
