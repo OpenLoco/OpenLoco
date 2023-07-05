@@ -71,6 +71,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Entities/Misc.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Environment.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Game.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/BuildCompanyHeadquarters.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeCompanyColour.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeCompanyFace.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeLandMaterial.cpp"
