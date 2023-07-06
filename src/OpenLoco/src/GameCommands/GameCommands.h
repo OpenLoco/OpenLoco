@@ -1543,7 +1543,7 @@ namespace OpenLoco::GameCommands
         IndustryPlacementArgs() = default;
         explicit IndustryPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
-            , type(regs.dl)
+            , type(regs.dl & 0x7F)
             , buildImmediately(regs.dl & 0x80)
             , srand0(regs.ebp)
             , srand1(regs.edi)

@@ -15,6 +15,7 @@
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Map/TreeElement.h"
+#include "MessageManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -586,8 +587,22 @@ namespace OpenLoco::GameCommands
         // Claim surrounding surfaces
         // Place fences
         // Expand grounds
+
         // Cleanup
+        if (!(flags & Flags::apply))
+        {
+            StringManager::emptyUserString(newIndustry->name);
+            // Free the industry slot
+            newIndustry->name = StringIds::null;
+        }
+        totalCost += Economy::getInflationAdjustedCost(indObj->costFactor, indObj->costIndex, 3);
+
         // Send message post
+        if ((flags & Flags::apply) && !(flags & Flags::flag_6) && !(flags & Flags::flag_7))
+        {
+            MessageManager::post(MessageType::newIndustry, CompanyId::null, enumValue(newIndustry->id()), 0xFFFFU);
+        }
+        setExpenditureType(ExpenditureType::Miscellaneous);
         return totalCost;
     }
 
