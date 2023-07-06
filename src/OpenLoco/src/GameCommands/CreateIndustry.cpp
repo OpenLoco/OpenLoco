@@ -20,6 +20,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
+#include "Objects/TreeObject.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -28,6 +29,8 @@
 
 namespace OpenLoco::GameCommands
 {
+    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
+
     // 0x00454C91
     static IndustryId sub_454C91(uint8_t type, const World::Pos2& pos, const Core::Prng& prng)
     {
@@ -177,6 +180,33 @@ namespace OpenLoco::GameCommands
         return IndustryId::null;
     }
 
+    // 0x0045572D
+    static World::TileClearance::ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
+    {
+        // TODO: This is a copy of parts of TileClearance.cpp
+        auto* elTree = el.as<World::TreeElement>();
+        if (elTree == nullptr)
+        {
+            return World::TileClearance::ClearFuncResult::collision;
+        }
+        auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
+        cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
+
+        if ((flags & GameCommands::Flags::flag_6) || !(flags & GameCommands::Flags::apply))
+        {
+            return World::TileClearance::ClearFuncResult::noCollision;
+        }
+
+        World::TileManager::setRemoveElementPointerChecker(el);
+        World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
+        // S5::getOptions().madeAnyChanges = 1;
+        if (World::TileManager::wasRemoveOnLastElement())
+        {
+            return World::TileClearance::ClearFuncResult::allCollisionsRemoved;
+        }
+        return World::TileClearance::ClearFuncResult::collisionRemoved;
+    }
+
     /* 0x004551CC
        bh:7 = buildImmediately
        bh:0-3 = rotation
@@ -261,6 +291,10 @@ namespace OpenLoco::GameCommands
                 auto tile = World::TileManager::get(tilePos);
                 auto* surface = tile.surface();
 
+                auto clearFunc = [tilePos, flags, &totalCost](World::TileElement& el) {
+                    return tileClearFunction(el, World::toWorldSpace(tilePos), flags, totalCost);
+                };
+
                 // Perform clearance checks
                 if (indObj->hasFlags(IndustryObjectFlags::builtOnWater))
                 {
@@ -276,7 +310,7 @@ namespace OpenLoco::GameCommands
                         return FAILURE;
                     }
                     World::QuarterTile qt(0xF, 0xF);
-                    if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), highestBaseZ, clearZ, qt, { /*0x0045572D*/ }))
+                    if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), highestBaseZ, clearZ, qt, clearFunc))
                     {
                         return FAILURE;
                     }
@@ -289,7 +323,7 @@ namespace OpenLoco::GameCommands
                         return FAILURE;
                     }
                     World::QuarterTile qt(0xF, 0xF);
-                    if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), surface->baseZ(), clearZ, qt, { /*0x0045572D*/ }))
+                    if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), surface->baseZ(), clearZ, qt, clearFunc))
                     {
                         return FAILURE;
                     }
@@ -421,7 +455,7 @@ namespace OpenLoco::GameCommands
         {
             return FAILURE;
         }
-        //_industryLastPlacedId = newIndustryId;
+        _industryLastPlacedId = newIndustryId;
         auto* newIndustry = IndustryManager::get(newIndustryId);
         auto* indObj = newIndustry->getObject();
         if (args.buildImmediately)
@@ -582,8 +616,30 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
         }
-        // 0x004546EF
-        // find centre of tiles placed set this as x,y of ind
+
+        // Find centre of tiles placed
+        if (newIndustry->numTiles != 0)
+        {
+            // Use int32_t as this is a total and will be larger than 16bit
+            int32_t totalX = 0;
+            int32_t totalY = 0;
+            for (auto i = 0; i < newIndustry->numTiles; ++i)
+            {
+                auto& tile = newIndustry->tiles[i];
+                bool isMultiTile = tile.z & 0x8000;
+                totalX += tile.x;
+                totalY += tile.y;
+                if (isMultiTile)
+                {
+                    totalX += 16;
+                    totalY += 16;
+                }
+            }
+            newIndustry->x = World::tileFloor((totalX / newIndustry->numTiles) + 16);
+            newIndustry->y = World::tileFloor((totalY / newIndustry->numTiles) + 16);
+        }
+
+        // 0x00454745
         // Claim surrounding surfaces
         // Place fences
         // Expand grounds
@@ -598,7 +654,7 @@ namespace OpenLoco::GameCommands
         totalCost += Economy::getInflationAdjustedCost(indObj->costFactor, indObj->costIndex, 3);
 
         // Send message post
-        if ((flags & Flags::apply) && !(flags & Flags::flag_6) && !(flags & Flags::flag_7))
+        if ((flags & Flags::apply) && !(flags & Flags::flag_6) && !args.buildImmediately)
         {
             MessageManager::post(MessageType::newIndustry, CompanyId::null, enumValue(newIndustry->id()), 0xFFFFU);
         }
