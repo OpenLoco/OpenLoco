@@ -640,9 +640,42 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00454745
-        // Claim surrounding surfaces
-        // Place fences
-        // Expand grounds
+        if ((flags & Flags::apply) && !(flags & Flags::flag_6) && newIndustry->numTiles != 0)
+        {
+            if (indObj->var_EA != 0xFF)
+            {
+                const auto unkWallType1 = indObj->var_F1;
+                uint32_t wallType2Mask = 0;
+                if (indObj->var_F2 != 0xFF)
+                {
+                    const auto randVal = newIndustry->prng.srand_0();
+                    wallType2Mask |= 1ULL << (randVal & 0xF);
+                    wallType2Mask |= 1ULL << ((randVal >> 4) & 0xF);
+                    // wallType2Mask |= 1ULL << ((randVal >> 8) & 0xF); CS meant to do this but made a mistake
+                }
+
+                // Claim surrounding surfaces and place perimiter fences
+                for (auto i = 0; i < newIndustry->numTiles; ++i)
+                {
+                    const auto& tile = newIndustry->tiles[i];
+                    const bool isMultiTile = tile.z & 0x8000;
+                    const auto bottomLeft = World::toTileSpace(tile) - World::TilePos2{ 1, 1 };
+                    const auto topRight = bottomLeft + (isMultiTile ? World::TilePos2{ 3, 3 } : World::TilePos2{ 2, 2 });
+                    for (const auto& tilePos : World::TilePosRangeView(bottomLeft, topRight))
+                    {
+                        claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->var_EA);
+                        if (unkWallType1 != 0xFF)
+                        {
+                            // Place fences
+                            // 0x004547FC
+                        }
+                    }
+                }
+            }
+            // 0x004548E5
+
+            // Expand grounds
+        }
 
         // Cleanup
         if (!(flags & Flags::apply))
