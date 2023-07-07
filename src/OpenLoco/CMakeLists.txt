@@ -79,6 +79,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheat.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ClearLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CloneVehicle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CreateTown.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CreateTree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CreateVehicle.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.cpp"
