@@ -74,12 +74,13 @@ namespace OpenLoco::GameCommands
             auto manhattanDistance = Math::Vector::manhattanDistance(pos, Pos2(town.x, town.y));
             if (manhattanDistance < 768)
             {
-                printf("manhattanDistance passes, yay\n");
-                break;
+                printf("manhattanDistance did not pass -- bailing out\n");
+                setErrorText(StringIds::too_close_to_another_town);
+                return false;
             }
         }
 
-        printf("manhattanDistance did not pass, yay\n");
+        printf("manhattanDistance passed, yay\n");
         return true;
     }
 
