@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Date.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"
 #include "GameState.h"
@@ -111,7 +112,28 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        // TODO: loc_496F02 onwards
+        auto currentYear = getCurrentYear();
+        setCurrentYear(currentYear - 51);
+
+        auto growthFactor = args.size * args.size;
+
+        for (int i = 8; i > 0; i--)
+        {
+            for (int j = growthFactor; j > 0; j--)
+            {
+                newTown->grow(0xFF);
+                newTown->recalculateSize();
+            }
+
+            setCurrentYear(currentYear + 7);
+        }
+
+        setCurrentYear(currentYear);
+
+        newTown->history[newTown->historySize - 1] = newTown->population / 50;
+
+        auto tileHeight = World::TileManager::getHeight(Pos2(newTown->x, newTown->y));
+        setPosition(World::Pos3(newTown->x + World::kTileSize / 2, newTown->y + World::kTileSize / 2, tileHeight.landHeight));
 
         auto& options = S5::getOptions();
         options.madeAnyChanges = 1;
