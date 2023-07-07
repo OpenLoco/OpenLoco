@@ -120,9 +120,9 @@ namespace OpenLoco
         uint8_t var_EB;
         uint8_t var_EC;       // Used by Livestock cow shed count??
         uint8_t wallTypes[4]; // 0xED There can be up to 4 different wall types for an industry
-        // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2
-        uint8_t var_F1;
-        uint8_t var_F2;
+        // Selection of wall types isn't completely random from the 4 it is biased into 2 groups of 2 (wall and entrance)
+        uint8_t buildingWall;         // 0xF1
+        uint8_t buildingWallEntrance; // 0xF2 An alternative wall type that looks like a gate placed at random places in building perimeter
         uint8_t var_F3;
 
         bool requiresCargo() const;

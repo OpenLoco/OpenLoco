@@ -85,7 +85,7 @@ namespace OpenLoco
         bool isMonthlyProductionClosing();
         void sub_45329B(const World::Pos2& pos);
         void sub_453354();
-        void expandGrounds(const World::Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl);
+        void expandGrounds(const World::Pos2& pos, uint8_t primaryWallType, uint8_t wallEntranceType, uint8_t dl);
         void createMapAnimations();
         void updateProducedCargoStats();
 
@@ -97,4 +97,6 @@ namespace OpenLoco
 #pragma pack(pop)
 
     static_assert(sizeof(Industry) == 0x453);
+
+    bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t var_EA);
 }

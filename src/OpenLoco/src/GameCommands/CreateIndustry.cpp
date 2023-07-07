@@ -644,14 +644,13 @@ namespace OpenLoco::GameCommands
         {
             if (indObj->var_EA != 0xFF)
             {
-                const auto unkWallType1 = indObj->var_F1;
-                uint32_t wallType2Mask = 0;
-                if (indObj->var_F2 != 0xFF)
+                uint32_t buildingWallEntranceMask = 0;
+                if (indObj->buildingWallEntrance != 0xFF)
                 {
-                    const auto randVal = newIndustry->prng.srand_0();
-                    wallType2Mask |= 1ULL << (randVal & 0xF);
-                    wallType2Mask |= 1ULL << ((randVal >> 4) & 0xF);
-                    // wallType2Mask |= 1ULL << ((randVal >> 8) & 0xF); CS meant to do this but made a mistake
+                    const auto randWallVal = newIndustry->prng.srand_0();
+                    buildingWallEntranceMask |= 1ULL << (randWallVal & 0xF);
+                    buildingWallEntranceMask |= 1ULL << ((randWallVal >> 4) & 0xF);
+                    // buildingWallEntranceMask |= 1ULL << ((randWallVal >> 8) & 0xF); CS meant to do this but made a mistake
                 }
 
                 // Claim surrounding surfaces and place perimiter fences
@@ -664,10 +663,47 @@ namespace OpenLoco::GameCommands
                     for (const auto& tilePos : World::TilePosRangeView(bottomLeft, topRight))
                     {
                         claimSurfaceForIndustry(tilePos, newIndustry->id(), indObj->var_EA);
-                        if (unkWallType1 != 0xFF)
+                        // TODO: This is very similar to expand grounds code
+                        if (indObj->buildingWall != 0xFF)
                         {
+                            GameCommands::WallPlacementArgs wallArgs;
+                            wallArgs.pos = World::Pos3(World::toWorldSpace(tilePos), 0);
+                            wallArgs.primaryColour = Colour::black;
+                            wallArgs.secondaryColour = Colour::black;
+                            wallArgs.unk = 0;
                             // Place fences
-                            // 0x004547FC
+                            if (tilePos.x == bottomLeft.x)
+                            {
+                                wallArgs.rotation = 0;
+                                bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
+                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
+                                doCommand(wallArgs, Flags::apply);
+                            }
+                            if (tilePos.y == bottomLeft.y)
+                            {
+                                wallArgs.rotation = 3;
+                                bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
+                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
+                                doCommand(wallArgs, Flags::apply);
+                            }
+                            if (tilePos.x == topRight.x)
+                            {
+                                wallArgs.rotation = 2;
+                                bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
+                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
+                                doCommand(wallArgs, Flags::apply);
+                            }
+                            if (tilePos.y == topRight.y)
+                            {
+                                wallArgs.rotation = 1;
+                                bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
+                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
+                                doCommand(wallArgs, Flags::apply);
+                            }
                         }
                     }
                 }

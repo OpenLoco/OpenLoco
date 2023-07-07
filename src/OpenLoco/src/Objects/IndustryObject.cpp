@@ -303,7 +303,7 @@ namespace OpenLoco
         }
 
         // Load Unk1 Wall Types
-        var_F1 = 0xFF;
+        buildingWall = 0xFF;
         if (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
@@ -314,13 +314,13 @@ namespace OpenLoco
             auto res = ObjectManager::findObjectHandle(unkHeader);
             if (res.has_value())
             {
-                var_F1 = res->id;
+                buildingWall = res->id;
             }
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
         // Load Unk2 Wall Types
-        var_F2 = 0xFF;
+        buildingWallEntrance = 0xFF;
         if (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
@@ -331,7 +331,7 @@ namespace OpenLoco
             auto res = ObjectManager::findObjectHandle(unkHeader);
             if (res.has_value())
             {
-                var_F2 = res->id;
+                buildingWallEntrance = res->id;
             }
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
@@ -373,8 +373,8 @@ namespace OpenLoco
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(wallTypes), std::end(wallTypes), 0);
-        var_F1 = 0;
-        var_F2 = 0;
+        buildingWall = 0;
+        buildingWallEntrance = 0;
     }
 
     stdx::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const

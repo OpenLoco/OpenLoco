@@ -447,15 +447,15 @@ namespace OpenLoco
                 if (prng.randBool())
                 {
                     World::Pos2 randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
-                    uint8_t primaryWallType = obj->wallTypes[0];
-                    uint8_t secondaryWallType = obj->wallTypes[1];
+                    uint8_t wallType = obj->wallTypes[0];
+                    uint8_t wallEntranceType = obj->wallTypes[1];
                     if (obj->wallTypes[2] != 0xFF && prng.randBool())
                     {
-                        primaryWallType = obj->wallTypes[2];
-                        secondaryWallType = obj->wallTypes[3];
+                        wallType = obj->wallTypes[2];
+                        wallEntranceType = obj->wallTypes[3];
                     }
                     uint8_t dl = prng.randNext(7) * 32;
-                    expandGrounds(randTile, primaryWallType, secondaryWallType, dl);
+                    expandGrounds(randTile, wallType, wallEntranceType, dl);
                 }
             }
         }
@@ -506,7 +506,7 @@ namespace OpenLoco
     }
 
     // 0x0045510C bl == 1
-    static bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
+    bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t var_EA)
     {
         if (!isSurfaceClaimed(pos))
         {
@@ -526,7 +526,7 @@ namespace OpenLoco
     }
 
     // 0x00454A43
-    void Industry::expandGrounds(const Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl)
+    void Industry::expandGrounds(const Pos2& pos, uint8_t wallType, uint8_t wallEntranceType, uint8_t dl)
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
@@ -560,11 +560,11 @@ namespace OpenLoco
             is27prng = prng;
         }
 
-        uint32_t randWallTypeFlags = 0;
-        if (primaryWallType != 0xFF && secondaryWallType != 0xFF)
+        uint32_t randEntraceMask = 0;
+        if (wallType != 0xFF && wallEntranceType != 0xFF)
         {
-            randWallTypeFlags = 1 << (prng.srand_0() & 0xF);
-            randWallTypeFlags |= 1 << ((prng.srand_0() >> 4) & 0x1F);
+            randEntraceMask = 1 << (prng.srand_0() & 0xF);
+            randEntraceMask |= 1 << ((prng.srand_0() >> 4) & 0x1F);
         }
 
         std::size_t i = 0;
@@ -588,15 +588,15 @@ namespace OpenLoco
             {
                 claimSurfaceForIndustry(tilePos, id(), dl);
             }
-            if (primaryWallType == 0xFF)
+            if (wallType == 0xFF)
             {
                 continue;
             }
-            auto getWallPlacementArgs = [randWallTypeFlags, &i, secondaryWallType, primaryWallType, &tilePos](const uint8_t rotation) {
+            auto getWallPlacementArgs = [randEntraceMask, &i, wallEntranceType, wallType, &tilePos](const uint8_t rotation) {
                 GameCommands::WallPlacementArgs args;
                 args.pos = World::Pos3(World::toWorldSpace(tilePos), 0);
                 args.rotation = rotation;
-                args.type = randWallTypeFlags & (1 << i) ? secondaryWallType : primaryWallType;
+                args.type = randEntraceMask & (1 << i) ? wallEntranceType : wallType;
                 i++;
                 args.primaryColour = Colour::black;
                 args.secondaryColour = Colour::black;
