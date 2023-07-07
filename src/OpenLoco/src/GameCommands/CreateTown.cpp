@@ -96,11 +96,11 @@ namespace OpenLoco::GameCommands
             for (auto attempts = 200; attempts > 0; attempts--)
             {
                 uint32_t rand = gameState.rng.randNext();
-                pos = Pos2(((rand & 0xFFFF) * kMapRows) >> 5, ((rand >> 16) * kMapColumns) >> 5);
+                pos = Pos2(((rand & 0xFFFF) * kMapRows) << 5UL, ((rand >> 16) * kMapColumns) << 5UL);
 
                 if (pos.x < 384 || pos.y < 384 || pos.x > 11904 || pos.y > 11904)
                 {
-                    printf("Invalid position -- trying again\n");
+                    printf("Invalid position (%d, %d) -- trying again\n", pos.x, pos.y);
                     continue;
                 }
 
