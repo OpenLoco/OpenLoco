@@ -24,9 +24,11 @@ namespace OpenLoco::GameCommands
 {
     // 0x00496FE7
     // TODO: only used here, but move to town manager?
-    static Town* initialiseTown()
+    static Town* initialiseTown(Pos2 pos)
     {
         registers regs;
+        regs.eax = pos.x;
+        regs.ecx = pos.y;
         call(0x00496FE7, regs);
 
         if (regs.esi != -1)
@@ -92,7 +94,7 @@ namespace OpenLoco::GameCommands
                     }
                 }
 
-                newTown = initialiseTown();
+                newTown = initialiseTown(pos);
                 if (!newTown)
                 {
                     setErrorText(StringIds::too_many_towns);
