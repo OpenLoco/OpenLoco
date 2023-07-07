@@ -96,7 +96,7 @@ namespace OpenLoco::GameCommands
             for (auto attempts = 200; attempts > 0; attempts--)
             {
                 uint32_t rand = gameState.rng.randNext();
-                pos = Pos2(((rand & 0xFFFF) * kMapRows) << 5UL, ((rand >> 16) * kMapColumns) << 5UL);
+                pos = Pos2((((rand >> 16) * kMapColumns) >> 16) << 5, (((rand & 0xFFFF) * kMapRows) >> 16) << 5);
 
                 if (pos.x < 384 || pos.y < 384 || pos.x > 11904 || pos.y > 11904)
                 {
