@@ -54,6 +54,7 @@ namespace OpenLoco::GameCommands
         auto* surfaceEl = tile.surface();
         if (surfaceEl->slope() != 0 || surfaceEl->water() != 0)
         {
+            printf("Slope or water present -- bailing out\n");
             return false;
         }
 
@@ -63,6 +64,7 @@ namespace OpenLoco::GameCommands
             auto dx = sub_4C5604(pos);
             if (dx < 10 && getGameState().rng.randNext() & 0xFF)
             {
+                printf("sub_4C5604 does not pass -- bailing out\n");
                 return false;
             }
         }
@@ -72,10 +74,12 @@ namespace OpenLoco::GameCommands
             auto manhattanDistance = Math::Vector::manhattanDistance(pos, Pos2(town.x, town.y));
             if (manhattanDistance < 768)
             {
+                printf("manhattanDistance passes, yay\n");
                 return true;
             }
         }
 
+        printf("manhattanDistance did not pass, yay\n");
         return false;
     }
 
@@ -96,11 +100,13 @@ namespace OpenLoco::GameCommands
 
                 if (pos.x < 384 || pos.y < 384 || pos.x > 11904 || pos.y > 11904)
                 {
+                    printf("Invalid position -- trying again\n");
                     continue;
                 }
 
                 if (checkSurroundings(pos))
                 {
+                    printf("Surroundings pass the sniff test -- success\n");
                     foundPos = true;
                     break;
                 }
@@ -108,6 +114,7 @@ namespace OpenLoco::GameCommands
 
             if (!foundPos)
             {
+                printf("Unable to find suitable surroundings (-1) -- bailing out\n");
                 return FAILURE;
             }
         }
@@ -129,11 +136,13 @@ namespace OpenLoco::GameCommands
 
                 if (pos.x < 160 || pos.y < 160 || pos.x > 12128 || pos.y > 12128)
                 {
+                    printf("Invalid position -- trying again\n");
                     continue;
                 }
 
                 if (checkSurroundings(pos))
                 {
+                    printf("Surroundings pass the sniff test -- success\n");
                     foundPos = true;
                     break;
                 }
@@ -141,6 +150,7 @@ namespace OpenLoco::GameCommands
 
             if (!foundPos)
             {
+                printf("Unable to find suitable surroundings (-2) -- bailing out\n");
                 return FAILURE;
             }
         }
