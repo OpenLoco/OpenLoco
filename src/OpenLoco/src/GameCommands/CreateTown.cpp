@@ -86,9 +86,8 @@ namespace OpenLoco::GameCommands
                 // loc_496E89
                 for (auto& town : TownManager::towns())
                 {
-                    auto xDiff = std::abs(pos.x - town.x);
-                    auto yDiff = std::abs(pos.y - town.y);
-                    if (xDiff + yDiff < 768)
+                    auto manhattanDistance = Math::Vector::manhattanDistance(pos, Pos2(town.x, town.y));
+                    if (manhattanDistance < 768)
                     {
                         break;
                     }
