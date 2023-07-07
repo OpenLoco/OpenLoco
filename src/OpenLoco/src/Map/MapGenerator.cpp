@@ -1,4 +1,6 @@
 #include "MapGenerator.h"
+#include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "Objects/LandObject.h"
@@ -705,12 +707,24 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x00496BBC
-    static void generateTowns(uint32_t minProgress, uint32_t maxProgress)
+    static void generateTowns()
     {
-        registers regs;
-        regs.eax = minProgress;
-        regs.ebx = maxProgress;
-        call(0x00496BBC, regs);
+        for (auto i = 0; i < S5::getOptions().numberOfTowns; i++)
+        {
+            /*
+            // NB: vanilla was calling the game command directly; we're using the runner.
+            GameCommands::TownPlacementArgs args{};
+            args.pos = { -1, -1 };
+            args.size = getGameState().rng.randNext(7);
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+            */
+
+            registers regs;
+            regs.ax = -1;
+            regs.dl = getGameState().rng.randNext(7);
+            regs.bl = 1;
+            GameCommands::createTown(regs);
+        }
     }
 
     // 0x004597FD
@@ -777,7 +791,7 @@ namespace OpenLoco::World::MapGenerator
         generateTrees();
         updateProgress(45);
 
-        generateTowns(45, 225);
+        generateTowns();
         updateProgress(225);
 
         generateIndustries(225, 245);
