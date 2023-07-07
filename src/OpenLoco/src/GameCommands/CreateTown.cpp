@@ -75,12 +75,12 @@ namespace OpenLoco::GameCommands
             if (manhattanDistance < 768)
             {
                 printf("manhattanDistance passes, yay\n");
-                return true;
+                break;
             }
         }
 
         printf("manhattanDistance did not pass, yay\n");
-        return false;
+        return true;
     }
 
     // 0x00496C22
@@ -126,17 +126,17 @@ namespace OpenLoco::GameCommands
                 if (attempts == 0)
                 {
                     uint32_t rand = gameState.rng.randNext();
-                    pos += Pos2((rand & 0xE0) - 0x60, ((rand >> 4) & 0xE0) - 0x60);
+                    pos += Pos2(((rand >> 4) & 0xE0) - 0x60, (rand & 0xE0) - 0x60);
                 }
                 else if (attempts <= 10)
                 {
                     uint32_t rand = gameState.rng.randNext();
-                    pos += Pos2((rand & 0x60) - kTileSize, ((rand >> 4) & 0x60) - kTileSize);
+                    pos += Pos2(((rand >> 4) & 0x60) - kTileSize, (rand & 0x60) - kTileSize);
                 }
 
                 if (pos.x < 160 || pos.y < 160 || pos.x > 12128 || pos.y > 12128)
                 {
-                    printf("Invalid position -- trying again\n");
+                    printf("Invalid position (%d, %d) -- trying again\n", pos.x, pos.y);
                     continue;
                 }
 
