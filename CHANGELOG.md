@@ -1,7 +1,9 @@
 23.06.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2013] Add headers for base/clearance height, direction, and ghost flag to the tile inspector.
 - Feature: [#7627] Allow mouse scrolling on +/- stepper widgets to change their values.
 - Fix: [#1999] Potential crash at startup due to the screen buffer being too small.
+- Fix: [#2011] Crash when using terraform tools using a range that exceeds the map edge.
 - Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installtion path.
 - Fix: [#2028] Incorrect industry building clearing heights causing graphical glitches.
 - Fix: [#2039] Crash/hang when clicking on news items of new vehicle available.

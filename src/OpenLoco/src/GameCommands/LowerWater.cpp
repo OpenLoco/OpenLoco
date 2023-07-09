@@ -34,6 +34,9 @@ namespace OpenLoco::GameCommands
         auto highestWaterHeight = 0;
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             if (surface->water())
@@ -48,6 +51,9 @@ namespace OpenLoco::GameCommands
             // Now modify only the elements matching this highest water height
             for (const auto& tilePos : tileLoop)
             {
+                if (!validCoords(tilePos))
+                    continue;
+
                 auto tile = World::TileManager::get(tilePos);
                 auto* surface = tile.surface();
                 auto waterHeight = surface->water() * kMicroToSmallZStep;

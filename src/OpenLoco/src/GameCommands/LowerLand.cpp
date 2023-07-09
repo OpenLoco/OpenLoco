@@ -39,6 +39,9 @@ namespace OpenLoco::GameCommands
         auto highestBaseZ = 0;
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = TileManager::get(tilePos);
             auto* surface = tile.surface();
 
@@ -50,6 +53,9 @@ namespace OpenLoco::GameCommands
         auto totalCost = 0;
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = TileManager::get(tilePos);
             auto* surface = tile.surface();
 

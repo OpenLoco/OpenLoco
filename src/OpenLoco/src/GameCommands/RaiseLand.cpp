@@ -39,6 +39,9 @@ namespace OpenLoco::GameCommands
         auto lowestBaseZ = 255;
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             lowestBaseZ = std::min<SmallZ>(lowestBaseZ, surface->baseZ());
@@ -48,6 +51,9 @@ namespace OpenLoco::GameCommands
         auto totalCost = 0;
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             if (surface->baseZ() > lowestBaseZ)

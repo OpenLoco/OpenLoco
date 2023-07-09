@@ -34,6 +34,9 @@ namespace OpenLoco::GameCommands
         auto lowestBaseZ = 255;
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
 
@@ -49,6 +52,9 @@ namespace OpenLoco::GameCommands
         // Now modify only the elements matching this lowest baseZ
         for (const auto& tilePos : tileLoop)
         {
+            if (!validCoords(tilePos))
+                continue;
+
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             if (surface->baseZ() > lowestBaseZ)
