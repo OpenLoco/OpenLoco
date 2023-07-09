@@ -50,74 +50,83 @@ namespace OpenLoco::GameCommands
         {
             auto tile = TileManager::get(tilePos);
 
-            for (auto& element : tile)
+            bool resetTileLoop = true;
+            while (resetTileLoop)
             {
-                if (element.isGhost())
+                resetTileLoop = false;
+                for (auto& element : tile)
                 {
-                    continue;
-                }
-
-                auto* buildingEl = element.as<BuildingElement>();
-                if (buildingEl != nullptr)
-                {
-                    if (buildingEl->has_40())
+                    if (element.isGhost())
                     {
                         continue;
                     }
 
-                    if (buildingEl->multiTileIndex() != 0)
+                    auto* buildingEl = element.as<BuildingElement>();
+                    if (buildingEl != nullptr)
                     {
-                        continue;
-                    }
-
-                    auto worldPos = toWorldSpace(tilePos);
-                    auto maybeTown = TownManager::getClosestTownAndDensity(worldPos);
-                    if (maybeTown)
-                    {
-                        TownId nearestTown = maybeTown->first;
-                        if (nearestTown != args.townId)
+                        if (buildingEl->has_40())
                         {
                             continue;
                         }
-                    }
 
-                    BuildingRemovalArgs rmArgs{};
-                    rmArgs.pos = Pos3(worldPos.x, worldPos.y, buildingEl->baseHeight());
-                    if (doCommand(rmArgs, flags) == FAILURE)
-                    {
-                        // Stop processing this tile
-                        break;
-                    }
-
-                    continue;
-                }
-
-                auto* roadEl = element.as<RoadElement>();
-                if (roadEl != nullptr)
-                {
-                    if (roadEl->owner() != CompanyId::neutral)
-                    {
-                        continue;
-                    }
-
-                    auto worldPos = toWorldSpace(tilePos);
-                    auto maybeTown = TownManager::getClosestTownAndDensity(worldPos);
-                    if (maybeTown)
-                    {
-                        TownId nearestTown = maybeTown->first;
-                        if (nearestTown != args.townId)
+                        if (buildingEl->multiTileIndex() != 0)
                         {
                             continue;
                         }
+
+                        auto worldPos = toWorldSpace(tilePos);
+                        auto maybeTown = TownManager::getClosestTownAndDensity(worldPos);
+                        if (maybeTown)
+                        {
+                            TownId nearestTown = maybeTown->first;
+                            if (nearestTown != args.townId)
+                            {
+                                continue;
+                            }
+                        }
+
+                        BuildingRemovalArgs rmArgs{};
+                        rmArgs.pos = Pos3(worldPos.x, worldPos.y, buildingEl->baseHeight());
+                        if (doCommand(rmArgs, flags) != FAILURE)
+                        {
+                            resetTileLoop = true;
+                            break;
+                        }
+
+                        continue;
                     }
 
-                    RoadRemovalArgs rmArgs{};
-                    rmArgs.pos = Pos3(worldPos.x, worldPos.y, roadEl->baseHeight());
-                    rmArgs.unkDirection = roadEl->unkDirection();
-                    rmArgs.roadId = roadEl->roadId();
-                    rmArgs.sequenceIndex = roadEl->sequenceIndex();
-                    rmArgs.objectId = roadEl->roadObjectId();
-                    doCommand(rmArgs, flags);
+                    auto* roadEl = element.as<RoadElement>();
+                    if (roadEl != nullptr)
+                    {
+                        if (roadEl->owner() != CompanyId::neutral)
+                        {
+                            continue;
+                        }
+
+                        auto worldPos = toWorldSpace(tilePos);
+                        auto maybeTown = TownManager::getClosestTownAndDensity(worldPos);
+                        if (maybeTown)
+                        {
+                            TownId nearestTown = maybeTown->first;
+                            if (nearestTown != args.townId)
+                            {
+                                continue;
+                            }
+                        }
+
+                        RoadRemovalArgs rmArgs{};
+                        rmArgs.pos = Pos3(worldPos.x, worldPos.y, roadEl->baseHeight());
+                        rmArgs.unkDirection = roadEl->unkDirection();
+                        rmArgs.roadId = roadEl->roadId();
+                        rmArgs.sequenceIndex = roadEl->sequenceIndex();
+                        rmArgs.objectId = roadEl->roadObjectId();
+                        if (doCommand(rmArgs, flags) != FAILURE)
+                        {
+                            resetTileLoop = true;
+                            break;
+                        }
+                    }
                 }
             }
         }
