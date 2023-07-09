@@ -112,7 +112,11 @@ namespace OpenLoco::GameCommands
             bool foundPos = false;
             for (int attempts = 0; attempts < 40; attempts++)
             {
-                Pos2 attemptPos = pos;
+                Pos2 attemptPos;
+                if (attempts == 0)
+                {
+                    attemptPos = pos;
+                }
                 if (attempts <= 10)
                 {
                     // Add random value [-2, 1] to x and y
