@@ -1613,14 +1613,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Remove town
-    inline bool do_50(uint8_t townId)
+    struct TownRemovalArgs
     {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.edi = townId;
-        return doCommand(GameCommand::removeTown, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::removeTown;
+
+        TownRemovalArgs() = default;
+        explicit TownRemovalArgs(const registers& regs)
+            : townId(TownId(regs.edi))
+        {
+        }
+
+        TownId townId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.edi = enumValue(townId);
+            return regs;
+        }
+    };
 
     struct HeadquarterPlacementArgs
     {
@@ -2165,6 +2176,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/CloneVehicle.cpp
     void cloneVehicle(registers& regs);
 
+    // Defined in GameCommands/CreateTree.cpp
+    void createTree(registers& regs);
+
     // Defined in GameCommands/CreateVehicle.cpp
     void createVehicle(registers& regs);
 
@@ -2192,11 +2206,11 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RemoveIndustry.cpp
     void removeIndustry(registers& regs);
 
+    // Defined in GameCommands/RemoveTown.cpp
+    void removeTown(registers& regs);
+
     // Defined in GameCommands/RemoveTree.cpp
     void removeTree(registers& regs);
-
-    // Defined in GameCommands/CreateTree.cpp
-    void createTree(registers& regs);
 
     // Defined in GameCommands/RemoveWall.cpp
     void removeWall(registers& regs);

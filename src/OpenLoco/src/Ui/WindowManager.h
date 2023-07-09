@@ -435,6 +435,7 @@ namespace OpenLoco::Ui::Windows
     namespace TownList
     {
         Window* open();
+        void removeTown(TownId);
         void reset();
         bool rotate(Window* self);
     }

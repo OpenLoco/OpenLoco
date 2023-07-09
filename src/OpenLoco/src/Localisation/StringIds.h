@@ -1059,6 +1059,7 @@ namespace OpenLoco::StringIds
     constexpr string_id production_graph_label = 1391;
     constexpr string_id demolish_this_town = 1392;
     constexpr string_id cant_remove_town = 1393;
+    constexpr string_id all_stations_near_this_town_must_be_removed_first = 1394;
 
     constexpr string_id tooltip_select_town_size = 1398;
     constexpr string_id town_size_1 = 1399;

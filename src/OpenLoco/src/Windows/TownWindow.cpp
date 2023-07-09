@@ -213,11 +213,15 @@ namespace OpenLoco::Ui::Windows::Town
                 case widx::demolish_town:
                 {
                     GameCommands::setErrorTitle(StringIds::cant_remove_town);
-                    bool success = GameCommands::do_50(self.number);
-                    if (!success)
-                        break;
 
-                    Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+                    GameCommands::TownRemovalArgs args{};
+                    args.townId = static_cast<TownId>(self.number);
+
+                    if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                    {
+                        Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+                    }
+
                     break;
                 }
             }

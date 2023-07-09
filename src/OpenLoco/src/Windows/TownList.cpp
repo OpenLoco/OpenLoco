@@ -593,6 +593,20 @@ namespace OpenLoco::Ui::Windows::TownList
         _townSize = 3;
     }
 
+    // 0x00499DAE
+    void removeTown(TownId townId)
+    {
+        auto* window = WindowManager::find(WindowType::townList);
+        if (window == nullptr)
+            return;
+
+        for (auto i = 0; i < window->var_83C; i++)
+        {
+            if (window->rowInfo[i] == enumValue(townId))
+                window->rowInfo[i] = -1;
+        }
+    }
+
     namespace BuildTowns
     {
         static constexpr Ui::Size kWindowSize = { 220, 87 };
