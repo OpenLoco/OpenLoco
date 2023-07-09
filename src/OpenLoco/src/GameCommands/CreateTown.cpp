@@ -48,6 +48,7 @@ namespace OpenLoco::GameCommands
         return regs.dx;
     }
 
+    // 0x00496E09
     static bool checkSurroundings(Pos2 pos)
     {
         auto tile = TileManager::get(pos);
