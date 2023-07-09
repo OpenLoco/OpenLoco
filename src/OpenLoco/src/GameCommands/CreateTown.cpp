@@ -112,19 +112,19 @@ namespace OpenLoco::GameCommands
             bool foundPos = false;
             for (int attempts = 0; attempts < 40; attempts++)
             {
-                Pos2 attemptPos;
-                if (attempts == 0)
-                {
-                    // Add random value [-3, 4] to x and y
-                    uint32_t rand = gameState.rng.randNext();
-                    TilePos2 randOffset(((rand >> 9) & 7) - 3, ((rand >> 5) & 7) - 3);
-                    attemptPos = pos + World::toWorldSpace(randOffset);
-                }
-                else if (attempts <= 10)
+                Pos2 attemptPos = pos;
+                if (attempts <= 10)
                 {
                     // Add random value [-2, 1] to x and y
                     uint32_t rand = gameState.rng.randNext();
                     TilePos2 randOffset(((rand >> 9) & 3) - 2, ((rand >> 5) & 3) - 2);
+                    attemptPos = pos + World::toWorldSpace(randOffset);
+                }
+                else if (attempts > 10)
+                {
+                    // Add random value [-3, 4] to x and y
+                    uint32_t rand = gameState.rng.randNext();
+                    TilePos2 randOffset(((rand >> 9) & 7) - 3, ((rand >> 5) & 7) - 3);
                     attemptPos = pos + World::toWorldSpace(randOffset);
                 }
 
