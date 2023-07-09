@@ -147,6 +147,8 @@ namespace OpenLoco::GameCommands
         auto tileHeight = TileManager::getHeight(oldTownCentre);
         setPosition({ oldTownCentre.x, oldTownCentre.y, tileHeight.landHeight });
 
+        TownManager::resetBuildingsInfluence();
+
         auto& options = S5::getOptions();
         options.madeAnyChanges = 1;
 
