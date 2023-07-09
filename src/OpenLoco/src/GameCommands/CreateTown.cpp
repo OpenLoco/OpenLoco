@@ -181,7 +181,7 @@ namespace OpenLoco::GameCommands
         // Restore current year
         setCurrentYear(currentYear);
 
-        newTown->history[newTown->historySize - 1] = newTown->population / 50;
+        newTown->history[newTown->historySize - 1] = std::max<uint8_t>(newTown->population / 50, 255);
 
         auto tileHeight = World::TileManager::getHeight(Pos2(newTown->x, newTown->y));
         setPosition(World::Pos3(newTown->x + World::kTileSize / 2, newTown->y + World::kTileSize / 2, tileHeight.landHeight));
