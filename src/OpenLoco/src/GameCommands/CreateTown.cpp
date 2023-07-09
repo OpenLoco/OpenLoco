@@ -84,15 +84,16 @@ namespace OpenLoco::GameCommands
             {
                 uint32_t rand = gameState.rng.randNext();
                 auto tilePos = TilePos2(((rand >> 16) * kMapColumns) >> 16, ((rand & 0xFFFF) * kMapRows) >> 16);
-                pos = toWorldSpace(tilePos);
+                Pos2 attemptPos = toWorldSpace(tilePos);
 
-                if (pos.x < 384 || pos.y < 384 || pos.x > 11904 || pos.y > 11904)
+                if (attemptPos.x < 384 || attemptPos.y < 384 || attemptPos.x > 11904 || attemptPos.y > 11904)
                 {
                     continue;
                 }
 
-                if (checkSurroundings(pos))
+                if (checkSurroundings(attemptPos))
                 {
+                    pos = attemptPos;
                     foundPos = true;
                     break;
                 }
@@ -108,24 +109,30 @@ namespace OpenLoco::GameCommands
             bool foundPos = false;
             for (int attempts = 0; attempts < 40; attempts++)
             {
+                Pos2 attemptPos;
                 if (attempts == 0)
                 {
+                    // Add random value [-3, 4] to x and y
                     uint32_t rand = gameState.rng.randNext();
-                    pos += Pos2(((rand >> 4) & 0xE0) - 0x60, (rand & 0xE0) - 0x60);
+                    TilePos2 randOffset(((rand >> 9) & 7) - 3, ((rand >> 5) & 7) - 3);
+                    attemptPos = pos + World::toWorldSpace(randOffset);
                 }
                 else if (attempts <= 10)
                 {
+                    // Add random value [-2, 1] to x and y
                     uint32_t rand = gameState.rng.randNext();
-                    pos += Pos2(((rand >> 4) & 0x60) - kTileSize, (rand & 0x60) - kTileSize);
+                    TilePos2 randOffset(((rand >> 9) & 3) - 2, ((rand >> 5) & 3) - 2);
+                    attemptPos = pos + World::toWorldSpace(randOffset);
                 }
 
-                if (pos.x < 160 || pos.y < 160 || pos.x > 12128 || pos.y > 12128)
+                if (attemptPos.x < 160 || attemptPos.y < 160 || attemptPos.x > 12128 || attemptPos.y > 12128)
                 {
                     continue;
                 }
 
-                if (checkSurroundings(pos))
+                if (checkSurroundings(attemptPos))
                 {
+                    pos = attemptPos;
                     foundPos = true;
                     break;
                 }
