@@ -306,24 +306,25 @@ namespace OpenLoco::Ui::ScrollView
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
                 viewSize -= 11;
 
-            int32_t x = scrollArea.contentOffsetX * viewSize;
+            int32_t newThumbPos = scrollArea.contentOffsetX * viewSize;
             if (scrollArea.contentWidth != 0)
-                x /= scrollArea.contentWidth;
+                newThumbPos /= scrollArea.contentWidth;
 
-            scrollArea.hThumbLeft = x + 11;
+            scrollArea.hThumbLeft = newThumbPos + 11;
 
-            x = widget.width() - 3;
+            newThumbPos = widget.width() - 3;
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
-                x -= 11;
+                newThumbPos -= 11;
 
-            x += scrollArea.contentOffsetX;
+            newThumbPos += scrollArea.contentOffsetX;
             if (scrollArea.contentWidth != 0)
-                x = (x * viewSize) / scrollArea.contentWidth;
+                newThumbPos = (newThumbPos * viewSize) / scrollArea.contentWidth;
 
-            x += 11;
+            newThumbPos += 11;
             viewSize += 10;
-            scrollArea.hThumbRight = std::min(x, viewSize);
+            scrollArea.hThumbRight = std::min(newThumbPos, viewSize);
 
+            // Ensure the scrollbar thumb does not fall below a minimum size
             if (scrollArea.hThumbRight - scrollArea.hThumbLeft < 20)
             {
                 double barPosition = (scrollArea.hThumbRight * 1.0) / viewSize;
@@ -339,24 +340,25 @@ namespace OpenLoco::Ui::ScrollView
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
                 viewSize -= 11;
 
-            int32_t y = scrollArea.contentOffsetY * viewSize;
+            int32_t newThumbPos = scrollArea.contentOffsetY * viewSize;
             if (scrollArea.contentHeight != 0)
-                y /= scrollArea.contentHeight;
+                newThumbPos /= scrollArea.contentHeight;
 
-            scrollArea.vThumbTop = y + 11;
+            scrollArea.vThumbTop = newThumbPos + 11;
 
-            y = widget.height() - 3;
+            newThumbPos = widget.height() - 3;
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
-                y -= 11;
+                newThumbPos -= 11;
 
-            y += scrollArea.contentOffsetY;
+            newThumbPos += scrollArea.contentOffsetY;
             if (scrollArea.contentHeight != 0)
-                y = (y * viewSize) / scrollArea.contentHeight;
+                newThumbPos = (newThumbPos * viewSize) / scrollArea.contentHeight;
 
-            y += 11;
+            newThumbPos += 11;
             viewSize += 10;
-            scrollArea.vThumbBottom = std::min(y, viewSize);
+            scrollArea.vThumbBottom = std::min(newThumbPos, viewSize);
 
+            // Ensure the scrollbar thumb does not fall below a minimum size
             if (scrollArea.vThumbBottom - scrollArea.vThumbTop < 20)
             {
                 double barPosition = (scrollArea.vThumbBottom * 1.0) / viewSize;
