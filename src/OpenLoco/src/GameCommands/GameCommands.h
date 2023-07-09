@@ -2186,6 +2186,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RemoveBuilding.cpp
     void removeBuilding(registers& regs);
 
+    // Defined in GameCommands/RemoveCompanyHeadquarters.cpp
+    void removeCompanyHeadquarters(registers& regs);
+
     // Defined in GameCommands/RemoveIndustry.cpp
     void removeIndustry(registers& regs);
 

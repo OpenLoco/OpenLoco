@@ -88,6 +88,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RaiseLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RaiseWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveBuilding.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveCompanyHeadquarters.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveIndustry.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveTree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/RemoveWall.cpp"
