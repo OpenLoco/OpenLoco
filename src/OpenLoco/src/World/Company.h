@@ -185,9 +185,9 @@ namespace OpenLoco
         void updateHeadquartersColour();
         void updateOwnerEmotion();
         std::vector<uint8_t> getAvailableRailTracks();
+        uint8_t getHeadquarterPerformanceVariation() const;
 
     private:
-        uint8_t getHeadquarterPerformanceVariation() const;
         void setHeadquartersVariation(const uint8_t variation);
         void setHeadquartersVariation(const uint8_t variation, const World::TilePos2& pos);
 

@@ -2139,6 +2139,9 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    // Defined in GameCommands/BuildCompanyHeadquarters.cpp
+    void buildCompanyHeadquarters(registers& regs);
+
     // Defined in GameCommands/ChangeCompanyColour.cpp
     void changeCompanyColour(registers& regs);
 
