@@ -72,6 +72,7 @@ namespace OpenLoco::World::TileManager
     uint16_t countSurroundingWaterTiles(const Pos2& pos);
     uint16_t countSurroundingDesertTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
+    uint16_t countNearbyWaterTiles(Pos2 pos);
     void update();
     void updateYearly();
     void registerHooks();

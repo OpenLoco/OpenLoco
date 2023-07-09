@@ -37,17 +37,6 @@ namespace OpenLoco::GameCommands
             return nullptr;
     }
 
-    // 0x004C5604
-    // TODO: used by other functions; move elsewhere
-    static uint16_t sub_4C5604(Pos2 pos)
-    {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004C5604, regs);
-        return regs.dx;
-    }
-
     // 0x00496E09
     static bool checkSurroundings(Pos2 pos)
     {
@@ -61,8 +50,8 @@ namespace OpenLoco::GameCommands
         auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
         if (landObj->hasFlags(LandObjectFlags::isDesert | LandObjectFlags::noTrees))
         {
-            auto dx = sub_4C5604(pos);
-            if (dx < 10 && getGameState().rng.randNext() & 0xFF)
+            auto nearbyWaterTiles = TileManager::countNearbyWaterTiles(pos);
+            if (nearbyWaterTiles < 10 && getGameState().rng.randNext() & 0xFF)
             {
                 return false;
             }
