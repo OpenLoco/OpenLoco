@@ -162,8 +162,8 @@ namespace OpenLoco::GameCommands
         }
 
         // Backup current year, and adjust temporarily
-        auto currentYear = getCurrentYear();
-        setCurrentYear(currentYear - 51);
+        auto backupYear = getCurrentYear();
+        setCurrentYear(backupYear - 51);
 
         auto growthFactor = args.size * args.size;
 
@@ -179,7 +179,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Restore current year
-        setCurrentYear(currentYear);
+        setCurrentYear(backupYear);
 
         newTown->history[newTown->historySize - 1] = std::max<uint8_t>(newTown->population / 50, 255);
 
