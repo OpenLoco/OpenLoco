@@ -161,6 +161,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
+        // Backup current year, and adjust temporarily
         auto currentYear = getCurrentYear();
         setCurrentYear(currentYear - 51);
 
@@ -174,9 +175,10 @@ namespace OpenLoco::GameCommands
                 newTown->recalculateSize();
             }
 
-            setCurrentYear(currentYear + 7);
+            setCurrentYear(getCurrentYear() + 7);
         }
 
+        // Restore current year
         setCurrentYear(currentYear);
 
         newTown->history[newTown->historySize - 1] = newTown->population / 50;
