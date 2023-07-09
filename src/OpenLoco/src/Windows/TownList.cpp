@@ -600,10 +600,7 @@ namespace OpenLoco::Ui::Windows::TownList
         if (window == nullptr)
             return;
 
-        if (window->var_83C == 0)
-            return;
-
-        for (auto i = 0; i <= window->var_83C; i++)
+        for (auto i = 0; i < window->var_83C; i++)
         {
             if (window->rowInfo[i] == enumValue(townId))
                 window->rowInfo[i] = -1;
