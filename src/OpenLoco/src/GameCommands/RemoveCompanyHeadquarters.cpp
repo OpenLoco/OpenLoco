@@ -29,7 +29,9 @@ namespace OpenLoco::GameCommands
                 if (company.headquartersZ != baseZ)
                     continue;
 
-                sub_431E6A(company.id(), nullptr);
+                if (!sub_431E6A(company.id(), nullptr))
+                    return GameCommands::FAILURE;
+
                 targetCompanyId = company.id();
                 break;
             }
