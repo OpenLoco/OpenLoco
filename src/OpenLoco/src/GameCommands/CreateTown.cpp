@@ -38,7 +38,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00496E09
-    static bool checkSurroundings(Pos2 pos)
+    static bool checkSurroundings(Pos2 pos, bool checkSurroundingWater)
     {
         auto tile = TileManager::get(pos);
         auto* surfaceEl = tile.surface();
@@ -47,13 +47,16 @@ namespace OpenLoco::GameCommands
             return false;
         }
 
-        auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-        if (landObj->hasFlags(LandObjectFlags::isDesert | LandObjectFlags::noTrees))
+        if (checkSurroundingWater)
         {
-            auto nearbyWaterTiles = TileManager::countNearbyWaterTiles(pos);
-            if (nearbyWaterTiles < 10 && getGameState().rng.randNext() & 0xFF)
+            auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+            if (landObj->hasFlags(LandObjectFlags::isDesert | LandObjectFlags::noTrees))
             {
-                return false;
+                auto nearbyWaterTiles = TileManager::countNearbyWaterTiles(pos);
+                if (nearbyWaterTiles < 10 && getGameState().rng.randNext() & 0xFF)
+                {
+                    return false;
+                }
             }
         }
 
@@ -91,7 +94,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (checkSurroundings(attemptPos))
+                if (checkSurroundings(attemptPos, true))
                 {
                     pos = attemptPos;
                     foundPos = true;
@@ -130,7 +133,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (checkSurroundings(attemptPos))
+                if (checkSurroundings(attemptPos, false))
                 {
                     pos = attemptPos;
                     foundPos = true;
