@@ -108,4 +108,8 @@ namespace OpenLoco::World
             return Iterator(TilePos2(_bottomLeft.x, _topRight.y + 1), _topRight);
         }
     };
+
+    TilePosRangeView getClampedRange(const TilePos2& posA, const TilePos2& posB);
+    TilePosRangeView getClampedRange(const Pos2& posA, const Pos2& posB);
+    TilePosRangeView getWorldRange();
 }

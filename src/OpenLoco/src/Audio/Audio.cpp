@@ -844,16 +844,13 @@ namespace OpenLoco::Audio
             const auto centre = mainViewport->getCentreMapPosition();
             const auto topLeft = World::toTileSpace(centre) - World::TilePos2{ 5, 5 };
             const auto bottomRight = topLeft + World::TilePos2{ 11, 11 };
-            World::TilePosRangeView searchRange(topLeft, bottomRight);
+
+            auto searchRange = World::getClampedRange(topLeft, bottomRight);
             size_t waterCount = 0;      // bl
             size_t wildernessCount = 0; // bh
             size_t treeCount = 0;       // cx
             for (auto& tilePos : searchRange)
             {
-                if (!World::validCoords(tilePos))
-                {
-                    continue;
-                }
                 const auto tile = World::TileManager::get(tilePos);
                 bool passedSurface = false;
                 for (const auto& el : tile)

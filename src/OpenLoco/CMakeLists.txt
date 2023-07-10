@@ -149,6 +149,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/SurfaceElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tile.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileClearance.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileLoop.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/SubpositionData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/Track.cpp"

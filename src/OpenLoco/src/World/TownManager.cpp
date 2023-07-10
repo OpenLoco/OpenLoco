@@ -80,8 +80,7 @@ namespace OpenLoco::TownManager
             std::fill(std::begin(town.var_150), std::end(town.var_150), 0);
         }
 
-        World::TilePosRangeView tileLoop{ { 1, 1 }, { World::kMapColumns - 1, World::kMapRows - 1 } };
-        for (const auto& tilePos : tileLoop)
+        for (const auto& tilePos : World::getWorldRange())
         {
             auto tile = World::TileManager::get(tilePos);
             for (auto& element : tile)

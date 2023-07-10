@@ -33,15 +33,12 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        World::TilePosRangeView tileLoop{ toTileSpace(args.pointA), toTileSpace(args.pointB) };
+        auto tileLoop = World::getClampedRange(args.pointA, args.pointB);
 
         // Find out what the highest baseZ in the selected range is
         auto highestBaseZ = 0;
         for (const auto& tilePos : tileLoop)
         {
-            if (!validCoords(tilePos))
-                continue;
-
             auto tile = TileManager::get(tilePos);
             auto* surface = tile.surface();
 
@@ -53,9 +50,6 @@ namespace OpenLoco::GameCommands
         auto totalCost = 0;
         for (const auto& tilePos : tileLoop)
         {
-            if (!validCoords(tilePos))
-                continue;
-
             auto tile = TileManager::get(tilePos);
             auto* surface = tile.surface();
 

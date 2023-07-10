@@ -583,7 +583,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        TilePosRangeView tileLoop{ { 1, 1 }, { kMapColumns - 1, kMapRows - 1 } };
+        TilePosRangeView tileLoop = getWorldRange();
         for (const auto& tilePos : tileLoop)
         {
             auto* surface = World::TileManager::get(tilePos).surface();
@@ -658,7 +658,7 @@ namespace OpenLoco::World::MapGenerator
         uint32_t randMask = gPrng1().randNext();
         uint32_t i = 0;
         std::vector<TileElement*> toBeRemoved;
-        for (auto& loc : TilePosRangeView({}, { kMapRows - 1, kMapColumns - 1 }))
+        for (auto& loc : getWorldRange())
         {
             auto tile = TileManager::get(loc);
             for (auto& el : tile)

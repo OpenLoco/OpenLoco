@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
     // 0x00455A5C
     static void revokeAllSurfaceClaims(const IndustryId id)
     {
-        for (auto& pos : World::TilePosRangeView({ 1, 1 }, { World::kMapRows - 1, World::kMapColumns - 1 }))
+        for (auto& pos : World::getWorldRange())
         {
             auto tile = World::TileManager::get(pos);
             auto* surface = tile.surface();

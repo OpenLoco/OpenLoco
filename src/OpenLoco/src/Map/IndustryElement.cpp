@@ -217,14 +217,9 @@ namespace OpenLoco::World
             constexpr coord_t kLowerRange = 4;
 
             // Find all stations in range of industry building
-            const auto tileStart = World::toTileSpace(loc);
-            for (auto& tilePos : TilePosRangeView(tileStart - World::TilePos2{ kLowerRange, kLowerRange }, tileStart + World::TilePos2{ upperRange, upperRange }))
+            const auto tileStart = toTileSpace(loc);
+            for (auto& tilePos : getClampedRange(tileStart - TilePos2{ kLowerRange, kLowerRange }, tileStart + TilePos2{ upperRange, upperRange }))
             {
-                if (!validCoords(tilePos))
-                {
-                    continue;
-                }
-
                 auto tile = TileManager::get(tilePos);
                 for (auto& el : tile)
                 {

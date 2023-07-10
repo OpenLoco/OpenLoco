@@ -530,15 +530,12 @@ namespace OpenLoco
     {
         std::size_t numBorders = 0;
         // Search a 5x5 area centred on Pos
-        const auto initialTilePos = World::toTileSpace(pos);
+        const auto initialTilePos = toTileSpace(pos);
         const auto topRight = initialTilePos - TilePos2{ 2, 2 };
         const auto bottomLeft = initialTilePos + TilePos2{ 2, 2 };
-        for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
+
+        for (const auto& tilePos : getClampedRange(topRight, bottomLeft))
         {
-            if (!World::validCoords(tilePos))
-            {
-                continue;
-            }
             if (isSurfaceClaimed(tilePos))
             {
                 numBorders++;
