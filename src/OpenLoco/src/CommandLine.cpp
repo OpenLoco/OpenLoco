@@ -424,8 +424,14 @@ namespace OpenLoco
         {
             auto path = fs::u8path(options.path);
 
-            FileStream fsInput(path, StreamMode::read);
-            SawyerStreamReader reader(fsInput);
+            // Copy the whole input file into memory to allow writing over input file
+            MemoryStream ms;
+            {
+                FileStream fsInput(path, StreamMode::read);
+                ms.resize(fsInput.getLength());
+                fsInput.read(ms.data(), fsInput.getLength());
+            }
+            SawyerStreamReader reader(ms);
 
             auto outputPath = options.outputPath;
             if (outputPath.empty())
