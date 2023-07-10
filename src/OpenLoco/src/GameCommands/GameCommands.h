@@ -1767,13 +1767,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_59(EntityId head)
+    struct VehiclePickupAirArgs
     {
-        registers regs;
-        regs.bl = Flags::apply | Flags::noErrorWindow | Flags::ghost;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::vehiclePickupAir;
+
+        VehiclePickupAirArgs() = default;
+        explicit VehiclePickupAirArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     struct PortPlacementArgs
     {

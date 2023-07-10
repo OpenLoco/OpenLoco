@@ -3753,7 +3753,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
-                GameCommands::do_59(head.id);
+                GameCommands::VehiclePickupAirArgs gcArgs{};
+                gcArgs.head = head.id;
+                auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                GameCommands::doCommand(gcArgs, flags);
             }
             _ghostAirportStationId = StationId::null;
         }
@@ -4219,12 +4222,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     GameCommands::VehiclePickupArgs args{};
                     args.head = head->id;
-                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost);
+                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                    GameCommands::doCommand(args, flags);
                     break;
                 }
                 case TransportMode::air:
-                    GameCommands::do_59(head->id);
+                {
+                    GameCommands::VehiclePickupAirArgs gcArgs{};
+                    gcArgs.head = head->id;
+                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                    GameCommands::doCommand(gcArgs, flags);
                     break;
+                }
                 case TransportMode::water:
                     GameCommands::do_63(head->id);
                     break;
@@ -4350,12 +4359,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     GameCommands::VehiclePickupArgs gcArgs{};
                     gcArgs.head = head->id;
-                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
+                    auto flags = GameCommands::Flags::apply;
+                    success = GameCommands::doCommand(gcArgs, flags) != GameCommands::FAILURE;
                     break;
                 }
                 case TransportMode::air:
-                    success = GameCommands::do_59(head->id);
+                {
+                    GameCommands::VehiclePickupAirArgs gcArgs{};
+                    gcArgs.head = head->id;
+                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                    success = GameCommands::doCommand(gcArgs, flags) != GameCommands::FAILURE;
                     break;
+                }
                 case TransportMode::water:
                     success = GameCommands::do_63(head->id);
                     break;
