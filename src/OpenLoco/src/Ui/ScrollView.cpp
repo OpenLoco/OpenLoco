@@ -323,6 +323,15 @@ namespace OpenLoco::Ui::ScrollView
             newThumbPos += 11;
             viewWidth += 10;
             scrollArea.hThumbRight = std::min(newThumbPos, viewWidth);
+
+            // Ensure the scrollbar thumb does not fall below a minimum size
+            if (scrollArea.hThumbRight - scrollArea.hThumbLeft < 20)
+            {
+                int32_t barPosition = (scrollArea.hThumbRight * 1.0) / viewWidth;
+
+                scrollArea.hThumbLeft = scrollArea.hThumbLeft - (20 * barPosition);
+                scrollArea.hThumbRight = scrollArea.hThumbRight + (20 * (1 - barPosition));
+            }
         }
 
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
@@ -348,6 +357,15 @@ namespace OpenLoco::Ui::ScrollView
             newThumbPos += 11;
             viewHeight += 10;
             scrollArea.vThumbBottom = std::min(newThumbPos, viewHeight);
+
+            // Ensure the scrollbar thumb does not fall below a minimum size
+            if (scrollArea.vThumbBottom - scrollArea.vThumbTop < 20)
+            {
+                int32_t barPosition = scrollArea.vThumbBottom / viewHeight;
+
+                scrollArea.vThumbTop = scrollArea.vThumbTop - (20 * barPosition);
+                scrollArea.vThumbBottom = scrollArea.vThumbBottom + (20 * (1 - barPosition));
+            }
         }
     }
 
