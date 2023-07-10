@@ -597,9 +597,9 @@ namespace OpenLoco
                 args.rotation = rotation;
                 args.type = randWallTypeFlags & (1 << i) ? secondaryWallType : primaryWallType;
                 i++;
-                args.unk = 0;
                 args.primaryColour = Colour::black;
                 args.secondaryColour = Colour::black;
+                args.tertiaryColour = Colour::black;
                 return args;
             };
             // If on an edge add a wall

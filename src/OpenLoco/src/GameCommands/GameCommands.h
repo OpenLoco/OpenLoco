@@ -1127,18 +1127,18 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.dl)
             , type(regs.bh)
-            , unk(regs.dh)
-            , primaryColour(static_cast<Colour>(regs.bp & 0x1F))
-            , secondaryColour(static_cast<Colour>((regs.bp >> 8) & 0x1F))
+            , primaryColour(static_cast<Colour>(regs.dh))
+            , secondaryColour(static_cast<Colour>(regs.bp & 0x1F))
+            , tertiaryColour(static_cast<Colour>((regs.bp >> 8) & 0x1F))
         {
         }
 
         World::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
-        uint8_t unk;
         Colour primaryColour;
         Colour secondaryColour;
+        Colour tertiaryColour; // Note: will not work; render engine does not support tertiary
 
         explicit operator registers() const
         {
@@ -1146,9 +1146,9 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dl = rotation;
-            regs.dh = unk;
+            regs.dh = enumValue(primaryColour);
             regs.di = pos.z;
-            regs.bp = enumValue(primaryColour) | (enumValue(secondaryColour) << 8);
+            regs.bp = enumValue(secondaryColour) | (enumValue(tertiaryColour) << 8);
             regs.bh = type;
             return regs;
         }

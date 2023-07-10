@@ -27,17 +27,22 @@ namespace OpenLoco::World
         {
             _type = (_type & 0x3C) | (rotation & 0x3);
         }
-        void setSlope(uint8_t slope)
+        void setSlopeFlags(uint8_t slopeFlags)
         {
-            _6 = (_6 & 0xE0) | (slope & 0x1F);
+            _type &= ~0xC0;
+            _type |= slopeFlags & 0xC0; // Note slope flags are already << 6
         }
         void setPrimaryColour(Colour colour)
         {
+            _6 = (_6 & 0xE0) | (enumValue(colour) & 0x1F);
             _6 = ((enumValue(colour) & 0x07) << 5) | (_6 & 0x1F);
         }
         void setSecondaryColour(Colour colour)
         {
-            _flags = (enumValue(colour) & 0x18) << 2 | (_flags & 0xE7);
+            _6 &= 0x1F;
+            _6 |= (enumValue(colour) & 0x7) << 5;
+            _flags &= ~0x60; // Reuse flags 5 and 6 for storing bits of the primary colour
+            _flags |= (enumValue(colour) & 0x18) << 2;
         }
         void setTertiaryColour(Colour colour)
         {

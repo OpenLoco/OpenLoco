@@ -253,15 +253,15 @@ namespace OpenLoco::GameCommands
         }
 
         wall->setClearZ(clearZ);
-        wall->setRotation(args.rotation); // original had slopeFlags in here as well, but that interferes with type?? check
-        wall->setSlope(surface->slope());
+        wall->setRotation(args.rotation);
+        wall->setSlopeFlags(enumValue(slopeFlags));
         wall->setPrimaryColour(args.primaryColour);
         wall->setSecondaryColour(args.secondaryColour);
         wall->setWallObjectId(args.type);
 
         if ((wallObj->flags & WallObjectFlags::hasTertiaryColour) != WallObjectFlags::none)
         {
-            wall->setTertiaryColour(args.secondaryColour);
+            wall->setTertiaryColour(args.tertiaryColour);
         }
 
         if (flags & Flags::flag_6)
