@@ -870,6 +870,16 @@ namespace OpenLoco::World::TileManager
         return surroundingTrees;
     }
 
+    // 0x004C5604
+    uint16_t countNearbyWaterTiles(Pos2 pos)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004C5604, regs);
+        return regs.dx;
+    }
+
     static bool update(TileElement& el, const World::Pos2& loc)
     {
         registers regs;

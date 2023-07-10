@@ -2176,6 +2176,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/CloneVehicle.cpp
     void cloneVehicle(registers& regs);
 
+    // Defined in GameCommands/CreateTown.cpp
+    void createTown(registers& regs);
+
     // Defined in GameCommands/CreateTree.cpp
     void createTree(registers& regs);
 
