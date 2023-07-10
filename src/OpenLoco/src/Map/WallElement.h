@@ -35,7 +35,6 @@ namespace OpenLoco::World
         void setPrimaryColour(Colour colour)
         {
             _6 = (_6 & 0xE0) | (enumValue(colour) & 0x1F);
-            _6 = ((enumValue(colour) & 0x07) << 5) | (_6 & 0x1F);
         }
         void setSecondaryColour(Colour colour)
         {

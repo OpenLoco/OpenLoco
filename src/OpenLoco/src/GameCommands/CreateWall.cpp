@@ -164,15 +164,15 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        targetHeight /= kSmallZStep;
+        const auto targetBaseZ = targetHeight / kSmallZStep;
 
-        if (surface->water() && surface->water() * kMicroToSmallZStep > targetHeight)
+        if (surface->water() && surface->water() * kMicroToSmallZStep > targetBaseZ)
         {
             setErrorText(StringIds::cant_build_this_underwater);
             return FAILURE;
         }
 
-        if (targetHeight < surface->baseZ())
+        if (targetBaseZ < surface->baseZ())
         {
             setErrorText(StringIds::error_can_only_build_above_ground);
             return FAILURE;
@@ -180,7 +180,7 @@ namespace OpenLoco::GameCommands
 
         if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) == EdgeSlope::none)
         {
-            auto testHeight = targetHeight + kSmallZStep;
+            const auto testHeight = targetBaseZ + kSmallZStep;
 
             // Test placement edges to ensure we don't build partially underground
             for (auto i = 2; i <= 3; i++)
@@ -188,7 +188,7 @@ namespace OpenLoco::GameCommands
                 auto testEdge = (args.rotation + i) & 3;
                 if (surface->slope() & (1 << testEdge))
                 {
-                    if (args.pos.z < surface->baseZ())
+                    if (testHeight < surface->baseZ())
                     {
                         setErrorText(StringIds::error_can_only_build_above_ground);
                         return FAILURE;
@@ -202,7 +202,7 @@ namespace OpenLoco::GameCommands
                             testEdge = (testEdge + 2) & 3;
                             if (surface->slope() & (1 << testEdge))
                             {
-                                if (args.pos.z < testHeight + kSmallZStep)
+                                if (targetBaseZ < testHeight + kSmallZStep)
                                 {
                                     setErrorText(StringIds::error_can_only_build_above_ground);
                                     return FAILURE;
@@ -214,7 +214,6 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        auto targetBaseZ = targetHeight; // / kSmallZStep;
         auto clearZ = targetBaseZ;
 
         // TODO: fold into previous block; left for now to match IDA
@@ -229,6 +228,7 @@ namespace OpenLoco::GameCommands
 
             clearZ += kSmallZStep;
         }
+        clearZ += wallObj->height;
 
         if (!canConstructWall(args.pos, targetBaseZ, clearZ, args.rotation))
         {
