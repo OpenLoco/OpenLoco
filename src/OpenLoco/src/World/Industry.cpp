@@ -568,12 +568,8 @@ namespace OpenLoco
         }
 
         std::size_t i = 0;
-        for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
+        for (const auto& tilePos : getClampedRange(topRight, bottomLeft))
         {
-            if (!World::validCoords(tilePos))
-            {
-                continue;
-            }
             if (is23prng.has_value())
             {
                 const auto randVal = is23prng->randNext();

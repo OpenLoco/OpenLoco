@@ -750,10 +750,6 @@ namespace OpenLoco::World::TileManager
         auto range = getClampedRange(initialTilePos - TilePos2{ 5, 5 }, initialTilePos + TilePos2{ 5, 5 });
         for (auto& tilePos : range)
         {
-            if (!World::validCoords(tilePos))
-            {
-                continue;
-            }
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             auto height = surface->baseHeight();
