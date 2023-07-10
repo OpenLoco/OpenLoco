@@ -113,6 +113,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleOrderUp.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehiclePassSignal.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehiclePickup.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehiclePickupAir.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehiclePickupWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleRefit.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/VehicleReverse.cpp"

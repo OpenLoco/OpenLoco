@@ -2276,6 +2276,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/VehiclePickup.cpp
     void vehiclePickup(registers& regs);
 
+    // Defined in GameCommands/VehiclePickupAir.cpp
+    void vehiclePickupAir(Interop::registers& regs);
+
     // Defined in GameCommands/VehiclePickupWater.cpp
     void vehiclePickupWater(registers& regs);
 
