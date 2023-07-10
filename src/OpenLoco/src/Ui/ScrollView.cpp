@@ -302,11 +302,11 @@ namespace OpenLoco::Ui::ScrollView
 
         if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            int32_t viewSize = widget.width() - 22;
+            int32_t viewWidth = widget.width() - 22;
             if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
-                viewSize -= 11;
+                viewWidth -= 11;
 
-            int32_t newThumbPos = scrollArea.contentOffsetX * viewSize;
+            int32_t newThumbPos = scrollArea.contentOffsetX * viewWidth;
             if (scrollArea.contentWidth != 0)
                 newThumbPos /= scrollArea.contentWidth;
 
@@ -318,16 +318,16 @@ namespace OpenLoco::Ui::ScrollView
 
             newThumbPos += scrollArea.contentOffsetX;
             if (scrollArea.contentWidth != 0)
-                newThumbPos = (newThumbPos * viewSize) / scrollArea.contentWidth;
+                newThumbPos = (newThumbPos * viewWidth) / scrollArea.contentWidth;
 
             newThumbPos += 11;
-            viewSize += 10;
-            scrollArea.hThumbRight = std::min(newThumbPos, viewSize);
+            viewWidth += 10;
+            scrollArea.hThumbRight = std::min(newThumbPos, viewWidth);
 
             // Ensure the scrollbar thumb does not fall below a minimum size
             if (scrollArea.hThumbRight - scrollArea.hThumbLeft < 20)
             {
-                double barPosition = (scrollArea.hThumbRight * 1.0) / viewSize;
+                double barPosition = (scrollArea.hThumbRight * 1.0) / viewWidth;
 
                 scrollArea.hThumbLeft = std::lround(scrollArea.hThumbLeft - (20 * barPosition));
                 scrollArea.hThumbRight = std::lround(scrollArea.hThumbRight + (20 * (1 - barPosition)));
@@ -336,11 +336,11 @@ namespace OpenLoco::Ui::ScrollView
 
         if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            int32_t viewSize = widget.height() - 22;
+            int32_t viewHeight = widget.height() - 22;
             if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
-                viewSize -= 11;
+                viewHeight -= 11;
 
-            int32_t newThumbPos = scrollArea.contentOffsetY * viewSize;
+            int32_t newThumbPos = scrollArea.contentOffsetY * viewHeight;
             if (scrollArea.contentHeight != 0)
                 newThumbPos /= scrollArea.contentHeight;
 
@@ -352,16 +352,16 @@ namespace OpenLoco::Ui::ScrollView
 
             newThumbPos += scrollArea.contentOffsetY;
             if (scrollArea.contentHeight != 0)
-                newThumbPos = (newThumbPos * viewSize) / scrollArea.contentHeight;
+                newThumbPos = (newThumbPos * viewHeight) / scrollArea.contentHeight;
 
             newThumbPos += 11;
-            viewSize += 10;
-            scrollArea.vThumbBottom = std::min(newThumbPos, viewSize);
+            viewHeight += 10;
+            scrollArea.vThumbBottom = std::min(newThumbPos, viewHeight);
 
             // Ensure the scrollbar thumb does not fall below a minimum size
             if (scrollArea.vThumbBottom - scrollArea.vThumbTop < 20)
             {
-                double barPosition = (scrollArea.vThumbBottom * 1.0) / viewSize;
+                double barPosition = (scrollArea.vThumbBottom * 1.0) / viewHeight;
 
                 scrollArea.vThumbTop = std::lround(scrollArea.vThumbTop - (20 * barPosition));
                 scrollArea.vThumbBottom = std::lround(scrollArea.vThumbBottom + (20 * (1 - barPosition)));
