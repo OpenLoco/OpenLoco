@@ -535,6 +535,10 @@ namespace OpenLoco
         const auto bottomLeft = initialTilePos + TilePos2{ 2, 2 };
         for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
+            if (!World::validCoords(tilePos))
+            {
+                continue;
+            }
             if (isSurfaceClaimed(tilePos))
             {
                 numBorders++;
@@ -569,6 +573,10 @@ namespace OpenLoco
         std::size_t i = 0;
         for (const auto& tilePos : TilePosRangeView{ topRight, bottomLeft })
         {
+            if (!World::validCoords(tilePos))
+            {
+                continue;
+            }
             if (is23prng.has_value())
             {
                 const auto randVal = is23prng->randNext();
