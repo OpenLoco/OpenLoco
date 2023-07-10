@@ -3567,7 +3567,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
-                GameCommands::do_63(head.id);
+                GameCommands::VehiclePickupWaterArgs gcArgs{};
+                gcArgs.head = head.id;
+                auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                GameCommands::doCommand(gcArgs, flags);
             }
             _1136264 = -1;
         }
@@ -4235,8 +4238,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case TransportMode::water:
-                    GameCommands::do_63(head->id);
+                {
+                    GameCommands::VehiclePickupWaterArgs gcArgs{};
+                    gcArgs.head = head->id;
+                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                    GameCommands::doCommand(gcArgs, flags);
                     break;
+                }
             }
             self.invalidate();
         }
@@ -4372,8 +4380,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     break;
                 }
                 case TransportMode::water:
-                    success = GameCommands::do_63(head->id);
+                {
+                    GameCommands::VehiclePickupWaterArgs gcArgs{};
+                    gcArgs.head = head->id;
+                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
+                    success = GameCommands::doCommand(gcArgs, flags) != GameCommands::FAILURE;
                     break;
+                }
             }
             if (success)
             {

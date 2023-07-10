@@ -1865,13 +1865,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_63(EntityId head)
+    struct VehiclePickupWaterArgs
     {
-        registers regs;
-        regs.bl = Flags::apply | Flags::noErrorWindow | Flags::ghost;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::vehiclePickupWater;
+
+        VehiclePickupWaterArgs() = default;
+        explicit VehiclePickupWaterArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     struct VehicleRefitArgs
     {
