@@ -102,11 +102,11 @@ namespace OpenLoco::World
 
     constexpr coord_t clampCoord(coord_t coord)
     {
-        return std::clamp<coord_t>(coord, 1, kMapWidth);
+        return std::clamp<coord_t>(coord, 1, kMapWidth - 1);
     }
 
     constexpr coord_t clampTileCoord(coord_t coord)
     {
-        return std::clamp<coord_t>(coord, 1, kMapColumns);
+        return std::clamp<coord_t>(coord, 1, kMapColumns - 1);
     }
 }
