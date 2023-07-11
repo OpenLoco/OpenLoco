@@ -66,7 +66,7 @@ namespace OpenLoco::World
     // drawing coordinates validation differs from general valid coordinate validation
     constexpr bool drawableCoord(const coord_t coord)
     {
-        return (coord >= (World::kTileSize - 1)) && (coord < (World::kMapWidth - World::kTileSize));
+        return (coord >= World::kTileSize) && (coord < (World::kMapWidth - World::kTileSize));
     }
 
     constexpr bool drawableTileCoord(const tile_coord_t coord)
