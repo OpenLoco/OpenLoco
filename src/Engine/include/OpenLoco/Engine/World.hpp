@@ -63,6 +63,26 @@ namespace OpenLoco::World
         return validTileCoord(coords.x) && validTileCoord(coords.y);
     }
 
+    constexpr bool coordWithinMapBoundaries(const coord_t coord)
+    {
+        return (coord >= kTileSize) && (coord < (kMapWidth - kTileSize));
+    }
+
+    constexpr bool tileCoordWithinMapBoundaries(const tile_coord_t coord)
+    {
+        return (coord >= 1) && (coord < (kMapWidth - 1));
+    }
+
+    constexpr bool withinMapBoundaries(const Pos2& coords)
+    {
+        return coordWithinMapBoundaries(coords.x) && coordWithinMapBoundaries(coords.y);
+    }
+
+    constexpr bool withinMapBoundaries(const TilePos2& coords)
+    {
+        return tileCoordWithinMapBoundaries(coords.x) && tileCoordWithinMapBoundaries(coords.y);
+    }
+
     // drawing coordinates validation differs from general valid coordinate validation
     constexpr bool drawableCoord(const coord_t coord)
     {

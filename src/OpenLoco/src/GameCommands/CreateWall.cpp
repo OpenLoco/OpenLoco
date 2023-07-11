@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
     // 0x004C4A3B
     static bool canConstructWall(World::Pos3 pos, SmallZ baseZ, SmallZ clearZ, uint8_t targetEdge)
     {
-        if ((pos.x < kTileSize || pos.y < kTileSize) || (pos.x >= (kMapWidth - kTileSize) || pos.y >= (kMapHeight - kTileSize)))
+        if (!withinMapBoundaries(World::Pos2(pos)))
         {
             setErrorText(StringIds::off_edge_of_map);
             return false;
