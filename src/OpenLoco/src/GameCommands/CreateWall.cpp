@@ -166,7 +166,7 @@ namespace OpenLoco::GameCommands
 
         const auto targetBaseZ = targetHeight / kSmallZStep;
 
-        if (surface->water() && surface->water() * kMicroToSmallZStep > targetBaseZ)
+        if (surface->water() && targetBaseZ < surface->water() * kMicroToSmallZStep)
         {
             setErrorText(StringIds::cant_build_this_underwater);
             return FAILURE;
@@ -180,7 +180,7 @@ namespace OpenLoco::GameCommands
 
         if ((slopeFlags & (EdgeSlope::upwards | EdgeSlope::downwards)) == EdgeSlope::none)
         {
-            const auto testHeight = targetBaseZ + kSmallZStep;
+            const auto testHeight = surface->baseZ() + kSmallZStep;
 
             // Test placement edges to ensure we don't build partially underground
             for (auto i = 2; i <= 3; i++)
@@ -188,7 +188,7 @@ namespace OpenLoco::GameCommands
                 auto testEdge = (args.rotation + i) & 3;
                 if (surface->slope() & (1 << testEdge))
                 {
-                    if (testHeight < surface->baseZ())
+                    if (targetBaseZ < testHeight)
                     {
                         setErrorText(StringIds::error_can_only_build_above_ground);
                         return FAILURE;
