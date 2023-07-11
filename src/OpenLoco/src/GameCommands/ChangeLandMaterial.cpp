@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        auto tileLoop = World::getClampedRange(pointA, pointB);
+        const auto tileLoop = World::getClampedRange(pointA, pointB);
         for (const auto& tilePos : tileLoop)
         {
             auto surface = World::TileManager::get(tilePos).surface();

@@ -583,7 +583,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        TilePosRangeView tileLoop = getWorldRange();
+        const TilePosRangeView tileLoop = getWorldRange();
         for (const auto& tilePos : tileLoop)
         {
             auto* surface = World::TileManager::get(tilePos).surface();

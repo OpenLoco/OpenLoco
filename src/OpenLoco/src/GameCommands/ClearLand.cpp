@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
     // 0x00469CCB
     static uint32_t clearLand(const ClearLandArgs& args, const uint8_t flags)
     {
-        auto tileLoop = World::getClampedRange(args.pointA, args.pointB);
+        const auto tileLoop = World::getClampedRange(args.pointA, args.pointB);
         uint32_t totalCost = 0;
 
         // We keep track of removed buildings for each tile visited
