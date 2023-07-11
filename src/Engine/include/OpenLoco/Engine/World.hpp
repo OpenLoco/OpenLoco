@@ -71,7 +71,7 @@ namespace OpenLoco::World
 
     constexpr bool drawableTileCoord(const tile_coord_t coord)
     {
-        return (coord >= 1) && (coord < (kMapWidth - 1));
+        return (coord >= 1) && (coord < (kMapRows - 1));
     }
 
     constexpr bool drawableCoords(const Pos2& coords)
