@@ -844,8 +844,8 @@ namespace OpenLoco::Audio
             const auto centre = mainViewport->getCentreMapPosition();
             const auto topLeft = World::toTileSpace(centre) - World::TilePos2{ 5, 5 };
             const auto bottomRight = topLeft + World::TilePos2{ 11, 11 };
+            const auto searchRange = World::getClampedRange(topLeft, bottomRight);
 
-            auto searchRange = World::getClampedRange(topLeft, bottomRight);
             size_t waterCount = 0;      // bl
             size_t wildernessCount = 0; // bh
             size_t treeCount = 0;       // cx
