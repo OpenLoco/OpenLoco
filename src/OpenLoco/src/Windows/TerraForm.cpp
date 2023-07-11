@@ -2187,7 +2187,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             args.rotation = ViewportInteraction::getSideFromPos(res->first);
             args.primaryColour = Colour::black;
             args.secondaryColour = Colour::black;
-            args.unk = 0;
+            args.tertiaryColour = Colour::black;
             return { args };
         }
 
