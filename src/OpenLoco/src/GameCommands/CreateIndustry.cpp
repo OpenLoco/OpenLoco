@@ -453,7 +453,8 @@ namespace OpenLoco::GameCommands
             GameCommands::setPosition({ args.pos.x, args.pos.y, centreHeight.landHeight });
         }
 
-        Core::Prng prng{ args.srand0, args.srand1 };
+        // Vanilla bug args.srand0 not set. Change this when we can diverge
+        Core::Prng prng{ enumValue(GameCommand::createIndustry), args.srand1 };
         const auto newIndustryId = sub_454C91(args.type, args.pos, prng);
         if (newIndustryId == IndustryId::null)
         {
