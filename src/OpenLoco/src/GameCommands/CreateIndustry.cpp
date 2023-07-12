@@ -670,7 +670,7 @@ namespace OpenLoco::GameCommands
                             wallArgs.pos = World::Pos3(World::toWorldSpace(tilePos), 0);
                             wallArgs.primaryColour = Colour::black;
                             wallArgs.secondaryColour = Colour::black;
-                            wallArgs.unk = 0;
+                            wallArgs.tertiaryColour = Colour::black;
                             // Place fences
                             if (tilePos.x == bottomLeft.x)
                             {
