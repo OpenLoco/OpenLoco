@@ -262,7 +262,8 @@ namespace OpenLoco::GameCommands
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {
             auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
-            const auto numSegments = std::min(1, clearHeight / scaffObj->segmentHeights[indObj->scaffoldingSegmentType]);
+            bool requiresMore = clearHeight % scaffObj->segmentHeights[indObj->scaffoldingSegmentType];
+            const auto numSegments = (clearHeight / scaffObj->segmentHeights[indObj->scaffoldingSegmentType]) + (requiresMore ? 1 : 0);
             clearHeight = (numSegments * scaffObj->segmentHeights[indObj->scaffoldingSegmentType]) + scaffObj->roofHeights[indObj->scaffoldingSegmentType];
         }
         // ceil to 4
