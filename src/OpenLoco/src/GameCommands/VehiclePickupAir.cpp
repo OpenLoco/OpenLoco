@@ -8,10 +8,10 @@ using namespace OpenLoco::Vehicles;
 namespace OpenLoco::GameCommands
 {
     // 0x00426B29
-    static uint32_t vehiclePickupAir(EntityId head, uint8_t flags)
+    static uint32_t vehiclePickupAir(const VehiclePickupAirArgs& args, uint8_t flags)
     {
         setExpenditureType(ExpenditureType::AircraftRunningCosts);
-        Vehicle train(head);
+        Vehicle train(args.head);
         setPosition(train.veh2->position);
         if (!sub_431E6A(train.head->owner))
         {
@@ -28,19 +28,22 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        if (!(flags & Flags::ghost))
-            Vehicles::playPickupSound(train.veh2);
-
-        train.applyToComponents([](auto& component) {
-            component.tileX = -1;
-            component.invalidateSprite();
-            component.moveTo({ static_cast<int16_t>(0x8000), 0, 0 });
-        });
-
-        if (train.head->stationId != StationId::null)
+        if (train.head->tileX != -1)
         {
-            auto* station = StationManager::get(train.head->stationId);
-            station->airportMovementOccupiedEdges &= ~(1 << train.head->airportMovementEdge);
+            if (!(flags & Flags::ghost))
+                Vehicles::playPickupSound(train.veh2);
+
+            train.applyToComponents([](auto& component) {
+                component.tileX = -1;
+                component.invalidateSprite();
+                component.moveTo({ static_cast<int16_t>(0x8000), 0, 0 });
+            });
+
+            if (train.head->stationId != StationId::null)
+            {
+                auto* station = StationManager::get(train.head->stationId);
+                station->airportMovementOccupiedEdges &= ~(1ULL << train.head->airportMovementEdge);
+            }
         }
 
         train.head->status = Vehicles::Status::unk_0;
@@ -65,6 +68,7 @@ namespace OpenLoco::GameCommands
 
     void vehiclePickupAir(Interop::registers& regs)
     {
-        regs.ebx = vehiclePickupAir(EntityId(regs.di), regs.bl);
+        const VehiclePickupAirArgs args(regs);
+        regs.ebx = vehiclePickupAir(args, regs.bl);
     }
 }

@@ -4367,24 +4367,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     GameCommands::VehiclePickupArgs gcArgs{};
                     gcArgs.head = head->id;
-                    auto flags = GameCommands::Flags::apply;
-                    success = GameCommands::doCommand(gcArgs, flags) != GameCommands::FAILURE;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
                     break;
                 }
                 case TransportMode::air:
                 {
                     GameCommands::VehiclePickupAirArgs gcArgs{};
                     gcArgs.head = head->id;
-                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
-                    success = GameCommands::doCommand(gcArgs, flags) != GameCommands::FAILURE;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
                     break;
                 }
                 case TransportMode::water:
                 {
                     GameCommands::VehiclePickupWaterArgs gcArgs{};
                     gcArgs.head = head->id;
-                    auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost;
-                    success = GameCommands::doCommand(gcArgs, flags) != GameCommands::FAILURE;
+                    success = GameCommands::doCommand(gcArgs, GameCommands::Flags::apply) != GameCommands::FAILURE;
                     break;
                 }
             }
