@@ -80,10 +80,10 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            const auto hasAtLeast1SameCargo = ((producedCargoTypes & producedCargoTypes2) != 0)
-                || ((requiredCargoTypes & requiredCargoTypes2) != 0);
+            const auto hasAtLeast1CargoRequirement = ((requiredCargoTypes & producedCargoTypes2) != 0)
+                || ((producedCargoTypes & requiredCargoTypes2) != 0);
 
-            const auto tooClose = 32 * (hasAtLeast1SameCargo ? 24 : 9);
+            const auto tooClose = 32 * (hasAtLeast1CargoRequirement ? 24 : 9);
 
             if (distance < tooClose)
             {
