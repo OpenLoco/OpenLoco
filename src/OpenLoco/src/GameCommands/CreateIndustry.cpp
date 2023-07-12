@@ -417,6 +417,10 @@ namespace OpenLoco::GameCommands
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
                 }
                 auto* elIndustry = World::TileManager::insertElement<World::IndustryElement>(World::toWorldSpace(tilePos), highestBaseZ, 0xF);
+                if (elIndustry == nullptr)
+                {
+                    return FAILURE;
+                }
                 elIndustry->setClearZ(clearZ);
                 elIndustry->setRotation(direction);
                 elIndustry->setIsConstructed(buildImmediate);
@@ -440,11 +444,11 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0045436B
-    currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
+    static currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
         {
-            const auto centrePos = World::Pos2{ args.pos.x + 16, args.pos.y + 16 };
+            const auto centrePos = World::Pos2(args.pos.x + 16, args.pos.y + 16);
             const auto centreHeight = World::TileManager::getHeight(centrePos);
             GameCommands::setPosition({ args.pos.x, args.pos.y, centreHeight.landHeight });
         }
@@ -589,7 +593,7 @@ namespace OpenLoco::GameCommands
                 if (flags & Flags::apply)
                 {
                     // do test placement
-                    const auto cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags & ~(Flags::apply));
+                    const uint32_t cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags & ~(Flags::apply));
                     if (cost == FAILURE)
                     {
                         continue;
@@ -598,7 +602,7 @@ namespace OpenLoco::GameCommands
                     newIndustry->numTiles--;
                 }
 
-                const auto cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags);
+                const uint32_t cost = placeIndustryBuilding(newIndustryId, randPos, direction, building, randColour, args.buildImmediately, flags);
                 if (cost == FAILURE)
                 {
                     continue;
