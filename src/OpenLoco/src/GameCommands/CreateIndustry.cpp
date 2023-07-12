@@ -708,9 +708,30 @@ namespace OpenLoco::GameCommands
                     }
                 }
             }
-            // 0x004548E5
 
             // Expand grounds
+            if (indObj->var_EC != 0)
+            {
+                const auto numExpands = (((indObj->var_EB * newIndustry->prng.randNext(0xFF)) / 256) + 1) * 4;
+                for (auto i = 0; i < numExpands; ++i)
+                {
+                    const auto randExpandVal = newIndustry->prng.randNext();
+                    // dl
+                    const auto surfaceUnk = (((randExpandVal & 0xFF) * indObj->var_EC) / 256) | (((randExpandVal >> 8) & 0x7) << 5);
+
+                    const World::TilePos2 randOffset(
+                        ((randExpandVal >> 11) & 0x1F) - 15,
+                        ((randExpandVal >> 16) & 0x1F) - 15);
+
+                    const World::Pos2 randPos = World::Pos2{ newIndustry->x, newIndustry->y } + World::toWorldSpace(randOffset);
+
+                    bool useSecondWallType = (randExpandVal >> 21) & 1;
+
+                    const auto wallType = useSecondWallType ? indObj->wallTypes[2] : indObj->wallTypes[0];
+                    const auto wallEntranceType = useSecondWallType ? indObj->wallTypes[3] : indObj->wallTypes[1];
+                    newIndustry->expandGrounds(randPos, wallType, wallEntranceType, surfaceUnk);
+                }
+            }
         }
 
         // Cleanup
