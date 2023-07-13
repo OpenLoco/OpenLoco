@@ -5,6 +5,7 @@
 #include <cmath>
 #include <codecvt>
 #include <cstring>
+#include <imgui_impl_sdl2.h>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -383,6 +384,8 @@ namespace OpenLoco::Ui
             return;
         }
 
+        drawingEngine.beginFrame();
+
         WindowManager::updateViewports();
 
         if (!Intro::isActive())
@@ -447,9 +450,18 @@ namespace OpenLoco::Ui
     {
         using namespace Input;
 
+        auto& io = ImGui::GetIO();
+
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
+            ImGui_ImplSDL2_ProcessEvent(&e);
+
+            if (io.WantCaptureMouse)
+            {
+                continue;
+            }
+
             switch (e.type)
             {
                 case SDL_QUIT:
@@ -464,9 +476,18 @@ namespace OpenLoco::Ui
     {
         using namespace Input;
 
+        auto& io = ImGui::GetIO();
+
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
+            ImGui_ImplSDL2_ProcessEvent(&e);
+
+            if (io.WantCaptureMouse)
+            {
+                continue;
+            }
+
             switch (e.type)
             {
                 case SDL_QUIT:

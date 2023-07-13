@@ -261,6 +261,18 @@ namespace OpenLoco::Drawing
         _screenInvalidation->initialised = 1;
     }
 
+    void SoftwareDrawingEngine::beginFrame()
+    {
+        ImGui_ImplSDLRenderer2_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        bool demownd = true;
+        ImGui::ShowDemoWindow(&demownd);
+
+        SDL_RenderClear(_renderer);
+    }
+
     /**
      * 0x004C5C69
      *
@@ -410,13 +422,6 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::present()
     {
-        ImGui_ImplSDLRenderer2_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
-
-        bool demownd = true;
-        ImGui::ShowDemoWindow(&demownd);
-
         // Lock the surface before setting its pixels
         if (SDL_MUSTLOCK(_screenSurface))
         {
