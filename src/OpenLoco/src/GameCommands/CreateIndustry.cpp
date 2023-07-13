@@ -549,8 +549,8 @@ namespace OpenLoco::GameCommands
                     }
                 }();
 
-                const auto randTileX = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 2) & 0xFF)) / 256) + minDistance;
-                const auto randTileY = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 18) & 0xFF)) / 256) + minDistance;
+                const auto randTileX = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 18) & 0xFF)) / 256) + minDistance;
+                const auto randTileY = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 2) & 0xFF)) / 256) + minDistance;
 
                 const auto randPos = lastPlacedBuildingPos + World::toWorldSpace(World::TilePos2(randTileX, randTileY));
                 const auto minRandPos = randPos;
