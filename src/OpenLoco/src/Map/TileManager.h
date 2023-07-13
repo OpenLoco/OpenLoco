@@ -54,7 +54,7 @@ namespace OpenLoco::World::TileManager
         return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
     }
     TileHeight getHeight(const Pos2& pos);
-    SmallZ getSurfaceCornerHeight(SurfaceElement* surface);
+    SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
     void updateTilePointers();
     void reorganise();
     bool checkFreeElementsAndReorganise();

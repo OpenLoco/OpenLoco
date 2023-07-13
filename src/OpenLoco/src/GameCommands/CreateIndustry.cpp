@@ -83,9 +83,9 @@ namespace OpenLoco::GameCommands
             const auto hasAtLeast1CargoRequirement = ((requiredCargoTypes & producedCargoTypes2) != 0)
                 || ((producedCargoTypes & requiredCargoTypes2) != 0);
 
-            const auto tooClose = 32 * (hasAtLeast1CargoRequirement ? 24 : 9);
+            const auto minIndustryDistance = 32 * (hasAtLeast1CargoRequirement ? 24 : 9);
 
-            if (distance < tooClose)
+            if (distance < minIndustryDistance)
             {
                 GameCommands::setErrorText(StringIds::too_close_to_another_industry);
                 return IndustryId::null;
@@ -93,8 +93,9 @@ namespace OpenLoco::GameCommands
         }
 
         // Find free industry slot (MOVE TO INDUSTRY MANAGER)
-        for (IndustryId id = static_cast<IndustryId>(0); enumValue(id) < Limits::kMaxIndustries; id = static_cast<IndustryId>(enumValue(id) + 1))
+        for (auto i = 0U; i < Limits::kMaxIndustries; ++i)
         {
+            const auto id = static_cast<IndustryId>(i);
             auto* industry = IndustryManager::get(id);
             if (!industry->empty())
             {
@@ -241,9 +242,9 @@ namespace OpenLoco::GameCommands
                 continue;
             }
             auto tile = World::TileManager::get(tilePos);
-            auto* surface = tile.surface();
+            const auto* surface = tile.surface();
 
-            auto baseZ = World::TileManager::getSurfaceCornerHeight(surface);
+            auto baseZ = World::TileManager::getSurfaceCornerHeight(*surface);
             highestBaseZ = std::max<World::SmallZ>(highestBaseZ, baseZ);
             if (surface->water())
             {
@@ -290,7 +291,7 @@ namespace OpenLoco::GameCommands
 
             {
                 auto tile = World::TileManager::get(tilePos);
-                auto* surface = tile.surface();
+                const auto* surface = tile.surface();
 
                 auto clearFunc = [tilePos, flags, &totalCost](World::TileElement& el) {
                     return tileClearFunction(el, World::toWorldSpace(tilePos), flags, totalCost);
@@ -337,7 +338,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            // Perform additional validation ?for ghosts? and flatten surfaces
+            // Flatten surfaces (also checks if other elements will cause issues due to the flattening of the surface)
             if (!(flags & Flags::flag_6) && !indObj->hasFlags(IndustryObjectFlags::builtOnWater))
             {
                 auto tile = World::TileManager::get(tilePos);

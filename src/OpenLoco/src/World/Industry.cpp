@@ -563,8 +563,8 @@ namespace OpenLoco
         uint32_t randEntraceMask = 0;
         if (wallType != 0xFF && wallEntranceType != 0xFF)
         {
-            randEntraceMask = 1 << (prng.srand_0() & 0xF);
-            randEntraceMask |= 1 << ((prng.srand_0() >> 4) & 0x1F);
+            randEntraceMask = 1U << (prng.srand_0() & 0xF);
+            randEntraceMask |= 1U << ((prng.srand_0() >> 4) & 0x1F);
         }
 
         std::size_t i = 0;
@@ -596,7 +596,7 @@ namespace OpenLoco
                 GameCommands::WallPlacementArgs args;
                 args.pos = World::Pos3(World::toWorldSpace(tilePos), 0);
                 args.rotation = rotation;
-                args.type = randEntraceMask & (1 << i) ? wallEntranceType : wallType;
+                args.type = randEntraceMask & (1U << i) ? wallEntranceType : wallType;
                 i++;
                 args.primaryColour = Colour::black;
                 args.secondaryColour = Colour::black;
@@ -648,7 +648,7 @@ namespace OpenLoco
                     const auto* industryObject = tileIndustry->getObject();
                     if (industryObject != nullptr)
                     {
-                        auto animOffsets = getBuildingTileOffsets(industryObject->buildingSizeFlags & (1 << industryEl->buildingType()));
+                        auto animOffsets = getBuildingTileOffsets(industryObject->buildingSizeFlags & (1U << industryEl->buildingType()));
                         for (auto animOffset : animOffsets)
                         {
                             AnimationManager::createAnimation(3, animOffset.pos + tilePos, baseZ);
