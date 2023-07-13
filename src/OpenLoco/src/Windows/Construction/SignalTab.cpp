@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
     {
-        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
             _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::signal;
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.index = _signalGhostTileIndex;
             args.flags = _signalGhostSides;
             args.type = _signalGhostTrackObjId;
-            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::signal;
         }

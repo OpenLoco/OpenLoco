@@ -2104,7 +2104,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 args.sequenceIndex = 0;
                 args.roadId = _ghostRemovalTrackId;
                 args.objectId = _ghostRemovalTrackObjectId & ~(1 << 7);
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
             {
@@ -2115,7 +2115,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 args.index = 0;
                 args.trackId = _ghostRemovalTrackId;
                 args.trackObjectId = _ghostRemovalTrackObjectId;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::track;
         }
@@ -2128,7 +2128,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
     {
         removeTrackGhosts();
-        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res == GameCommands::FAILURE)
         {
             if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
@@ -2181,7 +2181,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static uint32_t placeRoadGhost(const GameCommands::RoadPlacementArgs& args)
     {
         removeTrackGhosts();
-        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res == GameCommands::FAILURE)
         {
             if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)

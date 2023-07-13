@@ -919,7 +919,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (_headquarterGhostPlaced)
             {
                 _headquarterGhostPlaced = false;
-                auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
+                auto flags = GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
                 GameCommands::HeadquarterRemovalArgs args;
                 args.pos = _headquarterGhostPos;
                 GameCommands::doCommand(args, flags);
@@ -930,7 +930,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void placeHeadquarterGhost(const GameCommands::HeadquarterPlacementArgs& args)
         {
             removeHeadquarterGhost();
-            auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
+            auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost;
             if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
                 _headquarterGhostPlaced = true;

@@ -980,7 +980,7 @@ namespace OpenLoco::World::TileManager
             playDemolishTreeSound(loc);
         }
 
-        if ((flags & GameCommands::Flags::flag_6) == 0)
+        if ((flags & GameCommands::Flags::ghost) == 0)
         {
             auto treeObj = ObjectManager::get<TreeObject>(element.treeObjectId());
             auto ratingReduction = treeObj->demolishRatingReduction;

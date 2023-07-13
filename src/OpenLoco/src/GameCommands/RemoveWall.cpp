@@ -43,7 +43,7 @@ namespace OpenLoco::GameCommands
             if (wallElement->rotation() != args.rotation)
                 continue;
 
-            if ((flags & Flags::flag_6) == 0 && wallElement->isGhost())
+            if ((flags & Flags::ghost) == 0 && wallElement->isGhost())
                 continue;
 
             if ((flags & Flags::apply) == 0)

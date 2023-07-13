@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
         currency32_t totalCost = 0;
         auto targetCompanyId = CompanyId::null;
 
-        if (!(flags & Flags::flag_6)) // ghost?
+        if (!(flags & Flags::ghost))
         {
             auto baseZ = pos.z / World::kSmallZStep;
             for (auto& company : CompanyManager::companies())
@@ -48,14 +48,14 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::flag_6))
+        if ((flags & Flags::apply) && !(flags & Flags::ghost))
         {
             auto* company = CompanyManager::get(targetCompanyId);
             company->headquartersX = -1;
             Ui::WindowManager::invalidate(Ui::WindowType::company, Ui::WindowNumber_t(targetCompanyId));
         }
 
-        if ((flags & Flags::apply) && !(flags & (Flags::flag_4 | Flags::flag_6)))
+        if ((flags & Flags::apply) && !(flags & (Flags::flag_4 | Flags::ghost)))
         {
             Audio::playSound(Audio::SoundId::demolish, pos);
         }

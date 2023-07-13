@@ -25,14 +25,14 @@ namespace OpenLoco::GameCommands
 {
     namespace Flags
     {
-        constexpr uint8_t apply = 1 << 0;  // 0x01
-        constexpr uint8_t flag_1 = 1 << 1; // 0x02
-        constexpr uint8_t flag_2 = 1 << 2; // 0x04
-        constexpr uint8_t flag_3 = 1 << 3; // 0x08
-        constexpr uint8_t flag_4 = 1 << 4; // 0x10
-        constexpr uint8_t flag_5 = 1 << 5; // 0x20
-        constexpr uint8_t flag_6 = 1 << 6; // 0x40
-        constexpr uint8_t flag_7 = 1 << 7; // 0x80
+        constexpr uint8_t apply = 1 << 0;         // 0x01
+        constexpr uint8_t flag_1 = 1 << 1;        // 0x02
+        constexpr uint8_t flag_2 = 1 << 2;        // 0x04
+        constexpr uint8_t noErrorWindow = 1 << 3; // 0x08 do not show an error window even on failure (use this with ghosts)
+        constexpr uint8_t flag_4 = 1 << 4;        // 0x10
+        constexpr uint8_t noPayment = 1 << 5;     // 0x20 calculates cost but does not deduct it
+        constexpr uint8_t ghost = 1 << 6;         // 0x40
+        constexpr uint8_t flag_7 = 1 << 7;        // 0x80
     }
 
     enum class GameCommand : uint8_t
@@ -1770,7 +1770,7 @@ namespace OpenLoco::GameCommands
     inline bool do_59(EntityId head)
     {
         registers regs;
-        regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
+        regs.bl = Flags::apply | Flags::noErrorWindow | Flags::ghost;
         regs.di = enumValue(head);
         return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
     }
@@ -1856,7 +1856,7 @@ namespace OpenLoco::GameCommands
     inline bool do_63(EntityId head)
     {
         registers regs;
-        regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
+        regs.bl = Flags::apply | Flags::noErrorWindow | Flags::ghost;
         regs.di = enumValue(head);
         return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
     }

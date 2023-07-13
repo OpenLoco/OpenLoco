@@ -184,13 +184,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             {
                 GameCommands::AirportRemovalArgs args;
                 args.pos = _stationGhostPos;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else if (_stationGhostType & (1 << 14))
             {
                 GameCommands::PortRemovalArgs args;
                 args.pos = _stationGhostPos;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else if (_stationGhostType & (1 << 7))
             {
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.roadId = _stationGhostTrackId;
                 args.index = _stationGhostTileIndex;
                 args.type = _stationGhostType & ~(1 << 7);
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
             {
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.trackId = _stationGhostTrackId;
                 args.index = _stationGhostTileIndex;
                 args.type = _stationGhostType;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::station;
         }
@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _stationGhostTypeDockAirport = args->type;
         _stationGhostType = (1U << 15);
 
-        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
         _stationCost = cost;
 
@@ -343,7 +343,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _stationGhostTypeDockAirport = args->type;
         _stationGhostType = (1U << 14);
 
-        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
         _stationCost = cost;
 
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _stationGhostTileIndex = args->index;
         _stationGhostType = args->roadObjectId | (1 << 7);
 
-        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
         _stationCost = cost;
 
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _stationGhostTileIndex = args->index;
         _stationGhostType = args->trackObjectId;
 
-        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        const auto cost = GameCommands::doCommand(*args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
         _stationCost = cost;
 

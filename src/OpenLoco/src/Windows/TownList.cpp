@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 GameCommands::BuildingRemovalArgs args;
                 args.pos = _buildingGhostPos;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
                 _buildingGhostPlaced = false;
             }
         }
@@ -1017,7 +1017,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static currency32_t placeBuildingGhost(const GameCommands::BuildingPlacementArgs& placementArgs)
         {
             removeBuildingGhost();
-            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             if (res != GameCommands::FAILURE)
             {
                 _buildingGhostPos = placementArgs.pos;

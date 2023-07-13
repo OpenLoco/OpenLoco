@@ -976,14 +976,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 _industryGhostPlaced = false;
                 GameCommands::IndustryRemovalArgs args;
                 args.industryId = _industryGhostId;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
         }
 
         // 0x00458BB5
         static currency32_t placeIndustryGhost(const GameCommands::IndustryPlacementArgs& placementArgs)
         {
-            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             if (res == GameCommands::FAILURE)
             {
                 return res;

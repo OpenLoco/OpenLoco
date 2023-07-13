@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 args.roadObjType = _modGhostTrackObjId & ~(1 << 7);
                 args.type = _lastSelectedMods;
                 args.modSection = _lastSelectedTrackModSection;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
             {
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 args.trackObjType = _modGhostTrackObjId & ~(1 << 7);
                 args.type = _lastSelectedMods;
                 args.modSection = _lastSelectedTrackModSection;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::overhead;
         }
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     static uint32_t placeRoadModGhost(const GameCommands::RoadModsPlacementArgs& args)
     {
-        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
             _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::overhead;
@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     static uint32_t placeTrackModGhost(const GameCommands::TrackModsPlacementArgs& args)
     {
-        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
         if (res != GameCommands::FAILURE)
         {
             _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::overhead;
