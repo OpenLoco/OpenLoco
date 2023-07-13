@@ -678,6 +678,7 @@ namespace OpenLoco::GameCommands
                             wallArgs.secondaryColour = Colour::black;
                             wallArgs.tertiaryColour = Colour::black;
                             // Place fences
+                            // Note: Order of this 0, 2, 3, 1 is to match vanilla
                             if (tilePos.x == bottomLeft.x)
                             {
                                 wallArgs.rotation = 0;
@@ -686,17 +687,17 @@ namespace OpenLoco::GameCommands
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
-                            if (tilePos.y == bottomLeft.y)
+                            if (tilePos.x == topRight.x)
                             {
-                                wallArgs.rotation = 3;
+                                wallArgs.rotation = 2;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
                                 buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
-                            if (tilePos.x == topRight.x)
+                            if (tilePos.y == bottomLeft.y)
                             {
-                                wallArgs.rotation = 2;
+                                wallArgs.rotation = 3;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
                                 buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
@@ -731,7 +732,7 @@ namespace OpenLoco::GameCommands
 
                     const World::Pos2 randPos = World::Pos2{ newIndustry->x, newIndustry->y } + World::toWorldSpace(randOffset);
 
-                    bool useSecondWallType = (randExpandVal >> 21) & 1;
+                    bool useSecondWallType = ((randExpandVal >> 21) & 1) && indObj->wallTypes[2] != 0xFF;
 
                     const auto wallType = useSecondWallType ? indObj->wallTypes[2] : indObj->wallTypes[0];
                     const auto wallEntranceType = useSecondWallType ? indObj->wallTypes[3] : indObj->wallTypes[1];
