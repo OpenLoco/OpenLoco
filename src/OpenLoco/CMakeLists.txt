@@ -562,7 +562,9 @@ target_link_libraries(OpenLoco
     Threads::Threads
     yaml-cpp
     ${PNG_LIBRARY}
-    ${OPENAL_LIBRARIES})
+    ${OPENAL_LIBRARIES}
+    ${IMGUI_LIBRARIES}
+)
 
 if (WIN32)
     target_link_libraries(OpenLoco ${BREAKPAD_LIBRARIES})
@@ -676,7 +678,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Engine
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
-        nonstd::span-lite)
+        nonstd::span-lite
+        ${IMGUI_LIBRARIES}
+    )
 else ()
     # Dummy target to ease invocation
     add_custom_target(OpenLoco-headers-check)

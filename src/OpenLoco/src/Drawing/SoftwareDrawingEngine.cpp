@@ -7,6 +7,9 @@
 #include <SDL2/SDL.h>
 #include <algorithm>
 #include <cstdlib>
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_sdlrenderer2.h>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
@@ -49,6 +52,10 @@ namespace OpenLoco::Drawing
             SDL_FreeFormat(_screenTextureFormat);
             _screenTextureFormat = nullptr;
         }
+
+        ImGui_ImplSDLRenderer2_Shutdown();
+        ImGui_ImplSDL2_Shutdown();
+        ImGui::DestroyContext();
     }
 
     void SoftwareDrawingEngine::initialize(SDL_Window* window)
@@ -69,6 +76,18 @@ namespace OpenLoco::Drawing
         }
         _window = window;
         createPalette();
+
+        // Initialize ImGUI.
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;  // Enable Gamepad Controls
+
+        io.Fonts->AddFontDefault();
+
+        ImGui_ImplSDL2_InitForSDLRenderer(window, _renderer);
+        ImGui_ImplSDLRenderer2_Init(_renderer);
     }
 
     // T[m][n]
@@ -391,6 +410,13 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::present()
     {
+        ImGui_ImplSDLRenderer2_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        bool demownd = true;
+        ImGui::ShowDemoWindow(&demownd);
+
         // Lock the surface before setting its pixels
         if (SDL_MUSTLOCK(_screenSurface))
         {
@@ -441,6 +467,13 @@ namespace OpenLoco::Drawing
         {
             SDL_RenderCopy(_renderer, _screenTexture, nullptr, nullptr);
         }
+
+        ImGuiIO& io = ImGui::GetIO();
+
+        ImGui::Render();
+        SDL_RenderSetScale(_renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 
         // Display buffers.
         SDL_RenderPresent(_renderer);

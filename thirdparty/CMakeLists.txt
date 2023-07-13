@@ -87,3 +87,6 @@ if ( NOT fmt_FOUND )
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")
 endif()
+
+find_package(imgui CONFIG REQUIRED)
+set(IMGUI_LIBRARIES imgui::imgui)

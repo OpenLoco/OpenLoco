@@ -7,6 +7,13 @@
         "gtest",
         "libpng",
         "openal-soft",
-        "sdl2"
+        "sdl2",
+        { 
+            "name": "imgui", 
+            "features": [
+                "sdl2-binding",
+                "sdl2-renderer-binding"
+            ] 
+        }
     ]
 }
