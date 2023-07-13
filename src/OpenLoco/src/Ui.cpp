@@ -46,6 +46,7 @@
 #include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+#include "Windows/Debug/Debug.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
@@ -385,6 +386,8 @@ namespace OpenLoco::Ui
         }
 
         drawingEngine.beginFrame();
+
+        Windows::Debug::draw();
 
         WindowManager::updateViewports();
 

@@ -267,9 +267,6 @@ namespace OpenLoco::Drawing
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        bool demownd = true;
-        ImGui::ShowDemoWindow(&demownd);
-
         SDL_RenderClear(_renderer);
     }
 
