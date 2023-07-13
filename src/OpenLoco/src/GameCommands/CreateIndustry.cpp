@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
             industry->tileLoop = World::TileLoop{};
             industry->var_DB = 0;
             industry->var_DD = 0;
-            industry->var_DF = 0;
+            industry->var_DF = 25;
             industry->foundingYear = getCurrentYear();
             industry->var_E1 = {};
             for (auto& stats : industry->producedCargoStatsStation)
