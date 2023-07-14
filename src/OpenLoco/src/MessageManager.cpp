@@ -98,6 +98,11 @@ namespace OpenLoco::MessageManager
             }
             remove(oldestMessage);
         }
+        {
+            // To match vanilla we need to copy the old memory. Remove this when diverging possible
+            // See also L417 copying the message
+            std::copy(std::begin(rawMessages()[numMessages()].messageString), std::end(rawMessages()[numMessages()].messageString), std::begin(newMessage.messageString));
+        }
         rawMessages()[numMessages()] = newMessage;
         auto& message = rawMessages()[numMessages()];
         numMessages()++;
@@ -408,7 +413,10 @@ namespace OpenLoco::MessageManager
             break;
         }
 
-        std::copy_n(std::begin(tempBuffer), std::size(message.messageString) - 1, std::begin(message.messageString));
+        // For vanilla compatibility we are purposely using strlen instead of just copying std::size(message.messageString) - 1 data
+        const auto length = std::min(StringManager::locoStrlen(tempBuffer), std::size(message.messageString) - 1);
+        std::copy_n(std::begin(tempBuffer), length, std::begin(message.messageString));
+        message.messageString[length] = '\0';
         // I don't quite see the significance of 0xFF as its not a control code but for now just follow vanilla
         for (auto i = std::size(message.messageString) - 3; i < std::size(message.messageString) - 1; ++i)
         {
