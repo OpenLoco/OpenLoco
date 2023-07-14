@@ -89,4 +89,35 @@ if ( NOT fmt_FOUND )
 endif()
 
 find_package(imgui CONFIG REQUIRED)
+if ( NOT imgui_FOUND )
+    message(STATUS "Fetching imgui (c191faf0ba478e9c58a69c63306986a21ebfb6e4)...")
+    FetchContent_Declare(imgui
+        GIT_REPOSITORY
+            "https://github.com/ocornut/imgui.git"
+        GIT_TAG
+            c191faf0ba478e9c58a69c63306986a21ebfb6e4
+    )
+    FetchContent_MakeAvailable(imgui)
+
+    FetchContent_GetProperties(imgui)
+    if (NOT imgui_POPULATED)
+      FetchContent_Populate(imgui)
+    endif ()
+
+    add_library(imgui
+      ${imgui_SOURCE_DIR}/imgui.cpp ${imgui_SOURCE_DIR}/imgui.h
+      ${imgui_SOURCE_DIR}/imconfig.h ${imgui_SOURCE_DIR}/imgui_demo.cpp
+      ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h
+      ${imgui_SOURCE_DIR}/imgui_draw.cpp ${imgui_SOURCE_DIR}/imgui_internal.h
+      ${imgui_SOURCE_DIR}/imgui_tables.cpp ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+      ${imgui_SOURCE_DIR}/imstb_rectpack.h ${imgui_SOURCE_DIR}/imstb_textedit.h
+      ${imgui_SOURCE_DIR}/imstb_truetype.h
+      ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+      ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.h ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp)
+
+    target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+
+    FetchContent_MakeAvailable(imgui)
+    set_target_properties(imgui PROPERTIES FOLDER "ThirdParty")
+endif()
 set(IMGUI_LIBRARIES imgui::imgui)
