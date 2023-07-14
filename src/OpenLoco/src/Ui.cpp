@@ -2,10 +2,10 @@
 #include "GameStateFlags.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
+#include <backends/imgui_impl_sdl2.h>
 #include <cmath>
 #include <codecvt>
 #include <cstring>
-#include <imgui_impl_sdl2.h>
 #include <iostream>
 #include <limits>
 #include <map>
