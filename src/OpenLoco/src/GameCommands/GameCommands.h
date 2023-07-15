@@ -1767,13 +1767,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_59(EntityId head)
+    struct VehiclePickupAirArgs
     {
-        registers regs;
-        regs.bl = Flags::apply | Flags::noErrorWindow | Flags::ghost;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::vehiclePickupAir;
+
+        VehiclePickupAirArgs() = default;
+        explicit VehiclePickupAirArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     struct PortPlacementArgs
     {
@@ -1853,13 +1865,25 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_63(EntityId head)
+    struct VehiclePickupWaterArgs
     {
-        registers regs;
-        regs.bl = Flags::apply | Flags::noErrorWindow | Flags::ghost;
-        regs.di = enumValue(head);
-        return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
-    }
+        static constexpr auto command = GameCommand::vehiclePickupWater;
+
+        VehiclePickupWaterArgs() = default;
+        explicit VehiclePickupWaterArgs(const registers& regs)
+            : head(static_cast<EntityId>(regs.di))
+        {
+        }
+
+        EntityId head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.di = enumValue(head);
+            return regs;
+        }
+    };
 
     struct VehicleRefitArgs
     {
@@ -2275,6 +2299,9 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/VehiclePickup.cpp
     void vehiclePickup(registers& regs);
+
+    // Defined in GameCommands/VehiclePickupAir.cpp
+    void vehiclePickupAir(Interop::registers& regs);
 
     // Defined in GameCommands/VehiclePickupWater.cpp
     void vehiclePickupWater(registers& regs);
