@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
         if (!(flags & GameCommands::Flags::apply))
             return 0;
 
-        if (!(flags & GameCommands::Flags::flag_6))
+        if (!(flags & GameCommands::Flags::ghost))
             Vehicles::playPickupSound(veh2);
 
         head->liftUpVehicle();

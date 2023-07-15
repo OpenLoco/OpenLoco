@@ -165,7 +165,7 @@ namespace OpenLoco::GameCommands
 
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
-        if ((flags & (Flags::flag_4 | Flags::flag_6)) != 0)
+        if ((flags & (Flags::flag_4 | Flags::ghost)) != 0)
             return false;
 
         auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];
@@ -190,7 +190,7 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs);
         }
 
-        auto isGhost = (flags & Flags::flag_6) != 0;
+        auto isGhost = (flags & Flags::ghost) != 0;
         if (!isGhost && Network::isConnected())
         {
             // For network games, we need to delay the command apply processing
@@ -281,7 +281,7 @@ namespace OpenLoco::GameCommands
             if (_gameCommandNestLevel == 1)
             {
                 if ((_gameCommandFlags & Flags::flag_2) == 0
-                    && (_gameCommandFlags & Flags::flag_6) == 0
+                    && (_gameCommandFlags & Flags::ghost) == 0
                     && ebx != 0)
                 {
                     registers regs2;
@@ -336,7 +336,7 @@ namespace OpenLoco::GameCommands
         if (_gameCommandNestLevel != 0)
             return ebx;
 
-        if ((flagsBackup2 & Flags::flag_5) != 0)
+        if ((flagsBackup2 & Flags::noPayment) != 0)
             return ebx;
 
         // Apply to company money
@@ -360,7 +360,7 @@ namespace OpenLoco::GameCommands
         if (_updatingCompanyId != CompanyManager::getControllingId())
             return GameCommands::FAILURE;
 
-        if (_gameCommandFlags & Flags::flag_3)
+        if (_gameCommandFlags & Flags::noErrorWindow)
             return GameCommands::FAILURE;
 
         if (_gGameCommandErrorText != 0xFFFE)

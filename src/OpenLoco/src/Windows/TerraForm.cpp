@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.pos = World::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
                 args.type = _terraformGhostType;
                 args.elementType = _terraformGhostTreeElementType;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
         }
 
@@ -427,7 +427,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             removeTreeGhost();
 
-            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             if (res != GameCommands::FAILURE)
             {
                 _terraformGhostPos = placementArgs.pos;
@@ -987,7 +987,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                cost = GameCommands::doCommand(args, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+                cost = GameCommands::doCommand(args, GameCommands::Flags::flag_2 | GameCommands::Flags::ghost);
             }
 
             if (cost != _raiseLandCost)
@@ -1356,7 +1356,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                cost = GameCommands::doCommand(args, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+                cost = GameCommands::doCommand(args, GameCommands::Flags::flag_2 | GameCommands::Flags::ghost);
             }
 
             if (cost != _raiseLandCost)
@@ -2140,7 +2140,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 GameCommands::WallRemovalArgs args;
                 args.pos = World::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * World::kSmallZStep);
                 args.rotation = _terraformGhostRotation;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
         }
 
@@ -2149,7 +2149,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             removeWallGhost();
 
-            if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost) != GameCommands::FAILURE)
             {
                 _terraformGhostPos = placementArgs.pos;
                 _terraformGhostRotation = placementArgs.rotation;

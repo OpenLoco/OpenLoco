@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if ((flags & Flags::apply) && !(flags & Flags::flag_6))
+        if ((flags & Flags::apply) && !(flags & Flags::ghost))
         {
             company->headquartersX = args.pos.x;
             company->headquartersY = args.pos.y;
@@ -57,7 +57,7 @@ namespace OpenLoco::GameCommands
             Ui::WindowManager::invalidate(Ui::WindowType::company, Ui::WindowNumber_t(targetCompanyId));
         }
 
-        if ((flags & Flags::apply) && !(flags & (Flags::flag_4 | Flags::flag_6)))
+        if ((flags & Flags::apply) && !(flags & (Flags::flag_4 | Flags::ghost)))
         {
             Audio::playSound(Audio::SoundId::construct, args.pos);
         }

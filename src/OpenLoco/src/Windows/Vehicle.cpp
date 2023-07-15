@@ -3589,7 +3589,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             _ghostVehiclePos = placementArgs->pos;
             removeBoatGhost(head);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
             {
                 _1136264 = 0;
             }
@@ -3774,7 +3774,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeAirplaneGhost(head);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
             {
                 _ghostAirportNode = placementArgs->airportNode;
                 _ghostAirportStationId = placementArgs->stationId;
@@ -3989,7 +3989,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 GameCommands::VehiclePickupArgs args{};
                 args.head = head.id;
-                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_6);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost);
             }
             _1136264 = -1;
         }
@@ -4011,7 +4011,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeLandGhost(head);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::ghost | GameCommands::Flags::noErrorWindow) != GameCommands::FAILURE)
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;
@@ -4219,7 +4219,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     GameCommands::VehiclePickupArgs args{};
                     args.head = head->id;
-                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_6);
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::ghost);
                     break;
                 }
                 case TransportMode::air:

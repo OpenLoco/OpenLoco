@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
             const auto* buildingObj = elBuilding->getObject();
             if (!isEditorMode())
             {
-                if ((flags & (GameCommands::Flags::flag_6 | GameCommands::Flags::flag_7)) == 0)
+                if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::flag_7)) == 0)
                 {
                     if (buildingObj->hasFlags(BuildingObjectFlags::undestructible))
                     {

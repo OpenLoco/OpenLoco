@@ -264,7 +264,7 @@ namespace OpenLoco::GameCommands
             wall->setTertiaryColour(args.tertiaryColour);
         }
 
-        if (flags & Flags::flag_6)
+        if (flags & Flags::ghost)
         {
             wall->setGhost(true);
         }

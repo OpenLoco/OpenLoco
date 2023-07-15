@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
                     elTree->setSnow(true);
                 }
             }
-            if (flags & Flags::flag_6)
+            if (flags & Flags::ghost)
             {
                 elTree->setGhost(true);
             }
