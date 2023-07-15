@@ -4,6 +4,7 @@
 #include "Speed.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/Span.hpp>
+#include <OpenLoco/Engine/World.hpp>
 
 namespace OpenLoco
 {
@@ -28,7 +29,7 @@ namespace OpenLoco
         uint8_t spanLength;         // 0x08
         uint8_t pillarSpacing;      // 0x09
         Speed16 maxSpeed;           // 0x0A
-        uint8_t maxHeight;          // 0x0C
+        World::MicroZ maxHeight;    // 0x0C MicroZ!
         uint8_t costIndex;          // 0x0D
         int16_t baseCostFactor;     // 0x0E
         int16_t heightCostFactor;   // 0x10

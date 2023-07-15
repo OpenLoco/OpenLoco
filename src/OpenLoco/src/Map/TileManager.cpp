@@ -1205,7 +1205,7 @@ namespace OpenLoco::World::TileManager
                     if (trackEl->hasBridge())
                     {
                         auto* bridgeObj = ObjectManager::get<BridgeObject>(trackEl->bridge());
-                        if (height > bridgeObj->maxHeight)
+                        if (height > bridgeObj->maxHeight * kMicroToSmallZStep)
                         {
                             GameCommands::setErrorText(StringIds::bridge_already_at_maximum_height);
                             return GameCommands::FAILURE;
@@ -1229,7 +1229,7 @@ namespace OpenLoco::World::TileManager
                     if (roadEl->hasBridge())
                     {
                         auto* bridgeObj = ObjectManager::get<BridgeObject>(roadEl->bridge());
-                        if (height > bridgeObj->maxHeight)
+                        if (height > bridgeObj->maxHeight * kMicroToSmallZStep)
                         {
                             GameCommands::setErrorText(StringIds::bridge_already_at_maximum_height);
                             return GameCommands::FAILURE;
