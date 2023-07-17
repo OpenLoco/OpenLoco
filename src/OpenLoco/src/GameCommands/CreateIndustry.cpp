@@ -21,6 +21,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/ScaffoldingObject.h"
 #include "Objects/TreeObject.h"
+#include "S5/S5.h"
 #include "SceneManager.h"
 #include "ViewportManager.h"
 #include "World/IndustryManager.h"
@@ -125,7 +126,7 @@ namespace OpenLoco::GameCommands
 
         World::TileManager::setRemoveElementPointerChecker(el);
         World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
-        // S5::getOptions().madeAnyChanges = 1;
+        S5::getOptions().madeAnyChanges = 1;
         if (World::TileManager::wasRemoveOnLastElement())
         {
             return World::TileClearance::ClearFuncResult::allCollisionsRemoved;
@@ -370,6 +371,26 @@ namespace OpenLoco::GameCommands
         return totalCost;
     }
 
+    // 0x0045442A
+    static Colour getRandomAvailableColour(Core::Prng& prng, const IndustryObject& indObj)
+    {
+        // Could use a fixed size vector here as its never > Colour::max
+        std::vector<Colour> availableColours;
+        auto colourBitSet = indObj.availableColours;
+        for (auto colourI32 = Numerics::bitScanForward(colourBitSet); colourI32 != -1; colourI32 = Numerics::bitScanForward(colourBitSet))
+        {
+            colourBitSet &= ~(1ULL << colourI32);
+            availableColours.push_back(static_cast<Colour>(colourI32));
+        }
+
+        if (availableColours.empty())
+        {
+            return Colour::black;
+        }
+        // Note: Don't optimise for size 1 as randNext required to prevent divergence
+        return availableColours[prng.randNext(availableColours.size() - 1)];
+    }
+
     // 0x0045436B
     static currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
     {
@@ -404,23 +425,8 @@ namespace OpenLoco::GameCommands
             newIndustry->owner = getUpdatingCompanyId();
         }
 
-        // Note: Could use a fixed size vector as max size is Colour::max
-        std::vector<Colour> availableColours;
-        auto colourBitSet = indObj->availableColours;
-        for (auto colourI32 = Numerics::bitScanForward(colourBitSet); colourI32 != -1; colourI32 = Numerics::bitScanForward(colourBitSet))
-        {
-            colourBitSet &= ~(1ULL << colourI32);
-            availableColours.push_back(static_cast<Colour>(colourI32));
-        }
-
         // 0x00E0C3D3
-        const auto randColour = [&availableColours, &newIndustry]() {
-            if (availableColours.empty())
-            {
-                return Colour::black;
-            }
-            return availableColours[newIndustry->prng.randNext(availableColours.size() - 1)];
-        }();
+        const auto randColour = getRandomAvailableColour(newIndustry->prng, *indObj);
 
         // 0x00E0C3BE - C0
         auto lastPlacedBuildingPos = World::Pos2{ newIndustry->x, newIndustry->y };
@@ -526,6 +532,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
+                    S5::getOptions().madeAnyChanges = 1;
                     // Why are we incrementing this even on test?
                     newIndustry->numTiles--;
                 }
