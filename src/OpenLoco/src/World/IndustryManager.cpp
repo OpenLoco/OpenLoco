@@ -601,9 +601,11 @@ namespace OpenLoco::IndustryManager
             std::fill(std::begin(industry->producedCargoQuantityDeliveredPreviousMonth), std::end(industry->producedCargoQuantityDeliveredPreviousMonth), 0);
             std::fill(std::begin(industry->producedCargoPercentTransportedPreviousMonth), std::end(industry->producedCargoPercentTransportedPreviousMonth), 0);
             std::fill(std::begin(industry->producedCargoMonthlyHistorySize), std::end(industry->producedCargoMonthlyHistorySize), 1);
-            // Note: vanilla just set to 0 first entry
-            std::fill(std::begin(industry->producedCargoMonthlyHistory1), std::end(industry->producedCargoMonthlyHistory1), 0);
-            std::fill(std::begin(industry->producedCargoMonthlyHistory2), std::end(industry->producedCargoMonthlyHistory2), 0);
+            // Note: vanilla just set to 0 first entry change this when allowing divergence
+            // std::fill(std::begin(industry->producedCargoMonthlyHistory1), std::end(industry->producedCargoMonthlyHistory1), 0);
+            // std::fill(std::begin(industry->producedCargoMonthlyHistory2), std::end(industry->producedCargoMonthlyHistory2), 0);
+            industry->producedCargoMonthlyHistory1[0] = 0;
+            industry->producedCargoMonthlyHistory2[0] = 0;
             std::fill(std::begin(industry->history_min_production), std::end(industry->history_min_production), 0);
 
             industry->town = nearbyTown;
