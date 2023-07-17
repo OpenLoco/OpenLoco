@@ -193,7 +193,7 @@ namespace OpenLoco::GameCommands
         auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
         cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
-        if ((flags & GameCommands::Flags::flag_6) || !(flags & GameCommands::Flags::apply))
+        if ((flags & GameCommands::Flags::ghost) || !(flags & GameCommands::Flags::apply))
         {
             return World::TileClearance::ClearFuncResult::noCollision;
         }
@@ -284,7 +284,7 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            if ((flags & Flags::apply) && !(flags & Flags::flag_6))
+            if ((flags & Flags::apply) && !(flags & Flags::ghost))
             {
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, highestBaseZ + clearHeight / World::kSmallZStep);
             }
@@ -339,7 +339,7 @@ namespace OpenLoco::GameCommands
             }
 
             // Flatten surfaces (also checks if other elements will cause issues due to the flattening of the surface)
-            if (!(flags & Flags::flag_6) && !indObj->hasFlags(IndustryObjectFlags::builtOnWater))
+            if (!(flags & Flags::ghost) && !indObj->hasFlags(IndustryObjectFlags::builtOnWater))
             {
                 auto tile = World::TileManager::get(tilePos);
                 auto* surface = tile.surface();
@@ -413,7 +413,7 @@ namespace OpenLoco::GameCommands
             // Create new tile
             if (flags & Flags::apply)
             {
-                if (!(flags & Flags::flag_6))
+                if (!(flags & Flags::ghost))
                 {
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
@@ -434,7 +434,7 @@ namespace OpenLoco::GameCommands
                 elIndustry->setBuildingType(buildingType);
                 elIndustry->setVar_6_003F(0);
                 World::AnimationManager::createAnimation(3, World::toWorldSpace(tilePos), elIndustry->baseZ());
-                elIndustry->setGhost(flags & Flags::flag_6);
+                elIndustry->setGhost(flags & Flags::ghost);
                 Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elIndustry->baseHeight(), elIndustry->clearHeight());
             }
         }
@@ -469,7 +469,7 @@ namespace OpenLoco::GameCommands
         {
             newIndustry->under_construction = 0xFF;
         }
-        if (flags & Flags::flag_6)
+        if (flags & Flags::ghost)
         {
             newIndustry->flags |= IndustryFlags::isGhost;
         }
@@ -647,7 +647,7 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00454745
-        if ((flags & Flags::apply) && !(flags & Flags::flag_6) && newIndustry->numTiles != 0)
+        if ((flags & Flags::apply) && !(flags & Flags::ghost) && newIndustry->numTiles != 0)
         {
             if (indObj->var_EA != 0xFF)
             {
@@ -752,7 +752,7 @@ namespace OpenLoco::GameCommands
         totalCost += Economy::getInflationAdjustedCost(indObj->costFactor, indObj->costIndex, 3);
 
         // Send message post
-        if ((flags & Flags::apply) && !(flags & Flags::flag_6) && !args.buildImmediately)
+        if ((flags & Flags::apply) && !(flags & Flags::ghost) && !args.buildImmediately)
         {
             MessageManager::post(MessageType::newIndustry, CompanyId::null, enumValue(newIndustry->id()), 0xFFFFU);
         }
