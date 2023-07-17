@@ -30,4 +30,5 @@ namespace OpenLoco::IndustryManager
     void createAllMapAnimations();
     bool industryNearPosition(const World::Pos2& position, IndustryObjectFlags flags);
     void updateProducedCargoStats();
+    IndustryId allocateNewIndustry(const uint8_t type, const World::Pos2& pos, const Core::Prng& prng, const TownId nearbyTown);
 }

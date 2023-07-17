@@ -31,54 +31,52 @@ namespace OpenLoco::GameCommands
 {
     static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
 
-    // 0x00454C91
-    static IndustryId sub_454C91(uint8_t type, const World::Pos2& pos, const Core::Prng& prng)
+    // Convert the cargo id's into a bitset
+    static uint32_t getProducedCargoBitSet(const IndustryObject& indObj)
     {
-        const auto* indObj = ObjectManager::get<IndustryObject>(type);
-
-        // TODO: MAKE THIS A FUNCTION
-        // 0x00E0C38C
         uint32_t producedCargoTypes = 0;
-        for (auto& cargoType : indObj->producedCargoType)
+        for (auto& cargoType : indObj.producedCargoType)
         {
             if (cargoType != 0xFFU)
             {
                 producedCargoTypes |= (1U << cargoType);
             }
         }
+        return producedCargoTypes;
+    }
 
-        // 0x00E0C390
+    // Convert the cargo id's into a bitset
+    static uint32_t getRequiredCargoBitSet(const IndustryObject& indObj)
+    {
         uint32_t requiredCargoTypes = 0;
-        for (auto& cargoType : indObj->requiredCargoType)
+        for (auto& cargoType : indObj.requiredCargoType)
         {
             if (cargoType != 0xFFU)
             {
                 requiredCargoTypes |= (1U << cargoType);
             }
         }
+        return requiredCargoTypes;
+    }
+
+    // 0x00454C91
+    static IndustryId sub_454C91(uint8_t type, const World::Pos2& pos, const Core::Prng& prng)
+    {
+        const auto* indObj = ObjectManager::get<IndustryObject>(type);
+
+        // 0x00E0C38C
+        const uint32_t producedCargoTypes = getProducedCargoBitSet(*indObj);
+
+        // 0x00E0C390
+        const uint32_t requiredCargoTypes = getRequiredCargoBitSet(*indObj);
 
         for (const auto& ind : IndustryManager::industries())
         {
             const auto distance = Math::Vector::manhattanDistance(World::Pos2{ ind.x, ind.y }, pos);
 
             const auto* indObj2 = ind.getObject();
-            uint32_t producedCargoTypes2 = 0;
-            for (auto& cargoType : indObj2->producedCargoType)
-            {
-                if (cargoType != 0xFFU)
-                {
-                    producedCargoTypes2 |= (1U << cargoType);
-                }
-            }
-
-            uint32_t requiredCargoTypes2 = 0;
-            for (auto& cargoType : indObj2->requiredCargoType)
-            {
-                if (cargoType != 0xFFU)
-                {
-                    requiredCargoTypes2 |= (1U << cargoType);
-                }
-            }
+            const uint32_t producedCargoTypes2 = getProducedCargoBitSet(*indObj2);
+            const uint32_t requiredCargoTypes2 = getRequiredCargoBitSet(*indObj2);
 
             const auto hasAtLeast1CargoRequirement = ((requiredCargoTypes & producedCargoTypes2) != 0)
                 || ((producedCargoTypes & requiredCargoTypes2) != 0);
@@ -92,91 +90,18 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // Find free industry slot (MOVE TO INDUSTRY MANAGER)
-        for (auto i = 0U; i < Limits::kMaxIndustries; ++i)
+        const auto res = TownManager::getClosestTownAndDensity(pos);
+        if (!res.has_value())
         {
-            const auto id = static_cast<IndustryId>(i);
-            auto* industry = IndustryManager::get(id);
-            if (!industry->empty())
-            {
-                continue;
-            }
-
-            industry->prng = prng;
-            industry->flags = IndustryFlags::none;
-            industry->objectId = type;
-            industry->x = pos.x;
-            industry->y = pos.y;
-            industry->numTiles = 0;
-            industry->under_construction = 0;
-            industry->tileLoop = World::TileLoop{};
-            industry->var_DB = 0;
-            industry->var_DD = 0;
-            industry->var_DF = 25;
-            industry->foundingYear = getCurrentYear();
-            industry->var_E1 = {};
-            for (auto& stats : industry->producedCargoStatsStation)
-            {
-                std::fill(std::begin(stats), std::end(stats), StationId::null);
-            }
-            std::fill(std::begin(industry->var_17D), std::end(industry->var_17D), 0);
-            std::fill(std::begin(industry->var_181), std::end(industry->var_181), 0);
-            std::fill(std::begin(industry->producedCargoQuantityMonthlyTotal), std::end(industry->producedCargoQuantityMonthlyTotal), 0);
-            std::fill(std::begin(industry->producedCargoQuantityPreviousMonth), std::end(industry->producedCargoQuantityPreviousMonth), 0);
-            std::fill(std::begin(industry->receivedCargoQuantityMonthlyTotal), std::end(industry->receivedCargoQuantityMonthlyTotal), 0);
-            std::fill(std::begin(industry->receivedCargoQuantityPreviousMonth), std::end(industry->receivedCargoQuantityPreviousMonth), 0);
-            std::fill(std::begin(industry->receivedCargoQuantityDailyTotal), std::end(industry->receivedCargoQuantityDailyTotal), 0);
-            std::fill(std::begin(industry->producedCargoQuantityDeliveredMonthlyTotal), std::end(industry->producedCargoQuantityDeliveredMonthlyTotal), 0);
-            std::fill(std::begin(industry->producedCargoQuantityDeliveredPreviousMonth), std::end(industry->producedCargoQuantityDeliveredPreviousMonth), 0);
-            std::fill(std::begin(industry->producedCargoPercentTransportedPreviousMonth), std::end(industry->producedCargoPercentTransportedPreviousMonth), 0);
-            std::fill(std::begin(industry->producedCargoMonthlyHistorySize), std::end(industry->producedCargoMonthlyHistorySize), 1);
-            // Note: vanilla just set to 0 first entry
-            std::fill(std::begin(industry->producedCargoMonthlyHistory1), std::end(industry->producedCargoMonthlyHistory1), 0);
-            std::fill(std::begin(industry->producedCargoMonthlyHistory2), std::end(industry->producedCargoMonthlyHistory2), 0);
-            std::fill(std::begin(industry->history_min_production), std::end(industry->history_min_production), 0);
-
-            const auto res = TownManager::getClosestTownAndDensity(pos);
-            if (!res.has_value())
-            {
-                GameCommands::setErrorText(StringIds::town_must_be_built_nearby_first);
-                return IndustryId::null;
-            }
-            industry->town = res->first;
-            industry->name = indObj->var_02;
-
-            for (auto& innerInd : IndustryManager::industries())
-            {
-                if (innerInd.name != industry->name)
-                {
-                    continue;
-                }
-                if (&innerInd == industry)
-                {
-                    continue;
-                }
-                if (innerInd.town != industry->town)
-                {
-                    continue;
-                }
-
-                for (auto unique = 1; unique < 0xFFF; ++unique)
-                {
-                    FormatArguments args{};
-                    args.push<uint16_t>(unique);
-                    char buffer[512]{};
-                    StringManager::formatString(buffer, indObj->var_02 + 1, &args);
-                    const auto newName = StringManager::userStringAllocate(buffer, 0);
-                    if (newName == StringIds::empty)
-                    {
-                        continue;
-                    }
-                    industry->name = newName;
-                    break;
-                }
-            }
-            return id;
+            GameCommands::setErrorText(StringIds::town_must_be_built_nearby_first);
+            return IndustryId::null;
         }
 
+        const auto id = IndustryManager::allocateNewIndustry(type, pos, prng, res->first);
+        if (id != IndustryId::null)
+        {
+            return id;
+        }
         GameCommands::setErrorText(StringIds::too_many_industries);
         return IndustryId::null;
     }
