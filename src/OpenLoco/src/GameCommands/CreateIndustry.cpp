@@ -391,6 +391,41 @@ namespace OpenLoco::GameCommands
         return availableColours[prng.randNext(availableColours.size() - 1)];
     }
 
+    struct RangeAndMinDistance
+    {
+        tile_coord_t distanceRange;
+        tile_coord_t minDistance;
+    };
+
+    // As more placement attempts happen the distance searched to try place increases
+    constexpr std::array<RangeAndMinDistance, 25> kPlacementAttemptDistanceRangeAndMin = {
+        RangeAndMinDistance{ 1, 0 }, // 0
+        RangeAndMinDistance{ 3, -1 },
+        RangeAndMinDistance{ 3, -1 },
+        RangeAndMinDistance{ 3, -1 },
+        RangeAndMinDistance{ 3, -1 },
+        RangeAndMinDistance{ 3, -1 },
+        RangeAndMinDistance{ 3, -1 },
+        RangeAndMinDistance{ 3, -1 }, // 7
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+        RangeAndMinDistance{ 5, -2 },
+    };
+
     // 0x0045436B
     static currency32_t createIndustry(const IndustryPlacementArgs& args, const uint8_t flags)
     {
@@ -466,20 +501,7 @@ namespace OpenLoco::GameCommands
                 // bh
                 const uint8_t direction = indObj->hasFlags(IndustryObjectFlags::notRotatable) ? 0 : randVal2 & 0x3;
 
-                const auto [distanceRange, minDistance] = [j]() -> std::pair<tile_coord_t, tile_coord_t> {
-                    if (j == 0)
-                    {
-                        return { 1, 0 };
-                    }
-                    else if (j < 8)
-                    {
-                        return { 3, -1 };
-                    }
-                    else
-                    {
-                        return { 5, -2 };
-                    }
-                }();
+                const auto [distanceRange, minDistance] = kPlacementAttemptDistanceRangeAndMin[j];
 
                 const auto randTileX = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 18) & 0xFF)) / 256) + minDistance;
                 const auto randTileY = static_cast<tile_coord_t>((distanceRange * ((randVal2 >> 2) & 0xFF)) / 256) + minDistance;
