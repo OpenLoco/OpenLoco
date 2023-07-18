@@ -565,7 +565,6 @@ target_link_libraries(OpenLoco
     ${OPENAL_LIBRARIES})
 
 if (WIN32)
-    target_link_libraries(OpenLoco ${BREAKPAD_LIBRARIES})
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
 endif ()
 
@@ -590,8 +589,7 @@ elseif (MSVC)
             _CRT_NONSTDC_NO_DEPRECATE
             _USE_MATH_DEFINES
             SDL_MAIN_HANDLED
-            _WINSOCK_DEPRECATED_NO_WARNINGS
-            USE_BREAKPAD)
+            _WINSOCK_DEPRECATED_NO_WARNINGS)
 else ()
     target_compile_definitions(OpenLoco
         PRIVATE
