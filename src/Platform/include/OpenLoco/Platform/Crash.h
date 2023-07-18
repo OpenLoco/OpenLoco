@@ -1,9 +1,18 @@
 #pragma once
-namespace google_breakpad
-{
-    class ExceptionHandler;
-}
 
-using CExceptionHandler = google_breakpad::ExceptionHandler*;
-CExceptionHandler crashInit();
-void crashClose(CExceptionHandler);
+#include <string>
+
+namespace OpenLoco::CrashHandler
+{
+    using Handle = void*;
+
+    struct AppInfo
+    {
+        std::string name;
+        std::string version;
+    };
+
+    Handle init(const AppInfo& appInfo);
+    void shutdown(Handle handler);
+
+}
