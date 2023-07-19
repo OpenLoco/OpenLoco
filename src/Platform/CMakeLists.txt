@@ -22,7 +22,17 @@ loco_add_library(Platform STATIC
         ${private_files}
 )
 
+if (MSVC)
+    target_compile_definitions(Platform
+        PRIVATE
+            USE_BREAKPAD)
+endif()
+
 target_link_libraries(Platform PUBLIC
     Core
     Utility
 )
+
+if (MSVC)
+    target_link_libraries(Platform PUBLIC ${BREAKPAD_LIBRARIES})
+endif ()

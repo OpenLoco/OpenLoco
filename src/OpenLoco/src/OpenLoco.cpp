@@ -93,7 +93,7 @@ namespace OpenLoco
 
     static double _accumulator = 0.0;
     static Timepoint _lastUpdate = Clock::now();
-    static CExceptionHandler _exHandler = nullptr;
+    static CrashHandler::Handle _exHandler = nullptr;
 
     loco_global<char[256], 0x005060D0> _gCDKey;
 
@@ -224,7 +224,7 @@ namespace OpenLoco
             Logging::info("Removing temp file '{}'", path8.c_str());
             fs::remove(tempFilePath);
         }
-        crashClose(_exHandler);
+        CrashHandler::shutdown(_exHandler);
 
         // Logging should be the last before terminating.
         Logging::shutdown();
@@ -1161,7 +1161,11 @@ namespace OpenLoco
 
         if (!OpenLoco::Platform::isRunningInWine())
         {
-            _exHandler = crashInit();
+            CrashHandler::AppInfo appInfo;
+            appInfo.name = "OpenLoco";
+            appInfo.version = getVersionInfo();
+
+            _exHandler = CrashHandler::init(appInfo);
         }
         else
         {
