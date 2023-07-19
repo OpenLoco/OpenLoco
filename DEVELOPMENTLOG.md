@@ -12,10 +12,16 @@
 ## Introduce getClampedRange and getWorldRange (#2024)
 
 
-## Implement raise/lower land game commands (#1998, #2031)
+## Implement more terraform game commands (#1998, #2008, #2010, #2031)
+
+Last month, we implemented the clear land game command. This set up the stage for the other terraform game commands
+to be implemented. This month, we've tackled five more of them: raise/lower land, raise/lower water, and create wall.
+These do pretty much what you'd expect them to do, except many hidden caveats that led to us spending many hours
+debugging why our implementations behaved slightly different to vanilla! We should be fully compatible now, though.
+One more terraform game command remains: the mountain tool game command. And boy, is it a big one...
 
 
-## Implement the raise/lower water game commands #2008
+## Implement the create industry game command (#1986)
 
 
 ## Implement the build/remove company HQ game commands (#2020, #2021)
@@ -24,13 +30,14 @@
 ## Implement the create/remove town game commands (#2022, #2023)
 
 
-## Implement the create wall game command (#2010)
-
-
 ## Implement vehiclePickupAir game command (#2025)
 
 
 ## Remove window event interop (#2015)
+
+Now that all windows have been reimplemented in C++, we can drop the compatibility layer for interopting with
+vanilla window routines. This also means we can work towards increasing the amount of windows players can have
+open at the same time.
 
 
 ## Add BH/CH/D/G headers to tile inspector (#2013)
