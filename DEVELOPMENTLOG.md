@@ -1,5 +1,44 @@
 # OpenLoco version 23.06.1+ (???)
 
+## Use height instead of width to initialize the RT buffer (#2001)
+
+
+## Allow scrolling up and down on steppers to change their values (#2019)
+
+
+## Fix breakpad crash dump creation (#2032)
+
+
+## Introduce getClampedRange and getWorldRange (#2024)
+
+
+## Implement raise/lower land game commands (#1998, #2031)
+
+
+## Implement the raise/lower water game commands #2008
+
+
+## Implement the build/remove company HQ game commands (#2020, #2021)
+
+
+## Implement the create/remove town game commands (#2022, #2023)
+
+
+## Implement the create wall game command (#2010)
+
+
+## Implement vehiclePickupAir game command (#2025)
+
+
+## Remove window event interop (#2015)
+
+
+## Add BH/CH/D/G headers to tile inspector (#2013)
+
+
+## Actually use our vehicleOrderInsert implementation (#2014, #2016)
+
+
 
 # OpenLoco version 23.06 (2023-06-12)
 
