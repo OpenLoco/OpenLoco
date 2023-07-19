@@ -85,8 +85,7 @@ namespace OpenLoco::CrashHandler
         {
             fs::create_directories(crashDir);
         }
-        auto result = Utility::toUtf16(crashDir.string());
-        return result;
+        return crashDir.wstring();
     }
 
 #endif // USE_BREAKPAD
