@@ -140,7 +140,7 @@ namespace OpenLoco::World
                         return total + partHeights[part];
                     });
 
-                    const auto newClearZ = ((height + 3) / World::kSmallZStep) + baseHeight();
+                    const auto newClearZ = ((height + 3) / World::kSmallZStep) + baseZ();
 
                     applyToMultiTile(*this, loc, isMultiTile, [newClearZ](World::IndustryElement& elIndustry, const World::Pos2& pos) {
                         Ui::ViewportManager::invalidate(pos, elIndustry.baseHeight(), elIndustry.clearHeight(), ZoomLevel::quarter);
