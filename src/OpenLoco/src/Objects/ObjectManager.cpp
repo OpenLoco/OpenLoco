@@ -961,5 +961,17 @@ namespace OpenLoco::ObjectManager
                 regs.eax = res.imageOffset;
                 return 0;
             });
+
+        registerHook(
+            0x00471BCE,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                ObjectHeader* header = X86Pointer<ObjectHeader>(regs.ebp);
+                auto res = load(*header);
+                regs = backup;
+
+                return res ? 0 : X86_FLAG_CARRY;
+            });
     }
 }
