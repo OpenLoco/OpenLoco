@@ -478,18 +478,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.widgets[i].type = showSecondaryTabs ? WidgetType::tab : WidgetType::none;
         }
 
-        self.activatedWidgets &= ~((1U << widx::vehicleTypeTrain) | (1U << widx::vehicleTypeBus) | (1U << widx::vehicleTypeTruck) | (1U << widx::vehicleTypeTram) | (1U << widx::vehicleTypeAircraft) | (1U << widx::vehicleTypeShip));
+        self.activatedWidgets &= ~((1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip));
         if (showSecondaryTabs)
         {
-            self.activatedWidgets |= 1U << (widx::vehicleTypeTrain + self.currentSecondaryTab);
-            self.enabledWidgets |= (1U << widx::vehicleTypeTrain) | (1U << widx::vehicleTypeBus) | (1U << widx::vehicleTypeTruck) | (1U << widx::vehicleTypeTram) | (1U << widx::vehicleTypeAircraft) | (1U << widx::vehicleTypeShip);
+            self.activatedWidgets |= 1ULL << (widx::vehicleTypeTrain + self.currentSecondaryTab);
+            self.enabledWidgets |= (1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip);
 
             self.widgets[widx::scrollview].top = 85 + 28;
             self.widgets[widx::objectImage].top = 68 + 28;
         }
         else
         {
-            self.enabledWidgets &= ~((1U << widx::vehicleTypeTrain) | (1U << widx::vehicleTypeBus) | (1U << widx::vehicleTypeTruck) | (1U << widx::vehicleTypeTram) | (1U << widx::vehicleTypeAircraft) | (1U << widx::vehicleTypeShip));
+            self.enabledWidgets &= ~((1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip));
 
             self.widgets[widx::scrollview].top = 85;
             self.widgets[widx::objectImage].top = 68;
