@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::WindowManager
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;
-            std::for_each(std::rbegin(_windows), std::rend(_windows), [](Window &w) {
+            std::for_each(std::rbegin(_windows), std::rend(_windows), [](Window& w) {
                 w.callOnPeriodicUpdate();
             });
         }
