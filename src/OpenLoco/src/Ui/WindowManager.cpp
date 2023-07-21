@@ -552,19 +552,19 @@ namespace OpenLoco::Ui::WindowManager
         }
 
         // Border flash invalidation
-        std::for_each(std::rbegin(_windows), std::rend(_windows), [](Window* w) {
-            if (w->hasFlags(WindowFlags::whiteBorderMask))
+        std::for_each(std::rbegin(_windows), std::rend(_windows), [](Window& w) {
+            if (w.hasFlags(WindowFlags::whiteBorderMask))
             {
                 // TODO: Replace with countdown
                 // Countdown is stuffed into WindowFlags extract it out and decrement by 1
-                const auto newCount = enumValue(w->flags & WindowFlags::whiteBorderMask) - enumValue(WindowFlags::whiteBorderOne);
+                const auto newCount = enumValue(w.flags & WindowFlags::whiteBorderMask) - enumValue(WindowFlags::whiteBorderOne);
                 // Stuff the new count back into the WindowFlags
-                w->flags &= ~WindowFlags::whiteBorderMask;
-                w->flags |= static_cast<WindowFlags>(newCount);
+                w.flags &= ~WindowFlags::whiteBorderMask;
+                w.flags |= static_cast<WindowFlags>(newCount);
 
-                if (!w->hasFlags(WindowFlags::whiteBorderMask))
+                if (!w.hasFlags(WindowFlags::whiteBorderMask))
                 {
-                    w->invalidate();
+                    w.invalidate();
                 }
             }
         });
@@ -1267,7 +1267,8 @@ namespace OpenLoco::Ui::WindowManager
         window->invalidate();
 
         // Remove window from list, reshifting all windows
-        _windows.erase(std::remove(_windows.begin(), _windows.end(), window), _windows.end());
+        auto index = indexOf(window);
+        _windows.erase(std::next(_windows.begin() + index), _windows.end());
 
         ViewportManager::collectGarbage();
     }
