@@ -1,6 +1,7 @@
 23.06.1+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1999] Potential crash at startup due to the screen buffer being too small.
+- Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installtion path.
 - Fix: [#2028] Incorrect industry building clearing heights causing graphical glitches.
 - Technical: [#2004] Crash reports are no longer being generated (Windows only).
 
