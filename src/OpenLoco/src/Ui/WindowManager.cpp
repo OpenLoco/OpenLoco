@@ -1510,6 +1510,9 @@ namespace OpenLoco::Ui::WindowManager
             widgetType = w.widgets[widgetIndex].type;
         }
 
+        assert(w.widgets[widgetIndex + 1].type != WidgetType::end);
+        assert(w.widgets[widgetIndex + 2].type != WidgetType::end);
+
         WidgetIndex_t buttonWidgetIndex;
         WidgetType expectedType;
 
