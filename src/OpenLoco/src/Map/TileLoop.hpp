@@ -111,5 +111,6 @@ namespace OpenLoco::World
 
     TilePosRangeView getClampedRange(const TilePos2& posA, const TilePos2& posB);
     TilePosRangeView getClampedRange(const Pos2& posA, const Pos2& posB);
+    TilePosRangeView getDrawableTileRange();
     TilePosRangeView getWorldRange();
 }

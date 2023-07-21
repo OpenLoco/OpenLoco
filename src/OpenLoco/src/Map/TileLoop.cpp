@@ -16,8 +16,13 @@ namespace OpenLoco::World
         return TilePosRangeView(toTileSpace(clampedA), toTileSpace(clampedB));
     }
 
-    TilePosRangeView getWorldRange()
+    TilePosRangeView getDrawableTileRange()
     {
         return TilePosRangeView({ 1, 1 }, { kMapColumns - 1, kMapRows - 1 });
+    }
+
+    TilePosRangeView getWorldRange()
+    {
+        return TilePosRangeView({ 0, 0 }, { kMapColumns, kMapRows });
     }
 }
