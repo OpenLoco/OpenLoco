@@ -116,8 +116,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                                 {
                                     if (vehicleObj->trackType != 0xFF)
                                     {
-                                        uint8_t i = 0;
-                                        while (i < _numTrackTypeTabs)
+                                        for (uint8_t i = 0; i < _numTrackTypeTabs && i < std::size(_trackTypesForTab); ++i)
                                         {
                                             if (vehicleObj->trackType == _trackTypesForTab[i])
                                             {
