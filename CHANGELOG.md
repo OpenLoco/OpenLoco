@@ -3,6 +3,7 @@
 - Fix: [#1999] Potential crash at startup due to the screen buffer being too small.
 - Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installtion path.
 - Fix: [#2028] Incorrect industry building clearing heights causing graphical glitches.
+- Fix: [#2039] Crash/hang when clicking on news items of new vehicle available.
 - Technical: [#2004] Crash reports are no longer being generated (Windows only).
 
 23.06.1 (2023-06-17)
