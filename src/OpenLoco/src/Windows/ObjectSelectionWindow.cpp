@@ -47,9 +47,11 @@
 #include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 
+using namespace OpenLoco::Diagnostics;
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
@@ -311,12 +313,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             != a.end();
     }
 
-    static VehicleType getVehicleTypeFromObject(TabObjectEntry& entry)
+    static std::optional<VehicleType> getVehicleTypeFromObject(TabObjectEntry& entry)
     {
         ObjectManager::freeTemporaryObject();
         ObjectManager::loadTemporaryObject(*entry.object._header);
 
         auto vehicleObj = reinterpret_cast<VehicleObject*>(ObjectManager::getTemporaryObject());
+        if (vehicleObj == nullptr)
+        {
+            Logging::info("Could not load determine vehicle type for object '{}', skipping", entry.object._header->getName());
+            return std::nullopt;
+        }
+
         return vehicleObj->type;
     }
 
