@@ -34,6 +34,9 @@ namespace OpenLoco::Drawing
 
         void resize(int32_t width, int32_t height);
 
+        // Must be called before any drawing operations.
+        void beginFrame();
+
         // Renders all invalidated regions.
         void render();
 

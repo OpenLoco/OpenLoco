@@ -265,6 +265,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/OverheadTab.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/SignalTab.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/StationTab.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Debug/Debug.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/DragVehiclePart.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/EditKeyboardShortcut.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Error.cpp"
@@ -502,6 +503,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Widget.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Construction/Construction.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/Debug/Debug.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/News/News.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Windows/ToolbarTopCommon.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/World/Company.h"
@@ -563,7 +565,9 @@ target_link_libraries(OpenLoco
     Threads::Threads
     yaml-cpp
     ${PNG_LIBRARY}
-    ${OPENAL_LIBRARIES})
+    ${OPENAL_LIBRARIES}
+    ${IMGUI_LIBRARIES}
+)
 
 if (WIN32)
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
@@ -675,7 +679,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Engine
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
-        nonstd::span-lite)
+        nonstd::span-lite
+        ${IMGUI_LIBRARIES}
+    )
 else ()
     # Dummy target to ease invocation
     add_custom_target(OpenLoco-headers-check)

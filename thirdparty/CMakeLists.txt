@@ -87,3 +87,37 @@ if ( NOT fmt_FOUND )
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")
 endif()
+
+FetchContent_Declare(imgui
+    GIT_REPOSITORY
+        "https://github.com/ocornut/imgui.git"
+    GIT_TAG
+        v1.89.7
+)
+FetchContent_MakeAvailable(imgui)
+
+FetchContent_GetProperties(imgui)
+if (NOT imgui_POPULATED)
+  FetchContent_Populate(imgui)
+endif ()
+
+add_library(imgui
+  ${imgui_SOURCE_DIR}/imgui.cpp ${imgui_SOURCE_DIR}/imgui.h
+  ${imgui_SOURCE_DIR}/imconfig.h ${imgui_SOURCE_DIR}/imgui_demo.cpp
+  ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h
+  ${imgui_SOURCE_DIR}/imgui_draw.cpp ${imgui_SOURCE_DIR}/imgui_internal.h
+  ${imgui_SOURCE_DIR}/imgui_tables.cpp ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+  ${imgui_SOURCE_DIR}/imstb_rectpack.h ${imgui_SOURCE_DIR}/imstb_textedit.h
+  ${imgui_SOURCE_DIR}/imstb_truetype.h
+  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+  ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.h ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp)
+
+target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+target_link_libraries(imgui PUBLIC ${SDL2_LIB})
+
+FetchContent_MakeAvailable(imgui)
+set_target_properties(imgui PROPERTIES FOLDER "ThirdParty")
+
+loco_thirdparty_target_compile_link_flags(imgui)
+
+set(IMGUI_LIBRARIES imgui)
