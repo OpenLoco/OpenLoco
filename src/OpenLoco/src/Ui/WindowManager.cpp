@@ -1485,18 +1485,24 @@ namespace OpenLoco::Ui::WindowManager
 
     static std::optional<WidgetIndex_t> getStepperGroupWidgetIndex(Window& w, WidgetIndex_t startIndex)
     {
-        // We only iterate 3 times as we might be at the the textbox or one of the buttons.
+        // We only iterate 3 times as we might be at the textbox or one of the buttons.
         for (WidgetIndex_t index = 0; index < 3; index++)
         {
             const auto reverseIndex = startIndex - index;
             if (reverseIndex < 0)
+            {
                 break;
+            }
 
             if (isStepperGroup(w, reverseIndex, WidgetType::toolbarTab))
+            {
                 return reverseIndex;
+            }
 
             if (isStepperGroup(w, reverseIndex, WidgetType::button))
+            {
                 return reverseIndex;
+            }
         }
 
         return std::nullopt;
@@ -1507,7 +1513,9 @@ namespace OpenLoco::Ui::WindowManager
     {
         const auto stepperGroupIndex = getStepperGroupWidgetIndex(w, widgetIndex);
         if (!stepperGroupIndex.has_value())
+        {
             return false;
+        }
 
         const auto buttonWidgetIndex = wheel < 0 ? widgetIndex + 2 : widgetIndex + 1;
         const auto entryWidgetType = w.widgets[buttonWidgetIndex].type;
