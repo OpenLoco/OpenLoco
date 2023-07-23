@@ -212,7 +212,7 @@ namespace OpenLoco::Interop
             if (page0Address != page1Address)
             {
                 uint8_t nopCount = 4096 - (address & 0xFFF);
-                Logging::info("Address {:#08x} straddles page boundary (page0 = {:#08x}, page1 = {:#08x}), injecting {} nops", address, page0Address, page1Address, nopCount);
+                Logging::verbose("Address {:#08x} straddles page boundary (page0 = {:#08x}, page1 = {:#08x}), injecting {} nops", address, page0Address, page1Address, nopCount);
                 for (; nopCount > 0; nopCount--)
                 {
                     data[i++] = 0x90; // nop
