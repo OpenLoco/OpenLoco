@@ -1467,98 +1467,74 @@ namespace OpenLoco::Ui::WindowManager
         invalidateWidget(window->type, window->number, widgetIndex);
     }
 
+    static bool isStepperGroup(Window& w, WidgetIndex_t index, WidgetType buttonType)
+    {
+        const auto& widgets = w.widgets;
+
+        if (widgets[index].type != WidgetType::textbox && widgets[index].type != WidgetType::wt_3)
+            return false;
+
+        if (widgets[index + 1].type != buttonType)
+            return false;
+
+        if (widgets[index + 2].type != buttonType)
+            return false;
+
+        return true;
+    }
+
+    static std::optional<WidgetIndex_t> getStepperGroupWidgetIndex(Window& w, WidgetIndex_t startIndex)
+    {
+        // We only iterate 3 times as we might be at the the textbox or one of the buttons.
+        for (WidgetIndex_t index = 0; index < 3; index++)
+        {
+            const auto reverseIndex = startIndex - index;
+            if (reverseIndex < 0)
+                break;
+
+            if (isStepperGroup(w, reverseIndex, WidgetType::toolbarTab))
+                return reverseIndex;
+
+            if (isStepperGroup(w, reverseIndex, WidgetType::button))
+                return reverseIndex;
+        }
+
+        return std::nullopt;
+    }
+
     // Allow mouse wheel scrolling to manipulate stepper widgets and tool sizes
     static bool stepperWheelInput(Window& w, WidgetIndex_t widgetIndex, int32_t wheel)
     {
-        auto widgetType = w.widgets[widgetIndex].type;
+        const auto stepperGroupIndex = getStepperGroupWidgetIndex(w, widgetIndex);
+        if (!stepperGroupIndex.has_value())
+            return false;
 
-        // If we aren't scrolling on a tool preview or stepper textbox, lower the widget index
-        // once or twice to try to find the parent widget. This allows scrolling on the
-        // increase/decrease buttons themselves, too.
-        int32_t attempts = 0;
-        while (widgetType != WidgetType::wt_3 && widgetType != WidgetType::textbox && widgetIndex > 0)
+        const auto buttonWidgetIndex = wheel < 0 ? widgetIndex + 2 : widgetIndex + 1;
+        const auto entryWidgetType = w.widgets[buttonWidgetIndex].type;
+
+        if (entryWidgetType == WidgetType::wt_3)
         {
-            switch (widgetType)
-            {
-                case WidgetType::toolbarTab: // + and - for tool widget
-                case WidgetType::button:     // + and - for stepper widget
-                {
-                    if (attempts > 0)
-                    {
-                        // Verify that the previous button was of the same type
-                        auto previousType = w.widgets[widgetIndex + 1].type;
-                        if (previousType != widgetType)
-                        {
-                            return false;
-                        }
-                    }
-                    break;
-                }
-                default:
-                    // The widget type is not an increment or decrement button
-                    return false;
-            }
+            auto expectedContent1 = Gfx::recolour(ImageIds::decrease_tool_area, Colour::white);
+            auto expectedContent2 = Gfx::recolour(ImageIds::increase_tool_area, Colour::white);
 
-            attempts++;
-            if (attempts > 2)
+            auto button1Image = w.widgets[widgetIndex + 1].image;
+            auto button2Image = w.widgets[widgetIndex + 2].image;
+            if (button1Image != expectedContent1 || button2Image != expectedContent2)
             {
-                // We've looked two widgets up, and no tool preview or stepper widget was found
                 return false;
             }
-
-            widgetIndex--;
-            widgetType = w.widgets[widgetIndex].type;
         }
-
-        assert(w.widgets[widgetIndex + 1].type != WidgetType::end);
-        assert(w.widgets[widgetIndex + 2].type != WidgetType::end);
-
-        WidgetIndex_t buttonWidgetIndex;
-        WidgetType expectedType;
-
-        switch (widgetType)
+        else if (entryWidgetType == WidgetType::textbox)
         {
-            case WidgetType::wt_3:
+            auto button1StringId = w.widgets[widgetIndex + 1].text;
+            auto button2StringId = w.widgets[widgetIndex + 2].text;
+            if (button1StringId != StringIds::stepper_minus || button2StringId != StringIds::stepper_plus)
             {
-                auto expectedContent1 = Gfx::recolour(ImageIds::decrease_tool_area, Colour::white);
-                auto expectedContent2 = Gfx::recolour(ImageIds::increase_tool_area, Colour::white);
-
-                auto button1Image = w.widgets[widgetIndex + 1].image;
-                auto button2Image = w.widgets[widgetIndex + 2].image;
-                if (button1Image != expectedContent1 || button2Image != expectedContent2)
-                {
-                    return false;
-                }
-
-                buttonWidgetIndex = wheel < 0 ? widgetIndex + 2 : widgetIndex + 1;
-                expectedType = WidgetType::toolbarTab;
-                break;
-            }
-            case WidgetType::textbox:
-            {
-                auto button1StringId = w.widgets[widgetIndex + 1].text;
-                auto button2StringId = w.widgets[widgetIndex + 2].text;
-                if (button1StringId != StringIds::stepper_minus || button2StringId != StringIds::stepper_plus)
-                {
-                    return false;
-                }
-
-                buttonWidgetIndex = wheel < 0 ? widgetIndex + 2 : widgetIndex + 1;
-                expectedType = WidgetType::button;
-                break;
-            }
-            default:
                 return false;
+            }
         }
 
         if (w.isDisabled(buttonWidgetIndex))
-        {
-            return false;
-        }
-
-        auto button1Type = w.widgets[widgetIndex + 1].type;
-        auto button2Type = w.widgets[widgetIndex + 2].type;
-        if (button1Type != expectedType || button2Type != expectedType)
         {
             return false;
         }
