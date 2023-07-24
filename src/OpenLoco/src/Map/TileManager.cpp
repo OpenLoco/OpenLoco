@@ -35,11 +35,13 @@
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <set>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::TileManager
 {
@@ -217,6 +219,12 @@ namespace OpenLoco::World::TileManager
     Tile get(TilePos2 pos)
     {
         const auto index = getTileIndex(pos);
+        if (index >= _tiles.size())
+        {
+            Logging::error("Attempted to get tile out of bounds! ({0}, {1})", pos.x, pos.y);
+            return Tile(pos, nullptr);
+        }
+
         auto data = _tiles[index];
         if (data == kInvalidTile)
         {
