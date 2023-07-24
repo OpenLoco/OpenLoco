@@ -1089,7 +1089,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         if (!(_objectSelection[index] & (1 << 0)))
         {
-            bx |= (1 << 0);
+            bx |= (1 << 0); // Selection mode
         }
 
         bx |= 6;
