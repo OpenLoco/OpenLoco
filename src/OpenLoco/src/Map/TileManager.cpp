@@ -70,6 +70,19 @@ namespace OpenLoco::World::TileManager
         }
     }
 
+    // 0x004BF476
+    void allocateMapElements()
+    {
+        TileElement* elements = reinterpret_cast<TileElement*>(malloc(0x360000));
+        if (elements == nullptr)
+        {
+            exitWithError(StringIds::game_init_failure, StringIds::unable_to_allocate_enough_memory);
+            return;
+        }
+
+        _elements = elements;
+    }
+
     // 0x00461179
     void initialise()
     {

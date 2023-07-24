@@ -32,6 +32,7 @@ namespace OpenLoco::World::TileManager
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ElementPositionFlags);
 
+    void allocateMapElements();
     void initialise();
     stdx::span<TileElement> getElements();
     TileElement* getElementsEnd();
