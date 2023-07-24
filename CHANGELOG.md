@@ -8,6 +8,7 @@
 - Fix: [#2028] Incorrect industry building clearing heights causing graphical glitches.
 - Fix: [#2039] Crash/hang when clicking on news items of new vehicle available.
 - Fix: [#2042] Crash when Data Execution Prevention (DEP) is enabled on all executables on Windows.
+- Fix: [#2044] Incorrect error message when selecting an object fails in the object selection window.
 - Technical: [#2004] Crash reports are no longer being generated (Windows only).
 
 23.06.1 (2023-06-17)
