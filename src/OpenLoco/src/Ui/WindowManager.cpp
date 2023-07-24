@@ -7,6 +7,7 @@
 #include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Intro.h"
 #include "Logging.h"
@@ -1466,6 +1467,90 @@ namespace OpenLoco::Ui::WindowManager
         invalidateWidget(window->type, window->number, widgetIndex);
     }
 
+    static bool isStepperGroup(Window& w, WidgetIndex_t index, WidgetType buttonType)
+    {
+        const auto& widgets = w.widgets;
+
+        if (widgets[index].type != WidgetType::textbox && widgets[index].type != WidgetType::wt_3)
+            return false;
+
+        if (widgets[index + 1].type != buttonType)
+            return false;
+
+        if (widgets[index + 2].type != buttonType)
+            return false;
+
+        return true;
+    }
+
+    static std::optional<WidgetIndex_t> getStepperGroupWidgetIndex(Window& w, WidgetIndex_t startIndex)
+    {
+        // We only iterate 3 times as we might be at the textbox or one of the buttons.
+        for (WidgetIndex_t index = 0; index < 3; index++)
+        {
+            const auto reverseIndex = startIndex - index;
+            if (reverseIndex < 0)
+            {
+                break;
+            }
+
+            if (isStepperGroup(w, reverseIndex, WidgetType::toolbarTab))
+            {
+                return reverseIndex;
+            }
+
+            if (isStepperGroup(w, reverseIndex, WidgetType::button))
+            {
+                return reverseIndex;
+            }
+        }
+
+        return std::nullopt;
+    }
+
+    // Allow mouse wheel scrolling to manipulate stepper widgets and tool sizes
+    static bool stepperWheelInput(Window& w, WidgetIndex_t widgetIndex, int32_t wheel)
+    {
+        const auto stepperGroupIndex = getStepperGroupWidgetIndex(w, widgetIndex);
+        if (!stepperGroupIndex.has_value())
+        {
+            return false;
+        }
+
+        const auto buttonWidgetIndex = wheel < 0 ? widgetIndex + 2 : widgetIndex + 1;
+        const auto entryWidgetType = w.widgets[buttonWidgetIndex].type;
+
+        if (entryWidgetType == WidgetType::wt_3)
+        {
+            auto expectedContent1 = Gfx::recolour(ImageIds::decrease_tool_area, Colour::white);
+            auto expectedContent2 = Gfx::recolour(ImageIds::increase_tool_area, Colour::white);
+
+            auto button1Image = w.widgets[widgetIndex + 1].image;
+            auto button2Image = w.widgets[widgetIndex + 2].image;
+            if (button1Image != expectedContent1 || button2Image != expectedContent2)
+            {
+                return false;
+            }
+        }
+        else if (entryWidgetType == WidgetType::textbox)
+        {
+            auto button1StringId = w.widgets[widgetIndex + 1].text;
+            auto button2StringId = w.widgets[widgetIndex + 2].text;
+            if (button1StringId != StringIds::stepper_minus || button2StringId != StringIds::stepper_plus)
+            {
+                return false;
+            }
+        }
+
+        if (w.isDisabled(buttonWidgetIndex))
+        {
+            return false;
+        }
+
+        w.callOnMouseDown(buttonWidgetIndex);
+        return true;
+    }
+
     // 0x004C628E
     static bool windowWheelInput(Window* window, int wheel)
     {
@@ -1548,6 +1633,11 @@ namespace OpenLoco::Ui::WindowManager
             return;
         }
 
+        if (wheel == 0)
+        {
+            return;
+        }
+
         const Ui::Point cursorPosition = Input::getMouseLocation();
         auto window = findAt(cursorPosition);
 
@@ -1585,6 +1675,11 @@ namespace OpenLoco::Ui::WindowManager
                             windowScrollWheelInput(window, widgetIndex, wheel);
                             return;
                         }
+                    }
+
+                    if (stepperWheelInput(*window, widgetIndex, wheel))
+                    {
+                        return;
                     }
 
                     if (windowWheelInput(window, wheel))

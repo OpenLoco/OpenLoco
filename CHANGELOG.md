@@ -1,5 +1,6 @@
 23.06.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#7627] Allow mouse scrolling on +/- stepper widgets to change their values.
 - Fix: [#1999] Potential crash at startup due to the screen buffer being too small.
 - Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installtion path.
 - Fix: [#2028] Incorrect industry building clearing heights causing graphical glitches.
