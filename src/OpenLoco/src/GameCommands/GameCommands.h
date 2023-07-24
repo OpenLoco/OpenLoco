@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
     void registerHooks();
     uint32_t doCommand(GameCommand command, const registers& registers);
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);
-    bool sub_431E6A(const CompanyId company, World::TileElement* const tile = nullptr);
+    bool sub_431E6A(const CompanyId company, const World::TileElement* const tile = nullptr);
 
     template<typename T>
     uint32_t doCommand(const T& args, uint8_t flags)

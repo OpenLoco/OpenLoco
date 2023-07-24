@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
 
     static uint16_t _gameCommandFlags;
 
-    static loco_global<TileElement*, 0x009C68D0> _9C68D0;
+    static loco_global<const TileElement*, 0x009C68D0> _9C68D0;
 
     static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
     static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
@@ -116,7 +116,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
         { GameCommand::createTrainStation,           nullptr,                   0x0048BB20, true  },
         { GameCommand::removeTrackStation,           nullptr,                   0x0048C402, true  },
-        { GameCommand::createTrackMod,               nullptr,                   0x004A6479, true  },
+        { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
         { GameCommand::removeTrackMod,               nullptr,                   0x004A668A, true  },
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
         { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
@@ -421,7 +421,7 @@ namespace OpenLoco::GameCommands
         // advanced errors
         if (_9C68D0 != (void*)-1)
         {
-            auto tile = (TileElement*)_9C68D0;
+            auto tile = *_9C68D0;
 
             switch (tile->type())
             {
@@ -494,7 +494,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const CompanyId company, World::TileElement* const tile /*= nullptr*/)
+    bool sub_431E6A(const CompanyId company, const World::TileElement* const tile /*= nullptr*/)
     {
         if (company == CompanyId::neutral)
         {
@@ -506,7 +506,7 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = -2;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<World::TileElement*>(-1) : tile;
+        _9C68D0 = tile == nullptr ? reinterpret_cast<const World::TileElement*>(-1) : tile;
         return false;
     }
 
