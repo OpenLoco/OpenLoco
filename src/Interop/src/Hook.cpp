@@ -175,7 +175,7 @@ namespace OpenLoco::Interop
         if (!_hookTableAddress)
         {
 #ifdef _WIN32
-            _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+            _hookTableAddress = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE);
             if (_hookTableAddress == nullptr)
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
