@@ -1,5 +1,5 @@
 #include "CompanyManager.h"
-#include "Ai.h"
+#include "CompanyAi.h"
 #include "CompanyRecords.h"
 #include "Config.h"
 #include "Economy/Economy.h"

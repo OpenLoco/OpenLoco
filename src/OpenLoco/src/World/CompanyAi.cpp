@@ -1,4 +1,4 @@
-#include "Ai.h"
+#include "CompanyAi.h"
 #include "Company.h"
 #include "CompanyManager.h"
 #include "GameCommands/GameCommands.h"
