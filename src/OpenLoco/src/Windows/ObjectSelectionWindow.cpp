@@ -1099,7 +1099,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto errorTitle = StringIds::error_unable_to_select_object;
 
-        if (bx & (1 << 0))
+        if (!(bx & (1 << 0)))
         {
             errorTitle = StringIds::error_unable_to_deselect_object;
         }
