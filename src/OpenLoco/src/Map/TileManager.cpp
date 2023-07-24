@@ -746,16 +746,10 @@ namespace OpenLoco::World::TileManager
         // (Its just the heighest point - the lowest point)
         int16_t lowest = std::numeric_limits<int16_t>::max();
         int16_t highest = 0;
-        const auto initialTilePos = World::toTileSpace(loc);
-        World::TilePosRangeView range{
-            initialTilePos - World::TilePos2{ 5, 5 }, initialTilePos + World::TilePos2{ 5, 5 }
-        };
+        const auto initialTilePos = toTileSpace(loc);
+        auto range = getClampedRange(initialTilePos - TilePos2{ 5, 5 }, initialTilePos + TilePos2{ 5, 5 });
         for (auto& tilePos : range)
         {
-            if (!World::validCoords(tilePos))
-            {
-                continue;
-            }
             auto tile = World::TileManager::get(tilePos);
             auto* surface = tile.surface();
             auto height = surface->baseHeight();
@@ -804,15 +798,12 @@ namespace OpenLoco::World::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto initialTilePos = World::toTileSpace(pos) - World::TilePos2(5, 5);
+        auto initialTilePos = toTileSpace(pos) - TilePos2(5, 5);
 
         uint16_t surroundingDesertTiles = 0;
 
-        for (const auto& tilePos : TilePosRangeView(initialTilePos, initialTilePos + World::TilePos2{ 10, 10 }))
+        for (const auto& tilePos : getClampedRange(initialTilePos, initialTilePos + TilePos2{ 10, 10 }))
         {
-            if (!World::validCoords(tilePos))
-                continue;
-
             auto tile = get(tilePos);
             auto* surface = tile.surface();
             // Desert tiles can't have water! Oasis aren't deserts.

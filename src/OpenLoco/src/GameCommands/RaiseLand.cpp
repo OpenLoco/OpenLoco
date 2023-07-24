@@ -33,7 +33,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        World::TilePosRangeView tileLoop{ toTileSpace(args.pointA), toTileSpace(args.pointB) };
+        const auto tileLoop = getClampedRange(args.pointA, args.pointB);
 
         // Find out what the lowest baseZ in the selected range is
         auto lowestBaseZ = 255;

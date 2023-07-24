@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        World::TilePosRangeView tileLoop{ World::toTileSpace(pointA), World::toTileSpace(pointB) };
+        const auto tileLoop = World::getClampedRange(pointA, pointB);
         for (const auto& tilePos : tileLoop)
         {
             auto surface = World::TileManager::get(tilePos).surface();

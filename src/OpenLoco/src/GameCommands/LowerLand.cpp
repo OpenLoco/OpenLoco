@@ -33,7 +33,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        World::TilePosRangeView tileLoop{ toTileSpace(args.pointA), toTileSpace(args.pointB) };
+        const auto tileLoop = World::getClampedRange(args.pointA, args.pointB);
 
         // Find out what the highest baseZ in the selected range is
         auto highestBaseZ = 0;

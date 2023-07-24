@@ -2,6 +2,7 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Math/Vector.hpp>
+#include <algorithm>
 
 namespace OpenLoco::World
 {
@@ -66,12 +67,12 @@ namespace OpenLoco::World
     // drawing coordinates validation differs from general valid coordinate validation
     constexpr bool drawableCoord(const coord_t coord)
     {
-        return (coord >= World::kTileSize) && (coord < (World::kMapWidth - World::kTileSize));
+        return (coord >= World::kTileSize) && (coord < (World::kMapWidth - World::kTileSize - 1));
     }
 
     constexpr bool drawableTileCoord(const tile_coord_t coord)
     {
-        return (coord >= 1) && (coord < (kMapRows - 1));
+        return (coord >= 1) && (coord < (kMapColumns - 2));
     }
 
     constexpr bool drawableCoords(const Pos2& coords)
@@ -97,5 +98,15 @@ namespace OpenLoco::World
     constexpr Pos2 toWorldSpace(const TilePos2& coords)
     {
         return Pos2{ static_cast<coord_t>(coords.x * kTileSize), static_cast<coord_t>(coords.y * kTileSize) };
+    }
+
+    constexpr coord_t clampCoord(coord_t coord)
+    {
+        return std::clamp<coord_t>(coord, 0, kMapWidth - 1);
+    }
+
+    constexpr coord_t clampTileCoord(coord_t coord)
+    {
+        return std::clamp<coord_t>(coord, 0, kMapColumns - 1);
     }
 }
