@@ -170,7 +170,6 @@ namespace OpenLoco
 
         CompanyId id() const;
         bool empty() const;
-        void aiThink();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
         void updateDaily();
@@ -190,16 +189,6 @@ namespace OpenLoco
     private:
         void setHeadquartersVariation(const uint8_t variation);
         void setHeadquartersVariation(const uint8_t variation, const World::TilePos2& pos);
-
-        void callThinkFunc2();
-        bool tryPlaceVehicles();
-        void sub_431295();
-        void sub_43129D();
-        void sub_4312AF();
-        void sub_4312BF();
-
-        void sub_4308D4();
-        void sub_494805();
 
         uint8_t getNewChallengeProgress() const;
     };

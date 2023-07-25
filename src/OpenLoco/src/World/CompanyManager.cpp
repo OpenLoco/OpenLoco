@@ -1,4 +1,5 @@
 #include "CompanyManager.h"
+#include "CompanyAi.h"
 #include "CompanyRecords.h"
 #include "Config.h"
 #include "Economy/Economy.h"
@@ -213,7 +214,7 @@ namespace OpenLoco::CompanyManager
                 if (!isNetworked() || isNetworkHost())
                 {
                     setUpdatingCompanyId(id);
-                    company->aiThink();
+                    aiThink(id);
                 }
             }
 
