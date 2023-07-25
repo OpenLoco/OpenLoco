@@ -9,6 +9,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+
+
     // 0x004A6479
     static currency32_t createTrackMod(const TrackModsPlacementArgs& args, uint8_t flags)
     {
@@ -84,7 +86,6 @@ namespace OpenLoco::GameCommands
                 // 0x004A65FD
                 break;
         }
-
     }
 
     void createTrackMod(registers& regs)

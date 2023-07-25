@@ -7,6 +7,8 @@
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/TrackExtraObject.h"
+#include "Objects/TrackObject.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
 #include <OpenLoco/Engine/World.hpp>
@@ -693,5 +695,55 @@ namespace OpenLoco::Vehicles
         findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
 
         return unk;
+    }
+
+    // 0x004A5D94
+    static void sub_4A5D94(const LocationOfInterest& interest, uint8_t trackObjectId, uint8_t trackModObjectIds)
+    {
+        // If called from routing add reverse direction of track
+        // This is because track mods do not have directions.
+
+        auto* trackObj = ObjectManager::get<TrackObject>(trackObjectId);
+        bool placementFailure = false;
+
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (!(trackModObjectIds & (1U << i)))
+            {
+                continue;
+            }
+
+            auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
+
+            const auto pieceFlags = _trackPieceToFlags[interest.tad().id()];
+            if ((trackModObj->trackPieces & pieceFlags) != pieceFlags)
+            {
+                //_1135F64 |= (1 << 0); placement failed at least once
+                placementFailure = true;
+                break;
+            }
+        }
+
+        if (!placementFailure)
+        {
+            // Get start tile coords
+            // For each track piece (or if not applying just first)
+            //   Get the track on it
+            //   If this is first tile
+            //       increment successful placement count
+            //       For each track mod
+            //           Get mod cost (changes depending on track id)
+            //   If flags apply
+            //       If flags ghost
+            //           If owner == playerCompany[0]
+            //               set bit 0x40 of 4 (setHasGhostMods)
+            //               invalidate
+            //       else
+            //           set upper nibble of 7 (setMods)
+            //           invalidate
+        }
+        // if (justTheOneBlock)
+        //    return (interest.trackAndDirection & (1 << 15));
+        // return false;
     }
 }
