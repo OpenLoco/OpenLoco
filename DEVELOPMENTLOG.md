@@ -1,4 +1,4 @@
-# OpenLoco version 23.06.1+ (???)
+# OpenLoco version 23.07 (2023-07-25)
 
 ## Use height instead of width to initialize the RT buffer (#2001)
 

@@ -1,4 +1,4 @@
-23.06.1+ (???)
+23.07 (2023-07-25)
 ------------------------------------------------------------------------
 - Feature: [#2013] Add headers for base/clearance height, direction, and ghost flag to the tile inspector.
 - Feature: [#7627] Allow mouse scrolling on +/- stepper widgets to change their values.
