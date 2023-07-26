@@ -1,6 +1,7 @@
 #include "CompanyAi.h"
 #include "Company.h"
 #include "CompanyManager.h"
+#include "Date.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
 #include "Industry.h"
@@ -73,12 +74,68 @@ namespace OpenLoco
         sub_494805(company);
     }
 
-    // 0x00430971
-    static void sub_430971(Company& company)
+    // 0x00487F8D
+    static bool sub_487F8D(const Company& company, const Company::unk4A8& unk)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return true;
+        }
+        if (unk.var_88 < 3)
+        {
+            return false;
+        }
+        // 27 / 8 ???
+        const auto val = unk.var_7C * 3;
+        const auto val2 = val + (val / 8);
+        return unk.var_84 >= val2;
+    }
+
+    // 0x00488050
+    static bool sub_488050(const Company& company, const Company::unk4A8& unk)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        call(0x00430971, regs);
+        regs.edi = X86Pointer(&unk);
+        return call(0x00488050, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x00430971
+    static void sub_430971(Company& company)
+    {
+        company.var_2578++;
+        if (company.var_2578 < 60)
+        {
+            const auto& unk = company.var_4A8[company.var_2578];
+            if (unk.var_00 == 0xFF)
+            {
+                sub_430971(company);
+                return;
+            }
+
+            if (sub_487F8D(company, unk))
+            {
+                company.var_4A4 = 7;
+                company.var_4A5 = 0;
+                StationManager::sub_437F29(company.id(), 8);
+                return;
+            }
+
+            if (sub_488050(company, unk))
+            {
+                company.var_4A4 = 8;
+                company.var_4A5 = 0;
+            }
+            return;
+        }
+        if (((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
+            || (getCurrentDay() - company.startedDate <= 42))
+        {
+            company.var_4A4 = 2;
+            company.var_4A5 = 0;
+            return;
+        }
+        CompanyManager::aiDestroy(company.id());
     }
 
     // 0x004309FD
@@ -112,6 +169,7 @@ namespace OpenLoco
     // 0x00431104
     static void sub_431104(Company& company)
     {
+        // try sell a vehicle?
         registers regs;
         regs.esi = X86Pointer(&company);
         call(0x00431104, regs);

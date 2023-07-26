@@ -100,10 +100,10 @@ namespace OpenLoco
             uint8_t pad_02[0x42];
             uint8_t var_44; // 0x4EC size of var_66
             uint8_t pad_45[0x66 - 0x45];
-            EntityId var_66[11]; // 0x50E unsure on size
+            EntityId var_66[11]; // 0x50E unsure on size (likely size 9)
             currency32_t var_7C; // 0x524
-            uint32_t var_80;     // 0x528
-            uint32_t var_84;     // 0x52C
+            currency32_t var_80; // 0x528
+            currency32_t var_84; // 0x52C
             uint8_t var_88;      // 0x530
             uint8_t pad_89[3];
         };
