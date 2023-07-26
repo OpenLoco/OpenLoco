@@ -98,14 +98,18 @@ namespace OpenLoco
             uint8_t var_00;
             uint8_t var_01;
             uint8_t pad_02[0x42];
-            uint8_t var_44; // 0x4EC size of var_66
-            uint8_t pad_45[0x66 - 0x45];
-            EntityId var_66[11]; // 0x50E unsure on size (likely size 9)
+            uint8_t var_44;              // 0x4EC size of var_66
+            uint8_t var_45;              // 0x4ED size of var_46
+            uint8_t pad_46[0x66 - 0x46]; // array of uint16_t object id's unsure of size
+            EntityId var_66[8];          // 0x50E
+            currency32_t var_76;         // 0x51E
+            uint8_t pad_7A[0x7C - 0x7A];
             currency32_t var_7C; // 0x524
             currency32_t var_80; // 0x528
             currency32_t var_84; // 0x52C
             uint8_t var_88;      // 0x530
-            uint8_t pad_89[3];
+            uint8_t pad_89[2];
+            uint8_t var_8B; // 0x533
         };
         static_assert(sizeof(unk4A8) == 0x8C);
         StringId name;

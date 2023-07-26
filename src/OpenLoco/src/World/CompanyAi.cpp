@@ -183,12 +183,73 @@ namespace OpenLoco
         call(0x00431193, regs);
     }
 
-    // 0x004311E7
-    static void sub_4311E7(Company& company)
+    // 0x00431209
+    static void sub_431209(Company& company, Company::unk4A8& unk)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        call(0x004311E7, regs);
+        regs.edi = X86Pointer(&unk);
+        call(0x00431209, regs);
+    }
+
+    // 0x00431216
+    static void sub_431216(Company& company, Company::unk4A8& unk)
+    {
+        // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
+        company.var_4A5 = 2;
+    }
+
+    // 0x0043122D
+    static void sub_43122D(Company& company, Company::unk4A8& unk)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&unk);
+        call(0x0043122D, regs);
+    }
+
+    // 0x00431244
+    static void sub_431244(Company& company, Company::unk4A8& unk)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&unk);
+        call(0x00431244, regs);
+    }
+
+    // 0x00431254
+    static void sub_431254(Company& company, Company::unk4A8& unk)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&unk);
+        call(0x00431254, regs);
+    }
+
+    // 0x00431279
+    static void sub_431279(Company& company, Company::unk4A8& unk)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&unk);
+        call(0x00431279, regs);
+    }
+
+    using Unk4311E7ThinkFunction = void (*)(Company&, Company::unk4A8&);
+
+    static constexpr std::array<Unk4311E7ThinkFunction, 6> _funcs_4F9530 = {
+        sub_431209,
+        sub_431216,
+        sub_43122D,
+        sub_431244,
+        sub_431254,
+        sub_431279,
+    };
+
+    // 0x004311E7
+    static void sub_4311E7(Company& company)
+    {
+        _funcs_4F9530[company.var_4A5](company, company.var_4A8[company.var_2578]);
     }
 
     static void nullsub_4([[maybe_unused]] Company& company)
