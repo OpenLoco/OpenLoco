@@ -434,7 +434,7 @@ namespace OpenLoco::Input
                 _tooltipTimeout = 0;
                 _tooltipWindowType = Ui::WindowType::undefined;
                 state(State::normal);
-                resetFlag(Flags::flag4);
+                resetFlag(Flags::leftMousePressed);
                 stateNormal(button, x, y, window, widget, widgetIndex);
                 break;
 
@@ -529,7 +529,7 @@ namespace OpenLoco::Input
                         tool->callToolDragEnd(ToolManager::getToolWidgetIndex());
                     }
                 }
-                else if (!hasFlag(Flags::flag4))
+                else if (!hasFlag(Flags::leftMousePressed))
                 {
                     auto interaction = ViewportInteraction::getItemLeft(x, y);
                     switch (interaction.type)
@@ -1740,7 +1740,7 @@ namespace OpenLoco::Input
                     if (w != nullptr)
                     {
                         w->callToolDown(ToolManager::getToolWidgetIndex(), x, y);
-                        setFlag(Flags::flag4);
+                        setFlag(Flags::leftMousePressed);
                     }
                 }
                 break;
