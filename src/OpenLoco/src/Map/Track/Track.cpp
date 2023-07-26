@@ -88,12 +88,12 @@ namespace OpenLoco::World::Track
                         if (elRoad->hasBridge())
                         {
                             trackAndDirection2 |= elRoad->bridge() << 9;
-                            trackAndDirection2 |= (1 << 12);
+                            trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
                         if (_113601A[1] != elRoad->mods())
                         {
-                            trackAndDirection2 |= (1 << 13);
+                            trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
 
                         if (elRoad->hasStationElement())
@@ -135,12 +135,12 @@ namespace OpenLoco::World::Track
             if (elRoad->hasBridge())
             {
                 trackAndDirection2 |= elRoad->bridge() << 9;
-                trackAndDirection2 |= (1 << 12);
+                trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
             if (_113601A[1] != elRoad->mods())
             {
-                trackAndDirection2 |= (1 << 13);
+                trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
 
             if (elRoad->hasStationElement())
@@ -218,12 +218,12 @@ namespace OpenLoco::World::Track
                         if (elTrack->hasBridge())
                         {
                             trackAndDirection2 |= elTrack->bridge() << 9;
-                            trackAndDirection2 |= (1 << 12);
+                            trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
                         if (_113601A[1] != elTrack->mods())
                         {
-                            trackAndDirection2 |= (1 << 13);
+                            trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
 
                         if (elTrack->hasStationElement())
@@ -283,12 +283,12 @@ namespace OpenLoco::World::Track
             if (elTrack->hasBridge())
             {
                 trackAndDirection2 |= elTrack->bridge() << 9;
-                trackAndDirection2 |= (1 << 12);
+                trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
             if (_113601A[1] != elTrack->mods())
             {
-                trackAndDirection2 |= (1 << 13);
+                trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
 
             if (elTrack->hasStationElement())

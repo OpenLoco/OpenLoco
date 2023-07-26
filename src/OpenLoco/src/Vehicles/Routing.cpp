@@ -20,7 +20,7 @@ namespace OpenLoco::Vehicles
     struct LocationOfInterest
     {
         World::Pos3 loc;
-        uint16_t trackAndDirection;
+        uint16_t trackAndDirection; // This is a TaD with a AdditionalTaDFlags::hasSignal bit
         CompanyId company;
         uint8_t trackType;
 
@@ -416,8 +416,8 @@ namespace OpenLoco::Vehicles
 
     // 0x004A2AF0
     // Passes occupied state via _routingTransformData
-    // Returns true for signals
-    static bool findSignalsAndOccupation(const LocationOfInterest& interest)
+    // Returns true for signal block end
+    static bool findOccupationByBlock(const LocationOfInterest& interest)
     {
         auto nextLoc = interest.loc;
         const auto tad = interest.tad();
@@ -463,7 +463,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        return interest.trackAndDirection & (1 << 15);
+        return interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal;
     }
 
     // 0x004A2CE7
@@ -472,7 +472,7 @@ namespace OpenLoco::Vehicles
     {
         for (const auto& interest : hashMap)
         {
-            if (!(interest.trackAndDirection & (1 << 15)))
+            if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
             {
                 continue;
             }
@@ -486,7 +486,7 @@ namespace OpenLoco::Vehicles
     // 0x004A2D4C
     static bool sub_4A2D4C(const LocationOfInterest& interest)
     {
-        if (!(interest.trackAndDirection & (1 << 15)))
+        if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
         {
             return false;
         }
@@ -502,7 +502,7 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    static void findAllUsableTrackInBlock(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap);
+    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap);
 
     // 0x004A313B
     // Iterates all individual tiles of a track piece to find tracks that need inspection
@@ -510,7 +510,7 @@ namespace OpenLoco::Vehicles
     {
         if (!(_1135FA6 & (1 << 2)))
         {
-            findAllUsableTrackInBlock(interest, filterFunction, hashMap);
+            findAllUsableTrackInNetwork(interest, filterFunction, hashMap);
             return;
         }
 
@@ -600,7 +600,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        findAllUsableTrackInBlock(interest, filterFunction, hashMap);
+        findAllUsableTrackInNetwork(interest, filterFunction, hashMap);
 
         for (auto& interest2 : trackToCheck)
         {
@@ -609,7 +609,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2FE6
-    static void findAllUsableTrackInBlock(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap)
     {
         World::Track::TrackConnections connections{};
         _113601A[0] = 0;
@@ -624,7 +624,7 @@ namespace OpenLoco::Vehicles
         {
             for (size_t i = 0; i < connections.size; ++i)
             {
-                uint16_t trackAndDirection2 = connections.data[i] & 0x81FF;
+                uint16_t trackAndDirection2 = connections.data[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 LocationOfInterest interest{ trackEndLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
                 if (hashMap.tryAdd(interest))
                 {
@@ -656,7 +656,7 @@ namespace OpenLoco::Vehicles
             World::Track::getTrackConnections(nextLoc, rotation, connections, initialInterest.company, initialInterest.trackType);
             for (size_t i = 0; i < connections.size; ++i)
             {
-                uint16_t trackAndDirection2 = connections.data[i] & 0x81FF;
+                uint16_t trackAndDirection2 = connections.data[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 LocationOfInterest interest{ nextLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
                 if (hashMap.tryAdd(interest))
                 {
@@ -683,7 +683,7 @@ namespace OpenLoco::Vehicles
         _1135F06 = &interestMap;
         _1135F0A = 0;
         _1135FA6 = 5; // flags
-        findAllUsableTrackInBlock(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
+        findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
         if (reinterpret_cast<uint32_t>(transformFunction) != 0xFFFFFFFF)
         {
             transformFunction(interestMap);
@@ -694,7 +694,7 @@ namespace OpenLoco::Vehicles
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         _routingTransformData = 0;
-        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, findSignalsAndOccupation, setSignalsOccupiedState);
+        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, findOccupationByBlock, setSignalsOccupiedState);
     }
 
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)

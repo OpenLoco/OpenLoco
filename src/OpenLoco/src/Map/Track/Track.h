@@ -18,6 +18,16 @@ namespace OpenLoco::World::Track
     };
     static_assert(sizeof(TrackConnections) == 0x24);
 
+    namespace AdditionalTaDFlags
+    {
+        constexpr uint16_t basicTaDMask = 0b0000'0001'1111'1111;
+        constexpr uint16_t bridgeMask = 0b0000'1110'0000'0000;
+        constexpr uint16_t hasBridge = (1U << 12);
+        constexpr uint16_t hasMods = (1U << 13);
+        constexpr uint16_t hasSignal = (1U << 15); // Track only (not roads)
+        constexpr uint16_t basicTaDWithSignalMask = basicTaDMask | hasSignal;
+    }
+
     enum class TrackId : uint8_t
     {
         straight,
