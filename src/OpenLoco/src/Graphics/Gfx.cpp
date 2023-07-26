@@ -250,7 +250,7 @@ namespace OpenLoco::Gfx
             getDrawingEngine().render();
         }
 
-        if (Input::hasFlag(Input::Flags::flag5))
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
             Ui::processMessagesMini();
         }

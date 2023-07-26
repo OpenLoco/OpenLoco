@@ -1609,7 +1609,7 @@ namespace OpenLoco::Ui::WindowManager
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (Input::hasFlag(Input::Flags::flag5))
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
             if (OpenLoco::isTitleMode())
                 return;

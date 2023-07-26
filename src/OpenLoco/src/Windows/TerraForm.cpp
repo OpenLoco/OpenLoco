@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (ToolManager::getToolWindowType() != WindowType::terraform)
                 WindowManager::close(&self);
 
-            if (!Input::hasFlag(Input::Flags::flag5))
+            if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -2057,7 +2057,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (ToolManager::getToolWindowType() != WindowType::terraform)
                 WindowManager::close(&self);
 
-            if (!Input::hasFlag(Input::Flags::flag5))
+            if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;

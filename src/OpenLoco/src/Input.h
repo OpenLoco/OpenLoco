@@ -45,7 +45,7 @@ namespace OpenLoco::Input
         flag2 = 1U << 2,
         toolActive = 1U << 3,
         leftMousePressed = 1U << 4,
-        flag5 = 1U << 5,
+        rightMousePressed = 1U << 5,
         flag6 = 1U << 6,
         viewportScrolling = 1U << 7,
     };
