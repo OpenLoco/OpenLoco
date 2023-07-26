@@ -983,20 +983,24 @@ namespace OpenLoco
         } while (Platform::getTime() - _last_tick_time < Engine::UpdateRateInMs);
     }
 
-    void promptTickLoop(std::function<bool()> tickAction)
+    bool promptTickLoop(std::function<bool()> tickAction)
     {
         while (true)
         {
             _last_tick_time = Platform::getTime();
             _time_since_last_tick = 31;
-            if (!Ui::processMessages() || !tickAction())
+            if (!Ui::processMessages())
+            {
+                return false;
+            }
+            if (!tickAction())
             {
                 break;
             }
             Ui::render();
-
             tickWait();
         }
+        return true;
     }
 
     constexpr auto MaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;

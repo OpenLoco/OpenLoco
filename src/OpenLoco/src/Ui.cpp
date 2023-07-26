@@ -79,6 +79,7 @@ namespace OpenLoco::Ui
 
     static SDL_Window* window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
+    static bool _exitRequested = false;
 
     static void setWindowIcon();
     static void resize(int32_t width, int32_t height);
@@ -464,12 +465,20 @@ namespace OpenLoco::Ui
     {
         using namespace Input;
 
+        // The game has more than one loop for processing messages, if the secondary loop receives
+        // SDL_QUIT then the message would be lost for the primary loop so we have to keep track of it.
+        if (_exitRequested)
+        {
+            return false;
+        }
+
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
             switch (e.type)
             {
                 case SDL_QUIT:
+                    _exitRequested = true;
                     return false;
                 case SDL_WINDOWEVENT:
                     switch (e.window.event)
