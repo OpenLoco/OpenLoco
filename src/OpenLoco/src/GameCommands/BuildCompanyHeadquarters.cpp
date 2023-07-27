@@ -16,7 +16,7 @@ namespace OpenLoco::GameCommands
         auto targetCompanyId = getUpdatingCompanyId();
         auto* company = CompanyManager::get(targetCompanyId);
 
-        if (company->headquartersX != -1)
+        if (company->headquartersX != -1 && !(flags & Flags::ghost))
         {
             HeadquarterRemovalArgs rmArgs{};
             rmArgs.pos = World::Pos3(company->headquartersX, company->headquartersY, company->headquartersZ * World::kSmallZStep);
