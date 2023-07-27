@@ -110,9 +110,19 @@ namespace OpenLoco
     {
         struct unk4A8
         {
-            uint8_t var_00;
-            uint8_t var_01;
-            uint8_t pad_02[0x42];
+            struct unk4AE
+            {
+                StationId var_00;
+                uint8_t pad_02[0xC];
+            };
+            static_assert(sizeof(unk4AE) == 0xE);
+            uint8_t var_00; // 0x4A8
+            uint8_t var_01; // 0x4A9
+            uint8_t pad_02;
+            uint8_t var_03; // 0x4AB size of var_06
+            uint8_t pad_04[2];
+            unk4AE var_06[4]; // 0x4AE
+            uint8_t pad_3E[0x44 - 0x3E];
             uint8_t var_44;              // 0x4EC size of var_66
             uint8_t var_45;              // 0x4ED size of var_46
             uint8_t pad_46[0x66 - 0x46]; // array of uint16_t object id's unsure of size

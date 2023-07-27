@@ -6,6 +6,7 @@
 #include "GameCommands/GameCommands.h"
 #include "Industry.h"
 #include "IndustryManager.h"
+#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Random.h"
@@ -19,12 +20,147 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    static constexpr uint32_t _dword4FE720[] = {
+        0x849,
+        0x4011,
+        0x4051,
+        0x808,
+        0x20808,
+        0x1421,
+        0x1120,
+        0x98E,
+        0x2098E,
+        0x98A,
+        0x2098A,
+        0x21A6,
+        0x21A2,
+        0x8000,
+        0x8082,
+        0x10000,
+        0x10086,
+        0x10082,
+        0x80A,
+        0x2080A
+    };
+
     // 0x00494805
-    static void sub_494805(Company& company)
+    static void tryRemovePortsAndAirports(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00494805, regs);
+        // If set the port/airport is not removed?
+        std::array<uint8_t, Limits::kMaxStations> unkStationFlags{};
+        for (auto& unk : company.var_4A8)
+        {
+            if (unk.var_00 == 0xFF)
+            {
+                continue;
+            }
+
+            for (auto i = 0; i < 4 && i < unk.var_03; ++i)
+            {
+                const auto& unk2 = unk.var_06[i];
+                if (_dword4FE720[unk.var_00] & (1ULL << 15))
+                {
+                    unkStationFlags[enumValue(unk2.var_00)] |= 1U << 0;
+                }
+                if (_dword4FE720[unk.var_00] & (1ULL << 16))
+                {
+                    unkStationFlags[enumValue(unk2.var_00)] |= 1U << 1;
+                }
+            }
+        }
+
+        for (auto& station : StationManager::stations())
+        {
+            if (station.owner != company.id())
+            {
+                continue;
+            }
+
+            if (((station.flags & StationFlags::transportModeAir) != StationFlags::none)
+                && !(unkStationFlags[enumValue(station.id())] & (1U << 0)))
+            {
+
+                for (auto i = 0; i < station.stationTileSize; ++i)
+                {
+                    auto& tileLoc = station.stationTiles[i];
+
+                    const auto tile = World::TileManager::get(tileLoc);
+                    bool stationElFound = false;
+                    for (auto& el : tile)
+                    {
+                        auto* elStation = el.as<World::StationElement>();
+                        if (elStation == nullptr)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->baseHeight() != tileLoc.z)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->stationType() != StationType::airport)
+                        {
+                            continue;
+                        }
+                        stationElFound = true;
+                        break;
+                    }
+
+                    if (!stationElFound)
+                    {
+                        continue;
+                    }
+
+                    GameCommands::AirportRemovalArgs args{};
+                    args.pos = tileLoc;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    break;
+                }
+            }
+            if (((station.flags & StationFlags::transportModeWater) != StationFlags::none)
+                && !(unkStationFlags[enumValue(station.id())] & (1U << 1)))
+            {
+
+                for (auto i = 0; i < station.stationTileSize; ++i)
+                {
+                    auto& tileLoc = station.stationTiles[i];
+
+                    const auto tile = World::TileManager::get(tileLoc);
+                    bool stationElFound = false;
+                    for (auto& el : tile)
+                    {
+                        auto* elStation = el.as<World::StationElement>();
+                        if (elStation == nullptr)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->baseHeight() != tileLoc.z)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->stationType() != StationType::docks)
+                        {
+                            continue;
+                        }
+                        stationElFound = true;
+                        break;
+                    }
+
+                    if (!stationElFound)
+                    {
+                        continue;
+                    }
+
+                    GameCommands::PortRemovalArgs args{};
+                    args.pos = tileLoc;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+                    break;
+                }
+            }
+        }
     }
 
     // 0x004308D4
@@ -71,7 +207,7 @@ namespace OpenLoco
         company.var_85F6 = 0;
         company.var_4A4 = AiThinkState::unk1;
         company.var_2578 = 0xFF;
-        sub_494805(company);
+        tryRemovePortsAndAirports(company);
     }
 
     // 0x00487F8D
@@ -278,29 +414,6 @@ namespace OpenLoco
         aiThinkState8,
         nullsub_4,
         aiThinkState10,
-    };
-
-    static constexpr uint32_t _dword4FE720[] = {
-        0x849,
-        0x4011,
-        0x4051,
-        0x808,
-        0x20808,
-        0x1421,
-        0x1120,
-        0x98E,
-        0x2098E,
-        0x98A,
-        0x2098A,
-        0x21A6,
-        0x21A2,
-        0x8000,
-        0x8082,
-        0x10000,
-        0x10086,
-        0x10082,
-        0x80A,
-        0x2080A
     };
 
     // 0x00431295
