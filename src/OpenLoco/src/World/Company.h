@@ -112,8 +112,12 @@ namespace OpenLoco
         {
             struct unk4AE
             {
-                StationId var_00;
-                uint8_t pad_02[0xC];
+                StationId var_00; // 0x0
+                uint8_t pad_02;
+                uint8_t rotation; // 0x3
+                World::Pos2 pos;  // 0x4
+                uint8_t baseZ;    // 0x8
+                uint8_t pad_9[0xE - 0x9];
             };
             static_assert(sizeof(unk4AE) == 0xE);
             uint8_t var_00; // 0x4A8
@@ -121,8 +125,11 @@ namespace OpenLoco
             uint8_t pad_02;
             uint8_t var_03; // 0x4AB size of var_06
             uint8_t pad_04[2];
-            unk4AE var_06[4]; // 0x4AE
-            uint8_t pad_3E[0x44 - 0x3E];
+            unk4AE var_06[4];   // 0x4AE
+            uint8_t trackObjId; // 0x3E 0x4E6 track or road (with high bit set)
+            uint8_t pad_3F;
+            uint8_t mods; // 0x40 0x4E8 track or road
+            uint8_t pad_41[0x44 - 0x41];
             uint8_t var_44;              // 0x4EC size of var_66
             uint8_t var_45;              // 0x4ED size of var_46
             uint8_t pad_46[0x66 - 0x46]; // array of uint16_t object id's unsure of size

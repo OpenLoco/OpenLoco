@@ -335,13 +335,72 @@ namespace OpenLoco
         company.var_4A5 = 2;
     }
 
+    // 0x00487DAD
+    static uint32_t tryPlaceTrackOrRoadMods(Company::unk4A8& unk, uint8_t flags)
+    {
+        if (unk.trackObjId & (1U << 7))
+        {
+            GameCommands::RoadModsPlacementArgs args{};
+            args.pos = World::Pos3(unk.var_06[0].pos, unk.var_06[0].baseZ * World::kSmallZStep);
+            args.rotation = unk.var_06[0].rotation;
+            args.roadObjType = unk.trackObjId & ~(1U << 7);
+            args.index = 0;
+            args.modSection = 2;
+            args.roadId = 0;
+            args.type = unk.mods;
+            const auto cost = GameCommands::doCommand(args, flags);
+            if (cost != GameCommands::FAILURE)
+            {
+                return cost;
+            }
+            return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
+        }
+        else
+        {
+            GameCommands::TrackModsPlacementArgs args{};
+            args.pos = World::Pos3(unk.var_06[0].pos, unk.var_06[0].baseZ * World::kSmallZStep);
+            args.rotation = unk.var_06[0].rotation;
+            args.trackObjType = unk.trackObjId;
+            args.index = 0;
+            args.modSection = 2;
+            args.trackId = 0;
+            args.type = unk.mods;
+            const auto cost = GameCommands::doCommand(args, flags);
+            if (cost != GameCommands::FAILURE)
+            {
+                return cost;
+            }
+            return GameCommands::doCommand(args, flags | GameCommands::Flags::noPayment);
+        }
+    }
+
+    // 0x00487E74
+    static bool sub_487E74(Company& company, Company::unk4A8& unk)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return true;
+        }
+
+        if (!(unk.var_8B & (1U << 3)))
+        {
+            return false;
+        }
+
+        return tryPlaceTrackOrRoadMods(unk, GameCommands::Flags::apply) == GameCommands::FAILURE;
+    }
+
     // 0x0043122D
     static void sub_43122D(Company& company, Company::unk4A8& unk)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&unk);
-        call(0x0043122D, regs);
+        if (sub_487E74(company, unk))
+        {
+            company.var_4A4 = AiThinkState::unk1;
+        }
+        else
+        {
+            company.var_4A5 = 3;
+        }
     }
 
     // 0x00431244
