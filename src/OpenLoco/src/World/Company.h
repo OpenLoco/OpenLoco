@@ -129,7 +129,9 @@ namespace OpenLoco
             uint8_t trackObjId; // 0x3E 0x4E6 track or road (with high bit set)
             uint8_t pad_3F;
             uint8_t mods; // 0x40 0x4E8 track or road
-            uint8_t pad_41[0x44 - 0x41];
+            uint8_t pad_41;
+            uint8_t cargoType;           // 0x42 0x4EA
+            uint8_t var_43;              // 0x4EB
             uint8_t var_44;              // 0x4EC size of var_66
             uint8_t var_45;              // 0x4ED size of var_46
             uint8_t pad_46[0x66 - 0x46]; // array of uint16_t object id's unsure of size

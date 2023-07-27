@@ -403,22 +403,48 @@ namespace OpenLoco
         }
     }
 
+    // 0x00487EA0
+    static bool sub_487EA0(Company::unk4A8& unk)
+    {
+        // some sort of sell of vehicle
+        registers regs;
+        regs.edi = X86Pointer(&unk);
+        return call(0x00487EA0, regs) & X86_FLAG_CARRY;
+    }
+
     // 0x00431244
     static void sub_431244(Company& company, Company::unk4A8& unk)
     {
+        if (sub_487EA0(unk))
+        {
+            company.var_4A5 = 4;
+        }
+    }
+
+    // 0x00486ECF
+    static uint8_t sub_486ECF(Company& company, Company::unk4A8& unk)
+    {
+        // some sort of purchase vehicle
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&unk);
-        call(0x00431244, regs);
+        call(0x00486ECF, regs);
+        return regs.al;
     }
 
     // 0x00431254
     static void sub_431254(Company& company, Company::unk4A8& unk)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&unk);
-        call(0x00431254, regs);
+        const auto res = sub_486ECF(company, unk);
+        if (res == 2)
+        {
+            company.var_4A4 = AiThinkState::unk7;
+            company.var_4A5 = 0;
+        }
+        else if (res == 1)
+        {
+            company.var_4A5 = 5;
+        }
     }
 
     // 0x00431279
