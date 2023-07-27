@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
 
         BuildingRemovalArgs args{};
         args.pos = pos;
-        if (auto cost = GameCommands::doCommand(args, flags) != FAILURE)
+        if (auto cost = GameCommands::doCommand(args, flags); cost != FAILURE)
         {
             totalCost += cost;
         }
