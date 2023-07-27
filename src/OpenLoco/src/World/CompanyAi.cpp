@@ -447,13 +447,20 @@ namespace OpenLoco
         }
     }
 
+    // 0x004876CB
+    static void sub_4876CB(Company::unk4A8& unk)
+    {
+        // Sets unk vehicle vars and then breakdown flag ???
+        registers regs;
+        regs.edi = X86Pointer(&unk);
+        call(0x004876CB, regs);
+    }
+
     // 0x00431279
     static void sub_431279(Company& company, Company::unk4A8& unk)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&unk);
-        call(0x00431279, regs);
+        sub_4876CB(unk);
+        company.var_4A4 = AiThinkState::unk1;
     }
 
     using Unk4311E7ThinkFunction = void (*)(Company&, Company::unk4A8&);
