@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             window->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
-            promptTickLoop(
+            const bool success = promptTickLoop(
                 []() {
                     Input::handleKeyboard();
                     Audio::updateSounds();
@@ -162,7 +162,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             WindowManager::setCurrentModalType(WindowType::undefined);
 
             // TODO: return std::optional instead
-            return _savePath[0] != '\0';
+            return success && _savePath[0] != '\0';
         }
         return false;
     }
