@@ -28,12 +28,12 @@ namespace OpenLoco
     }
 
     // 0x004308D4
-    static void sub_4308D4(Company& company)
+    static void aiThinkState0(Company& company)
     {
         company.var_85F6++;
         if (company.var_85F6 < 672)
         {
-            company.var_4A4 = 2;
+            company.var_4A4 = AiThinkState::unk2;
             company.var_4A5 = 0;
             return;
         }
@@ -62,14 +62,14 @@ namespace OpenLoco
             }
             if (!hasAssets)
             {
-                company.var_4A4 = 10;
+                company.var_4A4 = AiThinkState::unk10;
                 company.var_85C4 = 0;
                 return;
             }
         }
 
         company.var_85F6 = 0;
-        company.var_4A4 = 1;
+        company.var_4A4 = AiThinkState::unk1;
         company.var_2578 = 0xFF;
         sub_494805(company);
     }
@@ -101,7 +101,7 @@ namespace OpenLoco
     }
 
     // 0x00430971
-    static void sub_430971(Company& company)
+    static void aiThinkState1(Company& company)
     {
         company.var_2578++;
         if (company.var_2578 < 60)
@@ -109,13 +109,13 @@ namespace OpenLoco
             const auto& unk = company.var_4A8[company.var_2578];
             if (unk.var_00 == 0xFF)
             {
-                sub_430971(company);
+                aiThinkState1(company);
                 return;
             }
 
             if (sub_487F8D(company, unk))
             {
-                company.var_4A4 = 7;
+                company.var_4A4 = AiThinkState::unk7;
                 company.var_4A5 = 0;
                 StationManager::sub_437F29(company.id(), 8);
                 return;
@@ -123,7 +123,7 @@ namespace OpenLoco
 
             if (sub_488050(company, unk))
             {
-                company.var_4A4 = 8;
+                company.var_4A4 = AiThinkState::unk8;
                 company.var_4A5 = 0;
             }
             return;
@@ -131,7 +131,7 @@ namespace OpenLoco
         if (((company.challengeFlags & CompanyFlags::unk0) != CompanyFlags::none)
             || (getCurrentDay() - company.startedDate <= 42))
         {
-            company.var_4A4 = 2;
+            company.var_4A4 = AiThinkState::unk2;
             company.var_4A5 = 0;
             return;
         }
@@ -139,7 +139,7 @@ namespace OpenLoco
     }
 
     // 0x004309FD
-    static void sub_4309FD(Company& company)
+    static void aiThinkState2(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
@@ -147,7 +147,7 @@ namespace OpenLoco
     }
 
     // 0x00430DB6
-    static void sub_430DB6(Company& company)
+    static void aiThinkState3(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
@@ -155,7 +155,7 @@ namespace OpenLoco
     }
 
     // 0x00431035
-    static void sub_431035(Company& company)
+    static void aiThinkState4(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
@@ -167,7 +167,7 @@ namespace OpenLoco
     }
 
     // 0x00431104
-    static void sub_431104(Company& company)
+    static void aiThinkState6(Company& company)
     {
         // try sell a vehicle?
         registers regs;
@@ -176,7 +176,7 @@ namespace OpenLoco
     }
 
     // 0x00431193
-    static void sub_431193(Company& company)
+    static void aiThinkState7(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
@@ -193,7 +193,7 @@ namespace OpenLoco
     }
 
     // 0x00431216
-    static void sub_431216(Company& company, Company::unk4A8& unk)
+    static void sub_431216(Company& company, Company::unk4A8&)
     {
         // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
         company.var_4A5 = 2;
@@ -247,7 +247,7 @@ namespace OpenLoco
     };
 
     // 0x004311E7
-    static void sub_4311E7(Company& company)
+    static void aiThinkState8(Company& company)
     {
         _funcs_4F9530[company.var_4A5](company, company.var_4A8[company.var_2578]);
     }
@@ -257,7 +257,7 @@ namespace OpenLoco
     }
 
     // 0x00431287
-    static void sub_431287(Company& company)
+    static void aiThinkState10(Company& company)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
@@ -266,18 +266,18 @@ namespace OpenLoco
 
     using UnknownThinkFunction = void (*)(Company&);
 
-    static constexpr UnknownThinkFunction _funcs_430786[] = {
-        sub_4308D4,
-        sub_430971,
-        sub_4309FD,
-        sub_430DB6,
-        sub_431035,
+    static constexpr std::array<UnknownThinkFunction, 11> _funcs_430786 = {
+        aiThinkState0,
+        aiThinkState1,
+        aiThinkState2,
+        aiThinkState3,
+        aiThinkState4,
         nullsub_3,
-        sub_431104,
-        sub_431193,
-        sub_4311E7,
+        aiThinkState6,
+        aiThinkState7,
+        aiThinkState8,
         nullsub_4,
-        sub_431287,
+        aiThinkState10,
     };
 
     static constexpr uint32_t _dword4FE720[] = {
@@ -372,7 +372,7 @@ namespace OpenLoco
 
         auto* company = CompanyManager::get(id);
 
-        const auto thinkFunc1 = _funcs_430786[company->var_4A4];
+        const auto thinkFunc1 = _funcs_430786[enumValue(company->var_4A4)];
         thinkFunc1(*company);
 
         if (company->empty())

@@ -90,6 +90,21 @@ namespace OpenLoco
 
     constexpr size_t expenditureHistoryCapacity = 16;
 
+    enum class AiThinkState : uint8_t
+    {
+        unk0,
+        unk1,
+        unk2,
+        unk3,
+        unk4,
+        unk5,
+        unk6,
+        unk7,
+        unk8,
+        unk9,
+        unk10,
+    };
+
 #pragma pack(push, 1)
     struct Company
     {
@@ -132,7 +147,7 @@ namespace OpenLoco
         uint32_t startedDate;                                                          // 0x0498
         uint32_t var_49C;
         uint32_t var_4A0;
-        uint8_t var_4A4;
+        AiThinkState var_4A4; // 0x04A4
         uint8_t var_4A5;
         uint8_t var_4A6;
         uint8_t var_4A7;
