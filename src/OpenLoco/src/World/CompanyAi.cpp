@@ -20,7 +20,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static constexpr uint32_t _dword4FE720[] = {
+    // 0x004FE720
+    static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
         0x849,
         0x4011,
         0x4051,
@@ -48,21 +49,21 @@ namespace OpenLoco
     {
         // If set the port/airport is not removed?
         std::array<uint8_t, Limits::kMaxStations> unkStationFlags{};
-        for (auto& unk : company.var_4A8)
+        for (auto& thought : company.aiThoughts)
         {
-            if (unk.var_00 == 0xFF)
+            if (thought.type == AiThoughtType::null)
             {
                 continue;
             }
 
-            for (auto i = 0; i < 4 && i < unk.var_03; ++i)
+            for (auto i = 0; i < 4 && i < thought.var_03; ++i)
             {
-                const auto& unk2 = unk.var_06[i];
-                if (_dword4FE720[unk.var_00] & (1ULL << 15))
+                const auto& unk2 = thought.var_06[i];
+                if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 15))
                 {
                     unkStationFlags[enumValue(unk2.var_00)] |= 1U << 0;
                 }
-                if (_dword4FE720[unk.var_00] & (1ULL << 16))
+                if (kThoughtTypeFlags[enumValue(thought.type)] & (1ULL << 16))
                 {
                     unkStationFlags[enumValue(unk2.var_00)] |= 1U << 1;
                 }
@@ -177,9 +178,9 @@ namespace OpenLoco
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             bool hasAssets = false;
-            for (auto& unk : company.var_4A8)
+            for (auto& thought : company.aiThoughts)
             {
-                if (unk.var_00 == 0xFF)
+                if (thought.type == AiThoughtType::null)
                 {
                     hasAssets = true;
                     break;
@@ -211,28 +212,28 @@ namespace OpenLoco
     }
 
     // 0x00487F8D
-    static bool sub_487F8D(const Company& company, const Company::unk4A8& unk)
+    static bool sub_487F8D(const Company& company, const Company::AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             return true;
         }
-        if (unk.var_88 < 3)
+        if (thought.var_88 < 3)
         {
             return false;
         }
         // 27 / 8 ???
-        const auto val = unk.var_7C * 3;
+        const auto val = thought.var_7C * 3;
         const auto val2 = val + (val / 8);
-        return unk.var_84 >= val2;
+        return thought.var_84 >= val2;
     }
 
     // 0x00488050
-    static bool sub_488050(const Company& company, const Company::unk4A8& unk)
+    static bool sub_488050(const Company& company, const Company::AiThought& thought)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&unk);
+        regs.edi = X86Pointer(&thought);
         return call(0x00488050, regs) & X86_FLAG_CARRY;
     }
 
@@ -242,14 +243,14 @@ namespace OpenLoco
         company.var_2578++;
         if (company.var_2578 < 60)
         {
-            const auto& unk = company.var_4A8[company.var_2578];
-            if (unk.var_00 == 0xFF)
+            const auto& thought = company.aiThoughts[company.var_2578];
+            if (thought.type == AiThoughtType::null)
             {
                 aiThinkState1(company);
                 return;
             }
 
-            if (sub_487F8D(company, unk))
+            if (sub_487F8D(company, thought))
             {
                 company.var_4A4 = AiThinkState::unk7;
                 company.var_4A5 = 0;
@@ -257,7 +258,7 @@ namespace OpenLoco
                 return;
             }
 
-            if (sub_488050(company, unk))
+            if (sub_488050(company, thought))
             {
                 company.var_4A4 = AiThinkState::unk8;
                 company.var_4A5 = 0;
@@ -319,35 +320,42 @@ namespace OpenLoco
         call(0x00431193, regs);
     }
 
-    // 0x00431209
-    static void sub_431209(Company& company, Company::unk4A8& unk)
+    // 0x00487C83
+    static void sub_487C83(Company::AiThought& thought)
     {
+        // Gets refund costs for vehicles and costs for track mods
         registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&unk);
-        call(0x00431209, regs);
+        regs.edi = X86Pointer(&thought);
+        call(0x00487C83, regs);
+    }
+
+    // 0x00431209
+    static void sub_431209(Company& company, Company::AiThought& thought)
+    {
+        sub_487C83(thought);
+        company.var_4A5 = 1;
     }
 
     // 0x00431216
-    static void sub_431216(Company& company, Company::unk4A8&)
+    static void sub_431216(Company& company, Company::AiThought&)
     {
         // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
         company.var_4A5 = 2;
     }
 
     // 0x00487DAD
-    static uint32_t tryPlaceTrackOrRoadMods(Company::unk4A8& unk, uint8_t flags)
+    static uint32_t tryPlaceTrackOrRoadMods(Company::AiThought& thought, uint8_t flags)
     {
-        if (unk.trackObjId & (1U << 7))
+        if (thought.trackObjId & (1U << 7))
         {
             GameCommands::RoadModsPlacementArgs args{};
-            args.pos = World::Pos3(unk.var_06[0].pos, unk.var_06[0].baseZ * World::kSmallZStep);
-            args.rotation = unk.var_06[0].rotation;
-            args.roadObjType = unk.trackObjId & ~(1U << 7);
+            args.pos = World::Pos3(thought.var_06[0].pos, thought.var_06[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.var_06[0].rotation;
+            args.roadObjType = thought.trackObjId & ~(1U << 7);
             args.index = 0;
             args.modSection = 2;
             args.roadId = 0;
-            args.type = unk.mods;
+            args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
             if (cost != GameCommands::FAILURE)
             {
@@ -358,13 +366,13 @@ namespace OpenLoco
         else
         {
             GameCommands::TrackModsPlacementArgs args{};
-            args.pos = World::Pos3(unk.var_06[0].pos, unk.var_06[0].baseZ * World::kSmallZStep);
-            args.rotation = unk.var_06[0].rotation;
-            args.trackObjType = unk.trackObjId;
+            args.pos = World::Pos3(thought.var_06[0].pos, thought.var_06[0].baseZ * World::kSmallZStep);
+            args.rotation = thought.var_06[0].rotation;
+            args.trackObjType = thought.trackObjId;
             args.index = 0;
             args.modSection = 2;
             args.trackId = 0;
-            args.type = unk.mods;
+            args.type = thought.mods;
             const auto cost = GameCommands::doCommand(args, flags);
             if (cost != GameCommands::FAILURE)
             {
@@ -375,25 +383,25 @@ namespace OpenLoco
     }
 
     // 0x00487E74
-    static bool sub_487E74(Company& company, Company::unk4A8& unk)
+    static bool sub_487E74(Company& company, Company::AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
             return true;
         }
 
-        if (!(unk.var_8B & (1U << 3)))
+        if (!(thought.var_8B & (1U << 3)))
         {
             return false;
         }
 
-        return tryPlaceTrackOrRoadMods(unk, GameCommands::Flags::apply) == GameCommands::FAILURE;
+        return tryPlaceTrackOrRoadMods(thought, GameCommands::Flags::apply) == GameCommands::FAILURE;
     }
 
     // 0x0043122D
-    static void sub_43122D(Company& company, Company::unk4A8& unk)
+    static void sub_43122D(Company& company, Company::AiThought& thought)
     {
-        if (sub_487E74(company, unk))
+        if (sub_487E74(company, thought))
         {
             company.var_4A4 = AiThinkState::unk1;
         }
@@ -404,38 +412,38 @@ namespace OpenLoco
     }
 
     // 0x00487EA0
-    static bool sub_487EA0(Company::unk4A8& unk)
+    static bool sub_487EA0(Company::AiThought& thought)
     {
         // some sort of sell of vehicle
         registers regs;
-        regs.edi = X86Pointer(&unk);
+        regs.edi = X86Pointer(&thought);
         return call(0x00487EA0, regs) & X86_FLAG_CARRY;
     }
 
     // 0x00431244
-    static void sub_431244(Company& company, Company::unk4A8& unk)
+    static void sub_431244(Company& company, Company::AiThought& thought)
     {
-        if (sub_487EA0(unk))
+        if (sub_487EA0(thought))
         {
             company.var_4A5 = 4;
         }
     }
 
     // 0x00486ECF
-    static uint8_t sub_486ECF(Company& company, Company::unk4A8& unk)
+    static uint8_t sub_486ECF(Company& company, Company::AiThought& thought)
     {
         // some sort of purchase vehicle
         registers regs;
         regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&unk);
+        regs.edi = X86Pointer(&thought);
         call(0x00486ECF, regs);
         return regs.al;
     }
 
     // 0x00431254
-    static void sub_431254(Company& company, Company::unk4A8& unk)
+    static void sub_431254(Company& company, Company::AiThought& thought)
     {
-        const auto res = sub_486ECF(company, unk);
+        const auto res = sub_486ECF(company, thought);
         if (res == 2)
         {
             company.var_4A4 = AiThinkState::unk7;
@@ -448,22 +456,22 @@ namespace OpenLoco
     }
 
     // 0x004876CB
-    static void sub_4876CB(Company::unk4A8& unk)
+    static void sub_4876CB(Company::AiThought& thought)
     {
         // Sets unk vehicle vars and then breakdown flag ???
         registers regs;
-        regs.edi = X86Pointer(&unk);
+        regs.edi = X86Pointer(&thought);
         call(0x004876CB, regs);
     }
 
     // 0x00431279
-    static void sub_431279(Company& company, Company::unk4A8& unk)
+    static void sub_431279(Company& company, Company::AiThought& thought)
     {
-        sub_4876CB(unk);
+        sub_4876CB(thought);
         company.var_4A4 = AiThinkState::unk1;
     }
 
-    using Unk4311E7ThinkFunction = void (*)(Company&, Company::unk4A8&);
+    using Unk4311E7ThinkFunction = void (*)(Company&, Company::AiThought&);
 
     static constexpr std::array<Unk4311E7ThinkFunction, 6> _funcs_4F9530 = {
         sub_431209,
@@ -477,7 +485,7 @@ namespace OpenLoco
     // 0x004311E7
     static void aiThinkState8(Company& company)
     {
-        _funcs_4F9530[company.var_4A5](company, company.var_4A8[company.var_2578]);
+        _funcs_4F9530[company.var_4A5](company, company.aiThoughts[company.var_2578]);
     }
 
     static void nullsub_4([[maybe_unused]] Company& company)
@@ -591,24 +599,24 @@ namespace OpenLoco
         }
 
         // Look for an entry with either town or industry assigned.
-        auto index = std::size(company->var_4A8);
-        while (company->var_4A8[--index].var_00 == 0xFF)
+        auto index = std::size(company->aiThoughts);
+        while (company->aiThoughts[--index].type == AiThoughtType::null)
         {
             if (index == 0)
                 return;
         }
 
-        auto& entry = company->var_4A8[index];
+        auto& thought = company->aiThoughts[index];
 
         World::Pos2 pos;
-        if ((_dword4FE720[entry.var_00] & 2) != 0)
+        if ((kThoughtTypeFlags[enumValue(thought.type)] & 2) != 0)
         {
-            auto* industry = IndustryManager::get(static_cast<IndustryId>(entry.var_01));
+            auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
             pos = { industry->x, industry->y };
         }
         else
         {
-            auto* town = TownManager::get(static_cast<TownId>(entry.var_01));
+            auto* town = TownManager::get(static_cast<TownId>(thought.var_01));
             pos = { town->x, town->y };
         }
 

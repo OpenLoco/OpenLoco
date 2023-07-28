@@ -105,10 +105,38 @@ namespace OpenLoco
         unk10,
     };
 
+    enum class AiThoughtType : uint8_t
+    {
+        unk0,
+        unk1,
+        unk2,
+        unk3,
+        unk4,
+        unk5,
+        unk6,
+        unk7,
+        unk8,
+        unk9,
+        unk10,
+        unk11,
+        unk12,
+        unk13,
+        unk14,
+        unk15,
+        unk16,
+        unk17,
+        unk18,
+        unk19,
+
+        null = 0xFF
+    };
+
+    constexpr auto kAiThoughtCount = 20;
+
 #pragma pack(push, 1)
     struct Company
     {
-        struct unk4A8
+        struct AiThought
         {
             struct unk4AE
             {
@@ -120,8 +148,8 @@ namespace OpenLoco
                 uint8_t pad_9[0xE - 0x9];
             };
             static_assert(sizeof(unk4AE) == 0xE);
-            uint8_t var_00; // 0x4A8
-            uint8_t var_01; // 0x4A9
+            AiThoughtType type; // 0x00 0x4A8
+            uint8_t var_01;     // 0x4A9
             uint8_t pad_02;
             uint8_t var_03; // 0x4AB size of var_06
             uint8_t pad_04[2];
@@ -145,7 +173,7 @@ namespace OpenLoco
             uint8_t pad_89[2];
             uint8_t var_8B; // 0x533
         };
-        static_assert(sizeof(unk4A8) == 0x8C);
+        static_assert(sizeof(AiThought) == 0x8C);
         StringId name;
         StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
@@ -170,8 +198,8 @@ namespace OpenLoco
         uint8_t var_4A5;
         uint8_t var_4A6;
         uint8_t var_4A7;
-        unk4A8 var_4A8[60];
-        uint8_t var_2578;
+        AiThought aiThoughts[60];    // 0x04A8
+        uint8_t var_2578;            // 0x2578 activeThought?
         World::SmallZ headquartersZ; // 0x2579
         coord_t headquartersX;       // 0x257A -1 on no headquarter placed
         coord_t headquartersY;       // 0x257C
