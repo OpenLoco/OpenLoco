@@ -312,12 +312,78 @@ namespace OpenLoco
         call(0x00431104, regs);
     }
 
+    // 0x00487BA3
+    static bool sub_487BA3(Company::AiThought& thought)
+    {
+        // sell a vehicle ??
+        registers regs;
+        regs.edi = X86Pointer(&thought);
+        return call(0x00487BA3, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x00487144
+    static void sub_487144(Company& company)
+    {
+        company.var_85C2 = 0;
+        company.var_85C3 = 0;
+        company.var_85F0 = 0;
+    }
+
+    // 0x004311B5
+    static void sub_4311B5(Company& company, Company::AiThought& thought)
+    {
+        if (sub_487BA3(thought))
+        {
+            company.var_4A5 = 1;
+            sub_487144(company);
+        }
+    }
+
+    // 0x0048715C
+    static bool sub_48715C(Company& company, Company::AiThought& thought)
+    {
+        // fair amount of logic
+        // removes roads/tracks
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        return call(0x0048715C, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x004311CA
+    static void sub_4311CA(Company& company, Company::AiThought& thought)
+    {
+        if (sub_48715C(company, thought))
+        {
+            company.var_4A5 = 2;
+        }
+    }
+
+    // 0x00483778
+    static void clearThought(Company::AiThought& thought)
+    {
+        thought.type = AiThoughtType::null;
+    }
+
+    // 0x004311DA
+    static void sub_4311DA(Company& company, Company::AiThought& thought)
+    {
+        clearThought(thought);
+        company.var_4A4 = AiThinkState::unk1;
+    }
+
+    using AiThinkState7Function = void (*)(Company&, Company::AiThought&);
+
+    static constexpr std::array<AiThinkState7Function, 3> _funcs_4F9524 = {
+        sub_4311B5,
+        sub_4311CA,
+        sub_4311DA,
+    };
+
     // 0x00431193
     static void aiThinkState7(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00431193, regs);
+        _funcs_4F9524[company.var_4A5](company, company.aiThoughts[company.var_2578]);
     }
 
     // 0x00487C83

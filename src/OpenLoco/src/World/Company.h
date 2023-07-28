@@ -205,10 +205,14 @@ namespace OpenLoco
         coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x85C4 - 0x25A2];
+        uint8_t pad_25A2[0x85C2 - 0x25A2];
+        uint8_t var_85C2;
+        uint8_t var_85C3;
         uint16_t var_85C4;
         uint16_t var_85C6;
-        uint8_t pad_85C8[0x85F6 - 0x85C8];
+        uint8_t pad_85C8[0x85F0 - 0x85C8];
+        uint16_t var_85F0;
+        uint8_t pad_85F2[0x85F6 - 0x85F2];
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
