@@ -35,11 +35,13 @@
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <set>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::TileManager
 {
@@ -221,9 +223,21 @@ namespace OpenLoco::World::TileManager
         return _tiles.get();
     }
 
+    static constexpr size_t getTileIndex(const TilePos2& pos)
+    {
+        // This is the same as (y * kMapPitch) + x
+        return (pos.y << 9) | pos.x;
+    }
+
     Tile get(TilePos2 pos)
     {
-        size_t index = (pos.y << 9) | pos.x;
+        const auto index = getTileIndex(pos);
+        if (index >= _tiles.size())
+        {
+            Logging::error("Attempted to get tile out of bounds! ({0}, {1})", pos.x, pos.y);
+            return Tile(pos, nullptr);
+        }
+
         auto data = _tiles[index];
         if (data == kInvalidTile)
         {
@@ -240,6 +254,12 @@ namespace OpenLoco::World::TileManager
     Tile get(coord_t x, coord_t y)
     {
         return get(TilePos2(x / World::kTileSize, y / World::kTileSize));
+    }
+
+    static void set(TilePos2 pos, TileElement* elements)
+    {
+        const auto index = getTileIndex(pos);
+        _tiles[index] = elements;
     }
 
     constexpr uint8_t kTileSize = 31;
@@ -447,11 +467,6 @@ namespace OpenLoco::World::TileManager
     static void clearTilePointers()
     {
         std::fill(_tiles.begin(), _tiles.end(), kInvalidTile);
-    }
-
-    static void set(TilePos2 pos, TileElement* elements)
-    {
-        _tiles[(pos.y * kMapPitch) + pos.x] = elements;
     }
 
     // 0x00461348
