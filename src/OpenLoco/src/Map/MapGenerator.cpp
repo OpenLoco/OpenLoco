@@ -155,6 +155,22 @@ namespace OpenLoco::World::MapGenerator
             auto hillShapesObj = ObjectManager::get<HillShapesObject>();
             if ((hillShapesObj->flags & HillShapeFlags::isHeightMap) != HillShapeFlags::none)
             {
+                auto g1El = Gfx::getG1Element(hillShapesObj->image);
+
+                // TODO: check
+                auto src = g1El->offset + World::kMapRows - 1;
+                for (auto y = World::kMapRows; y > 0; y--)
+                {
+                    for (auto x = World::kMapColumns; x > 0; x--)
+                    {
+                        // TODO: probably not quite
+                        // _heightMap[y][x] = src--;
+                    }
+
+                    // TODO: check
+                    src += World::kMapPitch;
+                }
+
                 registers regs;
                 regs.edx = X86Pointer(hillShapesObj);
                 call(0x00462556, regs);
