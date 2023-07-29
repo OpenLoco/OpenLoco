@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
+#include "Objects/HillShapesObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
@@ -144,7 +145,25 @@ namespace OpenLoco::World::MapGenerator
         void generate([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
         {
             _heightMap = heightMap.data();
-            call(0x004624F0);
+
+            for (auto i = 0x10000; i > 0; i--)
+            {
+                static const auto baseHeight = options.minLandHeight * 0x1010101;
+                _heightMap[i] = baseHeight;
+            }
+
+            auto hillShapesObj = ObjectManager::get<HillShapesObject>();
+            if ((hillShapesObj->flags & HillShapeFlags::isHeightMap) != HillShapeFlags::none)
+            {
+                registers regs;
+                regs.edx = X86Pointer(hillShapesObj);
+                call(0x00462556, regs);
+            }
+            else
+            {
+                call(0x00462518);
+            }
+
             _heightMap = nullptr;
         }
     };
