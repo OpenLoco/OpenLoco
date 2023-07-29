@@ -1,6 +1,7 @@
 23.07+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2047] Error message when closing the game while load/save prompt window is open.
+- Fix: [#2053] Placing a headquarter preview ghost immediately removes any existing HQ.
 
 23.07 (2023-07-25)
 ------------------------------------------------------------------------
