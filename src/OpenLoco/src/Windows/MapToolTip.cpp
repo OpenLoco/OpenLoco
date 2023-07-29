@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         static Ui::Point tooltipLocation = {};
         if ((std::abs(tooltipLocation.x - cursor.x) > 5)
             || (std::abs(tooltipLocation.y - cursor.y) > 5)
-            || Input::hasFlag(Input::Flags::flag5))
+            || Input::hasFlag(Input::Flags::rightMousePressed))
         {
             _mapTooltipTimeout = 0;
         }
@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);
         auto firstArg = argsWrap.pop<string_id>();
-        if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::flag5) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
+        if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
             WindowManager::close(WindowType::mapTooltip);
             return;

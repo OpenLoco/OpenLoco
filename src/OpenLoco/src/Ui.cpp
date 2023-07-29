@@ -877,7 +877,7 @@ namespace OpenLoco::Ui
                 Input::handleMouse(x, y, state);
             }
 
-            if (Input::hasFlag(Input::Flags::flag5))
+            if (Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 Input::handleMouse(x, y, state);
             }
@@ -911,7 +911,7 @@ namespace OpenLoco::Ui
             Input::handleMouse(x, y, state);
         }
 
-        if (Input::hasFlag(Input::Flags::flag5))
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
         {
             Input::handleMouse(x, y, state);
         }

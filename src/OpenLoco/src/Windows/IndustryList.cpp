@@ -815,7 +815,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004585B8
         static void onUpdate(Window& self)
         {
-            if (!Input::hasFlag(Input::Flags::flag5))
+            if (!Input::hasFlag(Input::Flags::rightMousePressed))
             {
                 auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;

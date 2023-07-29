@@ -434,7 +434,7 @@ namespace OpenLoco::Input
                 _tooltipTimeout = 0;
                 _tooltipWindowType = Ui::WindowType::undefined;
                 state(State::normal);
-                resetFlag(Flags::flag4);
+                resetFlag(Flags::leftMousePressed);
                 stateNormal(button, x, y, window, widget, widgetIndex);
                 break;
 
@@ -529,7 +529,7 @@ namespace OpenLoco::Input
                         tool->callToolDragEnd(ToolManager::getToolWidgetIndex());
                     }
                 }
-                else if (!hasFlag(Flags::flag4))
+                else if (!hasFlag(Flags::leftMousePressed))
                 {
                     auto interaction = ViewportInteraction::getItemLeft(x, y);
                     switch (interaction.type)
@@ -1740,7 +1740,7 @@ namespace OpenLoco::Input
                     if (w != nullptr)
                     {
                         w->callToolDown(ToolManager::getToolWidgetIndex(), x, y);
-                        setFlag(Flags::flag4);
+                        setFlag(Flags::leftMousePressed);
                     }
                 }
                 break;
@@ -1835,7 +1835,7 @@ namespace OpenLoco::Input
 
                 _5233AE = 0;
                 _5233B2 = 0;
-                setFlag(Flags::flag5);
+                setFlag(Flags::rightMousePressed);
                 break;
 
             case Ui::WidgetType::scrollview:
@@ -1843,7 +1843,7 @@ namespace OpenLoco::Input
 
                 _5233AE = 0;
                 _5233B2 = 0;
-                setFlag(Flags::flag5);
+                setFlag(Flags::rightMousePressed);
                 break;
         }
     }
@@ -2163,7 +2163,7 @@ namespace OpenLoco::Input
     static MouseButton loc_4C70F1(uint32_t& x, int16_t& y)
     {
         sub_407231();
-        resetFlag(Flags::flag5);
+        resetFlag(Flags::rightMousePressed);
         Ui::setCursor(CursorId(*_52336C));
 
         if (Tutorial::state() == Tutorial::State::playing)
@@ -2185,7 +2185,7 @@ namespace OpenLoco::Input
     // 0x004C6EE6
     MouseButton nextMouseInput(uint32_t& x, int16_t& y)
     {
-        if (!hasFlag(Flags::flag5))
+        if (!hasFlag(Flags::rightMousePressed))
         {
             // Interrupt tutorial on mouse button input.
             auto input = dequeueMouseInput();
