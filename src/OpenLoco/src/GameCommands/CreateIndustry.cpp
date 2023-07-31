@@ -189,9 +189,10 @@ namespace OpenLoco::GameCommands
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {
             auto* scaffObj = ObjectManager::get<ScaffoldingObject>();
-            bool requiresMore = clearHeight % scaffObj->segmentHeights[indObj->scaffoldingSegmentType];
-            const auto numSegments = (clearHeight / scaffObj->segmentHeights[indObj->scaffoldingSegmentType]) + (requiresMore ? 1 : 0);
-            clearHeight = (numSegments * scaffObj->segmentHeights[indObj->scaffoldingSegmentType]) + scaffObj->roofHeights[indObj->scaffoldingSegmentType];
+            const auto segmentHeight = scaffObj->segmentHeights[indObj->scaffoldingSegmentType];
+            const bool requiresMore = clearHeight % segmentHeight;
+            const auto numSegments = (clearHeight / segmentHeight) + (requiresMore ? 1 : 0);
+            clearHeight = (numSegments * segmentHeight) + scaffObj->roofHeights[indObj->scaffoldingSegmentType];
         }
         // ceil to 4
         clearHeight += 3;
@@ -436,7 +437,7 @@ namespace OpenLoco::GameCommands
             GameCommands::setPosition({ args.pos.x, args.pos.y, centreHeight.landHeight });
         }
 
-        // Vanilla bug args.srand0 not set. Change this when we can diverge
+        // TODO: Vanilla bug args.srand0 not set. Change this when we can diverge
         Core::Prng prng{ enumValue(GameCommand::createIndustry), args.srand1 };
         const auto newIndustryId = sub_454C91(args.type, args.pos, prng);
         if (newIndustryId == IndustryId::null)
@@ -466,14 +467,17 @@ namespace OpenLoco::GameCommands
         // 0x00E0C3BE - C0
         auto lastPlacedBuildingPos = World::Pos2{ newIndustry->x, newIndustry->y };
 
-        // used also for 0x00454552 break up into two when function allowed to diverge
+        // TODO: used also for 0x00454552 break up into two when function allowed to diverge
         const auto randVal = newIndustry->prng.randNext() & 0xFF;
 
         auto prodRateRand = randVal;
         for (auto i = 0; i < 2; ++i)
         {
             newIndustry->var_17D[i] = 0;
-            newIndustry->productionRate[i] = (((indObj->initialProductionRate[i].max - indObj->initialProductionRate[i].min) * prodRateRand) / 256) + indObj->initialProductionRate[i].min;
+
+            const auto& initalRate = indObj->initialProductionRate[i];
+            newIndustry->productionRate[i] = (((initalRate.max - initalRate.min) * prodRateRand) / 256) + initalRate.min;
+
             if (isEditorMode())
             {
                 newIndustry->var_17D[i] = newIndustry->productionRate[i];
