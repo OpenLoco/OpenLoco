@@ -1,12 +1,11 @@
 #include "Input.h"
 #include "Audio/Audio.h"
+#include "Config.h"
 #include "Localisation/StringIds.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
-#include "Config.h"
-
 #include <map>
 
 using namespace OpenLoco::Interop;
