@@ -201,6 +201,7 @@ namespace OpenLoco
             {
                 company.var_4A4 = AiThinkState::unk10;
                 company.var_85C4 = 0;
+                company.var_85C6 = 0;
                 return;
             }
         }
