@@ -1,3 +1,8 @@
+23.08 (31.07.2023)
+------------------------------------------------------------------------
+- Fix [#2056] Unintended Map Scrolling When Window Scaling is Modified 
+- Fix [#2005] Right-clicking when display scaling is set to a fractional percent causes random scrolling of view
+
 23.07+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2047] Error message when closing the game while load/save prompt window is open.
