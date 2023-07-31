@@ -815,16 +815,6 @@ namespace OpenLoco::Input
                         auto offsetX = dragOffset.x << (vp->zoom + 1);
                         auto offsetY = dragOffset.y << (vp->zoom + 1);
 
-                        // Fix #2056 / #2005: Somehow, when the scaling factor (Config.scalingFactor) is set to >1.0,
-                        //                    offsetX and/or offsetY sometimes become exactly -2 for unknown reasons.
-                        //                    This leads to unintended map scrolling even when the user does not move the mouse.
-                        //                    The early exit here prevents this issue from occurring.
-                        // TODO: find out where this -2 is comming from
-                        if (std::abs(offsetX) <= 2 || std::abs(offsetY) <= 2)
-                        {
-                            return;
-                        }
-
                         window->viewportConfigurations[0].savedViewX += offsetX * invert;
                         window->viewportConfigurations[0].savedViewY += offsetY * invert;
                     }
