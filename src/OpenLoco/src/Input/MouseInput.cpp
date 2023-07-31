@@ -803,7 +803,6 @@ namespace OpenLoco::Input
                 {
                     // Fix #151: use relative drag from one frame to the next rather than
                     //           using the relative position from the message loop
-                    // Fix #2056 and #2005
                     dragOffset = getNextDragOffset();
                 }
                 if (dragOffset.x != 0 || dragOffset.y != 0)
