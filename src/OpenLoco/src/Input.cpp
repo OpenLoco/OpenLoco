@@ -5,6 +5,7 @@
 #include "Ui/ScrollView.h"
 #include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include "Config.h"
 
 #include <map>
 
@@ -15,7 +16,6 @@ namespace OpenLoco::Input
     loco_global<Flags, 0x00523368> _flags;
     static loco_global<State, 0x0052336D> _state;
     static Ui::Point32 _cursorDragStart;
-    static Ui::Point32 _cursorDragStartUnscaled;
     loco_global<uint32_t, 0x00525374> _cursorDragState;
 
     void init()
@@ -56,9 +56,7 @@ namespace OpenLoco::Input
         {
             _cursorDragState = 1;
             auto cursor = Ui::getCursorPos();
-            auto cursorUnscaled = Ui::getCursorPosUnscaled();
             _cursorDragStart = cursor;
-            _cursorDragStartUnscaled = cursorUnscaled;
             Ui::hideCursor();
         }
     }
@@ -82,16 +80,9 @@ namespace OpenLoco::Input
 
         Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
 
-        return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
-    }
-
-    Ui::Point getNextDragOffsetUnscaled()
-    {
-        auto current = Ui::getCursorPosUnscaled();
-
-        auto delta = current - _cursorDragStartUnscaled;
-
-        Ui::setCursorPosUnscaled(_cursorDragStartUnscaled.x, _cursorDragStartUnscaled.y);
+        auto scale = Config::get().scaleFactor;
+        delta.x /= scale;
+        delta.y /= scale;
 
         return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
     }

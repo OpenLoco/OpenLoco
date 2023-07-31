@@ -124,10 +124,10 @@ namespace OpenLoco::Ui
     void disposeInput();
     void disposeCursors();
     void setCursor(CursorId id);
+    Point32 getCursorPosScaled();
     Point32 getCursorPos();
-    Point32 getCursorPosUnscaled();
-    void setCursorPos(int32_t scaledX, int32_t scaledY);
-    void setCursorPosUnscaled(int32_t x, int32_t y);
+    void setCursorPosScaled(int32_t scaledX, int32_t scaledY);
+    void setCursorPos(int32_t x, int32_t y);
     void hideCursor();
     void showCursor();
     void update();
