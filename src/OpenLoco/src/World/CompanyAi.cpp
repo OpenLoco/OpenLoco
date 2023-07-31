@@ -9,6 +9,8 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Objects/CompetitorObject.h"
+#include "Objects/ObjectManager.h"
 #include "Random.h"
 #include "Station.h"
 #include "StationManager.h"
@@ -43,6 +45,34 @@ namespace OpenLoco
         0x80A,
         0x2080A
     };
+
+    // 0x00487144
+    static void sub_487144(Company& company)
+    {
+        company.var_85C2 = 0;
+        company.var_85C3 = 0;
+        company.var_85F0 = 0;
+    }
+
+    // 0x00486ECF
+    static uint8_t sub_486ECF(Company& company, Company::AiThought& thought)
+    {
+        // some sort of purchase vehicle
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00486ECF, regs);
+        return regs.al;
+    }
+
+    // 0x004876CB
+    static void sub_4876CB(Company::AiThought& thought)
+    {
+        // Sets unk vehicle vars and then breakdown flag ???
+        registers regs;
+        regs.edi = X86Pointer(&thought);
+        call(0x004876CB, regs);
+    }
 
     // 0x00494805
     static void tryRemovePortsAndAirports(Company& company)
@@ -292,12 +322,113 @@ namespace OpenLoco
         call(0x00430DB6, regs);
     }
 
+    // 0x004866C8
+    static uint8_t sub_4866C8(const Company& company, const Company::AiThought& thought)
+    {
+        // Place airport?
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x004866C8, regs);
+        return regs.al;
+    }
+
+    // 0x004FE7AC
+    constexpr std::array<uint8_t, 9> kAgrressivenessTable1 = { 25, 20, 15, 11, 8, 5, 3, 2, 1 };
+
+    // 0x004869C2
+    static void sub_4869C2(Company& company)
+    {
+        company.var_85C2 = 0xFF;
+        company.var_85C3 = 0;
+        company.var_85DE = 0;
+        const auto* competitorObj = ObjectManager::get<CompetitorObject>(company.competitorId);
+        company.var_85EA = kAgrressivenessTable1[competitorObj->aggressiveness - 1];
+    }
+
+    // 0x0043106B
+    static void sub_43106B(Company& company, Company::AiThought& thought)
+    {
+        const auto res = sub_4866C8(company, thought);
+        if (res == 2)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 1;
+            sub_487144(company);
+        }
+        else if (res == 1)
+        {
+            company.var_4A5 = 1;
+            sub_4869C2(company);
+        }
+    }
+
+    // 0x004869F7
+    static uint8_t sub_4869F7(const Company& company, const Company::AiThought& thought)
+    {
+        // gc_unk_52?
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x004869F7, regs);
+        return regs.al;
+    }
+
+    // 0x0043109A
+    static void sub_43109A(Company& company, Company::AiThought& thought)
+    {
+        const auto res = sub_4869F7(company, thought);
+        if (res == 2)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 1;
+            sub_487144(company);
+        }
+        else if (res == 1)
+        {
+            company.var_4A5 = 2;
+        }
+    }
+
+    // 0x004310C4
+    static void sub_4310C4(Company& company, Company::AiThought& thought)
+    {
+        const auto res = sub_486ECF(company, thought);
+        if (res == 2)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 0;
+        }
+        else if (res == 1)
+        {
+            company.var_4A5 = 3;
+        }
+    }
+
+    // 0x004310E9
+    static void sub_4310E9(Company& company, Company::AiThought& thought)
+    {
+        sub_4876CB(thought);
+        StationManager::sub_437F29(company.id(), 1);
+        company.var_4A4 = AiThinkState::unk0;
+    }
+
+    using AiThinkState4Function = void (*)(Company&, Company::AiThought&);
+
+    static constexpr std::array<AiThinkState4Function, 4> _funcs_4F9500 = {
+        sub_43106B,
+        sub_43109A,
+        sub_4310C4,
+        sub_4310E9,
+    };
+
     // 0x00431035
     static void aiThinkState4(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00431035, regs);
+        StationManager::sub_437F29(company.id(), 3);
+        company.var_85F6++;
+
+        _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.var_2578]);
     }
 
     static void nullsub_3([[maybe_unused]] Company& company)
@@ -320,14 +451,6 @@ namespace OpenLoco
         registers regs;
         regs.edi = X86Pointer(&thought);
         return call(0x00487BA3, regs) & X86_FLAG_CARRY;
-    }
-
-    // 0x00487144
-    static void sub_487144(Company& company)
-    {
-        company.var_85C2 = 0;
-        company.var_85C3 = 0;
-        company.var_85F0 = 0;
     }
 
     // 0x004311B5
@@ -496,17 +619,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x00486ECF
-    static uint8_t sub_486ECF(Company& company, Company::AiThought& thought)
-    {
-        // some sort of purchase vehicle
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x00486ECF, regs);
-        return regs.al;
-    }
-
     // 0x00431254
     static void sub_431254(Company& company, Company::AiThought& thought)
     {
@@ -520,15 +632,6 @@ namespace OpenLoco
         {
             company.var_4A5 = 5;
         }
-    }
-
-    // 0x004876CB
-    static void sub_4876CB(Company::AiThought& thought)
-    {
-        // Sets unk vehicle vars and then breakdown flag ???
-        registers regs;
-        regs.edi = X86Pointer(&thought);
-        call(0x004876CB, regs);
     }
 
     // 0x00431279

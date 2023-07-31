@@ -210,7 +210,11 @@ namespace OpenLoco
         uint8_t var_85C3;
         uint16_t var_85C4;
         uint16_t var_85C6;
-        uint8_t pad_85C8[0x85F0 - 0x85C8];
+        uint8_t pad_85C8[0x85DE - 0x85C8];
+        uint32_t var_85DE;
+        uint8_t pad_85E2[0x85EA - 0x85E2];
+        uint32_t var_85EA;
+        uint8_t pad_85EE[0x85F0 - 0x85EE];
         uint16_t var_85F0;
         uint8_t pad_85F2[0x85F6 - 0x85F2];
         uint16_t var_85F6;
