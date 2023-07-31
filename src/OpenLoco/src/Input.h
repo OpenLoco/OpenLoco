@@ -128,6 +128,7 @@ namespace OpenLoco::Input
     void sub_407218();
     void sub_407231();
     Ui::Point getNextDragOffset();
+    Ui::Point getNextDragOffsetUnscaled();
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
