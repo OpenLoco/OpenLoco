@@ -289,9 +289,8 @@ namespace OpenLoco::Ui
         SDL_GetMouseState(&x, &y);
 
         auto scale = Config::get().scaleFactor;
-        x /= scale;
-        y /= scale;
-        return { x, y };
+        return { static_cast<int>(std::round(static_cast<float>(x) / scale)),
+                 static_cast<int>(std::round(static_cast<float>(y) / scale)) };
     }
 
     // 0x00407FEE
