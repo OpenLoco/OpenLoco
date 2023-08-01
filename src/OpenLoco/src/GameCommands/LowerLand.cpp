@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
             auto tile = TileManager::get(tilePos);
             auto* surface = tile.surface();
 
-            auto baseZ = TileManager::getSurfaceCornerHeight(surface);
+            auto baseZ = TileManager::getSurfaceCornerHeight(*surface);
             highestBaseZ = std::max<SmallZ>(highestBaseZ, baseZ);
         }
 
@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
             auto tile = TileManager::get(tilePos);
             auto* surface = tile.surface();
 
-            auto baseZ = TileManager::getSurfaceCornerHeight(surface);
+            auto baseZ = TileManager::getSurfaceCornerHeight(*surface);
             if (baseZ < highestBaseZ)
             {
                 continue;

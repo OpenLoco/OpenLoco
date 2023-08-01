@@ -100,7 +100,7 @@ namespace OpenLoco
     // 0x00458C7F
     void IndustryObject::drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const
     {
-        auto firstColour = Numerics::bitScanReverse(var_C2);
+        auto firstColour = Numerics::bitScanReverse(availableColours);
         Colour c = firstColour != -1 ? static_cast<Colour>(firstColour)
                                      : Colour::black;
         ImageId baseImage(var_12, c);
@@ -126,7 +126,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (var_BD < var_BC)
+        if (maxNumBuildings < minNumBuildings)
         {
             return false;
         }
@@ -166,11 +166,11 @@ namespace OpenLoco
             return false;
         }
 
-        if (var_D6 > 100)
+        if (initialProductionRate[0].min > 100)
         {
             return false;
         }
-        return var_DA <= 100;
+        return initialProductionRate[1].min <= 100;
     }
 
     // 0x00458CD9
@@ -184,6 +184,8 @@ namespace OpenLoco
                 dst = strRes.str;
                 remainingData = remainingData.subspan(strRes.tableLength);
             };
+
+            // This is actually used for initial name of the industry when two industries in same town
             string_id notUsed{};
 
             loadString(name, 0);
@@ -235,8 +237,8 @@ namespace OpenLoco
         // LOAD BUILDING PARTS End
 
         // Load Unk?
-        var_BE = reinterpret_cast<const uint8_t*>(remainingData.data());
-        remainingData = remainingData.subspan(var_BD * sizeof(uint8_t));
+        buildings = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(maxNumBuildings * sizeof(uint8_t));
 
         // Load Produced Cargo
         for (auto& cargo : producedCargoType)
@@ -301,7 +303,7 @@ namespace OpenLoco
         }
 
         // Load Unk1 Wall Types
-        var_F1 = 0xFF;
+        buildingWall = 0xFF;
         if (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
@@ -312,13 +314,13 @@ namespace OpenLoco
             auto res = ObjectManager::findObjectHandle(unkHeader);
             if (res.has_value())
             {
-                var_F1 = res->id;
+                buildingWall = res->id;
             }
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
         // Load Unk2 Wall Types
-        var_F2 = 0xFF;
+        buildingWallEntrance = 0xFF;
         if (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
             ObjectHeader unkHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
@@ -329,7 +331,7 @@ namespace OpenLoco
             auto res = ObjectManager::findObjectHandle(unkHeader);
             if (res.has_value())
             {
-                var_F2 = res->id;
+                buildingWallEntrance = res->id;
             }
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
@@ -367,12 +369,12 @@ namespace OpenLoco
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
         var_38 = nullptr;
         std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);
-        var_BE = nullptr;
+        buildings = nullptr;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(wallTypes), std::end(wallTypes), 0);
-        var_F1 = 0;
-        var_F2 = 0;
+        buildingWall = 0;
+        buildingWallEntrance = 0;
     }
 
     stdx::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const

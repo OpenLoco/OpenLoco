@@ -22,6 +22,7 @@ namespace OpenLoco::World
     public:
         CompanyId owner() const { return CompanyId(_4 & 0xF); } // _4l
         uint8_t objectId() const { return _5 & 0x1F; }
+        uint8_t unk5SLR5() const { return _5 >> 5; }
         StationType stationType() const;
         uint8_t rotation() const { return _type & 0x3; }
         uint8_t multiTileIndex() const { return (_type >> 6) & 3; }

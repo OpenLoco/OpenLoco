@@ -17,14 +17,14 @@ namespace OpenLoco
     struct Unk4F9274
     {
         World::Pos2 pos;
-        uint8_t unk;
+        uint8_t index;
     };
     const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type);
 
     enum class IndustryFlags : uint16_t
     {
         none = 0U,
-        flag_01 = 1U << 0,
+        isGhost = 1U << 0,
         sorted = 1U << 1,
         closingDown = 1U << 2,
         flag_04 = 1U << 3,
@@ -41,11 +41,11 @@ namespace OpenLoco
         Core::Prng prng;            // 0x08
         uint8_t objectId;           // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)
-        uint16_t pad_12;
-        uint8_t numTiles;         // 0x14
-        World::Pos3 tiles[32];    // 0x15
-        TownId town;              // 0xD5
-        World::TileLoop tileLoop; // 0xD7
+        uint16_t foundingYear;      // 0x12
+        uint8_t numTiles;           // 0x14
+        World::Pos3 tiles[32];      // 0x15 bit 15 of z indicates if multiTile (2x2)
+        TownId town;                // 0xD5
+        World::TileLoop tileLoop;   // 0xD7
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;
@@ -85,7 +85,7 @@ namespace OpenLoco
         bool isMonthlyProductionClosing();
         void sub_45329B(const World::Pos2& pos);
         void sub_453354();
-        void expandGrounds(const World::Pos2& pos, uint8_t primaryWallType, uint8_t secondaryWallType, uint8_t dl);
+        void expandGrounds(const World::Pos2& pos, uint8_t primaryWallType, uint8_t wallEntranceType, uint8_t dl);
         void createMapAnimations();
         void updateProducedCargoStats();
 
@@ -97,4 +97,6 @@ namespace OpenLoco
 #pragma pack(pop)
 
     static_assert(sizeof(Industry) == 0x453);
+
+    bool claimSurfaceForIndustry(const World::TilePos2& pos, IndustryId industryId, uint8_t var_EA);
 }

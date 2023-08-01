@@ -449,14 +449,14 @@ namespace OpenLoco::World::TileManager
         return height;
     }
 
-    SmallZ getSurfaceCornerHeight(SurfaceElement* surface)
+    SmallZ getSurfaceCornerHeight(const SurfaceElement& surface)
     {
-        auto baseZ = surface->baseZ();
-        if (surface->slope())
+        auto baseZ = surface.baseZ();
+        if (surface.slope())
         {
             baseZ += kSmallZStep;
         }
-        if (surface->isSlopeDoubleHeight())
+        if (surface.isSlopeDoubleHeight())
         {
             baseZ += kSmallZStep;
         }
@@ -1065,7 +1065,7 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x004C482B
-    void removeAllWallsOnTile(const World::TilePos2& pos, SmallZ baseZ)
+    void removeAllWallsOnTileAbove(const World::TilePos2& pos, SmallZ baseZ)
     {
         std::vector<World::TileElement*> toDelete;
         auto tile = get(pos);
@@ -1081,6 +1081,31 @@ namespace OpenLoco::World::TileManager
                 continue;
             }
             if (baseZ + 12 < elWall->baseZ())
+            {
+                continue;
+            }
+            toDelete.push_back(&el);
+        }
+        // Remove in reverse order to prevent pointer invalidation
+        std::for_each(std::rbegin(toDelete), std::rend(toDelete), [&pos](World::TileElement* el) {
+            Ui::ViewportManager::invalidate(World::toWorldSpace(pos), el->baseHeight(), el->baseHeight() + 72, ZoomLevel::half);
+            removeElement(*el);
+        });
+    }
+
+    // 0x004C4979
+    void removeAllWallsOnTileBelow(const World::TilePos2& pos, SmallZ baseZ)
+    {
+        std::vector<World::TileElement*> toDelete;
+        auto tile = get(pos);
+        for (auto& el : tile)
+        {
+            auto* elWall = el.as<WallElement>();
+            if (elWall == nullptr)
+            {
+                continue;
+            }
+            if (baseZ < elWall->clearZ() && baseZ + 12 <= elWall->baseZ())
             {
                 continue;
             }
@@ -1154,7 +1179,7 @@ namespace OpenLoco::World::TileManager
             }
 
             auto clearHeight = getHeight(pos).landHeight;
-            removeAllWallsOnTile(toTileSpace(pos), clearHeight / 4);
+            removeAllWallsOnTileAbove(toTileSpace(pos), clearHeight / 4);
         }
 
         // Compute cost of landscape operation
@@ -1327,7 +1352,7 @@ namespace OpenLoco::World::TileManager
             }
 
             auto clearHeight = getHeight(pos).landHeight;
-            removeAllWallsOnTile(toTileSpace(pos), clearHeight / kSmallZStep);
+            removeAllWallsOnTileAbove(toTileSpace(pos), clearHeight / kSmallZStep);
         }
 
         auto tile = get(pos);

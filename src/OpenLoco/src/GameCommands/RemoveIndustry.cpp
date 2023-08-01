@@ -113,7 +113,7 @@ namespace OpenLoco::GameCommands
             surface->setVar6SLR5(0);
             surface->setVariation(0);
             Ui::ViewportManager::invalidate(World::toWorldSpace(pos), surface->baseHeight(), surface->baseHeight() + 32);
-            World::TileManager::removeAllWallsOnTile(pos, surface->baseZ());
+            World::TileManager::removeAllWallsOnTileAbove(pos, surface->baseZ());
         }
     }
 

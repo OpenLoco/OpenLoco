@@ -5,6 +5,9 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Localisation/FormatArguments.hpp"
+#include "Localisation/Formatting.h"
+#include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
@@ -554,6 +557,93 @@ namespace OpenLoco::IndustryManager
         {
             industry.updateProducedCargoStats();
         }
+    }
+
+    // 0x00454DBE
+    IndustryId allocateNewIndustry(const uint8_t type, const World::Pos2& pos, const Core::Prng& prng, const TownId nearbyTown)
+    {
+        const auto* indObj = ObjectManager::get<IndustryObject>(type);
+
+        for (auto i = 0U; i < Limits::kMaxIndustries; ++i)
+        {
+            const auto id = static_cast<IndustryId>(i);
+            auto* industry = IndustryManager::get(id);
+            if (!industry->empty())
+            {
+                continue;
+            }
+
+            industry->prng = prng;
+            industry->flags = IndustryFlags::none;
+            industry->objectId = type;
+            industry->x = pos.x;
+            industry->y = pos.y;
+            industry->numTiles = 0;
+            industry->under_construction = 0;
+            industry->tileLoop = World::TileLoop{};
+            industry->var_DB = 0;
+            industry->var_DD = 0;
+            industry->var_DF = 25;
+            industry->foundingYear = getCurrentYear();
+            industry->var_E1 = {};
+            for (auto& stats : industry->producedCargoStatsStation)
+            {
+                std::fill(std::begin(stats), std::end(stats), StationId::null);
+            }
+            std::fill(std::begin(industry->var_17D), std::end(industry->var_17D), 0);
+            std::fill(std::begin(industry->var_181), std::end(industry->var_181), 0);
+            std::fill(std::begin(industry->producedCargoQuantityMonthlyTotal), std::end(industry->producedCargoQuantityMonthlyTotal), 0);
+            std::fill(std::begin(industry->producedCargoQuantityPreviousMonth), std::end(industry->producedCargoQuantityPreviousMonth), 0);
+            std::fill(std::begin(industry->receivedCargoQuantityMonthlyTotal), std::end(industry->receivedCargoQuantityMonthlyTotal), 0);
+            std::fill(std::begin(industry->receivedCargoQuantityPreviousMonth), std::end(industry->receivedCargoQuantityPreviousMonth), 0);
+            std::fill(std::begin(industry->receivedCargoQuantityDailyTotal), std::end(industry->receivedCargoQuantityDailyTotal), 0);
+            std::fill(std::begin(industry->producedCargoQuantityDeliveredMonthlyTotal), std::end(industry->producedCargoQuantityDeliveredMonthlyTotal), 0);
+            std::fill(std::begin(industry->producedCargoQuantityDeliveredPreviousMonth), std::end(industry->producedCargoQuantityDeliveredPreviousMonth), 0);
+            std::fill(std::begin(industry->producedCargoPercentTransportedPreviousMonth), std::end(industry->producedCargoPercentTransportedPreviousMonth), 0);
+            std::fill(std::begin(industry->producedCargoMonthlyHistorySize), std::end(industry->producedCargoMonthlyHistorySize), 1);
+            // Note: vanilla just set to 0 first entry change this when allowing divergence
+            // std::fill(std::begin(industry->producedCargoMonthlyHistory1), std::end(industry->producedCargoMonthlyHistory1), 0);
+            // std::fill(std::begin(industry->producedCargoMonthlyHistory2), std::end(industry->producedCargoMonthlyHistory2), 0);
+            industry->producedCargoMonthlyHistory1[0] = 0;
+            industry->producedCargoMonthlyHistory2[0] = 0;
+            std::fill(std::begin(industry->history_min_production), std::end(industry->history_min_production), 0);
+
+            industry->town = nearbyTown;
+            industry->name = indObj->var_02;
+
+            for (auto& innerInd : IndustryManager::industries())
+            {
+                if (innerInd.name != industry->name)
+                {
+                    continue;
+                }
+                if (&innerInd == industry)
+                {
+                    continue;
+                }
+                if (innerInd.town != industry->town)
+                {
+                    continue;
+                }
+
+                for (auto unique = 1; unique < 0xFFF; ++unique)
+                {
+                    FormatArguments args{};
+                    args.push<uint16_t>(unique);
+                    char buffer[512]{};
+                    StringManager::formatString(buffer, indObj->var_02 + 1, &args);
+                    const auto newName = StringManager::userStringAllocate(buffer, 0);
+                    if (newName == StringIds::empty)
+                    {
+                        continue;
+                    }
+                    industry->name = newName;
+                    break;
+                }
+            }
+            return id;
+        }
+        return IndustryId::null;
     }
 }
 
