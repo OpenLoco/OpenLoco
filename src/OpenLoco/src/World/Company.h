@@ -141,7 +141,7 @@ namespace OpenLoco
             struct unk4AE
             {
                 StationId var_00; // 0x0
-                uint8_t pad_02;
+                uint8_t var_02;   // 0x2 flags?
                 uint8_t rotation; // 0x3
                 World::Pos2 pos;  // 0x4
                 uint8_t baseZ;    // 0x8
@@ -170,7 +170,8 @@ namespace OpenLoco
             currency32_t var_80; // 0x528
             currency32_t var_84; // 0x52C
             uint8_t var_88;      // 0x530
-            uint8_t pad_89[2];
+            uint8_t var_89;      // 0x531 station obj type?
+            uint8_t pad_8A;
             uint8_t var_8B; // 0x533
         };
         static_assert(sizeof(AiThought) == 0x8C);

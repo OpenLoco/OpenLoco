@@ -22,6 +22,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
+    static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
+
     // 0x004FE720
     static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
         0x849,
@@ -323,8 +326,107 @@ namespace OpenLoco
     }
 
     // 0x004866C8
-    static uint8_t sub_4866C8(const Company& company, const Company::AiThought& thought)
+    static uint8_t sub_4866C8(const Company& company, Company::AiThought& thought)
     {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 2;
+        }
+
+        bool found = false;
+        auto i = 0U;
+        for (; i < thought.var_03; ++i)
+        {
+            if (!(thought.var_06[i].var_02 & (1U << 0)))
+            {
+                continue;
+            }
+            if (thought.var_06[i].var_02 & (1U << 1))
+            {
+                continue;
+            }
+            found = true;
+            break;
+        }
+
+        if (!found)
+        {
+            return 1;
+        }
+
+        auto& stationUnk = thought.var_06[i];
+        const auto pos = World::Pos3(stationUnk.pos, stationUnk.baseZ * World::kSmallZStep);
+        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 15))
+        {
+            {
+                GameCommands::AirportRemovalArgs removeArgs{};
+                removeArgs.pos = pos;
+                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_4);
+            }
+
+            GameCommands::AirportPlacementArgs placeArgs{};
+            placeArgs.pos = pos;
+            placeArgs.rotation = stationUnk.rotation;
+            placeArgs.type = thought.var_89;
+
+            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            {
+                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                {
+                    return 2;
+                }
+            }
+
+            if (_lastPlacedAirportStationId != StationId::null)
+            {
+                stationUnk.var_00 = _lastPlacedAirportStationId;
+            }
+            stationUnk.var_02 &= ~(1 << 0);
+            stationUnk.var_02 |= (1 << 1);
+            return 0;
+        }
+        else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
+        {
+            {
+                GameCommands::PortRemovalArgs removeArgs{};
+                removeArgs.pos = pos;
+                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_4);
+            }
+
+            GameCommands::PortPlacementArgs placeArgs{};
+            placeArgs.pos = pos;
+            placeArgs.rotation = stationUnk.rotation;
+            placeArgs.type = thought.var_89;
+
+            if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            {
+                if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                {
+                    return 2;
+                }
+            }
+
+            if (_lastPlacedPortStationId != StationId::null)
+            {
+                stationUnk.var_00 = _lastPlacedPortStationId;
+            }
+            stationUnk.var_02 &= ~(1 << 0);
+            stationUnk.var_02 |= (1 << 1);
+            return 0;
+        }
+        else
+        {
+            if (thought.trackObjId & (1U << 7))
+            {
+                // Road
+                // 0x004867E6
+            }
+            else
+            {
+                // Track
+                // 0x00486727
+            }
+        }
         // Place airport?
         registers regs;
         regs.esi = X86Pointer(&company);
