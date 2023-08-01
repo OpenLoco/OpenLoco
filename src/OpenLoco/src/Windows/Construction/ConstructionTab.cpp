@@ -360,7 +360,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
 
-        const auto trackAndDirection2 = (_113609C->data[_113609C->size - 1] & 0x1FF) ^ (1 << 2);
+        const auto trackAndDirection2 = (_113609C->data[_113609C->size - 1] & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
         World::Pos3 loc2(_x, _y, _constructionZ);
         loc2 -= TrackData::getUnkTrack(trackAndDirection2).pos;
         if (trackAndDirection2 & (1 << 2))
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint16_t trackAndDirection2 = 0;
         while (_113609C->size != 0)
         {
-            trackAndDirection2 = (_113609C->pop_back() & 0x1FF) ^ (1 << 2);
+            trackAndDirection2 = (_113609C->pop_back() & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
             World::Pos3 loc2(_x, _y, _constructionZ);
             loc2 -= TrackData::getUnkRoad(trackAndDirection2).pos;
             if (trackAndDirection2 & (1 << 2))
