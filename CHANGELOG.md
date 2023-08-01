@@ -1,6 +1,6 @@
 23.07+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2005] Right-clicking when display scaling is set to a fractional percent causes random scrolling of view
+- Fix: [#2005] Right-clicking when display scaling is set to a fractional percent causes random scrolling of view.
 - Fix: [#2047] Error message when closing the game while load/save prompt window is open.
 
 23.07 (2023-07-25)
