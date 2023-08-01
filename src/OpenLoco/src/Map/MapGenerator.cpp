@@ -140,12 +140,71 @@ namespace OpenLoco::World::MapGenerator
 
     class OriginalTerrainGenerator
     {
-    public:
-        // 0x004624F0
-        void generate([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
+    private:
+        // 0x00462518
+        void blitHillsByTopographyStyle([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
         {
             _heightMap = heightMap.data();
 
+            call(0x00462518);
+
+            _heightMap = nullptr;
+        }
+
+        // 0x00462556
+        void copyHeightMapFromG1(Gfx::G1Element* g1Element, HeightMap& heightMap)
+        {
+            auto* src = g1Element->offset;
+            auto* dst = heightMap.data();
+
+            for (auto y = World::kMapRows; y > 0; y--)
+            {
+                dst += World::kMapColumns;
+
+                for (auto x = World::kMapColumns; x > 0; x--)
+                {
+                    dst--;
+                    *dst = std::max<uint8_t>(*dst, *src);
+                    src++;
+                }
+
+                src += World::kMapPitch;
+            }
+        }
+
+        // 0x00462590
+        void capSeaLevels(HeightMap& heightMap)
+        {
+            auto seaLevel = getGameState().seaLevel;
+            auto* dst = heightMap.data();
+
+            for (auto i = World::kMapPitch * (World::kMapPitch - 1) - 1; i > 0; i--)
+            {
+                if (seaLevel < *(dst))
+                    continue;
+
+                if (seaLevel < *(dst + 1))
+                    continue;
+
+                if (seaLevel < *(dst + World::kMapPitch))
+                    continue;
+
+                if (seaLevel < *(dst + World::kMapPitch + 1))
+                    continue;
+
+                *dst += 1;
+                *(dst + 1) += 1;
+                *(dst + World::kMapPitch) += 1;
+                *(dst + World::kMapPitch + 1) += 1;
+
+                dst++;
+            }
+        }
+
+    public:
+        // 0x004624F0
+        void generate(const S5::Options& options, HeightMap& heightMap)
+        {
             for (auto i = 0x10000; i > 0; i--)
             {
                 static const auto baseHeight = options.minLandHeight * 0x1010101;
@@ -155,32 +214,15 @@ namespace OpenLoco::World::MapGenerator
             auto hillShapesObj = ObjectManager::get<HillShapesObject>();
             if ((hillShapesObj->flags & HillShapeFlags::isHeightMap) != HillShapeFlags::none)
             {
-                auto g1El = Gfx::getG1Element(hillShapesObj->image);
-
-                // TODO: check
-                auto src = g1El->offset + World::kMapRows - 1;
-                for (auto y = World::kMapRows; y > 0; y--)
-                {
-                    for (auto x = World::kMapColumns; x > 0; x--)
-                    {
-                        // TODO: probably not quite
-                        // _heightMap[y][x] = src--;
-                    }
-
-                    // TODO: check
-                    src += World::kMapPitch;
-                }
-
-                registers regs;
-                regs.edx = X86Pointer(hillShapesObj);
-                call(0x00462556, regs);
+                auto g1Element = Gfx::getG1Element(hillShapesObj->image);
+                copyHeightMapFromG1(g1Element, heightMap);
             }
             else
             {
-                call(0x00462518);
+                blitHillsByTopographyStyle(options, heightMap);
             }
 
-            _heightMap = nullptr;
+            capSeaLevels(heightMap);
         }
     };
 
