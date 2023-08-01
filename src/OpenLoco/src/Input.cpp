@@ -1,11 +1,11 @@
 #include "Input.h"
 #include "Audio/Audio.h"
+#include "Config.h"
 #include "Localisation/StringIds.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
-
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -48,6 +48,7 @@ namespace OpenLoco::Input
         _state = state;
     }
 
+    // Cursor drag start
     void sub_407218()
     {
         if (_cursorDragState == 0)
@@ -59,6 +60,7 @@ namespace OpenLoco::Input
         }
     }
 
+    // Cursor drag release
     void sub_407231()
     {
         if (_cursorDragState != 0)
@@ -76,6 +78,10 @@ namespace OpenLoco::Input
         auto delta = current - _cursorDragStart;
 
         Ui::setCursorPos(_cursorDragStart.x, _cursorDragStart.y);
+
+        auto scale = Config::get().scaleFactor;
+        delta.x /= scale;
+        delta.y /= scale;
 
         return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
     }

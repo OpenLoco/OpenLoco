@@ -513,7 +513,7 @@ namespace OpenLoco::Ui
     void Window::viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY)
     {
         // Get mouse position to offset against.
-        const auto mouse = Ui::getCursorPos();
+        const auto mouse = Ui::getCursorPosScaled();
 
         // Compute map coordinate by mouse position.
         auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse.x, mouse.y, ViewportInteraction::InteractionItemFlags::none);
@@ -617,7 +617,7 @@ namespace OpenLoco::Ui
         const auto dest = v->centre2dCoordinates({ mapX, mapY, baseHeight });
 
         // Get mouse position to offset against.
-        const auto mouse = Ui::getCursorPos();
+        const auto mouse = Ui::getCursorPosScaled();
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
         int16_t rebasedX = ((this->width >> 1) - mouse.x) * (1 << v->zoom),

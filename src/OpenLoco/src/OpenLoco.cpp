@@ -564,7 +564,7 @@ namespace OpenLoco
             if (Config::get().old.var_72 == 0)
             {
                 Config::get().old.var_72 = 16;
-                const auto cursor = Ui::getCursorPos();
+                const auto cursor = Ui::getCursorPosScaled();
                 addr<0x00F2538C, Ui::Point32>() = cursor;
                 drawingCtx.clear(Gfx::getScreenRT(), 0);
                 addr<0x00F2539C, int32_t>() = 0;
@@ -587,7 +587,7 @@ namespace OpenLoco
                             call(0x00403575); // ddrwaUnlockPSurface
                         }
                     }
-                    Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                    Ui::setCursorPosScaled(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                     Gfx::invalidateScreen();
                     if (Config::get().old.var_72 != 96)
                     {
@@ -724,9 +724,9 @@ namespace OpenLoco
                 if (Config::get().old.var_72 == 2)
                 {
                     addr<0x005252DC, int32_t>() = 1;
-                    const auto cursor = Ui::getCursorPos();
+                    const auto cursor = Ui::getCursorPosScaled();
                     addr<0x00F2538C, Ui::Point32>() = cursor;
-                    Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                    Ui::setCursorPosScaled(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 }
             }
         }

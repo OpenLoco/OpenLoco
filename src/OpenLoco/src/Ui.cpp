@@ -283,24 +283,35 @@ namespace OpenLoco::Ui
     }
 
     // 0x00407FCD
+    Point32 getCursorPosScaled()
+    {
+        auto unscaledPos = getCursorPos();
+
+        auto scale = Config::get().scaleFactor;
+
+        auto x = unscaledPos.x / scale;
+        auto y = unscaledPos.y / scale;
+        return { static_cast<int32_t>(std::round(x)), static_cast<int32_t>(std::round(y)) };
+    }
+
     Point32 getCursorPos()
     {
         int x = 0, y = 0;
         SDL_GetMouseState(&x, &y);
-
-        auto scale = Config::get().scaleFactor;
-        x /= scale;
-        y /= scale;
         return { x, y };
     }
 
     // 0x00407FEE
-    void setCursorPos(int32_t x, int32_t y)
+    void setCursorPosScaled(int32_t scaledX, int32_t scaledY)
     {
         auto scale = Config::get().scaleFactor;
-        x *= scale;
-        y *= scale;
+        auto unscaledX = scaledX * scale;
+        auto unscaledY = scaledY * scale;
+        setCursorPos(unscaledX, unscaledY);
+    }
 
+    void setCursorPos(int32_t x, int32_t y)
+    {
         SDL_WarpMouseInWindow(window, x, y);
     }
 

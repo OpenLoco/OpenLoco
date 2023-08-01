@@ -242,7 +242,7 @@ namespace OpenLoco::Input
             {
                 _cursorX2 = Tutorial::nextInput();
                 _cursorY2 = Tutorial::nextInput();
-                Ui::setCursorPos(*_cursorX2, *_cursorY2);
+                Ui::setCursorPosScaled(*_cursorX2, *_cursorY2);
                 break;
             }
 
