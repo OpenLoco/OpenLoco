@@ -550,10 +550,17 @@ namespace OpenLoco
             }
 
             const auto numImages = imgRes.imageOffset + offset - bodySprite.flatImageId;
-            const auto extents = Gfx::getImagesMaxExtent(ImageId(bodySprite.flatImageId), numImages);
-            bodySprite.width = extents.width;
-            bodySprite.heightNegative = extents.heightNegative;
-            bodySprite.heightPositive = extents.heightPositive;
+            if (bodySprite.flatImageId + numImages < ObjectManager::getTotalNumImages())
+            {
+                const auto extents = Gfx::getImagesMaxExtent(ImageId(bodySprite.flatImageId), numImages);
+                bodySprite.width = extents.width;
+                bodySprite.heightNegative = extents.heightNegative;
+                bodySprite.heightPositive = extents.heightPositive;
+            }
+            else
+            {
+                // This is a bad object! But we will keep loading anyway! Rarrr official objects do this!
+            }
         }
 
         for (auto& bogieSprite : bogieSprites)
@@ -583,13 +590,20 @@ namespace OpenLoco
             }
 
             const auto numImages = imgRes.imageOffset + offset - bogieSprite.flatImageIds;
-            const auto extents = Gfx::getImagesMaxExtent(ImageId(bogieSprite.flatImageIds), numImages);
-            bogieSprite.width = extents.width;
-            bogieSprite.heightNegative = extents.heightNegative;
-            bogieSprite.heightPositive = extents.heightPositive;
+            if (bogieSprite.flatImageIds + numImages < ObjectManager::getTotalNumImages())
+            {
+                const auto extents = Gfx::getImagesMaxExtent(ImageId(bogieSprite.flatImageIds), numImages);
+                bogieSprite.width = extents.width;
+                bogieSprite.heightNegative = extents.heightNegative;
+                bogieSprite.heightPositive = extents.heightPositive;
+            }
+            else
+            {
+                // This is a bad object! But we will keep loading anyway! Rarrr official objects do this!
+            }
         }
 
-        // Verify we haven't overshot any lengths
+        // Verify we haven't overshot any lengths (See above Rarrr's)
         if (imgRes.imageOffset + offset != ObjectManager::getTotalNumImages())
         {
             // There are some official objects that suffer from this so can't assert on this.
