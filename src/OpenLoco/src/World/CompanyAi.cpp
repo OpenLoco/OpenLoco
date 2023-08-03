@@ -431,6 +431,8 @@ namespace OpenLoco
             if (thought.trackObjId & (1U << 7))
             {
                 // Road
+
+                // TODO: Vanilla bug passes rotation for flags???
                 if (sub_47BA2C(pos, stationUnk.rotation, thought.trackObjId & ~(1U << 7), 0, stationUnk.rotation) == GameCommands::FAILURE)
                 {
                     return 2;
