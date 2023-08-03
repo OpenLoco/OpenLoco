@@ -162,14 +162,14 @@ namespace OpenLoco::World::MapGenerator
         // 0x004626B7
         void blitHill(const S5::Options& options, HeightMap& heightMap)
         {
-            const auto randomHillState = getGameState().rng.randNext();
+            const uint8_t randomHillState = getGameState().rng.randNext(0xFF);
             const bool flipHillImage = randomHillState & 1;
             // const bool unkHillBit2 = (randomHillState & 2) >> 1;
-            const bool topographyBit = (randomHillState & 4) >> 2;
+
+            const auto hillShapesObj = ObjectManager::get<HillShapesObject>();
+            const uint8_t hillShapeCount = hillShapesObj->hillHeightMapCount + hillShapesObj->mountainHeightMapCount;
 
             // The hill index calculation is a minor simpliciation compared to vanilla
-            const auto hillShapesObj = ObjectManager::get<HillShapesObject>();
-            const auto hillShapeCount = hillShapesObj->hillHeightMapCount + hillShapesObj->mountainHeightMapCount;
             const uint8_t randomHillIndex = randomHillState % hillShapeCount;
 
             const auto hillImage = hillShapesObj->image + randomHillIndex;
@@ -183,34 +183,63 @@ namespace OpenLoco::World::MapGenerator
             }
 
             // 0x00462718
-            if (((randomHillState >> 14) & 511) < 2)
+            const auto threshold = getGameState().rng.srand_1() >> 14;
+            if ((threshold & 511) < 2)
             {
+                printf("Bail! threshhold = %d & 511 < 2\n", threshold);
                 return;
             }
-            if (randomHillState < 1024)
+            if (threshold < 1024)
             {
+                printf("Bail! threshhold = %d < 1024\n", threshold);
                 return;
             }
 
             // Vanilla would use an `rcl` for the lower bit, getting the carry flag in.
             // We're substituting it with an extra bit of the random state.
-            auto topographyId = (enumValue(options.topographyStyle) << 1) | topographyBit;
-            auto topographyFlags = topographyStyleFlags[topographyId];
+            const bool topographyBit = (threshold & 511) << 9 > threshold;
+            const auto topographyId = (enumValue(options.topographyStyle) << 1) | topographyBit;
+            const auto topographyFlags = topographyStyleFlags[topographyId];
 
-            if ((topographyFlags & (1 << 0)) && randomHillIndex >= hillShapesObj->hillHeightMapCount)
+            const bool isValidHillIndex = (topographyFlags & (1 << 0)) && randomHillIndex < hillShapesObj->hillHeightMapCount;
+            const bool isValidMountainIndex = (topographyFlags & (1 << 1)) && randomHillIndex >= hillShapesObj->hillHeightMapCount;
+            if (!(isValidHillIndex || isValidMountainIndex))
             {
-                return;
-            }
-            if ((topographyFlags & (1 << 1)) && randomHillIndex < hillShapesObj->hillHeightMapCount)
-            {
+                printf("Bail: flags = %d, randomHillIndex = %d, hillHeightMapCount = %d, mountainHeightMapCount = %d\n",
+                    topographyFlags, randomHillIndex, hillShapesObj->hillHeightMapCount, hillShapesObj->mountainHeightMapCount);
                 return;
             }
 
             // 0x0046276D
+            auto src = g1Element->offset;
+
+            static loco_global<uint8_t, 0x00F00164> _randomHillState;
+            _randomHillState = randomHillState;
+
+            static loco_global<uint8_t, 0x00F00167> _randomHillIndex;
+            _randomHillIndex = randomHillIndex;
 
             _heightMap = heightMap.data();
 
-            call(0x004626B7);
+            registers regs;
+            regs.esi = X86Pointer(src);
+            regs.ebp = X86Pointer(heightMap.data());
+            regs.ebx = threshold;
+            regs.dl = randomHillIndex;
+            regs.eax = (threshold & 511) + targetWidth + randomHillIndex;
+
+            if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
+            {
+                if (regs.eax < 382)
+                {
+                    printf("Edge of map, skipping\n");
+                    return;
+                }
+            }
+
+            printf("Calling vanilla!\n");
+            call(0x00462785, regs);
+            // call(0x00462797, regs);
 
             _heightMap = nullptr;
         }
