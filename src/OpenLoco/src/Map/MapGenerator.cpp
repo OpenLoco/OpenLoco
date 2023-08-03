@@ -146,14 +146,26 @@ namespace OpenLoco::World::MapGenerator
     class OriginalTerrainGenerator
     {
     private:
-        // 0x00462518
-        void blitHillsByTopographyStyle([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
+        // 0x004626B7
+        void blitHill([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
         {
             _heightMap = heightMap.data();
 
-            call(0x00462518);
+            call(0x004626B7);
 
             _heightMap = nullptr;
+        }
+
+        // 0x00462518
+        void generateHills(const S5::Options& options, HeightMap& heightMap)
+        {
+            uint8_t baseCount = getGameState().rng.randNext() & 7;
+            uint16_t numHills = baseCount + (options.hillDensity * 5) + 1;
+
+            for (uint16_t i = 0; i < numHills; i++)
+            {
+                blitHill(options, heightMap);
+            }
         }
 
         // 0x00462556
@@ -220,7 +232,7 @@ namespace OpenLoco::World::MapGenerator
             }
             else
             {
-                blitHillsByTopographyStyle(options, heightMap);
+                generateHills(options, heightMap);
             }
 
             capSeaLevels(heightMap);
