@@ -87,6 +87,11 @@ namespace OpenLoco::World::MapGenerator
         {
             return _height.data();
         }
+
+        size_t size() const
+        {
+            return _height.size();
+        }
     };
 
     class HeightMapRange
@@ -205,11 +210,7 @@ namespace OpenLoco::World::MapGenerator
         // 0x004624F0
         void generate(const S5::Options& options, HeightMap& heightMap)
         {
-            for (auto i = 0x10000; i > 0; i--)
-            {
-                static const auto baseHeight = options.minLandHeight * 0x1010101;
-                _heightMap[i] = baseHeight;
-            }
+            std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
 
             auto hillShapesObj = ObjectManager::get<HillShapesObject>();
             if ((hillShapesObj->flags & HillShapeFlags::isHeightMap) != HillShapeFlags::none)
