@@ -14,6 +14,7 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/Track.h"
+#include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
@@ -61,10 +62,12 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
     static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
     static constexpr uint16_t kTramSignalTimeout = 2880; // Time to wait before turning around at barriers
+
 
     void VehicleHead::updateVehicle()
     {
@@ -1260,7 +1263,7 @@ namespace OpenLoco::Vehicles
                         }
                     }
 
-                    if (sub_4AC0A3())
+                    if (opposingTrainAtSignal())
                     {
                         return landReverseFromSignal();
                     }
@@ -3219,11 +3222,56 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC0A3
-    bool VehicleHead::sub_4AC0A3()
+    bool VehicleHead::opposingTrainAtSignal()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        return call(0x004AC0A3, regs) & X86_FLAG_CARRY;
+        // Works out if there is an opposing train in the tile 2 ahead (i.e. waiting at a signal)
+        // The train could be on any of the multiple connections on that tile.
+
+        Track::TrackConnections connections{};
+        connections.size = 0;
+        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
+        World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
+        if (connections.size != 1)
+        {
+            return false;
+        }
+
+        const auto [nextNextPos, nextRotation] = World::Track::getTrackConnectionEnd(nextPos, connections.data[0] & Track::AdditionalTaDFlags::basicTaDMask);
+        connections = Track::TrackConnections{};
+        World::Track::getTrackConnections(nextNextPos, nextRotation, connections, owner, trackType);
+        if (connections.size == 0)
+        {
+            return false;
+        }
+
+        for (auto i = 0U; i < connections.size; ++i)
+        {
+            TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+            tad._data = connections.data[i] & Track::AdditionalTaDFlags::basicTaDMask;
+            auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+            auto pos = nextNextPos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                pos -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+            }
+
+            auto reverseTad = tad;
+            reverseTad.setReversed(!tad.isReversed());
+
+            for (auto* v : VehicleManager::VehicleList())
+            {
+                Vehicle vehicle(v->head);
+                auto* veh2 = vehicle.veh2;
+                if (veh2->tileX == pos.x
+                    && veh2->tileY == pos.y
+                    && veh2->tileBaseZ == pos.z / World::kSmallZStep
+                    && veh2->trackAndDirection.track == reverseTad)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // 0x004ACCDC

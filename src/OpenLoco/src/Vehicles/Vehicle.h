@@ -424,7 +424,7 @@ namespace OpenLoco::Vehicles
         void sub_4AA625();
         std::tuple<uint8_t, uint8_t, StationId> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
-        bool sub_4AC0A3();
+        bool opposingTrainAtSignal();
         bool sub_4ACCDC();
         StationId manualFindTrainStationAtLocation();
         bool sub_4BADE4();
