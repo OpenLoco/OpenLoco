@@ -660,6 +660,37 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::renameTown, regs);
     }
 
+    struct Unk52Args
+    {
+        static constexpr auto command = GameCommand::gc_unk_52;
+
+        Unk52Args() = default;
+        explicit Unk52Args(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , unk(regs.dx)
+            , trackObjectId(regs.bp)
+        {
+        }
+
+        World::Pos3 pos;
+        uint8_t rotation;
+        uint16_t unk;
+        uint8_t trackObjectId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dx = unk;
+            regs.bp = trackObjectId;
+            return regs;
+        }
+    };
+
     struct AirportPlacementArgs
     {
         static constexpr auto command = GameCommand::createAirport;

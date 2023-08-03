@@ -152,7 +152,8 @@ namespace OpenLoco
             uint8_t var_01;     // 0x4A9
             uint8_t pad_02;
             uint8_t var_03; // 0x4AB size of var_06
-            uint8_t pad_04[2];
+            uint8_t var_04; // 0x4AC station length
+            uint8_t pad_05;
             unk4AE var_06[4];   // 0x4AE
             uint8_t trackObjId; // 0x3E 0x4E6 track or road (with high bit set)
             uint8_t pad_3F;

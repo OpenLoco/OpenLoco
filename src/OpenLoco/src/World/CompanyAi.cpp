@@ -22,8 +22,11 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
+
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x004FE720
     static constexpr std::array<uint32_t, kAiThoughtCount> kThoughtTypeFlags = {
@@ -325,6 +328,21 @@ namespace OpenLoco
         call(0x00430DB6, regs);
     }
 
+    // 0x0047BA2C
+    static uint32_t sub_47BA2C(World::Pos3 pos, uint8_t rotation, uint8_t roadObjectId, uint32_t unk, uint8_t flags)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.di = pos.z;
+        regs.bl = flags;
+        regs.bh = rotation;
+        regs.bp = roadObjectId;
+        regs.edx = unk;
+        call(0x0047BA2C, regs);
+        return regs.ebx;
+    }
+
     // 0x004866C8
     static uint8_t sub_4866C8(const Company& company, Company::AiThought& thought)
     {
@@ -381,9 +399,6 @@ namespace OpenLoco
             {
                 stationUnk.var_00 = _lastPlacedAirportStationId;
             }
-            stationUnk.var_02 &= ~(1 << 0);
-            stationUnk.var_02 |= (1 << 1);
-            return 0;
         }
         else if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 16))
         {
@@ -410,29 +425,52 @@ namespace OpenLoco
             {
                 stationUnk.var_00 = _lastPlacedPortStationId;
             }
-            stationUnk.var_02 &= ~(1 << 0);
-            stationUnk.var_02 |= (1 << 1);
-            return 0;
         }
         else
         {
             if (thought.trackObjId & (1U << 7))
             {
                 // Road
-                // 0x004867E6
+                if (sub_47BA2C(pos, stationUnk.rotation, thought.trackObjId & ~(1U << 7), 0, stationUnk.rotation) == GameCommands::FAILURE)
+                {
+                    return 2;
+                }
+
+                if (_lastPlacedTrackStationId != StationId::null)
+                {
+                    stationUnk.var_00 = _lastPlacedTrackStationId;
+                }
             }
             else
             {
                 // Track
-                // 0x00486727
+                GameCommands::Unk52Args placeArgs{};
+                placeArgs.rotation = stationUnk.rotation;
+                placeArgs.trackObjectId = thought.trackObjId;
+                placeArgs.unk = 0;
+                placeArgs.pos = pos;
+
+                for (auto j = 0U; j < thought.var_04; ++j)
+                {
+                    if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply) == GameCommands::FAILURE)
+                    {
+                        if (GameCommands::doCommand(placeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment) == GameCommands::FAILURE)
+                        {
+                            return 2;
+                        }
+                    }
+
+                    if (_lastPlacedTrackStationId != StationId::null)
+                    {
+                        stationUnk.var_00 = _lastPlacedTrackStationId;
+                    }
+                    placeArgs.pos += World::Pos3{ _503C6C[placeArgs.rotation], 0 };
+                }
             }
         }
-        // Place airport?
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        call(0x004866C8, regs);
-        return regs.al;
+        stationUnk.var_02 &= ~(1 << 0);
+        stationUnk.var_02 |= (1 << 1);
+        return 0;
     }
 
     // 0x004FE7AC
