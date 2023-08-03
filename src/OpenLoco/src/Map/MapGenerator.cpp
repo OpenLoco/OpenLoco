@@ -143,12 +143,71 @@ namespace OpenLoco::World::MapGenerator
         }
     };
 
+    // 0x004FD332
+    static constexpr std::array<uint8_t, 9> topographyStyleFlags = {
+        0,
+        (1 << 0),
+        (1 << 0),
+        (1 << 1) | (1 << 0),
+        (1 << 1) | (1 << 0),
+        (1 << 0),
+        (1 << 1) | (1 << 0),
+        0,
+        (1 << 1) | (1 << 0),
+    };
+
     class OriginalTerrainGenerator
     {
     private:
         // 0x004626B7
-        void blitHill([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
+        void blitHill(const S5::Options& options, HeightMap& heightMap)
         {
+            const auto randomHillState = getGameState().rng.randNext();
+            const bool flipHillImage = randomHillState & 1;
+            // const bool unkHillBit2 = (randomHillState & 2) >> 1;
+            const bool topographyBit = (randomHillState & 4) >> 2;
+
+            // The hill index calculation is a minor simpliciation compared to vanilla
+            const auto hillShapesObj = ObjectManager::get<HillShapesObject>();
+            const auto hillShapeCount = hillShapesObj->hillHeightMapCount + hillShapesObj->mountainHeightMapCount;
+            const uint8_t randomHillIndex = randomHillState % hillShapeCount;
+
+            const auto hillImage = hillShapesObj->image + randomHillIndex;
+            const auto g1Element = Gfx::getG1Element(hillImage);
+
+            auto targetWidth = g1Element->width;
+            auto targetHeight = g1Element->height;
+            if (flipHillImage)
+            {
+                std::swap(targetWidth, targetHeight);
+            }
+
+            // 0x00462718
+            if (((randomHillState >> 14) & 511) < 2)
+            {
+                return;
+            }
+            if (randomHillState < 1024)
+            {
+                return;
+            }
+
+            // Vanilla would use an `rcl` for the lower bit, getting the carry flag in.
+            // We're substituting it with an extra bit of the random state.
+            auto topographyId = (enumValue(options.topographyStyle) << 1) | topographyBit;
+            auto topographyFlags = topographyStyleFlags[topographyId];
+
+            if ((topographyFlags & (1 << 0)) && randomHillIndex >= hillShapesObj->hillHeightMapCount)
+            {
+                return;
+            }
+            if ((topographyFlags & (1 << 1)) && randomHillIndex < hillShapesObj->hillHeightMapCount)
+            {
+                return;
+            }
+
+            // 0x0046276D
+
             _heightMap = heightMap.data();
 
             call(0x004626B7);
