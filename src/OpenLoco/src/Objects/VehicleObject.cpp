@@ -550,7 +550,7 @@ namespace OpenLoco
             }
 
             const auto numImages = imgRes.imageOffset + offset - bodySprite.flatImageId;
-            if (bodySprite.flatImageId + numImages < ObjectManager::getTotalNumImages())
+            if (bodySprite.flatImageId + numImages <= ObjectManager::getTotalNumImages())
             {
                 const auto extents = Gfx::getImagesMaxExtent(ImageId(bodySprite.flatImageId), numImages);
                 bodySprite.width = extents.width;
@@ -559,7 +559,12 @@ namespace OpenLoco
             }
             else
             {
-                // This is a bad object! But we will keep loading anyway! Rarrr official objects do this!
+                // This is a bad object! But will keep loading
+                Logging::error("Object has too few images for body sprites!");
+                bodySprite.flatImageId = ImageId::kIndexUndefined;
+                bodySprite.gentleImageId = ImageId::kIndexUndefined;
+                bodySprite.steepImageId = ImageId::kIndexUndefined;
+                bodySprite.unkImageId = ImageId::kIndexUndefined;
             }
         }
 
@@ -590,7 +595,7 @@ namespace OpenLoco
             }
 
             const auto numImages = imgRes.imageOffset + offset - bogieSprite.flatImageIds;
-            if (bogieSprite.flatImageIds + numImages < ObjectManager::getTotalNumImages())
+            if (bogieSprite.flatImageIds + numImages <= ObjectManager::getTotalNumImages())
             {
                 const auto extents = Gfx::getImagesMaxExtent(ImageId(bogieSprite.flatImageIds), numImages);
                 bogieSprite.width = extents.width;
@@ -599,7 +604,11 @@ namespace OpenLoco
             }
             else
             {
-                // This is a bad object! But we will keep loading anyway! Rarrr official objects do this!
+                // This is a bad object! But we will keep loading anyway!
+                Logging::error("Object has too few images for bogie sprites!");
+                bogieSprite.flatImageIds = ImageId::kIndexUndefined;
+                bogieSprite.gentleImageIds = ImageId::kIndexUndefined;
+                bogieSprite.steepImageIds = ImageId::kIndexUndefined;
             }
         }
 
