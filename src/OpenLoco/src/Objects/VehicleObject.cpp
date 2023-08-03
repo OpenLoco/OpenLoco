@@ -607,6 +607,8 @@ namespace OpenLoco
         if (imgRes.imageOffset + offset != ObjectManager::getTotalNumImages())
         {
             // There are some official objects that suffer from this so can't assert on this.
+            // TODO: This does not work you can't get a header from a temporary object.
+            // This verbose message will only make sense when loading a save/scenario.
             const auto& header = ObjectManager::getHeader(handle);
             std::string objName(header.getName());
             Logging::verbose("Incorrect number of images for object: {}", objName);
