@@ -40,6 +40,7 @@ namespace OpenLoco::Vehicles
         }
     };
 
+    // Note: This is not binary identical to vanilla so cannot be hooked!
     struct LocationOfInterestHashMap
     {
         static constexpr auto kMapSize = 0x400;
@@ -47,20 +48,6 @@ namespace OpenLoco::Vehicles
         static constexpr auto kMaxEntries = 0x39C;
 
     private:
-#pragma pack(push, 1)
-        struct ZAndTD
-        {
-            coord_t z;
-            uint16_t trackAndDirection;
-        };
-        struct CAndT
-        {
-            CompanyId company;
-            uint8_t trackType;
-            uint8_t pad[0x2];
-        };
-#pragma pack(pop)
-
         class Iterator
         {
             uint16_t _index;
@@ -76,7 +63,7 @@ namespace OpenLoco::Vehicles
 
             void findAllocatedEntry()
             {
-                while (_index < kMapSize && _map.locs[_index] == World::Pos2{ -1, -1 })
+                while (_index < kMapSize && _map.locs[_index].loc == World::Pos3{ -1, -1, 0 })
                 {
                     _index++;
                 }
@@ -118,24 +105,19 @@ namespace OpenLoco::Vehicles
         };
 
     public:
-#pragma pack(push, 1)
-        World::Pos2 locs[kMapSize];
-        ZAndTD zAndTDs[kMapSize];
-        CAndT cAndTs[kMapSize];
-#pragma pack(pop)
-        size_t count; // count does not need to be tightly packed as this is only accessed via a pointer to first 3 members
+        std::vector<LocationOfInterest> locs;
+        size_t count;
 
         LocationOfInterestHashMap()
-            : zAndTDs{}
-            , cAndTs{}
-            , count()
+            : count()
         {
-            std::fill(std::begin(locs), std::end(locs), World::Pos2{ -1, -1 });
+            locs.resize(kMapSize);
+            std::fill(std::begin(locs), std::end(locs), LocationOfInterest{ World::Pos3{ -1, -1, 0 }, 0, CompanyId::null, 0 });
         }
 
         LocationOfInterest get(const uint16_t index) const
         {
-            return LocationOfInterest{ World::Pos3(locs[index].x, locs[index].y, zAndTDs[index].z), zAndTDs[index].trackAndDirection, cAndTs[index].company, cAndTs[index].trackType };
+            return locs[index];
         }
 
         constexpr uint16_t hash(const LocationOfInterest& interest) const
@@ -147,7 +129,7 @@ namespace OpenLoco::Vehicles
         bool tryAdd(LocationOfInterest& interest)
         {
             auto index = hash(interest);
-            for (; locs[index] != World::Pos2{ -1, -1 }; ++index, index &= kMapSizeMask)
+            for (; locs[index].loc != World::Pos3{ -1, -1, 0 }; ++index, index &= kMapSizeMask)
             {
                 if (get(index) == interest)
                 {
@@ -158,9 +140,7 @@ namespace OpenLoco::Vehicles
             {
                 return false;
             }
-            locs[index] = interest.loc;
-            zAndTDs[index] = ZAndTD{ interest.loc.z, interest.trackAndDirection };
-            cAndTs[index] = CAndT{ interest.company, interest.trackType, {} };
+            locs[index] = interest;
             count++;
             return true;
         }
@@ -183,7 +163,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint16_t, 0x01135FA6> _1135FA6;
     static loco_global<TransformFunction, 0x01135F12> _transformFunction;
     static loco_global<uint8_t, 0x01136085> _1136085;
-    static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06;
+    // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x001135F88> _routingTransformData;
 
@@ -677,7 +657,7 @@ namespace OpenLoco::Vehicles
         _filterFunction = filterFunction;
         _transformFunction = transformFunction;
         LocationOfInterestHashMap interestMap{};
-        _1135F06 = &interestMap;
+        // _1135F06 = &interestMap;
         _1135F0A = 0;
         _1135FA6 = 5; // flags
         findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
