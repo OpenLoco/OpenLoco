@@ -43,9 +43,7 @@ namespace OpenLoco::Vehicles
     // Note: This is not binary identical to vanilla so cannot be hooked!
     struct LocationOfInterestHashMap
     {
-        static constexpr auto kMapSize = 0x400;
-        static constexpr auto kMapSizeMask = kMapSize - 1;
-        static constexpr auto kMaxEntries = 0x39C;
+        static constexpr auto kMinFreeSlots = 100; // There must always be at least 100 free slots otherwise the hashmap gets very inefficient
 
     private:
         class Iterator
@@ -63,7 +61,7 @@ namespace OpenLoco::Vehicles
 
             void findAllocatedEntry()
             {
-                while (_index < kMapSize && _map.locs[_index].loc == World::Pos3{ -1, -1, 0 })
+                while (_index < _map.mapSize && _map.locs[_index].loc == World::Pos3{ -1, -1, 0 })
                 {
                     _index++;
                 }
@@ -107,11 +105,18 @@ namespace OpenLoco::Vehicles
     public:
         std::vector<LocationOfInterest> locs;
         size_t count;
+        uint16_t mapSize;
+        uint16_t mapSizeMask;
+        uint16_t maxEntries;
 
-        LocationOfInterestHashMap()
+        LocationOfInterestHashMap(uint16_t _maxSize)
             : count()
+            , mapSize(_maxSize)
+            , mapSizeMask(_maxSize - 1)
+            , maxEntries(_maxSize - kMinFreeSlots)
         {
-            locs.resize(kMapSize);
+            assert((mapSize & (mapSizeMask)) == 0); // Only works with powers of 2
+            locs.resize(mapSize);
             std::fill(std::begin(locs), std::end(locs), LocationOfInterest{ World::Pos3{ -1, -1, 0 }, 0, CompanyId::null, 0 });
         }
 
@@ -122,21 +127,21 @@ namespace OpenLoco::Vehicles
 
         constexpr uint16_t hash(const LocationOfInterest& interest) const
         {
-            return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & kMapSizeMask;
+            return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & mapSizeMask;
         }
 
         // 0x004A38DE
         bool tryAdd(LocationOfInterest& interest)
         {
             auto index = hash(interest);
-            for (; locs[index].loc != World::Pos3{ -1, -1, 0 }; ++index, index &= kMapSizeMask)
+            for (; locs[index].loc != World::Pos3{ -1, -1, 0 }; ++index, index &= mapSizeMask)
             {
                 if (get(index) == interest)
                 {
                     return false;
                 }
             }
-            if (count >= kMaxEntries)
+            if (count >= maxEntries)
             {
                 return false;
             }
@@ -151,7 +156,7 @@ namespace OpenLoco::Vehicles
         }
         Iterator end() const
         {
-            return Iterator(kMapSize, *this);
+            return Iterator(mapSize, *this);
         }
     };
 
@@ -651,12 +656,14 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    constexpr size_t kSignalHashMapSize = 0x400;
+
     // 0x004A2E46
     static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const FilterFunction filterFunction, const TransformFunction transformFunction)
     {
         _filterFunction = filterFunction;
         _transformFunction = transformFunction;
-        LocationOfInterestHashMap interestMap{};
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
         // _1135F06 = &interestMap;
         _1135F0A = 0;
         _1135FA6 = 5; // flags
