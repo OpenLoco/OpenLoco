@@ -536,8 +536,8 @@ namespace OpenLoco::Input
                     {
                         case InteractionItem::entity:
                         {
-                            auto _thing = reinterpret_cast<EntityBase*>(interaction.object);
-                            auto veh = _thing->asBase<Vehicles::VehicleBase>();
+                            auto _entity = reinterpret_cast<EntityBase*>(interaction.object);
+                            auto veh = _entity->asBase<Vehicles::VehicleBase>();
                             if (veh != nullptr)
                             {
                                 Ui::Windows::Vehicle::Main::open(veh);

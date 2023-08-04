@@ -300,20 +300,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // By default focus on the veh2 id and if there are cars focus on the body of the first car
-            EntityId targetThing = train.veh2->id;
+            EntityId targetEntity = train.veh2->id;
             if (!train.cars.empty())
             {
-                targetThing = train.cars.firstCar.front->id;
+                targetEntity = train.cars.firstCar.front->id;
                 // Always true so above is pointless
-                if (train.cars.firstCar.front->getSubType() == Vehicles::VehicleThingType::bogie)
+                if (train.cars.firstCar.front->getSubType() == Vehicles::VehicleEntityType::bogie)
                 {
-                    targetThing = train.cars.firstCar.body->id;
+                    targetEntity = train.cars.firstCar.body->id;
                 }
             }
 
             // Compute views.
             SavedView view = {
-                targetThing,
+                targetEntity,
                 (1 << 15) | (1 << 14),
                 ZoomLevel::full,
                 static_cast<int8_t>(self.viewports[0]->getRotation()),
@@ -344,7 +344,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto widget = &self.widgets[widx::viewport];
                 auto origin = Ui::Point(widget->left + self.x + 1, widget->top + self.y + 1);
                 auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
-                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, targetThing);
+                ViewportManager::create(&self, 0, origin, size, self.savedView.zoomLevel, targetEntity);
                 self.invalidate();
                 self.flags |= WindowFlags::viewportNoScrolling;
             }
@@ -704,11 +704,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     return;
                 }
                 Vehicles::Vehicle train(*vehHead);
-                EntityId targetThing = train.veh2->id;
+                EntityId targetEntity = train.veh2->id;
 
                 // Focus viewport on vehicle, with locking.
                 auto main = WindowManager::getMainWindow();
-                main->viewportFocusOnEntity(targetThing);
+                main->viewportFocusOnEntity(targetEntity);
             }
         }
 

@@ -105,7 +105,7 @@ namespace OpenLoco::Vehicles
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BreakdownFlags);
 
-    enum class VehicleThingType : uint8_t
+    enum class VehicleEntityType : uint8_t
     {
         head = 0,
         vehicle_1,
@@ -193,13 +193,13 @@ namespace OpenLoco::Vehicles
         static constexpr auto kBaseType = EntityBaseType::vehicle;
 
     private:
-        template<VehicleThingType SubType>
+        template<VehicleEntityType SubType>
         bool is() const
         {
             return getSubType() == SubType;
         }
 
-        template<typename TType, VehicleThingType TClass>
+        template<typename TType, VehicleEntityType TClass>
         TType* as() const
         {
             // This can not use reinterpret_cast due to being a const member without considerable more code
@@ -217,37 +217,37 @@ namespace OpenLoco::Vehicles
         }
 
     public:
-        VehicleThingType getSubType() const { return VehicleThingType(EntityBase::getSubType()); }
-        void setSubType(const VehicleThingType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
-        bool isVehicleHead() const { return is<VehicleThingType::head>(); }
+        VehicleEntityType getSubType() const { return VehicleEntityType(EntityBase::getSubType()); }
+        void setSubType(const VehicleEntityType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
+        bool isVehicleHead() const { return is<VehicleEntityType::head>(); }
         VehicleHead* asVehicleHead() const { return as<VehicleHead>(); }
-        bool isVehicle1() const { return is<VehicleThingType::vehicle_1>(); }
+        bool isVehicle1() const { return is<VehicleEntityType::vehicle_1>(); }
         Vehicle1* asVehicle1() const { return as<Vehicle1>(); }
-        bool isVehicle2() const { return is<VehicleThingType::vehicle_2>(); }
+        bool isVehicle2() const { return is<VehicleEntityType::vehicle_2>(); }
         Vehicle2* asVehicle2() const { return as<Vehicle2>(); }
-        bool isVehicleBogie() const { return is<VehicleThingType::bogie>(); }
+        bool isVehicleBogie() const { return is<VehicleEntityType::bogie>(); }
         VehicleBogie* asVehicleBogie() const { return as<VehicleBogie>(); }
-        bool isVehicleBody() const { return is<VehicleThingType::body_start>() || is<VehicleThingType::body_continued>(); }
+        bool isVehicleBody() const { return is<VehicleEntityType::body_start>() || is<VehicleEntityType::body_continued>(); }
         VehicleBody* asVehicleBody() const
         {
-            if (is<VehicleThingType::body_start>())
+            if (is<VehicleEntityType::body_start>())
             {
-                return as<VehicleBody, VehicleThingType::body_start>();
+                return as<VehicleBody, VehicleEntityType::body_start>();
             }
 
-            return as<VehicleBody, VehicleThingType::body_continued>();
+            return as<VehicleBody, VehicleEntityType::body_continued>();
         }
-        bool isVehicle2Or6() { return is<VehicleThingType::vehicle_2>() || is<VehicleThingType::tail>(); }
+        bool isVehicle2Or6() { return is<VehicleEntityType::vehicle_2>() || is<VehicleEntityType::tail>(); }
         Vehicle2or6* asVehicle2Or6() const
         {
-            if (is<VehicleThingType::vehicle_2>())
+            if (is<VehicleEntityType::vehicle_2>())
             {
-                return as<Vehicle2or6, VehicleThingType::vehicle_2>();
+                return as<Vehicle2or6, VehicleEntityType::vehicle_2>();
             }
 
-            return as<Vehicle2or6, VehicleThingType::tail>();
+            return as<Vehicle2or6, VehicleEntityType::tail>();
         }
-        bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
+        bool isVehicleTail() const { return is<VehicleEntityType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
         Flags38 getFlags38() const;
@@ -298,7 +298,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleHead : VehicleBase
     {
-        static constexpr auto kVehicleThingType = VehicleThingType::head;
+        static constexpr auto kVehicleThingType = VehicleEntityType::head;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
@@ -451,7 +451,7 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle1 : VehicleBase
     {
-        static constexpr auto kVehicleThingType = VehicleThingType::vehicle_1;
+        static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_1;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
@@ -488,7 +488,7 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle2 : VehicleBase
     {
-        static constexpr auto kVehicleThingType = VehicleThingType::vehicle_2;
+        static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
@@ -538,7 +538,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleBody : VehicleBase
     {
-        static constexpr auto kVehicleThingType = VehicleThingType::body_continued;
+        static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
         ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
@@ -597,7 +597,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleBogie : VehicleBase
     {
-        static constexpr auto kVehicleThingType = VehicleThingType::bogie;
+        static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
         ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
@@ -651,7 +651,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleTail : VehicleBase
     {
-        static constexpr auto kVehicleThingType = VehicleThingType::tail;
+        static constexpr auto kVehicleThingType = VehicleEntityType::tail;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
@@ -726,13 +726,13 @@ namespace OpenLoco::Vehicles
                 {
                     return *this;
                 }
-                if (nextVehicleComponent->getSubType() == VehicleThingType::tail)
+                if (nextVehicleComponent->getSubType() == VehicleEntityType::tail)
                 {
                     nextVehicleComponent = nullptr;
                     return *this;
                 }
                 CarComponent next{ nextVehicleComponent };
-                if (next.body == nullptr || next.body->getSubType() == VehicleThingType::body_start)
+                if (next.body == nullptr || next.body->getSubType() == VehicleEntityType::body_start)
                 {
                     nextVehicleComponent = nullptr;
                     return *this;
@@ -823,14 +823,14 @@ namespace OpenLoco::Vehicles
                     {
                         return *this;
                     }
-                    while (nextVehicleComponent->getSubType() != VehicleThingType::tail)
+                    while (nextVehicleComponent->getSubType() != VehicleEntityType::tail)
                     {
                         Car next{ nextVehicleComponent };
                         if (next.body == nullptr)
                         {
                             break;
                         }
-                        if (next.body->getSubType() == VehicleThingType::body_start)
+                        if (next.body->getSubType() == VehicleEntityType::body_start)
                         {
                             current = next;
                             return *this;

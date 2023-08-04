@@ -54,7 +54,7 @@ namespace OpenLoco::EntityManager
             auto& ent = rawEntities()[id];
             ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
-            ent.nextThingId = EntityId::null;
+            ent.nextEntityId = EntityId::null;
             ent.linkedListOffset = getLinkedListOffset(EntityListType::null);
             if (previous == nullptr)
             {
@@ -64,7 +64,7 @@ namespace OpenLoco::EntityManager
             else
             {
                 ent.llPreviousId = previous->id;
-                previous->nextThingId = EntityId(id);
+                previous->nextEntityId = EntityId(id);
             }
             previous = &ent;
         }
@@ -77,7 +77,7 @@ namespace OpenLoco::EntityManager
             auto& ent = rawEntities()[id];
             ent.baseType = EntityBaseType::null;
             ent.id = EntityId(id);
-            ent.nextThingId = EntityId::null;
+            ent.nextEntityId = EntityId::null;
             ent.linkedListOffset = getLinkedListOffset(EntityListType::nullMoney);
             if (previous == nullptr)
             {
@@ -87,7 +87,7 @@ namespace OpenLoco::EntityManager
             else
             {
                 ent.llPreviousId = previous->id;
-                previous->nextThingId = EntityId(id);
+                previous->nextEntityId = EntityId(id);
             }
             previous = &ent;
         }
@@ -312,7 +312,7 @@ namespace OpenLoco::EntityManager
         const auto newListIndex = enumValue(list);
         const auto oldListIndex = getLinkedListIndex(entity->linkedListOffset);
 
-        const auto nextId = entity->nextThingId;
+        const auto nextId = entity->nextEntityId;
         const auto previousId = entity->llPreviousId;
 
         // Unlink previous entity from this entity
@@ -329,7 +329,7 @@ namespace OpenLoco::EntityManager
             }
             else
             {
-                previousEntity->nextThingId = nextId;
+                previousEntity->nextEntityId = nextId;
             }
         }
         // Unlink next entity from this entity
@@ -348,15 +348,15 @@ namespace OpenLoco::EntityManager
 
         entity->llPreviousId = EntityId::null;
         entity->linkedListOffset = newListOffset;
-        entity->nextThingId = rawListHeads()[newListIndex];
+        entity->nextEntityId = rawListHeads()[newListIndex];
         rawListHeads()[newListIndex] = entity->id;
         // Link next entity to this entity
-        if (entity->nextThingId != EntityId::null)
+        if (entity->nextEntityId != EntityId::null)
         {
-            auto* nextEntity = get<EntityBase>(entity->nextThingId);
+            auto* nextEntity = get<EntityBase>(entity->nextEntityId);
             if (nextEntity == nullptr)
             {
-                Logging::error("Invalid next entity id. Entity linked list corrupted? Id: {}", enumValue(entity->nextThingId));
+                Logging::error("Invalid next entity id. Entity linked list corrupted? Id: {}", enumValue(entity->nextEntityId));
             }
             else
             {
@@ -381,13 +381,13 @@ namespace OpenLoco::EntityManager
 
     static void zeroEntity(EntityBase* ent)
     {
-        auto next = ent->nextThingId;
+        auto next = ent->nextEntityId;
         auto previous = ent->llPreviousId;
         auto id = ent->id;
         auto llOffset = ent->linkedListOffset;
         std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
         ent->baseType = EntityBaseType::null;
-        ent->nextThingId = next;
+        ent->nextEntityId = next;
         ent->llPreviousId = previous;
         ent->id = id;
         ent->linkedListOffset = llOffset;

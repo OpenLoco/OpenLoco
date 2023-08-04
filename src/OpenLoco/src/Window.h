@@ -145,7 +145,7 @@ namespace OpenLoco::Ui
         union
         {
             coord_t mapX;
-            EntityId thingId;
+            EntityId entityId;
         };
         union
         {
@@ -165,8 +165,8 @@ namespace OpenLoco::Ui
             , rotation(rotation)
             , surfaceZ(surfaceZ){};
 
-        SavedView(EntityId thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
-            : thingId(thingId)
+        SavedView(EntityId entityId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+            : entityId(entityId)
             , flags(flags)
             , zoomLevel(zoomLevel)
             , rotation(rotation)
@@ -182,14 +182,14 @@ namespace OpenLoco::Ui
             return (flags & (1 << 14)) != 0;
         }
 
-        bool isThingView() const
+        bool isEntityView() const
         {
             return (flags & (1 << 15)) != 0;
         }
 
         World::Pos3 getPos() const
         {
-            if (isThingView())
+            if (isEntityView())
                 return {};
 
             return { mapX, static_cast<coord_t>(mapY & 0x3FFF), surfaceZ };

@@ -37,7 +37,7 @@ namespace OpenLoco::Vehicles
 
     VehicleBase* VehicleBase::nextVehicle()
     {
-        return EntityManager::get<VehicleBase>(nextThingId);
+        return EntityManager::get<VehicleBase>(nextEntityId);
     }
 
     VehicleBase* VehicleBase::nextVehicleComponent()
@@ -127,7 +127,7 @@ namespace OpenLoco::Vehicles
     // 0x004AA407
     void VehicleBase::explodeComponent()
     {
-        assert(getSubType() == VehicleThingType::bogie || getSubType() == VehicleThingType::body_start || getSubType() == VehicleThingType::body_continued);
+        assert(getSubType() == VehicleEntityType::bogie || getSubType() == VehicleEntityType::body_start || getSubType() == VehicleEntityType::body_continued);
         registers regs;
         regs.esi = X86Pointer(this);
         call(0x004AA407, regs);
@@ -203,18 +203,18 @@ namespace OpenLoco::Vehicles
     {
         switch (getSubType())
         {
-            case VehicleThingType::head:
+            case VehicleEntityType::head:
                 return !asVehicleHead()->update();
-            case VehicleThingType::vehicle_1:
+            case VehicleEntityType::vehicle_1:
                 return !asVehicle1()->update();
-            case VehicleThingType::vehicle_2:
+            case VehicleEntityType::vehicle_2:
                 return !asVehicle2()->update();
-            case VehicleThingType::bogie:
+            case VehicleEntityType::bogie:
                 return !asVehicleBogie()->update();
-            case VehicleThingType::body_start:
-            case VehicleThingType::body_continued:
+            case VehicleEntityType::body_start:
+            case VehicleEntityType::body_continued:
                 return !asVehicleBody()->update();
-            case VehicleThingType::tail:
+            case VehicleEntityType::tail:
                 return !asVehicleTail()->update();
             default:
                 break;
@@ -293,11 +293,11 @@ namespace OpenLoco::Vehicles
         {
             throw std::runtime_error("Bad vehicle structure");
         }
-        if (component->getSubType() != VehicleThingType::tail)
+        if (component->getSubType() != VehicleEntityType::tail)
         {
             cars = Cars{ Car{ component } };
         }
-        while (component->getSubType() != VehicleThingType::tail)
+        while (component->getSubType() != VehicleEntityType::tail)
         {
             component = component->nextVehicleComponent();
             if (component == nullptr)

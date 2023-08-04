@@ -22,7 +22,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         widgetEnd()
     };
 
-    // TODO: make vehicles versions of these call into this global, ?make thing_id instead?
+    // TODO: make vehicles versions of these call into this global, ?make Entity::id instead?
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId, 0x01136156> _dragVehicleHead;
 

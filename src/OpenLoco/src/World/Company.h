@@ -153,7 +153,7 @@ namespace OpenLoco
         uint8_t var_8BB0[9];
         ObservationStatus observationStatus; // 0x8BB9;
         TownId observationTownId;            // 0x8BBA;
-        EntityId observationThing;           // 0x8BBC;
+        EntityId observationEntity;          // 0x8BBC;
         int16_t observationX;                // 0x8BBE;
         int16_t observationY;                // 0x8BC0;
         uint16_t observationObject;          // 0x8BC2;

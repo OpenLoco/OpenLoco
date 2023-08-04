@@ -597,11 +597,11 @@ namespace OpenLoco::Ui
         // Unfocus the viewport.
         main->viewportConfigurations[0].viewportTargetSprite = EntityId::null;
 
-        // Centre viewport on tile/thing.
-        if (savedView.isThingView())
+        // Centre viewport on tile/entity.
+        if (savedView.isEntityView())
         {
-            auto thing = EntityManager::get<EntityBase>(savedView.thingId);
-            main->viewportCentreOnTile(thing->position);
+            auto entity = EntityManager::get<EntityBase>(savedView.entityId);
+            main->viewportCentreOnTile(entity->position);
         }
         else
         {
@@ -653,9 +653,9 @@ namespace OpenLoco::Ui
         if (viewportConfigurations[0].viewportTargetSprite == EntityId::null)
             return;
 
-        auto thing = EntityManager::get<EntityBase>(viewportConfigurations[0].viewportTargetSprite);
+        auto entity = EntityManager::get<EntityBase>(viewportConfigurations[0].viewportTargetSprite);
         viewportConfigurations[0].viewportTargetSprite = EntityId::null;
-        viewportCentreOnTile(thing->position);
+        viewportCentreOnTile(entity->position);
     }
 
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
