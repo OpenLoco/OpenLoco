@@ -564,7 +564,7 @@ namespace OpenLoco::Input
                             if (building != nullptr)
                             {
                                 auto index = building->multiTileIndex();
-                                const auto firstTile = interaction.pos - World::offsets[index];
+                                const auto firstTile = interaction.pos - World::kOffsets[index];
                                 const Pos3 pos = { firstTile.x,
                                                    firstTile.y,
                                                    building->baseZ() };
@@ -716,7 +716,7 @@ namespace OpenLoco::Input
         }
         GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
         GameCommands::PortRemovalArgs args;
-        Pos2 firstTile = pos - World::offsets[station->multiTileIndex()];
+        Pos2 firstTile = pos - World::kOffsets[station->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
@@ -740,7 +740,7 @@ namespace OpenLoco::Input
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::BuildingRemovalArgs args;
-        Pos2 firstTile = pos - World::offsets[building->multiTileIndex()];
+        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
@@ -760,7 +760,7 @@ namespace OpenLoco::Input
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::HeadquarterRemovalArgs args;
-        Pos2 firstTile = pos - World::offsets[building->multiTileIndex()];
+        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }

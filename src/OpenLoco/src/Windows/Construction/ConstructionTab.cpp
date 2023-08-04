@@ -313,7 +313,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
     static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
@@ -346,7 +345,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         else
         {
             trackAndDirection = 1 << 3;
-            loc += World::Pos3{ _503C6C[_constructionRotation], 0 };
+            loc += World::Pos3{ World::kRotationOffset[_constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_constructionRotation & 0x3);
         _113601A[0] = 0;
@@ -2580,10 +2579,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto clearZ = baseZ + (trackPiece.clearZ + 32) / kSmallZStep;
 
             const auto centreTileCoords = World::toTileSpace(trackPos);
-            const auto eastTileCoords = centreTileCoords + World::toTileSpace(World::offsets[1]);
-            const auto westTileCoords = centreTileCoords - World::toTileSpace(World::offsets[1]);
-            const auto northTileCoords = centreTileCoords + World::toTileSpace(World::offsets[3]);
-            const auto southTileCoords = centreTileCoords - World::toTileSpace(World::offsets[3]);
+            const auto eastTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[1]);
+            const auto westTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[1]);
+            const auto northTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[3]);
+            const auto southTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[3]);
 
             // Copy map elements which will be replaced with temporary ones containing track
             backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];

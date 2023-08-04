@@ -367,8 +367,8 @@ namespace OpenLoco
                                 if (obj->hasFlags(BuildingObjectFlags::largeTile))
                                 {
                                     auto index = buildingEl.multiTileIndex();
-                                    tile_coord_t xPos = (pos.x - World::offsets[index].x) / kTileSize;
-                                    tile_coord_t yPos = (pos.y - World::offsets[index].y) / kTileSize;
+                                    tile_coord_t xPos = (pos.x - World::kOffsets[index].x) / kTileSize;
+                                    tile_coord_t yPos = (pos.y - World::kOffsets[index].y) / kTileSize;
 
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
