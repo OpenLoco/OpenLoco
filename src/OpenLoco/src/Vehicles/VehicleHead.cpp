@@ -68,7 +68,6 @@ namespace OpenLoco::Vehicles
     static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
     static constexpr uint16_t kTramSignalTimeout = 2880; // Time to wait before turning around at barriers
 
-
     void VehicleHead::updateVehicle()
     {
         // TODO: Refactor to use the Vehicle super class
