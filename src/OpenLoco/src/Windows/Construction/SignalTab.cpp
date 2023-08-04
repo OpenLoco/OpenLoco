@@ -119,10 +119,6 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Common::onUpdate(&self, GhostVisibilityFlags::signal);
     }
 
-    // Reverse direction map?
-    static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
-
     // 0x004A417A
     // false for left, true for right
     static bool getSide(const World::Pos3& loc, const Point& mousePos, const TrackElement& elTrack, const Viewport& viewport)

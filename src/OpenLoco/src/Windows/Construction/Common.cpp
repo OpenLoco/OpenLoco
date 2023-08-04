@@ -621,10 +621,6 @@ namespace OpenLoco::Ui::Windows::Construction
             self.height = self.widgets[widx::frame].bottom + 1;
         }
 
-        // Reverse direction map?
-        static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-        static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
-
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)
         {
             const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
@@ -639,12 +635,12 @@ namespace OpenLoco::Ui::Windows::Construction
             _nextTileRotation = trackSize.rotationEnd;
 
             // Get coordinates of the previous tile before the start of the track piece
-            const auto unk = _503CAC[trackSize.rotationBegin];
+            const auto unk = World::kReverseRotation[trackSize.rotationBegin];
             auto previousTile = firstTile;
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += World::Pos3{ _503C6C[unk], 0 };
+                previousTile += World::Pos3{ World::kRotationOffset[unk], 0 };
             }
             _previousTile = previousTile;
         }
@@ -663,12 +659,12 @@ namespace OpenLoco::Ui::Windows::Construction
             _nextTileRotation = trackSize.rotationEnd;
 
             // Get coordinates of the previous tile before the start of the track piece
-            const auto unk = _503CAC[trackSize.rotationBegin];
+            const auto unk = World::kReverseRotation[trackSize.rotationBegin];
             auto previousTile = firstTile;
             _previousTileRotation = unk;
             if (unk < 12)
             {
-                previousTile += World::Pos3{ _503C6C[unk], 0 };
+                previousTile += World::Pos3{ World::kRotationOffset[unk], 0 };
             }
             _previousTile = previousTile;
         }

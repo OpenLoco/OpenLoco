@@ -535,7 +535,7 @@ namespace OpenLoco::World::TileClearance
                 }
 
                 const auto buildingStart = World::Pos3{
-                    pos - World::offsets[elBuilding->multiTileIndex()], elBuilding->baseHeight()
+                    pos - World::kOffsets[elBuilding->multiTileIndex()], elBuilding->baseHeight()
                 };
                 if (removedBuildings.count(buildingStart) != 0)
                 {

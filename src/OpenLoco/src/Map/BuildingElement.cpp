@@ -71,7 +71,7 @@ namespace OpenLoco::World
                     {
                         for (auto i = 1; i < 4; ++i)
                         {
-                            const auto pos = loc + World::offsets[i];
+                            const auto pos = loc + World::kOffsets[i];
                             auto tile = TileManager::get(pos);
                             for (auto& el : tile)
                             {
@@ -106,7 +106,7 @@ namespace OpenLoco::World
             {
                 for (auto i = 1; i < 4; ++i)
                 {
-                    const auto pos = loc + World::offsets[i];
+                    const auto pos = loc + World::kOffsets[i];
                     auto tile = TileManager::get(pos);
                     for (auto& el : tile)
                     {
@@ -152,7 +152,7 @@ namespace OpenLoco::World
                 {
                     for (auto i = 1; i < 4; ++i)
                     {
-                        const auto pos = loc + World::offsets[i];
+                        const auto pos = loc + World::kOffsets[i];
                         auto tile = TileManager::get(pos);
                         for (auto& el : tile)
                         {

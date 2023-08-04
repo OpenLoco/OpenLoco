@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         const auto index = buildingTile->multiTileIndex();
-        const auto firstTile = interaction.pos - World::offsets[index];
+        const auto firstTile = interaction.pos - World::kOffsets[index];
         const World::Pos3 pos = { firstTile.x, firstTile.y, buildingTile->baseZ() };
 
         for (auto& company : CompanyManager::companies())
@@ -771,7 +771,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        auto firstTile = interaction.pos - World::offsets[building->multiTileIndex()];
+        auto firstTile = interaction.pos - World::kOffsets[building->multiTileIndex()];
         auto height = building->baseZ();
         for (auto& company : CompanyManager::companies())
         {

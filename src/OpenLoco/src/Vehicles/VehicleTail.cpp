@@ -17,8 +17,6 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
-
     // 0x004794BC
     static void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
     {
@@ -29,7 +27,7 @@ namespace OpenLoco::Vehicles
             levelCrossingLoc += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                levelCrossingLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                levelCrossingLoc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
         }
 
@@ -111,7 +109,7 @@ namespace OpenLoco::Vehicles
             auto nextTile = _oldTilePos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextTile -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                nextTile -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
             auto trackAndDirection2 = trackAndDir;
             trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());

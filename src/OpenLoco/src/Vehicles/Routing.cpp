@@ -178,9 +178,6 @@ namespace OpenLoco::Vehicles
     using FilterFunction = bool (*)(const LocationOfInterest& interest);
     using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap);
 
-    // Reverse direction map?
-    static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
     static loco_global<FilterFunction, 0x01135F0E> _filterFunction;
     static loco_global<uint32_t, 0x01135F0A> _1135F0A;
     static loco_global<uint16_t, 0x01135FA6> _1135FA6;
@@ -245,7 +242,7 @@ namespace OpenLoco::Vehicles
             trackStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                trackStart -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                trackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
             flags ^= (1ULL << 31);
         }
@@ -314,7 +311,7 @@ namespace OpenLoco::Vehicles
             trackStart += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                trackStart -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                trackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
             flags ^= (1ULL << 31);
         }
@@ -425,7 +422,7 @@ namespace OpenLoco::Vehicles
         nextLoc += trackSize.pos;
         if (trackSize.rotationEnd < 12)
         {
-            nextLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+            nextLoc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
         }
 
         auto backwardTaD = tad;
@@ -522,7 +519,7 @@ namespace OpenLoco::Vehicles
             nextLoc += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                nextLoc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
         }
 
@@ -584,7 +581,7 @@ namespace OpenLoco::Vehicles
                 auto endTargetPos = startTargetPos + trackSize.pos;
                 if (trackSize.rotationEnd < 12)
                 {
-                    endTargetPos -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                    endTargetPos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
                 }
 
                 tad2.setReversed(!tad2.isReversed());
@@ -648,11 +645,11 @@ namespace OpenLoco::Vehicles
             nextLoc += trackSize.pos;
             if (trackSize.rotationEnd < 12)
             {
-                nextLoc -= World::Pos3{ _503C6C[trackSize.rotationEnd], 0 };
+                nextLoc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
 
             connections.size = 0;
-            const auto rotation = _503CAC[trackSize.rotationEnd];
+            const auto rotation = World::kReverseRotation[trackSize.rotationEnd];
             World::Track::getTrackConnections(nextLoc, rotation, connections, initialInterest.company, initialInterest.trackType);
             for (size_t i = 0; i < connections.size; ++i)
             {

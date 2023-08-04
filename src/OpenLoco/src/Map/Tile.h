@@ -27,8 +27,53 @@ namespace OpenLoco::World
         }
     };
 
-    // 0x004F9296, 0x4F9298
-    constexpr Pos2 offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
+    // 0x004F9296, 0x004F9298
+    constexpr std::array<Pos2, 4> kOffsets = {
+        Pos2{ 0, 0 },
+        Pos2{ 0, 32 },
+        Pos2{ 32, 32 },
+        Pos2{ 32, 0 },
+    };
+
+    // 0x00503C6C, 0x00503C6E
+    constexpr std::array<Pos2, 16> kRotationOffset = {
+        Pos2{ -32, 0 },
+        Pos2{ 0, 32 },
+        Pos2{ 32, 0 },
+        Pos2{ 0, -32 },
+        Pos2{ -32, 0 },
+        Pos2{ 0, 32 },
+        Pos2{ 32, 0 },
+        Pos2{ 0, -32 },
+        Pos2{ -32, 0 },
+        Pos2{ 0, 32 },
+        Pos2{ 32, 0 },
+        Pos2{ 0, -32 },
+        Pos2{ -32, 32 },
+        Pos2{ 32, 32 },
+        Pos2{ 32, -32 },
+        Pos2{ -32, -32 },
+    };
+
+    // 0x00503CAC
+    constexpr std::array<uint8_t, 16> kReverseRotation = {
+        2,
+        3,
+        0,
+        1,
+        10,
+        11,
+        8,
+        9,
+        6,
+        7,
+        4,
+        5,
+        14,
+        15,
+        12,
+        13,
+    };
 
     struct LessThanPos3
     {
