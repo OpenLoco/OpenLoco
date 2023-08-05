@@ -128,16 +128,16 @@ namespace OpenLoco::Ui::ViewportManager
      * bx : width
      * ebx >> 16 : height
      * cl : zoom
-     * edx >> 14 : flags (bit 30 zoom related, bit 31 set if thing_id used)
+     * edx >> 14 : flags (bit 30 zoom related, bit 31 set if entityId used)
      * Optional one of 2
      * 1.
      * ecx >> 16 : tile_z
      * dx : tile_x
      * edx >> 16 : tile_y
      * 2.
-     * dx : thing_id
+     * dx : entityId
      */
-    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId thing_id)
+    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, EntityId entityId)
     {
         Viewport* viewport = initViewport(origin, size, zoom);
 
@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::ViewportManager
             return nullptr;
 
         window->viewports[viewportIndex] = viewport;
-        focusViewportOn(window, viewportIndex, thing_id);
+        focusViewportOn(window, viewportIndex, entityId);
 
         collectGarbage();
         return viewport;
@@ -157,14 +157,14 @@ namespace OpenLoco::Ui::ViewportManager
      * bx : width
      * ebx >> 16 : height
      * cl : zoom
-     * edx >> 14 : flags (bit 30 zoom related, bit 31 set if thing_id used)
+     * edx >> 14 : flags (bit 30 zoom related, bit 31 set if entityId used)
      * Optional one of 2
      * 1.
      * ecx >> 16 : tile_z
      * dx : tile_x
      * edx >> 16 : tile_y
      * 2.
-     * dx : thing_id
+     * dx : entityId
      */
     Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::Size size, ZoomLevel zoom, World::Pos3 tile)
     {

@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     /* 0x4C1AF7
-     * depending on flags (1<<31) vehicle is a tab id or a VehicleHead thing_id
+     * depending on flags (1<<31) vehicle is a tab id or a VehicleHead id
      */
     Window* open(uint32_t vehicle, uint32_t flags)
     {

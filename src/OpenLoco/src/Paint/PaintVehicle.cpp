@@ -467,16 +467,16 @@ namespace OpenLoco::Paint
         }
         switch (base->getSubType())
         {
-            case VehicleThingType::head:
-            case VehicleThingType::vehicle_1:
-            case VehicleThingType::vehicle_2:
-            case VehicleThingType::tail:
+            case VehicleEntityType::head:
+            case VehicleEntityType::vehicle_1:
+            case VehicleEntityType::vehicle_2:
+            case VehicleEntityType::tail:
                 break;
-            case VehicleThingType::bogie:
+            case VehicleEntityType::bogie:
                 paintBogie(session, base->asVehicleBogie());
                 break;
-            case VehicleThingType::body_start:
-            case VehicleThingType::body_continued:
+            case VehicleEntityType::body_start:
+            case VehicleEntityType::body_continued:
                 paintBody(session, base->asVehicleBody());
                 break;
         }

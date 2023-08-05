@@ -424,9 +424,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto& widget = self->widgets[widx::viewport];
             auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
             auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
-            if (view.isThingView())
+            if (view.isEntityView())
             {
-                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.thingId);
+                ViewportManager::create(self, 0, origin, size, self->savedView.zoomLevel, view.entityId);
             }
             else
             {
@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const auto& company = CompanyManager::get(CompanyId(self.number));
 
-            if (company->observationThing == EntityId::null)
+            if (company->observationEntity == EntityId::null)
             {
                 // Observing a certain location?
                 if (company->observationX != -1)
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         return;
                     }
 
-                    if (self.savedView.isThingView() || self.savedView.rotation != view.rotation || self.savedView.zoomLevel != view.zoomLevel)
+                    if (self.savedView.isEntityView() || self.savedView.rotation != view.rotation || self.savedView.zoomLevel != view.zoomLevel)
                     {
                         if (self.savedView != view)
                         {
@@ -530,8 +530,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observationThing);
-                auto* vehicle = thing->asBase<Vehicles::VehicleBase>();
+                auto entity = EntityManager::get<OpenLoco::EntityBase>(company->observationEntity);
+                auto* vehicle = entity->asBase<Vehicles::VehicleBase>();
                 if (vehicle == nullptr)
                 {
                     invalidViewport(&self);

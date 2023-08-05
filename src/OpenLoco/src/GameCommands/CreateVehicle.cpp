@@ -94,7 +94,7 @@ namespace OpenLoco::GameCommands
     }
 
     template<typename T>
-    static T* createVehicleThing()
+    static T* createVehicleBaseEntity()
     {
         auto* const base = EntityManager::createEntityVehicle();
         base->baseType = EntityBaseType::vehicle;
@@ -125,7 +125,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE8F1, 0x004AEA9E
     static VehicleBogie* createBogie(const EntityId head, const uint16_t vehicleTypeId, [[maybe_unused]] const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
-        auto newBogie = createVehicleThing<VehicleBogie>();
+        auto newBogie = createVehicleBaseEntity<VehicleBogie>();
         newBogie->owner = _updatingCompanyId;
         newBogie->head = head;
         newBogie->bodyIndex = bodyNumber;
@@ -242,9 +242,9 @@ namespace OpenLoco::GameCommands
     // 0x004AEA9E
     static VehicleBody* createBody(const EntityId head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
-        auto newBody = createVehicleThing<VehicleBody>();
+        auto newBody = createVehicleBaseEntity<VehicleBody>();
         // TODO: move this into the create function somehow
-        newBody->setSubType(bodyNumber == 0 ? VehicleThingType::body_start : VehicleThingType::body_continued);
+        newBody->setSubType(bodyNumber == 0 ? VehicleEntityType::body_start : VehicleEntityType::body_continued);
         newBody->owner = _updatingCompanyId;
         newBody->head = head;
         newBody->bodyIndex = bodyNumber;
@@ -428,7 +428,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE34B
     static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const RoutingHandle routingHandle, const VehicleType vehicleType)
     {
-        auto* const newHead = createVehicleThing<VehicleHead>();
+        auto* const newHead = createVehicleBaseEntity<VehicleHead>();
         EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = _updatingCompanyId;
         newHead->head = newHead->id;
@@ -468,7 +468,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE40E
     static Vehicle1* createVehicle1(const EntityId head, VehicleBase* const lastVeh)
     {
-        auto* const newVeh1 = createVehicleThing<Vehicle1>();
+        auto* const newVeh1 = createVehicleBaseEntity<Vehicle1>();
         newVeh1->owner = _updatingCompanyId;
         newVeh1->head = head;
         newVeh1->trackType = lastVeh->getTrackType();
@@ -499,7 +499,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE4A0
     static Vehicle2* createVehicle2(const EntityId head, VehicleBase* const lastVeh)
     {
-        auto* const newVeh2 = createVehicleThing<Vehicle2>();
+        auto* const newVeh2 = createVehicleBaseEntity<Vehicle2>();
         newVeh2->owner = _updatingCompanyId;
         newVeh2->head = head;
         newVeh2->trackType = lastVeh->getTrackType();
@@ -535,7 +535,7 @@ namespace OpenLoco::GameCommands
     // 0x004AE54E
     static VehicleTail* createVehicleTail(const EntityId head, VehicleBase* const lastVeh)
     {
-        auto* const newTail = createVehicleThing<VehicleTail>();
+        auto* const newTail = createVehicleBaseEntity<VehicleTail>();
         newTail->owner = _updatingCompanyId;
         newTail->head = head;
         newTail->trackType = lastVeh->getTrackType();
@@ -699,9 +699,9 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AE5FF
-    static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
+    static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId headId)
     {
-        Vehicle train(vehicleThingId);
+        Vehicle train(headId);
         setPosition(train.veh2->position);
 
         if (!sub_431E6A(train.head->owner))
@@ -766,7 +766,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004AE5E4
-    static uint32_t createVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId vehicleThingId)
+    static uint32_t createVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const EntityId headId)
     {
         setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
@@ -780,13 +780,13 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if (vehicleThingId == EntityId::null)
+        if (headId == EntityId::null)
         {
             return createNewVehicle(flags, vehicleTypeId);
         }
         else
         {
-            return addCarToVehicle(flags, vehicleTypeId, vehicleThingId);
+            return addCarToVehicle(flags, vehicleTypeId, headId);
         }
     }
 

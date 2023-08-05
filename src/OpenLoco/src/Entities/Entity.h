@@ -56,7 +56,7 @@ namespace OpenLoco
         uint8_t type; // Use type specific getters/setters as this depends on baseType
     public:
         EntityId nextQuadrantId;      // 0x02
-        EntityId nextThingId;         // 0x04
+        EntityId nextEntityId;        // 0x04
         EntityId llPreviousId;        // 0x06
         uint8_t linkedListOffset;     // 0x08
         uint8_t spriteHeightNegative; // 0x09

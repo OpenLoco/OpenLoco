@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
-            view.thingId = EntityId::null;
+            view.entityId = EntityId::null;
             switch (itemType)
             {
                 case MessageItemArgumentType::industry:
@@ -227,11 +227,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     if (train.head->tileX == -1)
                         break;
 
-                    view.thingId = train.veh2->id;
+                    view.entityId = train.veh2->id;
 
                     if (!train.cars.empty())
                     {
-                        view.thingId = train.cars.firstCar.body->id;
+                        view.entityId = train.cars.firstCar.body->id;
                     }
 
                     view.flags = (1 << 15);
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
-            view.thingId = EntityId::null;
+            view.entityId = EntityId::null;
             auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
 
@@ -313,10 +313,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             uint32_t ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
             uint32_t edx = view.mapY << 16 | view.mapX | 1 << 30;
 
-            if (!view.isEmpty() && view.isThingView())
+            if (!view.isEmpty() && view.isEntityView())
             {
                 ecx = view.rotation << 8 | (uint8_t)view.zoomLevel;
-                edx = enumValue(view.thingId) | view.flags << 16;
+                edx = enumValue(view.entityId) | view.flags << 16;
             }
 
             if (_dword_525CD0 != ecx || _dword_525CD4 != edx)
@@ -360,9 +360,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         viewportSize = { viewportWidth, viewportHeight };
                     }
 
-                    if (view.isThingView())
+                    if (view.isEntityView())
                     {
-                        ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
+                        ViewportManager::create(&self, 0, origin, viewportSize, view.zoomLevel, view.entityId);
                     }
                     else
                     {
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.surfaceZ = -1;
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
-            view.thingId = EntityId::null;
+            view.entityId = EntityId::null;
             selectable = false;
 
             if (MessageManager::getActiveIndex() != MessageId::null)
@@ -409,10 +409,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
             edx = view.mapY << 16 | view.mapX | 1 << 30;
 
-            if (!view.isEmpty() && view.isThingView())
+            if (!view.isEmpty() && view.isEntityView())
             {
                 ecx = view.rotation << 8 | (uint8_t)view.zoomLevel;
-                edx = enumValue(view.thingId) | view.flags << 16;
+                edx = enumValue(view.entityId) | view.flags << 16;
             }
 
             if (_dword_525CD8 != ecx || _dword_525CDC != edx)
