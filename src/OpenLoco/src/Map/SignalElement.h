@@ -34,16 +34,18 @@ namespace OpenLoco::World
                 _4 |= (newUnk4 & 0x3) << 4;
             }
             uint8_t signalObjectId() const { return _4 & 0xF; } // _4l
-            void setSignalObjectId(uint8_t signalObjectId) {
+            void setSignalObjectId(uint8_t signalObjectId)
+            {
                 _4 &= ~0xF;
                 _4 |= signalObjectId & 0xF;
             }
-            uint8_t frame() const { return _5 & 0xF; }          // _5l
-            void setFrame(uint8_t frame) {
+            uint8_t frame() const { return _5 & 0xF; } // _5l
+            void setFrame(uint8_t frame)
+            {
                 _5 &= ~0xF;
                 _5 |= frame & 0xF;
             }
-            uint8_t allLights() const { return _5 >> 4; }       // _5u
+            uint8_t allLights() const { return _5 >> 4; } // _5u
             void setAllLights(uint8_t newLights)
             {
                 _5 &= ~(0xF0);
