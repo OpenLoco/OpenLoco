@@ -3,6 +3,7 @@
 #include "BuildCompanyHeadquarters.h"
 #include "ChangeCompanyColour.h"
 #include "ChangeCompanyFace.h"
+#include "ChangeLandMaterial.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"

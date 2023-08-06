@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
+#include "GameCommands/ChangeLandMaterial.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"

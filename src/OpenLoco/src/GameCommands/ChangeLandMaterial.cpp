@@ -1,3 +1,4 @@
+#include "ChangeLandMaterial.h"
 #include "GameCommands.h"
 #include "Map/MapGenerator.h"
 #include "Map/SurfaceElement.h"
