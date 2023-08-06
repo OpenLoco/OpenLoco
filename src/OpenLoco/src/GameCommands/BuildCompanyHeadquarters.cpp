@@ -1,3 +1,4 @@
+#include "BuildCompanyHeadquarters.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands.h"

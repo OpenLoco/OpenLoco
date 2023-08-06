@@ -1,6 +1,7 @@
 #include "CompanyAi.h"
 #include "Company.h"
 #include "CompanyManager.h"
+#include "GameCommands/BuildCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
 #include "Industry.h"
 #include "IndustryManager.h"

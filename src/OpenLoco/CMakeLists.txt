@@ -354,6 +354,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Entities/Misc.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Environment.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Game.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/BuildCompanyHeadquarters.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheat.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameException.hpp"
