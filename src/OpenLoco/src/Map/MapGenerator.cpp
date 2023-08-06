@@ -143,17 +143,25 @@ namespace OpenLoco::World::MapGenerator
         }
     };
 
+    enum class TopographyFlags : uint8_t
+    {
+        none = 0U,
+        hasHills = 1U << 0,
+        hasMountains = 1U << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TopographyFlags);
+
     // 0x004FD332
-    static constexpr std::array<uint8_t, 9> topographyStyleFlags = {
-        0,
-        (1 << 0),
-        (1 << 0),
-        (1 << 1) | (1 << 0),
-        (1 << 1) | (1 << 0),
-        (1 << 0),
-        (1 << 1) | (1 << 0),
-        0,
-        (1 << 1) | (1 << 0),
+    static constexpr std::array<TopographyFlags, 9> topographyStyleFlags = {
+        TopographyFlags::none,
+        TopographyFlags::hasHills,
+        TopographyFlags::hasHills,
+        TopographyFlags::hasMountains | TopographyFlags::hasHills,
+        TopographyFlags::hasMountains | TopographyFlags::hasHills,
+        TopographyFlags::hasHills,
+        TopographyFlags::hasMountains | TopographyFlags::hasHills,
+        TopographyFlags::none,
+        TopographyFlags::hasMountains | TopographyFlags::hasHills,
     };
 
     class OriginalTerrainGenerator
@@ -197,16 +205,19 @@ namespace OpenLoco::World::MapGenerator
 
             // Vanilla would use an `rcl` for the lower bit, getting the carry flag in.
             // We're substituting it with an extra bit of the random state.
-            const bool topographyBit = (threshold & 511) << 9 > threshold;
+            const bool topographyBit = ((threshold & 511) << 9) > threshold;
             const auto topographyId = (enumValue(options.topographyStyle) << 1) | topographyBit;
             const auto topographyFlags = topographyStyleFlags[topographyId];
 
-            const bool isValidHillIndex = (topographyFlags & (1 << 0)) && randomHillIndex < hillShapesObj->hillHeightMapCount;
-            const bool isValidMountainIndex = (topographyFlags & (1 << 1)) && randomHillIndex >= hillShapesObj->hillHeightMapCount;
+            const bool generateHills = (topographyFlags & TopographyFlags::hasHills) != TopographyFlags::none;
+            const bool generateMountains = (topographyFlags & TopographyFlags::hasMountains) != TopographyFlags::none;
+
+            const bool isValidHillIndex = generateHills && randomHillIndex < hillShapesObj->hillHeightMapCount;
+            const bool isValidMountainIndex = generateMountains && randomHillIndex >= hillShapesObj->hillHeightMapCount;
             if (!(isValidHillIndex || isValidMountainIndex))
             {
                 printf("Bail: flags = %d, randomHillIndex = %d, hillHeightMapCount = %d, mountainHeightMapCount = %d\n",
-                    topographyFlags, randomHillIndex, hillShapesObj->hillHeightMapCount, hillShapesObj->mountainHeightMapCount);
+                    enumValue(topographyFlags), randomHillIndex, hillShapesObj->hillHeightMapCount, hillShapesObj->mountainHeightMapCount);
                 return;
             }
 
