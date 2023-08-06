@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "BuildCompanyHeadquarters.h"
 #include "ChangeCompanyColour.h"
+#include "ChangeCompanyFace.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"

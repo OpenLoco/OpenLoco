@@ -356,6 +356,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Game.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/BuildCompanyHeadquarters.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeCompanyColour.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/ChangeCompanyFace.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheat.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameException.hpp"

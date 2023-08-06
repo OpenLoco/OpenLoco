@@ -2097,9 +2097,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Defined in GameCommands/ChangeCompanyFace.cpp
-    void changeCompanyFace(registers& regs);
-
     // Defined in GameCommands/ChangeLandMaterial.cpp
     void changeLandMaterial(registers& regs);
 
