@@ -127,6 +127,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleReverse.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleSell.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleSpeedControl.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/CreateSignal.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameState.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Colour.cpp"
