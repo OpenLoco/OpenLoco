@@ -293,7 +293,7 @@ namespace OpenLoco::ObjectManager
         _installedObjectCount = 0;
         // Create new index by iterating all DAT files and processing
         IndexHeader header{};
-        uint8_t progress = 0;      // Progress is used for the ProgressBar Ui element
+        int32_t progress = 0;      // Progress is used for the ProgressBar Ui element
         size_t usedBufferSize = 0; // Keep track of used space to allow for growth and for final sizing
         const auto objectPath = Environment::getPathNoWarning(Environment::PathId::objects);
         for (const auto& file : fs::directory_iterator(objectPath, fs::directory_options::skip_permission_denied))
@@ -312,7 +312,7 @@ namespace OpenLoco::ObjectManager
 
             // Cheap calculation of (curObjectCount / totalObjectCount) * 256
             const auto newProgress = (header.state.numObjects << 8) / ((currentState.numObjects & 0xFFFFFF) + 1);
-            if (progress != newProgress)
+            if (progress != static_cast<int32_t>(newProgress))
             {
                 progress = newProgress;
                 Ui::ProgressBar::setProgress(newProgress);

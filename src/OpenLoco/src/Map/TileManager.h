@@ -12,7 +12,7 @@ namespace OpenLoco::World
     struct BuildingElement;
     struct TreeElement;
     struct SurfaceElement;
-    enum class ElementType;
+    enum class ElementType : uint8_t;
 }
 
 namespace OpenLoco::World::TileManager

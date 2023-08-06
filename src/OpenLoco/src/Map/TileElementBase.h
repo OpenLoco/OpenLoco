@@ -9,7 +9,7 @@ namespace OpenLoco::World
 {
     struct TileElement;
 
-    enum class ElementType
+    enum class ElementType : uint8_t
     {
         surface,  // 0x00
         track,    // 0x04
