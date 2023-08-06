@@ -23,6 +23,11 @@ namespace OpenLoco::World
 
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         bool hasSignal() const { return (_type & 0x40) != 0; }
+        void setHasSignal(bool state)
+        {
+            _type &= ~0x40;
+            _type |= state ? 0x40 : 0;
+        }
         uint8_t unkDirection() const { return _type & 0x03; }
         uint8_t trackId() const { return _4 & 0x3F; } // _4
         bool hasBridge() const { return (_4 & 0x80) != 0; }

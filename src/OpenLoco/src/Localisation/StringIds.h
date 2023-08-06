@@ -549,6 +549,9 @@ namespace OpenLoco::StringIds
     constexpr string_id town_size_city = 620;
     constexpr string_id town_size_metropolis = 621;
 
+    constexpr string_id signals_cannot_be_built_on_a_junction = 624;
+    constexpr string_id signals_cannot_be_built_on_a_junction_2 = 625; // identical to 624
+    constexpr string_id signals_cannot_be_built_in_stations = 626;
     constexpr string_id wcolour3_stringid_2 = 627; // identical to 628
     constexpr string_id wcolour3_stringid = 628;
     constexpr string_id wcolour3_stringid_stringid = 629;

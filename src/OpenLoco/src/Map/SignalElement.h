@@ -17,6 +17,11 @@ namespace OpenLoco::World
 
         public:
             bool hasSignal() const { return _4 & 0x80; }
+            void setHasSignal(bool state)
+            {
+                _4 &= ~0x80;
+                _4 |= state ? 0x80 : 0;
+            }
             bool hasUnk4_40() const { return _4 & (1 << 6); }
             void setUnk4_40(bool newState)
             {
@@ -29,7 +34,15 @@ namespace OpenLoco::World
                 _4 |= (newUnk4 & 0x3) << 4;
             }
             uint8_t signalObjectId() const { return _4 & 0xF; } // _4l
+            void setSignalObjectId(uint8_t signalObjectId) {
+                _4 &= ~0xF;
+                _4 |= signalObjectId & 0xF;
+            }
             uint8_t frame() const { return _5 & 0xF; }          // _5l
+            void setFrame(uint8_t frame) {
+                _5 &= ~0xF;
+                _5 |= frame & 0xF;
+            }
             uint8_t allLights() const { return _5 >> 4; }       // _5u
             void setAllLights(uint8_t newLights)
             {
@@ -47,8 +60,23 @@ namespace OpenLoco::World
 
     public:
         uint8_t rotation() const { return _type & 0x3; }
+        void setRotation(uint8_t rotation)
+        {
+            _type &= ~0x3;
+            _type |= rotation & 0x3;
+        }
         bool isLeftGhost() const { return _type & 0x80; }
+        void setLeftGhost(bool state)
+        {
+            _type &= ~0x80;
+            _type |= state ? 0x80 : 0;
+        }
         bool isRightGhost() const { return _type & 0x40; }
+        void setRightGhost(bool state)
+        {
+            _type &= ~0x40;
+            _type |= state ? 0x40 : 0;
+        }
         Side& getLeft() { return sides[0]; }
         Side& getRight() { return sides[1]; }
         const Side& getLeft() const { return sides[0]; }

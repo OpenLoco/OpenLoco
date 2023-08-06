@@ -63,6 +63,11 @@ namespace OpenLoco::World
             _flags |= state == true ? ElementFlags::ghost : 0;
         }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
+        void setFlag5(bool state)
+        {
+            _flags &= ~ElementFlags::flag_5;
+            _flags |= state == true ? ElementFlags::flag_5 : 0;
+        }
         bool isFlag6() const { return _flags & ElementFlags::flag_6; } // in tracks/roads indicates is last tile of multi tile
         void setFlag6(bool state)
         {
