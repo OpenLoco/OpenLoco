@@ -1,6 +1,6 @@
-#include "GameCommands.h"
+#pragma once
 
-using namespace OpenLoco::Interop;
+#include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {

@@ -1,8 +1,9 @@
+#pragma once
+
 #include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {
-
     struct ChangeLandMaterialArgs
     {
         static constexpr auto command = GameCommand::changeLandMaterial;
@@ -31,5 +32,4 @@ namespace OpenLoco::GameCommands
     };
 
     void changeLandMaterial(registers& regs);
-
 }

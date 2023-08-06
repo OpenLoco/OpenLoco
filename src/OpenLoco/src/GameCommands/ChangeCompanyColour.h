@@ -1,8 +1,9 @@
+#pragma once
+
 #include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {
-
     struct ChangeCompanyColourSchemeArgs
     {
         static constexpr auto command = GameCommand::changeCompanyColourScheme;
@@ -51,5 +52,4 @@ namespace OpenLoco::GameCommands
     };
 
     void changeCompanyColour(registers& regs);
-
 }

@@ -1,8 +1,9 @@
+#pragma once
+
 #include "GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {
-
     struct ChangeLoanArgs
     {
         static constexpr auto command = GameCommand::changeLoan;
@@ -23,5 +24,4 @@ namespace OpenLoco::GameCommands
     };
 
     void changeLoan(registers& regs);
-
 }
