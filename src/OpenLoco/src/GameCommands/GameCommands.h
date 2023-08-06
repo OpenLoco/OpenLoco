@@ -343,7 +343,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
             , index(regs.dh)
-            , trackObjectId(static_cast<uint8_t>(regs.ebp)) // TODO: Validate this.
+            , trackObjectId(static_cast<uint8_t>(regs.ebp))
         {
         }
 
@@ -452,7 +452,7 @@ namespace OpenLoco::GameCommands
         RenameStationArgs() = default;
         explicit RenameStationArgs(const registers& regs)
             : stationId(StationId(regs.cx))
-            , nameBufferIndex(static_cast<uint8_t>(regs.ax)) // TODO: Validate this.
+            , nameBufferIndex(static_cast<uint8_t>(regs.ax))
             , buffer{}
         {
             std::memcpy(buffer, &regs.edx, 4);
@@ -596,7 +596,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0xF)
             , index(regs.dh & 0x3)
-            , trackObjectId(static_cast<uint8_t>(regs.bp)) // TODO: Validate this.
+            , trackObjectId(static_cast<uint8_t>(regs.bp))
             , type(static_cast<uint8_t>(regs.edi >> 16))
         {
         }
@@ -1403,7 +1403,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , roadId(regs.dl & 0xF)
             , index(regs.dh & 0x3)
-            , roadObjectId(static_cast<uint8_t>(regs.bp)) // TODO: Validate this.
+            , roadObjectId(static_cast<uint8_t>(regs.bp))
             , type(static_cast<uint8_t>(regs.edi >> 16))
         {
         }
