@@ -1,3 +1,4 @@
+#include "ChangeCompanyFace.h"
 #include "GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Objects/CompetitorObject.h"

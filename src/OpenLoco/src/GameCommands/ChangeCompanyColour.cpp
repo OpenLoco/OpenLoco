@@ -1,3 +1,4 @@
+#include "ChangeCompanyColour.h"
 #include "Audio/Audio.h"
 #include "GameCommands.h"
 #include "GameException.hpp"

@@ -4,6 +4,7 @@
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/BuildCompanyHeadquarters.h"
+#include "GameCommands/ChangeCompanyColour.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
