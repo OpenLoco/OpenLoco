@@ -365,44 +365,50 @@ namespace OpenLoco::ObjectManager
             Logging::verbose("Object index does not exist.");
             return false;
         }
-        std::ifstream stream;
-        stream.open(indexPath, std::ios::in | std::ios::binary);
-        if (!stream.is_open())
+        FileStream stream;
+        stream.open(indexPath, StreamMode::read);
+        if (!stream.isOpen())
         {
             Logging::error("Unable to load the object index.");
             return false;
         }
-        // 0x00112A14C -> 160
-        IndexHeader header{};
-        Utility::readData(stream, header);
-        if ((header.state != currentState) || (stream.gcount() != sizeof(header)))
+
+        try
         {
+            // 0x00112A14C -> 160
+            IndexHeader header{};
+            stream.readValue(header);
+            if ((header.state != currentState))
+            {
+                Logging::error("Invalid object index header state.");
+                return false;
+            }
+            else
+            {
+                if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
+                {
+                    free(*_installedObjectList);
+                }
+                _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
+                if (_installedObjectList == nullptr)
+                {
+                    exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+                    return false;
+                }
+                stream.read(*_installedObjectList, header.fileSize);
+                _installedObjectCount = header.numObjects;
+
+                Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
+            }
+        }
+        catch (const std::runtime_error& ex)
+        {
+            Logging::error("Unable to load the object index: {}", ex.what());
             return false;
         }
-        else
-        {
-            if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
-            {
-                free(*_installedObjectList);
-            }
-            _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
-            if (_installedObjectList == nullptr)
-            {
-                exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
-                return false;
-            }
-            Utility::readData(stream, *_installedObjectList, header.fileSize);
-            if (stream.gcount() != static_cast<int32_t>(header.fileSize))
-            {
-                Logging::error("Failed reading the object index.");
-                return false;
-            }
-            _installedObjectCount = header.numObjects;
 
-            Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
+        reloadAll();
 
-            reloadAll();
-        }
         return true;
     }
 
