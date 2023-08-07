@@ -216,15 +216,21 @@ namespace OpenLoco::ObjectManager
     static void addObjectToIndex(const fs::path filepath, size_t& usedBufferSize)
     {
         ObjectHeader objHeader{};
+        try
         {
-            std::ifstream stream;
-            stream.open(filepath, std::ios::in | std::ios::binary);
-            Utility::readData(stream, objHeader);
-            if (stream.gcount() != sizeof(objHeader))
+            FileStream stream;
+            stream.open(filepath, StreamMode::read);
+            if (!stream.isOpen())
             {
-                Logging::error("Unable to the read the object index");
+                Logging::error("Unable to open object index file.");
                 return;
             }
+            stream.readValue(objHeader);
+        }
+        catch (const std::runtime_error& ex)
+        {
+            Logging::error("Unable to read object index header: {}", ex.what());
+            return;
         }
 
         const auto curObjPos = usedBufferSize;
