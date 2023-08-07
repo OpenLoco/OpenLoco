@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
-                const auto unk = i == 0 ? *_dword_525CD0 : *_dword_525CD8;
+                const int32_t unk = i == 0 ? *_dword_525CD0 : *_dword_525CD8;
                 if (unk == -2 && itemSubject != 0xFFFFU)
                 {
                     const auto* company = CompanyManager::get(CompanyId(itemSubject));
