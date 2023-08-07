@@ -99,6 +99,8 @@ namespace OpenLoco::ObjectManager
 
     static void saveIndex(const IndexHeader& header)
     {
+        Core::Timer saveTimer;
+
         std::ofstream stream;
         const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
         stream.open(indexPath, std::ios::out | std::ios::binary);
@@ -109,6 +111,8 @@ namespace OpenLoco::ObjectManager
         }
         stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
         stream.write(reinterpret_cast<const char*>(*_installedObjectList), header.fileSize);
+
+        Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
 
     static std::pair<ObjectIndexEntry, size_t> createPartialNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
@@ -353,6 +357,8 @@ namespace OpenLoco::ObjectManager
 
     static bool tryLoadIndex(const ObjectFolderState& currentState)
     {
+        Core::Timer loadTimer;
+
         const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
         if (!fs::exists(indexPath))
         {
@@ -392,6 +398,9 @@ namespace OpenLoco::ObjectManager
                 return false;
             }
             _installedObjectCount = header.numObjects;
+
+            Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
+
             reloadAll();
         }
         return true;
