@@ -8,12 +8,15 @@
 #include "Ui/ProgressBar.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
+#include <OpenLoco/Core/Timer.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
 {
@@ -101,6 +104,7 @@ namespace OpenLoco::ObjectManager
         stream.open(indexPath, std::ios::out | std::ios::binary);
         if (!stream.is_open())
         {
+            Logging::error("Unable to save object index.");
             return;
         }
         stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
@@ -214,6 +218,7 @@ namespace OpenLoco::ObjectManager
             Utility::readData(stream, objHeader);
             if (stream.gcount() != sizeof(objHeader))
             {
+                Logging::error("Unable to the read the object index");
                 return;
             }
         }
@@ -234,6 +239,7 @@ namespace OpenLoco::ObjectManager
 
         if (!tempLoadFailed)
         {
+            Logging::error("Unable to load the object '{}', can't add to index", objHeader.getName());
             return;
         }
 
@@ -350,12 +356,14 @@ namespace OpenLoco::ObjectManager
         const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
         if (!fs::exists(indexPath))
         {
+            Logging::verbose("Object index does not exist.");
             return false;
         }
         std::ifstream stream;
         stream.open(indexPath, std::ios::in | std::ios::binary);
         if (!stream.is_open())
         {
+            Logging::error("Unable to load the object index.");
             return false;
         }
         // 0x00112A14C -> 160
@@ -380,6 +388,7 @@ namespace OpenLoco::ObjectManager
             Utility::readData(stream, *_installedObjectList, header.fileSize);
             if (stream.gcount() != static_cast<int32_t>(header.fileSize))
             {
+                Logging::error("Failed reading the object index.");
                 return false;
             }
             _installedObjectCount = header.numObjects;
