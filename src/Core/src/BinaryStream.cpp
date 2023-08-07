@@ -1,6 +1,6 @@
 #include "BinaryStream.h"
+#include "Exception.hpp"
 #include <cstring>
-#include <stdexcept>
 
 namespace OpenLoco
 {
@@ -29,13 +29,13 @@ namespace OpenLoco
     {
         auto maxReadLen = _len - _index;
         if (len > maxReadLen)
-            throw std::runtime_error("Failed to read data");
+            throw Exception::RuntimeError("Failed to read data");
         std::memcpy(buffer, reinterpret_cast<const void*>(reinterpret_cast<size_t>(_data) + _index), len);
         _index += len;
     }
 
     void BinaryStream::write([[maybe_unused]] const void* buffer, [[maybe_unused]] size_t len)
     {
-        throw std::runtime_error("Invalid operation");
+        throw Exception::InvalidOperation("Can not write");
     }
 }
