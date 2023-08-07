@@ -1,3 +1,4 @@
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/MemoryStream.h>
 #include <array>
 #include <gtest/gtest.h>
@@ -82,7 +83,7 @@ TEST(MemoryStreamTest, testBadRead)
     ASSERT_EQ(ms.getPosition(), 2);
 
     std::array<uint8_t, 4> readBuffer{};
-    EXPECT_THROW(ms.read(readBuffer.data(), readBuffer.size()), std::runtime_error);
+    EXPECT_THROW(ms.read(readBuffer.data(), readBuffer.size()), Exception::RuntimeError);
 }
 
 TEST(MemoryStreamTest, testWrite100MiB)
