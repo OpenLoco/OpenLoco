@@ -68,11 +68,18 @@ namespace OpenLoco::GameCommands
                             head->liftUpVehicle();
                             break;
                         case TransportMode::air:
-                            VehicleManager::vehiclePickupAir(head->id, Flags::apply);
+                        {
+                            GameCommands::VehiclePickupAirArgs airArgs{};
+                            airArgs.head = head->id;
+                            GameCommands::doCommand(airArgs, Flags::apply);
                             break;
+                        }
                         case TransportMode::water:
-                            VehicleManager::vehiclePickupWater(head->id, Flags::apply);
-                            break;
+                        {
+                            GameCommands::VehiclePickupWaterArgs waterArgs{};
+                            waterArgs.head = head->id;
+                            GameCommands::doCommand(waterArgs, Flags::apply);
+                        }
                     }
                 }
                 Vehicles::Car car(vehBase);
