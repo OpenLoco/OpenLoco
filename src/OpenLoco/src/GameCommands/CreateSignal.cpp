@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        auto getElTrackAt = [&args](World::Pos3 pos) -> World::TrackElement* {
+        auto getElTrackAt = [&args](World::Pos3 pos, uint8_t index) -> World::TrackElement* {
             auto tile = World::TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
                 {
                     continue;
                 }
-                if (elTrack->sequenceIndex() != args.index)
+                if (elTrack->sequenceIndex() != index)
                 {
                     continue;
                 }
@@ -59,7 +59,7 @@ namespace OpenLoco::GameCommands
             return nullptr;
         };
 
-        auto* elTrack = getElTrackAt(args.pos);
+        auto* elTrack = getElTrackAt(args.pos, args.index);
 
         if (elTrack == nullptr)
         {
@@ -82,17 +82,14 @@ namespace OpenLoco::GameCommands
 
         const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
 
-        auto i = -1;
         uint32_t totalCost = 0;
         // We remove certain sides from placing when in ghost mode
         auto sides = args.sides;
 
         for (auto& piece : trackPieces)
         {
-            i++;
-
-            const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
-            auto* pieceElTrack = getElTrackAt(trackLoc);
+            const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
+            auto* pieceElTrack = getElTrackAt(trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
                 return FAILURE;
@@ -132,7 +129,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if (i == 0)
+            if (piece.index == 0)
             {
                 const auto* signalObj = ObjectManager::get<TrainSignalObject>(args.type);
                 const auto baseCost = Economy::getInflationAdjustedCost(signalObj->costFactor, signalObj->costIndex, 10);
