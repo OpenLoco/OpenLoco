@@ -16,7 +16,7 @@
 namespace OpenLoco::GameCommands
 {
     // 0x00488BDB
-    uint32_t createSignal(const SignalPlacementArgs& args, uint8_t flags)
+    static uint32_t createSignal(const SignalPlacementArgs& args, uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
