@@ -20,11 +20,11 @@ namespace OpenLoco::Core
         }
 
         // Returns elapsed time in milliseconds
-        uint64_t elapsed() const
+        float elapsed() const
         {
             const auto now = ClockType::now();
-            const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - _start);
-            return elapsed.count();
+            const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - _start);
+            return elapsed.count() / 1000000.0f;
         }
     };
 }
