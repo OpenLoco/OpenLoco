@@ -93,6 +93,10 @@ namespace OpenLoco::GameCommands
 
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
             auto* pieceElTrack = getElTrackAt(trackLoc);
+            if (pieceElTrack == nullptr)
+            {
+                return FAILURE;
+            }
             if (pieceElTrack->hasStationElement())
             {
                 setErrorText(StringIds::signals_cannot_be_built_in_stations);
@@ -204,6 +208,10 @@ namespace OpenLoco::GameCommands
                         return FAILURE;
                     }
                     pieceElTrack = newSignal->prev()->as<World::TrackElement>();
+                    if (pieceElTrack == nullptr)
+                    {
+                        return FAILURE;
+                    }
                     newSignal->setRotation(pieceElTrack->unkDirection());
                     newSignal->setGhost(flags & Flags::ghost);
                     newSignal->setFlag5(flags & Flags::flag_4);
