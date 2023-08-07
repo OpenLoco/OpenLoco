@@ -384,9 +384,9 @@ namespace OpenLoco::ObjectManager
             // 0x00112A14C -> 160
             IndexHeader header{};
             stream.readValue(header);
-            if ((header.state != currentState))
+            if (header.state != currentState)
             {
-                Logging::error("Invalid object index header state.");
+                Logging::verbose("Invalid object index header state.");
                 return false;
             }
             else
