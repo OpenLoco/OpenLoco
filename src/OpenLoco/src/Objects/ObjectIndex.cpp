@@ -6,8 +6,8 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -101,16 +101,16 @@ namespace OpenLoco::ObjectManager
     {
         Core::Timer saveTimer;
 
-        std::ofstream stream;
+        FileStream stream;
         const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
-        stream.open(indexPath, std::ios::out | std::ios::binary);
-        if (!stream.is_open())
+        stream.open(indexPath, StreamMode::write);
+        if (!stream.isOpen())
         {
             Logging::error("Unable to save object index.");
             return;
         }
-        stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
-        stream.write(reinterpret_cast<const char*>(*_installedObjectList), header.fileSize);
+        stream.writeValue(header);
+        stream.write(*_installedObjectList, header.fileSize);
 
         Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
