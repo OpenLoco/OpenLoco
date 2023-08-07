@@ -10,6 +10,7 @@
 #include "Map/TileManager.h"
 #include "Message.h"
 #include "MessageManager.h"
+#include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Vehicles/Vehicle.h"
@@ -458,11 +459,40 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x0042A136
         static void sub_42A136(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            registers regs;
-            regs.edi = X86Pointer(rt);
-            regs.esi = X86Pointer(self);
-            regs.ebp = X86Pointer(news);
-            call(0x0042A136, regs);
+            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            for (auto i = 0; i < 2; ++i)
+            {
+                const auto itemSubject = news->itemSubjects[i];
+                const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
+                const auto unk = i == 0 ? *_dword_525CD0 : *_dword_525CD8;
+                if (unk == -2 && itemSubject != 0xFFFFU)
+                {
+                    const auto* company = CompanyManager::get(CompanyId(itemSubject));
+                    const auto* competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
+                    const auto imageIndexBase = competitorObj->images[company->ownerEmotion];
+
+                    const ImageId imageId(imageIndexBase + 1, company->mainColours.primary);
+                    const auto x = self->x + viewWidget.width() - 32;
+                    const auto y = self->y + viewWidget.height() - 32;
+                    drawingCtx.drawImage(*rt, Ui::Point(x, y), imageId);
+
+                    if (company->jailStatus != 0)
+                    {
+                        drawingCtx.drawImage(*rt, Ui::Point(x, y), ImageId(ImageIds::owner_jailed));
+                    }
+                }
+                if (unk == -3 && itemSubject != 0xFFFFU)
+                {
+                    const auto x = self->x + viewWidget.left;
+                    const auto y = self->y + viewWidget.top;
+                    auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x + 1, y + 1, viewWidget.width() - 2, viewWidget.height() - 2));
+                    if (clipped)
+                    {
+                        const auto frame = Ui::WindowManager::getVehiclePreviewRotationFrame();
+                        Windows::BuildVehicle::drawVehicleOverview(&*clipped, itemSubject, CompanyManager::getControllingId(), frame & 0x3F, ((frame + 2) / 4) & 0x3F, { viewWidget.midX(), 35 });
+                    }
+                }
+            }
         }
 
         // 0x0042A036
