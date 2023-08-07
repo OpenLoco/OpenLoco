@@ -202,7 +202,7 @@ namespace OpenLoco::GameCommands
                 if (!pieceElTrack->hasSignal())
                 {
                     // pieceElTrack is invalid after this call!
-                    auto* newSignal = World::TileManager::insertElementNoReorg<World::SignalElement>(trackLoc, pieceElTrack->baseZ(), pieceElTrack->occupiedQuarter());
+                    auto* newSignal = World::TileManager::insertElementAfterNoReorg<World::SignalElement>(reinterpret_cast<World::TileElement*>(pieceElTrack), trackLoc, pieceElTrack->baseZ(), pieceElTrack->occupiedQuarter());
                     if (newSignal == nullptr)
                     {
                         return FAILURE;

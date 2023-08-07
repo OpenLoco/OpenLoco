@@ -220,13 +220,14 @@ namespace OpenLoco::World::TileManager
     }
 
     // 0x00461578
-    TileElement* insertElementNoReorg(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
     {
         registers regs;
         regs.ax = pos.x;
         regs.cx = pos.y;
         regs.bl = baseZ;
         regs.bh = occupiedQuads;
+        regs.esi = X86Pointer(after);
         call(0x00461578, regs);
         TileElement* el = X86Pointer<TileElement>(regs.esi);
         el->setType(type);
