@@ -23,8 +23,7 @@ namespace OpenLoco::Core
         float elapsed() const
         {
             const auto now = ClockType::now();
-            const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - _start);
-            return elapsed.count() / 1000000.0f;
+            return std::chrono::duration<float, std::milli>(now - _start).count();
         }
     };
 }

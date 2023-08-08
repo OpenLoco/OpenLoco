@@ -386,7 +386,7 @@ namespace OpenLoco::ObjectManager
             stream.readValue(header);
             if (header.state != currentState)
             {
-                Logging::verbose("Invalid object index header state.");
+                Logging::info("Object index out of date.");
                 return false;
             }
             else
