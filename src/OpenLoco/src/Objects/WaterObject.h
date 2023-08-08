@@ -25,8 +25,8 @@ namespace OpenLoco
         uint8_t var_03;
         int8_t costFactor; // 0x04
         uint8_t var_05;
-        uint32_t image; // 0x06
-        uint32_t var_0A;
+        uint32_t image;         // 0x06
+        uint32_t mapPixelImage; // 0x0A
 
         bool validate() const;
         void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);

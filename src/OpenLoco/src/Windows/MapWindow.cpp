@@ -14,9 +14,11 @@
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/InterfaceSkinObject.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Objects/WaterObject.h"
 #include "SceneManager.h"
 #include "Types.hpp"
 #include "Ui/LastMapWindowAttributes.h"
@@ -70,7 +72,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             0,
         }
     };
-    static loco_global<uint8_t[16], 0x00F253CE> _byte_F253CE;
+    static loco_global<uint8_t[16], 0x00F253CE> _assignedIndustryColours;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
@@ -638,43 +640,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
+    // 0x004FB464
+    // clang-format off
+    static constexpr std::array<PaletteIndex_t, 31> industryColours = {
+        PaletteIndex::index_0A, PaletteIndex::index_0E, PaletteIndex::index_15, PaletteIndex::index_1F,
+        PaletteIndex::index_29, PaletteIndex::index_35, PaletteIndex::index_38, PaletteIndex::index_3F,
+        PaletteIndex::index_43, PaletteIndex::index_4B, PaletteIndex::index_50, PaletteIndex::index_58,
+        PaletteIndex::index_66, PaletteIndex::index_71, PaletteIndex::index_7D, PaletteIndex::index_85,
+        PaletteIndex::index_89, PaletteIndex::index_9D, PaletteIndex::index_A1, PaletteIndex::index_A3,
+        PaletteIndex::index_AC, PaletteIndex::index_B8, PaletteIndex::index_BB, PaletteIndex::index_C3,
+        PaletteIndex::index_C6, PaletteIndex::index_D0, PaletteIndex::index_D3, PaletteIndex::index_DB,
+        PaletteIndex::index_DE, PaletteIndex::index_24, PaletteIndex::index_12,
+    };
+    // clang-format on
+
     // 0x0046D47F
     static void drawGraphKeyIndustries(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
-        static const PaletteIndex_t industryColours[] = {
-            PaletteIndex::index_0A,
-            PaletteIndex::index_0E,
-            PaletteIndex::index_15,
-            PaletteIndex::index_1F,
-            PaletteIndex::index_29,
-            PaletteIndex::index_35,
-            PaletteIndex::index_38,
-            PaletteIndex::index_3F,
-            PaletteIndex::index_43,
-            PaletteIndex::index_4B,
-            PaletteIndex::index_50,
-            PaletteIndex::index_58,
-            PaletteIndex::index_66,
-            PaletteIndex::index_71,
-            PaletteIndex::index_7D,
-            PaletteIndex::index_85,
-            PaletteIndex::index_89,
-            PaletteIndex::index_9D,
-            PaletteIndex::index_A1,
-            PaletteIndex::index_A3,
-            PaletteIndex::index_AC,
-            PaletteIndex::index_B8,
-            PaletteIndex::index_BB,
-            PaletteIndex::index_C3,
-            PaletteIndex::index_C6,
-            PaletteIndex::index_D0,
-            PaletteIndex::index_D3,
-            PaletteIndex::index_DB,
-            PaletteIndex::index_DE,
-            PaletteIndex::index_24,
-            PaletteIndex::index_12,
-        };
-
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
@@ -686,7 +668,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                auto colour = industryColours[_byte_F253CE[i]];
+                auto colour = industryColours[_assignedIndustryColours[i]];
 
                 drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
@@ -1433,11 +1415,96 @@ namespace OpenLoco::Ui::Windows::MapWindow
         events.drawScroll = drawScroll;
     }
 
-    static void sub_46CFF0()
+    // 0x0046D0C3
+    static uint32_t checkIndustryColours(PaletteIndex_t colour, uint32_t colourMask)
     {
-        registers regs;
-        call(0x0046CFF0, regs);
+        for (auto i = 0; i < 31; i++)
+        {
+            int8_t industryColour = industryColours[i];
+            int8_t diff = std::abs(industryColour - colour);
+
+            if (diff <= 2)
+            {
+                colourMask &= ~(1U << i);
+            }
+        }
+
+        return colourMask;
     }
+
+    // 0x0046CFF0
+    static void assignIndustryColours()
+    {
+        uint32_t availableColours = 0x7FFFFFFF;
+
+        // First, assign water colour
+        {
+            auto waterObj = ObjectManager::get<WaterObject>();
+
+            auto waterPixel = Gfx::getG1Element(waterObj->mapPixelImage)->offset[0];
+            availableColours = checkIndustryColours(waterPixel, availableColours);
+
+            waterPixel = Gfx::getG1Element(waterObj->mapPixelImage)->offset[1];
+            availableColours = checkIndustryColours(waterPixel, availableColours);
+        }
+
+        // Then, assign surface texture colours
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
+        {
+            auto landObj = ObjectManager::get<LandObject>(i);
+            if (landObj == nullptr)
+                continue;
+
+            auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
+            availableColours = checkIndustryColours(landPixel, availableColours);
+
+            landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[1];
+            availableColours = checkIndustryColours(landPixel, availableColours);
+        }
+
+        availableColours = checkIndustryColours(PaletteIndex::index_3C, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_0C, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_0A, availableColours);
+
+        // Reset assigned industry colours
+        for (auto i = 0U; i < std::size(_assignedIndustryColours); i++)
+        {
+            _assignedIndustryColours[i] = 0xFF;
+        }
+
+        // Assign preferred industry colours, if possible
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            auto industryObj = ObjectManager::get<IndustryObject>(i);
+            if (industryObj == nullptr)
+                continue;
+
+            // Preferred colour still available?
+            auto preferredColour = enumValue(industryObj->mapColour);
+            if (availableColours & (1U << preferredColour))
+            {
+                _assignedIndustryColours[i] = preferredColour;
+                availableColours &= ~(1U << preferredColour);
+            }
+        }
+
+        // Assign alternative industry colours if needed
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            auto industryObj = ObjectManager::get<IndustryObject>(i);
+            if (industryObj == nullptr)
+                continue;
+
+            if (_assignedIndustryColours[i] != 0xFF)
+                continue;
+
+            auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
+            availableColours &= ~(1U << freeColour);
+            _assignedIndustryColours[i] = freeColour;
+        }
+    }
+
+    // 0x0046CED0
     static void sub_46CED0()
     {
         registers regs;
@@ -1498,7 +1565,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->var_854 = 0;
         window->var_856 = 0;
 
-        sub_46CFF0();
+        assignIndustryColours();
         sub_46CED0();
 
         mapFrameNumber = 0;
