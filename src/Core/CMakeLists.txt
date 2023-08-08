@@ -28,6 +28,7 @@ set(test_files
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/MemoryStreamTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/NumericsTests.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/PrngTests.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tests/TimerTest.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/tests/TraitsTest.cpp"
 )
 
