@@ -1,7 +1,7 @@
 #include "Config.h"
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
-#include "GameCommands/Cheat.h"
+#include "GameCommands/Cheats/Cheat.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
