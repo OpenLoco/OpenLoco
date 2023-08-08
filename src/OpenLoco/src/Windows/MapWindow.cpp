@@ -1509,10 +1509,45 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046CED0
-    static void sub_46CED0()
+    static void assignRouteColours()
     {
+        uint32_t availableColours = 0x7FFFFFFF;
+
+        // First, assign water colour
+        {
+            auto waterObj = ObjectManager::get<WaterObject>();
+
+            auto waterPixel = Gfx::getG1Element(waterObj->mapPixelImage)->offset[0];
+            availableColours = checkIndustryColours(waterPixel, availableColours);
+
+            waterPixel = Gfx::getG1Element(waterObj->mapPixelImage)->offset[1];
+            availableColours = checkIndustryColours(waterPixel, availableColours);
+        }
+
+        // Then, assign surface texture colours
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
+        {
+            auto landObj = ObjectManager::get<LandObject>(i);
+            if (landObj == nullptr)
+                continue;
+
+            auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
+            availableColours = checkIndustryColours(landPixel, availableColours);
+
+            landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[1];
+            availableColours = checkIndustryColours(landPixel, availableColours);
+        }
+
+        availableColours = checkIndustryColours(PaletteIndex::index_3C, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_BA, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_D3, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_8B, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_0A, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_15, availableColours);
+
         registers regs;
-        call(0x0046CED0, regs);
+        regs.ebp = availableColours;
+        call(0x0046CF56, regs);
     }
 
     // 0x0046B490
@@ -1570,7 +1605,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->var_856 = 0;
 
         assignIndustryColours();
-        sub_46CED0();
+        assignRouteColours();
 
         mapFrameNumber = 0;
     }
