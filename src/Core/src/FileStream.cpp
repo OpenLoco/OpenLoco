@@ -1,6 +1,6 @@
 #include "FileStream.h"
+#include "Exception.hpp"
 #include <algorithm>
-#include <stdexcept>
 #include <stdio.h>
 
 namespace OpenLoco
@@ -9,7 +9,7 @@ namespace OpenLoco
     {
         if (mode == StreamMode::none)
         {
-            throw std::invalid_argument("Invalid mode argument");
+            throw Exception::InvalidArgument("Invalid mode argument");
         }
 #ifdef _WIN32
         FILE* fs;
@@ -79,7 +79,7 @@ namespace OpenLoco
         if (!open(path, mode))
         {
             // TODO: Make this work like fstream which is not throwing for failing to open the file.
-            throw std::runtime_error("Failed to open '" + path.u8string() + "' for writing");
+            throw Exception::RuntimeError("Failed to open '" + path.u8string() + "' for writing");
         }
     }
 
@@ -150,7 +150,7 @@ namespace OpenLoco
     {
         if (_mode == StreamMode::none)
         {
-            throw std::runtime_error("Invalid operation");
+            throw Exception::InvalidOperation("Invalid mode");
         }
         position = std::min(_length, static_cast<size_t>(position));
         fileSeek(_file, position, SEEK_SET);
@@ -161,13 +161,13 @@ namespace OpenLoco
     {
         if (_mode != StreamMode::read)
         {
-            throw std::runtime_error("Invalid operation");
+            throw Exception::InvalidOperation("Can not read");
         }
 
         const auto bytesRead = readFile(buffer, len, _file);
         if (bytesRead != len)
         {
-            throw std::runtime_error("Failed to read data");
+            throw Exception::RuntimeError("Failed to read data");
         }
 
         _offset += bytesRead;
@@ -177,7 +177,7 @@ namespace OpenLoco
     {
         if (_mode != StreamMode::write)
         {
-            throw std::runtime_error("Invalid operation");
+            throw Exception::InvalidOperation("Can not write");
         }
         if (len == 0)
         {
@@ -187,7 +187,7 @@ namespace OpenLoco
         const auto bytesWriten = writeFile(buffer, len, _file);
         if (bytesWriten != len)
         {
-            throw std::runtime_error("Failed to write data");
+            throw Exception::RuntimeError("Failed to write data");
         }
 
         _offset += bytesWriten;

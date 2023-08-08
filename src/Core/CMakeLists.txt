@@ -2,6 +2,7 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/BinaryStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/BitSet.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/EnumFlags.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Exception.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/FileSystem.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/LocoFixedVector.hpp"

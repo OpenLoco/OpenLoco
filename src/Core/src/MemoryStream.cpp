@@ -1,7 +1,7 @@
 #include "MemoryStream.h"
+#include "Exception.hpp"
 #include <algorithm>
 #include <cstring>
-#include <stdexcept>
 
 namespace OpenLoco
 {
@@ -23,7 +23,7 @@ namespace OpenLoco
         auto* newData = static_cast<std::byte*>(std::realloc(_data, len));
         if (newData == nullptr)
         {
-            throw std::bad_alloc();
+            throw Exception::BadAlloc();
         }
 
         _data = newData;
@@ -94,7 +94,7 @@ namespace OpenLoco
         const auto maxReadLength = std::min(len, _length - _offset);
         if (len > maxReadLength)
         {
-            throw std::runtime_error("Failed to read data");
+            throw Exception::RuntimeError("Failed to read data");
         }
 
         std::memcpy(buffer, _data + _offset, len);
@@ -128,7 +128,7 @@ namespace OpenLoco
             auto* newData = static_cast<std::byte*>(std::realloc(_data, finalCapacity));
             if (newData == nullptr)
             {
-                throw std::bad_alloc();
+                throw Exception::BadAlloc();
             }
 
             _data = newData;

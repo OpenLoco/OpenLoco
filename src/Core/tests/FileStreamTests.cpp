@@ -1,3 +1,4 @@
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileStream.h>
 #include <array>
 #include <cstdio>
@@ -82,7 +83,7 @@ TEST(FileStreamTest, testBadRead)
     ASSERT_EQ(streamIn.getPosition(), 2);
 
     std::array<uint8_t, 4> readBuffer{};
-    EXPECT_THROW(streamIn.read(readBuffer.data(), readBuffer.size()), std::runtime_error);
+    EXPECT_THROW(streamIn.read(readBuffer.data(), readBuffer.size()), Exception::RuntimeError);
 
     streamIn.close();
     std::filesystem::remove(filePath);
@@ -133,7 +134,7 @@ TEST(FileStreamTest, testModeWriteRead)
     ASSERT_EQ(streamOut.getPosition(), 0);
 
     DataBuffer readBuffer(testDataSize);
-    EXPECT_THROW(streamOut.read(readBuffer.data(), readBuffer.size()), std::runtime_error);
+    EXPECT_THROW(streamOut.read(readBuffer.data(), readBuffer.size()), Exception::InvalidOperation);
 
     streamOut.close();
     std::filesystem::remove(filePath);
@@ -151,7 +152,7 @@ TEST(FileStreamTest, testModeReadWrite)
     ASSERT_EQ(streamIn.getLength(), testData.size());
     ASSERT_EQ(streamIn.getPosition(), 0);
 
-    EXPECT_THROW(streamIn.write(testData.data(), testData.size()), std::runtime_error);
+    EXPECT_THROW(streamIn.write(testData.data(), testData.size()), Exception::InvalidOperation);
 
     streamIn.close();
     std::filesystem::remove(filePath);
