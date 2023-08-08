@@ -20,11 +20,11 @@
 #include "VehicleChannel.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
-#include <OpenLoco/Core/Stream.hpp>
+#include <OpenLoco/Core/Exception.hpp>
+#include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <cassert>
-#include <fstream>
 #include <unordered_map>
 
 #ifdef _WIN32
@@ -129,33 +129,40 @@ namespace OpenLoco::Audio
     static std::vector<uint32_t> loadSoundsFromCSS(const fs::path& path)
     {
         Logging::verbose("loadSoundsFromCSS({})", path.string());
-        std::vector<uint32_t> results;
-        std::ifstream fs(path, std::ios::in | std::ios::binary);
 
-        if (fs.is_open())
+        try
         {
-            auto numSounds = readValue<uint32_t>(fs);
+            std::vector<uint32_t> results;
+
+            FileStream fs(path, StreamMode::read);
+            auto numSounds = fs.readValue<uint32_t>();
 
             std::vector<uint32_t> soundOffsets(numSounds, 0);
-            readData(fs, soundOffsets.data(), numSounds);
+            fs.read(soundOffsets.data(), numSounds * sizeof(uint32_t));
 
             std::vector<std::byte> pcm;
             for (uint32_t i = 0; i < numSounds; i++)
             {
                 // Navigate to beginning of wave data
-                fs.seekg(soundOffsets[i]);
+                fs.setPosition(soundOffsets[i]);
 
                 // Read length of wave data and load it into the pcm buffer
-                auto pcmLen = readValue<uint32_t>(fs);
-                auto format = readValue<WAVEFORMATEX>(fs);
+                auto pcmLen = fs.readValue<uint32_t>();
+                auto format = fs.readValue<WAVEFORMATEX>();
 
                 pcm.resize(pcmLen);
-                readData(fs, pcm.data(), pcmLen);
+                fs.read(pcm.data(), pcmLen);
 
                 results.push_back(loadSoundFromWaveMemory(format, pcm.data(), pcmLen));
             }
+
+            return results;
         }
-        return results;
+        catch (const std::exception& ex)
+        {
+            Logging::error("loadSoundsFromCSS({}) failed: {}", path.string(), ex.what());
+            return {};
+        }
     }
 
     static void disposeSamples()
@@ -623,34 +630,60 @@ namespace OpenLoco::Audio
         {
             return res->second;
         }
-        const auto path = Environment::getPath(asset);
-        std::ifstream fs(path, std::ios::in | std::ios::binary);
 
-        if (fs.is_open())
+        const auto path = Environment::getPath(asset);
+        try
         {
-            char buffer[5]{};
-            // Read length of wave data and load it into the pcm buffer
-            fs.read(buffer, 4);      // RIFF
-            readValue<uint32_t>(fs); // size
-            fs.read(buffer, 4);      // WAVE
-            fs.read(buffer, 4);      // fmt
-            readValue<uint32_t>(fs); // headersize
-            readValue<uint16_t>(fs); // PCM
-            const auto channels = readValue<uint16_t>(fs);
-            const auto sampleRate = readValue<uint32_t>(fs);
-            readValue<uint32_t>(fs);
-            readValue<uint16_t>(fs);
-            const auto bits = readValue<uint16_t>(fs);
-            fs.read(buffer, 4); // data
-            auto pcmLen = readValue<uint32_t>(fs);
-            std::vector<std::uint8_t> pcm;
-            pcm.resize(pcmLen);
-            readData(fs, pcm.data(), pcmLen);
+            FileStream fs(path, StreamMode::read);
+
+            const auto sig = fs.readValue<uint32_t>();
+            if (sig != 0x46464952) // RIFF
+                throw Exception::RuntimeError("Invalid signature.");
+
+            fs.readValue<uint32_t>(); // size
+
+            const auto riffType = fs.readValue<uint32_t>();
+            if (riffType != 0x45564157) // WAVE
+                throw Exception::RuntimeError("Invalid format.");
+
+            const auto fmtMarker = fs.readValue<uint32_t>();
+            // This can be 'fmt\0' or 'fmt '
+            if (fmtMarker != 0x20746d66 && fmtMarker != 0x00746d66)
+                throw Exception::RuntimeError("Invalid format marker.");
+
+            fs.readValue<uint32_t>(); // headersize
+
+            const auto typeFormat = fs.readValue<uint16_t>();
+            if (typeFormat != 1)
+                throw Exception::RuntimeError("Invalid format type, expected PCM.");
+
+            const auto channels = fs.readValue<uint16_t>();
+            const auto sampleRate = fs.readValue<uint32_t>();
+
+            fs.readValue<uint32_t>();
+            fs.readValue<uint16_t>();
+
+            const auto bits = fs.readValue<uint16_t>();
+
+            const auto dataMarker = fs.readValue<uint32_t>();
+            if (dataMarker != 0x61746164) // data
+                throw Exception::RuntimeError("Invalid data marker.");
+
+            const auto pcmLen = fs.readValue<uint32_t>();
+
+            std::vector<std::uint8_t> pcm(pcmLen);
+            fs.read(pcm.data(), pcmLen);
+
             const auto id = _bufferManager.allocate(stdx::span<const uint8_t>(pcm.data(), pcmLen), sampleRate, channels == 2, bits);
             _musicSamples[asset] = id;
+
             return id;
         }
-        return std::nullopt;
+        catch (const std::exception& ex)
+        {
+            Logging::error("Unable to load music sample '{}': {}", path, ex.what());
+            return std::nullopt;
+        }
     }
 
     // 0x00401A05
