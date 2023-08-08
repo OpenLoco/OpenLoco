@@ -50,6 +50,7 @@
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
+#include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <vector>
@@ -316,6 +317,9 @@ namespace OpenLoco::ObjectManager
     // 0x0047237D
     void reloadAll()
     {
+        Core::Timer reloadTimer;
+        size_t loadedObjects{};
+
         setTotalNumImages(0x201A); // TODO: Why this value?
         for (auto type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
@@ -327,9 +331,12 @@ namespace OpenLoco::ObjectManager
                 {
                     auto& extHdr = getRepositoryItem(type).objectEntryExtendeds[id];
                     callObjectLoad(handle, *obj, stdx::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+                    loadedObjects++;
                 }
             }
         }
+
+        Logging::verbose("Loaded {} objects in {} milliseconds.", loadedObjects, reloadTimer.elapsed());
     }
 
     // 0x00472754
@@ -588,8 +595,7 @@ namespace OpenLoco::ObjectManager
             {
                 result.success = false;
                 result.problemObjects.push_back(header);
-                std::string str(header.getName());
-                Logging::error("Failed to load: {}", str);
+                Logging::error("Failed to load: {}", header.getName());
                 // Could break early here but we want to list all of the failed objects
             }
             index++;

@@ -6,14 +6,17 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Core/Stream.hpp>
+#include <OpenLoco/Core/Timer.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <cstdint>
 #include <fstream>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::ObjectManager
 {
@@ -96,15 +99,20 @@ namespace OpenLoco::ObjectManager
 
     static void saveIndex(const IndexHeader& header)
     {
-        std::ofstream stream;
+        Core::Timer saveTimer;
+
+        FileStream stream;
         const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
-        stream.open(indexPath, std::ios::out | std::ios::binary);
-        if (!stream.is_open())
+        stream.open(indexPath, StreamMode::write);
+        if (!stream.isOpen())
         {
+            Logging::error("Unable to save object index.");
             return;
         }
-        stream.write(reinterpret_cast<const char*>(&header), sizeof(header));
-        stream.write(reinterpret_cast<const char*>(*_installedObjectList), header.fileSize);
+        stream.writeValue(header);
+        stream.write(*_installedObjectList, header.fileSize);
+
+        Logging::verbose("Saved object index in {} milliseconds.", saveTimer.elapsed());
     }
 
     static std::pair<ObjectIndexEntry, size_t> createPartialNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
@@ -208,14 +216,21 @@ namespace OpenLoco::ObjectManager
     static void addObjectToIndex(const fs::path filepath, size_t& usedBufferSize)
     {
         ObjectHeader objHeader{};
+        try
         {
-            std::ifstream stream;
-            stream.open(filepath, std::ios::in | std::ios::binary);
-            Utility::readData(stream, objHeader);
-            if (stream.gcount() != sizeof(objHeader))
+            FileStream stream;
+            stream.open(filepath, StreamMode::read);
+            if (!stream.isOpen())
             {
+                Logging::error("Unable to open object index file.");
                 return;
             }
+            stream.readValue(objHeader);
+        }
+        catch (const std::runtime_error& ex)
+        {
+            Logging::error("Unable to read object index header: {}", ex.what());
+            return;
         }
 
         const auto curObjPos = usedBufferSize;
@@ -234,6 +249,7 @@ namespace OpenLoco::ObjectManager
 
         if (!tempLoadFailed)
         {
+            Logging::error("Unable to load the object '{}', can't add to index", objHeader.getName());
             return;
         }
 
@@ -347,44 +363,58 @@ namespace OpenLoco::ObjectManager
 
     static bool tryLoadIndex(const ObjectFolderState& currentState)
     {
+        Core::Timer loadTimer;
+
         const auto indexPath = Environment::getPathNoWarning(Environment::PathId::plugin1);
         if (!fs::exists(indexPath))
         {
+            Logging::verbose("Object index does not exist.");
             return false;
         }
-        std::ifstream stream;
-        stream.open(indexPath, std::ios::in | std::ios::binary);
-        if (!stream.is_open())
+        FileStream stream;
+        stream.open(indexPath, StreamMode::read);
+        if (!stream.isOpen())
         {
+            Logging::error("Unable to load the object index.");
             return false;
         }
-        // 0x00112A14C -> 160
-        IndexHeader header{};
-        Utility::readData(stream, header);
-        if ((header.state != currentState) || (stream.gcount() != sizeof(header)))
+
+        try
         {
-            return false;
-        }
-        else
-        {
-            if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
+            // 0x00112A14C -> 160
+            IndexHeader header{};
+            stream.readValue(header);
+            if (header.state != currentState)
             {
-                free(*_installedObjectList);
-            }
-            _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
-            if (_installedObjectList == nullptr)
-            {
-                exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+                Logging::info("Object index out of date.");
                 return false;
             }
-            Utility::readData(stream, *_installedObjectList, header.fileSize);
-            if (stream.gcount() != static_cast<int32_t>(header.fileSize))
+            else
             {
-                return false;
+                if (reinterpret_cast<int32_t>(*_installedObjectList) != -1)
+                {
+                    free(*_installedObjectList);
+                }
+                _installedObjectList = static_cast<std::byte*>(malloc(header.fileSize));
+                if (_installedObjectList == nullptr)
+                {
+                    exitWithError(StringIds::unable_to_allocate_enough_memory, StringIds::game_init_failure);
+                    return false;
+                }
+                stream.read(*_installedObjectList, header.fileSize);
+                _installedObjectCount = header.numObjects;
+
+                Logging::verbose("Loaded object index in {} milliseconds.", loadTimer.elapsed());
             }
-            _installedObjectCount = header.numObjects;
-            reloadAll();
         }
+        catch (const std::runtime_error& ex)
+        {
+            Logging::error("Unable to load the object index: {}", ex.what());
+            return false;
+        }
+
+        reloadAll();
+
         return true;
     }
 
