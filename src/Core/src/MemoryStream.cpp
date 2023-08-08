@@ -23,7 +23,7 @@ namespace OpenLoco
         auto* newData = static_cast<std::byte*>(std::realloc(_data, len));
         if (newData == nullptr)
         {
-            throw Exception::BadAlloc();
+            throw Exception::BadAllocation();
         }
 
         _data = newData;
@@ -128,7 +128,7 @@ namespace OpenLoco
             auto* newData = static_cast<std::byte*>(std::realloc(_data, finalCapacity));
             if (newData == nullptr)
             {
-                throw Exception::BadAlloc();
+                throw Exception::BadAllocation();
             }
 
             _data = newData;
