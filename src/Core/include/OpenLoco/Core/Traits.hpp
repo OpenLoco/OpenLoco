@@ -23,4 +23,12 @@ namespace OpenLoco::Traits
     {
         using type = typename std::underlying_type<T>::type;
     };
+
+    // Determines if a type is a primitive type such as int, float, etc. Pointers are not considered primitive.
+    // It also returns true for enums while the standard is_fundamental does not.
+    template<typename T>
+    struct IsPrimitive
+    {
+        static constexpr auto value = std::is_fundamental_v<typename UnderlyingType<T>::type>;
+    };
 }

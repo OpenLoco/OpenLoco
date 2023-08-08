@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Traits.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <istream>
@@ -50,16 +51,20 @@ namespace OpenLoco
         virtual void write(const void*, size_t) = 0;
 
         template<typename T>
-        void readValue(T& dst)
+        T readValue()
         {
-            // TODO: Ensure the type is a primitive.
-            read(&dst, sizeof(T));
+            static_assert(Traits::IsPrimitive<T>::value || Traits::IsPOD<T>::value, "Type must be primitive or POD");
+
+            T tmp;
+            read(&tmp, sizeof(T));
+            return tmp;
         }
 
         template<typename T>
         void writeValue(const T& src)
         {
-            // TODO: Ensure the type is a primitive.
+            static_assert(Traits::IsPrimitive<T>::value || Traits::IsPOD<T>::value, "Type must be primitive or POD");
+
             write(&src, sizeof(T));
         }
     };
