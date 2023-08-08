@@ -43,7 +43,7 @@ namespace OpenLoco
         uint32_t image; // 0x0A
         uint32_t var_0E;
         uint32_t var_12;
-        uint32_t var_16;
+        uint32_t mapPixelImage; // 0x16
         uint8_t pad_1A;
         uint8_t numVariations;       // 0x1B
         uint8_t variationLikelihood; // 0x1C

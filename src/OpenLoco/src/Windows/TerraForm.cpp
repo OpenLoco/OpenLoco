@@ -1200,7 +1200,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Dropdown::setHighlightedItem(landIndex);
 
                 auto args = FormatArguments();
-                args.push(landObj->var_16 + Land::ImageIds::landscape_generator_tile_icon);
+                args.push(landObj->mapPixelImage + Land::ImageIds::landscape_generator_tile_icon);
                 args.push<uint16_t>(i);
 
                 Dropdown::add(landIndex, 0xFFFE, args);
@@ -1576,7 +1576,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
 
-                self.widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
+                self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
@@ -2511,7 +2511,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Adjust Land Tab
             {
                 auto landObj = ObjectManager::get<LandObject>(LastGameOptionManager::getLastLand());
-                uint32_t imageId = landObj->var_16 + Land::ImageIds::toolbar_terraform_land;
+                uint32_t imageId = landObj->mapPixelImage + Land::ImageIds::toolbar_terraform_land;
 
                 Widget::drawTab(self, rt, imageId, widx::tab_adjust_land);
             }

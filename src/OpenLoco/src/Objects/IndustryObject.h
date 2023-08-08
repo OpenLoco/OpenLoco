@@ -112,8 +112,8 @@ namespace OpenLoco
         IndustryObjectProductionRateRange initialProductionRate[2]; // 0xD6
         uint8_t producedCargoType[2];                               // 0xDE (0xFF = null)
         uint8_t requiredCargoType[3];                               // 0xE0 (0xFF = null)
-        uint8_t pad_E3;
-        IndustryObjectFlags flags; // 0xE4
+        Colour mapColour;                                           // 0xE3
+        IndustryObjectFlags flags;                                  // 0xE4
         uint8_t var_E8;
         uint8_t var_E9;
         uint8_t var_EA;

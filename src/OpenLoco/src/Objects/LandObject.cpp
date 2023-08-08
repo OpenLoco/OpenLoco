@@ -76,7 +76,7 @@ namespace OpenLoco
 
         var_0E = var_04 * 25;
         image = var_04 * var_03 * 57 + imgRes.imageOffset;
-        var_16 = var_04 * var_03 * 82 + imgRes.imageOffset;
+        mapPixelImage = var_04 * var_03 * 82 + imgRes.imageOffset;
 
         assert(remainingData.size() == imgRes.tableLength);
     }
@@ -90,7 +90,7 @@ namespace OpenLoco
         var_12 = 0;
         var_06 = 0;
         var_07 = 0;
-        var_16 = 0;
+        mapPixelImage = 0;
     }
 
     // 0x004699A8

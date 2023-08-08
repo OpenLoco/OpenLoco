@@ -37,7 +37,7 @@ namespace OpenLoco
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
         image = imageRes.imageOffset;
-        var_0A = imageRes.imageOffset + 40;
+        mapPixelImage = imageRes.imageOffset + 40;
 
         // Ensure we've loaded the entire object
         assert(remainingData.size() == imageRes.tableLength);
@@ -48,7 +48,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        var_0A = 0;
+        mapPixelImage = 0;
     }
 
     // 0x004C56D3
