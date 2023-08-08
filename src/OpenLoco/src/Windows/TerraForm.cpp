@@ -2,6 +2,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Terraform/ChangeLandMaterial.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"

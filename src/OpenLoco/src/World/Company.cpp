@@ -1,6 +1,7 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/Company/ChangeLoan.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"

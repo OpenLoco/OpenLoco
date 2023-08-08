@@ -367,25 +367,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct ChangeLoanArgs
-    {
-        static constexpr auto command = GameCommand::changeLoan;
-        ChangeLoanArgs() = default;
-        explicit ChangeLoanArgs(const registers& regs)
-            : newLoan(regs.edx)
-        {
-        }
-
-        currency32_t newLoan;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.edx = newLoan;
-            return regs;
-        }
-    };
-
     struct SetGameSpeedArgs
     {
         static constexpr auto command = GameCommand::setGameSpeed;
@@ -732,53 +713,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct ChangeCompanyColourSchemeArgs
-    {
-        static constexpr auto command = GameCommand::changeCompanyColourScheme;
-
-        ChangeCompanyColourSchemeArgs() = default;
-        explicit ChangeCompanyColourSchemeArgs(const registers& regs)
-            : companyId(CompanyId(regs.dl))
-            , isPrimary()
-            , value(regs.al)
-            , colourType(regs.cl)
-            , setColourMode(regs.dh)
-        {
-            if (!setColourMode)
-            {
-                isPrimary = regs.ah == 0;
-            }
-        }
-
-        CompanyId companyId;
-        bool isPrimary;
-        uint8_t value;
-        uint8_t colourType;
-        bool setColourMode;
-
-        explicit operator registers() const
-        {
-            registers regs;
-
-            regs.cl = colourType;           // vehicle type or main
-            regs.dh = setColourMode;        // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
-            regs.dl = enumValue(companyId); // company id
-
-            if (!setColourMode)
-            {
-                // cl is divided by 2 when used
-                regs.ah = isPrimary ? 1 : 0; // [ 0, 1 ] -- primary or secondary palette
-                regs.al = value;             // new colour
-            }
-            else if (setColourMode)
-            {
-                regs.al = value; // [ 0, 1 ] -- off or on
-            }
-
-            return regs;
-        }
-    };
-
     struct PauseGameArgs
     {
         static constexpr auto command = GameCommand::pauseGame;
@@ -884,33 +818,6 @@ namespace OpenLoco::GameCommands
             regs.dh = enumValue(colour);
             regs.di = rotation | (buildImmediately ? 0x8000 : 0) | (requiresFullClearance ? 0x4000 : 0);
             regs.bh = type;
-            return regs;
-        }
-    };
-
-    struct ChangeLandMaterialArgs
-    {
-        static constexpr auto command = GameCommand::changeLandMaterial;
-        ChangeLandMaterialArgs() = default;
-        explicit ChangeLandMaterialArgs(const registers& regs)
-            : pointA(regs.ax, regs.cx)
-            , pointB(regs.di, regs.bp)
-            , landType(regs.dl)
-        {
-        }
-
-        World::Pos2 pointA;
-        World::Pos2 pointB;
-        uint8_t landType;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pointA.x;
-            regs.cx = pointA.y;
-            regs.di = pointB.x;
-            regs.bp = pointB.y;
-            regs.dl = landType;
             return regs;
         }
     };
@@ -1633,43 +1540,13 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct HeadquarterPlacementArgs
-    {
-        static constexpr auto command = GameCommand::buildCompanyHeadquarters;
-
-        HeadquarterPlacementArgs() = default;
-        explicit HeadquarterPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-            , rotation(regs.bh & 0x3)
-            , type(regs.dl)
-            , buildImmediately(regs.bh & 0x80)
-        {
-        }
-
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t type;
-        bool buildImmediately = false; // No scaffolding required (editor mode)
-        explicit operator registers() const
-        {
-
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
-            regs.dx = type;
-            regs.bh = rotation | (buildImmediately ? 0x80 : 0);
-            return regs;
-        }
-    };
-
     struct HeadquarterRemovalArgs
     {
         static constexpr auto command = GameCommand::removeCompanyHeadquarters;
 
         HeadquarterRemovalArgs() = default;
-        explicit HeadquarterRemovalArgs(const HeadquarterPlacementArgs& place)
-            : pos(place.pos)
+        explicit HeadquarterRemovalArgs(const World::Pos3& place)
+            : pos(place)
         {
         }
         explicit HeadquarterRemovalArgs(const registers& regs)
@@ -2173,21 +2050,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    // Defined in GameCommands/BuildCompanyHeadquarters.cpp
-    void buildCompanyHeadquarters(registers& regs);
-
-    // Defined in GameCommands/ChangeCompanyColour.cpp
-    void changeCompanyColour(registers& regs);
-
-    // Defined in GameCommands/ChangeCompanyFace.cpp
-    void changeCompanyFace(registers& regs);
-
-    // Defined in GameCommands/ChangeLandMaterial.cpp
-    void changeLandMaterial(registers& regs);
-
-    // Defined in GameCommands/ChangeLoan.cpp
-    void changeLoan(registers& regs);
 
     // Defined in GameCommands/Cheat.cpp
     void cheat(registers& regs);
