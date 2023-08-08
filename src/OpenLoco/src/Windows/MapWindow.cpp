@@ -1420,8 +1420,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (auto i = 0; i < 31; i++)
         {
-            int8_t industryColour = industryColours[i];
-            int8_t diff = std::abs(industryColour - colour);
+            auto industryColour = industryColours[i];
+            auto diff = industryColour - colour;
+            if (industryColour < colour)
+            {
+                diff = -diff;
+            }
 
             if (diff <= 2)
             {
