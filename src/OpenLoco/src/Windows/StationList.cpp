@@ -17,6 +17,7 @@
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -352,7 +353,7 @@ namespace OpenLoco::Ui::Windows::StationList
     Window* open(CompanyId companyId, uint8_t type)
     {
         if (type > 4)
-            throw std::domain_error("Unexpected station type");
+            throw Exception::RuntimeError("Unexpected station type");
 
         Window* stationList = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;

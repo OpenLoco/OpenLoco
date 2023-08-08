@@ -12,6 +12,7 @@
 #include "Window.h"
 #include "World/Company.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/Exception.hpp>
 
 namespace OpenLoco::Vehicles
 {
@@ -205,7 +206,7 @@ namespace OpenLoco::Vehicles
             // This can not use reinterpret_cast due to being a const member without considerable more code
             if (!is<TClass>())
             {
-                throw std::runtime_error("Malformed vehicle. Incorrect subType!");
+                throw Exception::RuntimeError("Malformed vehicle. Incorrect subType!");
             }
             return (TType*)this;
         }

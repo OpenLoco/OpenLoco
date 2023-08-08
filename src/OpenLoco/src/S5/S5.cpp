@@ -26,6 +26,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -345,7 +346,7 @@ namespace OpenLoco::S5
 
             if (file.header.hasFlags(HeaderFlags::isRaw))
             {
-                throw NotImplementedException();
+                throw Exception::NotImplemented();
             }
             else
             {
@@ -407,7 +408,7 @@ namespace OpenLoco::S5
         SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
         {
-            throw std::runtime_error("Invalid checksum");
+            throw Exception::RuntimeError("Invalid checksum");
         }
 
         auto file = std::make_unique<S5File>();

@@ -13,6 +13,7 @@
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
@@ -70,13 +71,13 @@ namespace OpenLoco::Gfx
         std::ifstream stream(g1Path, std::ios::in | std::ios::binary);
         if (!stream)
         {
-            throw std::runtime_error("Opening g1 file failed.");
+            throw Exception::RuntimeError("Opening g1 file failed.");
         }
 
         G1Header header;
         if (!readData(stream, header))
         {
-            throw std::runtime_error("Reading g1 file header failed.");
+            throw Exception::RuntimeError("Reading g1 file header failed.");
         }
 
         if (header.numEntries != G1ExpectedCount::kDisc)
@@ -95,7 +96,7 @@ namespace OpenLoco::Gfx
         auto elements32 = std::vector<G1Element32>(header.numEntries);
         if (!readData(stream, elements32.data(), header.numEntries))
         {
-            throw std::runtime_error("Reading g1 element headers failed.");
+            throw Exception::RuntimeError("Reading g1 element headers failed.");
         }
         auto elements = convertElements(elements32);
 
@@ -103,7 +104,7 @@ namespace OpenLoco::Gfx
         auto elementData = std::make_unique<std::byte[]>(header.totalSize);
         if (!readData(stream, elementData.get(), header.totalSize))
         {
-            throw std::runtime_error("Reading g1 elements failed.");
+            throw Exception::RuntimeError("Reading g1 elements failed.");
         }
         stream.close();
 

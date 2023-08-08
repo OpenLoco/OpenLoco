@@ -1,4 +1,5 @@
 #include "SawyerStream.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <algorithm>
 #include <cassert>
@@ -47,7 +48,7 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
     }
     catch (...)
     {
-        throw std::runtime_error(exceptionReadError);
+        throw Exception::RuntimeError(exceptionReadError);
     }
 }
 
@@ -112,7 +113,7 @@ stdx::span<const std::byte> SawyerStreamReader::decode(SawyerEncoding encoding, 
             decodeRotate(_decodeBuffer2, data);
             return _decodeBuffer2.getSpan();
         default:
-            throw std::runtime_error(exceptionUnknownEncoding);
+            throw Exception::RuntimeError(exceptionUnknownEncoding);
     }
 }
 
@@ -134,7 +135,7 @@ void SawyerStreamReader::decodeRunLengthSingle(MemoryStream& buffer, stdx::span<
             i++;
             if (i >= data.size())
             {
-                throw std::runtime_error(exceptionInvalidRLE);
+                throw Exception::RuntimeError(exceptionInvalidRLE);
             }
 
             auto copyLen = static_cast<size_t>(257 - rleCodeByte);
@@ -145,7 +146,7 @@ void SawyerStreamReader::decodeRunLengthSingle(MemoryStream& buffer, stdx::span<
         {
             if (i + 1 >= data.size() || i + 1 + rleCodeByte + 1 > data.size())
             {
-                throw std::runtime_error(exceptionInvalidRLE);
+                throw Exception::RuntimeError(exceptionInvalidRLE);
             }
 
             auto copyLen = static_cast<size_t>(rleCodeByte + 1);
@@ -164,7 +165,7 @@ void SawyerStreamReader::decodeRunLengthMulti(MemoryStream& buffer, stdx::span<c
             i++;
             if (i >= data.size())
             {
-                throw std::runtime_error(exceptionInvalidRLE);
+                throw Exception::RuntimeError(exceptionInvalidRLE);
             }
             buffer.writeValue(data[i]);
         }
@@ -174,7 +175,7 @@ void SawyerStreamReader::decodeRunLengthMulti(MemoryStream& buffer, stdx::span<c
             assert(offset < 0);
             if (static_cast<size_t>(-offset) > buffer.getLength())
             {
-                throw std::runtime_error(exceptionInvalidRLE);
+                throw Exception::RuntimeError(exceptionInvalidRLE);
             }
             auto copySrc = buffer.data() + buffer.getLength() + offset;
             auto copyLen = (static_cast<size_t>(data[i]) & 7) + 1;
@@ -235,7 +236,7 @@ void SawyerStreamWriter::writeStream(const void* data, size_t dataLen)
     }
     catch (...)
     {
-        throw std::runtime_error(exceptionWriteError);
+        throw Exception::RuntimeError(exceptionWriteError);
     }
 }
 
@@ -265,7 +266,7 @@ stdx::span<const std::byte> SawyerStreamWriter::encode(SawyerEncoding encoding, 
             encodeRotate(_encodeBuffer, data);
             return _encodeBuffer.getSpan();
         default:
-            throw std::runtime_error(exceptionUnknownEncoding);
+            throw Exception::RuntimeError(exceptionUnknownEncoding);
     }
 }
 

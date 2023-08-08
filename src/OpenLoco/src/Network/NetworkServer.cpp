@@ -6,6 +6,7 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/MemoryStream.h>
 #include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Platform/Platform.h>
@@ -48,7 +49,7 @@ void NetworkServer::listen(const std::string& bind, port_t port)
 
     if (_sockets.empty())
     {
-        throw std::runtime_error("Unable to listen on " + bind + ", port " + std::to_string(port));
+        throw Exception::RuntimeError("Unable to listen on " + bind + ", port " + std::to_string(port));
     }
 
     beginReceivePacketLoop();

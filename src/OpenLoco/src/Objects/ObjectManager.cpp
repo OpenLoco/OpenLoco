@@ -47,6 +47,7 @@
 #include "VehicleObject.h"
 #include "WallObject.h"
 #include "WaterObject.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
@@ -803,7 +804,7 @@ namespace OpenLoco::ObjectManager
             }
             else
             {
-                throw std::runtime_error("Unable to pack object: object not loaded");
+                throw Exception::RuntimeError("Unable to pack object: object not loaded");
             }
         }
     }
@@ -823,7 +824,7 @@ namespace OpenLoco::ObjectManager
         }
         else
         {
-            throw std::runtime_error("Object not loaded at this index");
+            throw Exception::RuntimeError("Object not loaded at this index");
         }
     }
 

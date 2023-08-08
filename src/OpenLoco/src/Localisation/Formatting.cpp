@@ -10,6 +10,7 @@
 #include "StringIds.h"
 #include "StringManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
@@ -528,10 +529,10 @@ namespace OpenLoco::StringManager
                         break;
 
                     case ControlCodes::timeMS:
-                        throw std::runtime_error("Unimplemented format string: 15");
+                        throw Exception::RuntimeError("Unimplemented format string: 15");
 
                     case ControlCodes::timeHM:
-                        throw std::runtime_error("Unimplemented format string: 16");
+                        throw Exception::RuntimeError("Unimplemented format string: 16");
 
                     case ControlCodes::distance:
                     {

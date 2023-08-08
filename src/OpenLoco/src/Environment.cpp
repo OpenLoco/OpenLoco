@@ -1,6 +1,7 @@
 #include "Environment.h"
 #include "Config.h"
 #include "Ui.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
@@ -339,7 +340,7 @@ namespace OpenLoco::Environment
         size_t index = (size_t)id;
         if (index >= Utility::length(kPaths))
         {
-            throw std::runtime_error("Invalid PathId: " + std::to_string((int32_t)id));
+            throw Exception::RuntimeError("Invalid PathId: " + std::to_string((int32_t)id));
         }
         return kPaths[(size_t)id];
     }

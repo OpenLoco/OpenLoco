@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto tabIndex = static_cast<uint8_t>(type);
         if (tabIndex > 5)
         {
-            throw std::domain_error("Unexpected vehicle type");
+            throw Exception::RuntimeError("Unexpected vehicle type");
         }
 
         static constexpr Widx type_to_widx[] = {
