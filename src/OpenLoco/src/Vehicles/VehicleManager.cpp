@@ -62,24 +62,6 @@ namespace OpenLoco::VehicleManager
         call(0x004C3A0C, regs);
     }
 
-    // 0x004279CC
-    void vehiclePickupWater(EntityId head, uint8_t flags)
-    {
-        registers regs;
-        regs.di = enumValue(head);
-        regs.bl = flags;
-        call(0x004279CC, regs);
-    }
-
-    // 0x00426B29
-    void vehiclePickupAir(EntityId head, uint8_t flags)
-    {
-        registers regs;
-        regs.di = enumValue(head);
-        regs.bl = flags;
-        call(0x00426B29, regs);
-    }
-
     // 0x004B05E4
     void placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
     {
@@ -127,11 +109,26 @@ namespace OpenLoco::VehicleManager
                 head.liftUpVehicle();
                 break;
             case TransportMode::air:
-                vehiclePickupAir(head.id, GameCommands::Flags::apply);
+            {
+                // Calling this GC directly as we need the result immediately
+                // perhaps in the future this could be changed.
+                GameCommands::VehiclePickupAirArgs airArgs{};
+                airArgs.head = head.id;
+                registers regs = static_cast<registers>(airArgs);
+                regs.bl = GameCommands::Flags::apply;
+                GameCommands::vehiclePickupAir(regs);
                 break;
+            }
             case TransportMode::water:
-                vehiclePickupWater(head.id, GameCommands::Flags::apply);
-                break;
+            {
+                // Calling this GC directly as we need the result immediately
+                // perhaps in the future this could be changed.
+                GameCommands::VehiclePickupWaterArgs waterArgs{};
+                waterArgs.head = head.id;
+                registers regs = static_cast<registers>(waterArgs);
+                regs.bl = GameCommands::Flags::apply;
+                GameCommands::vehiclePickupWater(regs);
+            }
         }
 
         Vehicles::Vehicle train(head);
