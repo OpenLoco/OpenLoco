@@ -206,7 +206,7 @@ namespace OpenLoco::World::MapGenerator
             // Vanilla would use an `rcl` for the lower bit, getting the carry flag in.
             // We're substituting it with an extra bit of the random state.
             const bool topographyBit = ((threshold & 511) << 9) > threshold;
-            const auto topographyId = (enumValue(options.topographyStyle) << 1) | topographyBit;
+            const auto topographyId = (enumValue(options.topographyStyle) << 1) | (topographyBit ? 1U : 0);
             const auto topographyFlags = topographyStyleFlags[topographyId];
 
             const bool generateHills = (topographyFlags & TopographyFlags::hasHills) != TopographyFlags::none;
@@ -216,8 +216,7 @@ namespace OpenLoco::World::MapGenerator
             const bool isValidMountainIndex = generateMountains && randomHillIndex >= hillShapesObj->hillHeightMapCount;
             if (!(isValidHillIndex || isValidMountainIndex))
             {
-                printf("Bail: flags = %d, randomHillIndex = %d, hillHeightMapCount = %d, mountainHeightMapCount = %d\n",
-                    enumValue(topographyFlags), randomHillIndex, hillShapesObj->hillHeightMapCount, hillShapesObj->mountainHeightMapCount);
+                printf("Bail: flags = %d, randomHillIndex = %d, hillHeightMapCount = %d, mountainHeightMapCount = %d\n", enumValue(topographyFlags), randomHillIndex, hillShapesObj->hillHeightMapCount, hillShapesObj->mountainHeightMapCount);
                 return;
             }
 
@@ -236,6 +235,8 @@ namespace OpenLoco::World::MapGenerator
             regs.esi = X86Pointer(src);
             regs.ebp = X86Pointer(heightMap.data());
             regs.ebx = threshold;
+            regs.cl = targetWidth;
+            regs.ch = targetHeight;
             regs.dl = randomHillIndex;
             regs.eax = (threshold & 511) + targetWidth + randomHillIndex;
 
@@ -249,7 +250,7 @@ namespace OpenLoco::World::MapGenerator
             }
 
             printf("Calling vanilla!\n");
-            call(0x00462785, regs);
+            call(0x00462797, regs);
             // call(0x00462797, regs);
 
             _heightMap = nullptr;
