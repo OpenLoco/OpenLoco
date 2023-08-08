@@ -3,6 +3,9 @@ cmake_policy(VERSION 3.22)
 
 set (PROJECT openloco)
 
+# Store the top level source directory in a variable to be passed down to targets.
+set(OPENLOCO_PROJECT_PATH ${CMAKE_SOURCE_DIR})
+
 # Note: Searching for CCache must be before project() so project() can use CCache too
 # if it is available
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

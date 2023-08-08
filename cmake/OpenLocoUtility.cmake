@@ -234,6 +234,9 @@ function(_loco_add_target TARGET TYPE)
         # Group files nicely in IDEs
         source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/tests" PREFIX "tests" FILES ${_TEST_FILES})
     endif()
+    
+    # Tell each target about the project directory.
+    target_compile_definitions(${TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
 endfunction()
 
 function(loco_add_library TARGET TYPE)
