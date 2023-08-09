@@ -1013,50 +1013,6 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::renameTown, regs);
     }
 
-    struct TownPlacementArgs
-    {
-        static constexpr auto command = GameCommand::createTown;
-
-        TownPlacementArgs() = default;
-        explicit TownPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx)
-            , size(regs.dl)
-        {
-        }
-
-        World::Pos2 pos;
-        uint8_t size;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.edx = size;
-            return regs;
-        }
-    };
-
-    struct TownRemovalArgs
-    {
-        static constexpr auto command = GameCommand::removeTown;
-
-        TownRemovalArgs() = default;
-        explicit TownRemovalArgs(const registers& regs)
-            : townId(TownId(regs.edi))
-        {
-        }
-
-        TownId townId;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.edi = enumValue(townId);
-            return regs;
-        }
-    };
-
     struct AirportPlacementArgs
     {
         static constexpr auto command = GameCommand::createAirport;

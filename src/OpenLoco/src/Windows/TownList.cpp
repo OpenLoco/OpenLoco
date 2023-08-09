@@ -3,6 +3,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Town/CreateTown.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
