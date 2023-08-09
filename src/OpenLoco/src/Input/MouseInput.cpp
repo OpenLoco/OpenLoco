@@ -4,6 +4,8 @@
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Terraform/RemoveTree.h"
+#include "GameCommands/Terraform/RemoveWall.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"

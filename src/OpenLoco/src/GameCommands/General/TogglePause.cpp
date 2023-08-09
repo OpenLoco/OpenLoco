@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x00431E32
-    uint32_t togglePause(uint8_t flags)
+    static uint32_t togglePause(uint8_t flags)
     {
         if ((flags & Flags::apply) == 0)
             return 0;

@@ -1,5 +1,6 @@
 #include "Tree.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Terraform/CreateTree.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"

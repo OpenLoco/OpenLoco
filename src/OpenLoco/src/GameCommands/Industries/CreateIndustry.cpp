@@ -2,6 +2,7 @@
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Terraform/CreateWall.h"
 #include "Graphics/Colour.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"

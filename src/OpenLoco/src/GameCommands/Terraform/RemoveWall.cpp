@@ -1,3 +1,4 @@
+#include "RemoveWall.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/TileManager.h"
