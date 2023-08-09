@@ -1,3 +1,4 @@
+#include "CreateIndustry.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"

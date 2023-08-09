@@ -1,6 +1,7 @@
 #include "Industry.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Industries/RemoveIndustry.h"
 #include "IndustryManager.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"

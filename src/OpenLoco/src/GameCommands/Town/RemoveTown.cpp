@@ -2,6 +2,7 @@
 #include "Economy/Expenditures.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Industries/RemoveIndustry.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"

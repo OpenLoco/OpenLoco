@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"

@@ -4,6 +4,8 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Industries/CreateIndustry.h"
+#include "GameCommands/Industries/RemoveIndustry.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"

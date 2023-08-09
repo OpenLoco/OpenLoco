@@ -367,30 +367,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct SetGameSpeedArgs
-    {
-        static constexpr auto command = GameCommand::setGameSpeed;
-        SetGameSpeedArgs() = default;
-        explicit SetGameSpeedArgs(const registers& regs)
-            : newSpeed(static_cast<GameSpeed>(regs.edi))
-        {
-        }
-
-        explicit SetGameSpeedArgs(const GameSpeed speed)
-        {
-            newSpeed = speed;
-        }
-
-        GameSpeed newSpeed;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.edi = static_cast<std::underlying_type_t<GameSpeed>>(newSpeed);
-            return regs;
-        }
-    };
-
     struct VehicleRenameArgs
     {
         static constexpr auto command = GameCommand::vehicleRename;
@@ -422,42 +398,6 @@ namespace OpenLoco::GameCommands
             std::memcpy(&regs.edx, buffer + offset, 4);
             std::memcpy(&regs.ebp, buffer + offset + 4, 4);
             std::memcpy(&regs.edi, buffer + offset + 8, 4);
-            return regs;
-        }
-    };
-
-    struct RenameStationArgs
-    {
-        static constexpr auto command = GameCommand::changeStationName;
-
-        RenameStationArgs() = default;
-        explicit RenameStationArgs(const registers& regs)
-            : stationId(StationId(regs.cx))
-            , nameBufferIndex(regs.ax)
-            , buffer{}
-        {
-            std::memcpy(buffer, &regs.edx, 4);
-            std::memcpy(buffer + 4, &regs.ebp, 4);
-            std::memcpy(buffer + 8, &regs.edi, 4);
-        }
-
-        StationId stationId;
-        uint8_t nameBufferIndex;
-        char buffer[37];
-
-        explicit operator registers() const
-        {
-            registers regs;
-
-            regs.cx = enumValue(stationId);
-            regs.ax = nameBufferIndex;
-            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
-            const auto offset = iToOffset[nameBufferIndex];
-
-            std::memcpy(&regs.edx, buffer + offset, 4);
-            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
-            std::memcpy(&regs.edi, buffer + offset + 8, 4);
-
             return regs;
         }
     };
@@ -709,50 +649,6 @@ namespace OpenLoco::GameCommands
             regs.dh = index;
             regs.edi = pos.z | (type << 16);
             regs.ebp = trackObjType | (modSection << 16);
-            return regs;
-        }
-    };
-
-    struct PauseGameArgs
-    {
-        static constexpr auto command = GameCommand::pauseGame;
-
-        PauseGameArgs() = default;
-        explicit PauseGameArgs(const registers&)
-        {
-        }
-
-        explicit operator registers() const
-        {
-            return registers();
-        }
-    };
-
-    struct LoadSaveQuitGameArgs
-    {
-        enum class Options : uint8_t
-        {
-            save,
-            closeSavePrompt,
-            dontSave,
-        };
-        static constexpr auto command = GameCommand::loadSaveQuitGame;
-
-        LoadSaveQuitGameArgs() = default;
-        explicit LoadSaveQuitGameArgs(const registers& regs)
-            : option1(static_cast<Options>(regs.dl))
-            , option2(static_cast<LoadOrQuitMode>(regs.di))
-        {
-        }
-
-        Options option1;
-        LoadOrQuitMode option2;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.dl = enumValue(option1); // [ 0 = save, 1 = close save prompt, 2 = don't save ]
-            regs.di = enumValue(option2); // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
             return regs;
         }
     };
@@ -1348,59 +1244,6 @@ namespace OpenLoco::GameCommands
         regs.edi = edi; // part of name buffer
         doCommand(GameCommand::renameTown, regs);
     }
-
-    struct IndustryPlacementArgs
-    {
-        static constexpr auto command = GameCommand::createIndustry;
-
-        IndustryPlacementArgs() = default;
-        explicit IndustryPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx)
-            , type(regs.dl & 0x7F)
-            , buildImmediately(regs.dl & 0x80)
-            , srand0(regs.ebp)
-            , srand1(regs.edi)
-        {
-        }
-
-        World::Pos2 pos;
-        uint8_t type;
-        bool buildImmediately = false; // No scaffolding required (editor mode)
-        uint32_t srand0;
-        uint32_t srand1;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.dl = type | (buildImmediately ? 0x80 : 0);
-            regs.ebp = srand0;
-            regs.edi = srand1;
-            regs.esi = enumValue(command); // Vanilla bug? Investigate when doing createIndustry
-            return regs;
-        }
-    };
-
-    struct IndustryRemovalArgs
-    {
-        static constexpr auto command = GameCommand::removeIndustry;
-
-        IndustryRemovalArgs() = default;
-        explicit IndustryRemovalArgs(const registers& regs)
-            : industryId(static_cast<IndustryId>(regs.dl))
-        {
-        }
-
-        IndustryId industryId;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.dl = enumValue(industryId);
-            return regs;
-        }
-    };
 
     struct TownPlacementArgs
     {

@@ -1,3 +1,4 @@
+#include "TogglePause.h"
 #include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"

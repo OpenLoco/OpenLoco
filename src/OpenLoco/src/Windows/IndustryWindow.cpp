@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Industries/RemoveIndustry.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
