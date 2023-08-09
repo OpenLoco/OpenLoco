@@ -194,15 +194,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    
-
-
-    
-
-    
-
-    
-
     struct TrackPlacementArgs
     {
         static constexpr auto command = GameCommand::createTrack;
@@ -272,10 +263,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    
-
-    
 
     struct SignalPlacementArgs
     {
@@ -525,12 +512,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    
-
-   
-
-    
 
     struct RoadPlacementArgs
     {
@@ -872,8 +853,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    
-
     struct PortPlacementArgs
     {
         static constexpr auto command = GameCommand::createPort;
@@ -952,10 +931,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    
-
-   
-
     // Change company face
     inline bool do_65(const ObjectHeader& object, CompanyId company)
     {
@@ -1016,12 +991,6 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    
-
-    
-
-   
-
     // Rename industry
     inline void do_79(IndustryId cl, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
@@ -1055,8 +1024,6 @@ namespace OpenLoco::GameCommands
         regs.edx = param3;
         return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
     }
-
-    
 
     const World::Pos3& getPosition();
     void setPosition(const World::Pos3& pos);
