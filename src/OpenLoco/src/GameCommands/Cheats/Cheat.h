@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdint>
+#include "GameCommands/GameCommands.h"
 
 namespace OpenLoco::GameCommands
 {
@@ -17,4 +17,8 @@ namespace OpenLoco::GameCommands
         modifyDate,
         completeChallenge,
     };
+
+    void vehicleShuntCheat(registers& regs);
+    void cheat(registers& regs);
+    void freeCashCheat(registers& regs);
 }

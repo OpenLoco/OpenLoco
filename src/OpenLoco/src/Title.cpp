@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/General/TogglePause.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
 #include "Intro.h"
@@ -164,7 +165,9 @@ namespace OpenLoco::Title
         CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
         if (isPaused())
         {
-            GameCommands::togglePause(1);
+            registers regs;
+            regs.bl = GameCommands::Flags::apply;
+            GameCommands::togglePause(regs);
         }
 
         auto currentScreenFlags = getScreenFlags();
