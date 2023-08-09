@@ -194,108 +194,14 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct VehiclePickupArgs
-    {
-        static constexpr auto command = GameCommand::vehiclePickup;
+    
 
-        VehiclePickupArgs() = default;
-        explicit VehiclePickupArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.di))
-        {
-        }
 
-        EntityId head;
+    
 
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            return regs;
-        }
-    };
+    
 
-    struct VehicleReverseArgs
-    {
-        static constexpr auto command = GameCommand::vehicleReverse;
-
-        VehicleReverseArgs() = default;
-        explicit VehicleReverseArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.dx))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.dx = enumValue(head);
-            return regs;
-        }
-    };
-
-    struct VehiclePassSignalArgs
-    {
-        static constexpr auto command = GameCommand::vehiclePassSignal;
-
-        VehiclePassSignalArgs() = default;
-        explicit VehiclePassSignalArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.di))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            return regs;
-        }
-    };
-
-    struct VehicleCreateArgs
-    {
-        static constexpr auto command = GameCommand::vehicleCreate;
-
-        VehicleCreateArgs() = default;
-        explicit VehicleCreateArgs(const registers& regs)
-            : vehicleId(static_cast<EntityId>(regs.di))
-            , vehicleType(regs.dx)
-        {
-        }
-
-        EntityId vehicleId; // Optional id representing where it will attach
-        uint16_t vehicleType;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(vehicleId);
-            regs.edx = vehicleType;
-            return regs;
-        }
-    };
-
-    struct VehicleSellArgs
-    {
-        static constexpr auto command = GameCommand::vehicleSell;
-
-        VehicleSellArgs() = default;
-        explicit VehicleSellArgs(const registers& regs)
-            : car(static_cast<EntityId>(regs.dx))
-        {
-        }
-
-        EntityId car;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.dx = enumValue(car);
-            return regs;
-        }
-    };
+    
 
     struct TrackPlacementArgs
     {
@@ -367,71 +273,9 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct VehicleRenameArgs
-    {
-        static constexpr auto command = GameCommand::vehicleRename;
+    
 
-        VehicleRenameArgs() = default;
-        explicit VehicleRenameArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.cx))
-            , buffer{}
-            , i(regs.ax)
-        {
-            // Copies it into the first 12 bytes not into the specific slot as per i
-            std::memcpy(buffer, &regs.edx, 4);
-            std::memcpy(buffer + 4, &regs.ebp, 4);
-            std::memcpy(buffer + 8, &regs.edi, 4);
-        }
-
-        EntityId head;
-        char buffer[37];
-        uint16_t i;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.cx = enumValue(head);
-            regs.ax = i;
-            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
-            const auto offset = iToOffset[i];
-
-            std::memcpy(&regs.edx, buffer + offset, 4);
-            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
-            std::memcpy(&regs.edi, buffer + offset + 8, 4);
-            return regs;
-        }
-    };
-
-    struct VehicleChangeRunningModeArgs
-    {
-        enum class Mode : uint8_t
-        {
-            stopVehicle,
-            startVehicle,
-            toggleLocalExpress,
-            driveManually,
-        };
-
-        static constexpr auto command = GameCommand::vehicleChangeRunningMode;
-
-        VehicleChangeRunningModeArgs() = default;
-        explicit VehicleChangeRunningModeArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.dx))
-            , mode(static_cast<Mode>(regs.bh))
-        {
-        }
-
-        EntityId head;
-        Mode mode;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.dx = enumValue(head);
-            regs.bh = enumValue(mode);
-            return regs;
-        }
-    };
+    
 
     struct SignalPlacementArgs
     {
@@ -682,75 +526,11 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct VehicleOrderInsertArgs
-    {
-        static constexpr auto command = GameCommand::vehicleOrderInsert;
+    
 
-        VehicleOrderInsertArgs() = default;
-        explicit VehicleOrderInsertArgs(const registers& regs)
-            : head(EntityId(regs.di))
-            , orderOffset(regs.dx)
-            , rawOrder((uint64_t(regs.cx) << 32ULL) | regs.eax)
-        {
-        }
+   
 
-        EntityId head;
-        uint32_t orderOffset;
-        uint64_t rawOrder;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            regs.dx = orderOffset;
-            regs.eax = rawOrder & 0xFFFFFFFF;
-            regs.cx = rawOrder >> 32;
-            return regs;
-        }
-    };
-
-    struct VehicleOrderDeleteArgs
-    {
-        static constexpr auto command = GameCommand::vehicleOrderDelete;
-
-        VehicleOrderDeleteArgs() = default;
-        explicit VehicleOrderDeleteArgs(const registers& regs)
-            : head(EntityId(regs.di))
-            , orderOffset(regs.edx)
-        {
-        }
-
-        EntityId head;
-        uint32_t orderOffset;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            regs.edx = orderOffset;
-            return regs;
-        }
-    };
-
-    struct VehicleOrderSkipArgs
-    {
-        static constexpr auto command = GameCommand::vehicleOrderSkip;
-
-        VehicleOrderSkipArgs() = default;
-        explicit VehicleOrderSkipArgs(const registers& regs)
-            : head(EntityId(regs.di))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            return regs;
-        }
-    };
+    
 
     struct RoadPlacementArgs
     {
@@ -1092,25 +872,7 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct VehiclePickupAirArgs
-    {
-        static constexpr auto command = GameCommand::vehiclePickupAir;
-
-        VehiclePickupAirArgs() = default;
-        explicit VehiclePickupAirArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.di))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            return regs;
-        }
-    };
+    
 
     struct PortPlacementArgs
     {
@@ -1190,48 +952,9 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct VehiclePickupWaterArgs
-    {
-        static constexpr auto command = GameCommand::vehiclePickupWater;
+    
 
-        VehiclePickupWaterArgs() = default;
-        explicit VehiclePickupWaterArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.di))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            return regs;
-        }
-    };
-
-    struct VehicleRefitArgs
-    {
-        static constexpr auto command = GameCommand::vehicleRefit;
-
-        VehicleRefitArgs() = default;
-        explicit VehicleRefitArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.di))
-            , cargoType(regs.dl)
-        {
-        }
-
-        EntityId head;
-        uint8_t cargoType;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            regs.dl = cargoType;
-            return regs;
-        }
-    };
+   
 
     // Change company face
     inline bool do_65(const ObjectHeader& object, CompanyId company)
@@ -1293,74 +1016,11 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    struct VehicleSpeedControlArgs
-    {
-        static constexpr auto command = GameCommand::vehicleSpeedControl;
+    
 
-        VehicleSpeedControlArgs() = default;
-        explicit VehicleSpeedControlArgs(const registers& regs)
-            : head(static_cast<EntityId>(regs.cx))
-            , speed(regs.dx)
-        {
-        }
+    
 
-        EntityId head;
-        int16_t speed;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.cx = enumValue(head);
-            regs.dx = speed;
-            return regs;
-        }
-    };
-
-    struct VehicleOrderUpArgs
-    {
-        static constexpr auto command = GameCommand::vehicleOrderUp;
-
-        VehicleOrderUpArgs() = default;
-        explicit VehicleOrderUpArgs(const registers& regs)
-            : head(EntityId(regs.di))
-            , orderOffset(regs.edx)
-        {
-        }
-
-        EntityId head;
-        uint32_t orderOffset;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            regs.edx = orderOffset;
-            return regs;
-        }
-    };
-
-    struct VehicleOrderDownArgs
-    {
-        static constexpr auto command = GameCommand::vehicleOrderDown;
-
-        VehicleOrderDownArgs() = default;
-        explicit VehicleOrderDownArgs(const registers& regs)
-            : head(EntityId(regs.di))
-            , orderOffset(regs.edx)
-        {
-        }
-
-        EntityId head;
-        uint32_t orderOffset;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            regs.edx = orderOffset;
-            return regs;
-        }
-    };
+   
 
     // Rename industry
     inline void do_79(IndustryId cl, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
@@ -1396,25 +1056,7 @@ namespace OpenLoco::GameCommands
         return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
     }
 
-    struct VehicleOrderReverseArgs
-    {
-        static constexpr auto command = GameCommand::vehicleOrderReverse;
-
-        VehicleOrderReverseArgs() = default;
-        explicit VehicleOrderReverseArgs(const registers& regs)
-            : head(EntityId(regs.di))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(head);
-            return regs;
-        }
-    };
+    
 
     const World::Pos3& getPosition();
     void setPosition(const World::Pos3& pos);

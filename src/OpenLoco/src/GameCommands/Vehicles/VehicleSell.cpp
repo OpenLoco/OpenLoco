@@ -1,5 +1,8 @@
+#include "VehicleSell.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "VehiclePickupAir.h"
+#include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 
