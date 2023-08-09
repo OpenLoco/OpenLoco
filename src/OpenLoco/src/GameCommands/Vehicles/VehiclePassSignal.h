@@ -2,6 +2,6 @@
 
 namespace OpenLoco::GameCommands
 {
-  
+
     void vehiclePassSignal(registers& regs);
 }

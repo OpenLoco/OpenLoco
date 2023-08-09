@@ -2,6 +2,6 @@
 
 namespace OpenLoco::GameCommands
 {
-  
+
     void lowerWater(registers& regs);
 }

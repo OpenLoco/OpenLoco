@@ -2,6 +2,6 @@
 
 namespace OpenLoco::GameCommands
 {
- 
+
     void removeTree(registers& regs);
 }
