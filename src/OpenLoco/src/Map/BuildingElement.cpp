@@ -1,6 +1,7 @@
 #include "BuildingElement.h"
 #include "AnimationManager.h"
 #include "Game.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameStateFlags.h"
 #include "Objects/BuildingObject.h"

@@ -1,3 +1,4 @@
+#include "RenameCompanyOwner.h"
 #include "Economy/Expenditures.h"
 #include "Engine/Limits.h"
 #include "GameCommands/GameCommands.h"

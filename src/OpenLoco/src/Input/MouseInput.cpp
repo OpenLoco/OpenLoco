@@ -1,6 +1,8 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
+#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"

@@ -1,3 +1,4 @@
+#include "RemoveBuilding.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "Localisation/FormatArguments.hpp"

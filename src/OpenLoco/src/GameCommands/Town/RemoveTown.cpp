@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"

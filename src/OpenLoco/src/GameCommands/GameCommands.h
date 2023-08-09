@@ -957,74 +957,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct ChangeCompanyNameArgs
-    {
-        static constexpr auto command = GameCommand::changeCompanyName;
-
-        ChangeCompanyNameArgs() = default;
-        explicit ChangeCompanyNameArgs(const registers& regs)
-            : companyId(CompanyId(regs.cx))
-            , bufferIndex(regs.ax)
-        {
-            memcpy(buffer, &regs.edx, 4);
-            memcpy(buffer + 4, &regs.ebp, 4);
-            memcpy(buffer + 8, &regs.edi, 4);
-        }
-
-        CompanyId companyId;
-        uint16_t bufferIndex;
-        char buffer[37];
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.cl = enumValue(companyId);
-            regs.ax = bufferIndex; // [ 0, 1, 2]
-            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
-            const auto offset = iToOffset[bufferIndex];
-
-            std::memcpy(&regs.edx, buffer + offset, 4);
-            std::memcpy(&regs.ebp, buffer + offset + 4, 4);
-            std::memcpy(&regs.edi, buffer + offset + 8, 4);
-
-            return regs;
-        }
-    };
-
-    struct ChangeCompanyOwnerNameArgs
-    {
-        static constexpr auto command = GameCommand::changeCompanyOwnerName;
-
-        ChangeCompanyOwnerNameArgs() = default;
-        explicit ChangeCompanyOwnerNameArgs(const registers& regs)
-            : companyId(CompanyId(regs.cx))
-            , bufferIndex(regs.ax)
-        {
-            memcpy(newName, &regs.edx, 4);
-            memcpy(newName + 4, &regs.ebp, 4);
-            memcpy(newName + 8, &regs.edi, 4);
-        }
-
-        CompanyId companyId;
-        uint16_t bufferIndex;
-        char newName[37];
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.cl = enumValue(companyId);
-            regs.ax = bufferIndex; // [ 0, 1, 2]
-            constexpr std::array<uint8_t, 3> iToOffset = { 24, 0, 12 };
-            const auto offset = iToOffset[bufferIndex];
-
-            std::memcpy(&regs.edx, newName + offset, 4);
-            std::memcpy(&regs.ebp, newName + offset + 4, 4);
-            std::memcpy(&regs.edi, newName + offset + 8, 4);
-
-            return regs;
-        }
-    };
-
     struct WallPlacementArgs
     {
         static constexpr auto command = GameCommand::createWall;
@@ -1404,32 +1336,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct BuildingRemovalArgs
-    {
-        static constexpr auto command = GameCommand::removeBuilding;
-
-        BuildingRemovalArgs() = default;
-        explicit BuildingRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-        {
-        }
-        explicit BuildingRemovalArgs(const BuildingPlacementArgs& place)
-            : pos(place.pos)
-        {
-        }
-
-        World::Pos3 pos;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
-            return regs;
-        }
-    };
-
     // Rename town
     inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
@@ -1536,31 +1442,6 @@ namespace OpenLoco::GameCommands
         {
             registers regs;
             regs.edi = enumValue(townId);
-            return regs;
-        }
-    };
-
-    struct HeadquarterRemovalArgs
-    {
-        static constexpr auto command = GameCommand::removeCompanyHeadquarters;
-
-        HeadquarterRemovalArgs() = default;
-        explicit HeadquarterRemovalArgs(const World::Pos3& place)
-            : pos(place)
-        {
-        }
-        explicit HeadquarterRemovalArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-        {
-        }
-
-        World::Pos3 pos;
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.di = pos.z;
             return regs;
         }
     };
@@ -1871,28 +1752,6 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    struct UpdateOwnerStatusArgs
-    {
-        static constexpr auto command = GameCommand::updateOwnerStatus;
-        UpdateOwnerStatusArgs() = default;
-        explicit UpdateOwnerStatusArgs(const registers& regs)
-            : ownerStatus(regs.ax, regs.cx)
-        {
-        }
-
-        OwnerStatus ownerStatus;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            int16_t res[2];
-            ownerStatus.getData(res);
-            regs.ax = res[0];
-            regs.cx = res[1];
-            return regs;
-        }
-    };
-
     struct VehicleSpeedControlArgs
     {
         static constexpr auto command = GameCommand::vehicleSpeedControl;
@@ -1959,41 +1818,6 @@ namespace OpenLoco::GameCommands
             regs.di = enumValue(head);
             regs.edx = orderOffset;
             return regs;
-        }
-    };
-
-    struct VehicleApplyShuntCheatArgs
-    {
-        static constexpr auto command = GameCommand::vehicleApplyShuntCheat;
-
-        VehicleApplyShuntCheatArgs() = default;
-        explicit VehicleApplyShuntCheatArgs(const registers& regs)
-            : head(EntityId(regs.cx))
-        {
-        }
-
-        EntityId head;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.cx = enumValue(head);
-            return regs;
-        }
-    };
-
-    struct ApplyFreeCashCheatArgs
-    {
-        static constexpr auto command = GameCommand::applyFreeCashCheat;
-
-        ApplyFreeCashCheatArgs() = default;
-        explicit ApplyFreeCashCheatArgs(const registers&)
-        {
-        }
-
-        explicit operator registers() const
-        {
-            return registers();
         }
     };
 

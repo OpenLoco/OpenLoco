@@ -1,5 +1,7 @@
+#include "RemoveCompanyHeadquarters.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
