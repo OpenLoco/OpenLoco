@@ -152,7 +152,8 @@ namespace OpenLoco::World::MapGenerator
     OPENLOCO_ENABLE_ENUM_OPERATORS(TopographyFlags);
 
     // 0x004FD332
-    static constexpr std::array<TopographyFlags, 9> topographyStyleFlags = {
+    static constexpr std::array<TopographyFlags, 10> kTopographyStyleFlags = {
+        TopographyFlags::none,
         TopographyFlags::none,
         TopographyFlags::hasHills,
         TopographyFlags::hasHills,
@@ -184,32 +185,32 @@ namespace OpenLoco::World::MapGenerator
             const auto hillImage = hillShapesObj->image + randomHillIndex;
             const auto g1Element = Gfx::getG1Element(hillImage);
 
-            auto targetWidth = g1Element->width & 0xFF;
-            auto targetHeight = g1Element->height & 0xFF;
+            auto featureWidth = g1Element->width & 0xFF;
+            auto featureHeight = g1Element->height & 0xFF;
             if (flipHillImage)
             {
-                std::swap(targetWidth, targetHeight);
+                std::swap(featureWidth, featureHeight);
             }
 
             // 0x00462718
-            const auto remainingRand = (randomVal >> 14);
-            const auto threshold = remainingRand & 0x1FF;
-            if (threshold < 2)
+            const auto randX = (randomVal >> 14) & 0x1FF;
+            const auto randY = (randomVal >> 23) & 0x1FF;
+            if (randX < 2)
             {
-                printf("Bail! threshhold = %d & 511 < 2\n", threshold);
+                printf("Bail! x = %d < 2\n", randX);
                 return;
             }
-            if (remainingRand < 1024)
+            if (randY < 2)
             {
-                printf("Bail! threshhold = %d < 1024\n", threshold);
+                printf("Bail! y = %d < 2\n", randY);
                 return;
             }
 
             // Vanilla would use an `rcl` for the lower bit, getting the carry flag in.
             // We're substituting it with an extra bit of the random state.
-            const bool topographyBit = (threshold << 9) > remainingRand;
+            const bool topographyBit = randX > randY;
             const auto topographyId = (enumValue(options.topographyStyle) << 1) | (topographyBit ? 1U : 0);
-            const auto topographyFlags = topographyStyleFlags[topographyId];
+            const auto topographyFlags = kTopographyStyleFlags[topographyId];
 
             const bool generateHills = (topographyFlags & TopographyFlags::hasHills) != TopographyFlags::none;
             const bool generateMountains = (topographyFlags & TopographyFlags::hasMountains) != TopographyFlags::none;
@@ -236,22 +237,73 @@ namespace OpenLoco::World::MapGenerator
             registers regs;
             regs.esi = X86Pointer(src);
             regs.ebp = X86Pointer(heightMap.data());
-            regs.ebx = remainingRand;
-            regs.cl = targetWidth;
-            regs.ch = targetHeight;
-            regs.eax = threshold + targetWidth;
+            regs.ebx = (randomVal >> 14);
+            regs.cl = featureWidth;
+            regs.ch = featureHeight;
+            regs.eax = (randomVal >> 14);
 
             if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
             {
-                if (regs.eax >= 382)
+                if (randX + featureWidth >= 382)
+                {
+                    printf("Edge of map, skipping\n");
+                    return;
+                }
+                if (randY + featureHeight >= 382)
                 {
                     printf("Edge of map, skipping\n");
                     return;
                 }
             }
 
-            printf("Calling vanilla!\n");
-            call(0x00462797, regs);
+            if (flipHillImage)
+            {
+                if (unkHillBit2)
+                {
+                    int32_t x = randX;
+                    for (auto j = 0; j < featureWidth; ++j)
+                    {
+                        int32_t y = (featureHeight + randY - 1) & 0x1FF;
+                        for (auto i = 0; i < featureHeight; ++i)
+                        {
+                            const auto data = *src++;
+                            if (data >= heightMap[Point{ x, y }])
+                            {
+                                heightMap[Point{ x, y }] = data;
+                            }
+                            y--;
+                            y &= 0x1FF;
+                        }
+                        x++;
+                        x &= 0x1FF;
+                    }
+                }
+                else
+                {
+                    int32_t x = randX;
+                    for (auto j = 0; j < featureWidth; ++j)
+                    {
+                        int32_t y = randY;
+                        for (auto i = 0; i < featureHeight; ++i)
+                        {
+                            const auto data = *src++;
+                            if (data >= heightMap[Point{ x, y }])
+                            {
+                                heightMap[Point{ x, y }] = data;
+                            }
+                            y++;
+                            y &= 0x1FF;
+                        }
+                        x++;
+                        x &= 0x1FF;
+                    }
+                }
+            }
+            else
+            {
+                printf("Calling vanilla!\n");
+                call(0x004627B8, regs);
+            }
             // call(0x00462797, regs);
 
             _heightMap = nullptr;
