@@ -4,6 +4,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Town/RemoveTown.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"

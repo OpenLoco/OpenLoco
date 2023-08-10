@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Industries/CreateIndustry.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "Localisation/FormatArguments.hpp"

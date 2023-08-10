@@ -1,8 +1,10 @@
+#include "VehicleSpeedControl.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Types.hpp"
 #include "Ui/WindowManager.h"
+#include "VehicleSell.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 

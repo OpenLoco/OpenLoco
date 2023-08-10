@@ -1,5 +1,6 @@
 #include "MapGenerator.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Town/CreateTown.h"
 #include "GameState.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"

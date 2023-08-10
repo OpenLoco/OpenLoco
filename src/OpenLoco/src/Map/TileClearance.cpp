@@ -1,6 +1,7 @@
 #include "TileClearance.h"
 #include "BuildingElement.h"
 #include "Economy/Economy.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "IndustryElement.h"
 #include "Localisation/FormatArguments.hpp"

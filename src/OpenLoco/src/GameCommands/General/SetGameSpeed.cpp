@@ -1,3 +1,4 @@
+#include "SetGameSpeed.h"
 #include "GameCommands/GameCommands.h"
 #include "SceneManager.h"
 #include <OpenLoco/Interop/Interop.hpp>

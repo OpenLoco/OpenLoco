@@ -2,6 +2,8 @@
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehiclePickupAir.h"
+#include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "MessageManager.h"

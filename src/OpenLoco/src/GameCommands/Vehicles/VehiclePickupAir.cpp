@@ -1,3 +1,4 @@
+#include "VehiclePickupAir.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Vehicles/Vehicle.h"

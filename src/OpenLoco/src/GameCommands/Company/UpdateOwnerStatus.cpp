@@ -1,3 +1,4 @@
+#include "UpdateOwnerStatus.h"
 #include "GameCommands/GameCommands.h"
 #include "World/CompanyManager.h"
 

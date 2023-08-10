@@ -1,3 +1,4 @@
+#include "VehiclePickupWater.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Map/StationElement.h"

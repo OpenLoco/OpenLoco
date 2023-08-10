@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/Cheats/Cheat.h"
 #include "GameCommands/GameCommands.h"
 #include "Input.h"
 #include "Input/Shortcuts.h"

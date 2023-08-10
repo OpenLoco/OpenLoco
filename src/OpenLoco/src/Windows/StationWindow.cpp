@@ -2,6 +2,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/General/RenameStation.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"

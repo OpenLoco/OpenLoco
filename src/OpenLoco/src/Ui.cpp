@@ -33,6 +33,7 @@
 #include "Drawing/FPSCounter.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"

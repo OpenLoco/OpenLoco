@@ -3,6 +3,7 @@
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/CreateVehicle.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"

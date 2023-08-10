@@ -1,3 +1,4 @@
+#include "RemoveTree.h"
 #include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"

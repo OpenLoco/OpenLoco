@@ -1,3 +1,4 @@
+#include "VehicleOrderInsert.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Objects/VehicleObject.h"

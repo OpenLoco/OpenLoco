@@ -1,6 +1,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Intro.h"

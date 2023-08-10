@@ -1,5 +1,7 @@
 #include "Shortcuts.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/General/SetGameSpeed.h"
+#include "GameCommands/General/TogglePause.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
