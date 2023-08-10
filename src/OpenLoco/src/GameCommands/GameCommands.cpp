@@ -41,6 +41,7 @@
 #include "Town/CreateTown.h"
 #include "Town/RemoveTown.h"
 #include "Town/RenameTown.h"
+#include "Track/CreateSignal.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/CloneVehicle.h"
 #include "Vehicles/CreateVehicle.h"

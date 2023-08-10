@@ -1,6 +1,7 @@
+#include "CreateSignal.h"
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
-#include "GameCommands.h"
+#include "GameCommands/GameCommands.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
 #include "Map/SignalElement.h"
