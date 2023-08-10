@@ -985,6 +985,7 @@ namespace OpenLoco::Ui::Windows::Construction
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
             TileManager::mapInvalidateMapSelectionTiles();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
             hideDirectionArrows();
             hideGridlines();
         }
