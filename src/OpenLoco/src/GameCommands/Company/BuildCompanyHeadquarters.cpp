@@ -40,6 +40,7 @@ namespace OpenLoco::GameCommands
         buildArgs.type = args.type;
         buildArgs.variation = company->getHeadquarterPerformanceVariation();
         buildArgs.colour = CompanyManager::getCompanyColour(targetCompanyId);
+        buildArgs.buildImmediately = args.buildImmediately;
 
         auto buildCost = doCommand(buildArgs, flags);
         if (buildCost != FAILURE)
