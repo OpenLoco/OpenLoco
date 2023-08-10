@@ -1013,6 +1013,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
+            // Always show buildings, not scaffolding, for ghost placements.
+            placementArgs->buildImmediately = true;
+
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             World::TileManager::setMapSelectionCorner(4);
 
