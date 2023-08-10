@@ -1067,6 +1067,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Ui::Windows::hideGridlines();
         }
 
+        static void onClose(Window& self)
+        {
+            if (Input::isToolActive(self.type, self.number))
+                Input::toolCancel();
+        }
+
         // 0x0432D85
         static void onUpdate(Window& self)
         {
@@ -1168,6 +1174,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             events.onToolUpdate = onToolUpdate;
             events.onToolDown = onToolDown;
             events.onToolAbort = onToolAbort;
+            events.onClose = onClose;
             events.onUpdate = onUpdate;
             events.onResize = onResize;
             events.viewportRotate = viewportRotate;
