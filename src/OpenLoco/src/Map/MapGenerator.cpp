@@ -423,17 +423,13 @@ namespace OpenLoco::World::MapGenerator
     {
         static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
-        World::TileLoop tileLoop;
-        for (uint32_t posId = 0; posId < kMapSize; posId++)
+        for (auto pos : World::getDrawableTileRange())
         {
-            auto pos = tileLoop.current();
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
 
             if (surface != nullptr && surface->baseZ() < (_seaLevel << 2))
                 surface->setWater(_seaLevel);
-
-            tileLoop.next();
         }
     }
 
