@@ -47,6 +47,7 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 
@@ -148,7 +149,7 @@ namespace OpenLoco::Ui
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
-            throw std::runtime_error("Unable to initialise SDL2 video subsystem.");
+            throw Exception::RuntimeError("Unable to initialise SDL2 video subsystem.");
         }
 
         // Create the window
@@ -156,7 +157,7 @@ namespace OpenLoco::Ui
         window = SDL_CreateWindow("OpenLoco", desc.x, desc.y, desc.width, desc.height, desc.flags);
         if (window == nullptr)
         {
-            throw std::runtime_error("Unable to create SDL2 window.");
+            throw Exception::RuntimeError("Unable to create SDL2 window.");
         }
 
 #ifdef _WIN32
@@ -165,7 +166,7 @@ namespace OpenLoco::Ui
         SDL_VERSION(&wmInfo.version);
         if (SDL_GetWindowWMInfo(window, &wmInfo) == SDL_FALSE)
         {
-            throw std::runtime_error("Unable to fetch SDL2 window system handle.");
+            throw Exception::RuntimeError("Unable to fetch SDL2 window system handle.");
         }
         _hwnd = wmInfo.info.win.window;
 #endif

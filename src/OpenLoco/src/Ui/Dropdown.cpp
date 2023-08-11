@@ -12,6 +12,7 @@
 #include "Widget.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <cassert>
@@ -961,7 +962,7 @@ namespace OpenLoco::Ui::Dropdown
     void Builder::show()
     {
         if (_window == nullptr)
-            throw std::invalid_argument("Window and widget index not set");
+            throw Exception::InvalidArgument("Window and widget index not set");
 
         _dropdownIds.clear();
 

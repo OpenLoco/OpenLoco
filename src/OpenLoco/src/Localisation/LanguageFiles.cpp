@@ -8,6 +8,7 @@
 #include "StringManager.h"
 #include "Ui.h"
 #include "Unicode.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>
@@ -272,7 +273,7 @@ namespace OpenLoco::Localisation
         fs::path languageDir = Environment::getPath(Environment::PathId::languageFiles);
         fs::path languageFile = languageDir / "en-GB.yml";
         if (!loadLanguageStringTable(languageFile))
-            throw std::runtime_error("Could not load the en-GB language file!");
+            throw Exception::RuntimeError("Could not load the en-GB language file!");
 
         // Determine the language currently selected.
         auto& config = Config::get();
@@ -282,7 +283,7 @@ namespace OpenLoco::Localisation
         // Now, load the language table for the language currently selected.
         languageFile = languageDir / (config.language + ".yml");
         if (!loadLanguageStringTable(languageFile))
-            throw std::runtime_error("Could not load the " + config.language + " language file!");
+            throw Exception::RuntimeError("Could not load the " + config.language + " language file!");
     }
 
     void unloadLanguageFile()

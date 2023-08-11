@@ -6,6 +6,7 @@
 #include "S5/S5.h"
 #include "Ui.h"
 #include "WindowManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <cstdint>
@@ -42,23 +43,23 @@ namespace OpenLoco::Input
         {
             pngPtr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
             if (pngPtr == nullptr)
-                throw std::runtime_error("png_create_write_struct failed.");
+                throw Exception::RuntimeError("png_create_write_struct failed.");
 
             png_set_write_fn(pngPtr, &outputStream, pngWriteData, pngFlush);
 
             // Set error handler
             if (setjmp(png_jmpbuf(pngPtr)))
             {
-                throw std::runtime_error("PNG ERROR");
+                throw Exception::RuntimeError("PNG ERROR");
             }
 
             auto infoPtr = png_create_info_struct(pngPtr);
             if (infoPtr == nullptr)
-                throw std::runtime_error("png_create_info_struct failed.");
+                throw Exception::RuntimeError("png_create_info_struct failed.");
 
             palette = (png_colorp)png_malloc(pngPtr, 246 * sizeof(png_color));
             if (palette == nullptr)
-                throw std::runtime_error("png_malloc failed.");
+                throw Exception::RuntimeError("png_malloc failed.");
 
             for (size_t i = 0; i < 246; i++)
             {
@@ -118,7 +119,7 @@ namespace OpenLoco::Input
 
         if (path.empty())
         {
-            throw std::runtime_error("Failed finding filename");
+            throw Exception::RuntimeError("Failed finding filename");
         }
 
         std::fstream outputStream(path.c_str(), std::ios::out | std::ios::binary);

@@ -1,3 +1,4 @@
+#include <OpenLoco/Core/Exception.hpp>
 #include <atomic>
 #include <cassert>
 #include <chrono>
@@ -176,7 +177,7 @@ namespace OpenLoco::Network
                 case AF_INET6:
                     return Protocol::ipv6;
                 default:
-                    throw std::invalid_argument("Unknown protocol");
+                    throw Exception::InvalidArgument("Unknown protocol");
             }
         }
 
@@ -241,7 +242,7 @@ namespace OpenLoco::Network
             }
             else
             {
-                throw std::invalid_argument("Invalid protocol");
+                throw Exception::InvalidArgument("Invalid protocol");
             }
         }
 #endif
@@ -311,7 +312,7 @@ namespace OpenLoco::Network
                 case Protocol::any:
                     return AF_UNSPEC;
                 default:
-                    throw std::invalid_argument("Invalid protocol");
+                    throw Exception::InvalidArgument("Invalid protocol");
             }
         }
 
@@ -416,7 +417,7 @@ namespace OpenLoco::Network
         {
             if (_status != SocketStatus::closed)
             {
-                throw std::runtime_error("Socket not closed.");
+                throw Exception::InvalidArgument("Socket not closed.");
             }
 
             sockaddr_storage ss{};
@@ -464,7 +465,7 @@ namespace OpenLoco::Network
             const auto& dest = dynamic_cast<const NetworkEndpoint*>(&destination);
             if (dest == nullptr)
             {
-                throw std::invalid_argument("destination is not compatible.");
+                throw Exception::InvalidArgument("destination is not compatible.");
             }
             auto ss = &dest->getAddress();
             auto ss_len = dest->getAddressLen();
