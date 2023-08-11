@@ -225,83 +225,97 @@ namespace OpenLoco::World::MapGenerator
                 }
             }
 
+            using BlitFunction = std::function<void(Gfx::G1Element*, uint8_t, uint8_t, HeightMap&, tile_coord_t, tile_coord_t)>;
+            static const std::array<std::array<BlitFunction, 2>, 2> blitMethods = { {
+                {
+                    blitImageNormalXNormalY,
+                    blitImageNormalXFlippedY,
+                },
+                {
+                    blitImageFlippedXNormalY,
+                    blitImageFlippedXFlippedY,
+                }
+            } };
+
+            auto blitFeature = blitMethods[flipHillImageLateral][flipHillImageVertical];
+            blitFeature(g1Element, featureWidth, featureHeight, heightMap, randX, randY);
+        }
+
+        static void blitImageFlippedXFlippedY(Gfx::G1Element* g1Element, uint8_t featureWidth, uint8_t featureHeight, HeightMap& heightMap, tile_coord_t randX, tile_coord_t randY)
+        {
             auto* src = g1Element->offset;
-
-            if (flipHillImageLateral)
+            int32_t x = randX;
+            for (auto j = 0; j < featureWidth; ++j)
             {
-                if (flipHillImageVertical)
+                int32_t y = (featureHeight + randY - 1) & 0x1FF;
+                for (auto i = 0; i < featureHeight; ++i)
                 {
-                    int32_t x = randX;
-                    for (auto j = 0; j < featureWidth; ++j)
-                    {
-                        int32_t y = (featureHeight + randY - 1) & 0x1FF;
-                        for (auto i = 0; i < featureHeight; ++i)
-                        {
-                            const auto data = *src++;
-                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
-                            y--;
-                            y &= 0x1FF;
-                        }
-                        x++;
-                        x &= 0x1FF;
-                    }
+                    const auto data = *src++;
+                    heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                    y--;
+                    y &= 0x1FF;
                 }
-                else
-                {
-                    int32_t x = randX;
-                    for (auto j = 0; j < featureWidth; ++j)
-                    {
-                        int32_t y = randY;
-                        for (auto i = 0; i < featureHeight; ++i)
-                        {
-                            const auto data = *src++;
-                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
-                            y++;
-                            y &= 0x1FF;
-                        }
-                        x++;
-                        x &= 0x1FF;
-                    }
-                }
+                x++;
+                x &= 0x1FF;
             }
-            else
+        }
+
+        static void blitImageFlippedXNormalY(Gfx::G1Element* g1Element, uint8_t featureWidth, uint8_t featureHeight, HeightMap& heightMap, tile_coord_t randX, tile_coord_t randY)
+        {
+            auto* src = g1Element->offset;
+            int32_t x = randX;
+            for (auto j = 0; j < featureWidth; ++j)
             {
-                if (flipHillImageVertical)
+                int32_t y = randY;
+                for (auto i = 0; i < featureHeight; ++i)
                 {
-                    int32_t y = randY;
-                    for (auto j = 0; j < featureHeight; ++j)
-                    {
-                        int32_t x = (randX + featureWidth - 1) & 0x1FF;
-                        for (auto i = 0; i < featureWidth; ++i)
-                        {
-                            const auto data = *src++;
-                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
-                            x--;
-                            x &= 0x1FF;
-                        }
-                        y++;
-                        y &= 0x1FF;
-                    }
+                    const auto data = *src++;
+                    heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                    y++;
+                    y &= 0x1FF;
                 }
-                else
+                x++;
+                x &= 0x1FF;
+            }
+        }
+
+        static void blitImageNormalXFlippedY(Gfx::G1Element* g1Element, uint8_t featureWidth, uint8_t featureHeight, HeightMap& heightMap, tile_coord_t randX, tile_coord_t randY)
+        {
+            auto* src = g1Element->offset;
+            int32_t y = randY;
+            for (auto j = 0; j < featureHeight; ++j)
+            {
+                int32_t x = (randX + featureWidth - 1) & 0x1FF;
+                for (auto i = 0; i < featureWidth; ++i)
                 {
-                    int32_t y = randY;
-                    for (auto j = 0; j < featureHeight; ++j)
-                    {
-                        int32_t x = randX;
-                        for (auto i = 0; i < featureWidth; ++i)
-                        {
-                            const auto data = *src++;
-
-                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
-
-                            x++;
-                            x &= 0x1FF;
-                        }
-                        y++;
-                        y &= 0x1FF;
-                    }
+                    const auto data = *src++;
+                    heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                    x--;
+                    x &= 0x1FF;
                 }
+                y++;
+                y &= 0x1FF;
+            }
+        }
+
+        static void blitImageNormalXNormalY(Gfx::G1Element* g1Element, uint8_t featureWidth, uint8_t featureHeight, HeightMap& heightMap, tile_coord_t randX, tile_coord_t randY)
+        {
+            auto* src = g1Element->offset;
+            int32_t y = randY;
+            for (auto j = 0; j < featureHeight; ++j)
+            {
+                int32_t x = randX;
+                for (auto i = 0; i < featureWidth; ++i)
+                {
+                    const auto data = *src++;
+
+                    heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+
+                    x++;
+                    x &= 0x1FF;
+                }
+                y++;
+                y &= 0x1FF;
             }
         }
 
