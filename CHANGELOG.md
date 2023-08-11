@@ -3,11 +3,12 @@
 - Fix: [#2005] Right-clicking when display scaling is set to a fractional percent causes random scrolling of view.
 - Fix: [#2047] Error message when closing the game while load/save prompt window is open.
 - Fix: [#2053] Placing a headquarter preview ghost immediately removes any existing HQ.
+- Fix: [#2080] The map generator is not setting water levels correctly at map edges.
 
 23.07 (2023-07-25)
 ------------------------------------------------------------------------
 - Feature: [#2013] Add headers for base/clearance height, direction, and ghost flag to the tile inspector.
-- Feature: [#7627] Allow mouse scrolling on +/- stepper widgets to change their values.
+- Feature: [#2019] Allow mouse scrolling on +/- stepper widgets to change their values.
 - Fix: [#1999] Potential crash at startup due to the screen buffer being too small.
 - Fix: [#2011] Crash when using terraform tools using a range that exceeds the map edge.
 - Fix: [#2027] Crash when loading scenarios with a non-ASCII locomotion installtion path.
