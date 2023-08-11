@@ -172,9 +172,8 @@ namespace OpenLoco::World::MapGenerator
         void blitHill(const S5::Options& options, HeightMap& heightMap)
         {
             const uint32_t randomVal = getGameState().rng.randNext();
-            // const uint16_t randomHillState = randomVal >> 14;
-            const bool flipHillImage = randomVal & 0x100;
-            const bool unkHillBit2 = randomVal & 0x200;
+            const bool flipHillImageLateral = randomVal & 0x100;
+            const bool flipHillImageVertical = randomVal & 0x200;
 
             const auto hillShapesObj = ObjectManager::get<HillShapesObject>();
             const uint8_t hillShapeCount = hillShapesObj->hillHeightMapCount + hillShapesObj->mountainHeightMapCount;
@@ -187,7 +186,7 @@ namespace OpenLoco::World::MapGenerator
 
             auto featureWidth = g1Element->width & 0xFF;
             auto featureHeight = g1Element->height & 0xFF;
-            if (flipHillImage)
+            if (flipHillImageLateral)
             {
                 std::swap(featureWidth, featureHeight);
             }
@@ -224,23 +223,6 @@ namespace OpenLoco::World::MapGenerator
             }
 
             // 0x0046276D
-            auto* src = g1Element->offset;
-
-            static loco_global<uint8_t, 0x00F00164> _randomHillState;
-            _randomHillState = (flipHillImage ? 1 : 0) | (unkHillBit2 ? 2 : 0);
-
-            static loco_global<uint8_t, 0x00F00167> _randomHillIndex;
-            _randomHillIndex = randomHillIndex;
-
-            _heightMap = heightMap.data();
-
-            registers regs;
-            regs.esi = X86Pointer(src);
-            regs.ebp = X86Pointer(heightMap.data());
-            regs.ebx = (randomVal >> 14);
-            regs.cl = featureWidth;
-            regs.ch = featureHeight;
-            regs.eax = (randomVal >> 14);
 
             if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
             {
@@ -256,9 +238,11 @@ namespace OpenLoco::World::MapGenerator
                 }
             }
 
-            if (flipHillImage)
+            auto* src = g1Element->offset;
+
+            if (flipHillImageLateral)
             {
-                if (unkHillBit2)
+                if (flipHillImageVertical)
                 {
                     int32_t x = randX;
                     for (auto j = 0; j < featureWidth; ++j)
@@ -267,10 +251,7 @@ namespace OpenLoco::World::MapGenerator
                         for (auto i = 0; i < featureHeight; ++i)
                         {
                             const auto data = *src++;
-                            if (data >= heightMap[Point{ x, y }])
-                            {
-                                heightMap[Point{ x, y }] = data;
-                            }
+                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
                             y--;
                             y &= 0x1FF;
                         }
@@ -287,10 +268,7 @@ namespace OpenLoco::World::MapGenerator
                         for (auto i = 0; i < featureHeight; ++i)
                         {
                             const auto data = *src++;
-                            if (data >= heightMap[Point{ x, y }])
-                            {
-                                heightMap[Point{ x, y }] = data;
-                            }
+                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
                             y++;
                             y &= 0x1FF;
                         }
@@ -301,12 +279,43 @@ namespace OpenLoco::World::MapGenerator
             }
             else
             {
-                printf("Calling vanilla!\n");
-                call(0x004627B8, regs);
-            }
-            // call(0x00462797, regs);
+                if (flipHillImageVertical)
+                {
+                    int32_t y = randY;
+                    for (auto j = 0; j < featureHeight; ++j)
+                    {
+                        int32_t x = (randX + featureWidth - 1) & 0x1FF;
+                        for (auto i = 0; i < featureWidth; ++i)
+                        {
+                            const auto data = *src++;
+                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                            x--;
+                            x &= 0x1FF;
+                        }
+                        y++;
+                        y &= 0x1FF;
+                    }
+                }
+                else
+                {
+                    int32_t y = randY;
+                    for (auto j = 0; j < featureHeight; ++j)
+                    {
+                        int32_t x = randX;
+                        for (auto i = 0; i < featureWidth; ++i)
+                        {
+                            const auto data = *src++;
 
-            _heightMap = nullptr;
+                            heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+
+                            x++;
+                            x &= 0x1FF;
+                        }
+                        y++;
+                        y &= 0x1FF;
+                    }
+                }
+            }
         }
 
         // 0x00462518
@@ -350,16 +359,16 @@ namespace OpenLoco::World::MapGenerator
 
             for (auto i = World::kMapPitch * (World::kMapPitch - 1) - 1; i > 0; i--)
             {
-                if (seaLevel < *(dst))
+                if (seaLevel != *(dst))
                     continue;
 
-                if (seaLevel < *(dst + 1))
+                if (seaLevel != *(dst + 1))
                     continue;
 
-                if (seaLevel < *(dst + World::kMapPitch))
+                if (seaLevel != *(dst + World::kMapPitch))
                     continue;
 
-                if (seaLevel < *(dst + World::kMapPitch + 1))
+                if (seaLevel != *(dst + World::kMapPitch + 1))
                     continue;
 
                 *dst += 1;
