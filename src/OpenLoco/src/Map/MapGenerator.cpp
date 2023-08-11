@@ -234,7 +234,7 @@ namespace OpenLoco::World::MapGenerator
                 {
                     blitImageFlippedXNormalY,
                     blitImageFlippedXFlippedY,
-                }
+                },
             } };
 
             auto blitFeature = blitMethods[flipHillImageLateral][flipHillImageVertical];
