@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Span.hpp>
 
 namespace OpenLoco
@@ -15,6 +16,13 @@ namespace OpenLoco
         struct RenderTarget;
     }
 
+    enum class HillShapeFlags : uint16_t
+    {
+        none = 0U,
+        isHeightMap = 1 << 0,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(HillShapeFlags);
+
 #pragma pack(push, 1)
     struct HillShapesObject
     {
@@ -25,7 +33,7 @@ namespace OpenLoco
         uint8_t mountainHeightMapCount; // 0x03
         uint32_t image;                 // 0x04
         uint32_t var_08;                // 0x08
-        uint8_t pad_0C[0x0E - 0x0C];
+        HillShapeFlags flags;           // 0x0C
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         // 0x00463BB3
