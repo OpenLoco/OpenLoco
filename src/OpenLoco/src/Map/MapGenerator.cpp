@@ -194,14 +194,8 @@ namespace OpenLoco::World::MapGenerator
             // 0x00462718
             const auto randX = (randomVal >> 14) & 0x1FF;
             const auto randY = (randomVal >> 23) & 0x1FF;
-            if (randX < 2)
+            if (randX < 2 || randY < 2)
             {
-                printf("Bail! x = %d < 2\n", randX);
-                return;
-            }
-            if (randY < 2)
-            {
-                printf("Bail! y = %d < 2\n", randY);
                 return;
             }
 
@@ -218,7 +212,6 @@ namespace OpenLoco::World::MapGenerator
             const bool isValidMountainIndex = generateMountains && randomHillIndex >= hillShapesObj->hillHeightMapCount;
             if (!(isValidHillIndex || isValidMountainIndex))
             {
-                printf("Bail: flags = %d, randomHillIndex = %d, hillHeightMapCount = %d, mountainHeightMapCount = %d\n", enumValue(topographyFlags), randomHillIndex, hillShapesObj->hillHeightMapCount, hillShapesObj->mountainHeightMapCount);
                 return;
             }
 
@@ -226,14 +219,8 @@ namespace OpenLoco::World::MapGenerator
 
             if ((options.scenarioFlags & Scenario::ScenarioFlags::hillsEdgeOfMap) == Scenario::ScenarioFlags::none)
             {
-                if (randX + featureWidth >= 382)
+                if ((randX + featureWidth >= 382) || (randY + featureHeight >= 382))
                 {
-                    printf("Edge of map, skipping\n");
-                    return;
-                }
-                if (randY + featureHeight >= 382)
-                {
-                    printf("Edge of map, skipping\n");
                     return;
                 }
             }
