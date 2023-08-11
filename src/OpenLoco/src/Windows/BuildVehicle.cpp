@@ -303,7 +303,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static Window* create(CompanyId company)
     {
         initEvents();
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, &_events);
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, _events);
         window->widgets = _widgets;
         window->number = enumValue(company);
         window->enabledWidgets = (1ULL << widx::close_button) | (1ULL << widx::tab_build_new_trains) | (1ULL << widx::tab_build_new_buses) | (1ULL << widx::tab_build_new_trucks) | (1ULL << widx::tab_build_new_trams) | (1ULL << widx::tab_build_new_aircraft) | (1ULL << widx::tab_build_new_ships) | (1ULL << widx::tab_track_type_0) | (1ULL << widx::tab_track_type_1) | (1ULL << widx::tab_track_type_2) | (1ULL << widx::tab_track_type_3) | (1ULL << widx::tab_track_type_4) | (1ULL << widx::tab_track_type_5) | (1ULL << widx::tab_track_type_6) | (1ULL << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1ULL << widx::scrollview_vehicle_selection);

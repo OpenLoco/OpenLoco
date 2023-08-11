@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         // TODO: only needs to be called once
         initEvents();
 
-        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, &events);
+        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, events);
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::close;

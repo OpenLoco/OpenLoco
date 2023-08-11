@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 origin,
                 { 366, 217 },
                 WindowFlags::flag_11,
-                &Messages::events);
+                Messages::events);
 
             window->enabledWidgets = Messages::enabledWidgets;
             window->number = 0;

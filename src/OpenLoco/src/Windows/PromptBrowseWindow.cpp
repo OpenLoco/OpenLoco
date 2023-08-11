@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             WindowType::fileBrowserPrompt,
             { 500, 380 },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
-            &_events);
+            _events);
 
         if (window != nullptr)
         {

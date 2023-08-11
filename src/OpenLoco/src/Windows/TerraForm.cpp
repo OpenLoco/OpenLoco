@@ -858,7 +858,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 origin,
                 PlantTrees::kWindowSize,
                 WindowFlags::flag_11,
-                &PlantTrees::events);
+                PlantTrees::events);
 
             window->number = 0;
             window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;

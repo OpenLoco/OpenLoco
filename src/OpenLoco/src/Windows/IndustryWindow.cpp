@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             // 0x00456DBC start
             const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, &Industry::events);
+            window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, Industry::events);
             window->number = enumValue(industryId);
             window->minWidth = 192;
             window->minHeight = 137;

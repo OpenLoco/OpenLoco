@@ -588,7 +588,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             static constexpr Ui::Size kWindowSize = { 640, 272 };
 
-            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, WindowFlags::none, &CompanyList::events);
+            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, WindowFlags::none, CompanyList::events);
 
             window->frameNo = 0;
             window->savedView.clear();

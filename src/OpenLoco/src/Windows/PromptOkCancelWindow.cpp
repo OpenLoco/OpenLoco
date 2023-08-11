@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
             WindowType::confirmationPrompt,
             { 280, 92 },
             Ui::WindowFlags::flag_12 | Ui::WindowFlags::stickToFront,
-            &_events);
+            _events);
 
         if (window == nullptr)
             return false;

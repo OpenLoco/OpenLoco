@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             { 0, 0 },
             kWindowSize,
             WindowFlags::openQuietly | WindowFlags::transparent,
-            &_events);
+            _events);
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::logo;

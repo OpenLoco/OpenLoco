@@ -535,7 +535,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 origin,
                 IndustryList::kWindowSize,
                 WindowFlags::flag_8,
-                &IndustryList::events);
+                IndustryList::events);
 
             window->number = 0;
             window->currentTab = 0;

@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             WindowType::objectLoadError,
             kWindowSize,
             WindowFlags::stickToFront,
-            &_events);
+            _events);
 
         // TODO: only needs to be called once.
         initEvents();

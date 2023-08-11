@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, &Town::events);
+            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, Town::events);
             window->number = townId;
             window->minWidth = 192;
             window->minHeight = 161;

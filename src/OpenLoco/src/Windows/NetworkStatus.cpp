@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
             WindowType::networkStatus,
             kWindowSize,
             WindowFlags::flag_11 | WindowFlags::stickToFront,
-            &_events);
+            _events);
 
         window->widgets = widgets;
         window->enabledWidgets = (1 << Widx::closeBtn);

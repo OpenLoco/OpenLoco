@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::Main
             { 0, 0 },
             Ui::Size(uiWidth, uiHeight),
             Ui::WindowFlags::stickToBack,
-            &_events);
+            _events);
         window->widgets = _widgets;
         WindowManager::setCurrentRotation(0);
         ViewportManager::create(

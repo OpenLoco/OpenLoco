@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         if (window == nullptr)
         {
             // 0x0043EEFF start
-            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, kOtherWindowSize, WindowFlags::none, &Challenge::events);
+            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, kOtherWindowSize, WindowFlags::none, Challenge::events);
             window->widgets = Challenge::widgets;
             window->enabledWidgets = Challenge::enabledWidgets;
             window->number = 0;

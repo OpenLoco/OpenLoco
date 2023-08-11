@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::Error
                 Ui::Point(x, y),
                 windowSize,
                 WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
-                &Common::events);
+                Common::events);
 
             Common::initEvents();
 

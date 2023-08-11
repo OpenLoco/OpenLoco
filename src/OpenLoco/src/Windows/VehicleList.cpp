@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             WindowType::vehicleList,
             kWindowSize,
             WindowFlags::flag_11,
-            &_events);
+            _events);
 
         self->widgets = _widgets;
         self->enabledWidgets = _enabledWidgets;

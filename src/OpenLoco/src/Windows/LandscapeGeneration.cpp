@@ -305,7 +305,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // Start of 0x0043DAEA
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, &Options::events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, Options::events);
             window->widgets = Options::widgets;
             window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;

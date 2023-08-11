@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
             WindowType::aboutMusic,
             kWindowSize,
             WindowFlags::none,
-            &_events);
+            _events);
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::close;
