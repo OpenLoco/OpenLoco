@@ -2,6 +2,8 @@
 
 #include <OpenLoco/Diagnostics/LogLevel.h>
 #include <fmt/format.h>
+// Enable printing of fs::path
+#include <fmt/std.h>
 #include <memory>
 #include <string_view>
 

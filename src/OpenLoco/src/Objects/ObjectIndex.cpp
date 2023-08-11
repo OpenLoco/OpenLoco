@@ -225,7 +225,7 @@ namespace OpenLoco::ObjectManager
                 Logging::error("Unable to open object index file.");
                 return;
             }
-            stream.readValue(objHeader);
+            objHeader = stream.readValue<ObjectHeader>();
         }
         catch (const std::runtime_error& ex)
         {
@@ -382,8 +382,7 @@ namespace OpenLoco::ObjectManager
         try
         {
             // 0x00112A14C -> 160
-            IndexHeader header{};
-            stream.readValue(header);
+            auto header = stream.readValue<IndexHeader>();
             if (header.state != currentState)
             {
                 Logging::info("Object index out of date.");
