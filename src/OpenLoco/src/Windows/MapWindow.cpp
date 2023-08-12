@@ -75,6 +75,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[16], 0x00F253CE> _assignedIndustryColours;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
+    static loco_global<uint8_t[8], 0x00F25404> _byte_F25404;
+    static loco_global<uint8_t[8], 0x00F2540C> _byte_F2540C;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -1508,6 +1510,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
+    // 0x00478265
+    static void sub_478265(int8_t* buffer)
+    {
+        registers regs;
+        regs.edi = X86Pointer(buffer);
+        call(0x00478265, regs);
+    }
+
     // 0x0046CED0
     static void assignRouteColours()
     {
@@ -1545,9 +1555,47 @@ namespace OpenLoco::Ui::Windows::MapWindow
         availableColours = checkIndustryColours(PaletteIndex::index_0A, availableColours);
         availableColours = checkIndustryColours(PaletteIndex::index_15, availableColours);
 
-        registers regs;
-        regs.ebp = availableColours;
-        call(0x0046CF56, regs);
+        auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
+
+        std::array<int8_t, 100> buffer = {};
+        assert(std::size(buffer) >= std::size(availableTracks));
+
+        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(buffer));
+        buffer[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
+
+        auto* nextEl = &buffer[availableTracks.size()];
+        sub_478265(nextEl);
+
+        for (auto i = 0U; i < buffer.size(); i++)
+        {
+            if (buffer[i] != -1)
+            {
+                _byte_F253DF[i] = buffer[i];
+                auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
+                availableColours &= ~(1U << freeColour);
+
+                auto colour = industryColours[freeColour];
+                _routeColours[i] = colour;
+
+                if (buffer[i] >= 0)
+                {
+                    _byte_F25404[i] = colour;
+                }
+                else
+                {
+                    _byte_F2540C[i & 0x7F] = colour;
+                }
+            }
+            else
+            {
+                _byte_F253DF[i] = 0xFE;
+                _byte_F253DF[i + 1] = 0xFD;
+                _byte_F253DF[i + 2] = 0xFF;
+                _routeColours[i] = 0xD3;
+                _routeColours[i + 1] = 0x8B;
+                break;
+            }
+        }
     }
 
     // 0x0046B490
