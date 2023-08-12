@@ -73,10 +73,24 @@ namespace OpenLoco::Vehicles
     // 0x004AAC02
     void VehicleBogie::updateRoll()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
+        auto unk = _vehicleUpdate_var_1136130 / 8;
+        if (has38Flags(Flags38::isReversed))
+        {
+            unk = -unk;
+        }
+        var_44 += unk;
 
-        call(0x004AAC02, regs);
+        if (objectSpriteType != 0xFF)
+        {
+            auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
+            auto& bogieSprites = vehObj->bogieSprites[objectSpriteType];
+            const auto newRoll = (bogieSprites.rollStates - 1) & (var_44 / 4096);
+            if (newRoll != var_46)
+            {
+                var_46 = newRoll;
+                invalidateSprite();
+            }
+        }
     }
 
     // 0x004AA0DF
