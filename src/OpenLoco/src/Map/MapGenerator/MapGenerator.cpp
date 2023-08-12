@@ -62,15 +62,15 @@ namespace OpenLoco::World::MapGenerator
     // 0x004C4BD7
     static void generateWater([[maybe_unused]] HeightMap& heightMap)
     {
-        static loco_global<uint16_t, 0x00525FB2> _seaLevel;
+        auto seaLevel = getGameState().seaLevel;
 
         for (auto pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
 
-            if (surface != nullptr && surface->baseZ() < (_seaLevel << 2))
-                surface->setWater(_seaLevel);
+            if (surface != nullptr && surface->baseZ() < (seaLevel << 2))
+                surface->setWater(seaLevel);
         }
     }
 
