@@ -40,27 +40,12 @@ namespace OpenLoco::Vehicles
         }
     };
 
+    // Note: This is not binary identical to vanilla so cannot be hooked!
     struct LocationOfInterestHashMap
     {
-        static constexpr auto kMapSize = 0x400;
-        static constexpr auto kMapSizeMask = kMapSize - 1;
-        static constexpr auto kMaxEntries = 0x39C;
+        static constexpr auto kMinFreeSlots = 100; // There must always be at least 100 free slots otherwise the hashmap gets very inefficient
 
     private:
-#pragma pack(push, 1)
-        struct ZAndTD
-        {
-            coord_t z;
-            uint16_t trackAndDirection;
-        };
-        struct CAndT
-        {
-            CompanyId company;
-            uint8_t trackType;
-            uint8_t pad[0x2];
-        };
-#pragma pack(pop)
-
         class Iterator
         {
             uint16_t _index;
@@ -76,7 +61,7 @@ namespace OpenLoco::Vehicles
 
             void findAllocatedEntry()
             {
-                while (_index < kMapSize && _map.locs[_index] == World::Pos2{ -1, -1 })
+                while (_index < _map.mapSize && _map.locs[_index].loc == World::Pos3{ -1, -1, 0 })
                 {
                     _index++;
                 }
@@ -118,49 +103,49 @@ namespace OpenLoco::Vehicles
         };
 
     public:
-#pragma pack(push, 1)
-        World::Pos2 locs[kMapSize];
-        ZAndTD zAndTDs[kMapSize];
-        CAndT cAndTs[kMapSize];
-#pragma pack(pop)
-        size_t count; // count does not need to be tightly packed as this is only accessed via a pointer to first 3 members
+        std::vector<LocationOfInterest> locs;
+        size_t count;
+        uint16_t mapSize;
+        uint16_t mapSizeMask;
+        uint16_t maxEntries;
 
-        LocationOfInterestHashMap()
-            : zAndTDs{}
-            , cAndTs{}
-            , count()
+        LocationOfInterestHashMap(uint16_t _maxSize)
+            : count()
+            , mapSize(_maxSize)
+            , mapSizeMask(_maxSize - 1)
+            , maxEntries(_maxSize - kMinFreeSlots)
         {
-            std::fill(std::begin(locs), std::end(locs), World::Pos2{ -1, -1 });
+            assert((mapSize & (mapSizeMask)) == 0); // Only works with powers of 2
+            locs.resize(mapSize);
+            std::fill(std::begin(locs), std::end(locs), LocationOfInterest{ World::Pos3{ -1, -1, 0 }, 0, CompanyId::null, 0 });
         }
 
         LocationOfInterest get(const uint16_t index) const
         {
-            return LocationOfInterest{ World::Pos3(locs[index].x, locs[index].y, zAndTDs[index].z), zAndTDs[index].trackAndDirection, cAndTs[index].company, cAndTs[index].trackType };
+            return locs[index];
         }
 
         constexpr uint16_t hash(const LocationOfInterest& interest) const
         {
-            return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & kMapSizeMask;
+            return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & mapSizeMask;
         }
 
         // 0x004A38DE
         bool tryAdd(LocationOfInterest& interest)
         {
             auto index = hash(interest);
-            for (; locs[index] != World::Pos2{ -1, -1 }; ++index, index &= kMapSizeMask)
+            for (; locs[index].loc != World::Pos3{ -1, -1, 0 }; ++index, index &= mapSizeMask)
             {
                 if (get(index) == interest)
                 {
                     return false;
                 }
             }
-            if (count >= kMaxEntries)
+            if (count >= maxEntries)
             {
                 return false;
             }
-            locs[index] = interest.loc;
-            zAndTDs[index] = ZAndTD{ interest.loc.z, interest.trackAndDirection };
-            cAndTs[index] = CAndT{ interest.company, interest.trackType, {} };
+            locs[index] = interest;
             count++;
             return true;
         }
@@ -171,7 +156,7 @@ namespace OpenLoco::Vehicles
         }
         Iterator end() const
         {
-            return Iterator(kMapSize, *this);
+            return Iterator(mapSize, *this);
         }
     };
 
@@ -183,7 +168,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint16_t, 0x01135FA6> _1135FA6;
     static loco_global<TransformFunction, 0x01135F12> _transformFunction;
     static loco_global<uint8_t, 0x01136085> _1136085;
-    static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06;
+    // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x001135F88> _routingTransformData;
 
@@ -671,13 +656,15 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    constexpr size_t kSignalHashMapSize = 0x400;
+
     // 0x004A2E46
     static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const FilterFunction filterFunction, const TransformFunction transformFunction)
     {
         _filterFunction = filterFunction;
         _transformFunction = transformFunction;
-        LocationOfInterestHashMap interestMap{};
-        _1135F06 = &interestMap;
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
+        // _1135F06 = &interestMap;
         _1135F0A = 0;
         _1135FA6 = 5; // flags
         findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
