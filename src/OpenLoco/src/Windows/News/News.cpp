@@ -472,8 +472,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     const auto imageIndexBase = competitorObj->images[company->ownerEmotion];
 
                     const ImageId imageId(imageIndexBase + 1, company->mainColours.primary);
-                    const auto x = self->x + viewWidget.width() - 32;
-                    const auto y = self->y + viewWidget.height() - 32;
+                    const auto x = self->x + viewWidget.midX() - 31;
+                    const auto y = self->y + viewWidget.midY() - 31;
                     drawingCtx.drawImage(*rt, Ui::Point(x, y), imageId);
 
                     if (company->jailStatus != 0)
