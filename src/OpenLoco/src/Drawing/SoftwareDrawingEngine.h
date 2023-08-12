@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "InvalidationGrid.h"
 #include "SoftwareDrawingContext.h"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <algorithm>
@@ -31,6 +32,8 @@ namespace OpenLoco::Drawing
         ~SoftwareDrawingEngine();
 
         void initialize(SDL_Window* window);
+
+        bool isInitialized() const;
 
         void resize(int32_t width, int32_t height);
 
@@ -68,5 +71,6 @@ namespace OpenLoco::Drawing
         SDL_Texture* _screenRGBATexture{};
 
         SoftwareDrawingContext _ctx;
+        InvalidationGrid _invalidationGrid;
     };
 }
