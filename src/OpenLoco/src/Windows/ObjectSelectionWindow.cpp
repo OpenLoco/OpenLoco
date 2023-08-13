@@ -136,7 +136,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         ObjectManager::ObjectIndexId index;
         ObjectManager::ObjectIndexEntry object;
         Visibility display;
-        std::optional<VehicleType> vehicleType;
     };
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
@@ -333,11 +332,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             if (_filterByVehicleType)
             {
-                // if (!entry.vehicleType.has_value())
-                // {
-                //     entry.vehicleType = getVehicleTypeFromObject(entry);
-                // }
-
                 auto vehicleType = getVehicleTypeFromObject(entry);
                 if (vehicleType != _currentVehicleType)
                 {
@@ -374,7 +368,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _tabObjectList.reserve(objects.size());
         for (auto [index, object] : objects)
         {
-            auto entry = TabObjectEntry{ index, object, Visibility::shown, std::nullopt };
+            auto entry = TabObjectEntry{ index, object, Visibility::shown };
             _tabObjectList.emplace_back(std::move(entry));
         }
 
