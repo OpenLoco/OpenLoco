@@ -155,6 +155,7 @@ namespace OpenLoco::Ui::Windows
         Window* openAndSetName();
         Window* openChallenge(CompanyId companyId);
         Window* openFinances(CompanyId companyId);
+        bool rotate(Window& self);
     }
 
     namespace Construction

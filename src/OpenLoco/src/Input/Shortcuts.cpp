@@ -113,6 +113,13 @@ namespace OpenLoco::Input::Shortcuts
             if (Ui::Windows::TownList::rotate(window))
                 return;
         }
+
+        window = WindowManager::find(WindowType::company);
+        if (window != nullptr)
+        {
+            if (Ui::Windows::CompanyWindow::rotate(*window))
+                return;
+        }
     }
 
     // 0x004BF18A

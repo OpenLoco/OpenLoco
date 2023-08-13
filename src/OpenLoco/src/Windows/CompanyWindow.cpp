@@ -667,6 +667,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         loco_global<uint8_t, 0x009C68F1> _headquarterGhostType;
         loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
 
+        // New in OpenLoco; not to be confused with rotation of already-placed HQ ghost
+        static uint8_t _headquarterConstructionRotation;
+
         enum widx
         {
             viewport = 11,
@@ -910,6 +913,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Common::switchCompany(&self, itemIndex);
         }
 
+        static void onTabSwitch()
+        {
+            _headquarterConstructionRotation = (WindowManager::getCurrentRotation() + 2) & 3;
+        }
+
+        static void rotateHQGhost90Deg()
+        {
+            _headquarterConstructionRotation = (_headquarterConstructionRotation + 1) & 3;
+        }
+
         // 0x00432C24
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
@@ -966,7 +979,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             GameCommands::HeadquarterPlacementArgs args;
             args.type = CompanyManager::getHeadquarterBuildingType();
-            args.rotation = (WindowManager::getCurrentRotation() + 2) & 3;
+            args.rotation = _headquarterConstructionRotation;
 
             auto tile = World::TileManager::get(*pos);
             const auto* surface = tile.surface();
@@ -999,6 +1012,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 removeHeadquarterGhost();
                 return;
             }
+
+            // Always show buildings, not scaffolding, for ghost placements.
+            placementArgs->buildImmediately = true;
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             World::TileManager::setMapSelectionCorner(4);
@@ -1049,6 +1065,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             removeHeadquarterGhost();
             Ui::Windows::hideGridlines();
+        }
+
+        static void onClose(Window& self)
+        {
+            if (Input::isToolActive(self.type, self.number))
+                Input::toolCancel();
         }
 
         // 0x0432D85
@@ -1152,10 +1174,22 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             events.onToolUpdate = onToolUpdate;
             events.onToolDown = onToolDown;
             events.onToolAbort = onToolAbort;
+            events.onClose = onClose;
             events.onUpdate = onUpdate;
             events.onResize = onResize;
             events.viewportRotate = viewportRotate;
         }
+    }
+
+    bool rotate(Window& self)
+    {
+        if (self.currentTab != Common::widx::tab_details - Common::widx::tab_status)
+        {
+            return false;
+        }
+
+        Details::rotateHQGhost90Deg();
+        return true;
     }
 
     namespace ColourScheme
@@ -2680,6 +2714,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
+
+            if (tabInfo.widgetIndex == widx::tab_details)
+                Details::onTabSwitch();
 
             if (tabInfo.widgetIndex == widx::tab_finances)
                 Finances::scrollToLatestData(self);
