@@ -42,6 +42,7 @@
 #include "Town/RemoveTown.h"
 #include "Town/RenameTown.h"
 #include "Track/CreateSignal.h"
+#include "Track/CreateTrackMod.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/CloneVehicle.h"
 #include "Vehicles/CreateVehicle.h"
@@ -419,7 +420,7 @@ namespace OpenLoco::GameCommands
         }
 
         // advanced errors
-        if (_9C68D0 != (void*)-1)
+        if (_9C68D0 != (const TileElement*)-1)
         {
             auto tile = *_9C68D0;
 

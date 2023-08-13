@@ -1,5 +1,5 @@
+#include "CreateTrackMod.h"
 #include "Economy/Expenditures.h"
-#include "GameCommands.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
@@ -9,8 +9,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-
-
     // 0x004A6479
     static currency32_t createTrackMod(const TrackModsPlacementArgs& args, uint8_t flags)
     {
