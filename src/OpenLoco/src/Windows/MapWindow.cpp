@@ -1511,7 +1511,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x00478265
-    static void sub_478265(int8_t* buffer)
+    static void sub_478265(uint8_t* buffer)
     {
         registers regs;
         regs.edi = X86Pointer(buffer);
@@ -1557,7 +1557,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
 
-        std::array<int8_t, 100> buffer = {};
+        std::array<uint8_t, 100> buffer = {};
         assert(std::size(buffer) >= std::size(availableTracks));
 
         std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(buffer));
@@ -1568,7 +1568,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         for (auto i = 0U; i < buffer.size(); i++)
         {
-            if (buffer[i] != -1)
+            if (buffer[i] != 0xFF)
             {
                 _byte_F253DF[i] = buffer[i];
                 auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
@@ -1577,13 +1577,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 auto colour = industryColours[freeColour];
                 _routeColours[i] = colour;
 
-                if (buffer[i] >= 0)
+                if (buffer[i] & 0x80)
                 {
-                    _byte_F25404[i] = colour;
+                    _byte_F2540C[i & 0x7F] = colour;
                 }
                 else
                 {
-                    _byte_F2540C[i & 0x7F] = colour;
+                    _byte_F25404[i] = colour;
                 }
             }
             else
