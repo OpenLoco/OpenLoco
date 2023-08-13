@@ -500,8 +500,6 @@ namespace OpenLoco::ObjectManager
         {
             auto* vehicle = reinterpret_cast<VehicleObject*>(preLoadObj->object);
             result.displayData.vehicleSubType = enumValue(vehicle->type);
-
-            Logging::info("Index: vehicle {} is of type {}", header.getName(), enumValue(vehicle->type));
         }
 
         return result;

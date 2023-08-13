@@ -322,8 +322,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return std::nullopt;
         }
 
-        Logging::info("Vehicle {} is of type {}", entry.object._header->getName(), displayData->vehicleSubType);
-
         return static_cast<VehicleType>(displayData->vehicleSubType);
     }
 
