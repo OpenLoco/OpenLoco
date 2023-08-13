@@ -16,89 +16,55 @@
 
 namespace OpenLoco::GameCommands
 {
-    // 0x00488BDB
-    static uint32_t createSignal(const SignalPlacementArgs& args, uint8_t flags)
+    World::TrackElement* getElTrackAt(const SignalPlacementArgs& args, const World::Pos3 pos, const uint8_t index)
     {
-        setExpenditureType(ExpenditureType::Construction);
-        setPosition(args.pos + World::Pos3{ 16, 16, 0 });
-        if (!World::TileManager::checkFreeElementsAndReorganise())
+        auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
         {
-            return FAILURE;
-        }
-
-        auto getElTrackAt = [&args](World::Pos3 pos, uint8_t index) -> World::TrackElement* {
-            auto tile = World::TileManager::get(pos);
-            for (auto& el : tile)
+            auto* elTrack = el.as<World::TrackElement>();
+            if (elTrack == nullptr)
             {
-                auto* elTrack = el.as<World::TrackElement>();
-                if (elTrack == nullptr)
-                {
-                    continue;
-                }
-                if (elTrack->baseHeight() != pos.z)
-                {
-                    continue;
-                }
-                if (elTrack->unkDirection() != args.rotation)
-                {
-                    continue;
-                }
-                if (elTrack->sequenceIndex() != index)
-                {
-                    continue;
-                }
-                if (elTrack->trackObjectId() != args.trackObjType)
-                {
-                    continue;
-                }
-                if (elTrack->trackId() != args.trackId)
-                {
-                    continue;
-                }
-                return elTrack;
+                continue;
             }
-            return nullptr;
-        };
-
-        auto* elTrack = getElTrackAt(args.pos, args.index);
-
-        if (elTrack == nullptr)
-        {
-            return FAILURE;
+            if (elTrack->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (elTrack->unkDirection() != args.rotation)
+            {
+                continue;
+            }
+            if (elTrack->sequenceIndex() != index)
+            {
+                continue;
+            }
+            if (elTrack->trackObjectId() != args.trackObjType)
+            {
+                continue;
+            }
+            if (elTrack->trackId() != args.trackId)
+            {
+                continue;
+            }
+            return elTrack;
         }
+        return nullptr;
+    };
 
-        if (elTrack->hasLevelCrossing())
-        {
-            setErrorText(StringIds::level_crossing_in_the_way);
-            return FAILURE;
-        }
-
-        if (!sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
-        {
-            return FAILURE;
-        }
-
-        const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
-        auto& trackPiece = trackPieces[args.index];
-
-        const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
-
-        uint32_t totalCost = 0;
-        // We remove certain sides from placing when in ghost mode
-        auto sides = args.sides;
-
+    static bool validateTrackIsSignalCompatible(const SignalPlacementArgs& args, const stdx::span<const World::TrackData::PreviewTrack> trackPieces, const World::Pos3 trackStart)
+    {
         for (auto& piece : trackPieces)
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
-            auto* pieceElTrack = getElTrackAt(trackLoc, piece.index);
+            auto* pieceElTrack = getElTrackAt(args, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
-                return FAILURE;
+                return false;
             }
             if (pieceElTrack->hasStationElement())
             {
                 setErrorText(StringIds::signals_cannot_be_built_in_stations);
-                return FAILURE;
+                return false;
             }
             const auto connectFlags = piece.connectFlags[pieceElTrack->unkDirection()];
             auto tile = World::TileManager::get(trackLoc);
@@ -126,54 +92,118 @@ namespace OpenLoco::GameCommands
                 if (otherConnectFlags & connectFlags)
                 {
                     setErrorText(StringIds::signals_cannot_be_built_on_a_junction_2);
-                    return FAILURE;
+                    return false;
                 }
             }
+        }
+        return true;
+    }
 
-            if (piece.index == 0)
+    static currency32_t signalCost(const SignalPlacementArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart)
+    {
+        const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, args.rotation), trackPiece0.z };
+        auto* pieceElTrack = getElTrackAt(args, trackLoc, trackPiece0.index);
+        if (pieceElTrack == nullptr)
+        {
+            return 0;
+        }
+
+        const auto* signalObj = ObjectManager::get<TrainSignalObject>(args.type);
+        const auto baseCost = Economy::getInflationAdjustedCost(signalObj->costFactor, signalObj->costIndex, 10);
+
+        currency32_t totalCost = 0;
+        if (args.sides & (1U << 15))
+        {
+            totalCost += baseCost;
+            if (pieceElTrack->hasSignal())
             {
-                const auto* signalObj = ObjectManager::get<TrainSignalObject>(args.type);
-                const auto baseCost = Economy::getInflationAdjustedCost(signalObj->costFactor, signalObj->costIndex, 10);
-                if (sides & (1U << 15))
+                auto* next = pieceElTrack->next()->as<World::SignalElement>();
+                if (next != nullptr && next->getLeft().hasSignal())
                 {
-                    totalCost += baseCost;
-                    if (pieceElTrack->hasSignal())
+                    if (next->getLeft().signalObjectId() == args.type)
                     {
-                        auto* next = pieceElTrack->next()->as<World::SignalElement>();
-                        if (next != nullptr && next->getLeft().hasSignal())
-                        {
-                            if (next->getLeft().signalObjectId() == args.type)
-                            {
-                                totalCost -= baseCost;
-                            }
-                            else
-                            {
-                                const auto* existingSignalObj = ObjectManager::get<TrainSignalObject>(next->getLeft().signalObjectId());
-                                totalCost += Economy::getInflationAdjustedCost(existingSignalObj->sellCostFactor, existingSignalObj->costIndex, 10);
-                            }
-                        }
+                        totalCost -= baseCost;
+                    }
+                    else
+                    {
+                        const auto* existingSignalObj = ObjectManager::get<TrainSignalObject>(next->getLeft().signalObjectId());
+                        totalCost += Economy::getInflationAdjustedCost(existingSignalObj->sellCostFactor, existingSignalObj->costIndex, 10);
                     }
                 }
-                if (sides & (1U << 14))
+            }
+        }
+        if (args.sides & (1U << 14))
+        {
+            totalCost += baseCost;
+            if (pieceElTrack->hasSignal())
+            {
+                auto* next = pieceElTrack->next()->as<World::SignalElement>();
+                if (next != nullptr && next->getRight().hasSignal())
                 {
-                    totalCost += baseCost;
-                    if (pieceElTrack->hasSignal())
+                    if (next->getRight().signalObjectId() == args.type)
                     {
-                        auto* next = pieceElTrack->next()->as<World::SignalElement>();
-                        if (next != nullptr && next->getRight().hasSignal())
-                        {
-                            if (next->getRight().signalObjectId() == args.type)
-                            {
-                                totalCost -= baseCost;
-                            }
-                            else
-                            {
-                                const auto* existingSignalObj = ObjectManager::get<TrainSignalObject>(next->getRight().signalObjectId());
-                                totalCost += Economy::getInflationAdjustedCost(existingSignalObj->sellCostFactor, existingSignalObj->costIndex, 10);
-                            }
-                        }
+                        totalCost -= baseCost;
+                    }
+                    else
+                    {
+                        const auto* existingSignalObj = ObjectManager::get<TrainSignalObject>(next->getRight().signalObjectId());
+                        totalCost += Economy::getInflationAdjustedCost(existingSignalObj->sellCostFactor, existingSignalObj->costIndex, 10);
                     }
                 }
+            }
+        }
+        return totalCost;
+    }
+
+    // 0x00488BDB
+    static uint32_t createSignal(const SignalPlacementArgs& args, uint8_t flags)
+    {
+        setExpenditureType(ExpenditureType::Construction);
+        setPosition(args.pos + World::Pos3{ 16, 16, 0 });
+        if (!World::TileManager::checkFreeElementsAndReorganise())
+        {
+            return FAILURE;
+        }
+
+        auto* elTrack = getElTrackAt(args, args.pos, args.index);
+
+        if (elTrack == nullptr)
+        {
+            return FAILURE;
+        }
+
+        if (elTrack->hasLevelCrossing())
+        {
+            setErrorText(StringIds::level_crossing_in_the_way);
+            return FAILURE;
+        }
+
+        if (!sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
+        {
+            return FAILURE;
+        }
+
+        const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
+        auto& trackPiece = trackPieces[args.index];
+
+        const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
+
+        if (!validateTrackIsSignalCompatible(args, trackPieces, trackStart))
+        {
+            return FAILURE;
+        }
+
+        uint32_t totalCost = signalCost(args, trackPieces[0], trackStart);
+
+        // We remove certain sides from placing when in ghost mode
+        auto sides = args.sides;
+        for (auto& piece : trackPieces)
+        {
+            const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
+            auto* pieceElTrack = getElTrackAt(args, trackLoc, piece.index);
+            if (pieceElTrack == nullptr)
+            {
+                return FAILURE;
             }
 
             if (flags & Flags::ghost)
