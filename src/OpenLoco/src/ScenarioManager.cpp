@@ -211,7 +211,7 @@ namespace OpenLoco::ScenarioManager
             return true;
         }
 
-        if (!ObjectManager::loadTemporaryObject(options.scenarioText))
+        if (!ObjectManager::loadTemporaryObject(options.scenarioText).has_value())
         {
             return false;
         }

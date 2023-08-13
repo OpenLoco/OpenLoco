@@ -445,12 +445,12 @@ namespace OpenLoco::ObjectManager
 
     // 0x0047176D
     // TODO: Return a std::unique_ptr and a ObjectHeader3 & ObjectHeader2 for the metadata
-    bool loadTemporaryObject(ObjectHeader& header)
+    std::optional<TempLoadMetaData> loadTemporaryObject(ObjectHeader& header)
     {
         auto preLoadObj = findAndPreLoadObject(header);
         if (!preLoadObj.has_value())
         {
-            return false;
+            return std::nullopt;
         }
 
         const uint32_t oldNumImages = getTotalNumImages();
@@ -480,7 +480,17 @@ namespace OpenLoco::ObjectManager
 
         _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
-        return true;
+        TempLoadMetaData result{};
+        result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
+        result.displayData.numImages = _numImages;
+        if (header.getType() == ObjectType::competitor)
+        {
+            auto* competitor = reinterpret_cast<CompetitorObject*>(preLoadObj->object);
+            result.displayData.aggressiveness = competitor->aggressiveness;
+            result.displayData.competitiveness = competitor->competitiveness;
+            result.displayData.intelligence = competitor->intelligence;
+        }
+        return result;
     }
 
     Object* getTemporaryObject()

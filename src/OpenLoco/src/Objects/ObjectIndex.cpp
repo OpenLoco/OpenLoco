@@ -157,8 +157,8 @@ namespace OpenLoco::ObjectManager
         return std::make_pair(entry, newEntrySize);
     }
 
-    // TODO: Take an ObjectHeader2 & ObjectHeader3 from loadTemporary
-    static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename)
+    // TODO: Take depenedent object vectors from loadTemporary
+    static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename, const TempLoadMetaData& metaData)
     {
         ObjectIndexEntry entry{};
         size_t newEntrySize = 0;
@@ -174,10 +174,8 @@ namespace OpenLoco::ObjectManager
         newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
 
         // Header2
-        ObjectHeader2 objHeader2;
-        objHeader2.decodedFileSize = _decodedSize;
-        std::memcpy(&entryBuffer[newEntrySize], &objHeader2, sizeof(objHeader2));
-        newEntrySize += sizeof(objHeader2);
+        std::memcpy(&entryBuffer[newEntrySize], &metaData.fileSizeHeader, sizeof(metaData.fileSizeHeader));
+        newEntrySize += sizeof(metaData.fileSizeHeader);
 
         // Name
         strcpy(reinterpret_cast<char*>(&entryBuffer[newEntrySize]), StringManager::getString(0x2000));
@@ -185,13 +183,8 @@ namespace OpenLoco::ObjectManager
         newEntrySize += strlen(reinterpret_cast<char*>(&entryBuffer[newEntrySize])) + 1;
 
         // Header3
-        ObjectHeader3 objHeader3{};
-        objHeader3.numImages = _numImages;
-        objHeader3.intelligence = _intelligence;
-        objHeader3.aggressiveness = _aggressiveness;
-        objHeader3.competitiveness = _competitiveness;
-        std::memcpy(&entryBuffer[newEntrySize], &objHeader3, sizeof(objHeader3));
-        newEntrySize += sizeof(objHeader3);
+        std::memcpy(&entryBuffer[newEntrySize], &metaData.displayData, sizeof(metaData.displayData));
+        newEntrySize += sizeof(metaData.displayData);
 
         auto* ptr = &_dependentObjectVectorData[0];
 
@@ -240,14 +233,14 @@ namespace OpenLoco::ObjectManager
 
         _isPartialLoaded = true;
         _dependentObjectsVector = _dependentObjectVectorData;
-        const bool tempLoadFailed = loadTemporaryObject(objHeader);
+        const auto loadResult = loadTemporaryObject(objHeader);
         _dependentObjectsVector = reinterpret_cast<std::byte*>(-1);
         _isPartialLoaded = false;
         _installedObjectCount--;
         // Rewind as it is only a partial object loaded
         usedBufferSize = curObjPos;
 
-        if (!tempLoadFailed)
+        if (!loadResult.has_value())
         {
             Logging::error("Unable to load the object '{}', can't add to index", objHeader.getName());
             return;
@@ -256,7 +249,7 @@ namespace OpenLoco::ObjectManager
         // Load full entry into temp buffer.
         // 0x009D1CC8
         std::byte newEntryBuffer[0x2000] = {};
-        const auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename());
+        const auto [newEntry, newEntrySize] = createNewEntry(newEntryBuffer, objHeader, filepath.filename(), loadResult.value());
 
         freeTemporaryObject();
 
@@ -500,7 +493,7 @@ namespace OpenLoco::ObjectManager
         entry._name = (char*)*ptr;
         *ptr += strlen(entry._name) + 1;
 
-        // ObjectHeader3* h3 = (ObjectHeader3*)ptr;
+        entry._displayData = reinterpret_cast<ObjectHeader3*>(ptr);
         *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
