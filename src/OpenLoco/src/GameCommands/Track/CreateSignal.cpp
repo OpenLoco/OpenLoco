@@ -16,7 +16,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    World::TrackElement* getElTrackAt(const SignalPlacementArgs& args, const World::Pos3 pos, const uint8_t index)
+    static World::TrackElement* getElTrackAt(const SignalPlacementArgs& args, const World::Pos3 pos, const uint8_t index)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
