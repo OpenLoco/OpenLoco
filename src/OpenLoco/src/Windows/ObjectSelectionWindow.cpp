@@ -315,17 +315,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static std::optional<VehicleType> getVehicleTypeFromObject(TabObjectEntry& entry)
     {
-        ObjectManager::freeTemporaryObject();
-        ObjectManager::loadTemporaryObject(*entry.object._header);
-
-        auto vehicleObj = reinterpret_cast<VehicleObject*>(ObjectManager::getTemporaryObject());
-        if (vehicleObj == nullptr)
+        auto* displayData = entry.object._displayData;
+        if (displayData == nullptr || displayData->vehicleSubType == 0xFF)
         {
             Logging::info("Could not load determine vehicle type for object '{}', skipping", entry.object._header->getName());
             return std::nullopt;
         }
 
-        return vehicleObj->type;
+        Logging::info("Vehicle {} is of type {}", entry.object._header->getName(), displayData->vehicleSubType);
+
+        return static_cast<VehicleType>(displayData->vehicleSubType);
     }
 
     static void applyFilterToObjectList()
@@ -336,12 +335,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             if (_filterByVehicleType)
             {
-                if (!entry.vehicleType.has_value())
-                {
-                    entry.vehicleType = getVehicleTypeFromObject(entry);
-                }
+                // if (!entry.vehicleType.has_value())
+                // {
+                //     entry.vehicleType = getVehicleTypeFromObject(entry);
+                // }
 
-                if (entry.vehicleType != _currentVehicleType)
+                auto vehicleType = getVehicleTypeFromObject(entry);
+                if (vehicleType != _currentVehicleType)
                 {
                     entry.display = Visibility::hidden;
                     continue;
