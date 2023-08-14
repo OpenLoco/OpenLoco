@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Effects/Effect.h"
+#include "Effects/SmokeEffect.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"

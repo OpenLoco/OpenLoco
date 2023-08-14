@@ -5,6 +5,7 @@
 #include "Effects/ExplosionSmokeEffect.h"
 #include "Effects/FireballEffect.h"
 #include "Effects/MoneyEffect.h"
+#include "Effects/SmokeEffect.h"
 #include "Effects/SplashEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Graphics/Gfx.h"
