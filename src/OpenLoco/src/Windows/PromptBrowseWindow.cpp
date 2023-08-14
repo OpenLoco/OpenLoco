@@ -118,6 +118,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             *_fileType = BrowseFileType::landscape;
         }
+        // TODO: make named constant for filter
         else if (Utility::iequals(filter, "*.png"))
         {
             *_fileType = BrowseFileType::heightmap;

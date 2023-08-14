@@ -44,7 +44,7 @@ namespace OpenLoco::Game
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
+    bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
         setPauseFlag(1 << 2);

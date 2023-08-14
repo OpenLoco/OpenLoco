@@ -1,10 +1,12 @@
-#include "MapGenerator.h"
 #include "PngTerrainGenerator.h"
+#include "MapGenerator.h"
 
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
+#include "Localisation/StringIds.h"
 #include "Logging.h"
+#include "Ui/WindowManager.h"
 
 #include <OpenLoco/Platform/Platform.h>
 #include <cassert>
@@ -133,13 +135,17 @@ namespace OpenLoco::World::MapGenerator
 
     void PngTerrainGenerator::openUiPngBrowser()
     {
-        auto basePath = Platform::getUserDirectory();
-        strncpy(&_savePath[0], basePath.string().c_str(), std::size(_savePath));
-
-        GameCommands::LoadSaveQuitGameArgs args{};
-        args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::dontSave;
-        args.option2 = LoadOrQuitMode::loadGamePrompt;
-        GameCommands::doCommand(args, GameCommands::Flags::apply);
+        // TODO: add custom title
+        // TODO: make named constant for filter
+        const auto browseType = Ui::Windows::PromptBrowse::browse_type::load;
+        if (Game::openBrowsePrompt(StringIds::title_load_landscape, browseType, "*.png"))
+        {
+            Logging::info("Selected height map: {}", *_savePath);
+        }
+        else
+        {
+            Logging::info("Height map browser aborted");
+        }
     }
 
     int PngTerrainGenerator::generateFromHeightmapPng(HeightMapRange heightMap)
