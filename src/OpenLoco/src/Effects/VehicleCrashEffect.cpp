@@ -44,9 +44,9 @@ namespace OpenLoco
         int32_t vy = velocity.y + accelerationY;
         int32_t vz = velocity.z + accelerationZ;
 
-        auto newLoc = position + World::Pos3{ vx >> 16, vy >> 16, vz >> 16 };
+        auto newLoc = position + World::Pos3{ static_cast<coord_t>(vx >> 16), static_cast<coord_t>(vy >> 16), static_cast<coord_t>(vz >> 16) };
 
-        velocity = World::Pos3{ vx & 0xFFFF, vy & 0xFFFF, vz & 0xFFFF };
+        velocity = World::Pos3{ static_cast<coord_t>(vx & 0xFFFF), static_cast<coord_t>(vy & 0xFFFF), static_cast<coord_t>(vz & 0xFFFF) };
 
         // Check collision with land / water
         const auto tileHeight = World::TileManager::getHeight({ newLoc.x, newLoc.y });
