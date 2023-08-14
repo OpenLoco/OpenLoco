@@ -3,6 +3,7 @@
 #include "BuildingElement.h"
 #include "Economy/Economy.h"
 #include "Effects/Effect.h"
+#include "Effects/ExplosionSmokeEffect.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"

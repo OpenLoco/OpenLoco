@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Effects/ExhaustEffect.h"
 #include "Effects/ExplosionEffect.h"
+#include "Effects/ExplosionSmokeEffect.h"
 #include "Effects/FireballEffect.h"
 #include "Effects/MoneyEffect.h"
 #include "Effects/SplashEffect.h"
