@@ -120,7 +120,7 @@ namespace OpenLoco::Platform
 
     std::vector<fs::path> getDrives()
     {
-        char drive[4] = { 'A', ':', '\0' };
+        char drive[4] = { 'A', ':', '\\', '\0' };
         std::vector<fs::path> drives;
         auto driveMask = GetLogicalDrives();
         for (auto i = 0; i < 26; i++)
