@@ -320,7 +320,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00440325
-    void paintMiscEntity(PaintSession& session, EffectEntity* base)
+    void paintEffectEntity(PaintSession& session, EffectEntity* base)
     {
         switch (base->getSubType())
         {

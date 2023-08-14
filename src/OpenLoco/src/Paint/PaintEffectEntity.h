@@ -13,5 +13,5 @@ namespace OpenLoco::Paint
      * @param ((base->sprite_yaw + (session.getRotation() << 4)) & 0x3F) @<ebx>
      * @param base @<esi>
      */
-    void paintMiscEntity(PaintSession& session, EffectEntity* base);
+    void paintEffectEntity(PaintSession& session, EffectEntity* base);
 }

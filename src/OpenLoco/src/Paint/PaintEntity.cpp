@@ -67,7 +67,7 @@ namespace OpenLoco::Paint
                     paintVehicleEntity(session, entity->asBase<Vehicles::VehicleBase>());
                     break;
                 case EntityBaseType::effect:
-                    paintMiscEntity(session, entity->asBase<EffectEntity>());
+                    paintEffectEntity(session, entity->asBase<EffectEntity>());
                     break;
                 case EntityBaseType::null:
                     // Nothing to paint
