@@ -311,59 +311,59 @@ namespace OpenLoco::Paint
     }
 
     // 0x00440325
-    void paintMiscEntity(PaintSession& session, MiscBase* base)
+    void paintMiscEntity(PaintSession& session, EffectEntity* base)
     {
         switch (base->getSubType())
         {
-            case MiscEntityType::exhaust: // 0
+            case EffectType::exhaust: // 0
             {
                 paintExhaustEntity(session, base->asExhaust());
                 break;
             }
 
-            case MiscEntityType::redGreenCurrency: // 1
+            case EffectType::redGreenCurrency: // 1
             {
                 paintRedGreenCurrencyEntity(session, base->asRedGreenCurrency());
                 break;
             }
 
-            case MiscEntityType::windowCurrency: // 2
+            case EffectType::windowCurrency: // 2
             {
                 paintWindowCurrencyEntity(session, base->asWindowCurrency());
                 break;
             }
 
-            case MiscEntityType::vehicleCrashParticle: // 3
+            case EffectType::vehicleCrashParticle: // 3
             {
                 paintVehicleCrashParticleEntity(session, base->asVehicleCrashParticle());
                 break;
             }
 
-            case MiscEntityType::explosionCloud: // 4
+            case EffectType::explosionCloud: // 4
             {
                 paintExplosionCloudEntity(session, base->asExplosionCloud());
                 break;
             }
 
-            case MiscEntityType::splash: // 5
+            case EffectType::splash: // 5
             {
                 paintSplashEntity(session, base->asSplash());
                 break;
             }
 
-            case MiscEntityType::fireball: // 6
+            case EffectType::fireball: // 6
             {
                 paintFireballEntity(session, base->asFireball());
                 break;
             }
 
-            case MiscEntityType::explosionSmoke: // 7
+            case EffectType::explosionSmoke: // 7
             {
                 paintExplosionSmokeEntity(session, base->asExplosionSmoke());
                 break;
             }
 
-            case MiscEntityType::smoke: // 8
+            case EffectType::smoke: // 8
             {
                 paintSmokeEntity(session, base->asSmoke());
                 break;

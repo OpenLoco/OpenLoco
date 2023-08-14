@@ -16,7 +16,7 @@ namespace OpenLoco
     struct ExplosionSmoke;
     struct Smoke;
 
-    enum class MiscEntityType : uint8_t
+    enum class EffectType : uint8_t
     {
         exhaust = 0, // Steam from the exhaust
         redGreenCurrency = 1,
@@ -30,33 +30,33 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct MiscBase : EntityBase
+    struct EffectEntity : EntityBase
     {
-        static constexpr auto kBaseType = EntityBaseType::misc;
+        static constexpr auto kBaseType = EntityBaseType::effect;
 
     private:
-        template<typename TType, MiscEntityType TClass>
+        template<typename TType, EffectType TClass>
         TType* as() const
         {
             return getSubType() == TClass ? (TType*)this : nullptr;
         }
 
     public:
-        MiscEntityType getSubType() const { return MiscEntityType(EntityBase::getSubType()); }
-        void setSubType(const MiscEntityType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
-        Exhaust* asExhaust() const { return as<Exhaust, MiscEntityType::exhaust>(); }
-        MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, MiscEntityType::redGreenCurrency>(); }
-        MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscEntityType::windowCurrency>(); }
-        VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, MiscEntityType::vehicleCrashParticle>(); }
-        ExplosionCloud* asExplosionCloud() const { return as<ExplosionCloud, MiscEntityType::explosionCloud>(); }
-        Splash* asSplash() const { return as<Splash, MiscEntityType::splash>(); }
-        Fireball* asFireball() const { return as<Fireball, MiscEntityType::fireball>(); }
-        ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscEntityType::explosionSmoke>(); }
-        Smoke* asSmoke() const { return as<Smoke, MiscEntityType::smoke>(); }
+        EffectType getSubType() const { return EffectType(EntityBase::getSubType()); }
+        void setSubType(const EffectType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
+        Exhaust* asExhaust() const { return as<Exhaust, EffectType::exhaust>(); }
+        MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, EffectType::redGreenCurrency>(); }
+        MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, EffectType::windowCurrency>(); }
+        VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, EffectType::vehicleCrashParticle>(); }
+        ExplosionCloud* asExplosionCloud() const { return as<ExplosionCloud, EffectType::explosionCloud>(); }
+        Splash* asSplash() const { return as<Splash, EffectType::splash>(); }
+        Fireball* asFireball() const { return as<Fireball, EffectType::fireball>(); }
+        ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, EffectType::explosionSmoke>(); }
+        Smoke* asSmoke() const { return as<Smoke, EffectType::smoke>(); }
         void update();
     };
 
-    struct Exhaust : MiscBase
+    struct Exhaust : EffectEntity
     {
         uint8_t pad_24[0x26 - 0x24];
         uint16_t frameNum;          // 0x26
@@ -76,7 +76,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(Exhaust) == 0x4A);
 
-    struct MoneyEffect : MiscBase
+    struct MoneyEffect : EffectEntity
     {
         static constexpr uint32_t kLifetime = 160;        // windowCurrency
         static constexpr uint32_t kRedGreenLifetime = 55; // redGreen (RCT2 legacy) Note: due to delay it is technically 55 * 2
@@ -100,7 +100,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(MoneyEffect) == 0x48);
 
-    struct VehicleCrashParticle : MiscBase
+    struct VehicleCrashParticle : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
@@ -112,7 +112,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(VehicleCrashParticle) == 0x32);
 
-    struct ExplosionCloud : MiscBase
+    struct ExplosionCloud : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
@@ -121,7 +121,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(ExplosionCloud) == 0x2A);
 
-    struct Splash : MiscBase
+    struct Splash : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
@@ -130,7 +130,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(Splash) == 0x2A);
 
-    struct Fireball : MiscBase
+    struct Fireball : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
@@ -139,7 +139,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(Fireball) == 0x2A);
 
-    struct ExplosionSmoke : MiscBase
+    struct ExplosionSmoke : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
@@ -150,7 +150,7 @@ namespace OpenLoco
     };
     static_assert(sizeof(ExplosionSmoke) == 0x2A);
 
-    struct Smoke : MiscBase
+    struct Smoke : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28

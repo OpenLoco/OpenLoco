@@ -19,35 +19,35 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     // 0x004405CD
-    void MiscBase::update()
+    void EffectEntity::update()
     {
         switch (getSubType())
         {
-            case MiscEntityType::exhaust:
+            case EffectType::exhaust:
                 asExhaust()->update();
                 break;
-            case MiscEntityType::redGreenCurrency:
+            case EffectType::redGreenCurrency:
                 asRedGreenCurrency()->update();
                 break;
-            case MiscEntityType::windowCurrency:
+            case EffectType::windowCurrency:
                 asWindowCurrency()->update();
                 break;
-            case MiscEntityType::vehicleCrashParticle:
+            case EffectType::vehicleCrashParticle:
                 asVehicleCrashParticle()->update();
                 break;
-            case MiscEntityType::explosionCloud:
+            case EffectType::explosionCloud:
                 asExplosionCloud()->update();
                 break;
-            case MiscEntityType::splash:
+            case EffectType::splash:
                 asSplash()->update();
                 break;
-            case MiscEntityType::fireball:
+            case EffectType::fireball:
                 asFireball()->update();
                 break;
-            case MiscEntityType::explosionSmoke:
+            case EffectType::explosionSmoke:
                 asExplosionSmoke()->update();
                 break;
-            case MiscEntityType::smoke:
+            case EffectType::smoke:
                 asSmoke()->update();
                 break;
         }
@@ -183,14 +183,14 @@ namespace OpenLoco
 
         if (_exhaust != nullptr)
         {
-            _exhaust->baseType = EntityBaseType::misc;
+            _exhaust->baseType = EntityBaseType::effect;
             _exhaust->moveTo(loc);
             _exhaust->objectId = type;
             const auto* obj = _exhaust->getObject();
             _exhaust->spriteWidth = obj->spriteWidth;
             _exhaust->spriteHeightNegative = obj->spriteHeightNegative;
             _exhaust->spriteHeightPositive = obj->spriteHeightPositive;
-            _exhaust->setSubType(MiscEntityType::exhaust);
+            _exhaust->setSubType(EffectType::exhaust);
             _exhaust->frameNum = 0;
             _exhaust->stationaryProgress = 0;
             _exhaust->windProgress = 0;
@@ -223,9 +223,9 @@ namespace OpenLoco
             t->spriteWidth = 44;
             t->spriteHeightNegative = 32;
             t->spriteHeightPositive = 34;
-            t->baseType = EntityBaseType::misc;
+            t->baseType = EntityBaseType::effect;
             t->moveTo(loc);
-            t->setSubType(MiscEntityType::smoke);
+            t->setSubType(EffectType::smoke);
             t->frame = 0;
         }
         return t;
@@ -264,7 +264,7 @@ namespace OpenLoco
     // 0x0044063E
     void MoneyEffect::update()
     {
-        if (getSubType() == MiscEntityType::windowCurrency)
+        if (getSubType() == EffectType::windowCurrency)
         {
             invalidateSprite();
             if (wiggle == 0)
@@ -332,10 +332,10 @@ namespace OpenLoco
             m->spriteWidth = 64;
             m->spriteHeightNegative = 20;
             m->spriteHeightPositive = 30;
-            m->baseType = EntityBaseType::misc;
+            m->baseType = EntityBaseType::effect;
             m->var_2E = company;
             m->moveTo(loc);
-            m->setSubType(MiscEntityType::windowCurrency);
+            m->setSubType(EffectType::windowCurrency);
             m->frame = 0;
             m->numMovements = 0;
 
@@ -412,9 +412,9 @@ namespace OpenLoco
             t->spriteWidth = 44;
             t->spriteHeightNegative = 32;
             t->spriteHeightPositive = 34;
-            t->baseType = EntityBaseType::misc;
+            t->baseType = EntityBaseType::effect;
             t->moveTo(loc + World::Pos3{ 0, 0, 4 });
-            t->setSubType(MiscEntityType::explosionSmoke);
+            t->setSubType(EffectType::explosionSmoke);
             t->frame = 0;
         }
         return t;

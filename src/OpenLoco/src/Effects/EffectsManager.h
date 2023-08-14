@@ -4,7 +4,7 @@
 
 namespace OpenLoco::EffectsManager
 {
-    using EffectsList = EntityManager::EntityList<EntityManager::EntityListIterator<MiscBase>, EntityManager::EntityListType::misc>;
+    using EffectsList = EntityManager::EntityList<EntityManager::EntityListIterator<EffectEntity>, EntityManager::EntityListType::misc>;
 
     void update();
 }
