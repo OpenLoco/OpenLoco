@@ -12,7 +12,7 @@ namespace OpenLoco
     enum class EntityBaseType : uint8_t
     {
         vehicle = 0,
-        misc,
+        effect,
         null = 0xFF
     };
 

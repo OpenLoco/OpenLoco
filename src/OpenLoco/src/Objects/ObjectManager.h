@@ -151,8 +151,14 @@ namespace OpenLoco::ObjectManager
         std::vector<ObjectHeader> willLoad;
     };
 
+    struct TempLoadMetaData
+    {
+        ObjectHeader2 fileSizeHeader;
+        ObjectHeader3 displayData;
+    };
+
     void freeTemporaryObject();
-    bool loadTemporaryObject(ObjectHeader& header);
+    std::optional<TempLoadMetaData> loadTemporaryObject(ObjectHeader& header);
     Object* getTemporaryObject();
     bool isTemporaryObjectLoad();
 
