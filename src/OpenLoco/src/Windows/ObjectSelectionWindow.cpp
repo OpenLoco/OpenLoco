@@ -175,6 +175,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         vehicleTypeTram,
         vehicleTypeAircraft,
         vehicleTypeShip,
+        scrollviewFrame,
         scrollview,
         objectImage,
     };
@@ -202,6 +203,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeRemapWidget({ 158, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
 
         // Scroll and preview areas
+        makeWidget({ 3, 83 }, { 290, 303 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
@@ -485,6 +487,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.enabledWidgets |= (1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip);
 
             self.widgets[widx::scrollview].top = 85 + 28;
+            self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
+            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
             self.widgets[widx::objectImage].top = 68 + 28;
         }
         else
@@ -492,6 +496,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self.enabledWidgets &= ~((1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip));
 
             self.widgets[widx::scrollview].top = 85;
+            self.widgets[widx::scrollviewFrame].type = WidgetType::none;
             self.widgets[widx::objectImage].top = 68;
         }
     }
