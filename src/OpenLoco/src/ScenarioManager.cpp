@@ -226,12 +226,14 @@ namespace OpenLoco::ScenarioManager
     // 0x00444C4E
     static void loadScenarioProgress(ScenarioIndexEntry& entry, S5::Options& options)
     {
-        ObjectManager::loadTemporaryObject(options.objectiveDeliveredCargo);
+        const auto deliveredCargoObjTempLoaded = ObjectManager::loadTemporaryObject(options.objectiveDeliveredCargo);
         Scenario::Objective objective = options.objective;
         Scenario::ObjectiveProgress progress{};
         progress.timeLimitUntilYear = objective.timeLimitYears + options.scenarioStartYear - 1;
-        objective.deliveredCargoType = 0xFF; // Used to indicate formatChallengeArguments to use tempObj
-
+        if (deliveredCargoObjTempLoaded)
+        {
+            objective.deliveredCargoType = 0xFF; // Used to indicate formatChallengeArguments to use tempObj
+        }
         std::optional<ObjectHeader> previousCurrency;
         if (ObjectManager::get<CurrencyObject>() != nullptr)
         {

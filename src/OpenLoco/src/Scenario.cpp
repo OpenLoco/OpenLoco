@@ -447,7 +447,14 @@ namespace OpenLoco::Scenario
                 {
                     cargoObject = ObjectManager::get<CargoObject>(objective.deliveredCargoType);
                 }
-                args.push(cargoObject->unitNamePlural);
+                if (cargoObject == nullptr)
+                {
+                    args.push(StringIds::empty);
+                }
+                else
+                {
+                    args.push(cargoObject->unitNamePlural);
+                }
                 args.push(objective.deliveredCargoAmount);
                 break;
             }
