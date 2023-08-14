@@ -10,6 +10,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    // There are a total of 12 sprites for this effect, the paint code divides this by 256.
+    static constexpr uint16_t kMaxSplashFrames = 12 * 256;
+
+    // Advances the frame counter by 85 each tick.
+    static constexpr uint16_t kAnimationSpeed = 85;
+
+    // Unknown which unit this is in, but it is used to calculate the acceleration for gravity.
+    static constexpr int32_t kGravity = 5041;
+
     // 0x004406A0
     void VehicleCrashParticle::update()
     {
@@ -23,7 +32,7 @@ namespace OpenLoco
         }
 
         // Apply gravity
-        accelerationZ -= 5041;
+        accelerationZ -= kGravity;
 
         // Apply air resistance
         accelerationX -= (accelerationX / 256);
@@ -66,8 +75,8 @@ namespace OpenLoco
         moveTo(newLoc);
         invalidateSprite();
 
-        frame += 85;
-        if (frame >= 3072)
+        frame += kAnimationSpeed;
+        if (frame >= kMaxSplashFrames)
         {
             frame = 0;
         }

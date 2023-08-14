@@ -19,7 +19,7 @@ namespace OpenLoco
         if (!World::validCoords(pos))
             return nullptr;
 
-        auto splashEnt = static_cast<Splash*>(EntityManager::createEntityMisc());
+        auto* splashEnt = static_cast<Splash*>(EntityManager::createEntityMisc());
         if (splashEnt == nullptr)
             return nullptr;
 
