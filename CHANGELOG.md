@@ -4,6 +4,7 @@
 - Change: [#2078] Building construction ghosts now show finished buildings instead of scaffolding.
 - Fix: [#56] Orphaned arrow bug when closing construction window with shortcut (original bug).
 - Fix: [#891] Non-ASCII characters do not show up correctly in directory listings.
+- Fix: [#1852] Cannot navigate to different drive letters in load/save browse window (Windows only).
 - Fix: [#2005] Right-clicking when display scaling is set to a fractional percent causes random scrolling of view.
 - Fix: [#2047] Error message when closing the game while load/save prompt window is open.
 - Fix: [#2053] Placing a headquarter preview ghost immediately removes any existing HQ.
