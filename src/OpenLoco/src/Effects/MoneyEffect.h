@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Economy/Currency.h"
 #include "Effect.h"
 
 namespace OpenLoco

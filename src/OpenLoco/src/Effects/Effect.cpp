@@ -1,25 +1,12 @@
 #include "Effect.h"
-#include "Drawing/SoftwareDrawingEngine.h"
-#include "Entities/EntityManager.h"
 #include "ExhaustEffect.h"
 #include "ExplosionEffect.h"
 #include "ExplosionSmokeEffect.h"
 #include "FireballEffect.h"
-#include "Map/StationElement.h"
-#include "Map/SurfaceElement.h"
-#include "Map/TileManager.h"
-#include "Map/TrackElement.h"
 #include "MoneyEffect.h"
-#include "Objects/ObjectManager.h"
-#include "Objects/TrainStationObject.h"
-#include "SceneManager.h"
 #include "SmokeEffect.h"
 #include "SplashEffect.h"
-#include "Ui/WindowManager.h"
 #include "VehicleCrashEffect.h"
-#include "ViewportManager.h"
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

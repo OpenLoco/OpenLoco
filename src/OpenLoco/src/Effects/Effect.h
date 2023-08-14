@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Economy/Currency.h"
 #include "Entities/Entity.h"
-#include <OpenLoco/Engine/World.hpp>
+#include <cstdint>
 
 namespace OpenLoco
 {
