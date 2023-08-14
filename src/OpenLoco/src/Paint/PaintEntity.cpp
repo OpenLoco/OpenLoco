@@ -4,7 +4,7 @@
 #include "Entities/EntityManager.h"
 #include "Map/Tile.h"
 #include "Paint.h"
-#include "PaintMiscEntity.h"
+#include "PaintEffectEntity.h"
 #include "PaintVehicle.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>

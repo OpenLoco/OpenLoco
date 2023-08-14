@@ -1,4 +1,4 @@
-#include "PaintMiscEntity.h"
+#include "PaintEffectEntity.h"
 #include "Config.h"
 #include "Effects/ExhaustEffect.h"
 #include "Effects/ExplosionEffect.h"
