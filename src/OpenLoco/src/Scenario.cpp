@@ -15,7 +15,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
-#include "Map/MapGenerator.h"
+#include "Map/MapGenerator/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
 #include "MultiPlayer.h"

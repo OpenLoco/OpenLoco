@@ -1,6 +1,6 @@
 #include "ChangeLandMaterial.h"
 #include "GameCommands/GameCommands.h"
-#include "Map/MapGenerator.h"
+#include "Map/MapGenerator/MapGenerator.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
