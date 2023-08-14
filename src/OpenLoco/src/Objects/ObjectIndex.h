@@ -7,9 +7,12 @@
 
 namespace OpenLoco::ObjectManager
 {
+    struct ObjectHeader3;
+
     struct ObjectIndexEntry
     {
         ObjectHeader* _header;
+        ObjectHeader3* _displayData;
         char* _filename;
         char* _name;
 
