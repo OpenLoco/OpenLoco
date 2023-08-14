@@ -1,11 +1,13 @@
 #include "PaintMiscEntity.h"
 #include "Config.h"
+#include "Effects/ExhaustEffect.h"
 #include "Effects/MoneyEffect.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Localisation/StringIds.h"
 #include "Map/Tile.h"
+#include "Objects/SteamObject.h"
 #include "Paint.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
