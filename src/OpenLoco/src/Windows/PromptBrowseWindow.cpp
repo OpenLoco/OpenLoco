@@ -5,6 +5,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Localisation/Conversion.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -341,7 +342,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // We'll ensure the folder width does not reach the parent button.
         const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
-        const std::string nameBuffer = _currentDirectory.u8string();
+        auto nameBuffer = _currentDirectory.u8string();
+        nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
         uint16_t folderWidth = drawingCtx.getStringWidth(_displayFolderBuffer);
 
@@ -401,7 +403,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto x = window.x + widget.right + 3;
                 auto y = window.y + 45;
 
-                const std::string nameBuffer = selectedFile.stem().u8string();
+                auto nameBuffer = selectedFile.stem().u8string();
+                nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
+
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
                 drawingCtx.drawStringCentredClipped(
                     *rt,
@@ -616,7 +620,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
 
             // Copy name to our work buffer (if drive letter use the full path)
-            const std::string nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
+            auto nameBuffer = isRootPath(entry) ? entry.u8string() : entry.stem().u8string();
+            nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
 
             // Draw the name
             auto args = getStringPtrFormatArgs(nameBuffer.c_str());
