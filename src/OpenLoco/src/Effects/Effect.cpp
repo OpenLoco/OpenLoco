@@ -2,6 +2,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "ExhaustEffect.h"
+#include "ExplosionEffect.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
@@ -82,17 +83,6 @@ namespace OpenLoco
             t->frame = 0;
         }
         return t;
-    }
-
-    // 0x004407CC
-    void ExplosionCloud::update()
-    {
-        invalidateSprite();
-        frame += 0x80;
-        if (frame >= 0x1200)
-        {
-            EntityManager::freeEntity(this);
-        }
     }
 
     // 0x004407E0

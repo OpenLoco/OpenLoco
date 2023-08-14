@@ -1,6 +1,7 @@
 #include "PaintMiscEntity.h"
 #include "Config.h"
 #include "Effects/ExhaustEffect.h"
+#include "Effects/ExplosionEffect.h"
 #include "Effects/MoneyEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Graphics/Gfx.h"
