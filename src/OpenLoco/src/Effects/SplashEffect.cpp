@@ -23,11 +23,13 @@ namespace OpenLoco
         if (splashEnt == nullptr)
             return nullptr;
 
+        splashEnt->baseType = EntityBaseType::effect;
         splashEnt->spriteWidth = 33;
         splashEnt->spriteHeightNegative = 51;
         splashEnt->spriteHeightPositive = 16;
         splashEnt->setSubType(EffectType::splash);
         splashEnt->moveTo(pos + World::Pos3{ 0, 3, 0 });
+        splashEnt->frame = 0;
 
         return splashEnt;
     }
