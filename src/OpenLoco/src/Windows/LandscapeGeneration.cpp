@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "Game.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -20,8 +21,10 @@
 #include "Widget.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 
+using namespace OpenLoco::Diagnostics;
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
@@ -174,6 +177,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             terrainSmoothingNumUp,
             generate_when_game_starts,
 
+            heightmap_poc,
+
             generate_now,
         };
 
@@ -209,6 +214,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeStepperWidgets({ 256, 120 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+
+            // PNG browser
+            makeWidget({ 280, 165 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
 
             // Generate button
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
@@ -440,6 +448,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     EditorController::goToPreviousStep();
                     ObjectSelectionWindow::openInTab(ObjectType::hillShapes);
                     break;
+
+                case widx::heightmap_poc:
+                {
+                    // NB: this is a proof-of-concept
+                    // TODO: add custom title
+                    // TODO: make named constant for filter
+                    const auto browseType = Ui::Windows::PromptBrowse::browse_type::load;
+                    if (Game::openBrowsePrompt(StringIds::title_load_landscape, browseType, "*.png"))
+                    {
+                        static loco_global<char[512], 0x0112CE04> _savePath;
+                        Logging::info("Selected height map: {}", *_savePath);
+                    }
+                    else
+                    {
+                        Logging::info("Height map browser aborted");
+                    }
+                    break;
+                }
 
                 case widx::generate_now:
                     confirmResetLandscape(0);
