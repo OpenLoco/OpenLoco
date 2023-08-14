@@ -11,6 +11,7 @@
 #include "Objects/TrainStationObject.h"
 #include "SceneManager.h"
 #include "Ui/WindowManager.h"
+#include "VehicleCrashEffect.h"
 #include "ViewportManager.h"
 
 using namespace OpenLoco::Interop;
@@ -81,14 +82,6 @@ namespace OpenLoco
             t->frame = 0;
         }
         return t;
-    }
-
-    // 0x004406A0
-    void VehicleCrashParticle::update()
-    {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004406A0, regs);
     }
 
     // 0x004407CC

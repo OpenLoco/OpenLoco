@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Effects/ExhaustEffect.h"
 #include "Effects/MoneyEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
