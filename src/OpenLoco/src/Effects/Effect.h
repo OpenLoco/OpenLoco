@@ -55,15 +55,6 @@ namespace OpenLoco
         void update();
     };
 
-    struct Fireball : EffectEntity
-    {
-        uint8_t pad_24[0x28 - 0x24];
-        uint16_t frame; // 0x28
-
-        void update();
-    };
-    static_assert(sizeof(Fireball) == 0x2A);
-
     struct ExplosionSmoke : EffectEntity
     {
         uint8_t pad_24[0x28 - 0x24];

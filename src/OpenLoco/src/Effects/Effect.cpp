@@ -3,6 +3,7 @@
 #include "Entities/EntityManager.h"
 #include "ExhaustEffect.h"
 #include "ExplosionEffect.h"
+#include "FireballEffect.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
@@ -84,17 +85,6 @@ namespace OpenLoco
             t->frame = 0;
         }
         return t;
-    }
-
-    // 0x004407F3
-    void Fireball::update()
-    {
-        invalidateSprite();
-        frame += 0x40;
-        if (frame >= 0x1F00)
-        {
-            EntityManager::freeEntity(this);
-        }
     }
 
     // 0x00440078D
