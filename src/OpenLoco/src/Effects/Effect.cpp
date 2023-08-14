@@ -1,6 +1,6 @@
-#include "Misc.h"
+#include "Effect.h"
 #include "Drawing/SoftwareDrawingEngine.h"
-#include "EntityManager.h"
+#include "Entities/EntityManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"

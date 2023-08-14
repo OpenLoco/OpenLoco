@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Economy/Currency.h"
-#include "Entity.h"
+#include "Entities/Entity.h"
 #include "Objects/SteamObject.h"
 #include <OpenLoco/Engine/World.hpp>
 

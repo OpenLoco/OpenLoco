@@ -1,7 +1,7 @@
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Effects/Effect.h"
 #include "Entities/EntityManager.h"
-#include "Entities/Misc.h"
 #include "Graphics/Gfx.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"

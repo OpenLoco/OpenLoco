@@ -2,7 +2,7 @@
 #include "Audio/Audio.h"
 #include "BuildingElement.h"
 #include "Economy/Economy.h"
-#include "Entities/Misc.h"
+#include "Effects/Effect.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"

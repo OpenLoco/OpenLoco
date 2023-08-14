@@ -1,6 +1,6 @@
 #pragma once
+#include "Effect.h"
 #include "Entities/EntityManager.h"
-#include "Entities/Misc.h"
 
 namespace OpenLoco::EffectsManager
 {

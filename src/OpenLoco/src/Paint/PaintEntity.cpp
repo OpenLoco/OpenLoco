@@ -1,7 +1,7 @@
 #include "PaintEntity.h"
 #include "Config.h"
+#include "Effects/Effect.h"
 #include "Entities/EntityManager.h"
-#include "Entities/Misc.h"
 #include "Map/Tile.h"
 #include "Paint.h"
 #include "PaintMiscEntity.h"
