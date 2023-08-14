@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "Economy/Economy.h"
 #include "Effects/Effect.h"
+#include "Effects/MoneyEffect.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/RenameCompanyName.h"
 #include "GameCommands/Company/RenameCompanyOwner.h"

@@ -1,5 +1,6 @@
 #include "PaintMiscEntity.h"
 #include "Config.h"
+#include "Effects/MoneyEffect.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
