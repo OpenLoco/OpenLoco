@@ -17,8 +17,9 @@ namespace OpenLoco
      */
     struct ImageId
     {
-    private:
         // clang-format off
+        static constexpr uint32_t kIndexUndefined   = 0b00000000000001111111111111111111;
+    private:
         static constexpr uint32_t kMaskIndex        = 0b00000000000001111111111111111111;
         static constexpr uint32_t kMaskRemap        = 0b00000011111110000000000000000000;
         static constexpr uint32_t kMaskTranslucent  = 0b00000111111110000000000000000000;
@@ -33,7 +34,6 @@ namespace OpenLoco
         static constexpr uint32_t kShiftTranslucent = 19;
         static constexpr uint32_t kShiftSecondary   = 24;
         static constexpr uint32_t kShiftNoiseMask   = 26;
-        static constexpr uint32_t kIndexUndefined   = 0b00000000000001111111111111111111;
         static constexpr uint32_t kValueUndefined   = kIndexUndefined;
         // clang-format on
 
