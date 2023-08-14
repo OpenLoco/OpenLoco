@@ -243,6 +243,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
 
                 case MessageItemArgumentType::company:
+                    // Used to indicate to drawNewsSubjectImages to draw a company image
+                    // TODO: Do this better
                     view.zoomLevel = (ZoomLevel)-2;
                     self->invalidate();
                     *selectable = true;
@@ -262,6 +264,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     break;
 
                 case MessageItemArgumentType::vehicleTab:
+                    // Used to indicate to drawNewsSubjectImages to draw a vehicle image
+                    // TODO: Do this better
                     view.zoomLevel = (ZoomLevel)-3;
                     self->invalidate();
                     *selectable = true;
@@ -457,7 +461,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A136
-        static void sub_42A136(Window* self, Gfx::RenderTarget* rt, Message* news)
+        static void drawNewsSubjectImages(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
             auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             for (auto i = 0; i < 2; ++i)
@@ -465,6 +469,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 const auto itemSubject = news->itemSubjects[i];
                 const auto& viewWidget = self->widgets[Common::widx::viewport1 + i];
                 const int32_t unk = i == 0 ? *_dword_525CD0 : *_dword_525CD8;
+                // see getView as to where these magic numbers come from
+                // TODO: Do this better
                 if (unk == -2 && itemSubject != 0xFFFFU)
                 {
                     const auto* company = CompanyManager::get(CompanyId(itemSubject));
@@ -630,7 +636,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             self->drawViewports(rt);
 
-            sub_42A136(self, rt, news);
+            drawNewsSubjectImages(self, rt, news);
         }
 
         // 0x00429934
@@ -714,7 +720,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             self->drawViewports(rt);
 
-            sub_42A136(self, rt, news);
+            drawNewsSubjectImages(self, rt, news);
 
             x = self->x + 3;
             y = self->y + 5;
