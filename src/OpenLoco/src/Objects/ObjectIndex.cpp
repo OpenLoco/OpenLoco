@@ -27,11 +27,6 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
-    static loco_global<uint32_t, 0x009D9D52> _decodedSize;    // return of loadTemporaryObject (badly named)
-    static loco_global<uint32_t, 0x0112A168> _numImages;      // return of loadTemporaryObject (badly named)
-    static loco_global<uint8_t, 0x0112C211> _intelligence;    // return of loadTemporaryObject (badly named)
-    static loco_global<uint8_t, 0x0112C212> _aggressiveness;  // return of loadTemporaryObject (badly named)
-    static loco_global<uint8_t, 0x0112C213> _competitiveness; // return of loadTemporaryObject (badly named)
 
 #pragma pack(push, 1)
     struct ObjectFolderState
@@ -157,7 +152,7 @@ namespace OpenLoco::ObjectManager
         return std::make_pair(entry, newEntrySize);
     }
 
-    // TODO: Take depenedent object vectors from loadTemporary
+    // TODO: Take dependent object vectors from loadTemporary
     static std::pair<ObjectIndexEntry, size_t> createNewEntry(std::byte* entryBuffer, const ObjectHeader& objHeader, const fs::path filename, const TempLoadMetaData& metaData)
     {
         ObjectIndexEntry entry{};
@@ -493,7 +488,7 @@ namespace OpenLoco::ObjectManager
         entry._name = (char*)*ptr;
         *ptr += strlen(entry._name) + 1;
 
-        entry._displayData = reinterpret_cast<ObjectHeader3*>(ptr);
+        entry._displayData = reinterpret_cast<ObjectHeader3*>(*ptr);
         *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
