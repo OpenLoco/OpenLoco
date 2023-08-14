@@ -1,10 +1,10 @@
 #include "PaintEntity.h"
 #include "Config.h"
+#include "Effects/Effect.h"
 #include "Entities/EntityManager.h"
-#include "Entities/Misc.h"
 #include "Map/Tile.h"
 #include "Paint.h"
-#include "PaintMiscEntity.h"
+#include "PaintEffectEntity.h"
 #include "PaintVehicle.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -66,8 +66,8 @@ namespace OpenLoco::Paint
                 case EntityBaseType::vehicle:
                     paintVehicleEntity(session, entity->asBase<Vehicles::VehicleBase>());
                     break;
-                case EntityBaseType::misc:
-                    paintMiscEntity(session, entity->asBase<MiscBase>());
+                case EntityBaseType::effect:
+                    paintEffectEntity(session, entity->asBase<EffectEntity>());
                     break;
                 case EntityBaseType::null:
                     // Nothing to paint

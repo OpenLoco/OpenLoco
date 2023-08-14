@@ -243,7 +243,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void setTrackTypeTabs(Ui::Window* window);
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
-    static void drawVehicleOverview(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
     static int16_t drawVehicleInline(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc);
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::RenderTarget* rt);
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::RenderTarget* rt);
@@ -1447,7 +1446,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4B7741
-    static void drawVehicleOverview(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset)
+    void drawVehicleOverview(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         registers regs;
         regs.cx = offset.x;
