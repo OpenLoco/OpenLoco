@@ -11,6 +11,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/TrainStationObject.h"
 #include "SceneManager.h"
+#include "SplashEffect.h"
 #include "Ui/WindowManager.h"
 #include "VehicleCrashEffect.h"
 #include "ViewportManager.h"
@@ -83,17 +84,6 @@ namespace OpenLoco
             t->frame = 0;
         }
         return t;
-    }
-
-    // 0x004407E0
-    void Splash::update()
-    {
-        invalidateSprite();
-        frame += 0x55;
-        if (frame >= 0x1C00)
-        {
-            EntityManager::freeEntity(this);
-        }
     }
 
     // 0x004407F3

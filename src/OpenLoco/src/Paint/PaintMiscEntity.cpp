@@ -3,6 +3,7 @@
 #include "Effects/ExhaustEffect.h"
 #include "Effects/ExplosionEffect.h"
 #include "Effects/MoneyEffect.h"
+#include "Effects/SplashEffect.h"
 #include "Effects/VehicleCrashEffect.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
