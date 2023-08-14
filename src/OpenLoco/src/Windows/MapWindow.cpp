@@ -1579,11 +1579,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 if (buffer[i] & 0x80)
                 {
-                    _byte_F2540C[i & 0x7F] = colour;
+                    _byte_F2540C[buffer[i] & 0x7F] = colour;
                 }
                 else
                 {
-                    _byte_F25404[i] = colour;
+                    _byte_F25404[buffer[i]] = colour;
                 }
             }
             else
