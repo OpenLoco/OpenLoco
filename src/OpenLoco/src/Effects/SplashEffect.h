@@ -12,6 +12,8 @@ namespace OpenLoco
         uint16_t frame; // 0x28
 
         void update();
+
+        static Splash* create(const World::Pos3& pos);
     };
     static_assert(sizeof(Splash) == 0x2A);
 

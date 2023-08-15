@@ -13,4 +13,26 @@ namespace OpenLoco
             EntityManager::freeEntity(this);
         }
     }
+
+    // 0x00440C6B
+    Splash* Splash::create(const World::Pos3& pos)
+    {
+        if (!World::validCoords(pos))
+            return nullptr;
+
+        auto* splashEnt = static_cast<Splash*>(EntityManager::createEntityMisc());
+        if (splashEnt == nullptr)
+            return nullptr;
+
+        splashEnt->baseType = EntityBaseType::effect;
+        splashEnt->spriteWidth = 33;
+        splashEnt->spriteHeightNegative = 51;
+        splashEnt->spriteHeightPositive = 16;
+        splashEnt->setSubType(EffectType::splash);
+        splashEnt->moveTo(pos + World::Pos3{ 0, 3, 0 });
+        splashEnt->frame = 0;
+
+        return splashEnt;
+    }
+
 }
