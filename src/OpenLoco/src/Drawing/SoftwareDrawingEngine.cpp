@@ -217,28 +217,6 @@ namespace OpenLoco::Drawing
         _setPaletteCallback = updatePaletteStatic;
     }
 
-    // 0x004C5CFA
-    void SoftwareDrawingEngine::render()
-    {
-        _invalidationGrid.traverseDirtyCells([this](int32_t x, int32_t y, int32_t columns, int32_t rows) {
-            this->render(x, y, columns, rows);
-        });
-    }
-
-    void SoftwareDrawingEngine::render(size_t x, size_t y, size_t columns, size_t rows)
-    {
-        const auto blockWidth = _invalidationGrid.getBlockWidth();
-        const auto blockHeight = _invalidationGrid.getBlockHeight();
-
-        auto rect = Rect(
-            static_cast<int16_t>(x * blockWidth),
-            static_cast<int16_t>(y * blockHeight),
-            static_cast<uint16_t>(columns * blockWidth),
-            static_cast<uint16_t>(rows * blockHeight));
-
-        this->render(rect);
-    }
-
     void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
     {
         assert(index + count < 256);
@@ -254,6 +232,14 @@ namespace OpenLoco::Drawing
             basePtr->a = 0;
         }
         SDL_SetPaletteColors(_palette, &base[index], index, count);
+    }
+
+    // 0x004C5CFA
+    void SoftwareDrawingEngine::render()
+    {
+        _invalidationGrid.traverseDirtyCells([this](int32_t left, int32_t top, int32_t right, int32_t bottom) {
+            this->render(Rect::fromLTRB(left, top, right, bottom));
+        });
     }
 
     void SoftwareDrawingEngine::render(const Rect& _rect)

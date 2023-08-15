@@ -56,8 +56,6 @@ namespace OpenLoco::Drawing
         SoftwareDrawingContext& getDrawingContext();
 
     private:
-        void render(size_t x, size_t y, size_t dx, size_t dy);
-
         SDL_Renderer* _renderer{};
         SDL_Window* _window{};
         SDL_Palette* _palette{};

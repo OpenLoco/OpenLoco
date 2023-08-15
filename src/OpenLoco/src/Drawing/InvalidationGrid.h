@@ -26,8 +26,8 @@ namespace OpenLoco::Drawing
         // TODO: Make non-static once interop is no longer required.
         static Interop::loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
         static Interop::loco_global<uint8_t[7500], 0x00E025C4> _blocks;
-        int32_t _screenWidth{};
-        int32_t _screenHeight{};
+        uint32_t _screenWidth{};
+        uint32_t _screenHeight{};
 
     public:
         uint32_t getRowCount() const noexcept;
@@ -47,32 +47,64 @@ namespace OpenLoco::Drawing
         {
             const auto columnCount = _screenInvalidation->columnCount;
             const auto rowCount = _screenInvalidation->rowCount;
+            const auto blockWidth = _screenInvalidation->blockWidth;
+            const auto blockHeight = _screenInvalidation->blockHeight;
 
-            for (uint32_t x = 0; x < columnCount; x++)
+            for (uint32_t column = 0; column < columnCount; column++)
             {
-                for (uint32_t y = 0; y < rowCount; y++)
+                uint32_t index = 0;
+                for (uint32_t row = 0; row < rowCount; row++)
                 {
-                    if (_blocks[y * columnCount + x])
+                    if (_blocks[index + column] != 0)
                     {
-                        const auto cols = getCountColumnsInvalidated(x, y);
-                        const auto rows = getCountRowsInvalidated(x, y);
+                        uint32_t columnStart = column;
+                        uint32_t rowStart = row;
+                        uint32_t index2 = index;
 
-                        // Draw the region.
-                        func(x, y, cols, rows);
+                        while (true)
+                        {
+                            rowStart++;
+                            index2 += columnCount;
+                            if (rowStart >= rowCount || _blocks[index2 + columnStart] == 0)
+                                break;
+                        }
 
-                        // Unset rows and cols
-                        clearRegion(x, y, cols, rows);
+                        rowStart--;
+                        index2 -= columnCount;
+
+                        clearBlocks(index, column, columnStart, index2);
+
+                        const auto left = column * blockWidth;
+                        const auto top = row * blockHeight;
+                        const auto right = (columnStart + 1) * blockWidth;
+                        const auto bottom = (rowStart + 1) * blockHeight;
+
+                        if (left < _screenWidth && top < _screenHeight)
+                        {
+                            func(left, top, std::min(right, _screenWidth), std::min(bottom, _screenHeight));
+                        }
                     }
+                    index += columnCount;
                 }
             }
         }
 
     private:
-        uint32_t getCountRowsInvalidated(const uint32_t x, const uint32_t y) noexcept;
+        void clearBlocks(uint32_t index, uint32_t column, uint32_t columnStart, uint32_t index2) noexcept
+        {
+            const auto columnCount = _screenInvalidation->columnCount;
+            do
+            {
+                uint32_t tempColumn = column;
+                do
+                {
+                    _blocks[index + tempColumn] = 0;
+                    tempColumn++;
+                } while (tempColumn <= columnStart);
 
-        uint32_t getCountColumnsInvalidated(const uint32_t x, const uint32_t y) noexcept;
-
-        void clearRegion(uint32_t x, uint32_t y, uint32_t cols, uint32_t rows) noexcept;
+                index += columnCount;
+            } while (index <= index2);
+        }
     };
 
 } // namespace OpenRCT2

@@ -66,38 +66,4 @@ namespace OpenLoco::Drawing
         }
     }
 
-    uint32_t InvalidationGrid::getCountRowsInvalidated(const uint32_t x, const uint32_t y) noexcept
-    {
-        const auto columnCount = _screenInvalidation->columnCount;
-        const auto rowCount = _screenInvalidation->rowCount;
-
-        uint32_t y2 = y;
-        while (y2 < rowCount && _blocks[y2 * columnCount + x])
-            y2++;
-        return y2 - y;
-    }
-
-    uint32_t InvalidationGrid::getCountColumnsInvalidated(const uint32_t x, const uint32_t y) noexcept
-    {
-        const auto columnCount = _screenInvalidation->columnCount;
-
-        uint32_t x2 = x;
-        while (x2 < columnCount && _blocks[y * columnCount + x2])
-            x2++;
-        return x2 - x;
-    }
-
-    void InvalidationGrid::clearRegion(uint32_t x, uint32_t y, uint32_t cols, uint32_t rows) noexcept
-    {
-        const auto columnCount = _screenInvalidation->columnCount;
-
-        for (uint32_t x2 = x; x2 < x + cols; x2++)
-        {
-            for (uint32_t y2 = y; y2 < y + rows; y2++)
-            {
-                _blocks[y2 * columnCount + x2] = 0;
-            }
-        }
-    }
-
 }
