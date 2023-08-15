@@ -14,6 +14,7 @@ namespace OpenLoco
         }
     }
 
+    // 0x00440C6B
     Splash* Splash::create(const World::Pos3& pos)
     {
         if (!World::validCoords(pos))
