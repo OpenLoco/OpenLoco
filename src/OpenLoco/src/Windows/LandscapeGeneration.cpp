@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static const string_id generatorIds[] = {
             StringIds::generator_original,
-            StringIds::generator_improved,
+            StringIds::generator_simplex,
         };
 
         // 0x0043E1BA

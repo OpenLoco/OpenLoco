@@ -11,7 +11,7 @@ namespace OpenLoco::S5
 
 namespace OpenLoco::World::MapGenerator
 {
-    class ModernTerrainGenerator
+    class SimplexTerrainGenerator
     {
     public:
         void generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed);

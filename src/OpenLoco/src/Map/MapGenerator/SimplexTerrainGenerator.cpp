@@ -1,4 +1,4 @@
-#include "ModernTerrainGenerator.h"
+#include "SimplexTerrainGenerator.h"
 #include "S5/S5.h"
 #include <algorithm>
 
@@ -6,7 +6,7 @@ using namespace OpenLoco::S5;
 
 namespace OpenLoco::World::MapGenerator
 {
-    void ModernTerrainGenerator::generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed)
+    void SimplexTerrainGenerator::generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed)
     {
         initialiseRng(seed);
 
@@ -55,18 +55,18 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    void ModernTerrainGenerator::initialiseRng(uint32_t seed)
+    void SimplexTerrainGenerator::initialiseRng(uint32_t seed)
     {
         _pprng.seed(seed);
     }
 
-    void ModernTerrainGenerator::generate(const SimplexSettings& settings, HeightMapRange heightMap)
+    void SimplexTerrainGenerator::generate(const SimplexSettings& settings, HeightMapRange heightMap)
     {
         generateSimplex(settings, heightMap);
         smooth(settings.smooth, heightMap);
     }
 
-    void ModernTerrainGenerator::generateSimplex(const SimplexSettings& settings, HeightMapRange heightMap)
+    void SimplexTerrainGenerator::generateSimplex(const SimplexSettings& settings, HeightMapRange heightMap)
     {
         auto freq = settings.baseFreq * (1.0f / std::max(heightMap.width, heightMap.height));
         uint8_t perm[512];
@@ -83,7 +83,7 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    void ModernTerrainGenerator::smooth(int32_t iterations, HeightMapRange heightMap)
+    void SimplexTerrainGenerator::smooth(int32_t iterations, HeightMapRange heightMap)
     {
         for (int32_t i = 0; i < iterations; i++)
         {
@@ -106,7 +106,7 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    float ModernTerrainGenerator::noiseFractal(uint8_t* perm, int32_t x, int32_t y, float frequency, int32_t octaves, float lacunarity, float persistence)
+    float SimplexTerrainGenerator::noiseFractal(uint8_t* perm, int32_t x, int32_t y, float frequency, int32_t octaves, float lacunarity, float persistence)
     {
         float total = 0.0f;
         float amplitude = persistence;
@@ -119,7 +119,7 @@ namespace OpenLoco::World::MapGenerator
         return total;
     }
 
-    float ModernTerrainGenerator::generateNoise(uint8_t* perm, float x, float y)
+    float SimplexTerrainGenerator::generateNoise(uint8_t* perm, float x, float y)
     {
         const float F2 = 0.366025403f; // F2 = 0.5*(sqrt(3.0)-1.0)
         const float G2 = 0.211324865f; // G2 = (3.0-sqrt(3.0))/6.0
@@ -205,7 +205,7 @@ namespace OpenLoco::World::MapGenerator
         return 40.0f * (n0 + n1 + n2); // TODO: The scale factor is preliminary!
     }
 
-    void ModernTerrainGenerator::noise(uint8_t* perm, size_t len)
+    void SimplexTerrainGenerator::noise(uint8_t* perm, size_t len)
     {
         for (size_t i = 0; i < len; i++)
         {
@@ -213,7 +213,7 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    float ModernTerrainGenerator::grad(int32_t hash, float x, float y)
+    float SimplexTerrainGenerator::grad(int32_t hash, float x, float y)
     {
         int32_t h = hash & 7;    // Convert low 3 bits of hash code
         float u = h < 4 ? x : y; // into 8 simple gradient directions,
@@ -221,17 +221,17 @@ namespace OpenLoco::World::MapGenerator
         return ((h & 1) != 0 ? -u : u) + ((h & 2) != 0 ? -2.0f * v : 2.0f * v);
     }
 
-    int32_t ModernTerrainGenerator::fastFloor(float x)
+    int32_t SimplexTerrainGenerator::fastFloor(float x)
     {
         return (x > 0) ? (static_cast<int32_t>(x)) : ((static_cast<int32_t>(x)) - 1);
     }
 
-    uint32_t ModernTerrainGenerator::randomNext()
+    uint32_t SimplexTerrainGenerator::randomNext()
     {
         return _pprng();
     }
 
-    int32_t ModernTerrainGenerator::randomNext(int32_t min, int32_t max)
+    int32_t SimplexTerrainGenerator::randomNext(int32_t min, int32_t max)
     {
         return min + (randomNext() % (max - min));
     }

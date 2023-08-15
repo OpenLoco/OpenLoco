@@ -1734,7 +1734,7 @@ namespace OpenLoco::StringIds
     constexpr string_id autosave_every_x_months = 2147;
     constexpr string_id generator = 2148;
     constexpr string_id generator_original = 2149;
-    constexpr string_id generator_improved = 2150;
+    constexpr string_id generator_simplex = 2150;
     constexpr string_id dropdown_modify_vehicle = 2151;
     constexpr string_id dropdown_clone_vehicle = 2152;
     constexpr string_id cant_clone_vehicle = 2153;
