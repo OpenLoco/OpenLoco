@@ -1131,6 +1131,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 self.currentSecondaryTab = w - widx::vehicleTypeTrain;
                 _currentVehicleType = static_cast<VehicleType>(self.currentSecondaryTab);
                 applyFilterToObjectList();
+                self.initScrollWidgets();
                 self.invalidate();
             }
         }
