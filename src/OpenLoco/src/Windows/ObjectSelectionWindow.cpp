@@ -959,6 +959,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         ObjectManager::loadTemporaryObject(*objIndex.object._header);
                     }
 
+                    applyFilterToObjectList();
+                    self.initScrollWidgets();
                     self.invalidate();
                 }
 
@@ -990,6 +992,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 inputSession.clearInput();
                 applyFilterToObjectList();
+                self.initScrollWidgets();
                 self.invalidate();
             }
         }
@@ -1197,9 +1200,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             inputSession.calculateTextOffset(containerWidth);
 
         inputSession.cursorFrame = 0;
-        WindowManager::invalidateWidget(WindowType::objectSelection, 0, widx::textInput);
 
         applyFilterToObjectList();
+
+        w->initScrollWidgets();
+        w->invalidate();
     }
 
     static void initEvents()
