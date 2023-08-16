@@ -12,6 +12,7 @@
 - Fix: [#2077] Crash when generating scenario index if referenced custom cargo objects have been subsequently deleted.
 - Fix: [#2078] Remove any leftover headquarter ghost when the company window is closed with a shortcut.
 - Fix: [#2080] The map generator is not setting water levels correctly at map edges.
+- Fix: [#2092] Scrollbar positions are not reset when changing filters in the object selection window.
 
 23.07 (2023-07-25)
 ------------------------------------------------------------------------
