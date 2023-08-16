@@ -240,7 +240,7 @@ namespace OpenLoco::World::Track
                             }
                         }
 
-                        if (elTrack->has_6_10())
+                        if (elTrack->hasLevelCrossing())
                         {
                             _113607D = 1;
                         }
@@ -305,7 +305,7 @@ namespace OpenLoco::World::Track
                 }
             }
 
-            if (elTrack->has_6_10())
+            if (elTrack->hasLevelCrossing())
             {
                 _113607D = 1;
             }

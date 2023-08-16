@@ -150,6 +150,8 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
+    constexpr string_id level_crossing_in_the_way = 150;
+
     constexpr string_id unable_to_cross_or_create_junction_with_string = 156;
 
     constexpr string_id capt_signal = 158;
@@ -547,6 +549,9 @@ namespace OpenLoco::StringIds
     constexpr string_id town_size_city = 620;
     constexpr string_id town_size_metropolis = 621;
 
+    constexpr string_id signals_cannot_be_built_on_a_junction = 624;
+    constexpr string_id signals_cannot_be_built_on_a_junction_2 = 625; // identical to 624
+    constexpr string_id signals_cannot_be_built_in_stations = 626;
     constexpr string_id wcolour3_stringid_2 = 627; // identical to 628
     constexpr string_id wcolour3_stringid = 628;
     constexpr string_id wcolour3_stringid_stringid = 629;

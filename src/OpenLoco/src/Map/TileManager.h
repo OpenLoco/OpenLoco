@@ -53,6 +53,13 @@ namespace OpenLoco::World::TileManager
     {
         return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
     }
+
+    TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    template<typename TileT>
+    TileT* insertElementAfterNoReorg(TileElement* after, const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
+    {
+        return insertElementAfterNoReorg(after, TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
+    }
     TileHeight getHeight(const Pos2& pos);
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
     void updateTilePointers();
