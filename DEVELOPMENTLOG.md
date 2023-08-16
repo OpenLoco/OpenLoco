@@ -1,5 +1,103 @@
 # OpenLoco version 23.07+ (???)
 
+Another month, another OpenLoco release. Owing in part to the summer having been quite
+rainy in our corner of the world, this has been such a busy month for the project
+again! Let's dive into the most major changes...
+
+## Vehicle object selection is now grouped by vehicle type (#2036, #2085, #2092)
+
+A common complaint from players setting up scenarios, is that their vehicle object
+list gets too long to easily wade through. In February, we alleviated this somewhat
+by introducing search filters to the object selection window. This month,
+@AaronVanGeffen expanded on this by adding an extra set of tab groups to the vehicle
+object selection tab. To keep things performant, the game's object index will
+automatically be rebuilt once to now keep track of vehicle subtypes as well.
+@Duncanspumpkin's latest work on the object index is paying off nicely here!
+
+## Construction improvements (#2078)
+
+Constructing impressive transport layouts is at the heart of the game. We've improved
+a few things this month. First off, the construction ghost for buildings now shows the
+building in their constructed form, rather than just the scaffolding needed to build
+it. Moreover, placing a company headquarters now respects the keyboard shortcut for
+rotation (defaults to Z), so you can build it just at the angle you like it. The same
+goes for new industries and other buildings you construct in-game. Finally, we also
+fixed a bug from the original game, where the yellow construction marker would stick
+around after closing the construction window.
+
+Our work on the game commands over the past few months is really paying off here.
+We couldn't have easily tackled these issues without it!
+
+## More game commands reimplementation (#2061, #2065, #2066, #2076)
+
+The remaining game commands are all huge functions to undertake, so the pace has
+slowed down a bit compared to earlier months. This month, @Duncanspumpkin has tackled
+the signal placement game command. Functionally, it is identical to the old version,
+but it's all in C++ now! Ready for multiplayer in the future.
+
+We're about 65% into the game command reimplementation process now. This meant there
+were a bunch of files in just the one `GameCommand` folder. @ZehMatt set out to split
+these up into logical units, with game commands grouped by themed subfolders. For
+example, `Terraform` or `Vehicle`. This has cleaned things up nicely!
+
+## Some love for the file browser (#2051, #2087, #2088)
+
+This month, some longstanding minor bugs in the in-game file browser were addressed.
+Disk drives are accessible again on Windows, and accented characters now display
+correctly, as long as the in-game sprite font supports them.
+
+Another issue that went under the radar for a while is that the game would not close
+cleanly when the file browser is open. @ZehMatt fixed that one, too.
+
+## Smoother right-click scrolling (#2057)
+
+A bug that had us stumped for a while, was why right-click scrolling would sometimes
+stutter. Crucially, this wouldn't happen with window scaling off. Well, as it turns
+out, the problem was that we were a bit too enthusiastic with scaling the mouse
+position in this case. Our thanks go out to first-time contributor @RednibCoding for
+fixing this one!
+
+## Work on the map generator (#2054, #2081, #2084)
+
+Our implementations for the map generator is still calling into vanilla *Locomotion*
+routines a lot. Over the years, our understanding of the game's structures has
+improved considerably, so it's become much easier to implement them now than it
+would have been back then. And so we did! The original height map generator has been
+tackled, which also led to us discovering a years-old bug with setting water levels
+at map edges.
+
+With our implementation expanding, we also finally split up the map generator code
+into several smaller files. A cleaner code base makes it nicer for us to work in,
+but importantly for new contributors as well. We hope to see more of you in the
+future!
+
+## Assigning map window colours (#2072, #2073)
+
+Like the map generator, the map window was still using a bunch of vanilla code.
+This month, we implemented the functions assigning colours to industries and routes.
+Fun fact! Did you know all of them have a preferred colour? Sometimes those
+preferences clash, however, and it becomes a first-come, first-served kind of
+situation. In that case, the first available colour is assigned instead to the others.
+
+## Exceptional work on exceptions (#2068, #2074)
+
+Exception handling, or lack thereof, was a big cause for debugging woes. No more!
+@ZehMatt added handling such that the line and file throwing the exception are
+now included in the exception message. Thanks!
+
+## The hardest problem in computer science: naming things (#2049, #2050, #2062, #2064)
+
+We've been quite strict with trying to name variables and functions as soon as possible,
+but sometimes clarity only strikes after more implementation. @ZehMatt and @duncanspumpin
+had a few such epiphanies this month, even finding remnamts of *things* that should've
+been renamed into *entities* years ago. Good to have that sorted!
+
+## Using FileStream for better status reporting (#2067, #2075)
+
+In June, @ZehMatt worked on refactoring our custom stream classes to be more efficient
+and generalisible. This month, he's expanded their use in the codebase. Conveniently,
+this means it's now much easier for them to report on their progress, for instance
+when processing the object index. Neat!
 
 # OpenLoco version 23.07 (2023-07-25)
 
