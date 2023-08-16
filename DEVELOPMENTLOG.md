@@ -22,7 +22,8 @@ building in their constructed form, rather than just the scaffolding needed to b
 it. Moreover, placing a company headquarters now respects the keyboard shortcut for
 rotation (defaults to Z), so you can build it just at the angle you like it. The same
 goes for new industries and other buildings you construct in-game. Finally, we also
-fixed a bug from the original game, where the yellow construction marker would stick around after closing the construction window.
+fixed a bug from the original game, where the yellow construction marker would stick
+around after closing the construction window.
 
 Our work on the game commands over the past few months is really paying off here.
 We couldn't have easily tackled these issues without it!
@@ -56,35 +57,47 @@ out, the problem was that we were a bit too enthusiastic with scaling the mouse
 position in this case. Our thanks go out to first-time contributor @RednibCoding for
 fixing this one!
 
-##
+## Work on the map generator (#2054, #2081, #2084)
 
-2081  Fix #2080: Map generator not setting water levels at edges
-2084  Implement MapGenerator::updateTreeSeasons
-2054  Implement OriginalTerrainGenerator::generate
-2072  Implement MapWindow::assignIndustryColours
-2073  Implement MapWindow::assignRouteColours
-2086  Refactor MapGenerator.cpp into multiple files
+Our implementations for the map generator is still calling into vanilla *Locomotion*
+routines a lot. Over the years, our understanding of the game's structures has
+improved considerably, so it's become much easier to implement them now than it
+would have been back then. And so we did! The original height map generator has been
+tackled, which also led to us discovering a years-old bug with setting water levels
+at map edges.
 
-##
+With our implementation expanding, we also finally split up the map generator code
+into several smaller files. A cleaner code base makes it nicer for us to work in,
+but importantly for new contributors as well. We hope to see more of you in the
+future!
 
-2049  Add names for some of the routing flags
-2050  Rename two Input flags
-2062  Add definitions to two common items
-2068  Better exceptions
-2074  Use new exception type where appropriate
+## Assigning map window colours (#2072, #2073)
 
-##
+Like the map generator, the map window was still using a bunch of vanilla code.
+This month, we implemented the functions assigning colours to industries and routes.
+Fun fact! Did you know all of them have a preferred colour? Sometimes those
+preferences clash, however, and it becomes a first-come, first-served kind of
+situation. In that case, the first available colour is assigned instead to the others.
 
-2063  Routing refactor: Make HashMap dynamically sized
-2067  Replace fstream usage with FileStream for object index
-2064  Remove remnants of thing name
-2075  Refactor Stream and replace ifstream for Audio
+## Exceptional work on exceptions (#2068, #2074)
 
-##
+Exception handling, or lack thereof, was a big cause for debugging woes. No more!
+@ZehMatt added handling such that the line and file throwing the exception are
+now included in the exception message. Thanks!
 
-2070  Implement news draw function
-2090  Refactor Misc/Effects, reorganize them
-2091  Implement VehicleCrashParticle update
+## The hardest problem in computer science: naming things (#2049, #2050, #2062, #2064)
+
+We've been quite strict with trying to name variables and functions as soon as possible,
+but sometimes clarity only strikes after more implementation. @ZehMatt and @duncanspumpin
+had a few such epiphanies this month, even finding remnamts of *things* that should've
+been renamed into *entities* years ago. Good to have that sorted!
+
+## Using FileStream for better status reporting (#2067, #2075)
+
+In June, @ZehMatt worked on refactoring our custom stream classes to be more efficient
+and generalisible. This month, he's expanded their use in the codebase. Conveniently,
+this means it's now much easier for them to report on their progress, for instance
+when processing the object index. Neat!
 
 # OpenLoco version 23.07 (2023-07-25)
 
