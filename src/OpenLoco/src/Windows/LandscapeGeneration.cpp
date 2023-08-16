@@ -152,6 +152,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             start_year = 9,
             start_year_down,
             start_year_up,
+            frame_generator,
             generator,
             generator_btn,
             generate_when_game_starts,
@@ -164,8 +165,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::start_year_value),
-            makeDropdownWidgets({ 176, 68 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 10, 84 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            makeWidget({ 4, 68 }, { LandscapeGeneration::kWindowSize.width - 8, 97 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_hardware),
+            makeDropdownWidgets({ 176, 84 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 10, 100 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
