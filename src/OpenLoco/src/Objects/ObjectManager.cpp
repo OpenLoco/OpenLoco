@@ -455,12 +455,15 @@ namespace OpenLoco::ObjectManager
 
         const uint32_t oldNumImages = getTotalNumImages();
         setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
+
         _temporaryObject = preLoadObj->object;
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
+
         auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
         DependentObjects dependencies;
         callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
+
         if (depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF))
         {
             *depObjs++ = static_cast<uint8_t>(dependencies.required.size());
@@ -475,14 +478,17 @@ namespace OpenLoco::ObjectManager
                 std::copy(dependencies.willLoad.begin(), dependencies.willLoad.end(), reinterpret_cast<ObjectHeader*>(depObjs));
             }
         }
+
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
 
         _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
+
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
         result.displayData.numImages = _numImages;
+
         if (header.getType() == ObjectType::competitor)
         {
             auto* competitor = reinterpret_cast<CompetitorObject*>(preLoadObj->object);
@@ -490,6 +496,12 @@ namespace OpenLoco::ObjectManager
             result.displayData.competitiveness = competitor->competitiveness;
             result.displayData.intelligence = competitor->intelligence;
         }
+        else if (header.getType() == ObjectType::vehicle)
+        {
+            auto* vehicle = reinterpret_cast<VehicleObject*>(preLoadObj->object);
+            result.displayData.vehicleSubType = enumValue(vehicle->type);
+        }
+
         return result;
     }
 

@@ -1,5 +1,6 @@
 23.07+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2036] Vehicle object selection is now split into tabs by vehicle subtype.
 - Change: [#61] Placing headquarters now respects the building rotation shortcut.
 - Change: [#2078] Building construction ghosts now show finished buildings instead of scaffolding.
 - Fix: [#56] Orphaned arrow bug when closing construction window with shortcut (original bug).

@@ -45,10 +45,13 @@
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "Window.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 
+using namespace OpenLoco::Diagnostics;
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
@@ -66,6 +69,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         hideInGame = 1U << 2,
         hideInEditor = 1U << 3,
         showEvenIfSingular = 1U << 4,
+        filterByVehicleType = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ObjectTabFlags);
 
@@ -101,7 +105,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         TabDisplayInfo{ StringIds::object_roads,                 ImageIds::tab_object_road,            ObjectTabFlags::advanced },
         TabDisplayInfo{ StringIds::object_airports,              ImageIds::tab_object_airports,        ObjectTabFlags::advanced },
         TabDisplayInfo{ StringIds::object_docks,                 ImageIds::tab_object_docks,           ObjectTabFlags::advanced },
-        TabDisplayInfo{ StringIds::object_vehicles,              ImageIds::tab_object_vehicles,        ObjectTabFlags::advanced },
+        TabDisplayInfo{ StringIds::object_vehicles,              ImageIds::tab_object_vehicles,        ObjectTabFlags::advanced | ObjectTabFlags::filterByVehicleType },
         TabDisplayInfo{ StringIds::object_trees,                 ImageIds::tab_object_trees,           ObjectTabFlags::advanced },
         TabDisplayInfo{ StringIds::object_snow,                  ImageIds::tab_object_snow,            ObjectTabFlags::advanced },
         TabDisplayInfo{ StringIds::object_climate,               ImageIds::tab_object_climate,         ObjectTabFlags::advanced },
@@ -147,6 +151,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static TabPosition _tabPositions[36];
     static std::vector<TabObjectEntry> _tabObjectList;
     static uint16_t _numVisibleObjectsListed;
+    static bool _filterByVehicleType = false;
+    static VehicleType _currentVehicleType;
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -163,6 +169,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         advancedButton,
         textInput,
         clearButton,
+        vehicleTypeTrain,
+        vehicleTypeBus,
+        vehicleTypeTruck,
+        vehicleTypeTram,
+        vehicleTypeAircraft,
+        vehicleTypeShip,
+        scrollviewFrame,
         scrollview,
         objectImage,
     };
@@ -172,10 +185,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, WindowColour::secondary),
+
+        // Primary tab area
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
+
+        // Filter options
         makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
         makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
+
+        // Secondary (vehicle type) tabs
+        makeRemapWidget({ 3, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trains),
+        makeRemapWidget({ 34, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_buses),
+        makeRemapWidget({ 65, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trucks),
+        makeRemapWidget({ 96, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_trams),
+        makeRemapWidget({ 127, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_aircraft),
+        makeRemapWidget({ 158, 85 }, { 31, 27 }, WidgetType::none, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ships),
+
+        // Scroll and preview areas
+        makeWidget({ 3, 83 }, { 290, 303 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 4, 85 }, { 288, 300 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
@@ -286,12 +314,34 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             != a.end();
     }
 
+    static std::optional<VehicleType> getVehicleTypeFromObject(TabObjectEntry& entry)
+    {
+        auto* displayData = entry.object._displayData;
+        if (displayData == nullptr || displayData->vehicleSubType == 0xFF)
+        {
+            Logging::info("Could not load determine vehicle type for object '{}', skipping", entry.object._header->getName());
+            return std::nullopt;
+        }
+
+        return static_cast<VehicleType>(displayData->vehicleSubType);
+    }
+
     static void applyFilterToObjectList()
     {
         std::string_view pattern = inputSession.buffer;
         _numVisibleObjectsListed = 0;
         for (auto& entry : _tabObjectList)
         {
+            if (_filterByVehicleType)
+            {
+                auto vehicleType = getVehicleTypeFromObject(entry);
+                if (vehicleType != _currentVehicleType)
+                {
+                    entry.display = Visibility::hidden;
+                    continue;
+                }
+            }
+
             if (pattern.empty())
             {
                 entry.display = Visibility::shown;
@@ -372,6 +422,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->frameNo = 0;
         window->rowHover = -1;
         window->var_856 = isEditorMode() ? 0 : 1;
+        window->currentSecondaryTab = 0;
 
         initEvents();
 
@@ -421,6 +472,33 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto args = FormatArguments();
         args.push(_tabDisplayInfo[self.currentTab].name);
+
+        const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
+        const bool showSecondaryTabs = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
+        for (int i = widx::vehicleTypeTrain; i <= widx::vehicleTypeShip; i++)
+        {
+            self.widgets[i].type = showSecondaryTabs ? WidgetType::tab : WidgetType::none;
+        }
+
+        self.activatedWidgets &= ~((1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip));
+        if (showSecondaryTabs)
+        {
+            self.activatedWidgets |= 1ULL << (widx::vehicleTypeTrain + self.currentSecondaryTab);
+            self.enabledWidgets |= (1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip);
+
+            self.widgets[widx::scrollview].top = 85 + 28;
+            self.widgets[widx::scrollviewFrame].type = WidgetType::panel;
+            self.widgets[widx::scrollviewFrame].top = self.widgets[widx::scrollview].top - 2;
+            self.widgets[widx::objectImage].top = 68 + 28;
+        }
+        else
+        {
+            self.enabledWidgets &= ~((1ULL << widx::vehicleTypeTrain) | (1ULL << widx::vehicleTypeBus) | (1ULL << widx::vehicleTypeTruck) | (1ULL << widx::vehicleTypeTram) | (1ULL << widx::vehicleTypeAircraft) | (1ULL << widx::vehicleTypeShip));
+
+            self.widgets[widx::scrollview].top = 85;
+            self.widgets[widx::scrollviewFrame].type = WidgetType::none;
+            self.widgets[widx::objectImage].top = 68;
+        }
     }
 
     static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
@@ -472,6 +550,49 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 }
                 xPos += 31;
             }
+        }
+    }
+
+    struct VehicleTabData
+    {
+        uint32_t image;
+        uint8_t frameSpeed;
+    };
+
+    static constexpr std::array<VehicleTabData, 6> tabIconByVehicleType{
+        VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_train_frame0, 1 },
+        VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_bus_frame0, 1 },
+        VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_truck_frame0, 1 },
+        VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_tram_frame0, 1 },
+        VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_aircraft_frame0, 2 },
+        VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_ship_frame0, 3 },
+    };
+
+    static void drawVehicleTabs(Window* self, Gfx::RenderTarget* rt)
+    {
+        const auto& tabFlags = _tabDisplayInfo[self->currentTab].flags;
+        const bool showSecondaryTabs = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
+        if (!showSecondaryTabs)
+        {
+            return;
+        }
+
+        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
+
+        for (int i = widx::vehicleTypeTrain; i <= widx::vehicleTypeShip; i++)
+        {
+            auto vehicleType = i - widx::vehicleTypeTrain;
+            auto& tabData = tabIconByVehicleType.at(vehicleType);
+
+            auto frame = 0;
+            if (self->currentSecondaryTab == vehicleType)
+            {
+                frame = (self->frameNo >> tabData.frameSpeed) & 0x7;
+            }
+
+            auto image = Gfx::recolour(skin->img + tabData.image + frame, CompanyManager::getCompanyColour(CompanyId::neutral));
+            Widget::drawTab(self, rt, image, i);
         }
     }
 
@@ -732,6 +853,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.draw(rt);
 
         drawTabs(&self, rt);
+        drawVehicleTabs(&self, rt);
         drawSearchBox(self, rt);
 
         bool doDefault = true;
@@ -943,6 +1065,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
                     repositionTargetTab(&self, static_cast<ObjectType>(clickedTab));
+
+                    const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
+                    _filterByVehicleType = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
+                    _currentVehicleType = VehicleType::train;
+
                     populateTabObjectList(static_cast<ObjectType>(clickedTab));
 
                     self.rowHover = -1;
@@ -991,6 +1118,21 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case widx::clearButton:
             {
                 inputSession.clearInput();
+                applyFilterToObjectList();
+                self.initScrollWidgets();
+                self.invalidate();
+                break;
+            }
+
+            case widx::vehicleTypeTrain:
+            case widx::vehicleTypeBus:
+            case widx::vehicleTypeTruck:
+            case widx::vehicleTypeTram:
+            case widx::vehicleTypeAircraft:
+            case widx::vehicleTypeShip:
+            {
+                self.currentSecondaryTab = w - widx::vehicleTypeTrain;
+                _currentVehicleType = static_cast<VehicleType>(self.currentSecondaryTab);
                 applyFilterToObjectList();
                 self.initScrollWidgets();
                 self.invalidate();

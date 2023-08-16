@@ -134,7 +134,8 @@ namespace OpenLoco::ObjectManager
         uint8_t intelligence;    // 0x4 competitor stats
         uint8_t aggressiveness;  // 0x5
         uint8_t competitiveness; // 0x6
-        uint8_t pad_07[0x5];
+        uint8_t vehicleSubType;  // 0x7
+        uint8_t pad_08[0x4];
     };
 
 #pragma pack(pop)

@@ -28,6 +28,8 @@ namespace OpenLoco::ObjectManager
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
 
+    static constexpr uint8_t kCurrentIndexVersion = 3;
+
 #pragma pack(push, 1)
     struct ObjectFolderState
     {
@@ -75,7 +77,10 @@ namespace OpenLoco::ObjectManager
             currentState.dateHash = Numerics::ror(currentState.dateHash, 5);
             currentState.totalFileSize += file.file_size();
         }
-        currentState.numObjects |= (1 << 24);
+
+        // NB: vanilla used to set just flag 24 to 1; we use it as a version byte.
+        currentState.numObjects |= kCurrentIndexVersion << 24;
+
         return currentState;
     }
 
