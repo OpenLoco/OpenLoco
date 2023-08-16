@@ -3,6 +3,7 @@
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -1563,8 +1564,15 @@ namespace OpenLoco::Ui::Windows::MapWindow
         std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(buffer));
         buffer[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
 
+        // TODO: setting this might be unnecessary, but matching vanilla for now.
+        auto backupCompanyId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
+
         auto* nextEl = &buffer[availableTracks.size()];
         sub_478265(nextEl);
+
+        // TODO: see note above.
+        GameCommands::setUpdatingCompanyId(backupCompanyId);
 
         for (auto i = 0U; i < buffer.size(); i++)
         {
