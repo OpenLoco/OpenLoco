@@ -62,15 +62,15 @@ namespace OpenLoco::World::MapGenerator
     // 0x004C4BD7
     static void generateWater([[maybe_unused]] HeightMap& heightMap)
     {
-        static loco_global<uint16_t, 0x00525FB2> _seaLevel;
+        auto seaLevel = getGameState().seaLevel;
 
         for (auto pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
 
-            if (surface != nullptr && surface->baseZ() < (_seaLevel << 2))
-                surface->setWater(_seaLevel);
+            if (surface != nullptr && surface->baseZ() < (seaLevel << 2))
+                surface->setWater(seaLevel);
         }
     }
 
@@ -266,6 +266,32 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    // 0x004BE0C7
+    static void updateTreeSeasons()
+    {
+        auto currentSeason = getGameState().currentSeason;
+
+        for (auto pos : World::getDrawableTileRange())
+        {
+            auto tile = TileManager::get(pos);
+            for (auto el : tile)
+            {
+                auto* treeEl = el.as<TreeElement>();
+                if (treeEl == nullptr)
+                {
+                    continue;
+                }
+
+                if (treeEl->season() < 4 && !treeEl->unk6_80())
+                {
+                    treeEl->setSeason(enumValue(currentSeason));
+                    treeEl->setUnk7l(0x7);
+                }
+                break;
+            }
+        }
+    }
+
     // 0x004BDA49
     static void generateTrees()
     {
@@ -340,8 +366,7 @@ namespace OpenLoco::World::MapGenerator
             toBeRemoved.clear();
         }
 
-        // Update season of trees?
-        call(0x004BE0C7);
+        updateTreeSeasons();
     }
 
     // 0x00496BBC

@@ -56,6 +56,7 @@ namespace OpenLoco::World
             _6 &= ~0x40;
             _6 |= hasSnow ? 0x40 : 0;
         }
+        bool unk6_80() const { return _6 & 0x80; };
         void setUnk6_80(bool unk)
         {
             _6 &= ~0x80;
