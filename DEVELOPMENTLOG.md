@@ -1,4 +1,4 @@
-# OpenLoco version 23.07+ (???)
+# OpenLoco version 23.08 (2023-08-16)
 
 Another month, another OpenLoco release. Owing in part to the summer having been quite
 rainy in our corner of the world, this has been such a busy month for the project
