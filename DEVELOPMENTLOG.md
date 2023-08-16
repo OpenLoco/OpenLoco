@@ -1,5 +1,90 @@
 # OpenLoco version 23.07+ (???)
 
+Another month, another OpenLoco release. Owing in part to the summer having been quite
+rainy in our corner of the world, this has been such a busy month for the project
+again! Let's dive into the most major changes...
+
+## Vehicle object selection is now grouped by vehicle type (#2036, #2085, #2092)
+
+A common complaint from players setting up scenarios, is that their vehicle object
+list gets too long to easily wade through. In February, we alleviated this somewhat
+by introducing search filters to the object selection window. This month,
+@AaronVanGeffen expanded on this by adding an extra set of tab groups to the vehicle
+object selection tab. To keep things performant, the game's object index will
+automatically be rebuilt once to now keep track of vehicle subtypes as well.
+@Duncanspumpkin's latest work on the object index is paying off nicely here!
+
+## Construction improvements (#2078)
+
+Constructing impressive transport layouts is at the heart of the game. We've improved
+a few things this month. First off, the construction ghost for buildings now shows the
+building in their constructed form, rather than just the scaffolding needed to build
+it. Moreover, placing a company headquarters now respects the keyboard shortcut for
+rotation (defaults to Z), so you can build it just at the angle you like it. The same
+goes for new industries and other buildings you construct in-game. Finally, we also
+fixed a bug from the original game, where the yellow construction marker would stick around after closing the construction window.
+
+Our work on the game commands over the past few months is really paying off here.
+We couldn't have easily tackled these issues without it!
+
+## More game commands reimplementation (#2061, #2065, #2066, #2076)
+
+The remaining game commands are all huge functions to undertake, so the pace has
+slowed down a bit compared to earlier months. This month, @Duncanspumpkin has tackled
+the signal placement game command. Functionally, it is identical to the old version,
+but it's all in C++ now! Ready for multiplayer in the future.
+
+We're about 65% into the game command reimplementation process now. This meant there
+were a bunch of files in just the one `GameCommand` folder. @ZehMatt set out to split
+these up into logical units, with game commands grouped by themed subfolders. For
+example, `Terraform` or `Vehicle`. This has cleaned things up nicely!
+
+## Some love for the file browser (#2051, #2087, #2088)
+
+This month, some longstanding minor bugs in the in-game file browser were addressed.
+Disk drives are accessible again on Windows, and accented characters now display
+correctly, as long as the in-game sprite font supports them.
+
+Another issue that went under the radar for a while is that the game would not close
+cleanly when the file browser is open. @ZehMatt fixed that one, too.
+
+## Smoother right-click scrolling (#2057)
+
+A bug that had us stumped for a while, was why right-click scrolling would sometimes
+stutter. Crucially, this wouldn't happen with window scaling off. Well, as it turns
+out, the problem was that we were a bit too enthusiastic with scaling the mouse
+position in this case. Our thanks go out to first-time contributor @RednibCoding for
+fixing this one!
+
+##
+
+2081  Fix #2080: Map generator not setting water levels at edges
+2084  Implement MapGenerator::updateTreeSeasons
+2054  Implement OriginalTerrainGenerator::generate
+2072  Implement MapWindow::assignIndustryColours
+2073  Implement MapWindow::assignRouteColours
+2086  Refactor MapGenerator.cpp into multiple files
+
+##
+
+2049  Add names for some of the routing flags
+2050  Rename two Input flags
+2062  Add definitions to two common items
+2068  Better exceptions
+2074  Use new exception type where appropriate
+
+##
+
+2063  Routing refactor: Make HashMap dynamically sized
+2067  Replace fstream usage with FileStream for object index
+2064  Remove remnants of thing name
+2075  Refactor Stream and replace ifstream for Audio
+
+##
+
+2070  Implement news draw function
+2090  Refactor Misc/Effects, reorganize them
+2091  Implement VehicleCrashParticle update
 
 # OpenLoco version 23.07 (2023-07-25)
 
