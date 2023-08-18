@@ -24,8 +24,8 @@ namespace OpenLoco::Drawing
     class InvalidationGrid
     {
         // TODO: Make non-static once interop is no longer required.
-        static Interop::loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
-        static Interop::loco_global<uint8_t[7500], 0x00E025C4> _blocks;
+        static inline Interop::loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
+        static inline Interop::loco_global<uint8_t[7500], 0x00E025C4> _blocks;
         uint32_t _screenWidth{};
         uint32_t _screenHeight{};
 
