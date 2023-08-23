@@ -455,7 +455,10 @@ namespace OpenLoco::S5
             // Load the rest of gamestate after animations
             fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
             file->gameState.fixFlags |= S5FixFlags::fixFlag1;
+
+            // Apply various fixes to the game state
             fixState(file->gameState);
+            Vehicles::OrderManager::fixCorruptWaypointOrders(file->gameState);
 
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
@@ -473,7 +476,10 @@ namespace OpenLoco::S5
 
             // Load game state
             fs.readChunk(&file->gameState, sizeof(file->gameState));
+
+            // Apply various fixes to the game state
             fixState(file->gameState);
+            Vehicles::OrderManager::fixCorruptWaypointOrders(file->gameState);
 
             // Load tile elements
             auto tileElements = fs.readChunk();
