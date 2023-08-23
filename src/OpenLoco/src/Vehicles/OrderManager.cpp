@@ -451,11 +451,25 @@ namespace OpenLoco::Vehicles::OrderManager
                 // Corrupted direction and track id?
                 if (waypointOrder->getDirection() == 0x7 && waypointOrder->getTrackId() == 0x3F)
                 {
-                    // Override with our best guess for track element and direction
                     auto pos = waypointOrder->getWaypoint();
+                    Logging::info("Encountered corrupt waypoint order at offset {} (pos={},{})", orderOffset, pos.x / World::kTileSize, pos.y / World::kTileSize);
+
+                    // Get the tile from the position stored, if not corrupted
                     auto tile = World::TileManager::get(pos);
+                    if (tile.isNull())
+                    {
+                        Logging::info("Attempt to fix corrupt waypoint order failed; removing order");
+                        // TODO: infer order table/vehicle to remove from
+                        // For now, skip instead of removing
+                        orderOffset += orderLength;
+                        continue;
+                    }
+
+                    // Override with our best guess for track element and direction
+                    bool fixed = false;
                     for (auto tileElement : tile)
                     {
+                        Logging::info("Considering element...");
                         auto trackElement = tileElement.as<World::TrackElement>();
                         if (trackElement == nullptr)
                         {
@@ -465,9 +479,18 @@ namespace OpenLoco::Vehicles::OrderManager
                         waypointOrder->setTrackId(trackElement->trackId());
                         waypointOrder->setDirection(trackElement->unkDirection());
 
+                        fixed = true;
                         Logging::info("Fixed corrupt routing order: inferred trackId {} and direction {}", trackElement->trackId(), trackElement->unkDirection());
-
                         break;
+                    }
+
+                    if (!fixed)
+                    {
+                        Logging::info("No track element found at stored position; position is probably corrupted -- removing order");
+                        // TODO: infer order table/vehicle to remove from
+                        // For now, skip instead of removing
+                        orderOffset += orderLength;
+                        continue;
                     }
                 }
             }
