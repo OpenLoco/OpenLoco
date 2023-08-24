@@ -455,8 +455,6 @@ namespace OpenLoco::S5
             // Load the rest of gamestate after animations
             fs.readChunk(&file->gameState.animations, sizeof(file->gameState));
             file->gameState.fixFlags |= S5FixFlags::fixFlag1;
-
-            // Apply various fixes to the game state
             fixState(file->gameState);
 
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
@@ -475,8 +473,6 @@ namespace OpenLoco::S5
 
             // Load game state
             fs.readChunk(&file->gameState, sizeof(file->gameState));
-
-            // Apply various fixes to the game state
             fixState(file->gameState);
 
             // Load tile elements
@@ -692,7 +688,10 @@ namespace OpenLoco::S5
             IndustryManager::createAllMapAnimations();
             Audio::resetSoundObjects();
 
+            // Fix saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
+            // TODO: remove this at some point in 2024 or so
             Vehicles::OrderManager::fixCorruptWaypointOrders();
+
             if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 _gameState->var_014A = 0;
