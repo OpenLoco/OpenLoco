@@ -448,7 +448,6 @@ namespace OpenLoco::GameCommands
 
     struct LowerRaiseLandMountainArgs
     {
-<<<<<<< HEAD
         static constexpr auto command = GameCommand::lowerRaiseLandMountain;
         LowerRaiseLandMountainArgs() = default;
         explicit LowerRaiseLandMountainArgs(const registers& regs)
