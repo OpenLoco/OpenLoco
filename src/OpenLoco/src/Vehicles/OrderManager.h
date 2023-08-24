@@ -9,11 +9,6 @@
 #include <string>
 #include <vector>
 
-namespace OpenLoco::S5
-{
-    struct GameState;
-}
-
 namespace OpenLoco::Vehicles
 {
     struct VehicleHead;
