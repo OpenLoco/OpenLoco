@@ -460,9 +460,7 @@ namespace OpenLoco::Vehicles::OrderManager
                     auto tile = World::TileManager::get(pos);
                     if (tile.isNull())
                     {
-                        Logging::info("Attempt to fix corrupt waypoint order failed; removing order");
-                        // TODO: infer order table/vehicle to remove from
-                        // For now, skip instead of removing
+                        Logging::info("Attempt to fix corrupt waypoint order failed. Check vehicle orders!");
                         orderOffset += orderLength;
                         continue;
                     }
@@ -507,9 +505,7 @@ namespace OpenLoco::Vehicles::OrderManager
                         }
                         else
                         {
-                            Logging::info("No track element found at stored position; position is probably corrupted -- removing order");
-                            // TODO: infer order table/vehicle to remove from
-                            // For now, skip instead of removing
+                            Logging::info("No track element found at stored position; position is probably corrupted. Check vehicle orders!");
                             orderOffset += orderLength;
                             continue;
                         }
