@@ -6,6 +6,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Map/RoadElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"
@@ -496,11 +497,22 @@ namespace OpenLoco::Vehicles::OrderManager
 
                     if (!fixed)
                     {
-                        Logging::info("No track element found at stored position; position is probably corrupted -- removing order");
-                        // TODO: infer order table/vehicle to remove from
-                        // For now, skip instead of removing
-                        orderOffset += orderLength;
-                        continue;
+                        auto* surface = tile.surface();
+                        if (surface->water())
+                        {
+                            Logging::info("Encountering water at corrupt routing order. Fixing order: inferred roadId 0 and direction 0");
+
+                            waypointOrder->setTrackId(0);
+                            waypointOrder->setDirection(0);
+                        }
+                        else
+                        {
+                            Logging::info("No track element found at stored position; position is probably corrupted -- removing order");
+                            // TODO: infer order table/vehicle to remove from
+                            // For now, skip instead of removing
+                            orderOffset += orderLength;
+                            continue;
+                        }
                     }
                 }
             }
