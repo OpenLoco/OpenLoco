@@ -1,4 +1,5 @@
 #include "VehicleManager.h"
+#include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -56,12 +57,63 @@ namespace OpenLoco::VehicleManager
         }
     }
 
+    // 0x004C39D4
+    void determineAvailableVehicleTypes(Company& company)
+    {
+        uint16_t availableTypes = 0;
+
+        for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            if (!(company.unlockedVehicles[i & 0x1F] & 1ULL << (i / 32)))
+            {
+                continue;
+            }
+
+            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            availableTypes |= 1ULL << enumValue(vehObj->type);
+        }
+        company.availableVehicles = availableTypes;
+    }
+
     // 0x004C3A0C
     void determineAvailableVehicles(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x004C3A0C, regs);
+        std::fill(std::begin(company.unlockedVehicles), std::end(company.unlockedVehicles), 0);
+
+        const auto curYear = getCurrentYear();
+
+        for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (curYear < vehObj->designed)
+            {
+                continue;
+            }
+            if (curYear >= vehObj->obsolete)
+            {
+                continue;
+            }
+
+            const auto forbiddenVehicles = CompanyManager::isPlayerCompany(company.id()) ? getGameState().forbiddenVehiclesPlayers : getGameState().forbiddenVehiclesCompetitors;
+            if (forbiddenVehicles & (1ULL << enumValue(vehObj->type)))
+            {
+                continue;
+            }
+
+            company.unlockedVehicles[i & 0x1F] |= 1ULL << (i / 32);
+        }
+
+        determineAvailableVehicleTypes(company);
     }
 
     // 0x004B05E4
