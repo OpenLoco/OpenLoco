@@ -458,7 +458,6 @@ namespace OpenLoco::S5
 
             // Apply various fixes to the game state
             fixState(file->gameState);
-            Vehicles::OrderManager::fixCorruptWaypointOrders(file->gameState);
 
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
@@ -479,7 +478,6 @@ namespace OpenLoco::S5
 
             // Apply various fixes to the game state
             fixState(file->gameState);
-            Vehicles::OrderManager::fixCorruptWaypointOrders(file->gameState);
 
             // Load tile elements
             auto tileElements = fs.readChunk();
@@ -694,6 +692,7 @@ namespace OpenLoco::S5
             IndustryManager::createAllMapAnimations();
             Audio::resetSoundObjects();
 
+            Vehicles::OrderManager::fixCorruptWaypointOrders();
             if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 _gameState->var_014A = 0;

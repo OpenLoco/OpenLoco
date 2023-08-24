@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
+#include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"
@@ -437,11 +438,11 @@ namespace OpenLoco::Vehicles::OrderManager
 
     // Fixes saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
     // TODO: remove this at some point in 2024 or so
-    void fixCorruptWaypointOrders(S5::GameState& state)
+    void fixCorruptWaypointOrders()
     {
-        for (auto orderOffset = 0U; orderOffset < S5::Limits::kMaxOrders; orderOffset++)
+        for (auto orderOffset = 0U; orderOffset < numOrders();)
         {
-            auto* order = reinterpret_cast<Order*>(&state.orders[orderOffset]);
+            auto* order = reinterpret_cast<Order*>(&orders()[orderOffset]);
             auto orderLength = kOrderSizes[enumValue(order->getType())];
 
             if (order->getType() == OrderType::RouteWaypoint)
@@ -470,18 +471,27 @@ namespace OpenLoco::Vehicles::OrderManager
                     for (auto tileElement : tile)
                     {
                         Logging::info("Considering element...");
-                        auto trackElement = tileElement.as<World::TrackElement>();
-                        if (trackElement == nullptr)
+                        auto* trackElement = tileElement.as<World::TrackElement>();
+                        auto* roadElement = tileElement.as<World::RoadElement>();
+                        if (trackElement != nullptr)
                         {
-                            continue;
+
+                            waypointOrder->setTrackId(trackElement->trackId());
+                            waypointOrder->setDirection(trackElement->unkDirection());
+
+                            fixed = true;
+                            Logging::info("Fixed corrupt routing order: inferred trackId {} and direction {}", trackElement->trackId(), trackElement->unkDirection());
+                            break;
                         }
+                        else if (roadElement != nullptr)
+                        {
+                            waypointOrder->setTrackId(roadElement->roadId());
+                            waypointOrder->setDirection(roadElement->unkDirection());
 
-                        waypointOrder->setTrackId(trackElement->trackId());
-                        waypointOrder->setDirection(trackElement->unkDirection());
-
-                        fixed = true;
-                        Logging::info("Fixed corrupt routing order: inferred trackId {} and direction {}", trackElement->trackId(), trackElement->unkDirection());
-                        break;
+                            fixed = true;
+                            Logging::info("Fixed corrupt routing order: inferred roadId {} and direction {}", roadElement->roadId(), roadElement->unkDirection());
+                            break;
+                        }
                     }
 
                     if (!fixed)
