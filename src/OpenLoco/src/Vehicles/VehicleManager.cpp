@@ -64,7 +64,7 @@ namespace OpenLoco::VehicleManager
 
         for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
-            if (!(company.unlockedVehicles[i / 32] & 1U << (i & 0x1F)))
+            if (!company.unlockedVehicles[i])
             {
                 continue;
             }
@@ -110,7 +110,7 @@ namespace OpenLoco::VehicleManager
                 continue;
             }
 
-            company.unlockedVehicles[i / 32] |= 1U << (i & 0x1F);
+            company.unlockedVehicles.set(i, true);
         }
 
         determineAvailableVehicleTypes(company);

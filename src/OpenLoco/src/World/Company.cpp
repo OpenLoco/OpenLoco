@@ -217,9 +217,7 @@ namespace OpenLoco
 
     bool Company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
     {
-        auto vehicleTypeIndex = vehicleIndex >> 5;
-
-        return (unlockedVehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
+        return unlockedVehicles[vehicleIndex];
     }
 
     // 0x00487FCC
