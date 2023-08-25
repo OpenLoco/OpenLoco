@@ -64,7 +64,7 @@ namespace OpenLoco::VehicleManager
 
         for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
-            if (!(company.unlockedVehicles[i & 0x1F] & 1ULL << (i / 32)))
+            if (!(company.unlockedVehicles[i / 32] & 1U << (i & 0x1F)))
             {
                 continue;
             }
@@ -105,12 +105,12 @@ namespace OpenLoco::VehicleManager
             }
 
             const auto forbiddenVehicles = CompanyManager::isPlayerCompany(company.id()) ? getGameState().forbiddenVehiclesPlayers : getGameState().forbiddenVehiclesCompetitors;
-            if (forbiddenVehicles & (1ULL << enumValue(vehObj->type)))
+            if (forbiddenVehicles & (1U << enumValue(vehObj->type)))
             {
                 continue;
             }
 
-            company.unlockedVehicles[i & 0x1F] |= 1ULL << (i / 32);
+            company.unlockedVehicles[i / 32] |= 1U << (i & 0x1F);
         }
 
         determineAvailableVehicleTypes(company);
