@@ -56,13 +56,17 @@ namespace OpenLoco::Drawing
         top /= _screenInvalidation->blockHeight;
         bottom /= _screenInvalidation->blockHeight;
 
+        // TODO: Remove this once _blocks is no longer interop wrapper.
+        auto* blocks = _blocks.get();
+
+        const auto columnSize = right - left + 1;
+
         for (int16_t y = top; y <= bottom; y++)
         {
-            uint32_t yOffset = y * _screenInvalidation->columnCount;
-            for (int16_t x = left; x <= right; x++)
-            {
-                _blocks[yOffset + x] = 0xFF;
-            }
+            const auto yOffset = y * _screenInvalidation->columnCount;
+
+            // Mark row by column size as invalidated.
+            std::memset(blocks + yOffset + left, 0xFF, columnSize);
         }
     }
 
