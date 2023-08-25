@@ -2,6 +2,7 @@
 
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
+#include <cstring>
 
 using namespace OpenLoco::Interop;
 
