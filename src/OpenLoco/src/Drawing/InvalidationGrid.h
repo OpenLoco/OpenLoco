@@ -52,58 +52,43 @@ namespace OpenLoco::Drawing
 
             for (uint32_t column = 0; column < columnCount; column++)
             {
-                uint32_t index = 0;
                 for (uint32_t row = 0; row < rowCount; row++)
                 {
-                    if (_blocks[index + column] != 0)
+                    const auto rowStartOffset = row * columnCount;
+                    if (_blocks[rowStartOffset + column] != 0)
                     {
-                        uint32_t columnStart = column;
-                        uint32_t rowStart = row;
-                        uint32_t index2 = index;
+                        uint32_t rowEndOffset = rowStartOffset;
+                        uint32_t numRowsDirty = 0;
 
+                        // Count amount of dirty rows at current column.
                         while (true)
                         {
-                            rowStart++;
-                            index2 += columnCount;
-                            if (rowStart >= rowCount || _blocks[index2 + columnStart] == 0)
+                            if (row + numRowsDirty + 1 >= rowCount || _blocks[rowEndOffset + column + columnCount] == 0)
                                 break;
+
+                            numRowsDirty++;
+                            rowEndOffset += columnCount;
                         }
 
-                        rowStart--;
-                        index2 -= columnCount;
+                        // Clear rows at the current column.
+                        for (auto rowOffset = rowStartOffset; rowOffset <= rowEndOffset; rowOffset += columnCount)
+                        {
+                            _blocks[rowOffset + column] = 0;
+                        }
 
-                        clearBlocks(index, column, columnStart, index2);
-
+                        // Convert to pixel coordinates.
                         const auto left = column * blockWidth;
                         const auto top = row * blockHeight;
-                        const auto right = (columnStart + 1) * blockWidth;
-                        const auto bottom = (rowStart + 1) * blockHeight;
+                        const auto right = (column + 1) * blockWidth;
+                        const auto bottom = (row + numRowsDirty + 1) * blockHeight;
 
                         if (left < _screenWidth && top < _screenHeight)
                         {
                             func(left, top, std::min(right, _screenWidth), std::min(bottom, _screenHeight));
                         }
                     }
-                    index += columnCount;
                 }
             }
-        }
-
-    private:
-        void clearBlocks(uint32_t index, uint32_t column, uint32_t columnStart, uint32_t index2) noexcept
-        {
-            const auto columnCount = _screenInvalidation->columnCount;
-            do
-            {
-                uint32_t tempColumn = column;
-                do
-                {
-                    _blocks[index + tempColumn] = 0;
-                    tempColumn++;
-                } while (tempColumn <= columnStart);
-
-                index += columnCount;
-            } while (index <= index2);
         }
     };
 
