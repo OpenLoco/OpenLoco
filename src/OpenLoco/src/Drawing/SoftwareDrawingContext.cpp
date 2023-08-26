@@ -1472,6 +1472,43 @@ namespace OpenLoco::Drawing
             call(0x0045196C, regs);
         }
 
+        static void sub_4950EF(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour /*ax*/, uint8_t numLinesToDisplay /*eax upper*/, uint16_t numCharactersToDisplay /*ebp upper*/, uint16_t width /* bp */)
+        {
+            _currentFontSpriteBase = Font::medium_bold;
+            // Setup the text colours (FIXME: This should be a separate function)
+            char empty[1] = "";
+            drawString(rt, rt.x, rt.y, colour, empty);
+
+            char buffer[512];
+            StringManager::formatString(buffer, std::size(buffer), stringId);
+
+            _currentFontSpriteBase = Font::medium_bold;
+            auto wrapResult = wrapStringTicker(buffer, width, numCharactersToDisplay);
+            const auto breakCount = std::get<2>(wrapResult);
+            const auto lineToDisplayFrom = breakCount - numLinesToDisplay;
+
+            // wrapString might change the font due to formatting codes
+            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
+
+            _currentFontFlags = TextDrawFlags::none;
+            Ui::Point point = origin;
+            if (lineToDisplayFrom > 0)
+            {
+                point.y -= lineHeight * lineToDisplayFrom;
+            }
+            const char* ptr = buffer;
+
+            for (auto i = 0; ptr != nullptr && i < breakCount; i++)
+            {
+                uint16_t lineWidth = getStringWidth(ptr);
+
+                // special drawstring
+                drawString(rt, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+                ptr = advanceToNextLineWrapped(ptr);
+                point.y += lineHeight;
+            }
+        }
+
         // 0x00495301
         // Note: Returned break count is -1. TODO: Refactor out this -1.
         // @return maxWidth @<cx> (breakCount-1) @<di>
@@ -1596,6 +1633,148 @@ namespace OpenLoco::Drawing
             // TODO: refactor to pair up with each line, and to not use a global.
             _currentFontSpriteBase = font;
             return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
+        }
+
+        // 0x0049544E
+        // Note: Returned break count is -1. TODO: Refactor out this -1.
+        // @return maxWidth @<cx> (breakCount-1) @<di> numLines @<ax>
+        static std::tuple<uint16_t, uint16_t, uint16_t> wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters)
+        {
+            // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
+            uint16_t wrapCount = 0;
+            auto font = *_currentFontSpriteBase;
+            uint16_t maxWidth = 0;
+            uint16_t numLines = 1;
+
+            for (auto* ptr = buffer; *ptr != '\0';)
+            {
+                auto* startLine = ptr;
+                uint16_t lineWidth = 0;
+                auto lastWordLineWith = lineWidth;
+                uint16_t charNum = numCharacters;
+                auto lastCharNum = charNum;
+                auto* wordStart = ptr;
+                for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
+                {
+                    if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                    {
+                        bool forceEndl = false;
+                        switch (*ptr)
+                        {
+                            case ControlCodes::newline:
+                            {
+                                *ptr = '\0';
+                                forceEndl = true;
+                                ++ptr; // Skip over '\0' when forcing a new line
+                                wrapCount++;
+                                // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
+                                maxWidth = std::max(maxWidth, lineWidth);
+                                if (charNum > 0)
+                                {
+                                    numLines++;
+                                }
+                                break;
+                            }
+                            case ControlCodes::Font::small:
+                                font = Font::small;
+                                break;
+                            case ControlCodes::Font::large:
+                                font = Font::large;
+                                break;
+                            case ControlCodes::Font::bold:
+                                font = Font::medium_bold;
+                                break;
+                            case ControlCodes::Font::regular:
+                                font = Font::medium_normal;
+                                break;
+                        }
+                        if (forceEndl)
+                        {
+                            break;
+                        }
+                    }
+                    else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                    {
+                        switch (*ptr)
+                        {
+                            case ControlCodes::moveX:
+                                lineWidth = static_cast<uint8_t>(ptr[1]);
+                                break;
+                        }
+                        ptr += 1;
+                    }
+                    else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                    {
+                        ptr += 2;
+                    }
+                    else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                    {
+                        switch (*ptr)
+                        {
+                            case ControlCodes::inlineSpriteStr:
+                            {
+                                uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
+                                ImageId imageId{ image & 0x7FFFF };
+                                auto* el = Gfx::getG1Element(imageId.getIndex());
+                                if (el != nullptr)
+                                {
+                                    lineWidth += el->width;
+                                }
+                                break;
+                            }
+                        }
+                        ptr += 4;
+                    }
+                    else
+                    {
+                        if (*ptr == ' ')
+                        {
+                            wordStart = ptr;
+                            lastWordLineWith = lineWidth;
+                            lastCharNum = charNum;
+                        }
+                        else
+                        {
+                            charNum--;
+                        }
+                        lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                    }
+                }
+                if (lineWidth >= stringWidth || *ptr == '\0')
+                {
+                    if (startLine == wordStart || (*ptr == '\0' && lineWidth < stringWidth))
+                    {
+                        // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
+                        maxWidth = std::max(maxWidth, lineWidth);
+                        if (startLine == wordStart && *ptr != '\0')
+                        {
+                            // Shuffle the string forward by one to make space for line ending
+                            const auto len = StringManager::locoStrlen(ptr) + 1; // +1 for null termination
+                            std::copy_backward(ptr, ptr + len, ptr + len + 1);
+                            // Insert line ending
+                            *ptr++ = '\0';
+                        }
+                    }
+                    else
+                    {
+                        // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
+                        maxWidth = std::max(maxWidth, lastWordLineWith);
+                        if (charNum > 0)
+                        {
+                            numLines++;
+                        }
+                        // Insert line ending instead of space character
+                        *wordStart = '\0';
+                        ptr = wordStart + 1;
+                    }
+                    wrapCount++;
+                }
+            }
+
+            // Note that this is always the font used in the last line.
+            // TODO: refactor to pair up with each line, and to not use a global.
+            _currentFontSpriteBase = font;
+            return std::make_tuple(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0), numLines);
         }
 
         // 0x004474BA
