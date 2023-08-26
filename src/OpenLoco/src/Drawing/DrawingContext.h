@@ -148,6 +148,8 @@ namespace OpenLoco::Drawing
 
         virtual void drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) = 0;
 
+        virtual void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
+
         virtual uint16_t getStringWidthNewLined(const char* buffer) = 0;
 
         virtual std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) = 0;

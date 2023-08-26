@@ -54,6 +54,7 @@ namespace OpenLoco::Drawing
         static PaletteMap::Buffer<8> _textColours{ 0 };
         static uint16_t getStringWidth(const char* buffer);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
+        static std::tuple<uint16_t, uint16_t, uint16_t> wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
@@ -1472,7 +1473,8 @@ namespace OpenLoco::Drawing
             call(0x0045196C, regs);
         }
 
-        static void sub_4950EF(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour /*ax*/, uint8_t numLinesToDisplay /*eax upper*/, uint16_t numCharactersToDisplay /*ebp upper*/, uint16_t width /* bp */)
+        // 0x004950EF
+        static void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour /*ax*/, uint8_t numLinesToDisplay /*eax upper*/, uint16_t numCharactersToDisplay /*ebp upper*/, uint16_t width /* bp */)
         {
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
@@ -1646,13 +1648,13 @@ namespace OpenLoco::Drawing
             uint16_t maxWidth = 0;
             uint16_t numLines = 1;
 
+            int16_t charNum = numCharacters;
             for (auto* ptr = buffer; *ptr != '\0';)
             {
                 auto* startLine = ptr;
                 uint16_t lineWidth = 0;
                 auto lastWordLineWith = lineWidth;
-                uint16_t charNum = numCharacters;
-                auto lastCharNum = charNum;
+                auto lastWordCharNum = charNum;
                 auto* wordStart = ptr;
                 for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
                 {
@@ -1731,7 +1733,7 @@ namespace OpenLoco::Drawing
                         {
                             wordStart = ptr;
                             lastWordLineWith = lineWidth;
-                            lastCharNum = charNum;
+                            lastWordCharNum = charNum;
                         }
                         else
                         {
@@ -1759,6 +1761,7 @@ namespace OpenLoco::Drawing
                     {
                         // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
                         maxWidth = std::max(maxWidth, lastWordLineWith);
+                        charNum = lastWordCharNum;
                         if (charNum > 0)
                         {
                             numLines++;
@@ -2237,6 +2240,11 @@ namespace OpenLoco::Drawing
     void SoftwareDrawingContext::drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
     {
         return Impl::drawStringYOffsets(rt, loc, colour, args, yOffsets);
+    }
+
+    void SoftwareDrawingContext::drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+    {
+        Impl::drawStringTicker(rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
     }
 
     uint16_t SoftwareDrawingContext::getStringWidthNewLined(const char* buffer)
