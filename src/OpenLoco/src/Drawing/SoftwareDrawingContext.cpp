@@ -1709,7 +1709,7 @@ namespace OpenLoco::Drawing
         }
 
         // 0x004950EF
-        static void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour /*ax*/, uint8_t numLinesToDisplay /*eax upper*/, uint16_t numCharactersToDisplay /*ebp upper*/, uint16_t width /* bp */)
+        static void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
         {
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
@@ -1721,8 +1721,8 @@ namespace OpenLoco::Drawing
 
             _currentFontSpriteBase = Font::medium_bold;
             auto wrapResult = wrapStringTicker(buffer, width, numCharactersToDisplay);
-            const auto breakCount = std::get<2>(wrapResult);
-            const auto lineToDisplayFrom = breakCount - numLinesToDisplay;
+            const auto numLinesToDisplayAllChars = std::get<2>(wrapResult);
+            const auto lineToDisplayFrom = numLinesToDisplayAllChars - numLinesToDisplay;
 
             // wrapString might change the font due to formatting codes
             uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
@@ -1736,7 +1736,7 @@ namespace OpenLoco::Drawing
             const char* ptr = buffer;
 
             auto numChars = numCharactersToDisplay;
-            for (auto i = 0; ptr != nullptr && i < breakCount; i++)
+            for (auto i = 0; ptr != nullptr && i < numLinesToDisplayAllChars; i++)
             {
                 uint16_t lineWidth = getStringWidth(ptr);
 
@@ -1749,7 +1749,7 @@ namespace OpenLoco::Drawing
 
         // 0x00495301
         // Note: Returned break count is -1. TODO: Refactor out this -1.
-        // @return maxWidth @<cx> (breakCount-1) @<di>
+        // @return maxWidth @<cx> (numLinesToDisplayAllChars-1) @<di>
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth)
         {
             // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
@@ -1875,14 +1875,14 @@ namespace OpenLoco::Drawing
 
         // 0x0049544E
         // Note: Returned break count is -1. TODO: Refactor out this -1.
-        // @return maxWidth @<cx> (breakCount-1) @<di> numLines @<ax>
+        // @return maxWidth @<cx> (numLinesToDisplayAllChars-1) @<di> numLinesToDisplayAllChars @<ax>
         static std::tuple<uint16_t, uint16_t, uint16_t> wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters)
         {
             // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
             uint16_t wrapCount = 0;
             auto font = *_currentFontSpriteBase;
             uint16_t maxWidth = 0;
-            uint16_t numLines = 1;
+            uint16_t numLinesToDisplayAllChars = 1;
 
             int16_t charNum = numCharacters;
             for (auto* ptr = buffer; *ptr != '\0';)
@@ -1909,7 +1909,7 @@ namespace OpenLoco::Drawing
                                 maxWidth = std::max(maxWidth, lineWidth);
                                 if (charNum > 0)
                                 {
-                                    numLines++;
+                                    numLinesToDisplayAllChars++;
                                 }
                                 break;
                             }
@@ -1998,7 +1998,7 @@ namespace OpenLoco::Drawing
                         charNum = lastWordCharNum;
                         if (charNum > 0)
                         {
-                            numLines++;
+                            numLinesToDisplayAllChars++;
                         }
                         // Insert line ending instead of space character
                         *wordStart = '\0';
@@ -2011,7 +2011,7 @@ namespace OpenLoco::Drawing
             // Note that this is always the font used in the last line.
             // TODO: refactor to pair up with each line, and to not use a global.
             _currentFontSpriteBase = font;
-            return std::make_tuple(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0), numLines);
+            return std::make_tuple(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0), numLinesToDisplayAllChars);
         }
 
         // 0x004474BA
