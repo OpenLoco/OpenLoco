@@ -140,19 +140,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         WindowManager::close(&self);
     }
 
-    //// 0x004950EF
-    //static void sub_4950EF(Gfx::RenderTarget* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
-    //{
-    //    registers regs;
-    //    regs.bx = buffer;
-    //    regs.eax = eax;
-    //    regs.cx = x;
-    //    regs.dx = y;
-    //    regs.ebp = ebp;
-    //    regs.edi = X86Pointer(clipped);
-    //    call(0x004950EF, regs);
-    //}
-
     // 0x00429DAA
     static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
@@ -225,9 +212,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         {
             _word_525CE0 = _word_525CE0 | (1 << 15);
         }
-        //uint32_t ebp = (((_word_525CE0 & ~(1 << 15)) >> 2) << 16) | 109;
 
-        //sub_4950EF(&*clipped, StringIds::buffer_2039, (1 << 18), ebp, 55, 0);
         drawingCtx.drawStringTicker(*clipped, { 55, 0 }, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
     }
 
