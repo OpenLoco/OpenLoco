@@ -1473,6 +1473,241 @@ namespace OpenLoco::Drawing
             call(0x0045196C, regs);
         }
 
+        // 0x00451582
+        static int16_t drawStringMaxChars(RenderTarget& rt, Ui::Point origin, const AdvancedColour colour, uint8_t* str, const int16_t numCharsRemaining)
+        {
+            // This function has been somewhat simplified removing unreachable parts
+            if (!colour.isFE())
+            {
+                assert(false);
+                return numCharsRemaining;
+            }
+            int16_t numChars = numCharsRemaining;
+            Ui::Point pos = origin;
+            while (true)
+            {
+                if (numChars == 0)
+                {
+                    break;
+                }
+                // When offscreen in y dimension don't draw text
+                // In original this check only performed if pos.y updated instead of every loop
+                bool offscreen = true;
+                if (pos.y + 19 > rt.y)
+                {
+                    if (rt.y + rt.height > pos.y)
+                    {
+                        offscreen = false;
+                    }
+                }
+                uint8_t chr = *str;
+                str++;
+
+                switch (chr)
+                {
+                    case '\0':
+                        return numChars;
+
+                    case ControlCodes::adjustPalette:
+                        // This control character does not appear in the localisation files
+                        assert(false);
+                        str++;
+                        break;
+
+                    case ControlCodes::newlineSmaller:
+                        pos.x = origin.x;
+                        if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
+                        {
+                            pos.y += 5;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::small)
+                        {
+                            pos.y += 3;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::large)
+                        {
+                            pos.y += 9;
+                        }
+                        break;
+
+                    case ControlCodes::newline:
+                        pos.x = origin.x;
+                        if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
+                        {
+                            pos.y += 10;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::small)
+                        {
+                            pos.y += 6;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::large)
+                        {
+                            pos.y += 18;
+                        }
+                        break;
+
+                    case ControlCodes::moveX:
+                    {
+                        uint8_t offset = *str;
+                        str++;
+                        pos.x = origin.x + offset;
+
+                        break;
+                    }
+
+                    case ControlCodes::newlineXY:
+                    {
+                        uint8_t offset = *str;
+                        str++;
+                        pos.x = origin.x + offset;
+
+                        offset = *str;
+                        str++;
+                        pos.y = origin.y + offset;
+
+                        break;
+                    }
+
+                    case ControlCodes::Font::small:
+                        setCurrentFontSpriteBase(Font::small);
+                        break;
+                    case ControlCodes::Font::large:
+                        setCurrentFontSpriteBase(Font::large);
+                        break;
+                    case ControlCodes::Font::regular:
+                        setCurrentFontSpriteBase(Font::medium_normal);
+                        break;
+                    case ControlCodes::Font::bold:
+                        setCurrentFontSpriteBase(Font::medium_bold);
+                        break;
+                    case ControlCodes::Font::outline:
+                        _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                        break;
+                    case ControlCodes::Font::outlineOff:
+                        _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
+                        break;
+                    case ControlCodes::windowColour1:
+                    {
+                        auto hue = _windowColours[0].c();
+                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour2:
+                    {
+                        auto hue = _windowColours[1].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour3:
+                    {
+                        auto hue = _windowColours[2].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour4:
+                    {
+                        auto hue = _windowColours[3].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+
+                    case ControlCodes::inlineSpriteStr:
+                    {
+                        uint32_t image = ((uint32_t*)str)[0];
+                        ImageId imageId{ image & 0x7FFFF };
+                        str += 4;
+
+                        drawImage(&rt, pos.x, pos.y, image);
+
+                        // For some reason the wrapStringTicker doesn't do this??
+                        numChars--;
+                        pos.x += Gfx::getG1Element(imageId.getIndex())->width;
+                        break;
+                    }
+
+                    case ControlCodes::Colour::black:
+                        setTextColour(0);
+                        break;
+
+                    case ControlCodes::Colour::grey:
+                        setTextColour(1);
+                        break;
+
+                    case ControlCodes::Colour::white:
+                        setTextColour(2);
+                        break;
+
+                    case ControlCodes::Colour::red:
+                        setTextColour(3);
+                        break;
+
+                    case ControlCodes::Colour::green:
+                        setTextColour(4);
+                        break;
+
+                    case ControlCodes::Colour::yellow:
+                        setTextColour(5);
+                        break;
+
+                    case ControlCodes::Colour::topaz:
+                        setTextColour(6);
+                        break;
+
+                    case ControlCodes::Colour::celadon:
+                        setTextColour(7);
+                        break;
+
+                    case ControlCodes::Colour::babyBlue:
+                        setTextColour(8);
+                        break;
+
+                    case ControlCodes::Colour::paleLavender:
+                        setTextColour(9);
+                        break;
+
+                    case ControlCodes::Colour::paleGold:
+                        setTextColour(10);
+                        break;
+
+                    case ControlCodes::Colour::lightPink:
+                        setTextColour(11);
+                        break;
+
+                    case ControlCodes::Colour::pearlAqua:
+                        setTextColour(12);
+                        break;
+
+                    case ControlCodes::Colour::paleSilver:
+                        setTextColour(13);
+                        break;
+
+                    default:
+                        if (chr >= 32)
+                        {
+                            numChars--;
+                        }
+                        if (!offscreen)
+                        {
+                            // When offscreen in the y dimension there is no requirement to keep pos.x correct
+                            if (chr >= 32)
+                            {
+                                // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
+                                drawImagePaletteSet(rt, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                            }
+                            else
+                            {
+                                // Unhandled control code
+                                assert(false);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            return numChars;
+        }
+
         // 0x004950EF
         static void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, string_id stringId, Colour colour /*ax*/, uint8_t numLinesToDisplay /*eax upper*/, uint16_t numCharactersToDisplay /*ebp upper*/, uint16_t width /* bp */)
         {
@@ -1500,12 +1735,13 @@ namespace OpenLoco::Drawing
             }
             const char* ptr = buffer;
 
+            auto numChars = numCharactersToDisplay;
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
                 uint16_t lineWidth = getStringWidth(ptr);
 
                 // special drawstring
-                drawString(rt, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+                numChars = drawStringMaxChars(rt, point - Ui::Point(lineWidth / 2, 0), AdvancedColour::FE(), reinterpret_cast<uint8_t*>(const_cast<char*>(ptr)), numChars);
                 ptr = advanceToNextLineWrapped(ptr);
                 point.y += lineHeight;
             }
@@ -1735,10 +1971,8 @@ namespace OpenLoco::Drawing
                             lastWordLineWith = lineWidth;
                             lastWordCharNum = charNum;
                         }
-                        else
-                        {
-                            charNum--;
-                        }
+
+                        charNum--;
                         lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
                     }
                 }
