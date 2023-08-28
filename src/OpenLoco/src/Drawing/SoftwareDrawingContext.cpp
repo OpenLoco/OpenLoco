@@ -54,7 +54,7 @@ namespace OpenLoco::Drawing
         static PaletteMap::Buffer<8> _textColours{ 0 };
         static uint16_t getStringWidth(const char* buffer);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
-        static std::tuple<uint16_t, uint16_t, uint16_t> wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
+        static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
@@ -1720,8 +1720,7 @@ namespace OpenLoco::Drawing
             StringManager::formatString(buffer, std::size(buffer), stringId);
 
             _currentFontSpriteBase = Font::medium_bold;
-            auto wrapResult = wrapStringTicker(buffer, width, numCharactersToDisplay);
-            const auto numLinesToDisplayAllChars = std::get<2>(wrapResult);
+            const auto numLinesToDisplayAllChars = wrapStringTicker(buffer, width, numCharactersToDisplay);
             const auto lineToDisplayFrom = numLinesToDisplayAllChars - numLinesToDisplay;
 
             // wrapString might change the font due to formatting codes
@@ -1874,14 +1873,12 @@ namespace OpenLoco::Drawing
         }
 
         // 0x0049544E
-        // Note: Returned break count is -1. TODO: Refactor out this -1.
-        // @return maxWidth @<cx> (numLinesToDisplayAllChars-1) @<di> numLinesToDisplayAllChars @<ax>
-        static std::tuple<uint16_t, uint16_t, uint16_t> wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters)
+        // Vanilla would also return maxWidth @<cx> (breakCount-1) @<di>
+        // @return numLinesToDisplayAllChars @<ax>
+        static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters)
         {
             // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
-            uint16_t wrapCount = 0;
             auto font = *_currentFontSpriteBase;
-            uint16_t maxWidth = 0;
             uint16_t numLinesToDisplayAllChars = 1;
 
             int16_t charNum = numCharacters;
@@ -1889,7 +1886,6 @@ namespace OpenLoco::Drawing
             {
                 auto* startLine = ptr;
                 uint16_t lineWidth = 0;
-                auto lastWordLineWith = lineWidth;
                 auto lastWordCharNum = charNum;
                 auto* wordStart = ptr;
                 for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
@@ -1904,9 +1900,7 @@ namespace OpenLoco::Drawing
                                 *ptr = '\0';
                                 forceEndl = true;
                                 ++ptr; // Skip over '\0' when forcing a new line
-                                wrapCount++;
                                 // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
-                                maxWidth = std::max(maxWidth, lineWidth);
                                 if (charNum > 0)
                                 {
                                     numLinesToDisplayAllChars++;
@@ -1968,7 +1962,6 @@ namespace OpenLoco::Drawing
                         if (*ptr == ' ')
                         {
                             wordStart = ptr;
-                            lastWordLineWith = lineWidth;
                             lastWordCharNum = charNum;
                         }
 
@@ -1981,7 +1974,6 @@ namespace OpenLoco::Drawing
                     if (startLine == wordStart || (*ptr == '\0' && lineWidth < stringWidth))
                     {
                         // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
-                        maxWidth = std::max(maxWidth, lineWidth);
                         if (startLine == wordStart && *ptr != '\0')
                         {
                             // Shuffle the string forward by one to make space for line ending
@@ -1994,7 +1986,6 @@ namespace OpenLoco::Drawing
                     else
                     {
                         // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
-                        maxWidth = std::max(maxWidth, lastWordLineWith);
                         charNum = lastWordCharNum;
                         if (charNum > 0)
                         {
@@ -2004,14 +1995,13 @@ namespace OpenLoco::Drawing
                         *wordStart = '\0';
                         ptr = wordStart + 1;
                     }
-                    wrapCount++;
                 }
             }
 
             // Note that this is always the font used in the last line.
             // TODO: refactor to pair up with each line, and to not use a global.
             _currentFontSpriteBase = font;
-            return std::make_tuple(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0), numLinesToDisplayAllChars);
+            return numLinesToDisplayAllChars;
         }
 
         // 0x004474BA
