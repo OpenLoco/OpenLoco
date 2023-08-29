@@ -12,7 +12,7 @@ namespace OpenLoco::GameCommands
         explicit VehicleOrderInsertArgs(const registers& regs)
             : head(EntityId(regs.di))
             , orderOffset(regs.dx)
-            , rawOrder((uint64_t(regs.cx) << 32ULL) | regs.eax)
+            , rawOrder((static_cast<uint64_t>(regs.cx) << 32ULL) | static_cast<uint32_t>(regs.eax))
         {
         }
 

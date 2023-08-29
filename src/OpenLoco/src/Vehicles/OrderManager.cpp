@@ -5,16 +5,24 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
+#include "Map/RoadElement.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileManager.h"
+#include "Map/TrackElement.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
 #include "S5/Limits.h"
+#include "S5/S5.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
+#include <OpenLoco/Diagnostics/Logging.h>
 
 #include <sstream>
+
+using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Vehicles
 {
@@ -427,5 +435,85 @@ namespace OpenLoco::Vehicles::OrderManager
 
         // Return the length with which to offset
         return lengthOrderB;
+    }
+
+    // Fixes saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
+    // TODO: remove this at some point in 2024 or so
+    void fixCorruptWaypointOrders()
+    {
+        for (auto orderOffset = 0U; orderOffset < numOrders();)
+        {
+            auto* order = reinterpret_cast<Order*>(&orders()[orderOffset]);
+            auto orderLength = kOrderSizes[enumValue(order->getType())];
+
+            if (order->getType() == OrderType::RouteWaypoint)
+            {
+                auto waypointOrder = order->as<OrderRouteWaypoint>();
+
+                // Corrupted direction and track id?
+                if (waypointOrder->getDirection() == 0x7 && waypointOrder->getTrackId() == 0x3F)
+                {
+                    auto pos = waypointOrder->getWaypoint();
+                    Logging::info("Encountered corrupt waypoint order at offset {} (pos={},{})", orderOffset, pos.x / World::kTileSize, pos.y / World::kTileSize);
+
+                    // Get the tile from the position stored, if not corrupted
+                    auto tile = World::TileManager::get(pos);
+                    if (tile.isNull())
+                    {
+                        Logging::info("Attempt to fix corrupt waypoint order failed. Check vehicle orders!");
+                        orderOffset += orderLength;
+                        continue;
+                    }
+
+                    // Override with our best guess for track element and direction
+                    bool fixed = false;
+                    for (auto tileElement : tile)
+                    {
+                        Logging::info("Considering element...");
+                        auto* trackElement = tileElement.as<World::TrackElement>();
+                        auto* roadElement = tileElement.as<World::RoadElement>();
+                        if (trackElement != nullptr)
+                        {
+
+                            waypointOrder->setTrackId(trackElement->trackId());
+                            waypointOrder->setDirection(trackElement->unkDirection());
+
+                            fixed = true;
+                            Logging::info("Fixed corrupt routing order: inferred trackId {} and direction {}", trackElement->trackId(), trackElement->unkDirection());
+                            break;
+                        }
+                        else if (roadElement != nullptr)
+                        {
+                            waypointOrder->setTrackId(roadElement->roadId());
+                            waypointOrder->setDirection(roadElement->unkDirection());
+
+                            fixed = true;
+                            Logging::info("Fixed corrupt routing order: inferred roadId {} and direction {}", roadElement->roadId(), roadElement->unkDirection());
+                            break;
+                        }
+                    }
+
+                    if (!fixed)
+                    {
+                        auto* surface = tile.surface();
+                        if (surface->water())
+                        {
+                            Logging::info("Encountering water at corrupt routing order. Fixing order: inferred roadId 0 and direction 0");
+
+                            waypointOrder->setTrackId(0);
+                            waypointOrder->setDirection(0);
+                        }
+                        else
+                        {
+                            Logging::info("No track element found at stored position; position is probably corrupted. Check vehicle orders!");
+                            orderOffset += orderLength;
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            orderOffset += orderLength;
+        }
     }
 }
