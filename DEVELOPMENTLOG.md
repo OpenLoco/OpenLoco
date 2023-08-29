@@ -1,6 +1,19 @@
 # OpenLoco version 23.08+ (???)
 
-23.06 introduced our implementation of the Vehicle Order Insert game command. Unfortunately we forgot to activate our new code until 23.07. Due to this mistake testing of the game command was not very robust and we accidentally broke waypoint vehicle orders. Waypoint orders are comprised of a position x, y, z and the track rotation and type. The x, y, z was correct but the rotation and type was being corrupted. This meant that vehicles could never find the track location that the waypoint was associated with! Luckily it was easy enough to fix and as the x, y, z was correct we can regenerate the correct order. We have noticed though that waypoints in general behave a bit odd but the issue predates 23.06 so we plan to further look into how vehicles are using them next month.
+In v23.06, we introduced our implementation of the Vehicle Order Insert game command.
+Unfortunately we forgot to activate our new code until v23.07. Due to this mistake,
+testing of the game command was not very robust and we accidentally broke waypoint
+vehicle orders. This is fixed in v23.08.1
+
+Waypoint orders are comprised of a position x, y, z and the track rotation and type.
+The x, y, z was correct, but the rotation and type was being corrupted. This meant
+that vehicles could never find the track location that the waypoint was associated
+with! Luckily it was easy enough to fix, and as the x, y, z was correct, we can infer
+the correct rotation and type.
+
+We have noticed though that waypoints in general behave a bit odd. This issue
+predates v23.06, though, so we plan to further look into how vehicles are using
+them next month.
 
 # OpenLoco version 23.08 (2023-08-16)
 
