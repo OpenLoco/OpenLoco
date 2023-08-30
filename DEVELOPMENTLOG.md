@@ -1,4 +1,4 @@
-# OpenLoco version 23.08+ (???)
+# OpenLoco version 23.08.1 (2023-08-30)
 
 In v23.06, we introduced our implementation of the Vehicle Order Insert game command.
 Unfortunately we forgot to activate our new code until v23.07. Due to this mistake,
