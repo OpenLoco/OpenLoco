@@ -97,6 +97,7 @@ namespace OpenLoco::GameCommands
         company->ownerName = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
         Gfx::invalidateScreen();
+        memcpy((char*)0x009C646E, renameStringBuffer, sizeof(renameStringBuffer));
         sub_434BA1();
         return 0;
     }
