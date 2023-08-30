@@ -3,7 +3,7 @@
 In v23.06, we introduced our implementation of the Vehicle Order Insert game command.
 Unfortunately we forgot to activate our new code until v23.07. Due to this mistake,
 testing of the game command was not very robust and we accidentally broke waypoint
-vehicle orders. This is fixed in v23.08.1
+vehicle orders. This is fixed in v23.08.1.
 
 Waypoint orders are comprised of a position x, y, z and the track rotation and type.
 The x, y, z was correct, but the rotation and type was being corrupted. This meant
