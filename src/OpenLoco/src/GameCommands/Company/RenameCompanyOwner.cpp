@@ -164,7 +164,7 @@ namespace OpenLoco::GameCommands
                     lhs++;
                     rhs++;
                 }
-                return true;
+                return *lhs == *rhs;
             };
 
             if (strcmpSpecial(companyName, objectName.c_str()))
