@@ -3,7 +3,7 @@
 #include "Effects/Effect.h"
 #include "Effects/ExhaustEffect.h"
 #include "Entities/EntityManager.h"
-#include "Gamestate.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
