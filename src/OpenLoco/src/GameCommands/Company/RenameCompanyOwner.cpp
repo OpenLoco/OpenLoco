@@ -150,14 +150,14 @@ namespace OpenLoco::GameCommands
                         rhs += 2;
                         continue;
                     }
-                    auto toLower = [](const char chr) -> char {
+                    auto toUpper = [](const char chr) -> char {
                         if (chr < 'a' || chr > 'z')
                         {
                             return chr;
                         }
                         return chr - 0x20;
                     };
-                    if (toLower(chr) != toLower(*rhs))
+                    if (toUpper(chr) != toUpper(*rhs))
                     {
                         return false;
                     }
