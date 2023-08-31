@@ -58,4 +58,7 @@ namespace OpenLoco::CompanyManager
 
     void createPlayerCompany();
     uint8_t getHeadquarterBuildingType();
+
+    // Vector of competitor object index's that are in use that aren't @id's competitor object index.
+    std::vector<uint32_t> findAllOtherInUseCompetitors(const CompanyId id);
 }

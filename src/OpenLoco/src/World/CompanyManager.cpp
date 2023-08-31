@@ -21,6 +21,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/DockObject.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -730,6 +731,33 @@ namespace OpenLoco::CompanyManager
         return 0;
     }
 
+    // 0x004353F4
+    std::vector<uint32_t> findAllOtherInUseCompetitors(const CompanyId id)
+    {
+        std::vector<uint8_t> takenCompetitorIds;
+        for (const auto& c : companies())
+        {
+            if (c.id() != id)
+            {
+                takenCompetitorIds.push_back(c.competitorId);
+            }
+        }
+
+        std::vector<uint32_t> inUseCompetitors;
+        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
+        {
+            auto competitorId = ObjectManager::findObjectHandle(*object.second._header);
+            if (competitorId)
+            {
+                auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), competitorId->id);
+                if (res != takenCompetitorIds.end())
+                {
+                    inUseCompetitors.push_back(object.first);
+                }
+            }
+        }
+        return inUseCompetitors;
+    }
 }
 
 namespace OpenLoco

@@ -55,33 +55,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static std::vector<uint32_t> _inUseCompetitors;
 
-    // 0x004353F4
-    static void findAllInUseCompetitors(const CompanyId id)
-    {
-        std::vector<uint8_t> takenCompetitorIds;
-        for (const auto& c : CompanyManager::companies())
-        {
-            if (c.id() != id)
-            {
-                takenCompetitorIds.push_back(c.competitorId);
-            }
-        }
-
-        _inUseCompetitors.clear();
-        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
-        {
-            auto competitorId = ObjectManager::findObjectHandle(*object.second._header);
-            if (competitorId)
-            {
-                auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), competitorId->id);
-                if (res != takenCompetitorIds.end())
-                {
-                    _inUseCompetitors.push_back(object.first);
-                }
-            }
-        }
-    }
-
     // 0x00434F52
     void open(const CompanyId id)
     {
@@ -91,7 +64,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             _9C68F2 = id;
             self->owner = id;
-            findAllInUseCompetitors(id);
+            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
             self->invalidate();
         }
         else
@@ -105,7 +78,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self->owner = id;
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->colour_0A);
-            findAllInUseCompetitors(id);
+            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
             self->rowCount = _numberCompetitorObjects;
             self->rowHover = -1;
             self->object = nullptr;
