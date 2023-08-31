@@ -132,7 +132,7 @@ namespace OpenLoco::GameCommands
                 while (*lhs && *rhs)
                 {
                     const auto chr = *lhs;
-                    if (chr == 0xFF)
+                    if (chr == '\xFF')
                     {
                         if (chr != *rhs)
                         {
