@@ -58,4 +58,8 @@ namespace OpenLoco::World::TrackData
     const stdx::span<const PreviewTrack> getRoadPiece(size_t trackId);
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
+
+    // TODO: Combine these two
+    uint16_t getTrackCompatibleFlags(size_t trackId);
+    uint16_t getTrackCostFactor(size_t trackId);
 }

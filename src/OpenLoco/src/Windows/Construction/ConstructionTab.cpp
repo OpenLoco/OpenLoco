@@ -2556,7 +2556,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (selectedMods & (1 << mod))
             {
                 const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-                if ((trackExtraObj->trackPieces & _trackPieceToFlags[trackPieceId]) != _trackPieceToFlags[trackPieceId])
+                if ((trackExtraObj->trackPieces & TrackData::getTrackCompatibleFlags(trackPieceId)) != TrackData::getTrackCompatibleFlags(trackPieceId))
                 {
                     selectedMods &= ~(1 << mod);
                 }

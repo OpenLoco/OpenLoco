@@ -1,5 +1,7 @@
 #include "Routing.h"
+#include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/GameCommands.h"
 #include "Map/AnimationManager.h"
 #include "Map/SignalElement.h"
 #include "Map/Tile.h"
@@ -11,6 +13,7 @@
 #include "Objects/TrackObject.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -698,10 +701,25 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static void sub_4A5D94(const LocationOfInterest& interest, uint8_t trackObjectId, uint8_t trackModObjectIds)
+    static bool sub_4A5D94(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If called from routing add reverse direction of track
         // This is because track mods do not have directions.
+        if (hashMap != nullptr)
+        {
+            LocationOfInterest reverseInterest = interest;
+            reverseInterest.loc = interest.loc;
+            const auto tad = interest.tad();
+            auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+            reverseInterest.loc += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reverseInterest.loc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
+
+            hashMap->tryAdd(reverseInterest);
+        }
 
         auto* trackObj = ObjectManager::get<TrackObject>(trackObjectId);
         bool placementFailure = false;
@@ -715,7 +733,7 @@ namespace OpenLoco::Vehicles
 
             auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
 
-            const auto pieceFlags = _trackPieceToFlags[interest.tad().id()];
+            const auto pieceFlags = TrackData::getTrackCompatibleFlags(interest.tad().id());
             if ((trackModObj->trackPieces & pieceFlags) != pieceFlags)
             {
                 //_1135F64 |= (1 << 0); placement failed at least once
@@ -726,21 +744,107 @@ namespace OpenLoco::Vehicles
 
         if (!placementFailure)
         {
-            // Get start tile coords
-            // For each track piece (or if not applying just first)
-            //   Get the track on it
-            //   If this is first tile
-            //       increment successful placement count
-            //       For each track mod
-            //           Get mod cost (changes depending on track id)
-            //   If flags apply
-            //       If flags ghost
-            //           If owner == playerCompany[0]
-            //               set bit 0x40 of 4 (setHasGhostMods)
-            //               invalidate
-            //       else
-            //           set upper nibble of 7 (setMods)
-            //           invalidate
+            auto trackStart = interest.loc;
+            const auto tad = interest.tad();
+            if (tad.isReversed())
+            {
+                auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+                trackStart += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    trackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+            }
+
+            for (auto& trackPiece : TrackData::getTrackPiece(tad.id()))
+            {
+                auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, tad.cardinalDirection()), 0 };
+                trackLoc.z += trackPiece.z;
+
+                auto tile = TileManager::get(trackLoc);
+                World::TrackElement* elTrack = nullptr;
+                for (auto& el : tile)
+                {
+                    elTrack = el.as<World::TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->baseHeight() != trackLoc.z)
+                    {
+                        continue;
+                    }
+                    if (elTrack->unkDirection() != tad.cardinalDirection())
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != trackPiece.index)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackObjectId() != trackObjectId)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackId() != tad.id())
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+                if (elTrack == nullptr)
+                {
+                    placementFailure = true;
+                    break;
+                }
+
+                if (trackPiece.index == 0)
+                {
+                    // increment successful placement count
+
+                    // For each track mod
+                    //   Get mod cost (changes depending on track id)
+                    for (auto i = 0; i < 4; ++i)
+                    {
+                        if (!(trackModObjectIds & (1U << i)))
+                        {
+                            continue;
+                        }
+                        if (elTrack->mods() & (1U << i))
+                        {
+                            continue;
+                        }
+
+                        auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
+                        const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->buildCostFactor, trackModObj->costIndex, 10);
+                        const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                        totalCost += cost;
+                    }
+                }
+
+                if (flags & GameCommands::Flags::apply)
+                {
+                    bool invalidate = false;
+                    if (flags & GameCommands::Flags::ghost)
+                    {
+                        if (CompanyManager::getControllingId() == companyId)
+                        {
+                            elTrack->setHasGhostMods(true);
+                            invalidate = true;
+                        }
+                    }
+                    else
+                    {
+                        elTrack->setMods(elTrack()->mods() | trackModObjectIds);
+                        invalidate = true;
+                    }
+                    if (invalidate)
+                    {
+                        Ui::ViewportManager::invalidate(trackLoc, elTrack->baseHeight(), elTrack->clearHeight(), ZoomLevel::half);
+                    }
+                }
+            }
         }
         // if (justTheOneBlock)
         //    return (interest.trackAndDirection & (1 << 15));

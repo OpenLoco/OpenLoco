@@ -24,7 +24,6 @@ namespace OpenLoco::Ui::Windows::Construction
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(GhostVisibilityFlags);
 
-    static loco_global<uint16_t[44], 0x004F891C> _trackPieceToFlags; // Roll into TrackData?
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
     static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
