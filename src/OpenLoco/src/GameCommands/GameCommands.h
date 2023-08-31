@@ -893,20 +893,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    // Change company face
-    inline bool do_65(const ObjectHeader& object, CompanyId company)
-    {
-        auto objPtr = reinterpret_cast<const int32_t*>(&object);
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.eax = *objPtr++;
-        regs.ecx = *objPtr++;
-        regs.edx = *objPtr++;
-        regs.edi = *objPtr;
-        regs.bh = enumValue(company);
-        return doCommand(GameCommand::changeCompanyFace, regs) != FAILURE;
-    }
-
     // Load multiplayer map
     inline void do_67(const char* filename)
     {

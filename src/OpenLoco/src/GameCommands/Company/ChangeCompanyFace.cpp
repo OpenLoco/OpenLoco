@@ -102,8 +102,7 @@ namespace OpenLoco::GameCommands
 
     void changeCompanyFace(registers& regs)
     {
-        int32_t header[] = { regs.eax, regs.ecx, regs.edx, regs.edi };
-        auto* targetHeader = reinterpret_cast<ObjectHeader*>(header);
-        regs.ebx = changeCompanyFace(regs.bl, CompanyId(regs.bh), *targetHeader);
+        ChangeCompanyFaceArgs args(regs);
+        regs.ebx = changeCompanyFace(regs.bl, args.companyId, args.objHeader);
     }
 }

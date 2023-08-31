@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "GameCommands/Company/ChangeCompanyFace.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -146,7 +147,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, _cursorX);
         GameCommands::setErrorTitle(StringIds::cant_select_face);
-        const auto result = GameCommands::do_65(*objRow.object._header, self.owner);
+
+        GameCommands::ChangeCompanyFaceArgs args{};
+        args.companyId = self.owner;
+        args.objHeader = *objRow.object._header;
+
+        const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
         if (result)
         {
             WindowManager::close(&self);
