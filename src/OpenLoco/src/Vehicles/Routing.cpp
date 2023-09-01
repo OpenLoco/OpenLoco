@@ -701,7 +701,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static bool sub_4A5D94(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool sub_4A5D94(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
         // If called from routing add reverse direction of track
         // This is because track mods do not have directions.
@@ -836,7 +836,13 @@ namespace OpenLoco::Vehicles
                     }
                     else
                     {
-                        elTrack->setMods(elTrack()->mods() | trackModObjectIds);
+                        for (auto i = 0; i < 4; ++i)
+                        {
+                            if (trackModObjectIds & (1U << i))
+                            {
+                                elTrack->setMod(i, true);
+                            }
+                        }
                         invalidate = true;
                     }
                     if (invalidate)
@@ -846,8 +852,11 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        // if (justTheOneBlock)
-        //    return (interest.trackAndDirection & (1 << 15));
-        // return false;
+
+        if (modSelection == 2)
+        {
+            return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
+        }
+        return false;
     }
 }
