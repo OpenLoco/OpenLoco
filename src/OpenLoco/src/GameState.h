@@ -51,7 +51,7 @@ namespace OpenLoco
         uint8_t lastRoadOption;                                                  // 0x000193 (0x00525FAB)
         uint8_t lastAirport;                                                     // 0x000194 (0x00525FAC)
         uint8_t lastShipPort;                                                    // 0x000195 (0x00525FAD)
-        bool trafficHandedness;                                                  // 0x000196 (0x00525FAE)
+        bool trafficHandedness;                                                  // 0x000196 (0x00525FAE)   boolean true for right false for left
         VehicleType lastVehicleType;                                             // 0x000197 (0x00525FAF)
         uint8_t pickupDirection;                                                 // 0x000198 (0x00525FB0)
         uint8_t lastTreeOption;                                                  // 0x000199 (0x00525FB1)

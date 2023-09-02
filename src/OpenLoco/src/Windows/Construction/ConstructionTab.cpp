@@ -2,6 +2,7 @@
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -726,7 +727,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
-            if (_trafficHandedness == 0)
+            if (getGameState().trafficHandedness == 0)
                 window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_left_turnaround;
         }
 
