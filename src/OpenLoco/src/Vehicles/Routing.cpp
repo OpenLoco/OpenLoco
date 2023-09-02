@@ -135,7 +135,7 @@ namespace OpenLoco::Vehicles
             return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & mapSizeMask;
         }
 
-        // 0x004A38DE
+        // 0x004A38DE & 0x004A3972
         bool tryAdd(LocationOfInterest& interest)
         {
             auto index = hash(interest);
@@ -492,7 +492,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
 
-    // 0x004A313B
+    // 0x004A313B & 0x004A35B7
     // Iterates all individual tiles of a track piece to find tracks that need inspection
     template<typename FilterFunction>
     static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
@@ -589,7 +589,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004A2FE6
+    // 0x004A2FE6 & 0x004A3462
     template<typename FilterFunction>
     static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
@@ -653,6 +653,7 @@ namespace OpenLoco::Vehicles
     }
 
     constexpr size_t kSignalHashMapSize = 0x400;
+    constexpr size_t kTrackModHashMapSize = 0x1000;
 
     // 0x004A2E46
     template<typename FilterFunction, typename TransformFunction>
@@ -698,6 +699,20 @@ namespace OpenLoco::Vehicles
         findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
 
         return unk;
+    }
+
+    // 0x004A2DE4
+    template<typename FilterFunction, typename TransformFunction>
+    static void findAllTracksTrackModFilterTransform(LocationOfInterestHashMap& interestMap, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    {
+        // TODO: Rework we don't need two of these!
+        // _1135F06 = &interestMap;
+        // _filterFunction = filterFunction;
+        // _transformFunction = transformFunction;
+        _1135F0A = 0;
+        _1135FA6 = 1; // flags
+        findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
+        transformFunction(interestMap);
     }
 
     // 0x004A5D94
@@ -858,5 +873,16 @@ namespace OpenLoco::Vehicles
             return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
         }
         return false;
+    }
+
+    currency32_t applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    {
+        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+        currency32_t totalCost = 0;
+        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &totalCost, company, &interestHashMap](const LocationOfInterest& interest) {
+            return sub_4A5D94(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, totalCost, company);
+        };
+        findAllTracksTrackModFilterTransform(interestHashMap, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        return totalCost;
     }
 }
