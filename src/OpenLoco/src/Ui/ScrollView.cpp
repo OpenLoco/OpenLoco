@@ -297,12 +297,76 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004CA1ED
     void updateThumbs(Window* window, WidgetIndex_t widgetIndex)
     {
-        registers regs;
+        const auto& widget = window->widgets[widgetIndex];
+        auto& scrollArea = window->scrollAreas[window->getScrollDataIndex(widgetIndex)];
 
-        regs.esi = X86Pointer(window);
-        regs.ebx = window->getScrollDataIndex(widgetIndex) * sizeof(ScrollArea);
-        regs.edi = X86Pointer(&window->widgets[widgetIndex]);
-        call(0x4CA1ED, regs);
+        if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+        {
+            int32_t viewWidth = widget.width() - 22;
+            if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+                viewWidth -= 11;
+
+            int32_t newThumbPos = scrollArea.contentOffsetX * viewWidth;
+            if (scrollArea.contentWidth != 0)
+                newThumbPos /= scrollArea.contentWidth;
+
+            scrollArea.hThumbLeft = newThumbPos + 11;
+
+            newThumbPos = widget.width() - 3;
+            if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+                newThumbPos -= 11;
+
+            newThumbPos += scrollArea.contentOffsetX;
+            if (scrollArea.contentWidth != 0)
+                newThumbPos = (newThumbPos * viewWidth) / scrollArea.contentWidth;
+
+            newThumbPos += 11;
+            viewWidth += 10;
+            scrollArea.hThumbRight = std::min(newThumbPos, viewWidth);
+
+            // Ensure the scrollbar thumb does not fall below a minimum size
+            if (scrollArea.hThumbRight - scrollArea.hThumbLeft < 20)
+            {
+                int32_t barPosition = (scrollArea.hThumbRight * 1.0) / viewWidth;
+
+                scrollArea.hThumbLeft = scrollArea.hThumbLeft - (20 * barPosition);
+                scrollArea.hThumbRight = scrollArea.hThumbRight + (20 * (1 - barPosition));
+            }
+        }
+
+        if (scrollArea.hasFlags(ScrollFlags::vscrollbarVisible))
+        {
+            int32_t viewHeight = widget.height() - 22;
+            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+                viewHeight -= 11;
+
+            int32_t newThumbPos = scrollArea.contentOffsetY * viewHeight;
+            if (scrollArea.contentHeight != 0)
+                newThumbPos /= scrollArea.contentHeight;
+
+            scrollArea.vThumbTop = newThumbPos + 11;
+
+            newThumbPos = widget.height() - 3;
+            if (scrollArea.hasFlags(ScrollFlags::hscrollbarVisible))
+                newThumbPos -= 11;
+
+            newThumbPos += scrollArea.contentOffsetY;
+            if (scrollArea.contentHeight != 0)
+                newThumbPos = (newThumbPos * viewHeight) / scrollArea.contentHeight;
+
+            newThumbPos += 11;
+            viewHeight += 10;
+            scrollArea.vThumbBottom = std::min(newThumbPos, viewHeight);
+
+            // Ensure the scrollbar thumb does not fall below a minimum size
+            if (scrollArea.vThumbBottom - scrollArea.vThumbTop < 20)
+            {
+                int32_t barPosition = scrollArea.vThumbBottom / viewHeight;
+
+                scrollArea.vThumbTop = scrollArea.vThumbTop - (20 * barPosition);
+                scrollArea.vThumbBottom = scrollArea.vThumbBottom + (20 * (1 - barPosition));
+            }
+        }
     }
 
     // 0x004C894F
