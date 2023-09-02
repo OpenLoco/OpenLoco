@@ -160,17 +160,18 @@ namespace OpenLoco::Vehicles
         }
     };
 
-    using FilterFunction = bool (*)(const LocationOfInterest& interest);
-    using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap);
+    // using FilterFunction = bool (*)(const LocationOfInterest& interest);
+    // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap);
+    constexpr auto kNullTransformFunction = [](const LocationOfInterestHashMap&) {};
 
-    static loco_global<FilterFunction, 0x01135F0E> _filterFunction;
+    // static loco_global<FilterFunction, 0x01135F0E> _filterFunction; // Note: No longer passed by global
     static loco_global<uint32_t, 0x01135F0A> _1135F0A;
     static loco_global<uint16_t, 0x01135FA6> _1135FA6;
-    static loco_global<TransformFunction, 0x01135F12> _transformFunction;
+    // static loco_global<TransformFunction, 0x01135F12> _transformFunction; // Note: No longer passed by global
     static loco_global<uint8_t, 0x01136085> _1136085;
     // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
-    static loco_global<uint16_t, 0x001135F88> _routingTransformData;
+    // static loco_global<uint16_t, 0x001135F88> _routingTransformData; // Note: No longer passed by global
 
     static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
@@ -399,7 +400,7 @@ namespace OpenLoco::Vehicles
     // 0x004A2AF0
     // Passes occupied state via _routingTransformData
     // Returns true for signal block end
-    static bool findOccupationByBlock(const LocationOfInterest& interest)
+    static bool findOccupationByBlock(const LocationOfInterest& interest, uint16_t& routingTransformData)
     {
         auto nextLoc = interest.loc;
         const auto tad = interest.tad();
@@ -434,13 +435,13 @@ namespace OpenLoco::Vehicles
 
                 if (vehicle->getTrackLoc() == interest.loc && vehicle->getTrackAndDirection().track == tad)
                 {
-                    _routingTransformData = 1;
+                    routingTransformData = 1;
                     break;
                 }
 
                 if (vehicle->getTrackLoc() == nextLoc && vehicle->getTrackAndDirection().track == backwardTaD)
                 {
-                    _routingTransformData = 1;
+                    routingTransformData = 1;
                     break;
                 }
             }
@@ -449,8 +450,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2CE7
-    // Passes occupied state via _routingTransformData
-    static void setSignalsOccupiedState(const LocationOfInterestHashMap& hashMap)
+    static void setSignalsOccupiedState(const LocationOfInterestHashMap& hashMap, const uint16_t& routingTransformData)
     {
         for (const auto& interest : hashMap)
         {
@@ -459,14 +459,14 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            bool isOccupied = _routingTransformData & 1;
+            bool isOccupied = routingTransformData & 1;
             uint32_t flags = (1ULL << 31) | (isOccupied ? 8ULL : 9ULL);
             setSignalState(interest.loc, interest.tad(), interest.trackType, flags);
         }
     }
 
     // 0x004A2D4C
-    static bool sub_4A2D4C(const LocationOfInterest& interest)
+    static bool sub_4A2D4C(const LocationOfInterest& interest, uint16_t& unk)
     {
         if (!(interest.trackAndDirection & World::Track::AdditionalTaDFlags::hasSignal))
         {
@@ -475,20 +475,22 @@ namespace OpenLoco::Vehicles
 
         if (getSignalState(interest.loc, interest.tad(), interest.trackType, (1ULL << 31)) & (1 << 0))
         {
-            addr<0x001135F88, uint16_t>() |= (1 << 0);
+            unk |= (1 << 0);
         }
         else
         {
-            addr<0x001135F88, uint16_t>() |= (1 << 1);
+            unk |= (1 << 1);
         }
         return true;
     }
 
-    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap);
+    template<typename FilterFunction>
+    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
 
     // 0x004A313B
     // Iterates all individual tiles of a track piece to find tracks that need inspection
-    static void findAllUsableTrackPieces(const LocationOfInterest& interest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap)
+    template<typename FilterFunction>
+    static void findAllUsableTrackPieces(const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         if (!(_1135FA6 & (1 << 2)))
         {
@@ -591,7 +593,8 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2FE6
-    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, const FilterFunction filterFunction, LocationOfInterestHashMap& hashMap)
+    template<typename FilterFunction>
+    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         World::Track::TrackConnections connections{};
         _113601A[0] = 0;
@@ -659,33 +662,40 @@ namespace OpenLoco::Vehicles
     constexpr size_t kSignalHashMapSize = 0x400;
 
     // 0x004A2E46
-    static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, const FilterFunction filterFunction, const TransformFunction transformFunction)
+    template<typename FilterFunction, typename TransformFunction>
+    static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
     {
-        _filterFunction = filterFunction;
-        _transformFunction = transformFunction;
         LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
         // _1135F06 = &interestMap;
+        // _filterFunction = filterFunction;
+        // _transformFunction = transformFunction;
         _1135F0A = 0;
         _1135FA6 = 5; // flags
         findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
-        if (reinterpret_cast<uint32_t>(transformFunction) != 0xFFFFFFFF)
-        {
-            transformFunction(interestMap);
-        }
+        transformFunction(interestMap);
     }
 
     // 0x004A2AD7
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
-        _routingTransformData = 0;
-        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, findOccupationByBlock, setSignalsOccupiedState);
+        // 0x001135F88
+        uint16_t routingTransformData = 0;
+
+        auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
+        auto transformFunction = [&routingTransformData](const LocationOfInterestHashMap& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
+
+        findAllTracksFilterTransform(
+            loc, trackAndDirection, company, trackType, filterFunction, transformFunction);
     }
 
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
-        addr<0x001135F88, uint16_t>() = 0;
-        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, sub_4A2D4C, reinterpret_cast<TransformFunction>(0xFFFFFFFF));
+        // 0x001135F88
+        uint16_t unk = 0;
 
-        return addr<0x001135F88, uint16_t>();
+        auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
+        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+
+        return unk;
     }
 }
