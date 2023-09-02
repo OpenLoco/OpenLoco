@@ -73,7 +73,6 @@ namespace OpenLoco::Ui
 #endif // _WIN32
     // TODO: Move this into renderer.
     static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
-    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
     loco_global<uint8_t[256], 0x01140740> _keyboardState;
 
     bool _resolutionsAllowAnyAspectRatio = false;
@@ -113,9 +112,10 @@ namespace OpenLoco::Ui
         return _screenInfo->height;
     }
 
+    // TODO: Rename misleading name.
     bool dirtyBlocksInitialised()
     {
-        return _screenInvalidation->initialised != 0;
+        return Gfx::getDrawingEngine().isInitialized();
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
