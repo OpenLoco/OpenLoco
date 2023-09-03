@@ -716,7 +716,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A5D94
-    static bool sub_4A5D94(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    static bool sub_4A5D94(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If called from routing add reverse direction of track
         // This is because track mods do not have directions.
@@ -817,7 +817,7 @@ namespace OpenLoco::Vehicles
                 if (trackPiece.index == 0)
                 {
                     // increment successful placement count
-
+                    hasFailedAllPlacement = false;
                     // For each track mod
                     //   Get mod cost (changes depending on track id)
                     for (auto i = 0; i < 4; ++i)
@@ -868,21 +868,34 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (modSelection == 2)
+        if (modSelection == 1)
         {
             return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
         }
         return false;
     }
 
-    currency32_t applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
     {
+        ApplyTrackModsResult result{};
+        result.cost = 0;
+        result.allPlacementsFailed = true;
+        result.networkTooComplex = false;
+
+        if (modSelection == 0)
+        {
+            LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
+            sub_4A5D94(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            return result;
+        }
+
         LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
-        currency32_t totalCost = 0;
-        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &totalCost, company, &interestHashMap](const LocationOfInterest& interest) {
-            return sub_4A5D94(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, totalCost, company);
+
+        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
+            return sub_4A5D94(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
         };
         findAllTracksTrackModFilterTransform(interestHashMap, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
-        return totalCost;
+        result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
+        return result;
     }
 }

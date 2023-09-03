@@ -3,6 +3,8 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 #include <OpenLoco/Math/Vector.hpp>
 
 using namespace OpenLoco::Interop;
@@ -71,19 +73,20 @@ namespace OpenLoco::GameCommands
             piece.z
         };
         const auto firstTilePos = args.pos - offsetToFirstTile;
+        const auto tad = Vehicles::TrackAndDirection::_TrackAndDirection(elTrack->trackId(), elTrack->unkDirection());
 
-        switch (args.modSection)
+        auto result = Vehicles::applyTrackModsToTrackNetwork(firstTilePos, tad, elTrack->owner(), args.trackObjType, flags, args.modSection, args.type);
+        if (result.allPlacementsFailed)
         {
-            case 0:
-                // 0x004A6653
-                break;
-            case 1:
-                // 0x004A65F4
-                break;
-            case 2:
-                // 0x004A65FD
-                break;
+            setErrorText(StringIds::track_road_unsuitable);
+            return FAILURE;
         }
+        if (result.networkTooComplex && (flags & Flags::apply) && !(flags & Flags::ghost))
+        {
+            Ui::Windows::Error::open(StringIds::null, StringIds::too_much_track_some_track_not_upgraded);
+        }
+
+        return result.cost;
     }
 
     void createTrackMod(registers& regs)
