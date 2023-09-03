@@ -165,18 +165,20 @@ namespace OpenLoco::Vehicles
         }
     };
 
-    // using FilterFunction = bool (*)(const LocationOfInterest& interest);
-    // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap);
+    // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
+    // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap); // TODO C++20 make these concepts
+
     constexpr auto kNullTransformFunction = [](const LocationOfInterestHashMap&) {};
 
     // static loco_global<FilterFunction, 0x01135F0E> _filterFunction; // Note: No longer passed by global
     // static loco_global<uint32_t, 0x01135F0A> _hashMapSize;          // Note: No longer passed by global
-    static loco_global<uint16_t, 0x01135FA6> _1135FA6;
     // static loco_global<TransformFunction, 0x01135F12> _transformFunction; // Note: No longer passed by global
-    static loco_global<uint8_t, 0x01136085> _1136085;
     // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
     // static loco_global<uint16_t, 0x001135F88> _routingTransformData; // Note: No longer passed by global
+
+    static loco_global<uint16_t, 0x01135FA6> _findTrackNetworkFlags;
+    static loco_global<uint8_t, 0x01136085> _1136085;
+    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
 
     static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
@@ -497,7 +499,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
-        if (!(_1135FA6 & (1 << 2)))
+        if (!(_findTrackNetworkFlags & (1 << 2)))
         {
             return;
         }
@@ -622,7 +624,7 @@ namespace OpenLoco::Vehicles
             _1136085 = *_1136085 | (1 << 0);
         }
 
-        if (!(_1135FA6 & (1 << 1)))
+        if (!(_findTrackNetworkFlags & (1 << 1)))
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
@@ -664,7 +666,7 @@ namespace OpenLoco::Vehicles
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
         // _1135F0A = 0;
-        _1135FA6 = 5; // flags
+        _findTrackNetworkFlags = 5; // flags
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
         std::vector<LocationOfInterest> trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
@@ -710,7 +712,7 @@ namespace OpenLoco::Vehicles
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
         // _1135F0A = 0;
-        _1135FA6 = 1; // flags
+        _findTrackNetworkFlags = 1; // flags
         findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
         transformFunction(interestMap);
     }
