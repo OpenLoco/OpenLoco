@@ -590,7 +590,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             makeWidget({ 130, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
             makeWidget({ 260, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
             makeWidget({ 260, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
-            makeWidget({ 5, 202  }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
+            makeWidget({ 5, 202 }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
             makeWidget({ 15, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
             makeWidget({ 15, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
             makeWidget({ 130, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
