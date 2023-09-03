@@ -370,8 +370,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    
-
     struct TrackModsRemovalArgs
     {
         static constexpr auto command = GameCommand::removeTrackMod;
