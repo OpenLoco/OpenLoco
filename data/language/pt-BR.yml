@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Atraso antes da criação dos competidores:"
   1685: "{POP16}{INT16} meses"
-  1686: "{COLOUR WINDOW_2}Seleção de competidores:"
+  1686: "{COLOUR WINDOW_2}Seleção de competidores"
   1687: "{COLOUR WINDOW_2}Inteligência Preferida:"
   1688: "{COLOUR WINDOW_2}Agressividade Preferida:"
   1689: "{COLOUR WINDOW_2}Competitividade Preferida:"
@@ -1912,8 +1912,8 @@ strings:
   1872: Permitir que indústrias novas sejam criadas durante a partida
   1873: Compartilhar aparências das companhias/proprietário adicionais
   1874: "{SMALLFONT}{COLOUR BLACK}Selecione esta opção para enviar quaisquer arquivos de dados personalizados da aparência de companhias/proprietário para o outro computador durante o processo de conexão"
-  1875: "{COLOUR WINDOW_2}Proibir que os competidores utilizem:"
-  1876: "{COLOUR WINDOW_2}Proibir que companhias de jogadores utilizem:"
+  1875: "{COLOUR WINDOW_2}Proibir que os competidores utilizem"
+  1876: "{COLOUR WINDOW_2}Proibir que companhias de jogadores utilizem"
   1877: "{NEWLINE}Para em: {STRINGID}"
   1878: ", {STRINGID}"
 

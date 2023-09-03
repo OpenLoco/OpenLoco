@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}竞争对手启动前延迟:"
   1685: "{POP16}{INT16} 月"
-  1686: "{COLOUR WINDOW_2}选择竞争对手:"
+  1686: "{COLOUR WINDOW_2}选择竞争对手"
   1687: "{COLOUR WINDOW_2}首选智能:"
   1688: "{COLOUR WINDOW_2}首选攻击性:"
   1689: "{COLOUR WINDOW_2}首选竞争力:"
@@ -1912,8 +1912,8 @@ strings:
   1872: 允许工业设施在游戏过程中开张
   1873: 共享额外的公司所有者肖像
   1874: "{SMALLFONT}{COLOUR BLACK}选择此选项以在连接过程中发送自定义公司所有者肖像文件至另一台计算机"
-  1875: "{COLOUR WINDOW_2}禁止竞争对手使用:"
-  1876: "{COLOUR WINDOW_2}禁止玩家使用:"
+  1875: "{COLOUR WINDOW_2}禁止竞争对手使用"
+  1876: "{COLOUR WINDOW_2}禁止玩家使用"
   1877: "{NEWLINE}在此停止: {STRINGID}"
   1878: ", {STRINGID}"
 
