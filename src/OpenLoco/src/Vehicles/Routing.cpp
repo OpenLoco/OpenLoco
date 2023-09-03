@@ -170,7 +170,7 @@ namespace OpenLoco::Vehicles
     constexpr auto kNullTransformFunction = [](const LocationOfInterestHashMap&) {};
 
     // static loco_global<FilterFunction, 0x01135F0E> _filterFunction; // Note: No longer passed by global
-    static loco_global<uint32_t, 0x01135F0A> _1135F0A;
+    // static loco_global<uint32_t, 0x01135F0A> _hashMapSize;          // Note: No longer passed by global
     static loco_global<uint16_t, 0x01135FA6> _1135FA6;
     // static loco_global<TransformFunction, 0x01135F12> _transformFunction; // Note: No longer passed by global
     static loco_global<uint8_t, 0x01136085> _1136085;
@@ -663,7 +663,7 @@ namespace OpenLoco::Vehicles
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
-        _1135F0A = 0;
+        // _1135F0A = 0;
         _1135FA6 = 5; // flags
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
@@ -709,14 +709,14 @@ namespace OpenLoco::Vehicles
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
-        _1135F0A = 0;
+        // _1135F0A = 0;
         _1135FA6 = 1; // flags
         findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
         transformFunction(interestMap);
     }
 
     // 0x004A5D94
-    static bool sub_4A5D94(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
     {
         // If called from routing add reverse direction of track
         // This is because track mods do not have directions.
@@ -885,14 +885,14 @@ namespace OpenLoco::Vehicles
         if (modSelection == 0)
         {
             LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
-            sub_4A5D94(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            applyTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
             return result;
         }
 
         LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
 
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
-            return sub_4A5D94(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            return applyTrackModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
         };
         findAllTracksTrackModFilterTransform(interestHashMap, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
