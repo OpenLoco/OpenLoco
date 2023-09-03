@@ -150,10 +150,15 @@ namespace OpenLoco::World::MapGenerator
 
     int PngTerrainGenerator::generateFromHeightmapPng(HeightMapRange heightMap)
     {
-        openUiPngBrowser(); // seems like game commands like this cannot be run here
+        // openUiPngBrowser(); // seems like game commands like this cannot be run here
 
         auto filename = fs::u8path(&_savePath[0]).replace_extension(".png");
         auto pngImage = PngOps::loadPng(filename.string());
+
+        if (pngImage == nullptr)
+        {
+            return -1;
+        }
 
         // do stuff with the image
         png_byte red, green, blue, alpha;
