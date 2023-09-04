@@ -667,17 +667,16 @@ namespace OpenLoco::Vehicles
     constexpr size_t kSignalHashMapSize = 0x400;
     constexpr size_t kTrackModHashMapSize = 0x1000;
 
-    // 0x004A2E46
+    // 0x004A2E46 & 0x004A2DE4
     template<typename FilterFunction, typename TransformFunction>
-    static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    static void findAllTracksFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
     {
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
         // _1135F0A = 0;
 
-        _findTrackNetworkFlags = TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2;
+        _findTrackNetworkFlags = searchFlags;
 
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
@@ -699,34 +698,37 @@ namespace OpenLoco::Vehicles
 
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
         auto transformFunction = [&routingTransformData](const LocationOfInterestHashMap& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
 
         findAllTracksFilterTransform(
-            loc, trackAndDirection, company, trackType, filterFunction, transformFunction);
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            filterFunction,
+            transformFunction);
     }
 
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t unk = 0;
-
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
         auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
-        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+
+        findAllTracksFilterTransform(
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            filterFunction,
+            kNullTransformFunction);
 
         return unk;
-    }
-
-    // 0x004A2DE4
-    template<typename FilterFunction, typename TransformFunction>
-    static void findAllTracksTrackModFilterTransform(LocationOfInterestHashMap& interestMap, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
-    {
-        // TODO: Rework we don't need two of these!
-        // _1135F06 = &interestMap;
-        // _filterFunction = filterFunction;
-        // _transformFunction = transformFunction;
-        // _1135F0A = 0;
-        _findTrackNetworkFlags = TrackNetworkSearchFlags::unk0;
-        findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
-        transformFunction(interestMap);
     }
 
     // 0x004A5D94
@@ -908,7 +910,7 @@ namespace OpenLoco::Vehicles
         auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
             return applyTrackModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
         };
-        findAllTracksTrackModFilterTransform(interestHashMap, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        findAllTracksFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
         return result;
     }
