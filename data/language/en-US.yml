@@ -1722,7 +1722,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Delay before competing companies start:"
   1685: "{POP16}{INT16} months"
-  1686: "{COLOUR WINDOW_2}Selection of competing companies:"
+  1686: "{COLOUR WINDOW_2}Selection of competing companies"
   1687: "{COLOUR WINDOW_2}Preferred Intelligence:"
   1688: "{COLOUR WINDOW_2}Preferred Aggressiveness:"
   1689: "{COLOUR WINDOW_2}Preferred Competitiveness:"
@@ -1913,8 +1913,8 @@ strings:
   1872: Allow new industries to start up during game
   1873: Share additional companies/owner faces
   1874: "{SMALLFONT}{COLOUR BLACK}Select this option to send any customized companies/owner face data files to the other computer during the connection process"
-  1875: "{COLOUR WINDOW_2}Forbid competing companies from using:"
-  1876: "{COLOUR WINDOW_2}Forbid player companies from using:"
+  1875: "{COLOUR WINDOW_2}Forbid competing companies from using"
+  1876: "{COLOUR WINDOW_2}Forbid player companies from using"
   1877: "{NEWLINE}Stops at: {STRINGID}"
   1878: ", {STRINGID}"
 

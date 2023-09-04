@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Demora antes del comienzo de la competencia:"
   1685: "{POP16}{INT16} meses"
-  1686: "{COLOUR WINDOW_2}Selección de empresas de la competencia:"
+  1686: "{COLOUR WINDOW_2}Selección de empresas de la competencia"
   1687: "{COLOUR WINDOW_2}Inteligencia preferida:"
   1688: "{COLOUR WINDOW_2}Agresividad preferida:"
   1689: "{COLOUR WINDOW_2}Competitividad preferida:"
@@ -1912,8 +1912,8 @@ strings:
   1872: Permitir que se pongan en marcha nuevas industrias
   1873: Compartir empresas/caras de propietarios adicionales
   1874: "{SMALLFONT}{COLOUR BLACK}Selecciona esta opción para enviar archivos de caras de propietarios o empresas personalizadas al otro ordenador durante el proceso de conexión"
-  1875: "{COLOUR WINDOW_2}Prohibir que las empresas de la competencia usen:"
-  1876: "{COLOUR WINDOW_2}Prohibir que las empresas del jugador usen:"
+  1875: "{COLOUR WINDOW_2}Prohibir que las empresas de la competencia usen"
+  1876: "{COLOUR WINDOW_2}Prohibir que las empresas del jugador usen"
   1877: "{NEWLINE}Para en: {STRINGID}"
   1878: ", {STRINGID}"
 

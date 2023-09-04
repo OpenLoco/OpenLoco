@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Ritardo apparizione aziende concorrenti:"
   1685: "{POP16}{INT16} mesi"
-  1686: "{COLOUR WINDOW_2}Scelta delle aziende concorrenti:"
+  1686: "{COLOUR WINDOW_2}Scelta delle aziende concorrenti"
   1687: "{COLOUR WINDOW_2}Intelligenza desiderata:"
   1688: "{COLOUR WINDOW_2}Aggressività desiderata:"
   1689: "{COLOUR WINDOW_2}Competitività desiderata:"
@@ -1912,8 +1912,8 @@ strings:
   1872: Permetti a nuovi stabilimenti di apparire durante la partita
   1873: Condividi le aziende/immagini del proprietario aggiuntive
   1874: "{SMALLFONT}{COLOUR BLACK}Attiva questa opzione per inviare i file aggiuntivi dei dati delle aziende e delle immagini dei proprietari ad altri computer durante la procedura di collegamento"
-  1875: "{COLOUR WINDOW_2}Impedisci alle aziende concorrenti di usare:"
-  1876: "{COLOUR WINDOW_2}Impedisci alle aziende del giocatore di usare:"
+  1875: "{COLOUR WINDOW_2}Impedisci alle aziende concorrenti di usare"
+  1876: "{COLOUR WINDOW_2}Impedisci alle aziende del giocatore di usare"
   1877: "{NEWLINE}Si ferma a: {STRINGID}"
   1878: ", {STRINGID}"
 

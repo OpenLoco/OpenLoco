@@ -25,7 +25,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
     static constexpr Ui::Size kChallengeWindowSize = { 366, 197 };
-    static constexpr Ui::Size kCompaniesWindowSize = { 366, 327 };
+    static constexpr Ui::Size kCompaniesWindowSize = { 366, 260 };
     static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
 
     namespace Common
@@ -552,18 +552,21 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             delay_before_competing_companies_start,
             delay_before_competing_companies_start_down,
             delay_before_competing_companies_start_up,
+            groupbox_preferred_ai,
             preferred_intelligence,
             preferred_intelligence_btn,
             preferred_aggressiveness,
             preferred_aggressiveness_btn,
             preferred_competitiveness,
             preferred_competitiveness_btn,
+            groupbox_forbid_competitor_vehicles,
             competitor_forbid_trains,
             competitor_forbid_buses,
             competitor_forbid_trucks,
             competitor_forbid_trams,
             competitor_forbid_aircraft,
             competitor_forbid_ships,
+            groupbox_forbid_player_vehicles,
             player_forbid_trains,
             player_forbid_buses,
             player_forbid_trucks,
@@ -576,26 +579,29 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             commonWidgets(327, StringIds::title_company_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
-            makeDropdownWidgets({ 246, 102 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 117 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 132 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 15, 160 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
-            makeWidget({ 15, 172 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
-            makeWidget({ 15, 184 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
-            makeWidget({ 15, 196 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
-            makeWidget({ 15, 208 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 15, 220 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
-            makeWidget({ 15, 247 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
-            makeWidget({ 15, 259 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
-            makeWidget({ 15, 271 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
-            makeWidget({ 15, 283 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
-            makeWidget({ 15, 295 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 15, 307 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
+            makeWidget({ 5, 102 - 14 - 5 }, { 356, 63 }, WidgetType::groupbox, WindowColour::secondary, StringIds::selection_of_competing_companies),
+            makeDropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 5, 150 }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
+            makeWidget({ 15, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
+            makeWidget({ 15, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
+            makeWidget({ 130, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
+            makeWidget({ 130, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
+            makeWidget({ 260, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
+            makeWidget({ 260, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
+            makeWidget({ 5, 202 }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
+            makeWidget({ 15, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
+            makeWidget({ 15, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
+            makeWidget({ 130, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
+            makeWidget({ 130, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
+            makeWidget({ 260, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
+            makeWidget({ 260, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
-        const uint64_t holdableWidgets = (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up) | (1ULL << widx::preferred_intelligence) | (1ULL << widx::preferred_intelligence_btn) | (1ULL << widx::preferred_aggressiveness) | (1ULL << widx::preferred_aggressiveness_btn) | (1ULL << widx::preferred_competitiveness) | (1ULL << widx::preferred_competitiveness_btn) | (1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships);
+        const uint64_t holdableWidgets = (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up);
 
         static WindowEventList events;
 
@@ -619,12 +625,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             {
-                const int16_t xPos = window.x + 15;
-                int16_t yPos = window.y + widgets[widx::preferred_intelligence].top - 14;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
-            }
-
-            {
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::preferred_intelligence].top + 1;
                 drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
@@ -640,18 +640,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::preferred_competitiveness].top + 1;
                 drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
-            }
-
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::competitor_forbid_trains].top - 12;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
-            }
-
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::player_forbid_trains].top - 12;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
             }
         }
 
@@ -835,7 +823,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[state.preferredAIAggressiveness];
             self.widgets[widx::preferred_competitiveness].text = preferenceLabelIds[state.preferredAICompetitiveness];
 
-            self.activatedWidgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
+            self.activatedWidgets &= ~((1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships));
 
             // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
             self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;

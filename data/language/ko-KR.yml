@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}경쟁사 등장까지 기다릴 시간:"
   1685: "{POP16}{INT16}개월"
-  1686: "{COLOUR WINDOW_2}경쟁사가 사용할 교통 수단:"
+  1686: "{COLOUR WINDOW_2}경쟁사가 사용할 교통 수단"
   1687: "{COLOUR WINDOW_2}선호 지능:"
   1688: "{COLOUR WINDOW_2}선호 공격성:"
   1689: "{COLOUR WINDOW_2}선호 경쟁성:"
@@ -1912,8 +1912,8 @@ strings:
   1872: 게임 플레이 도중 새 산업 시설이 생길 수 있음
   1873: 사용자 회사/소유주 얼굴 공유
   1874: "{SMALLFONT}{COLOUR BLACK}연결이 진행되는 도중에 다른 컴퓨터에게 사용자 회사/소유주 얼굴 데이터 파일을 전송하려면 이 설정을 선택하세요"
-  1875: "{COLOUR WINDOW_2}경쟁사가 사용하지 못 할 교통 수단:"
-  1876: "{COLOUR WINDOW_2}플레이어 회사가 사용하지 못 할 교통 수단:"
+  1875: "{COLOUR WINDOW_2}경쟁사가 사용하지 못 할 교통 수단"
+  1876: "{COLOUR WINDOW_2}플레이어 회사가 사용하지 못 할 교통 수단"
   1877: "{NEWLINE}정차: {STRINGID}"
   1878: ", {STRINGID}"
 

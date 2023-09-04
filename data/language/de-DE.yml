@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Startverzögerung für Konkurrenzunternehmen:"
   1685: "{POP16}{INT16} Monate"
-  1686: "{COLOUR WINDOW_2}Auswahl d. Konkurrenzunternehmen:"
+  1686: "{COLOUR WINDOW_2}Auswahl d. Konkurrenzunternehmen"
   1687: "{COLOUR WINDOW_2}Bevorzugte Intelligenz:"
   1688: "{COLOUR WINDOW_2}Bevorzugte Aggressivität:"
   1689: "{COLOUR WINDOW_2}Bevorzugte Konkurrenzfähigkeit:"
@@ -1912,8 +1912,8 @@ strings:
   1872: Freigabe für den Aufbau neuer Industrien während des Spiels
   1873: Zusätzliche Unternehmen/Gesichter der Besitzer verschicken
   1874: "{SMALLFONT}{COLOUR BLACK}Mit dieser Option können Sie die Daten für individuelle Unternehmen/Gesichter der Besitzer während des Verbindungsaufbaus an den anderen Computer senden"
-  1875: "{COLOUR WINDOW_2}Konkurrenzunternehmen folgende Einsatzmöglichkeiten untersagen:"
-  1876: "{COLOUR WINDOW_2}Spielerunternehmen folgende Einsatzmöglichkeiten untersagen:"
+  1875: "{COLOUR WINDOW_2}Konkurrenzunternehmen folgende Einsatzmöglichkeiten untersagen"
+  1876: "{COLOUR WINDOW_2}Spielerunternehmen folgende Einsatzmöglichkeiten untersagen"
   1877: "{NEWLINE}Hält in: {STRINGID}"
   1878: ", {STRINGID}"
 
