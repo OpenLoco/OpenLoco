@@ -22,6 +22,16 @@ namespace OpenLoco::Vehicles
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::World;
 
+    enum class TrackNetworkSearchFlags : uint16_t
+    {
+        none = 0,
+
+        unk0 = 1U << 0,
+        unk1 = 1U << 1,
+        unk2 = 1U << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
+
     struct LocationOfInterest
     {
         World::Pos3 loc;
@@ -176,7 +186,7 @@ namespace OpenLoco::Vehicles
     // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
     // static loco_global<uint16_t, 0x001135F88> _routingTransformData; // Note: No longer passed by global
 
-    static loco_global<uint16_t, 0x01135FA6> _findTrackNetworkFlags;
+    static loco_global<TrackNetworkSearchFlags, 0x01135FA6> _findTrackNetworkFlags;
     static loco_global<uint8_t, 0x01136085> _1136085;
     static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
 
@@ -499,7 +509,7 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
-        if (!(_findTrackNetworkFlags & (1 << 2)))
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
         {
             return;
         }
@@ -624,7 +634,7 @@ namespace OpenLoco::Vehicles
             _1136085 = *_1136085 | (1 << 0);
         }
 
-        if (!(_findTrackNetworkFlags & (1 << 1)))
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
@@ -666,7 +676,9 @@ namespace OpenLoco::Vehicles
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
         // _1135F0A = 0;
-        _findTrackNetworkFlags = 5; // flags
+
+        _findTrackNetworkFlags = TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2;
+
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
         std::vector<LocationOfInterest> trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
@@ -712,7 +724,7 @@ namespace OpenLoco::Vehicles
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
         // _1135F0A = 0;
-        _findTrackNetworkFlags = 1; // flags
+        _findTrackNetworkFlags = TrackNetworkSearchFlags::unk0;
         findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
         transformFunction(interestMap);
     }
