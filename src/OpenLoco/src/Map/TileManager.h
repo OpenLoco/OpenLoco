@@ -18,7 +18,7 @@ namespace OpenLoco::World
 namespace OpenLoco::World::TileManager
 {
     constexpr size_t maxElements = 0x6C000;
-    TileElement* const kInvalidTile = reinterpret_cast<TileElement*>(static_cast<intptr_t>(-1));
+    const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
 
     enum class ElementPositionFlags : uint8_t
     {

@@ -22,6 +22,7 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Network/Network.h"
 #include "Objects/ObjectManager.h"
@@ -420,7 +421,7 @@ namespace OpenLoco::GameCommands
         }
 
         // advanced errors
-        if (_9C68D0 != (const TileElement*)-1)
+        if (_9C68D0 != World::TileManager::kInvalidTile)
         {
             auto tile = *_9C68D0;
 
@@ -507,7 +508,7 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = -2;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<const World::TileElement*>(-1) : tile;
+        _9C68D0 = tile == nullptr ? World::TileManager::kInvalidTile : tile;
         return false;
     }
 
