@@ -44,6 +44,7 @@
 #include "Town/RenameTown.h"
 #include "Track/CreateSignal.h"
 #include "Track/CreateTrackMod.h"
+#include "Track/RemoveTrackMod.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/CloneVehicle.h"
 #include "Vehicles/CreateVehicle.h"
@@ -119,7 +120,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createTrainStation,           nullptr,                   0x0048BB20, true  },
         { GameCommand::removeTrackStation,           nullptr,                   0x0048C402, true  },
         { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
-        { GameCommand::removeTrackMod,               nullptr,                   0x004A668A, true  },
+        { GameCommand::removeTrackMod,               removeTrackMod,            0x004A668A, true  },
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
         { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
         { GameCommand::loadSaveQuitGame,             loadSaveQuit,              0x0043BFCB, false },
