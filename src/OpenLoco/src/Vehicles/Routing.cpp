@@ -485,16 +485,15 @@ namespace OpenLoco::Vehicles
     }
 
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
+    static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
 
     // 0x004A313B
     // Iterates all individual tiles of a track piece to find tracks that need inspection
     template<typename FilterFunction>
-    static void findAllUsableTrackPieces(const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         if (!(_1135FA6 & (1 << 2)))
         {
-            findAllUsableTrackInNetwork(interest, filterFunction, hashMap);
             return;
         }
 
@@ -509,8 +508,6 @@ namespace OpenLoco::Vehicles
                 nextLoc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
         }
-
-        std::vector<LocationOfInterest> trackToCheck;
 
         for (auto& piece : World::TrackData::getTrackPiece(tad.id()))
         {
@@ -560,7 +557,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(newInterest))
                     {
-                        trackToCheck.push_back(newInterest);
+                        additionalTrackToCheck.push_back(newInterest);
+                        findAllUsableTrackPieces(additionalTrackToCheck, newInterest, filterFunction, hashMap);
                     }
                 }
 
@@ -578,29 +576,22 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(newInterestR))
                     {
-                        trackToCheck.push_back(newInterestR);
+                        additionalTrackToCheck.push_back(newInterestR);
+                        findAllUsableTrackPieces(additionalTrackToCheck, newInterestR, filterFunction, hashMap);
                     }
                 }
             }
-        }
-
-        findAllUsableTrackInNetwork(interest, filterFunction, hashMap);
-
-        for (auto& interest2 : trackToCheck)
-        {
-            findAllUsableTrackPieces(interest2, filterFunction, hashMap);
         }
     }
 
     // 0x004A2FE6
     template<typename FilterFunction>
-    static void findAllUsableTrackInNetwork(const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
+    static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
         World::Track::TrackConnections connections{};
         _113601A[0] = 0;
         _113601A[1] = 0;
         connections.size = 0;
-        std::vector<LocationOfInterest> trackToCheck;
 
         const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
         World::Track::getTrackConnections(trackEndLoc, trackEndRotation, connections, initialInterest.company, initialInterest.trackType);
@@ -615,7 +606,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(interest))
                     {
-                        trackToCheck.push_back(interest);
+                        additionalTrackToCheck.push_back(interest);
+                        findAllUsableTrackPieces(additionalTrackToCheck, interest, filterFunction, hashMap);
                     }
                 }
             }
@@ -647,15 +639,11 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(interest))
                     {
-                        trackToCheck.push_back(interest);
+                        additionalTrackToCheck.push_back(interest);
+                        findAllUsableTrackPieces(additionalTrackToCheck, interest, filterFunction, hashMap);
                     }
                 }
             }
-        }
-
-        for (auto& interest : trackToCheck)
-        {
-            findAllUsableTrackPieces(interest, filterFunction, hashMap);
         }
     }
 
@@ -671,7 +659,15 @@ namespace OpenLoco::Vehicles
         // _transformFunction = transformFunction;
         _1135F0A = 0;
         _1135FA6 = 5; // flags
-        findAllUsableTrackInNetwork(LocationOfInterest{ loc, trackAndDirection._data, company, trackType }, filterFunction, interestMap);
+        // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
+        // to not be recursive anymore.
+        std::vector<LocationOfInterest> trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
+        while (!trackToCheck.empty())
+        {
+            const auto interest = trackToCheck.back();
+            trackToCheck.pop_back();
+            findAllUsableTrackInNetwork(trackToCheck, interest, filterFunction, interestMap);
+        }
         transformFunction(interestMap);
     }
 
