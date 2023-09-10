@@ -557,8 +557,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(newInterest))
                     {
-                        additionalTrackToCheck.push_back(newInterest);
                         findAllUsableTrackPieces(additionalTrackToCheck, newInterest, filterFunction, hashMap);
+                        additionalTrackToCheck.push_back(newInterest);
                     }
                 }
 
@@ -576,8 +576,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(newInterestR))
                     {
-                        additionalTrackToCheck.push_back(newInterestR);
                         findAllUsableTrackPieces(additionalTrackToCheck, newInterestR, filterFunction, hashMap);
+                        additionalTrackToCheck.push_back(newInterestR);
                     }
                 }
             }
@@ -606,8 +606,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(interest))
                     {
-                        additionalTrackToCheck.push_back(interest);
                         findAllUsableTrackPieces(additionalTrackToCheck, interest, filterFunction, hashMap);
+                        additionalTrackToCheck.push_back(interest);
                     }
                 }
             }
@@ -639,8 +639,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (!filterFunction(interest))
                     {
-                        additionalTrackToCheck.push_back(interest);
                         findAllUsableTrackPieces(additionalTrackToCheck, interest, filterFunction, hashMap);
+                        additionalTrackToCheck.push_back(interest);
                     }
                 }
             }
