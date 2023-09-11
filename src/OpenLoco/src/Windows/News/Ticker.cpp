@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             if (!newsStringChar)
                 break;
         }
-        strcat(buffer - 1, "This is some longer text to force more new lines even when not needed");
+
         if ((_word_525CE0 >> 2) > i)
         {
             _word_525CE0 = _word_525CE0 | (1 << 15);
