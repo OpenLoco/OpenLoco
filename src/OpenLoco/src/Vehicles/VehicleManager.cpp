@@ -75,7 +75,7 @@ namespace OpenLoco::VehicleManager
                 continue;
             }
 
-            availableTypes |= 1ULL << enumValue(vehObj->type);
+            availableTypes |= 1U << enumValue(vehObj->type);
         }
         company.availableVehicles = availableTypes;
     }
