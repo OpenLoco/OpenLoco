@@ -190,11 +190,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             const auto& def = shortcutDefs[i];
             auto& shortcut = shortcuts.at(def.id);
-            if (shortcut.keyCode != 0xFFFFFFFF)
+            if (shortcut.keyCode != 0xFFFFFFFF && shortcut.modifiers != KeyModifier::invalid)
             {
-                if (shortcut.modifiers == KeyModifier::shift)
+                if ((shortcut.modifiers & KeyModifier::shift) == KeyModifier::shift)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                else if (shortcut.modifiers == KeyModifier::control)
+                else if ((shortcut.modifiers & KeyModifier::control) == KeyModifier::control)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
 
                 baseStringId = StringIds::stringptr;

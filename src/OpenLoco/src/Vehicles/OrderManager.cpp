@@ -404,6 +404,10 @@ namespace OpenLoco::Vehicles::OrderManager
         {
             auto rawOrder = *it;
             auto orderType = rawOrder & 0x7;
+            if (orderType >= std::size(kOrderSizes))
+            {
+                throw std::out_of_range("Order type is greater than the order size table");
+            }
             auto orderLength = kOrderSizes[orderType];
             std::memcpy(dest, &rawOrder, orderLength);
             dest += orderLength;

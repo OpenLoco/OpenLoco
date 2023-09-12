@@ -71,7 +71,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        const auto tot1 = vehObject->power * train.veh2->totalWeight * 128ULL;
+        const auto tot1 = 128ULL * vehObject->power * train.veh2->totalWeight;
         const auto tot2 = frontBogie.var_52 * train.veh2->totalPower;
         auto fraction = tot2 == 0 ? tot1 : tot1 / tot2;
         fraction = std::min(fraction, 2'000ULL);

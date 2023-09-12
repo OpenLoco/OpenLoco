@@ -7,7 +7,7 @@ namespace OpenLoco::Core
 {
 
 #define OPENLOCO_ENABLE_ENUM_OPERATORS(ENM)                                                                                 \
-    static_assert(std::is_unsigned_v<std::underlying_type_t<ENM>> == true, "Underlying enum type must be unsignd");         \
+    static_assert(std::is_unsigned_v<std::underlying_type_t<ENM>> == true, "Underlying enum type must be unsigned");        \
     static_assert(static_cast<std::underlying_type_t<ENM>>(ENM::none) == 0U, "Enum must have a none value");                \
     inline constexpr ENM operator|(const ENM a, const ENM b) noexcept                                                       \
     {                                                                                                                       \

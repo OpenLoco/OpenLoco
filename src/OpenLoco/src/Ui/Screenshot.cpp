@@ -173,7 +173,7 @@ namespace OpenLoco::Input
 
         Gfx::RenderTarget rt{};
         rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
-        if (!rt.bits)
+        if (rt.bits == nullptr)
             return nullptr;
 
         rt.x = 0;
