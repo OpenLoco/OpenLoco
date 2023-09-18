@@ -131,6 +131,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         shown = 1,
     };
 
+    enum FilterLevel : uint8_t
+    {
+        beginner = 0,
+        advanced = 1,
+        expert = 2,
+    };
+
+    enum FilterFlags : uint8_t
+    {
+        vanilla = 1 << 2,
+        custom = 1 << 3,
+    };
+
     struct TabObjectEntry
     {
         ObjectManager::ObjectIndexId index;
@@ -166,7 +179,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         closeButton,
         panel,
         tabArea,
-        advancedButton,
+        filterLabel,
+        filterDropdown,
         textInput,
         clearButton,
         vehicleTypeTrain,
@@ -190,7 +204,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
 
         // Filter options
-        makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
+        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WidgetType::combobox, WindowColour::tertiary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
         makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
 
@@ -254,6 +268,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static bool shouldShowTab(int8_t objectType, uint8_t filterFlags)
     {
         const ObjectTabFlags tabFlags = _tabDisplayInfo[objectType].flags;
+
+        if ((filterFlags & 0b11) == FilterLevel::expert)
+            return true;
 
         if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
             return false;
@@ -425,11 +442,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, &_events);
         window->widgets = widgets;
-        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton) | (1ULL << widx::clearButton);
+        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::clearButton);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->var_856 = isEditorMode() ? 0 : 1;
+        window->var_856 = isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced;
+        window->var_856 |= FilterFlags::vanilla | FilterFlags::custom;
         window->currentSecondaryTab = 0;
 
         initEvents();
@@ -471,11 +489,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        self.activatedWidgets &= ~(1 << widx::advancedButton);
-
-        if (self.var_856 & (1 << 0))
+        switch (self.var_856 & 0b11)
         {
-            self.activatedWidgets |= (1 << widx::advancedButton);
+            case FilterLevel::beginner:
+                self.widgets[widx::filterLabel].text = StringIds::scenario_group_beginner;
+                break;
+
+            case FilterLevel::advanced:
+                self.widgets[widx::filterLabel].text = StringIds::object_selection_advanced;
+                break;
+
+            case FilterLevel::expert:
+                self.widgets[widx::filterLabel].text = StringIds::scenario_group_expert;
+                break;
         }
 
         auto args = FormatArguments();
@@ -1102,13 +1128,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            case widx::advancedButton:
+            case widx::filterDropdown:
             {
-                self.var_856 ^= 1;
+                const uint8_t flags = self.var_856 & 0b1100;
+                const uint8_t level = ((self.var_856 & 0b11) + 1) & 0b11;
+                self.var_856 = flags | level;
+
                 int currentTab = self.currentTab;
                 assignTabPositions(&self);
 
-                if ((self.var_856 & 1) == 0)
+                if ((self.var_856 & 0b11) == 0)
                 {
                     const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
                     if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
