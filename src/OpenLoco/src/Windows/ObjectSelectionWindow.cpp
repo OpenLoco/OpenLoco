@@ -251,6 +251,34 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static bool shouldShowTab(int8_t objectType, uint8_t filterFlags)
+    {
+        const ObjectTabFlags tabFlags = _tabDisplayInfo[objectType].flags;
+
+        if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
+            return false;
+
+        // Skip all types that don't have any objects
+        if (_tabObjectCounts[objectType] == 0)
+            return false;
+
+        // Skip certain object types that only have one entry in game
+        if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[objectType] == 1)
+            return false;
+
+        // Hide advanced object types as needed
+        if ((filterFlags & 0b11) < FilterLevel::advanced && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+            return false;
+
+        if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
+            return false;
+
+        if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+            return false;
+
+        return true;
+    }
+
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
@@ -261,27 +289,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentType].flags;
-
-            if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
-                continue;
-
-            // Skip all types that don't have any objects
-            if (_tabObjectCounts[currentType] == 0)
-                continue;
-
-            // Skip certain object types that only have one entry in game
-            if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[currentType] == 1)
-                continue;
-
-            // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
-                continue;
-
-            if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
-                continue;
-
-            if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+            if (!shouldShowTab(currentType, self->var_856))
                 continue;
 
             // Assign tab position
