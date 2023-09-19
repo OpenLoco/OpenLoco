@@ -893,9 +893,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         {
             static constexpr std::array<string_id, 3> levelStringIds = {
-                StringIds::scenario_group_beginner,
-                StringIds::object_selection_advanced,
-                StringIds::scenario_group_expert,
+                StringIds::objSelectionFilterBeginner,
+                StringIds::objSelectionFilterAdvanced,
+                StringIds::objSelectionFilterExpert,
             };
 
             FormatArguments args{};
@@ -1179,12 +1179,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto& dropdown = self.widgets[widx::filterLabel];
             Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 6, 0x80);
 
-            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::scenario_group_beginner);
-            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::object_selection_advanced);
-            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::scenario_group_expert);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::objSelectionFilterBeginner);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::objSelectionFilterAdvanced);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::objSelectionFilterExpert);
             Dropdown::add(3, 0);
-            Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::flat_land);
-            Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::small_hills);
+            Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::objSelectionFilterVanilla);
+            Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::objSelectionFilterCustom);
 
             // Mark current level
             Dropdown::setItemSelected(self.var_856);
