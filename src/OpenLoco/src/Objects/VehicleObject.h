@@ -55,6 +55,7 @@ namespace OpenLoco
         uint8_t baseVolume;        // 0x9
         uint8_t maxVolume;         // 0xA
     };
+    static_assert(sizeof(VehicleObjectFrictionSound) == 0xB);
 
     struct VehicleObjectEngine1Sound
     {
@@ -71,6 +72,7 @@ namespace OpenLoco
         uint8_t volumeDecreaseStep; // 0xF
         uint8_t speedFreqFactor;    // 0x10
     };
+    static_assert(sizeof(VehicleObjectEngine1Sound) == 0x11);
 
     struct VehicleObjectEngine2Sound
     {
@@ -92,6 +94,7 @@ namespace OpenLoco
         uint8_t volumeDecreaseStep; // 0x19
         uint8_t speedFreqFactor;    // 0x1A
     };
+    static_assert(sizeof(VehicleObjectEngine2Sound) == 0x1B);
 
     struct VehicleObjectSimpleAnimation
     {
@@ -99,6 +102,7 @@ namespace OpenLoco
         uint8_t height;           // 0x01
         SimpleAnimationType type; // 0x02
     };
+    static_assert(sizeof(VehicleObjectSimpleAnimation) == 0x3);
 
     struct VehicleObjectUnk
     {
@@ -109,6 +113,7 @@ namespace OpenLoco
         uint8_t bodySpriteInd;       // 0x04 index of a bodySprites struct
         uint8_t var_05;
     };
+    static_assert(sizeof(VehicleObjectUnk) == 0x6);
 
     enum class BogieSpriteFlags : uint8_t
     {
@@ -138,7 +143,6 @@ namespace OpenLoco
             return (flags & flagsToTest) != BogieSpriteFlags::none;
         }
     };
-
     static_assert(sizeof(VehicleObjectBogieSprite) == 0x12);
 
     enum class BodySpriteFlags : uint8_t

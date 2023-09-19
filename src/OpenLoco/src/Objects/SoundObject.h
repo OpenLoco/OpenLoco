@@ -29,6 +29,7 @@ namespace OpenLoco
             return (void*)((uintptr_t)this + sizeof(SoundObjectData));
         }
     };
+    static_assert(sizeof(SoundObjectData) == 0x1E);
 
     struct SoundObject
     {

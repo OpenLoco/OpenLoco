@@ -64,7 +64,7 @@ namespace OpenLoco
 
         // LOAD BUILDING PARTS Start
         // Load Part Heights
-        varationHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        variationHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(var_06 * sizeof(uint8_t));
 
         // Load Part Animations (probably)
@@ -144,7 +144,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        varationHeights = nullptr;
+        variationHeights = nullptr;
         var_0C = 0;
         std::fill(std::begin(variationsArr10), std::end(variationsArr10), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);

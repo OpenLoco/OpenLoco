@@ -36,7 +36,7 @@ namespace OpenLoco
         uint32_t image;                     // 0x2
         uint8_t var_06;                     // 0x6
         uint8_t numVariations;              // 0x7
-        const uint8_t* varationHeights;     // 0x8
+        const uint8_t* variationHeights;    // 0x8
         const uint16_t* var_0C;             // 0xC
         const uint8_t* variationsArr10[32]; // 0x10
         uint32_t colours;                   // 0x90

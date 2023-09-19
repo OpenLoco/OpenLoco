@@ -452,7 +452,7 @@ namespace OpenLoco
             auto totalHeight = 0;
             for (auto* unkVariation = buildingObj->variationsArr10[variation]; *unkVariation != 0xFF; unkVariation++)
             {
-                totalHeight += buildingObj->varationHeights[*unkVariation];
+                totalHeight += buildingObj->variationHeights[*unkVariation];
             }
             elBuilding->setClearZ((totalHeight / 4) + elBuilding->baseZ());
 

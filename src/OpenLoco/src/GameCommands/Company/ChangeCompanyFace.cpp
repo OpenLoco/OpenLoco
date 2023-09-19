@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         auto* targetCompany = CompanyManager::get(targetCompanyId);
         if (!otherCompanyUsingOldCompetitor)
         {
-            auto headerToUnload = ObjectManager::getHeader({ ObjectType::competitor, targetCompany->competitorId });
+            auto& headerToUnload = ObjectManager::getHeader({ ObjectType::competitor, targetCompany->competitorId });
             ObjectManager::unload(headerToUnload);
             ObjectManager::reloadAll();
             Ui::WindowManager::close(Ui::WindowType::dropdown);

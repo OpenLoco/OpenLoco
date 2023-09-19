@@ -100,7 +100,7 @@ namespace OpenLoco
     // 0x004899A7
     void TrainSignalObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto frames = signalFrames[(((numFrames + 2) / 3) - 2)];
+        auto& frames = signalFrames[(((numFrames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;
         auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationSpeed);
 

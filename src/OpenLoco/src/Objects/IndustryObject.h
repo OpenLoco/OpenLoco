@@ -79,8 +79,8 @@ namespace OpenLoco
         string_id nameClosingDown;    // 0x4
         string_id nameUpProduction;   // 0x6
         string_id nameDownProduction; // 0x8
-        uint16_t nameSingular;        // 0x0A
-        uint16_t namePlural;          // 0x0C
+        string_id nameSingular;       // 0x0A
+        string_id namePlural;         // 0x0C
         uint32_t var_0E;              // 0x0E shadows image id base
         uint32_t var_12;              // 0x12 Base image id for building 0
         uint32_t var_16;
@@ -100,7 +100,7 @@ namespace OpenLoco
         uint16_t designedYear;                               // 0xCA start year
         uint16_t obsoleteYear;                               // 0xCC end year
         // Total industries of this type that can be created in a scenario
-        // Note: this is not directly comparabile to total industries and vaires based
+        // Note: this is not directly comparable to total industries and varies based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the
         // amount of industries in a scenario.
         uint8_t totalOfTypeInScenario;                              // 0xCE

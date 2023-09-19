@@ -36,10 +36,14 @@ namespace OpenLoco::TownManager
         auto townId = res->first;
         auto town = get(townId);
         _dword_1135C38 = town;
-        if (town != nullptr)
+
+        if (town == nullptr)
         {
-            town->populationCapacity += populationCapacity;
+            return nullptr;
         }
+
+        town->populationCapacity += populationCapacity;
+
         if (population != 0)
         {
             town->population += population;
