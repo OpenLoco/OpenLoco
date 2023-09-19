@@ -41,6 +41,7 @@
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
 #include "SceneManager.h"
+#include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
@@ -1133,27 +1134,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            case widx::filterDropdown:
-            {
-                self.var_856 = (self.var_856 + 1) % 3;
-                int currentTab = self.currentTab;
-                assignTabPositions(&self);
-
-                if (self.var_856 == FilterLevel::beginner)
-                {
-                    const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
-                    if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
-                    {
-                        currentTab = _tabPositions[0].index;
-                        populateTabObjectList(static_cast<ObjectType>(currentTab));
-                    }
-                }
-                repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
-                self.invalidate();
-
-                break;
-            }
-
             case widx::clearButton:
             {
                 inputSession.clearInput();
@@ -1176,6 +1156,54 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 self.initScrollWidgets();
                 self.invalidate();
             }
+        }
+    }
+
+    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex)
+    {
+        if (widgetIndex == widx::filterDropdown)
+        {
+            auto& dropdown = self.widgets[widx::filterLabel];
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 3, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::scenario_group_beginner);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::object_selection_advanced);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::scenario_group_expert);
+            Dropdown::setItemSelected(self.var_856);
+        }
+    }
+
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    {
+        if (widgetIndex != widx::filterDropdown)
+            return;
+
+        if (itemIndex < 0)
+        {
+            self.var_856 = (self.var_856 ^ 1) % 3;
+            printf("%d\n", self.var_856);
+            assignTabPositions(&self);
+            self.invalidate();
+            return;
+        }
+
+        // Switch level?
+        if (itemIndex >= 0 && itemIndex <= 2)
+        {
+            self.var_856 = itemIndex;
+            assignTabPositions(&self);
+
+            auto currentTab = self.currentTab;
+            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
+            if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+            {
+                currentTab = _tabPositions[0].index;
+                populateTabObjectList(static_cast<ObjectType>(currentTab));
+            }
+
+            repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
+            self.invalidate();
+            return;
         }
     }
 
@@ -1392,6 +1420,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         _events.onClose = onClose;
         _events.onMouseUp = onMouseUp;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
         _events.onUpdate = onUpdate;
         _events.getScrollSize = getScrollSize;
         _events.scrollMouseDown = onScrollMouseDown;
