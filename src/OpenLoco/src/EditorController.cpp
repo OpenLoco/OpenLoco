@@ -103,7 +103,7 @@ namespace OpenLoco::EditorController
             return true;
         }
 
-        if (!TownManager::towns().empty())
+        if (TownManager::towns().size() >= Limits::kMinTowns)
         {
             return true;
         }
