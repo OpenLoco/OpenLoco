@@ -1,6 +1,7 @@
 23.08.1+ (???)
 ------------------------------------------------------------------------
 - Change: [#2018] Scroll bar thumbs now have a minimum size, making it easier to scroll long lists.
+- Change: [#2117] Scenario editor can generate maps with no towns, matching vanilla behaviour.
 
 23.08.1 (2023-08-30)
 ------------------------------------------------------------------------
