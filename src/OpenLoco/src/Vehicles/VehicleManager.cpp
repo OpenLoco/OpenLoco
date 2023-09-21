@@ -58,7 +58,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004C39D4
-    static uint16_t determineAvailableVehicleTypes(Company& company)
+    static uint16_t determineAvailableVehicleTypes(const Company& company)
     {
         uint16_t availableTypes = 0;
 
@@ -69,7 +69,7 @@ namespace OpenLoco::VehicleManager
                 continue;
             }
 
-            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
             if (vehObj == nullptr)
             {
                 continue;
@@ -80,13 +80,13 @@ namespace OpenLoco::VehicleManager
         return availableTypes;
     }
 
-    static BitSet<224> determineUnlockedVehicles(Company& company)
+    static BitSet<224> determineUnlockedVehicles(const Company& company)
     {
         const auto curYear = getCurrentYear();
         BitSet<224> unlockedVehicles{};
         for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
         {
-            auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
             if (vehObj == nullptr)
             {
                 continue;
