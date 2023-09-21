@@ -78,29 +78,10 @@ namespace OpenLoco::StringManager
         return kMonthToStringMap.find(month)->second;
     }
 
-    class ThousandsSepFacet : public std::numpunct<char>
-    {
-        char _sep;
-
-    public:
-        explicit ThousandsSepFacet(char sep)
-            : _sep(sep)
-        {
-        }
-
-    protected:
-        [[nodiscard]] char do_thousands_sep() const override
-        {
-            return _sep;
-        }
-
-        [[nodiscard]] std::string do_grouping() const { return "\3"; }
-    };
-
     // 0x00495F35
     static char* formatInt32Grouped(int32_t value, char* buffer)
     {
-        auto* ret = fmt::format_to(buffer, std::locale(std::locale(), new ThousandsSepFacet(',')), "{:L}", value);
+        auto* ret = fmt::format_to(buffer, std::locale(""), "{:L}", value);
         *ret = '\0';
         return ret;
     }
@@ -116,7 +97,7 @@ namespace OpenLoco::StringManager
     // 0x00496052
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
     {
-        auto* ret = fmt::format_to(buffer, std::locale(std::locale(), new ThousandsSepFacet(',')), "{:L}", value * static_cast<uint64_t>(std::pow(10, separator)));
+        auto* ret = fmt::format_to(buffer, std::locale(""), "{:L}", value * static_cast<uint64_t>(std::pow(10, separator)));
         *ret = '\0';
         return ret;
     }
@@ -124,8 +105,7 @@ namespace OpenLoco::StringManager
     // 0x004963FC
     static char* formatShortWith1Decimals(int16_t value, char* buffer)
     {
-        auto* ret = fmt::format_to(buffer, std::locale(std::locale(), new ThousandsSepFacet(',')), "{:L}", value / 10);
-        ret = fmt::format_to(ret, ".{}", value % 10);
+        auto* ret = fmt::format_to(buffer, std::locale(""), "{:.1Lf}", value / 10.0);
         *ret = '\0';
         return ret;
     }
@@ -133,8 +113,7 @@ namespace OpenLoco::StringManager
     // 0x004962F1
     static char* formatIntWith2Decimals(int32_t value, char* buffer)
     {
-        auto* ret = fmt::format_to(buffer, std::locale(std::locale(), new ThousandsSepFacet(',')), "{:L}", value / 100);
-        ret = fmt::format_to(ret, ".{}", value % 100);
+        auto* ret = fmt::format_to(buffer, std::locale(""), "{:.2Lf}", value / 100.0);
         *ret = '\0';
         return ret;
     }
