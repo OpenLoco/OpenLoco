@@ -1,4 +1,5 @@
 #include "VehicleManager.h"
+#include "Date.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
@@ -56,12 +57,66 @@ namespace OpenLoco::VehicleManager
         }
     }
 
+    // 0x004C39D4
+    static uint16_t determineAvailableVehicleTypes(const Company& company)
+    {
+        uint16_t availableTypes = 0;
+
+        for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            if (!company.unlockedVehicles[i])
+            {
+                continue;
+            }
+
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            availableTypes |= 1U << enumValue(vehObj->type);
+        }
+        return availableTypes;
+    }
+
+    static BitSet<224> determineUnlockedVehicles(const Company& company)
+    {
+        const auto curYear = getCurrentYear();
+        BitSet<224> unlockedVehicles{};
+        for (uint32_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (curYear < vehObj->designed)
+            {
+                continue;
+            }
+            if (curYear >= vehObj->obsolete)
+            {
+                continue;
+            }
+
+            const auto forbiddenVehicles = CompanyManager::isPlayerCompany(company.id()) ? getGameState().forbiddenVehiclesPlayers : getGameState().forbiddenVehiclesCompetitors;
+            if (forbiddenVehicles & (1U << enumValue(vehObj->type)))
+            {
+                continue;
+            }
+
+            unlockedVehicles.set(i, true);
+        }
+        return unlockedVehicles;
+    }
+
     // 0x004C3A0C
     void determineAvailableVehicles(Company& company)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x004C3A0C, regs);
+        company.unlockedVehicles = determineUnlockedVehicles(company);
+        company.availableVehicles = determineAvailableVehicleTypes(company);
     }
 
     // 0x004B05E4

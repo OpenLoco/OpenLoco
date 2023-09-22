@@ -3,6 +3,7 @@
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstddef>
@@ -119,7 +120,7 @@ namespace OpenLoco
         ColourScheme mainColours;         // 0x1A
         ColourScheme vehicleColours[10];  // 0x1C
         uint32_t customVehicleColoursSet; // 0x30
-        uint32_t unlockedVehicles[7];     // 0x34 (bit field based on VehicleObject index)
+        BitSet<224> unlockedVehicles;     // 0x34
         uint16_t availableVehicles;       // 0x50
         uint8_t pad_52[0x57 - 0x52];
         uint8_t numExpenditureMonths;                                                  // 0x57
