@@ -19,6 +19,7 @@
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
 #include "GameCommands/Vehicles/VehicleSpeedControl.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -236,7 +237,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
     }
 
-    static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             if (Input::isToolActive(self->type, self->number, widx::pickup))
             {
-                _pickupDirection = _pickupDirection ^ 1;
+                getGameState().pickupDirection = getGameState().pickupDirection ^ 1;
                 return;
             }
             GameCommands::setErrorTitle(StringIds::cant_reverse_train);
@@ -3879,7 +3879,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             uint8_t unkYaw = moveInfo.yaw + (WindowManager::getCurrentRotation() << 4);
             unkYaw -= 0x37;
-            if (_pickupDirection != 0)
+
+            if (getGameState().pickupDirection != 0)
             {
                 unkYaw -= 0x20;
             }
@@ -3978,7 +3979,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             uint8_t unkYaw = moveInfo.yaw + (WindowManager::getCurrentRotation() << 4);
             unkYaw -= 0x37;
-            if (_pickupDirection != 0)
+            if (getGameState().pickupDirection != 0)
             {
                 unkYaw -= 0x20;
             }
@@ -4047,7 +4048,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            ToolManager::setToolCursor(kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
+            ToolManager::setToolCursor(kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][getGameState().pickupDirection != 0 ? 1 : 0]);
 
             switch (head->mode)
             {
@@ -4359,7 +4360,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             if (!head->isPlaced())
             {
-                CursorId cursor = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+                CursorId cursor = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][getGameState().pickupDirection != 0 ? 1 : 0];
                 if (Input::toolSet(self, pickupWidx, cursor))
                 {
                     _1136264 = -1;
@@ -4551,7 +4552,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             if (ToolManager::getToolWidgetIndex() == Main::widx::pickup || ToolManager::getToolWidgetIndex() == Details::widx::pickup)
             {
-                _pickupDirection = _pickupDirection ^ 1;
+                getGameState().pickupDirection = getGameState().pickupDirection ^ 1;
                 return true;
             }
         }

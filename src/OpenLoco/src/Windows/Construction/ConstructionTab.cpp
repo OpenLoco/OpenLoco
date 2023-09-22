@@ -131,8 +131,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static std::optional<TrackPieceId> getRoadPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
     static std::optional<TrackPieceId> getTrackPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
 
-    static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // From Vehicle.cpp window
-
     // 0x0049B50C
     void reset()
     {
@@ -140,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         LastGameOptionManager::setLastAirport(LastGameOptionManager::kNoLastOption);
         LastGameOptionManager::setLastShipPort(LastGameOptionManager::kNoLastOption);
-        _pickupDirection = 0;
+        getGameState().pickupDirection = 0;
     }
 
     // 0x004A18D4
