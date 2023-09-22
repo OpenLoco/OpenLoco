@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Message.h"
 #include "MessageManager.h"
@@ -169,13 +170,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         MessageManager::setActiveIndex(MessageId::null);
         WindowManager::close(WindowType::news, 0);
 
-        if (_messageCount != 0)
+        if (getGameState().numMessages != 0)
         {
-            auto message = MessageManager::get(MessageId(_messageCount - 1));
+            auto message = MessageManager::get(MessageId(getGameState().numMessages - 1));
             message->setUserSelected();
             message->timeActive++;
 
-            NewsWindow::open(MessageId(_messageCount - 1));
+            NewsWindow::open(MessageId(getGameState().numMessages - 1));
         }
     }
 

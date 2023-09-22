@@ -3,6 +3,7 @@
 #include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -27,8 +28,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MessageWindow
 {
-    static loco_global<uint16_t, 0x005271CE> _messageCount;
-
     namespace Common
     {
         enum widx
@@ -136,7 +135,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A871
         static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = _messageCount * messageHeight;
+            *scrollHeight = getGameState().numMessages * messageHeight;
         }
 
         // 0x0042A8B9
@@ -144,7 +143,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             auto messageIndex = y / messageHeight;
 
-            if (messageIndex >= _messageCount)
+            if (messageIndex >= getGameState().numMessages)
                 return;
 
             if (MessageManager::getActiveIndex() != MessageId::null)
@@ -179,7 +178,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;
 
-            if (messageIndex < _messageCount)
+            if (messageIndex < getGameState().numMessages)
                 messageId = messageIndex;
 
             if (self.rowHover != messageId)
@@ -222,7 +221,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             drawingCtx.clearSingle(rt, colour);
 
             auto height = 0;
-            for (auto i = 0; i < _messageCount; i++)
+            for (auto i = 0; i < getGameState().numMessages; i++)
             {
                 if (height + messageHeight <= rt.y)
                 {
