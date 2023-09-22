@@ -444,7 +444,7 @@ namespace OpenLoco
 
             if (!reader.validateChecksum())
             {
-                throw std::runtime_error("Invalid checksum");
+                throw Exception::RuntimeError("Invalid checksum");
             }
 
             // Header chunk

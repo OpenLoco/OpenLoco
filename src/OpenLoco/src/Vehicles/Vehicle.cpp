@@ -238,7 +238,7 @@ namespace OpenLoco::Vehicles
         back = component->asVehicleBogie();
         if (back == nullptr)
         {
-            throw std::runtime_error("Bad vehicle structure");
+            throw Exception::RuntimeError("Bad vehicle structure");
         }
         component = component->nextVehicleComponent();
         if (component == nullptr)

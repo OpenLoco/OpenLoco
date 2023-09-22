@@ -489,7 +489,7 @@ namespace OpenLoco::StringManager
                                 break;
 
                             default:
-                                throw std::out_of_range("formatString: unexpected modifier: " + std::to_string((uint8_t)modifier));
+                                throw Exception::OutOfRange("formatString: unexpected modifier: " + std::to_string((uint8_t)modifier));
                         }
 
                         break;

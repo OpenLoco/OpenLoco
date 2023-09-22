@@ -303,7 +303,7 @@ namespace OpenLoco::Interop
         {
             const auto errCode = static_cast<uint32_t>(GetLastError());
             Logging::error("ReadProcessMemory failed! address = {:#08x}, size = {}, GetLastError() = {:#08x}", address, size, errCode);
-            throw std::runtime_error("ReadProcessMemory failed");
+            throw Exception::RuntimeError("ReadProcessMemory failed");
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
@@ -325,7 +325,7 @@ namespace OpenLoco::Interop
             {
                 const auto errCode = static_cast<uint32_t>(GetLastError());
                 Logging::error("WriteProcessMemory failed! address = {:#08x}, size = {}, bytesWritten = {}, addressLocal = {:#08x}, sizeLocal = {}, GetLastError() = {:#08x}", address, size, bytesWritten, addressLocal, sizeLocal, errCode);
-                throw std::runtime_error("WriteProcessMemory failed");
+                throw Exception::RuntimeError("WriteProcessMemory failed");
             }
             bytesWritten += sizeLocal;
         }

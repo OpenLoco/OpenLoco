@@ -1,5 +1,6 @@
 #pragma once
 
+#include <OpenLoco/Core/Exception.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -346,7 +347,7 @@ namespace OpenLoco::Interop
 #ifndef NDEBUG
             if (idx < 0 || static_cast<size_t>(idx) >= size())
             {
-                throw std::out_of_range("loco_global: bounds check violation!");
+                throw Exception::OutOfRange("loco_global: bounds check violation!");
             }
 #endif
             return get()[idx];
