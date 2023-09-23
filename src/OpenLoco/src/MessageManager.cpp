@@ -24,7 +24,7 @@ namespace OpenLoco::MessageManager
     static void remove(const MessageId id);
 
     static auto& rawMessages() { return getGameState().messages; }
-    static auto& numMessages() { return getGameState().numMessages; }
+    uint16_t& getNumMessages() { return getGameState().numMessages; }
 
     Message* get(MessageId id)
     {
@@ -55,7 +55,7 @@ namespace OpenLoco::MessageManager
 
         if (getMessageTypeDescriptor(type).hasFlag(MessageTypeFlags::unk0))
         {
-            for (auto i = 0; i < numMessages(); ++i)
+            for (auto i = 0; i < getNumMessages(); ++i)
             {
                 auto& message = rawMessages()[i];
                 if (message == newMessage)
@@ -64,11 +64,11 @@ namespace OpenLoco::MessageManager
                 }
             }
         }
-        if (numMessages() > Limits::kMaxMessages)
+        if (getNumMessages() > Limits::kMaxMessages)
         {
             MessageId oldestMessage = MessageId::null;
             int32_t oldest = -1;
-            for (auto i = 0; i < numMessages(); ++i)
+            for (auto i = 0; i < getNumMessages(); ++i)
             {
                 auto& message = rawMessages()[i];
                 if (message.timeActive != 0)
@@ -84,7 +84,7 @@ namespace OpenLoco::MessageManager
             // Nothing found so now search for messages that are active
             if (oldest == -1)
             {
-                for (auto i = 0; i < numMessages(); ++i)
+                for (auto i = 0; i < getNumMessages(); ++i)
                 {
                     auto& message = rawMessages()[i];
 
@@ -101,11 +101,11 @@ namespace OpenLoco::MessageManager
         {
             // To match vanilla we need to copy the old memory. Remove this when diverging possible
             // See also L417 copying the message
-            std::copy(std::begin(rawMessages()[numMessages()].messageString), std::end(rawMessages()[numMessages()].messageString), std::begin(newMessage.messageString));
+            std::copy(std::begin(rawMessages()[getNumMessages()].messageString), std::end(rawMessages()[getNumMessages()].messageString), std::begin(newMessage.messageString));
         }
-        rawMessages()[numMessages()] = newMessage;
-        auto& message = rawMessages()[numMessages()];
-        numMessages()++;
+        rawMessages()[getNumMessages()] = newMessage;
+        auto& message = rawMessages()[getNumMessages()];
+        getNumMessages()++;
         // A buffer that is larger than message.messageString
         char tempBuffer[512]{};
         switch (message.type)
@@ -455,7 +455,7 @@ namespace OpenLoco::MessageManager
                 getGameState().activeMessageIndex = static_cast<MessageId>(enumValue(getGameState().activeMessageIndex) - 1);
             }
         }
-        numMessages()--;
+        getNumMessages()--;
         // Move element to end of array (this seems excessive you could just move to end of numMessages)
         if (enumValue(id) < Limits::kMaxMessages - 1)
         {
@@ -467,7 +467,7 @@ namespace OpenLoco::MessageManager
     // 0x0042851C
     void removeAllSubjectRefs(const uint16_t subject, MessageItemArgumentType type)
     {
-        for (auto i = numMessages(); i > 0; --i)
+        for (auto i = getNumMessages(); i > 0; --i)
         {
             auto& message = rawMessages()[i];
             const auto& descriptor = getMessageTypeDescriptor(message.type);
@@ -491,7 +491,7 @@ namespace OpenLoco::MessageManager
     // 0x004284DB
     void updateDaily()
     {
-        for (auto i = numMessages() - 1; i >= 0; --i)
+        for (auto i = getNumMessages() - 1; i >= 0; --i)
         {
             auto& message = rawMessages()[i];
             if (getCurrentDay() >= message.date + getMessageTypeDescriptor(message.type).duration)
@@ -507,7 +507,7 @@ namespace OpenLoco::MessageManager
         uint8_t highestPriority = 0;
         MessageId bestId = MessageId::null;
 
-        for (auto i = 0; i < numMessages(); ++i)
+        for (auto i = 0; i < getNumMessages(); ++i)
         {
             auto& message = rawMessages()[i];
             if (!message.isActive())
@@ -567,7 +567,7 @@ namespace OpenLoco::MessageManager
             }
             message->timeActive++;
 
-            const auto numWaitingMessages = numMessages() - enumValue(getActiveIndex());
+            const auto numWaitingMessages = getNumMessages() - enumValue(getActiveIndex());
             uint16_t time = 0;
             switch (numWaitingMessages)
             {
