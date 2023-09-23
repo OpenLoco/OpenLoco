@@ -42,6 +42,6 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto versionInfo = getVersionInfo();
-        drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
+        drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
     }
 }

@@ -749,7 +749,7 @@ namespace OpenLoco::Drawing
         }
 
         // 0x00451189
-        static Ui::Point loopNewline(RenderTarget* rt, Ui::Point origin, uint8_t* str)
+        static Ui::Point loopNewline(RenderTarget* rt, Ui::Point origin, const char* str)
         {
             Ui::Point pos = origin;
             while (true)
@@ -764,7 +764,7 @@ namespace OpenLoco::Drawing
                         offscreen = false;
                     }
                 }
-                uint8_t chr = *str;
+                uint8_t chr = static_cast<uint8_t>(*str);
                 str++;
 
                 switch (chr)
@@ -983,21 +983,21 @@ namespace OpenLoco::Drawing
          * @param rt @<edi>
          * @param text @<esi>
          */
-        static Ui::Point drawString(RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, void* str)
+        static Ui::Point drawString(RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, const char* str)
         {
             // 0x00E04348, 0x00E0434A
             Ui::Point origin = { x, y };
 
             if (colour.isFE())
             {
-                return loopNewline(&rt, origin, (uint8_t*)str);
+                return loopNewline(&rt, origin, str);
             }
 
             if (colour.isFD())
             {
                 _currentFontFlags = TextDrawFlags::none;
                 setTextColour(0);
-                return loopNewline(&rt, origin, (uint8_t*)str);
+                return loopNewline(&rt, origin, str);
             }
 
             if (x >= rt.x + rt.width)
@@ -1014,7 +1014,7 @@ namespace OpenLoco::Drawing
 
             if (colour.isFF())
             {
-                return loopNewline(&rt, origin, (uint8_t*)str);
+                return loopNewline(&rt, origin, str);
             }
 
             _currentFontFlags = TextDrawFlags::none;
@@ -1073,7 +1073,7 @@ namespace OpenLoco::Drawing
                 setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
             }
 
-            return loopNewline(&rt, origin, (uint8_t*)str);
+            return loopNewline(&rt, origin, str);
         }
 
         // Use only with buffer mangled by wrapString
@@ -2401,7 +2401,7 @@ namespace OpenLoco::Drawing
         return Impl::getMaxStringWidth(buffer);
     }
 
-    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, void* str)
+    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, const char* str)
     {
         return Impl::drawString(rt, x, y, colour, str);
     }
