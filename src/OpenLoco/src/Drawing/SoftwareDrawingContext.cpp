@@ -52,7 +52,7 @@ namespace OpenLoco::Drawing
 
         // TODO: Store in drawing context.
         static PaletteMap::Buffer<8> _textColours{ 0 };
-        static uint16_t getStringWidth(const char* buffer);
+        static uint16_t getStringWidth(const char* str);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
         static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
@@ -114,7 +114,7 @@ namespace OpenLoco::Drawing
             for (const auto* chr = string; *chr != '\0'; ++chr)
             {
                 curString.push_back(*chr);
-                switch (*chr)
+                switch (static_cast<uint8_t>(*chr))
                 {
                     case ControlCodes::moveX:
                         curString.push_back(*++chr);
@@ -192,15 +192,14 @@ namespace OpenLoco::Drawing
          * @param buffer @<esi>
          * @return width @<cx>
          */
-        static uint16_t getStringWidth(const char* buffer)
+        static uint16_t getStringWidth(const char* str)
         {
             uint16_t width = 0;
-            const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
             auto fontSpriteBase = getCurrentFontSpriteBase();
 
-            while (*str != (uint8_t)0)
+            while (*str != '\0')
             {
-                const uint8_t chr = *str;
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 if (chr >= 32)
@@ -285,9 +284,10 @@ namespace OpenLoco::Drawing
             uint16_t lineWidth = 0;
             for (; *ptr != '\0'; ++ptr)
             {
-                if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                const auto chr = static_cast<uint8_t>(*ptr);
+                if (chr >= ControlCodes::noArgBegin && chr < ControlCodes::noArgEnd)
                 {
-                    switch (*ptr)
+                    switch (chr)
                     {
                         case ControlCodes::newline:
                         {
@@ -307,9 +307,9 @@ namespace OpenLoco::Drawing
                             break;
                     }
                 }
-                else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                else if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
                 {
-                    switch (*ptr)
+                    switch (chr)
                     {
                         case ControlCodes::moveX:
                             lineWidth = static_cast<uint8_t>(ptr[1]);
@@ -317,13 +317,13 @@ namespace OpenLoco::Drawing
                     }
                     ptr += 1;
                 }
-                else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
                 {
                     ptr += 2;
                 }
-                else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
                 {
-                    switch (*ptr)
+                    switch (chr)
                     {
                         case ControlCodes::inlineSpriteStr:
                         {
@@ -341,7 +341,7 @@ namespace OpenLoco::Drawing
                 }
                 else
                 {
-                    lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                    lineWidth += _characterWidths[font + (chr - 32)];
                 }
             }
             return std::make_tuple(lineWidth, ptr, font);
@@ -371,16 +371,15 @@ namespace OpenLoco::Drawing
          * @param buffer @<esi>
          * @return width @<cx>
          */
-        static uint16_t getMaxStringWidth(const char* buffer)
+        static uint16_t getMaxStringWidth(const char* str)
         {
             uint16_t width = 0;
             uint16_t maxWidth = 0;
-            const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
             auto fontSpriteBase = getCurrentFontSpriteBase();
 
-            while (*str != (uint8_t)0)
+            while (*str != '\0')
             {
-                const uint8_t chr = *str;
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 if (chr >= 32)
@@ -764,12 +763,13 @@ namespace OpenLoco::Drawing
                         offscreen = false;
                     }
                 }
-                uint8_t chr = static_cast<uint8_t>(*str);
+
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 switch (chr)
                 {
-                    case '\0':
+                    case 0U:
                         return pos;
 
                     case ControlCodes::adjustPalette:
@@ -1077,14 +1077,14 @@ namespace OpenLoco::Drawing
         }
 
         // Use only with buffer mangled by wrapString
-        static const char* advanceToNextLineWrapped(const char* buffer)
+        static const char* advanceToNextLineWrapped(const char* str)
         {
             // Traverse the buffer for the next line
-            const char* ptr = buffer;
+            const char* ptr = str;
             while (true)
             {
-                const auto chr = *ptr++;
-                if (chr == '\0')
+                const auto chr = static_cast<uint8_t>(*ptr++);
+                if (chr == 0U)
                     return ptr;
 
                 if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
@@ -1500,12 +1500,12 @@ namespace OpenLoco::Drawing
                         offscreen = false;
                     }
                 }
-                uint8_t chr = *str;
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 switch (chr)
                 {
-                    case '\0':
+                    case 0U:
                         return numChars;
 
                     case ControlCodes::adjustPalette:
@@ -1764,10 +1764,11 @@ namespace OpenLoco::Drawing
                 auto* wordStart = ptr;
                 for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
                 {
-                    if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                    const auto chr = static_cast<uint8_t>(*ptr);
+                    if (chr >= ControlCodes::noArgBegin && chr < ControlCodes::noArgEnd)
                     {
                         bool forceEndl = false;
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::newline:
                             {
@@ -1797,9 +1798,9 @@ namespace OpenLoco::Drawing
                             break;
                         }
                     }
-                    else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                    else if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
                     {
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::moveX:
                                 lineWidth = static_cast<uint8_t>(ptr[1]);
@@ -1807,13 +1808,13 @@ namespace OpenLoco::Drawing
                         }
                         ptr += 1;
                     }
-                    else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                    else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
                     {
                         ptr += 2;
                     }
-                    else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                    else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
                     {
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::inlineSpriteStr:
                             {
@@ -1890,10 +1891,11 @@ namespace OpenLoco::Drawing
                 auto* wordStart = ptr;
                 for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
                 {
-                    if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                    const auto chr = static_cast<uint8_t>(*ptr);
+                    if (chr >= ControlCodes::noArgBegin && chr < ControlCodes::noArgEnd)
                     {
                         bool forceEndl = false;
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::newline:
                             {
@@ -1925,7 +1927,7 @@ namespace OpenLoco::Drawing
                             break;
                         }
                     }
-                    else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                    else if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
                     {
                         switch (*ptr)
                         {
@@ -1935,13 +1937,13 @@ namespace OpenLoco::Drawing
                         }
                         ptr += 1;
                     }
-                    else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                    else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
                     {
                         ptr += 2;
                     }
-                    else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                    else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
                     {
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::inlineSpriteStr:
                             {
