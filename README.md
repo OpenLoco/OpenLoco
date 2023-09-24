@@ -80,7 +80,7 @@ The following libraries/dependencies are required:
 ### Windows
 - 7 / 8 / 10 / 11
 - [Visual Studio 2022](https://www.visualstudio.com/vs/community/)
-  - Desktop development with C++
+  - Desktop development with C++ (ensure MFC component is selected)
   - Dependencies are managed with [vcpkg](https://github.com/Microsoft/vcpkg)
 
 ### Linux
