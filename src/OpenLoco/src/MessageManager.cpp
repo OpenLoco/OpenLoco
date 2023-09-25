@@ -26,7 +26,7 @@ namespace OpenLoco::MessageManager
     static auto& rawMessages() { return getGameState().messages; }
     uint16_t getNumMessages() { return getGameState().numMessages; }
 
-    void setNumMessages(uint16_t numMessages)
+    static void setNumMessages(const uint16_t numMessages)
     {
         getGameState().numMessages = numMessages;
     }
