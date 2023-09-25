@@ -24,7 +24,11 @@ namespace OpenLoco::MessageManager
     static void remove(const MessageId id);
 
     static auto& rawMessages() { return getGameState().messages; }
-    uint16_t& getNumMessages() { return getGameState().numMessages; }
+    const uint16_t getNumMessages() { return getGameState().numMessages; }
+
+    void setNumMessages(uint16_t numMessages) {
+        getGameState().numMessages = numMessages;
+    };
 
     Message* get(MessageId id)
     {
@@ -105,7 +109,7 @@ namespace OpenLoco::MessageManager
         }
         rawMessages()[getNumMessages()] = newMessage;
         auto& message = rawMessages()[getNumMessages()];
-        getNumMessages()++;
+        setNumMessages(getNumMessages() + 1);
         // A buffer that is larger than message.messageString
         char tempBuffer[512]{};
         switch (message.type)
@@ -455,7 +459,7 @@ namespace OpenLoco::MessageManager
                 getGameState().activeMessageIndex = static_cast<MessageId>(enumValue(getGameState().activeMessageIndex) - 1);
             }
         }
-        getNumMessages()--;
+        setNumMessages(getNumMessages() - 1);
         // Move element to end of array (this seems excessive you could just move to end of numMessages)
         if (enumValue(id) < Limits::kMaxMessages - 1)
         {
