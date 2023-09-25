@@ -29,7 +29,7 @@ namespace OpenLoco::MessageManager
     void setNumMessages(uint16_t numMessages)
     {
         getGameState().numMessages = numMessages;
-    };
+    }
 
     Message* get(MessageId id)
     {
