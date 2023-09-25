@@ -24,7 +24,7 @@ namespace OpenLoco::MessageManager
     static void remove(const MessageId id);
 
     static auto& rawMessages() { return getGameState().messages; }
-    const uint16_t getNumMessages() { return getGameState().numMessages; }
+    uint16_t getNumMessages() { return getGameState().numMessages; }
 
     void setNumMessages(uint16_t numMessages)
     {

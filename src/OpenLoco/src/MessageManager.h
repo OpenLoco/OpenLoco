@@ -5,7 +5,7 @@
 namespace OpenLoco::MessageManager
 {
     Message* get(MessageId id);
-    const uint16_t getNumMessages();
+    uint16_t getNumMessages();
 
     MessageId getActiveIndex();
     void setActiveIndex(const MessageId newIndex);
