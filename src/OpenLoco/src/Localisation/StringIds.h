@@ -1693,6 +1693,7 @@ namespace OpenLoco::StringIds
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
 
+    // Two unused strings below
     constexpr string_id object_selection_advanced = 2093;
     constexpr string_id object_selection_advanced_tooltip = 2094;
     constexpr string_id object_currency_big_font = 2095;
@@ -1882,6 +1883,11 @@ namespace OpenLoco::StringIds
     constexpr string_id tileInspectorHeaderClearHeightTip = 2290;
     constexpr string_id tileInspectorHeaderDirectionTip = 2291;
     constexpr string_id tileInspectorHeaderGhostTip = 2292;
+    constexpr string_id objSelectionFilterBeginner = 2293;
+    constexpr string_id objSelectionFilterAdvanced = 2294;
+    constexpr string_id objSelectionFilterExpert = 2295;
+    constexpr string_id objSelectionFilterVanilla = 2296;
+    constexpr string_id objSelectionFilterCustom = 2297;
 
     constexpr string_id temporary_object_load_str_0 = 8192;
     constexpr string_id temporary_object_load_str_1 = 8193;

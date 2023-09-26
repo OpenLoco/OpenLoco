@@ -2345,3 +2345,8 @@ strings:
   2290: "{SMALLFONT}{COLOUR BLACK}Clear height of the tile element"
   2291: "{SMALLFONT}{COLOUR BLACK}Direction of the tile element"
   2292: "{SMALLFONT}{COLOUR BLACK}Ghost status of the tile element"
+  2293: "Beginner"
+  2294: "Advanced"
+  2295: "Expert"
+  2296: "Vanilla"
+  2297: "Custom"

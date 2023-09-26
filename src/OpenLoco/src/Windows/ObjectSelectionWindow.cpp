@@ -41,6 +41,7 @@
 #include "Objects/WallObject.h"
 #include "Objects/WaterObject.h"
 #include "SceneManager.h"
+#include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
@@ -125,11 +126,28 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t row;
     };
 
-    enum class Visibility
+    enum class Visibility : uint8_t
     {
         hidden = 0,
         shown = 1,
     };
+
+    // Used for var_856
+    enum class FilterLevel : uint8_t
+    {
+        beginner = 0,
+        advanced = 1,
+        expert = 2,
+    };
+
+    // Used for var_858
+    enum class FilterFlags : uint8_t
+    {
+        none = 0,
+        vanilla = 1 << 0,
+        custom = 1 << 1,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(FilterFlags);
 
     struct TabObjectEntry
     {
@@ -166,7 +184,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         closeButton,
         panel,
         tabArea,
-        advancedButton,
+        filterLabel,
+        filterDropdown,
         textInput,
         clearButton,
         vehicleTypeTrain,
@@ -190,7 +209,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_6, WindowColour::secondary),
 
         // Filter options
-        makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::button, WindowColour::primary, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
+        makeDropdownWidgets({ 492, 20 }, { 100, 12 }, WidgetType::combobox, WindowColour::primary, StringIds::empty),
         makeWidget({ 4, 68 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 254, 68 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
 
@@ -234,7 +253,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             // Ended up in a position without info? Reassign positions first.
             if (_tabPositions[i].index == 0xFF)
             {
-                self->var_856 |= (1 << 0);
+                self->var_856 = enumValue(FilterLevel::advanced);
                 assignTabPositions(self);
                 return;
             }
@@ -251,6 +270,37 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static bool shouldShowTab(int8_t objectType, FilterLevel filterLevel)
+    {
+        const ObjectTabFlags tabFlags = _tabDisplayInfo[objectType].flags;
+
+        if (filterLevel == FilterLevel::expert)
+            return true;
+
+        if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
+            return false;
+
+        // Skip all types that don't have any objects
+        if (_tabObjectCounts[objectType] == 0)
+            return false;
+
+        // Skip certain object types that only have one entry in game
+        if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[objectType] == 1)
+            return false;
+
+        // Hide advanced object types in beginner mode
+        if (filterLevel == FilterLevel::beginner && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+            return false;
+
+        if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
+            return false;
+
+        if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+            return false;
+
+        return true;
+    }
+
     // 0x00473154
     static void assignTabPositions(Window* self)
     {
@@ -261,27 +311,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentType].flags;
-
-            if ((tabFlags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
-                continue;
-
-            // Skip all types that don't have any objects
-            if (_tabObjectCounts[currentType] == 0)
-                continue;
-
-            // Skip certain object types that only have one entry in game
-            if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[currentType] == 1)
-                continue;
-
-            // Hide advanced object types as needed
-            if ((self->var_856 & (1 << 0)) == 0 && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
-                continue;
-
-            if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
-                continue;
-
-            if (!isEditorMode() && (tabFlags & ObjectTabFlags::hideInGame) != ObjectTabFlags::none)
+            if (!shouldShowTab(currentType, FilterLevel(self->var_856)))
                 continue;
 
             // Assign tab position
@@ -326,12 +356,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return static_cast<VehicleType>(displayData->vehicleSubType);
     }
 
-    static void applyFilterToObjectList()
+    static void applyFilterToObjectList(FilterFlags filterFlags)
     {
         std::string_view pattern = inputSession.buffer;
         _numVisibleObjectsListed = 0;
         for (auto& entry : _tabObjectList)
         {
+            // Apply vanilla/custom object filters
+            const bool isVanillaObj = entry.object._header->isVanilla();
+            if (isVanillaObj && (filterFlags & FilterFlags::vanilla) == FilterFlags::none)
+            {
+                entry.display = Visibility::hidden;
+                continue;
+            }
+            if (!isVanillaObj && (filterFlags & FilterFlags::custom) == FilterFlags::none)
+            {
+                entry.display = Visibility::hidden;
+                continue;
+            }
+
             if (_filterByVehicleType)
             {
                 auto vehicleType = getVehicleTypeFromObject(entry);
@@ -362,7 +405,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static void populateTabObjectList(ObjectType objectType)
+    static void populateTabObjectList(ObjectType objectType, FilterFlags filterFlags)
     {
         _tabObjectList.clear();
 
@@ -374,7 +417,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             _tabObjectList.emplace_back(std::move(entry));
         }
 
-        applyFilterToObjectList();
+        applyFilterToObjectList(filterFlags);
     }
 
     // 0x00472BBC
@@ -417,11 +460,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, &_events);
         window->widgets = widgets;
-        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton) | (1ULL << widx::clearButton);
+        window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::clearButton);
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->var_856 = isEditorMode() ? 0 : 1;
+        window->var_856 = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
+        window->var_858 = enumValue(FilterFlags::vanilla | FilterFlags::custom);
         window->currentSecondaryTab = 0;
 
         initEvents();
@@ -430,7 +474,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         assignTabPositions(window);
         repositionTargetTab(window, ObjectType::region);
-        populateTabObjectList(ObjectType::region);
+        populateTabObjectList(ObjectType::region, static_cast<FilterFlags>(window->var_858));
 
         ObjectManager::freeTemporaryObject();
 
@@ -461,13 +505,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (isEditorMode())
         {
             widgets[widx::closeButton].type = WidgetType::none;
-        }
-
-        self.activatedWidgets &= ~(1 << widx::advancedButton);
-
-        if (self.var_856 & (1 << 0))
-        {
-            self.activatedWidgets |= (1 << widx::advancedButton);
         }
 
         auto args = FormatArguments();
@@ -856,6 +893,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawVehicleTabs(&self, rt);
         drawSearchBox(self, rt);
 
+        {
+            static constexpr std::array<string_id, 3> levelStringIds = {
+                StringIds::objSelectionFilterBeginner,
+                StringIds::objSelectionFilterAdvanced,
+                StringIds::objSelectionFilterExpert,
+            };
+
+            FormatArguments args{};
+            args.push(levelStringIds[self.var_856]);
+
+            auto& widget = self.widgets[widx::filterLabel];
+            auto xPos = self.x + widget.left;
+            auto yPos = self.y + widget.top;
+
+            // Draw current level on combobox
+            drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
+
         bool doDefault = true;
         if (self.object != nullptr)
         {
@@ -1070,7 +1125,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     _filterByVehicleType = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
                     _currentVehicleType = VehicleType::train;
 
-                    populateTabObjectList(static_cast<ObjectType>(clickedTab));
+                    populateTabObjectList(static_cast<ObjectType>(clickedTab), FilterFlags(self.var_858));
 
                     self.rowHover = -1;
                     self.object = nullptr;
@@ -1086,7 +1141,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                         ObjectManager::loadTemporaryObject(*objIndex.object._header);
                     }
 
-                    applyFilterToObjectList();
+                    applyFilterToObjectList(FilterFlags(self.var_858));
                     self.initScrollWidgets();
                     self.invalidate();
                 }
@@ -1094,31 +1149,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            case widx::advancedButton:
-            {
-                self.var_856 ^= 1;
-                int currentTab = self.currentTab;
-                assignTabPositions(&self);
-
-                if ((self.var_856 & 1) == 0)
-                {
-                    const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
-                    if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
-                    {
-                        currentTab = _tabPositions[0].index;
-                        populateTabObjectList(static_cast<ObjectType>(currentTab));
-                    }
-                }
-                repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
-                self.invalidate();
-
-                break;
-            }
-
             case widx::clearButton:
             {
                 inputSession.clearInput();
-                applyFilterToObjectList();
+                applyFilterToObjectList(FilterFlags(self.var_858));
                 self.initScrollWidgets();
                 self.invalidate();
                 break;
@@ -1133,11 +1167,83 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             {
                 self.currentSecondaryTab = w - widx::vehicleTypeTrain;
                 _currentVehicleType = static_cast<VehicleType>(self.currentSecondaryTab);
-                applyFilterToObjectList();
+                applyFilterToObjectList(FilterFlags(self.var_858));
                 self.initScrollWidgets();
                 self.invalidate();
             }
         }
+    }
+
+    static void onMouseDown(Window& self, const WidgetIndex_t widgetIndex)
+    {
+        if (widgetIndex == widx::filterDropdown)
+        {
+            auto& dropdown = self.widgets[widx::filterLabel];
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 6, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::objSelectionFilterBeginner);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::objSelectionFilterAdvanced);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::objSelectionFilterExpert);
+            Dropdown::add(3, 0);
+            Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::objSelectionFilterVanilla);
+            Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::objSelectionFilterCustom);
+
+            // Mark current level
+            Dropdown::setItemSelected(self.var_856);
+
+            // Show vanilla objects?
+            if ((FilterFlags(self.var_858) & FilterFlags::vanilla) != FilterFlags::none)
+                Dropdown::setItemSelected(4);
+
+            // Show custom objects?
+            if ((FilterFlags(self.var_858) & FilterFlags::custom) != FilterFlags::none)
+                Dropdown::setItemSelected(5);
+        }
+    }
+
+    static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    {
+        if (widgetIndex != widx::filterDropdown)
+            return;
+
+        if (itemIndex < 0)
+        {
+            self.var_856 = (self.var_856 ^ 1) % 3;
+            assignTabPositions(&self);
+        }
+
+        // Switch level?
+        else if (itemIndex >= 0 && itemIndex <= 2)
+        {
+            self.var_856 = itemIndex;
+            assignTabPositions(&self);
+
+            auto currentTab = self.currentTab;
+            const ObjectTabFlags tabFlags = _tabDisplayInfo[currentTab].flags;
+            if ((tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+            {
+                currentTab = _tabPositions[0].index;
+                populateTabObjectList(static_cast<ObjectType>(currentTab), static_cast<FilterFlags>(self.var_858));
+            }
+
+            repositionTargetTab(&self, static_cast<ObjectType>(currentTab));
+        }
+
+        // Toggle vanilla objects
+        else if (itemIndex == 4)
+        {
+            self.var_858 = enumValue(FilterFlags(self.var_858) ^ FilterFlags::vanilla);
+            populateTabObjectList(static_cast<ObjectType>(self.currentTab), static_cast<FilterFlags>(self.var_858));
+        }
+
+        // Toggle custom objects
+        else if (itemIndex == 5)
+        {
+            self.var_858 = enumValue(FilterFlags(self.var_858) ^ FilterFlags::custom);
+            populateTabObjectList(static_cast<ObjectType>(self.currentTab), static_cast<FilterFlags>(self.var_858));
+        }
+
+        self.invalidate();
     }
 
     // 0x004738ED
@@ -1343,7 +1449,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         inputSession.cursorFrame = 0;
 
-        applyFilterToObjectList();
+        applyFilterToObjectList(FilterFlags(w->var_858));
 
         w->initScrollWidgets();
         w->invalidate();
@@ -1353,6 +1459,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         _events.onClose = onClose;
         _events.onMouseUp = onMouseUp;
+        _events.onMouseDown = onMouseDown;
+        _events.onDropdown = onDropdown;
         _events.onUpdate = onUpdate;
         _events.getScrollSize = getScrollSize;
         _events.scrollMouseDown = onScrollMouseDown;

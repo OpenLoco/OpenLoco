@@ -1,5 +1,6 @@
 23.08.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2116] Allow hiding vanilla and/or custom objects in object selection window.
 - Change: [#2018] Scroll bar thumbs now have a minimum size, making it easier to scroll long lists.
 
 23.08.1 (2023-08-30)
