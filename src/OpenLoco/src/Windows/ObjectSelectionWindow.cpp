@@ -288,8 +288,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if ((tabFlags & ObjectTabFlags::showEvenIfSingular) == ObjectTabFlags::none && _tabObjectCounts[objectType] == 1)
             return false;
 
-        // Hide advanced object types as needed
-        if (filterLevel < FilterLevel::advanced && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
+        // Hide advanced object types in beginner mode
+        if (filterLevel == FilterLevel::beginner && (tabFlags & ObjectTabFlags::advanced) != ObjectTabFlags::none)
             return false;
 
         if (isEditorMode() && (tabFlags & ObjectTabFlags::hideInEditor) != ObjectTabFlags::none)
