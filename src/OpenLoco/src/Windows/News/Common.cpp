@@ -169,13 +169,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         MessageManager::setActiveIndex(MessageId::null);
         WindowManager::close(WindowType::news, 0);
 
-        if (_messageCount != 0)
+        if (MessageManager::getNumMessages() != 0)
         {
-            auto message = MessageManager::get(MessageId(_messageCount - 1));
+            auto message = MessageManager::get(MessageId(MessageManager::getNumMessages() - 1));
             message->setUserSelected();
             message->timeActive++;
 
-            NewsWindow::open(MessageId(_messageCount - 1));
+            NewsWindow::open(MessageId(MessageManager::getNumMessages() - 1));
         }
     }
 
