@@ -126,14 +126,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t row;
     };
 
-    enum class Visibility
+    enum class Visibility : uint8_t
     {
         hidden = 0,
         shown = 1,
     };
 
     // Used for var_856
-    enum FilterLevel : uint8_t
+    enum class FilterLevel : uint8_t
     {
         beginner = 0,
         advanced = 1,
@@ -141,11 +141,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // Used for var_858
-    enum FilterFlags : uint8_t
+    enum class FilterFlags : uint8_t
     {
+        none = 0,
         vanilla = 1 << 0,
         custom = 1 << 1,
     };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(FilterFlags);
 
     struct TabObjectEntry
     {
@@ -251,7 +253,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             // Ended up in a position without info? Reassign positions first.
             if (_tabPositions[i].index == 0xFF)
             {
-                self->var_856 = FilterLevel::advanced;
+                self->var_856 = enumValue(FilterLevel::advanced);
                 assignTabPositions(self);
                 return;
             }
@@ -268,7 +270,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static bool shouldShowTab(int8_t objectType, uint8_t filterLevel)
+    static bool shouldShowTab(int8_t objectType, FilterLevel filterLevel)
     {
         const ObjectTabFlags tabFlags = _tabDisplayInfo[objectType].flags;
 
@@ -309,7 +311,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
         {
-            if (!shouldShowTab(currentType, self->var_856))
+            if (!shouldShowTab(currentType, FilterLevel(self->var_856)))
                 continue;
 
             // Assign tab position
@@ -362,12 +364,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             // Apply vanilla/custom object filters
             const bool isVanillaObj = entry.object._header->isVanilla();
-            if (isVanillaObj && !(filterFlags & FilterFlags::vanilla))
+            if (isVanillaObj && (filterFlags & FilterFlags::vanilla) == FilterFlags::none)
             {
                 entry.display = Visibility::hidden;
                 continue;
             }
-            if (!isVanillaObj && !(filterFlags & FilterFlags::custom))
+            if (!isVanillaObj && (filterFlags & FilterFlags::custom) == FilterFlags::none)
             {
                 entry.display = Visibility::hidden;
                 continue;
@@ -462,8 +464,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->initScrollWidgets();
         window->frameNo = 0;
         window->rowHover = -1;
-        window->var_856 = isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced;
-        window->var_858 = FilterFlags::vanilla | FilterFlags::custom;
+        window->var_856 = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
+        window->var_858 = enumValue(FilterFlags::vanilla | FilterFlags::custom);
         window->currentSecondaryTab = 0;
 
         initEvents();
@@ -1190,11 +1192,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Dropdown::setItemSelected(self.var_856);
 
             // Show vanilla objects?
-            if (self.var_858 & FilterFlags::vanilla)
+            if ((FilterFlags(self.var_858) & FilterFlags::vanilla) != FilterFlags::none)
                 Dropdown::setItemSelected(4);
 
             // Show custom objects?
-            if (self.var_858 & FilterFlags::custom)
+            if ((FilterFlags(self.var_858) & FilterFlags::custom) != FilterFlags::none)
                 Dropdown::setItemSelected(5);
         }
     }
@@ -1230,14 +1232,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         // Toggle vanilla objects
         else if (itemIndex == 4)
         {
-            self.var_858 ^= FilterFlags::vanilla;
+            self.var_858 = enumValue(FilterFlags(self.var_858) ^ FilterFlags::vanilla);
             populateTabObjectList(static_cast<ObjectType>(self.currentTab), static_cast<FilterFlags>(self.var_858));
         }
 
         // Toggle custom objects
         else if (itemIndex == 5)
         {
-            self.var_858 ^= FilterFlags::custom;
+            self.var_858 = enumValue(FilterFlags(self.var_858) ^ FilterFlags::custom);
             populateTabObjectList(static_cast<ObjectType>(self.currentTab), static_cast<FilterFlags>(self.var_858));
         }
 
