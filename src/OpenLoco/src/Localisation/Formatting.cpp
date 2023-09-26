@@ -122,7 +122,7 @@ namespace OpenLoco::StringManager
     }
 
     // 0x004963FC
-    static char* formatShortWith1Decimals(int16_t value, char* buffer)
+    static char* formatShortWithOneDecimal(int16_t value, char* buffer)
     {
         auto* ret = fmt::format_to(buffer, std::locale(std::locale(), new ThousandsSepFacet(',')), "{:L}", value / 10);
         ret = fmt::format_to(ret, ".{}", value % 10);
@@ -131,7 +131,7 @@ namespace OpenLoco::StringManager
     }
 
     // 0x004962F1
-    static char* formatIntWith2Decimals(int32_t value, char* buffer)
+    static char* formatIntWithTwoDecimals(int32_t value, char* buffer)
     {
         auto* ret = fmt::format_to(buffer, std::locale(std::locale(), new ThousandsSepFacet(',')), "{:L}", value / 100);
         ret = fmt::format_to(ret, ".{}", value % 100);
@@ -409,14 +409,14 @@ namespace OpenLoco::StringManager
                     case ControlCodes::int16_decimals:
                     {
                         int16_t value = args.pop<int16_t>();
-                        buffer = formatShortWith1Decimals(value, buffer);
+                        buffer = formatShortWithOneDecimal(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int32_decimals:
                     {
                         int32_t value = args.pop<int32_t>();
-                        buffer = formatIntWith2Decimals(value, buffer);
+                        buffer = formatIntWithTwoDecimals(value, buffer);
                         break;
                     }
 
