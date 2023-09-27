@@ -26,7 +26,7 @@ namespace OpenLoco::Localisation
 
     static const std::map<std::string, uint8_t, std::less<>> kBasicCommands = {
         { "INT16_1DP", ControlCodes::int16_decimals },
-        { "INT32_1DP", ControlCodes::int32_decimals },
+        { "INT32_2DP", ControlCodes::int32_decimals },
         { "INT16", ControlCodes::int16_grouped },
         { "UINT16", ControlCodes::uint16_ungrouped },
         { "SMALLFONT", ControlCodes::Font::regular },
