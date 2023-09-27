@@ -51,6 +51,7 @@
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
+#include <numeric>
 
 using namespace OpenLoco::Diagnostics;
 using namespace OpenLoco::Interop;
@@ -1308,11 +1309,30 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473D1D
-    static bool windowEditorObjectSelectionSelectObject(uint16_t bx, void* ebp)
+    static bool windowEditorObjectSelectionSelectObject(uint8_t bl, uint8_t bh, const ObjectHeader& objHeader)
     {
+        if (bh == 0)
+        {
+            // Vanilla had a few pointless no side effect loops here
+        }
+
+        auto objIndexEntry = ObjectManager::findObjectInIndex(objHeader);
+        if (!objIndexEntry.has_value())
+        {
+            auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2042));
+            buffer = strcpy(buffer, "Data for the following object not found: ");
+            objectCreateIdentifierName(buffer, objHeader);
+            GameCommands::setErrorText(StringIds::buffer_2042);
+            if (bh != 0)
+            {
+                resetSelectedObjectCountAndSize();
+            }
+            return false;
+        }
         registers regs;
-        regs.bx = bx;
-        regs.ebp = X86Pointer(ebp);
+        regs.bl = bl;
+        regs.bh = bh;
+        regs.ebp = X86Pointer(&objHeader);
 
         return call(0x00473D1D, regs) & X86_FLAG_CARRY;
     }
@@ -1341,7 +1361,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (oldIndex != -1)
                 {
-                    windowEditorObjectSelectionSelectObject(6, oldObject._header);
+                    windowEditorObjectSelectionSelectObject(6, 0, *oldObject._header);
                 }
             }
         }
@@ -1355,7 +1375,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         bx |= 6;
 
-        if (!windowEditorObjectSelectionSelectObject(bx, object))
+        if (!windowEditorObjectSelectionSelectObject(bx, 0, *object))
             return;
 
         auto errorTitle = StringIds::error_unable_to_select_object;
