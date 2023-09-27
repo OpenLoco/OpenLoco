@@ -2187,7 +2187,7 @@ strings:
   2132: "{COLOUR WINDOW_2}Fator de escala da janela:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
-  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Zoom para posição do cursor"
   2137: "{SMALLFONT}{COLOUR BLACK}Quando ativado, o zoom centralizará no cursor ao invés do centro da tela"
   2138: "{COLOUR WINDOW_2}Tocar música do menu"
