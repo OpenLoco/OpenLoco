@@ -2188,7 +2188,7 @@ strings:
   2132: "{COLOUR WINDOW_2}Faktor mierky okna:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
-  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Priblížiť k polohe kurzora"
   2137: "{SMALLFONT}{COLOUR BLACK}Ak je táto možnosť povolená, priblíženie sa bude orientovať okolo kurzora na rozdiel od stredu obrazovky."
   2138: "{COLOUR WINDOW_2}Prehrávať úvodnú hudbu"
