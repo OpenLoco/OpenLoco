@@ -49,7 +49,7 @@ namespace OpenLoco::World::TileManager
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
-    static loco_global<TileElement*, 0x00F00158> _F00158;
+    static loco_global<const TileElement*, 0x00F00158> _F00158;
     static loco_global<uint32_t, 0x00F00168> _F00168;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
@@ -482,7 +482,7 @@ namespace OpenLoco::World::TileManager
 
     static void clearTilePointers()
     {
-        std::fill(_tiles.begin(), _tiles.end(), kInvalidTile);
+        std::fill(_tiles.begin(), _tiles.end(), const_cast<TileElement*>(kInvalidTile));
     }
 
     // 0x00461348

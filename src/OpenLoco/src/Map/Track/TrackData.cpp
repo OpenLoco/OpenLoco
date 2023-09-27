@@ -339,4 +339,110 @@ namespace OpenLoco::World::TrackData
     {
         return _4F6F8C[trackAndDirection];
     }
+
+    // 0x004F891C
+    constexpr std::array<uint16_t, 44> kTrackCompatibleFlags = {
+        0x0000,
+        0x0001,
+        0x0010,
+        0x0010,
+        0x0008,
+        0x0008,
+        0x0004,
+        0x0004,
+        0x0002,
+        0x0002,
+        0x0002,
+        0x0002,
+        0x0200,
+        0x0200,
+        0x0020,
+        0x0020,
+        0x0040,
+        0x0040,
+        0x0128,
+        0x0128,
+        0x0128,
+        0x0128,
+        0x0148,
+        0x0148,
+        0x0148,
+        0x0148,
+        0x0080,
+        0x0080,
+        0x0090,
+        0x0090,
+        0x0090,
+        0x0090,
+        0x0080,
+        0x0080,
+        0x00C0,
+        0x00C0,
+        0x00C0,
+        0x00C0,
+        0x0080,
+        0x0080,
+        0x0080,
+        0x0080,
+        0x0080,
+        0x0080,
+    };
+
+    uint16_t getTrackCompatibleFlags(size_t trackId)
+    {
+        return kTrackCompatibleFlags[trackId];
+    }
+
+    // 0x004F870C
+    constexpr std::array<uint16_t, 44> kTrackCostFactor = {
+        0x100,
+        0x16A,
+        0x0C9,
+        0x0C9,
+        0x25B,
+        0x25B,
+        0x3ED,
+        0x3ED,
+        0x2BF,
+        0x2BF,
+        0x2BF,
+        0x2BF,
+        0x380,
+        0x380,
+        0x220,
+        0x220,
+        0x138,
+        0x138,
+        0x350,
+        0x350,
+        0x350,
+        0x350,
+        0x41F,
+        0x41F,
+        0x41F,
+        0x41F,
+        0x100,
+        0x100,
+        0x064,
+        0x12D,
+        0x12D,
+        0x064,
+        0x126,
+        0x126,
+        0x138,
+        0x138,
+        0x138,
+        0x138,
+        0x114,
+        0x114,
+        0x114,
+        0x114,
+        0x25B,
+        0x25B,
+    };
+
+    uint16_t getTrackCostFactor(size_t trackId)
+    {
+        return kTrackCostFactor[trackId];
+    }
 }

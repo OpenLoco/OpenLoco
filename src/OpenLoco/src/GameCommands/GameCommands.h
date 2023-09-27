@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
     void registerHooks();
     uint32_t doCommand(GameCommand command, const registers& registers);
     uint32_t doCommandForReal(GameCommand command, CompanyId company, const registers& registers);
-    bool sub_431E6A(const CompanyId company, World::TileElement* const tile = nullptr);
+    bool sub_431E6A(const CompanyId company, const World::TileElement* const tile = nullptr);
 
     template<typename T>
     uint32_t doCommand(const T& args, uint8_t flags)
@@ -366,44 +366,6 @@ namespace OpenLoco::GameCommands
             regs.dl = trackId;
             regs.dh = index;
             regs.bp = type;
-            return regs;
-        }
-    };
-
-    struct TrackModsPlacementArgs
-    {
-        static constexpr auto command = GameCommand::createTrackMod;
-
-        TrackModsPlacementArgs() = default;
-        explicit TrackModsPlacementArgs(const registers& regs)
-            : pos(regs.ax, regs.cx, regs.di)
-            , rotation(regs.bh & 0x3)
-            , trackId(regs.dl & 0x3F)
-            , index(regs.dh & 0x3)
-            , type((regs.edi >> 16) & 0xF)
-            , trackObjType(regs.ebp & 0xFF)
-            , modSection((regs.ebp >> 16) & 0xFF)
-        {
-        }
-
-        World::Pos3 pos;
-        uint8_t rotation;
-        uint8_t trackId;
-        uint8_t index;
-        uint8_t type;
-        uint8_t trackObjType;
-        uint8_t modSection;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.ax = pos.x;
-            regs.cx = pos.y;
-            regs.bh = rotation;
-            regs.dl = trackId;
-            regs.dh = index;
-            regs.edi = pos.z | (type << 16);
-            regs.ebp = trackObjType | (modSection << 16);
             return regs;
         }
     };

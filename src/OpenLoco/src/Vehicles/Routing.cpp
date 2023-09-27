@@ -1,5 +1,7 @@
 #include "Routing.h"
+#include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/GameCommands.h"
 #include "Map/AnimationManager.h"
 #include "Map/SignalElement.h"
 #include "Map/Tile.h"
@@ -7,8 +9,11 @@
 #include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/TrackExtraObject.h"
+#include "Objects/TrackObject.h"
 #include "Vehicle.h"
 #include "ViewportManager.h"
+#include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -16,6 +21,16 @@ namespace OpenLoco::Vehicles
 {
     using namespace OpenLoco::Interop;
     using namespace OpenLoco::World;
+
+    enum class TrackNetworkSearchFlags : uint16_t
+    {
+        none = 0,
+
+        unk0 = 1U << 0,
+        unk1 = 1U << 1,
+        unk2 = 1U << 2,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackNetworkSearchFlags);
 
     struct LocationOfInterest
     {
@@ -130,7 +145,7 @@ namespace OpenLoco::Vehicles
             return ((((interest.loc.x ^ interest.loc.z) / 32) ^ interest.loc.y) ^ interest.trackAndDirection) & mapSizeMask;
         }
 
-        // 0x004A38DE
+        // 0x004A38DE & 0x004A3972
         bool tryAdd(LocationOfInterest& interest)
         {
             auto index = hash(interest);
@@ -160,18 +175,20 @@ namespace OpenLoco::Vehicles
         }
     };
 
-    // using FilterFunction = bool (*)(const LocationOfInterest& interest);
-    // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap);
+    // using FilterFunction = bool (*)(const LocationOfInterest& interest);          // TODO C++20 make these concepts
+    // using TransformFunction = void (*)(const LocationOfInterestHashMap& hashMap); // TODO C++20 make these concepts
+
     constexpr auto kNullTransformFunction = [](const LocationOfInterestHashMap&) {};
 
     // static loco_global<FilterFunction, 0x01135F0E> _filterFunction; // Note: No longer passed by global
-    static loco_global<uint32_t, 0x01135F0A> _1135F0A;
-    static loco_global<uint16_t, 0x01135FA6> _1135FA6;
+    // static loco_global<uint32_t, 0x01135F0A> _hashMapSize;          // Note: No longer passed by global
     // static loco_global<TransformFunction, 0x01135F12> _transformFunction; // Note: No longer passed by global
-    static loco_global<uint8_t, 0x01136085> _1136085;
     // static loco_global<LocationOfInterestHashMap*, 0x01135F06> _1135F06; // Note: No longer binary identical so never set this
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
     // static loco_global<uint16_t, 0x001135F88> _routingTransformData; // Note: No longer passed by global
+
+    static loco_global<TrackNetworkSearchFlags, 0x01135FA6> _findTrackNetworkFlags;
+    static loco_global<uint8_t, 0x01136085> _1136085;
+    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
 
     static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
@@ -487,12 +504,12 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap);
 
-    // 0x004A313B
+    // 0x004A313B & 0x004A35B7
     // Iterates all individual tiles of a track piece to find tracks that need inspection
     template<typename FilterFunction>
     static void findAllUsableTrackPieces(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& interest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
-        if (!(_1135FA6 & (1 << 2)))
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk2) == TrackNetworkSearchFlags::none)
         {
             return;
         }
@@ -584,7 +601,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004A2FE6
+    // 0x004A2FE6 & 0x004A3462
     template<typename FilterFunction>
     static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
@@ -617,7 +634,7 @@ namespace OpenLoco::Vehicles
             _1136085 = *_1136085 | (1 << 0);
         }
 
-        if (!(_1135FA6 & (1 << 1)))
+        if ((_findTrackNetworkFlags & TrackNetworkSearchFlags::unk1) == TrackNetworkSearchFlags::none)
         {
             // odd logic here clearing a flag in a branch that can never hit
             auto nextLoc = initialInterest.loc;
@@ -648,17 +665,19 @@ namespace OpenLoco::Vehicles
     }
 
     constexpr size_t kSignalHashMapSize = 0x400;
+    constexpr size_t kTrackModHashMapSize = 0x1000;
 
-    // 0x004A2E46
+    // 0x004A2E46 & 0x004A2DE4
     template<typename FilterFunction, typename TransformFunction>
-    static void findAllTracksFilterTransform(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    static void findAllTracksFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
     {
-        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
         // _transformFunction = transformFunction;
-        _1135F0A = 0;
-        _1135FA6 = 5; // flags
+        // _1135F0A = 0;
+
+        _findTrackNetworkFlags = searchFlags;
+
         // Note: This function and its call chain findAllUsableTrackInNetwork and findAllUsableTrackPieces have been modified
         // to not be recursive anymore.
         std::vector<LocationOfInterest> trackToCheck{ LocationOfInterest{ loc, trackAndDirection._data, company, trackType } };
@@ -679,19 +698,222 @@ namespace OpenLoco::Vehicles
 
         auto filterFunction = [&routingTransformData](const LocationOfInterest& interest) { return findOccupationByBlock(interest, routingTransformData); };
         auto transformFunction = [&routingTransformData](const LocationOfInterestHashMap& interestMap) { setSignalsOccupiedState(interestMap, routingTransformData); };
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
 
         findAllTracksFilterTransform(
-            loc, trackAndDirection, company, trackType, filterFunction, transformFunction);
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            filterFunction,
+            transformFunction);
     }
 
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t unk = 0;
-
+        LocationOfInterestHashMap interestMap{ kSignalHashMapSize };
         auto filterFunction = [&unk](const LocationOfInterest& interest) { return sub_4A2D4C(interest, unk); };
-        findAllTracksFilterTransform(loc, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+
+        findAllTracksFilterTransform(
+            interestMap,
+            TrackNetworkSearchFlags::unk0 | TrackNetworkSearchFlags::unk2,
+            loc,
+            trackAndDirection,
+            company,
+            trackType,
+            filterFunction,
+            kNullTransformFunction);
 
         return unk;
+    }
+
+    // 0x004A5D94
+    static bool applyTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId, bool& hasFailedAllPlacement)
+    {
+        // If not in single segment mode then we should add the reverse
+        // direction of track to the hashmap to prevent it being visited.
+        // This is because track mods do not have directions so applying
+        // to the reverse would do nothing (or worse double spend)
+        if (hashMap != nullptr)
+        {
+            LocationOfInterest reverseInterest = interest;
+            reverseInterest.loc = interest.loc;
+            const auto tad = interest.tad();
+            auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+            reverseInterest.loc += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reverseInterest.loc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
+
+            hashMap->tryAdd(reverseInterest);
+        }
+
+        auto* trackObj = ObjectManager::get<TrackObject>(trackObjectId);
+        bool placementFailure = false;
+
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (!(trackModObjectIds & (1U << i)))
+            {
+                continue;
+            }
+
+            auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
+
+            const auto pieceFlags = TrackData::getTrackCompatibleFlags(interest.tad().id());
+            if ((trackModObj->trackPieces & pieceFlags) != pieceFlags)
+            {
+                //_1135F64 |= (1 << 0); placement failed at least once
+                placementFailure = true;
+                break;
+            }
+        }
+
+        if (!placementFailure)
+        {
+            auto trackStart = interest.loc;
+            const auto tad = interest.tad();
+            if (tad.isReversed())
+            {
+                auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+                trackStart += trackSize.pos;
+                if (trackSize.rotationEnd < 12)
+                {
+                    trackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                }
+            }
+
+            for (auto& trackPiece : TrackData::getTrackPiece(tad.id()))
+            {
+                auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, tad.cardinalDirection()), 0 };
+                trackLoc.z += trackPiece.z;
+
+                auto tile = TileManager::get(trackLoc);
+                World::TrackElement* elTrack = nullptr;
+                for (auto& el : tile)
+                {
+                    elTrack = el.as<World::TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elTrack->baseHeight() != trackLoc.z)
+                    {
+                        continue;
+                    }
+                    if (elTrack->unkDirection() != tad.cardinalDirection())
+                    {
+                        continue;
+                    }
+                    if (elTrack->sequenceIndex() != trackPiece.index)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackObjectId() != trackObjectId)
+                    {
+                        continue;
+                    }
+                    if (elTrack->trackId() != tad.id())
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+                if (elTrack == nullptr)
+                {
+                    placementFailure = true;
+                    break;
+                }
+
+                if (trackPiece.index == 0)
+                {
+                    // increment successful placement count
+                    hasFailedAllPlacement = false;
+                    // For each track mod
+                    //   Get mod cost (changes depending on track id)
+                    for (auto i = 0; i < 4; ++i)
+                    {
+                        if (!(trackModObjectIds & (1U << i)))
+                        {
+                            continue;
+                        }
+                        if (elTrack->mods() & (1U << i))
+                        {
+                            continue;
+                        }
+
+                        auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
+                        const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->buildCostFactor, trackModObj->costIndex, 10);
+                        const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                        totalCost += cost;
+                    }
+                }
+
+                if (flags & GameCommands::Flags::apply)
+                {
+                    bool invalidate = false;
+                    if (flags & GameCommands::Flags::ghost)
+                    {
+                        if (CompanyManager::getControllingId() == companyId)
+                        {
+                            elTrack->setHasGhostMods(true);
+                            invalidate = true;
+                        }
+                    }
+                    else
+                    {
+                        for (auto i = 0; i < 4; ++i)
+                        {
+                            if (trackModObjectIds & (1U << i))
+                            {
+                                elTrack->setMod(i, true);
+                            }
+                        }
+                        invalidate = true;
+                    }
+                    if (invalidate)
+                    {
+                        Ui::ViewportManager::invalidate(trackLoc, elTrack->baseHeight(), elTrack->clearHeight(), ZoomLevel::half);
+                    }
+                }
+            }
+        }
+
+        if (modSelection == 1)
+        {
+            return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
+        }
+        return false;
+    }
+
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    {
+        ApplyTrackModsResult result{};
+        result.cost = 0;
+        result.allPlacementsFailed = true;
+        result.networkTooComplex = false;
+
+        if (modSelection == 0)
+        {
+            LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
+            applyTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+            return result;
+        }
+
+        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+
+        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &result, company, &interestHashMap](const LocationOfInterest& interest) {
+            return applyTrackModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, result.cost, company, result.allPlacementsFailed);
+        };
+        findAllTracksFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
+        return result;
     }
 }

@@ -343,7 +343,7 @@ namespace OpenLoco::StringIds
     constexpr string_id single_section = 348;
     constexpr string_id block_section = 349;
     constexpr string_id all_connected_track = 350;
-
+    constexpr string_id too_much_track_some_track_not_upgraded = 351;
     constexpr string_id upgrade_track_with_mods = 352;
     constexpr string_id click_track_to_upgrade = 353;
     constexpr string_id tooltip_select_track_mod = 354;
@@ -548,6 +548,7 @@ namespace OpenLoco::StringIds
     constexpr string_id town_size_town = 619;
     constexpr string_id town_size_city = 620;
     constexpr string_id town_size_metropolis = 621;
+    constexpr string_id track_road_unsuitable = 622;
 
     constexpr string_id signals_cannot_be_built_on_a_junction = 624;
     constexpr string_id signals_cannot_be_built_on_a_junction_2 = 625; // identical to 624
