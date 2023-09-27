@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdio>
 #include <iterator>
@@ -96,7 +97,7 @@ namespace OpenLoco::EntityManager
         {
             if (entity == nullptr)
             {
-                throw "Bad Entity List!";
+                throw Exception::RuntimeError("Bad Entity List!");
             }
             return entity;
         }

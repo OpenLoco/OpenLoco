@@ -86,7 +86,7 @@ namespace OpenLoco
         {
             std::byte* const nextOffset = reinterpret_cast<std::byte*>(reinterpret_cast<std::byte*>(_buffer) + size);
             if (nextOffset > _bufferStart + _length)
-                throw std::out_of_range("FormatArguments: attempting to advance outside of buffer");
+                throw Exception::OutOfRange("FormatArguments: attempting to advance outside of buffer");
             return nextOffset;
         }
     };

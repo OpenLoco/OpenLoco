@@ -677,12 +677,12 @@ namespace OpenLoco::GameCommands
                 auto veh1 = _head->nextVehicleComponent();
                 if (veh1 == nullptr)
                 {
-                    throw std::runtime_error("Bad vehicle structure");
+                    throw Exception::RuntimeError("Bad vehicle structure");
                 }
                 auto veh2 = veh1->nextVehicleComponent();
                 if (veh2 == nullptr)
                 {
-                    throw std::runtime_error("Bad vehicle structure");
+                    throw Exception::RuntimeError("Bad vehicle structure");
                 }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing

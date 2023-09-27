@@ -18,6 +18,7 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/StationManager.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
 
 #include <sstream>
@@ -406,7 +407,7 @@ namespace OpenLoco::Vehicles::OrderManager
             auto orderType = rawOrder & 0x7;
             if (orderType >= std::size(kOrderSizes))
             {
-                throw std::out_of_range("Order type is greater than the order size table");
+                throw Exception::OutOfRange("Order type is greater than the order size table");
             }
             auto orderLength = kOrderSizes[orderType];
             std::memcpy(dest, &rawOrder, orderLength);
