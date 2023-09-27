@@ -2187,7 +2187,7 @@ strings:
   2132: "{COLOUR WINDOW_2}窗口缩放等级:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
-  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}缩放至光标位置"
   2137: "{SMALLFONT}{COLOUR BLACK}启用时, 会在光标周围放大, 而不是屏幕中心."
   2138: "{COLOUR WINDOW_2}播放标题画面音乐"
