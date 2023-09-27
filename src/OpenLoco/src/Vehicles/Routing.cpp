@@ -896,8 +896,10 @@ namespace OpenLoco::Vehicles
     // 0x004A6136
     static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
     {
-        // If called from routing add reverse direction of track
-        // This is because track mods do not have directions.
+        // If not in single segment mode then we should add the reverse
+        // direction of track to the hashmap to prevent it being visited.
+        // This is because track mods do not have directions so applying
+        // to the reverse would do nothing (or worse double spend)
         if (hashMap != nullptr)
         {
             LocationOfInterest reverseInterest = interest;
