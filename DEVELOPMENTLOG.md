@@ -1,5 +1,49 @@
 # OpenLoco version 23.08.1+ (???)
 
+A bit of a quite month compared to last one but there was still a good bit of work done.
+
+## Drawing engine refactoring
+
+@ZehMatt has been working on improving the drawing engine getting it into a better state for seperating the rendering of the UI from the game viewport.
+This month its cleaning up the invalidation grid that tells the game what parts of the game viewport need to be redrawn.
+A poorly optimised invalidation grid will cause decreased frame rates and can be the source of graphical z-fighting.
+
+## Load company face from company name
+
+A little known feature of Locomotion is that you can change your company face image by typing in your company name as the name of a different company object.
+We only found out about this feature when implementing the function that did it.
+
+## General refactoring and cleanup
+
+@memellis has been working on reducing the number of global variables in the codebase by using the existing game state global.
+This is an important task that needs to be completed before we can start looking at increasing limits of OpenLocoand it improves the structure of the codebase.
+@NEJulnes fixed a long standing mistake in our variable names and localisation files related to formatting of fixed precision numbers.
+Turns out we have two decimal place fixed precision and also one decimal place.
+@ilmoro93 attempted to build the project on Windows and realised our setup instructions were incorrect!
+Thanks for fixing that, its always important to have easy to follow setup instructions as it often scares off contributors if they are incorrect.
+@LeftOfZen fixed a couple of typos in the codebase (sorry I think I added them...) and addressed static analysis warnings.
+Static analysis warnings are important to stay on top of, they often indicate poorly written code or bugs (or both).
+
+## Create Track Mod game command
+
+Track mods are what we call things like the third rail on track.
+The game command for placing them is quite complex and requires iterating along the rail track to ensure it is being placed on the whole track network or track block.
+Now that its been completed we have a much better understanding of how track iteration works in the game.
+This should hopefully be the gateway to having an automatic signal placement feature.
+
+## Expert mode object selection
+
+@AaronVanGeffen worked on a few Ui related items this month but the main one was the expert mode for the object selection.
+When in expert mode every single object type is shown to the player.
+In addition Aaron added filter options so that the object selection only shows vanilla Locomotion objects or only custom objects (or both).
+Hopefully this should make things easier for scenario makers to find the objects they wish to add.
+
+## Draw string ticker
+
+When news items are generated in the game they can be set to create a newspaper like window or they can be sent to the news ticker in the bottom right corner of the screen.
+The ticker message has a surprisingly complex bit of code for drawing the message so hadn't been implemented.
+Now that it has been done its showing some of the issues we have in the codebase related to string drawing.
+Over the next few months we hope to improve string drawing and eventually it would be good to be able to display non-latin languages!
 
 # OpenLoco version 23.08.1 (2023-08-30)
 
