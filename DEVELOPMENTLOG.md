@@ -1,4 +1,4 @@
-# OpenLoco version 23.08.1+ (???)
+# OpenLoco version 23.09 (2023-09-28)
 
 A bit of a quiet month compared to last one, but there was still a good bit of work done.
 
