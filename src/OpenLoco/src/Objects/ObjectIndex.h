@@ -27,6 +27,8 @@ namespace OpenLoco::ObjectManager
         ObjectHeader3* _displayData;
         char* _filename;
         char* _name;
+        stdx::span<ObjectHeader> _requiredObjects;
+        stdx::span<ObjectHeader> _alsoLoadObjects;
 
         static ObjectIndexEntry read(std::byte** ptr);
     };

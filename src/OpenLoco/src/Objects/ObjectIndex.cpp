@@ -440,11 +440,21 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
+    static std::optional<std::pair<ObjectIndexId, ObjectIndexEntry>> internalFindObjectInIndex(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
         if (res == std::end(objects))
+        {
+            return std::nullopt;
+        }
+        return *res;
+    }
+
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
+    {
+        auto res = internalFindObjectInIndex(objectHeader);
+        if (!res.has_value())
         {
             return std::nullopt;
         }
@@ -472,6 +482,126 @@ namespace OpenLoco::ObjectManager
         return { -1, ObjectIndexEntry{} };
     }
 
+    // 0x00473D1D
+    static bool windowEditorObjectSelectionSelectObject(uint8_t bl, uint8_t bh, const ObjectHeader& objHeader, stdx::span<SelectedObjectsFlags> objectFlags)
+    {
+        if (bh == 0)
+        {
+            // Vanilla had a few pointless no side effect loops here
+        }
+
+        auto objIndexEntry = internalFindObjectInIndex(objHeader);
+        if (!objIndexEntry.has_value())
+        {
+            auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2042));
+            buffer = strcpy(buffer, "Data for the following object not found: ");
+            objectCreateIdentifierName(buffer, objHeader);
+            GameCommands::setErrorText(StringIds::buffer_2042);
+            if (bh != 0)
+            {
+                resetSelectedObjectCountAndSize();
+            }
+            return false;
+        }
+
+        auto& [index, entry] = *objIndexEntry;
+
+        auto& val = objectFlags[index];
+
+        if (bl & (1u << 0))
+        {
+            if (bh == 0)
+            {
+                if (bl & (1u << 3)) // check!
+                {
+                    val |= SelectedObjectsFlags::alwaysRequired;
+                }
+            }
+
+            if ((val & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+            {
+                if (bh == 0)
+                {
+                    call(0x004740CF);
+                }
+                return true;
+            }
+
+            if (numSelected[objHeader.getType()] >= getMaxObjects(objHeader.getType()))
+            {
+                GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            for (const auto& header : entry._requiredObjects)
+            {
+                if (!windowEditorObjectSelectionSelectObject(bl, 1, header, objectFlags))
+                {
+                    if (bh != 0)
+                    {
+                        resetSelectedObjectCountAndSize();
+                    }
+                    return false;
+                }
+            }
+
+            for (const auto& header : entry._alsoLoadObjects)
+            {
+                if (bl & (1U << 2))
+                {
+                    windowEditorObjectSelectionSelectObject(bl, 1, header, objectFlags);
+                }
+            }
+
+            if (bh != 0 && !(bl & (1U << 1)))
+            {
+                auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2045));
+                buffer = strcpy(buffer, "The following object must be selected first: ");
+                objectCreateIdentifierName(buffer, objHeader);
+                GameCommands::setErrorText(StringIds::buffer_2045);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            if (entry._displayData->numImages + _112C209 > 0x40000)
+            {
+                GameCommands::setErrorText(StringIds::not_enough_space_for_graphics);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            // Its possible that we have loaded other objects so check again
+            if (numSelected[objHeader.getType()] >= getMaxObjects(objHeader.getType()))
+            {
+                GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            _112C209 += entry._displayData->numImages;
+            numSelected[objHeader.getType()]++;
+            val |= SelectedObjectsFlags::selected;
+            if (bh == 0)
+            {
+                call(0x004740CF);
+            }
+            return true;
+        }
+    }
+
     ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
     {
         ObjectIndexEntry entry{};
@@ -493,6 +623,7 @@ namespace OpenLoco::ObjectManager
         *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
+        entry._requiredObjects = stdx::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
         *ptr += sizeof(uint8_t);
         for (int n = 0; n < *countA; n++)
         {
@@ -501,6 +632,7 @@ namespace OpenLoco::ObjectManager
         }
 
         uint8_t* countB = (uint8_t*)*ptr;
+        entry._alsoLoadObjects = stdx::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
         *ptr += sizeof(uint8_t);
         for (int n = 0; n < *countB; n++)
         {

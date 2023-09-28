@@ -127,6 +127,7 @@ namespace OpenLoco::ObjectManager
     {
         uint32_t decodedFileSize;
     };
+    static_assert(sizeof(ObjectHeader2) == 0x4);
 
     struct ObjectHeader3
     {
@@ -137,6 +138,7 @@ namespace OpenLoco::ObjectManager
         uint8_t vehicleSubType;  // 0x7
         uint8_t pad_08[0x4];
     };
+    static_assert(sizeof(ObjectHeader3) == 0xC);
 
 #pragma pack(pop)
 
