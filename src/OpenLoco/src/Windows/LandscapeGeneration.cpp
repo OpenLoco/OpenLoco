@@ -1068,8 +1068,15 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::number_of_towns_down:
                 {
-                    uint16_t newNumTowns = std::max<uint16_t>(Limits::kMinTowns, options.numberOfTowns - 1);
-                    options.numberOfTowns = newNumTowns;
+                    // Vanilla behaviour: Zero-town map generation is allowed in the scenario editor and
+                    // is checked on the editor stage progression for non-zero. It is required to be non-zero
+                    // for gameplay since industries must have at least one associated town. The user must
+                    // manually place at least one town if they generate a landscape with zero towns.
+                    if (options.numberOfTowns > 0)
+                    {
+                        uint16_t newNumTowns = std::max<uint16_t>(Limits::kMinTowns - 1, options.numberOfTowns - 1);
+                        options.numberOfTowns = newNumTowns;
+                    }
                     window.invalidate();
                     break;
                 }
