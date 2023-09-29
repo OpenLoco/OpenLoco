@@ -482,6 +482,47 @@ namespace OpenLoco::ObjectManager
         return { -1, ObjectIndexEntry{} };
     }
 
+    // 0x0047400C
+    static void setObjectIsRequiredByAnother(stdx::span<SelectedObjectsFlags> objectFlags, const ObjectHeader& objHeader)
+    {
+        const auto res = internalFindObjectInIndex(objHeader);
+        if (!res.has_value())
+        {
+            return;
+        }
+        auto& [index, entry] = *res;
+        objectFlags[index] |= SelectedObjectsFlags::requiredByAnother;
+
+        for (auto& objHeader2 : entry._requiredObjects)
+        {
+            setObjectIsRequiredByAnother(objectFlags, objHeader2);
+        }
+    }
+
+    // 0x004740CF
+    static void refreshRequiredByAnother(stdx::span<SelectedObjectsFlags> objectFlags)
+    {
+        for (auto& val : objectFlags)
+        {
+            val &= ~SelectedObjectsFlags::requiredByAnother;
+        }
+
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+            if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+            {
+                continue;
+            }
+
+            for (auto& objHeader : entry._requiredObjects)
+            {
+                setObjectIsRequiredByAnother(objectFlags, objHeader);
+            }
+        }
+    }
+
     // 0x00473D1D
     static bool windowEditorObjectSelectionSelectObject(uint8_t bl, uint8_t bh, const ObjectHeader& objHeader, stdx::span<SelectedObjectsFlags> objectFlags)
     {
@@ -522,7 +563,7 @@ namespace OpenLoco::ObjectManager
             {
                 if (bh == 0)
                 {
-                    call(0x004740CF);
+                    refreshRequiredByAnother(objectFlags);
                 }
                 return true;
             }
@@ -596,7 +637,7 @@ namespace OpenLoco::ObjectManager
             val |= SelectedObjectsFlags::selected;
             if (bh == 0)
             {
-                call(0x004740CF);
+                refreshRequiredByAnother(objectFlags);
             }
             return true;
         }
@@ -606,7 +647,7 @@ namespace OpenLoco::ObjectManager
             {
                 if (bh == 0)
                 {
-                    call(0x004740CF);
+                    refreshRequiredByAnother(objectFlags);
                 }
                 return true;
             }
@@ -655,7 +696,7 @@ namespace OpenLoco::ObjectManager
             val &= ~SelectedObjectsFlags::selected;
             if (bh == 0)
             {
-                call(0x004740CF);
+                refreshRequiredByAnother(objectFlags);
             }
             return true;
         }
