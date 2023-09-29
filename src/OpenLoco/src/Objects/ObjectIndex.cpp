@@ -512,7 +512,7 @@ namespace OpenLoco::ObjectManager
         {
             if (bh == 0)
             {
-                if (bl & (1u << 3)) // check!
+                if (bl & (1u << 3))
                 {
                     val |= SelectedObjectsFlags::alwaysRequired;
                 }
@@ -594,6 +594,65 @@ namespace OpenLoco::ObjectManager
             _112C209 += entry._displayData->numImages;
             numSelected[objHeader.getType()]++;
             val |= SelectedObjectsFlags::selected;
+            if (bh == 0)
+            {
+                call(0x004740CF);
+            }
+            return true;
+        }
+        else
+        {
+            if ((val & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+            {
+                if (bh == 0)
+                {
+                    call(0x004740CF);
+                }
+                return true;
+            }
+
+            if ((val & SelectedObjectsFlags::inUse) != SelectedObjectsFlags::none)
+            {
+                GameCommands::setErrorText(StringIds::this_object_is_currently_in_use);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            if ((val & SelectedObjectsFlags::requiredByAnother) != SelectedObjectsFlags::none)
+            {
+                GameCommands::setErrorText(StringIds::this_object_is_required_by_another_object);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            // Note: Not used in Locomotion (RCT2 only)
+            if ((val & SelectedObjectsFlags::alwaysRequired) != SelectedObjectsFlags::none)
+            {
+                GameCommands::setErrorText(StringIds::this_object_is_always_required);
+                if (bh != 0)
+                {
+                    resetSelectedObjectCountAndSize();
+                }
+                return false;
+            }
+
+            for (const auto& header : entry._alsoLoadObjects)
+            {
+                if (bl & (1U << 2))
+                {
+                    windowEditorObjectSelectionSelectObject(bl, 1, header, objectFlags);
+                }
+            }
+
+            _112C209 -= entry._displayData->numImages;
+            numSelected[objHeader.getType()]--;
+            val &= ~SelectedObjectsFlags::selected;
             if (bh == 0)
             {
                 call(0x004740CF);
