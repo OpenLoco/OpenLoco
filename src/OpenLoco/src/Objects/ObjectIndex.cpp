@@ -461,13 +461,13 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472AFE
-    ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi)
+    ObjIndexPair getActiveObject(ObjectType objectType, stdx::span<SelectedObjectsFlags> objectIndexFlags)
     {
         const auto objects = getAvailableObjects(objectType);
 
         for (auto [index, object] : objects)
         {
-            if (edi[index] & (1 << 0))
+            if ((objectIndexFlags[index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
                 return { static_cast<int16_t>(index), object };
             }

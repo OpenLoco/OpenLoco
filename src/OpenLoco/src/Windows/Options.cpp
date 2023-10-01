@@ -38,9 +38,14 @@ namespace OpenLoco::Ui::Windows::Options
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _lastSong;
 
-    // Should be a pointer to an array of u8's
-    static loco_global<void*, 0x011364A0> __11364A0;
+    // Pointer to an array of SelectedObjectsFlags
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
+
+    stdx::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
+    {
+        return stdx::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
+    }
 
     static void onClose([[maybe_unused]] Window& w)
     {
@@ -1532,7 +1537,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0C73
         static void currencyMouseDown(Window* w)
         {
-            uint8_t* _11364A0 = (uint8_t*)*__11364A0;
+            const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
             Widget dropdown = w->widgets[Widx::currency];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
@@ -1542,7 +1547,7 @@ namespace OpenLoco::Ui::Windows::Options
                 index++;
                 Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
 
-                if (_11364A0[object.first] & 1)
+                if ((selectedObjectFlags[object.first] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     Dropdown::setItemSelected(index);
                 }
@@ -1558,7 +1563,7 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            uint8_t* _11364A0 = (uint8_t*)*__11364A0;
+            const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
             int index = -1;
             for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
@@ -1566,7 +1571,7 @@ namespace OpenLoco::Ui::Windows::Options
                 index++;
                 if (index == ax)
                 {
-                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, _11364A0);
+                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, selectedObjectFlags);
 
                     if (ebp.index != -1)
                     {
@@ -2414,7 +2419,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void sub_4BF8CD()
     {
-        auto ptr = malloc(ObjectManager::getNumInstalledObjects());
+        auto ptr = static_cast<ObjectManager::SelectedObjectsFlags*>(malloc(ObjectManager::getNumInstalledObjects()));
         // TODO: reimplement nullptr check?
 
         __11364A0 = ptr;

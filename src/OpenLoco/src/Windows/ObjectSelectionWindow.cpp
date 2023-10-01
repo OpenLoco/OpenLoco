@@ -157,7 +157,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
-    static loco_global<uint8_t*, 0x50D144> _objectSelection;
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
+
+    stdx::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
+    {
+        return stdx::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
+    }
 
     static loco_global<uint16_t, 0x0052334A> _mousePosX;
     static loco_global<uint16_t, 0x0052334C> _mousePosY;
@@ -423,9 +428,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00472BBC
     static ObjectManager::ObjIndexPair getFirstAvailableSelectedObject([[maybe_unused]] Window* self)
     {
+        const auto selectionFlags = getSelectedObjectFlags();
         for (auto& entry : _tabObjectList)
         {
-            if (_objectSelection[entry.index] & (1 << 0))
+            if ((selectionFlags[entry.index] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
             {
                 return { static_cast<int16_t>(entry.index), entry.object };
             }
@@ -1011,6 +1017,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
 
+        const auto selectionFlags = getSelectedObjectFlags();
         int y = 0;
         for (auto& entry : _tabObjectList)
         {
@@ -1043,7 +1050,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 }
             }
 
-            if (_objectSelection[entry.index] & (1 << 0))
+            using namespace ObjectManager;
+
+            if ((selectionFlags[entry.index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
                 auto x = 2;
                 drawingCtx.setCurrentFontSpriteBase(Font::m2);
@@ -1055,7 +1064,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
 
-                if (_objectSelection[entry.index] & 0x1C)
+                if ((selectionFlags[entry.index] & (SelectedObjectsFlags::inUse | SelectedObjectsFlags::requiredByAnother | SelectedObjectsFlags::alwaysRequired)) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     checkColour = checkColour.inset();
                 }
@@ -1323,11 +1332,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto type = objIndex.object._header->getType();
 
+        const auto selectionFlags = getSelectedObjectFlags();
         if (ObjectManager::getMaxObjects(type) == 1)
         {
-            if (!(_objectSelection[index] & (1 << 0)))
+            if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
             {
-                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, _objectSelection);
+                auto [oldIndex, oldObject] = ObjectManager::getActiveObject(type, selectionFlags);
 
                 if (oldIndex != -1)
                 {
@@ -1338,7 +1348,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto bx = 0;
 
-        if (!(_objectSelection[index] & (1 << 0)))
+        if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
         {
             bx |= (1 << 0); // Selection mode
         }
@@ -1361,12 +1371,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00474821
     static void unloadUnselectedObjects()
     {
+        const auto selectionFlags = getSelectedObjectFlags();
         for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
             auto objects = ObjectManager::getAvailableObjects(type);
             for (auto [i, object] : objects)
             {
-                if (!(_objectSelection[i] & (1 << 0)))
+                if ((selectionFlags[i] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
                 {
                     ObjectManager::unload(*object._header);
                 }
@@ -1377,12 +1388,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00474874
     static void editorLoadSelectedObjects()
     {
+        const auto selectionFlags = getSelectedObjectFlags();
         for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
             auto objects = ObjectManager::getAvailableObjects(type);
             for (auto [i, object] : objects)
             {
-                if (_objectSelection[i] & (1 << 0))
+                if ((selectionFlags[i] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     if (!ObjectManager::findObjectHandle(*object._header))
                     {
