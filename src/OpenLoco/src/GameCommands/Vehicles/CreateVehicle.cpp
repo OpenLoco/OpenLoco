@@ -394,9 +394,9 @@ namespace OpenLoco::GameCommands
 
     static void sub_470312(VehicleHead* const newHead)
     {
-        _987C5C[OrderManager::numOrders()] = 0;
-        newHead->orderTableOffset = OrderManager::numOrders();
-        OrderManager::numOrders()++;
+        _987C5C[OrderManager::orderTableLength()] = 0;
+        newHead->orderTableOffset = OrderManager::orderTableLength();
+        OrderManager::orderTableLength()++;
         newHead->currentOrder = 0;
         newHead->sizeOfOrderTable = 1;
     }
@@ -584,7 +584,7 @@ namespace OpenLoco::GameCommands
             return {};
         }
 
-        if (OrderManager::numOrders() >= Limits::kMaxOrders)
+        if (OrderManager::orderTableLength() >= Limits::kMaxOrders)
         {
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
