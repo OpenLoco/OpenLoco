@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::Options
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
 
-    stdx::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
+    static stdx::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
     {
         return stdx::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
     }
