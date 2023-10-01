@@ -51,7 +51,6 @@ namespace OpenLoco::GameCommands
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A;                   // used by build window and others
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;          // total used length of _987C5C
     static loco_global<uint8_t[Limits::kMaxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 
     // 0x004B1D96
@@ -395,9 +394,9 @@ namespace OpenLoco::GameCommands
 
     static void sub_470312(VehicleHead* const newHead)
     {
-        _987C5C[_orderTableLength] = 0;
-        newHead->orderTableOffset = _orderTableLength;
-        _orderTableLength++;
+        _987C5C[OrderManager::numOrders()] = 0;
+        newHead->orderTableOffset = OrderManager::numOrders();
+        OrderManager::numOrders()++;
         newHead->currentOrder = 0;
         newHead->sizeOfOrderTable = 1;
     }
@@ -585,7 +584,7 @@ namespace OpenLoco::GameCommands
             return {};
         }
 
-        if (_orderTableLength >= Limits::kMaxOrders)
+        if (OrderManager::numOrders() >= Limits::kMaxOrders)
         {
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
