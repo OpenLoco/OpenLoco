@@ -95,16 +95,16 @@ namespace OpenLoco::Vehicles::OrderManager
     const std::vector<NumDisplayFrame>& displayFrames() { return _displayFrames; }
 
     Order* orders() { return reinterpret_cast<Order*>(getGameState().orders); }
-    uint32_t& numOrders() { return getGameState().numOrders; }
+    uint32_t& orderTableLength() { return getGameState().orderTableLength; }
 
     void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy)
     {
-        std::rotate(&orders()[offsetToShiftTowards], &orders()[offsetToShiftTowards + sizeToShiftBy], &orders()[numOrders()]);
+        std::rotate(&orders()[offsetToShiftTowards], &orders()[offsetToShiftTowards + sizeToShiftBy], &orders()[orderTableLength()]);
     }
 
     void shiftOrdersRight(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy)
     {
-        std::rotate(&orders()[offsetToShiftFrom], &orders()[numOrders()], &orders()[numOrders() + sizeToShiftBy]);
+        std::rotate(&orders()[offsetToShiftFrom], &orders()[orderTableLength()], &orders()[orderTableLength() + sizeToShiftBy]);
     }
 
     // 0x00470795
@@ -121,7 +121,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
     bool spaceLeftInGlobalOrderTableForOrder(const Order* order)
     {
-        return numOrders() + kOrderSizes[enumValue(order->getType())] <= Limits::kMaxOrders;
+        return orderTableLength() + kOrderSizes[enumValue(order->getType())] <= Limits::kMaxOrders;
     }
 
     bool spaceLeftInVehicleOrderTable(VehicleHead* head)
@@ -149,7 +149,7 @@ namespace OpenLoco::Vehicles::OrderManager
         // Shift existing orders to make room for the new one
         shiftOrdersRight(head->orderTableOffset + orderOffset, insOrderLength);
         // Bookkeeping: change order table size
-        numOrders() += insOrderLength;
+        orderTableLength() += insOrderLength;
 
         // Calculate destination offset and copy data
         auto rawOrder = order->getRaw();
@@ -186,7 +186,7 @@ namespace OpenLoco::Vehicles::OrderManager
         shiftOrdersLeft(head->orderTableOffset + orderOffset, removeOrderSize);
 
         // Bookkeeping: change order table size
-        numOrders() -= removeOrderSize;
+        orderTableLength() -= removeOrderSize;
 
         // Compensate other vehicles to use new table offsets
         reoffsetVehicleOrderTables(head->orderTableOffset + orderOffset + 1, -removeOrderSize);
@@ -211,7 +211,7 @@ namespace OpenLoco::Vehicles::OrderManager
         // Shift orders table left to remove empty orders
         shiftOrdersLeft(offset, size);
 
-        numOrders() -= head->sizeOfOrderTable;
+        orderTableLength() -= head->sizeOfOrderTable;
     }
 
     // 0x00470B76
@@ -446,7 +446,7 @@ namespace OpenLoco::Vehicles::OrderManager
     // TODO: remove this at some point in 2024 or so
     void fixCorruptWaypointOrders()
     {
-        for (auto orderOffset = 0U; orderOffset < numOrders();)
+        for (auto orderOffset = 0U; orderOffset < orderTableLength();)
         {
             auto* order = reinterpret_cast<Order*>(&orders()[orderOffset]);
             auto orderLength = kOrderSizes[enumValue(order->getType())];

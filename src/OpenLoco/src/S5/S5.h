@@ -318,7 +318,7 @@ namespace OpenLoco::S5
         uint8_t currentSeason;                                                           // 0x00019D (0x00525FB5)
         uint8_t lastLandOption;                                                          // 0x00019E (0x00525FB6)
         uint8_t maxCompetingCompanies;                                                   // 0x00019F (0x00525FB7)
-        uint32_t numOrders;                                                              // 0x0001A0 (0x00525FB8)
+        uint32_t orderTableLength;                                                       // 0x0001A0 (0x00525FB8)
         uint32_t var_1A4;                                                                // 0x0001A4 (0x00525FBC)
         uint32_t var_1A8;                                                                // 0x0001A8 (0x00525FC0)
         uint8_t var_1AC;                                                                 // 0x0001AC (0x00525FC4)

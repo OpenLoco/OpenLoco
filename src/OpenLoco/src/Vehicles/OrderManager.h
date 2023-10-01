@@ -121,7 +121,7 @@ namespace OpenLoco::Vehicles::OrderManager
     };
 
     Order* orders();
-    uint32_t& numOrders();
+    uint32_t& orderTableLength();
 
     void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy);
     void shiftOrdersRight(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy);
