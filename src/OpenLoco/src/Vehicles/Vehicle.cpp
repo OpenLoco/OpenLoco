@@ -1,5 +1,6 @@
 #include "Vehicle.h"
 #include "Entities/EntityManager.h"
+#include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
@@ -11,8 +12,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
-    static loco_global<uint32_t, 0x00525FBC> _525FBC;     // RoadObjectId bits
-
+ 
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
@@ -186,7 +186,7 @@ namespace OpenLoco::Vehicles
 
             if (getTrackType() == 0xFF)
             {
-                if (*_525FBC & (1 << elRoad->roadObjectId()))
+                if (getGameState().roadObjectIdBits & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
                     trackType = elRoad->roadObjectId();

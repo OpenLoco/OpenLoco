@@ -1,3 +1,4 @@
+#include "GameState.h"
 #include "RoadElement.h"
 #include "GameCommands/GameCommands.h"
 #include "Objects/RoadObject.h"
@@ -10,15 +11,13 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {
-    static loco_global<uint32_t, 0x00525FBC> _525FBC;
-
     // 0x00477FC2
     bool RoadElement::update(const World::Pos2& loc)
     {
         if (owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(owner()))
             return true;
 
-        if (!(_525FBC & (1 << roadObjectId())))
+        if (!(getGameState().roadObjectIdBits & (1 << roadObjectId())))
             return true;
 
         if (sequenceIndex())
@@ -48,8 +47,8 @@ namespace OpenLoco::World
             if (roadEl->owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(roadEl->owner()))
                 continue;
 
-            if (!(_525FBC & (1 << roadEl->roadObjectId())))
-                continue;
+            if (!(getGameState().roadObjectIdBits & (1 << roadEl->roadObjectId())))
+                    continue;
 
             if (roadEl->sequenceIndex())
                 return true;
