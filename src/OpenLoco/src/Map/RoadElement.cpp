@@ -1,6 +1,6 @@
-#include "GameState.h"
 #include "RoadElement.h"
 #include "GameCommands/GameCommands.h"
+#include "GameState.h"
 #include "Objects/RoadObject.h"
 #include "Tile.h"
 #include "TileManager.h"
@@ -48,7 +48,7 @@ namespace OpenLoco::World
                 continue;
 
             if (!(getGameState().roadObjectIdBits & (1 << roadEl->roadObjectId())))
-                    continue;
+                continue;
 
             if (roadEl->sequenceIndex())
                 return true;
