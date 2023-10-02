@@ -135,4 +135,6 @@ namespace OpenLoco
         ObjectType type;
         LoadedObjectId id;
     };
+
+    void objectCreateIdentifierName(char* dst, const ObjectHeader& header);
 }

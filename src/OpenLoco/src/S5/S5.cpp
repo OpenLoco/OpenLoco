@@ -33,7 +33,6 @@
 #include <OpenLoco/Utility/Exception.hpp>
 #include <fstream>
 #include <iomanip>
-#include <sstream>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -483,24 +482,6 @@ namespace OpenLoco::S5
         }
 
         return file;
-    }
-
-    // 0x00473BC7
-    static void objectCreateIdentifierName(char* dst, const ObjectHeader& header)
-    {
-        for (auto& c : header.name)
-        {
-            if (c != ' ')
-            {
-                *dst++ = c;
-            }
-        }
-        *dst++ = '/';
-        *dst = '\0';
-        std::stringstream ss;
-        ss << std::uppercase << std::setfill('0') << std::hex << std::setw(8) << header.flags << std::setw(8) << header.checksum;
-        const auto flagsChecksum = ss.str();
-        strcat(dst, flagsChecksum.c_str());
     }
 
     // 0x00444D76

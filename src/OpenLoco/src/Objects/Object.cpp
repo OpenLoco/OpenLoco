@@ -1,4 +1,5 @@
 #include "Object.h"
+#include <fmt/format.h>
 #include <string_view>
 #include <tuple>
 #include <unordered_set>
@@ -649,5 +650,19 @@ namespace OpenLoco
     {
         auto search = _vanillaObjects.find(std::make_tuple(getName(), getType()));
         return search != _vanillaObjects.end();
+    }
+
+    // 0x00473BC7
+    void objectCreateIdentifierName(char* dst, const ObjectHeader& header)
+    {
+        for (auto& c : header.name)
+        {
+            if (c != ' ')
+            {
+                *dst++ = c;
+            }
+        }
+
+        fmt::format_to(dst, "/{:08X}{:08X}", header.flags, header.checksum);
     }
 }
