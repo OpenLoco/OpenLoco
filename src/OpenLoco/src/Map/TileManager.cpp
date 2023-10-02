@@ -57,7 +57,6 @@ namespace OpenLoco::World::TileManager
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
     static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<World::Pos2, 0x00525F6E> _startUpdateLocation;
 
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -90,7 +89,7 @@ namespace OpenLoco::World::TileManager
     void initialise()
     {
         _F00168 = 0;
-        _startUpdateLocation = World::Pos2(0, 0);
+        getGameState().tileUpdateStartLocation = World::Pos2(0, 0);
         const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
 
         SurfaceElement defaultElement{};
@@ -963,7 +962,7 @@ namespace OpenLoco::World::TileManager
         }
 
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
-        auto pos = *_startUpdateLocation;
+        auto pos = getGameState().tileUpdateStartLocation;
         for (; pos.y < World::kMapHeight; pos.y += 16 * World::kTileSize)
         {
             for (; pos.x < World::kMapWidth; pos.x += 16 * World::kTileSize)
@@ -987,7 +986,7 @@ namespace OpenLoco::World::TileManager
 
         const auto tilePos = World::toTileSpace(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
-        _startUpdateLocation = World::toWorldSpace(TilePos2(shift & 0xF, shift >> 4));
+        getGameState().tileUpdateStartLocation = World::toWorldSpace(TilePos2(shift & 0xF, shift >> 4));
         if (shift == 0)
         {
             IndustryManager::updateProducedCargoStats();
