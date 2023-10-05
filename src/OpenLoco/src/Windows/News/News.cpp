@@ -224,7 +224,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case MessageItemArgumentType::vehicle:
                 {
-                    Vehicles::Vehicle train(EntityId{ itemId });
+                    auto* head = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemId));
+                    if (head == nullptr)
+                    {
+                        break;
+                    }
+                    Vehicles::Vehicle train(*head);
                     if (train.head->tileX == -1)
                         break;
 
@@ -536,8 +541,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemIndex));
                     if (vehicle == nullptr)
                     {
-                        WindowManager::close(WindowType::news);
-                        break;
+                        // We could close the window now but then we can't view old news about removed vehicles.
+                        return;
                     }
                     auto company = CompanyManager::get(vehicle->owner);
                     if (CompanyManager::isPlayerCompany(vehicle->owner))
