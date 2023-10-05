@@ -17,7 +17,7 @@ namespace OpenLoco::World
         if (owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(owner()))
             return true;
 
-        if (!(getGameState().roadObjectIdBits & (1 << roadObjectId())))
+        if (!(getGameState().roadObjectIdIsTram & (1 << roadObjectId())))
             return true;
 
         if (sequenceIndex())
@@ -47,7 +47,7 @@ namespace OpenLoco::World
             if (roadEl->owner() == CompanyId::neutral || CompanyManager::isPlayerCompany(roadEl->owner()))
                 continue;
 
-            if (!(getGameState().roadObjectIdBits & (1 << roadEl->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsTram & (1 << roadEl->roadObjectId())))
                 continue;
 
             if (roadEl->sequenceIndex())
