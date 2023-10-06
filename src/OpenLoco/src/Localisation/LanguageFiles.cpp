@@ -119,7 +119,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        Logging::error("{:{}}", (int)commands[1].length(), commands[1].data());
+                        Logging::error("{}", commands[1]);
                     }
                 }
                 else if (commands[0] == "UINT16")
@@ -182,7 +182,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        Logging::error("{:{}}", (int)commands[1].length(), commands[1].data());
+                        Logging::error("{}", commands[1]);
                     }
                 }
                 else if (commands[0] == "MOVE_X")
@@ -210,7 +210,7 @@ namespace OpenLoco::Localisation
                 }
                 else
                 {
-                    Logging::error("{:{}}", (int)commands[0].length(), commands[0].data());
+                    Logging::error("{}", commands[0]);
                 }
 
                 continue;
@@ -261,7 +261,7 @@ namespace OpenLoco::Localisation
         }
         catch (const std::exception& e)
         {
-            Logging::error(e.what());
+            Logging::error("{}", e.what());
             Ui::showMessageBox("Exception", e.what());
             return false;
         }
