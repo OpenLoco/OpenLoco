@@ -47,7 +47,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (!(getGameState().var_1A8 & (1 << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
             {
                 if (elRoad->owner() != company)
                 {
@@ -61,7 +61,7 @@ namespace OpenLoco::World::Track
                 {
                     continue;
                 }
-                if (!(getGameState().var_1A8 & (1 << roadObjectId)))
+                if (!(getGameState().roadObjectIdIsFlag7 & (1 << roadObjectId)))
                 {
                     continue;
                 }
