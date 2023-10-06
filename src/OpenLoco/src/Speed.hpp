@@ -1,15 +1,18 @@
 #pragma once
+
 #include <cstdint>
 #include <type_traits>
 
 namespace OpenLoco
 {
-    template<typename Value>
+    template<typename TValue>
     struct SpeedTemplate
     {
-        Value value;
-        constexpr Value getRaw() const { return value; }
-        constexpr explicit SpeedTemplate(Value val)
+        using ValueType = TValue;
+
+        ValueType value;
+        constexpr ValueType getRaw() const { return value; }
+        constexpr explicit SpeedTemplate(ValueType val)
             : value(val)
         {
         }
@@ -18,14 +21,14 @@ namespace OpenLoco
         template<typename T>
         constexpr operator SpeedTemplate<T>() const
         {
-            static_assert(sizeof(T) > sizeof(Value));
-            constexpr auto shift = (sizeof(T) - sizeof(Value)) * 8;
+            static_assert(sizeof(T) > sizeof(ValueType));
+            constexpr auto shift = (sizeof(T) - sizeof(ValueType)) * 8;
             return SpeedTemplate<T>(getRaw() * (1 << shift));
         }
 
         // Best accuracy between ThisType and OtherType
         template<typename OtherType>
-        using BestValue = std::conditional_t<(sizeof(Value) > sizeof(OtherType)), Value, OtherType>;
+        using BestValue = std::conditional_t<(sizeof(ValueType) > sizeof(OtherType)), ValueType, OtherType>;
         template<typename OtherType>
         using BestType = SpeedTemplate<BestValue<OtherType>>;
 
@@ -54,17 +57,17 @@ namespace OpenLoco
         {
             return !(*this < rhs);
         }
-        constexpr SpeedTemplate<Value>& operator-()
+        constexpr SpeedTemplate& operator-()
         {
             value = -value;
             return *this;
         }
-        constexpr SpeedTemplate<Value>& operator+=(SpeedTemplate<Value> const& rhs)
+        constexpr SpeedTemplate& operator+=(SpeedTemplate const& rhs)
         {
             value += rhs.value;
             return *this;
         }
-        constexpr SpeedTemplate<Value>& operator-=(SpeedTemplate<Value> const& rhs)
+        constexpr SpeedTemplate& operator-=(SpeedTemplate const& rhs)
         {
             value -= rhs.value;
             return *this;
@@ -84,13 +87,13 @@ namespace OpenLoco
         {
             return BestType<RhsT>(*this).value / BestType<RhsT>(rhs).value;
         }
-        constexpr SpeedTemplate<Value> operator/(uint32_t const& rhs) const
+        constexpr SpeedTemplate operator/(ValueType rhs) const
         {
-            return SpeedTemplate<Value>(value / rhs);
+            return SpeedTemplate(value / rhs);
         }
-        constexpr SpeedTemplate<Value> operator*(uint32_t const& rhs) const
+        constexpr SpeedTemplate operator*(ValueType rhs) const
         {
-            return SpeedTemplate<Value>(value * rhs);
+            return SpeedTemplate(value * rhs);
         }
     };
 
@@ -103,7 +106,7 @@ namespace OpenLoco
     // Truncates only use if safe to lose information
     constexpr Speed16 toSpeed16(Speed32 speed)
     {
-        return Speed16(speed.getRaw() / 65536);
+        return Speed16(static_cast<Speed16::ValueType>(speed.getRaw() / 65536));
     }
 
     namespace Literals
@@ -111,15 +114,16 @@ namespace OpenLoco
         // Note: Only valid for 5 decimal places.
         constexpr Speed32 operator"" _mph(long double speedMph)
         {
-            uint16_t wholeNumber = speedMph;
-            uint64_t fraction = (speedMph - wholeNumber) * 100000;
-            return Speed32((static_cast<uint32_t>(wholeNumber) << 16) | static_cast<uint16_t>((fraction << 16) / 100000));
+            const auto wholeNumber = static_cast<uint32_t>(speedMph);
+            const auto fraction = static_cast<uint64_t>((speedMph - wholeNumber) * 100000);
+            return Speed32((wholeNumber << 16) | static_cast<uint16_t>((fraction << 16) / 100000));
         }
 
         constexpr Speed16 operator""_mph(unsigned long long int speed)
         {
-            return Speed16(speed);
+            return Speed16(static_cast<Speed16::ValueType>(speed));
         }
+
         static_assert(2.75_mph == Speed32(0x2C000));
         static_assert(4.0_mph == Speed32(0x40000));
         static_assert(14.0_mph == Speed32(0xE0000));
@@ -140,5 +144,6 @@ namespace OpenLoco
         static_assert(1.5_mph == Speed32(0x18000));
         static_assert(-1.5_mph == Speed32(0xFFFE8000));
         static_assert(0.18311_mph == Speed32(0x2EE0));
+        static_assert(32000.5_mph / 2 == 16000.25_mph);
     }
 }
