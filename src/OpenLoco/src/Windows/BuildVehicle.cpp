@@ -34,7 +34,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static constexpr Ui::Size kWindowSize = { 380, 233 };
+    static constexpr Ui::Size kWindowSize = { 400, 305 };
 
     enum widx
     {
@@ -234,8 +234,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // Array of types if 0xFF then no type, flag (1<<7) as well
     static loco_global<uint8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _trackTypesForTab;
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
-
-    loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
 
     static WindowEventList _events;
 
