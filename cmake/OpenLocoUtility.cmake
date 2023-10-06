@@ -62,6 +62,7 @@ function(loco_target_compile_link_flags TARGET)
         /wd4201                  #   4201: nonstandard extension used : nameless struct/union
         /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
         /wd4245                  #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+        /Zc:char8_t-             # Enable char8_t<->char conversion :(
     )
 
     # GNU/CLANG
@@ -95,6 +96,7 @@ function(loco_target_compile_link_flags TARGET)
         -Wundef
         -Wunreachable-code
         -m32
+        -fno-char8_t             # Enable char8_t<->char conversion :(
     )
 
     set(COMMON_COMPILE_OPTIONS
