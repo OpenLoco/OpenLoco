@@ -403,6 +403,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
      */
     static void generateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, Vehicles::VehicleBase* vehicle)
     {
+        // Limit to available track types?
         if (trackType != 0xFF && (trackType & (1 << 7)))
         {
             auto trackIdx = trackType & ~(1 << 7);
@@ -413,19 +414,23 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
         }
 
+        // Limit to what's available for a particular company?
         auto companyId = CompanyManager::getControllingId();
         if (vehicle != nullptr)
         {
             companyId = vehicle->owner;
         }
-        _numAvailableVehicles = 0;
-        struct build_item
+
+        struct BuildableVehicle
         {
             uint16_t vehicleIndex;
+            StringId name;
             bool isPowered;
             uint16_t designed;
         };
-        std::vector<build_item> buildableVehicles;
+
+        _numAvailableVehicles = 0;
+        std::vector<BuildableVehicle> buildableVehicles;
 
         for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjIndex)
         {
@@ -488,15 +493,35 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->power > 0, vehicleObj->designed });
+            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->name, vehicleObj->power > 0, vehicleObj->designed });
         }
 
-        std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.designed < item2.designed; });
-        std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const build_item& item1, const build_item& item2) { return item1.isPowered > item2.isPowered; });
+        // Sort by name or design year
+        if (true)
+        {
+            std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) {
+                const std::string_view str1 = StringManager::getString(item1.name);
+                const std::string_view str2 = StringManager::getString(item2.name);
+                return str1 > str2;
+            });
+        }
+        else
+        {
+            std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) { return item1.designed < item2.designed; });
+        }
+
+        // Group powered vehicles, if were not leaving (un)powered out
+        if (false)
+        {
+            std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) { return item1.isPowered > item2.isPowered; });
+        }
+
+        // Assign available vehicle positions
         for (size_t i = 0; i < buildableVehicles.size(); ++i)
         {
             _availableVehicles[i] = buildableVehicles[i].vehicleIndex;
         }
+
         _numAvailableVehicles = static_cast<int16_t>(buildableVehicles.size());
     }
 
