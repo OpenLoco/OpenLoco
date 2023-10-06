@@ -21,7 +21,6 @@ namespace OpenLoco::World::Track
         }
     }
 
-    //static loco_global<uint32_t, 0x00525FC0> _525FC0;
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
     static loco_global<StationId, 0x01135FAE> _1135FAE;
