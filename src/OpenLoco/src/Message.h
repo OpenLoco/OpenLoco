@@ -100,7 +100,6 @@ namespace OpenLoco
                 && itemSubjects[1] == rhs.itemSubjects[1]
                 && itemSubjects[2] == rhs.itemSubjects[2];
         }
-        constexpr bool operator!=(const Message& rhs) const { return !(*this == rhs); }
         constexpr bool isActive() const { return timeActive != 0xFFFF; }
         constexpr bool isUserSelected() const { return timeActive & (1 << 15); }
         constexpr void setActive(bool state)

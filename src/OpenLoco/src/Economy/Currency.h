@@ -33,11 +33,6 @@ namespace OpenLoco
             return var_00 == rhs.var_00 && var_04 == rhs.var_04;
         }
 
-        bool operator!=(const currency48_t rhs) const
-        {
-            return !(var_00 == rhs.var_00 && var_04 == rhs.var_04);
-        }
-
         currency48_t operator+(const currency32_t& rhs)
         {
             return currency48_t(asInt64() + rhs);

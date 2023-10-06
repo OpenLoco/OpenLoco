@@ -228,11 +228,6 @@ namespace OpenLoco
                 return _bitset == other._bitset && _pos == other._pos;
             }
 
-            constexpr bool operator!=(iterator_base other) const
-            {
-                return !(*this == other);
-            }
-
             constexpr iterator_base& operator++()
             {
                 _pos++;

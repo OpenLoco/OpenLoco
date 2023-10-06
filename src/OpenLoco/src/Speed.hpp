@@ -35,11 +35,6 @@ namespace OpenLoco
             return BestType<RhsT>(*this).value == BestType<RhsT>(rhs).value;
         }
         template<typename RhsT>
-        constexpr bool operator!=(SpeedTemplate<RhsT> const& rhs) const
-        {
-            return !(*this == rhs);
-        }
-        template<typename RhsT>
         constexpr bool operator>(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(*this).value > BestType<RhsT>(rhs).value;

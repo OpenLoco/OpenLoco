@@ -6,11 +6,13 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
         /MP                      # Multithreaded compilation
         $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
         $<$<CONFIG:Release>:/Zi> # Debug information in release
+        /Zc:char8_t-             # Enable char8_t<->char conversion :(
     )
 
     # GNU/CLANG
     set(COMMON_COMPILE_OPTIONS_GNU
         -m32
+        -fno-char8_t             # Enable char8_t<->char conversion :(
     )
 
     set(COMMON_COMPILE_OPTIONS

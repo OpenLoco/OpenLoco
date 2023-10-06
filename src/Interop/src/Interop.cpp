@@ -373,9 +373,4 @@ namespace OpenLoco::Interop
             rhs.getState().begin(),
             rhs.getState().end());
     }
-
-    bool operator!=(const save_state& lhs, const save_state& rhs)
-    {
-        return !(lhs == rhs);
-    }
 }

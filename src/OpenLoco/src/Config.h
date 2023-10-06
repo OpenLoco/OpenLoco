@@ -122,11 +122,6 @@ namespace OpenLoco::Config
             return width == rhs.width && height == rhs.height;
         }
 
-        bool operator!=(const Resolution& rhs) const
-        {
-            return width != rhs.width || height != rhs.height;
-        }
-
         bool operator>(const Resolution& rhs) const
         {
             return width > rhs.width || height > rhs.height;

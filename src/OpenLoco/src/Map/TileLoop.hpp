@@ -77,11 +77,6 @@ namespace OpenLoco::World
                 return _pos == other._pos;
             }
 
-            bool operator!=(const Iterator& other) const
-            {
-                return !(*this == other);
-            }
-
             const TilePos2& operator*()
             {
                 return _pos;

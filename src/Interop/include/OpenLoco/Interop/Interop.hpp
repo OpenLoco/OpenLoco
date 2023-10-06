@@ -289,13 +289,9 @@ namespace OpenLoco::Interop
             --_ptr;
             return temp;
         }
-        bool operator==(const loco_global_iterator& rhs)
+        bool operator==(const loco_global_iterator& rhs) const
         {
             return _ptr == rhs._ptr;
-        }
-        bool operator!=(const loco_global_iterator& rhs)
-        {
-            return _ptr != rhs._ptr;
         }
         T& operator*()
         {
@@ -399,7 +395,6 @@ namespace OpenLoco::Interop
     };
 
     bool operator==(const save_state& lhs, const save_state& rhs);
-    bool operator!=(const save_state& lhs, const save_state& rhs);
 
     void readMemory(uint32_t address, void* data, size_t size);
     void writeMemory(uint32_t address, const void* data, size_t size);
