@@ -893,6 +893,143 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
+    // 0x004A6136
+    static bool removeTrackModToTrack(const LocationOfInterest& interest, const uint8_t flags, LocationOfInterestHashMap* hashMap, uint8_t modSelection, uint8_t trackObjectId, uint8_t trackModObjectIds, currency32_t& totalCost, CompanyId companyId)
+    {
+        // If not in single segment mode then we should add the reverse
+        // direction of track to the hashmap to prevent it being visited.
+        // This is because track mods do not have directions so applying
+        // to the reverse would do nothing (or worse double spend)
+        if (hashMap != nullptr)
+        {
+            LocationOfInterest reverseInterest = interest;
+            reverseInterest.loc = interest.loc;
+            const auto tad = interest.tad();
+            auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+            reverseInterest.loc += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                reverseInterest.loc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            reverseInterest.trackAndDirection ^= (1 << 2); // Reverse flag
+
+            hashMap->tryAdd(reverseInterest);
+        }
+
+        auto* trackObj = ObjectManager::get<TrackObject>(trackObjectId);
+
+        auto trackStart = interest.loc;
+        const auto tad = interest.tad();
+        if (tad.isReversed())
+        {
+            auto& trackSize = World::TrackData::getUnkTrack(tad._data);
+            trackStart += trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                trackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+        }
+
+        for (auto& trackPiece : TrackData::getTrackPiece(tad.id()))
+        {
+            auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, tad.cardinalDirection()), 0 };
+            trackLoc.z += trackPiece.z;
+
+            auto tile = TileManager::get(trackLoc);
+            World::TrackElement* elTrack = nullptr;
+            for (auto& el : tile)
+            {
+                elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+                if (elTrack->baseHeight() != trackLoc.z)
+                {
+                    continue;
+                }
+                if (elTrack->unkDirection() != tad.cardinalDirection())
+                {
+                    continue;
+                }
+                if (elTrack->sequenceIndex() != trackPiece.index)
+                {
+                    continue;
+                }
+                if (elTrack->trackObjectId() != trackObjectId)
+                {
+                    continue;
+                }
+                if (elTrack->trackId() != tad.id())
+                {
+                    continue;
+                }
+
+                break;
+            }
+            if (elTrack == nullptr)
+            {
+                break;
+            }
+
+            if (trackPiece.index == 0)
+            {
+                // For each track mod
+                //   Get mod cost (changes depending on track id)
+                for (auto i = 0; i < 4; ++i)
+                {
+                    if (!(trackModObjectIds & (1U << i)))
+                    {
+                        continue;
+                    }
+                    if (!(elTrack->mods() & (1U << i)))
+                    {
+                        continue;
+                    }
+
+                    auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
+                    const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->sellCostFactor, trackModObj->costIndex, 10);
+                    const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                    totalCost += cost;
+                }
+            }
+
+            if (flags & GameCommands::Flags::apply)
+            {
+                bool invalidate = false;
+                if (flags & GameCommands::Flags::ghost)
+                {
+                    if (CompanyManager::getControllingId() == companyId)
+                    {
+                        elTrack->setHasGhostMods(false);
+                        invalidate = true;
+                    }
+                }
+                else
+                {
+                    for (auto i = 0; i < 4; ++i)
+                    {
+                        if (trackModObjectIds & (1U << i))
+                        {
+                            elTrack->setMod(i, false);
+                        }
+                    }
+                    invalidate = true;
+                }
+                if (invalidate)
+                {
+                    Ui::ViewportManager::invalidate(trackLoc, elTrack->baseHeight(), elTrack->clearHeight(), ZoomLevel::half);
+                }
+            }
+        }
+
+        if (modSelection == 1)
+        {
+            return interest.trackAndDirection & Track::AdditionalTaDFlags::hasSignal;
+        }
+        return false;
+    }
+
     ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
     {
         ApplyTrackModsResult result{};
@@ -915,5 +1052,24 @@ namespace OpenLoco::Vehicles
         findAllTracksFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
         result.networkTooComplex = interestHashMap.count >= interestHashMap.maxEntries;
         return result;
+    }
+
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    {
+        currency32_t cost = 0;
+        if (modSelection == 0)
+        {
+            LocationOfInterest interest{ pos, trackAndDirection._data, company, trackType };
+            removeTrackModToTrack(interest, flags, nullptr, modSelection, trackType, trackModObjIds, cost, company);
+            return cost;
+        }
+
+        LocationOfInterestHashMap interestHashMap{ kTrackModHashMapSize };
+
+        auto filterFunction = [flags, modSelection, trackType, trackModObjIds, &cost, company, &interestHashMap](const LocationOfInterest& interest) {
+            return removeTrackModToTrack(interest, flags, &interestHashMap, modSelection, trackType, trackModObjIds, cost, company);
+        };
+        findAllTracksFilterTransform(interestHashMap, TrackNetworkSearchFlags::unk0, pos, trackAndDirection, company, trackType, filterFunction, kNullTransformFunction);
+        return cost;
     }
 }
