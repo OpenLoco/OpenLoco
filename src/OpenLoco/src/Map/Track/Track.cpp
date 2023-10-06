@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -20,7 +21,7 @@ namespace OpenLoco::World::Track
         }
     }
 
-    static loco_global<uint32_t, 0x00525FC0> _525FC0;
+    //static loco_global<uint32_t, 0x00525FC0> _525FC0;
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
     static loco_global<StationId, 0x01135FAE> _1135FAE;
@@ -47,7 +48,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (!(_525FC0 & (1 << elRoad->roadObjectId())))
+            if (!(getGameState().var_1A8 & (1 << elRoad->roadObjectId())))
             {
                 if (elRoad->owner() != company)
                 {
@@ -61,7 +62,7 @@ namespace OpenLoco::World::Track
                 {
                     continue;
                 }
-                if (!(_525FC0 & (1 << roadObjectId)))
+                if (!(getGameState().var_1A8 & (1 << roadObjectId)))
                 {
                     continue;
                 }
