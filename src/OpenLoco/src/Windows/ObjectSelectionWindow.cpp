@@ -1359,7 +1359,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
         _112C209 = meta.numImages;
 
-        if (!success)
+        if (success)
             return;
 
         auto errorTitle = StringIds::error_unable_to_select_object;

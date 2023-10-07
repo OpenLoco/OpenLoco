@@ -751,8 +751,8 @@ namespace OpenLoco::ObjectManager
         *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
-        entry._requiredObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
         *ptr += sizeof(uint8_t);
+        entry._requiredObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
         for (int n = 0; n < *countA; n++)
         {
             // header* subh = (header*)ptr;
@@ -760,8 +760,8 @@ namespace OpenLoco::ObjectManager
         }
 
         uint8_t* countB = (uint8_t*)*ptr;
-        entry._alsoLoadObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
         *ptr += sizeof(uint8_t);
+        entry._alsoLoadObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
         for (int n = 0; n < *countB; n++)
         {
             // header* subh = (header*)ptr;
