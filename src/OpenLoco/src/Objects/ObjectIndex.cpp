@@ -40,10 +40,6 @@ namespace OpenLoco::ObjectManager
         {
             return (numObjects == rhs.numObjects) && (totalFileSize == rhs.totalFileSize) && (dateHash == rhs.dateHash);
         }
-        constexpr bool operator!=(const ObjectFolderState& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
     static_assert(sizeof(ObjectFolderState) == 0xC);
     struct IndexHeader

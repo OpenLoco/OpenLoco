@@ -205,11 +205,6 @@ namespace OpenLoco::Ui
         {
             return mapX == rhs.mapX && mapY == rhs.mapY && zoomLevel == rhs.zoomLevel && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
         }
-
-        bool operator!=(const SavedView& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
 
     struct Window

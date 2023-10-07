@@ -39,14 +39,9 @@ namespace OpenLoco::Vehicles
         CompanyId company;
         uint8_t trackType;
 
-        bool operator==(const LocationOfInterest& rhs)
+        bool operator==(const LocationOfInterest& rhs) const
         {
             return (loc == rhs.loc) && (trackAndDirection == rhs.trackAndDirection) && (company == rhs.company) && (trackType == rhs.trackType);
-        }
-
-        bool operator!=(const LocationOfInterest& rhs)
-        {
-            return !(*this == rhs);
         }
 
         TrackAndDirection::_TrackAndDirection tad() const
@@ -96,13 +91,9 @@ namespace OpenLoco::Vehicles
                 return retval;
             }
 
-            bool operator==(Iterator& other) const
+            bool operator==(const Iterator& other) const
             {
                 return _index == other._index;
-            }
-            bool operator!=(Iterator& other) const
-            {
-                return !(*this == other);
             }
 
             LocationOfInterest operator*() const

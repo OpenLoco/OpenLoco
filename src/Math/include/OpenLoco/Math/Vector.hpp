@@ -31,11 +31,6 @@ namespace OpenLoco::Math::Vector
             return x == rhs.x && y == rhs.y;
         }
 
-        constexpr bool operator!=(const TVector2& rhs) const noexcept
-        {
-            return !(*this == rhs);
-        }
-
         constexpr TVector2& operator+=(const TVector2& rhs) noexcept
         {
             x += rhs.x;
@@ -121,11 +116,6 @@ namespace OpenLoco::Math::Vector
         constexpr bool operator==(const TVector3& rhs) const noexcept
         {
             return Base::operator==(rhs) && z == rhs.z;
-        }
-
-        constexpr bool operator!=(const TVector3& rhs) const noexcept
-        {
-            return !(*this == rhs);
         }
 
         constexpr TVector3& operator+=(const TVector3& rhs) noexcept

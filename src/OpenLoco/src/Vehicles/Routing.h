@@ -22,7 +22,6 @@ namespace OpenLoco::Vehicles
         }
 
         bool operator==(const RoutingHandle other) const { return _data == other._data; }
-        bool operator!=(const RoutingHandle other) const { return !(*this == other); }
     };
     static_assert(sizeof(RoutingHandle) == 2);
 #pragma pack(pop)

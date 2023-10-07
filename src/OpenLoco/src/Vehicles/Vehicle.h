@@ -146,7 +146,6 @@ namespace OpenLoco::Vehicles
                 _data |= state ? (1 << 2) : 0;
             }
             constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
-            constexpr bool operator!=(const _TrackAndDirection other) const { return !(_data == other._data); }
         };
         struct _RoadAndDirection
         {
@@ -165,7 +164,6 @@ namespace OpenLoco::Vehicles
             // Related to road vehicles turning around
             constexpr bool isUnk8() const { return _data & (1 << 8); }
             constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
-            constexpr bool operator!=(const _RoadAndDirection other) const { return !(_data == other._data); }
         };
 
         union
@@ -761,10 +759,6 @@ namespace OpenLoco::Vehicles
             {
                 return nextVehicleComponent == other.nextVehicleComponent;
             }
-            bool operator!=(CarComponentIter other) const
-            {
-                return !(*this == other);
-            }
 
             constexpr CarComponent& operator*()
             {
@@ -859,10 +853,6 @@ namespace OpenLoco::Vehicles
                 bool operator==(CarIter other) const
                 {
                     return nextVehicleComponent == other.nextVehicleComponent;
-                }
-                bool operator!=(CarIter other) const
-                {
-                    return !(*this == other);
                 }
 
                 constexpr Car& operator*()

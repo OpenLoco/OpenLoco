@@ -44,7 +44,6 @@ loco_add_library(Core STATIC
 
 target_link_libraries(Core
     PUBLIC
-        nonstd::span-lite
         fmt::fmt
 )
 

@@ -32,10 +32,6 @@ namespace OpenLoco::ScenarioManager
         {
             return ((numFiles & 0xFFFFFF) == (rhs.numFiles & 0xFFFFFF)) && (totalFileSize == rhs.totalFileSize);
         }
-        constexpr bool operator!=(const ScenarioFolderState& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
     static_assert(sizeof(ScenarioFolderState) == 0xC);
     struct ScoreHeader

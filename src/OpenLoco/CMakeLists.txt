@@ -756,7 +756,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         Engine
         ${SDL2_LIB} # These libraries are used in some of our headers try to minimize doing this
         yaml-cpp
-        nonstd::span-lite)
+        )
 else ()
     # Dummy target to ease invocation
     add_custom_target(OpenLoco-headers-check)

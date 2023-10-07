@@ -54,10 +54,6 @@ namespace OpenLoco
             {
                 return i == other.i;
             }
-            constexpr bool operator!=(Iter other) const
-            {
-                return !(*this == other);
-            }
 
             constexpr ValueType& operator*() const
             {

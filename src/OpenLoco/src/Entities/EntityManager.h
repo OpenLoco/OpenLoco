@@ -85,13 +85,9 @@ namespace OpenLoco::EntityManager
             ++(*this);
             return retval;
         }
-        bool operator==(ListIterator& other) const
+        bool operator==(const ListIterator& other) const
         {
             return entity == other.entity;
-        }
-        bool operator!=(ListIterator& other) const
-        {
-            return !(*this == other);
         }
         TEntityType* operator*()
         {

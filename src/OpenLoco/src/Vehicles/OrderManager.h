@@ -59,11 +59,6 @@ namespace OpenLoco::Vehicles
                 return _currentOrder == other._currentOrder && (_hasLooped || other._hasLooped);
             }
 
-            bool operator!=(Iterator other) const
-            {
-                return !(*this == other);
-            }
-
             Order& operator*()
             {
                 return *_currentOrder;
