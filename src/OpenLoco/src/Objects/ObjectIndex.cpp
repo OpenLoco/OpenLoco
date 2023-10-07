@@ -457,7 +457,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472AFE
-    ObjIndexPair getActiveObject(ObjectType objectType, stdx::span<SelectedObjectsFlags> objectIndexFlags)
+    ObjIndexPair getActiveObject(ObjectType objectType, std::span<SelectedObjectsFlags> objectIndexFlags)
     {
         const auto objects = getAvailableObjects(objectType);
 

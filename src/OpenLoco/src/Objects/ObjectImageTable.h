@@ -1,6 +1,6 @@
 #pragma once
-#include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
+#include <span>
 
 namespace OpenLoco::ObjectManager
 {
@@ -10,7 +10,7 @@ namespace OpenLoco::ObjectManager
         uint32_t tableLength;
     };
 
-    ImageTableResult loadImageTable(stdx::span<const std::byte> data);
+    ImageTableResult loadImageTable(std::span<const std::byte> data);
     uint32_t getTotalNumImages();
     void setTotalNumImages(uint32_t count);
 }

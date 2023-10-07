@@ -2,8 +2,8 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
 #include <array>
+#include <span>
 
 namespace OpenLoco
 {
@@ -35,7 +35,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

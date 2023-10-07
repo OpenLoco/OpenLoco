@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -43,7 +43,7 @@ namespace OpenLoco
 
         // 0x0043C888
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
     };

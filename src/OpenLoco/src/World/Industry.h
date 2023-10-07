@@ -7,8 +7,8 @@
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
-#include <OpenLoco/Core/Span.hpp>
 #include <limits>
+#include <span>
 
 namespace OpenLoco
 {
@@ -19,7 +19,7 @@ namespace OpenLoco
         World::Pos2 pos;
         uint8_t index;
     };
-    const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type);
+    const std::span<const Unk4F9274> getBuildingTileOffsets(bool type);
 
     enum class IndustryFlags : uint16_t
     {

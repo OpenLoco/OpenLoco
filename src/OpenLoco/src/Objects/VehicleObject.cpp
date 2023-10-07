@@ -343,7 +343,7 @@ namespace OpenLoco
     }
 
     // 0x004B841B
-    void VehicleObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void VehicleObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(VehicleObject));
 

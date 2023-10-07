@@ -54,7 +54,7 @@ namespace OpenLoco
     }
 
     // 0x004898E4
-    void TrainSignalObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void TrainSignalObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(TrainSignalObject));
 

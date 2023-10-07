@@ -4,7 +4,7 @@
 #include "Object.h"
 #include "Speed.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -268,7 +268,7 @@ namespace OpenLoco
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const;
         void getCargoString(char* buffer) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         uint32_t getLength() const;
         constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const

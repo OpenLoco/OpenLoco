@@ -51,7 +51,7 @@ namespace OpenLoco::GameCommands
         return nullptr;
     };
 
-    static bool validateTrackIsSignalCompatible(const SignalPlacementArgs& args, const stdx::span<const World::TrackData::PreviewTrack> trackPieces, const World::Pos3 trackStart)
+    static bool validateTrackIsSignalCompatible(const SignalPlacementArgs& args, const std::span<const World::TrackData::PreviewTrack> trackPieces, const World::Pos3 trackStart)
     {
         for (auto& piece : trackPieces)
         {

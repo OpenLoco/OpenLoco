@@ -19,7 +19,7 @@ SawyerStreamReader::SawyerStreamReader(Stream& stream)
 {
 }
 
-stdx::span<const std::byte> SawyerStreamReader::readChunk()
+std::span<const std::byte> SawyerStreamReader::readChunk()
 {
     SawyerEncoding encoding;
     read(&encoding, sizeof(encoding));
@@ -87,7 +87,7 @@ bool SawyerStreamReader::validateChecksum()
     return valid;
 }
 
-stdx::span<const std::byte> SawyerStreamReader::decode(SawyerEncoding encoding, stdx::span<const std::byte> data)
+std::span<const std::byte> SawyerStreamReader::decode(SawyerEncoding encoding, std::span<const std::byte> data)
 {
     switch (encoding)
     {
@@ -125,7 +125,7 @@ static void fillStream(MemoryStream& buffer, std::byte value, size_t count)
     }
 }
 
-void SawyerStreamReader::decodeRunLengthSingle(MemoryStream& buffer, stdx::span<const std::byte> data)
+void SawyerStreamReader::decodeRunLengthSingle(MemoryStream& buffer, std::span<const std::byte> data)
 {
     for (size_t i = 0; i < data.size(); i++)
     {
@@ -156,7 +156,7 @@ void SawyerStreamReader::decodeRunLengthSingle(MemoryStream& buffer, stdx::span<
     }
 }
 
-void SawyerStreamReader::decodeRunLengthMulti(MemoryStream& buffer, stdx::span<const std::byte> data)
+void SawyerStreamReader::decodeRunLengthMulti(MemoryStream& buffer, std::span<const std::byte> data)
 {
     for (size_t i = 0; i < data.size(); i++)
     {
@@ -190,7 +190,7 @@ void SawyerStreamReader::decodeRunLengthMulti(MemoryStream& buffer, stdx::span<c
     }
 }
 
-void SawyerStreamReader::decodeRotate(MemoryStream& buffer, stdx::span<const std::byte> data)
+void SawyerStreamReader::decodeRotate(MemoryStream& buffer, std::span<const std::byte> data)
 {
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
@@ -207,7 +207,7 @@ SawyerStreamWriter::SawyerStreamWriter(Stream& stream)
 
 void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
 {
-    auto encodedData = encode(chunkType, stdx::span(static_cast<const std::byte*>(data), dataLen));
+    auto encodedData = encode(chunkType, std::span(static_cast<const std::byte*>(data), dataLen));
     write(&chunkType, sizeof(chunkType));
     write(static_cast<uint32_t>(encodedData.size()));
     write(encodedData.data(), encodedData.size());
@@ -240,7 +240,7 @@ void SawyerStreamWriter::writeStream(const void* data, size_t dataLen)
     }
 }
 
-stdx::span<const std::byte> SawyerStreamWriter::encode(SawyerEncoding encoding, stdx::span<const std::byte> data)
+std::span<const std::byte> SawyerStreamWriter::encode(SawyerEncoding encoding, std::span<const std::byte> data)
 {
     switch (encoding)
     {
@@ -270,7 +270,7 @@ stdx::span<const std::byte> SawyerStreamWriter::encode(SawyerEncoding encoding, 
     }
 }
 
-void SawyerStreamWriter::encodeRunLengthSingle(MemoryStream& buffer, stdx::span<const std::byte> data)
+void SawyerStreamWriter::encodeRunLengthSingle(MemoryStream& buffer, std::span<const std::byte> data)
 {
     auto src = data.data();
     auto srcEnd = src + data.size();
@@ -318,7 +318,7 @@ void SawyerStreamWriter::encodeRunLengthSingle(MemoryStream& buffer, stdx::span<
     }
 }
 
-void SawyerStreamWriter::encodeRunLengthMulti(MemoryStream& buffer, stdx::span<const std::byte> data)
+void SawyerStreamWriter::encodeRunLengthMulti(MemoryStream& buffer, std::span<const std::byte> data)
 {
     auto src = data.data();
     auto srcLen = data.size();
@@ -380,7 +380,7 @@ void SawyerStreamWriter::encodeRunLengthMulti(MemoryStream& buffer, stdx::span<c
     }
 }
 
-void SawyerStreamWriter::encodeRotate(MemoryStream& buffer, stdx::span<const std::byte> data)
+void SawyerStreamWriter::encodeRotate(MemoryStream& buffer, std::span<const std::byte> data)
 {
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)

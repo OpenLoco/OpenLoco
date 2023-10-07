@@ -62,7 +62,7 @@ namespace OpenLoco
     }
 
     // 0x00477BCF
-    void RoadObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void RoadObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(RoadObject));
 

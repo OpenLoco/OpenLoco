@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -24,7 +24,7 @@ namespace OpenLoco
         {
             return true;
         }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

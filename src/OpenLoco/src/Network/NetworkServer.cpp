@@ -8,9 +8,9 @@
 #include "SceneManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/MemoryStream.h>
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <OpenLoco/Utility/String.hpp>
+#include <span>
 
 using namespace OpenLoco;
 using namespace OpenLoco::Network;

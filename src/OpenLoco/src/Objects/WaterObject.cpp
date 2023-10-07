@@ -25,7 +25,7 @@ namespace OpenLoco
     }
 
     // 0x004C567C
-    void WaterObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void WaterObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(WaterObject));
 

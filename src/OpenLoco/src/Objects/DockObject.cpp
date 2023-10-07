@@ -42,7 +42,7 @@ namespace OpenLoco
     }
 
     // 0x00490E49
-    void DockObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void DockObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(DockObject));
 

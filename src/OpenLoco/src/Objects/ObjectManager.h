@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Object.h"
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <optional>
+#include <span>
 #include <vector>
 
 namespace OpenLoco
@@ -171,7 +171,7 @@ namespace OpenLoco::ObjectManager
     ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();
 
-    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
+    LoadObjectsResult loadAll(std::span<ObjectHeader> objects);
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
@@ -181,7 +181,7 @@ namespace OpenLoco::ObjectManager
     void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
 
-    bool tryInstallObject(const ObjectHeader& object, stdx::span<const std::byte> data);
+    bool tryInstallObject(const ObjectHeader& object, std::span<const std::byte> data);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 

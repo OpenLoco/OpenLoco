@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -75,7 +75,7 @@ namespace OpenLoco
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
 
         constexpr bool hasFlags(TrackObjectFlags flagsToTest) const

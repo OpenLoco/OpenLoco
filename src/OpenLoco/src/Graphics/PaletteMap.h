@@ -2,10 +2,10 @@
 
 #include "Colour.h"
 #include "ImageId.h"
-#include <OpenLoco/Core/Span.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>
+#include <span>
 
 namespace OpenLoco::Gfx::PaletteMap
 {
@@ -20,7 +20,7 @@ namespace OpenLoco::Gfx::PaletteMap
     template<std::size_t TSize>
     using Buffer = std::array<PaletteIndex_t, TSize>;
 
-    using View = stdx::span<const PaletteIndex_t>;
+    using View = std::span<const PaletteIndex_t>;
 
     View getDefault();
 

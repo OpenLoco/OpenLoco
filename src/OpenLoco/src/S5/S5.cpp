@@ -649,7 +649,7 @@ namespace OpenLoco::S5
             }
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
-                TileManager::setElements(stdx::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
+                TileManager::setElements(std::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
             }
             else
             {

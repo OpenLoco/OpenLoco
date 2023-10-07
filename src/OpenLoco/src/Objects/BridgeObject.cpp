@@ -54,7 +54,7 @@ namespace OpenLoco
     }
 
     // 0x0042C5B6
-    void BridgeObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void BridgeObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(BridgeObject));
 

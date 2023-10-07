@@ -174,7 +174,7 @@ namespace OpenLoco
     }
 
     // 0x00458CD9
-    void IndustryObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void IndustryObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(IndustryObject));
 
@@ -377,30 +377,30 @@ namespace OpenLoco
         buildingWallEntrance = 0;
     }
 
-    stdx::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
+    std::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
     {
         const auto* partsPointer = buildingParts[buildingType];
         auto* end = partsPointer;
         while (*end != 0xFF)
             end++;
 
-        return stdx::span<const std::uint8_t>(partsPointer, end);
+        return std::span<const std::uint8_t>(partsPointer, end);
     }
 
-    stdx::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
+    std::span<const std::uint8_t> IndustryObject::getAnimationSequence(const uint8_t unk) const
     {
         // animationSequences comprises of a size then data. Size will always be a power of 2
         const auto* sequencePointer = animationSequences[unk];
         const auto size = *sequencePointer++;
-        return stdx::span<const std::uint8_t>(sequencePointer, size);
+        return std::span<const std::uint8_t>(sequencePointer, size);
     }
 
-    stdx::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
+    std::span<const IndustryObjectUnk38> OpenLoco::IndustryObject::getUnk38() const
     {
         const auto* unkPointer = var_38;
         auto* end = unkPointer;
         while (end->var_00 != 0xFF)
             end++;
-        return stdx::span<const IndustryObjectUnk38>(unkPointer, end);
+        return std::span<const IndustryObjectUnk38>(unkPointer, end);
     }
 }
