@@ -396,10 +396,10 @@ namespace OpenLoco
             {
                 continue;
             }
-            while (*reinterpret_cast<const uint16_t*>(remainingData.data()) != 0xFFFFU)
+            while (*reinterpret_cast<const CargoCategory*>(remainingData.data()) != CargoCategory::null)
             {
-                const auto cargoMatchFlags = *reinterpret_cast<const uint16_t*>(remainingData.data());
-                remainingData = remainingData.subspan(sizeof(uint16_t));
+                const auto cargoCategory = *reinterpret_cast<const CargoCategory*>(remainingData.data());
+                remainingData = remainingData.subspan(sizeof(CargoCategory));
                 const auto unk = *reinterpret_cast<const uint8_t*>(remainingData.data());
                 remainingData = remainingData.subspan(sizeof(uint8_t));
 
@@ -410,7 +410,7 @@ namespace OpenLoco
                     {
                         continue;
                     }
-                    if (cargoObj->matchFlags != cargoMatchFlags)
+                    if (cargoObj->cargoCategory != cargoCategory)
                     {
                         continue;
                     }
