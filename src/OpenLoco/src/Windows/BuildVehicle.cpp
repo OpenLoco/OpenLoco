@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "Date.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -225,6 +226,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     {
         return widgetIndex - widx::tab_track_type_0;
     }
+
+    static uint16_t _lastRefreshYear;
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
     static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
@@ -523,6 +526,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         _numAvailableVehicles = static_cast<int16_t>(buildableVehicles.size());
+        _lastRefreshYear = getCurrentYear();
     }
 
     static Ui::Window* getTopEditingVehicleWindow()
@@ -742,7 +746,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C3923
     static void onPeriodicUpdate(Window& window)
     {
-        sub_4B92A5(&window);
+        if (_lastRefreshYear != getCurrentYear())
+        {
+            sub_4B92A5(&window);
+        }
     }
 
     // 0x4C377B
