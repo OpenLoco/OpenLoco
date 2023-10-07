@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -26,8 +27,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     static constexpr Ui::Size kLandTabSize = { 366, 247 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
-
-    static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
     static constexpr size_t kMaxLandObjects = ObjectManager::getMaxObjects(ObjectType::land);
 
@@ -543,11 +542,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                    *_seaLevel = std::min<int8_t>(*_seaLevel + 1, Scenario::kMaxSeaLevel);
+                     getGameState().seaLevel = std::min<int8_t>(getGameState().seaLevel + 1, Scenario::kMaxSeaLevel);
                     break;
 
                 case widx::sea_level_down:
-                    *_seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, *_seaLevel - 1);
+                    getGameState().seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, getGameState().seaLevel - 1);
                     break;
 
                 case widx::min_land_height_up:
@@ -670,7 +669,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            _commonFormatArgs[0] = *_seaLevel;
+            _commonFormatArgs[0] = getGameState().seaLevel;
             auto& options = S5::getOptions();
             _commonFormatArgs[1] = options.minLandHeight;
             _commonFormatArgs[2] = options.hillDensity;
