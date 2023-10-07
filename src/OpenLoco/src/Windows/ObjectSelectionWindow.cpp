@@ -1336,26 +1336,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     ObjectManager::ObjectSelectionMeta meta{};
                     std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
                     meta.numImages = _112C209;
-                    ObjectManager::selectObjectFromIndex(6, *oldObject._header, selectionFlags, meta);
+                    ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldObject._header, selectionFlags, meta);
                     std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
                     _112C209 = meta.numImages;
                 }
             }
         }
 
-        auto bx = 0;
+        auto mode = ObjectManager::SelectObjectModes::defaultDeselect;
 
         if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
         {
-            bx |= (1 << 0); // Selection mode
+            mode = ObjectManager::SelectObjectModes::defaultSelect;
         }
-
-        bx |= 6;
 
         ObjectManager::ObjectSelectionMeta meta{};
         std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
         meta.numImages = _112C209;
-        bool success = ObjectManager::selectObjectFromIndex(bx, *object, selectionFlags, meta);
+        bool success = ObjectManager::selectObjectFromIndex(mode, *object, selectionFlags, meta);
         std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
         _112C209 = meta.numImages;
 
@@ -1364,7 +1362,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         auto errorTitle = StringIds::error_unable_to_select_object;
 
-        if (!(bx & (1 << 0)))
+        if ((mode & ObjectManager::SelectObjectModes::select) == ObjectManager::SelectObjectModes::none)
         {
             errorTitle = StringIds::error_unable_to_deselect_object;
         }

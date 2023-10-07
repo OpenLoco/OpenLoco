@@ -56,5 +56,17 @@ namespace OpenLoco::ObjectManager
         uint32_t numImages;
         std::array<uint16_t, kMaxObjectTypes> numSelectedObjects;
     };
-    bool selectObjectFromIndex(uint8_t bl, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
+    enum class SelectObjectModes : uint8_t
+    {
+        none = 0,
+        select = 1U << 0,               // When not set we are in deselection mode
+        selectDependents = 1U << 1,     // Always set
+        selectAlsoLoads = 1U << 2,      // Always set
+        markAsAlwaysRequired = 1U << 3, // Unused (from RCT2)
+
+        defaultDeselect = selectDependents | selectAlsoLoads,
+        defaultSelect = defaultDeselect | select,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(SelectObjectModes);
+    bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
 }
