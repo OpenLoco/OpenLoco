@@ -1,6 +1,8 @@
 #include "ObjectIndex.h"
 #include "Environment.h"
 #include "GameCommands/GameCommands.h"
+#include "Graphics/Gfx.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "ObjectManager.h"
@@ -557,10 +559,10 @@ namespace OpenLoco::ObjectManager
         auto objIndexEntry = internalFindObjectInIndex(objHeader);
         if (!objIndexEntry.has_value())
         {
-            auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2042));
-            buffer = strcpy(buffer, "Data for the following object not found: ");
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+            buffer = StringManager::formatString(buffer, sizeof(buffer), StringIds::data_for_following_object_not_found);
             objectCreateIdentifierName(buffer, objHeader);
-            GameCommands::setErrorText(StringIds::buffer_2042);
+            GameCommands::setErrorText(StringIds::buffer_2040);
             if (isRecursed)
             {
                 resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
@@ -623,10 +625,10 @@ namespace OpenLoco::ObjectManager
 
             if (isRecursed && !(bl & (1U << 1)))
             {
-                auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2045));
-                buffer = strcpy(buffer, "The following object must be selected first: ");
+                auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+                buffer = StringManager::formatString(buffer, sizeof(buffer), StringIds::the_following_object_must_be_selected_first);
                 objectCreateIdentifierName(buffer, objHeader);
-                GameCommands::setErrorText(StringIds::buffer_2045);
+                GameCommands::setErrorText(StringIds::buffer_2040);
                 if (isRecursed)
                 {
                     resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
@@ -634,7 +636,7 @@ namespace OpenLoco::ObjectManager
                 return false;
             }
 
-            if (entry._displayData->numImages + selectionMetaData.numImages > 0x40000)
+            if (entry._displayData->numImages + selectionMetaData.numImages > Gfx::G1ExpectedCount::kObjects)
             {
                 GameCommands::setErrorText(StringIds::not_enough_space_for_graphics);
                 if (isRecursed)
