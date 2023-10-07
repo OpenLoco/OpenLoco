@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                     getGameState().seaLevel = std::min<int8_t>(getGameState().seaLevel + 1, Scenario::kMaxSeaLevel);
+                    getGameState().seaLevel = std::min<int8_t>(getGameState().seaLevel + 1, Scenario::kMaxSeaLevel);
                     break;
 
                 case widx::sea_level_down:
