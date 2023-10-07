@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/TogglePause.h"
+#include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
 #include "Intro.h"
@@ -92,7 +93,6 @@ namespace OpenLoco::Title
     static uint16_t _waitCounter;
 
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
-    static loco_global<uint16_t, 0x00525F62> _525F62;
 
     static void sub_473A95(int32_t eax);
 
@@ -122,7 +122,7 @@ namespace OpenLoco::Title
         Scenario::sub_46115C();
         if (Intro::state() == Intro::State::none)
         {
-            uint16_t backupWord = _525F62;
+            uint16_t backupWord = getGameState().var_014A;
             auto titlePath = Environment::getPath(Environment::PathId::title);
             clearScreenFlag(ScreenFlags::networked);
             S5::importSaveToGameState(titlePath, S5::LoadFlags::titleSequence);
@@ -139,7 +139,7 @@ namespace OpenLoco::Title
                 }
             }
 
-            _525F62 = backupWord;
+            getGameState().var_014A = backupWord;
         }
     }
 

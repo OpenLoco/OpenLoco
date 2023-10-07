@@ -103,7 +103,6 @@ namespace OpenLoco
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<int16_t, 0x00525F62> _525F62;
 
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
@@ -426,7 +425,7 @@ namespace OpenLoco
         }
 
         // Only run every other tick?
-        if (_525F62 % 2 != 0)
+        if (getGameState().var_014A % 2 != 0)
         {
             return;
         }
@@ -691,7 +690,7 @@ namespace OpenLoco
 
                     tickLogic(numUpdates);
 
-                    _525F62++;
+                    getGameState().var_014A++;
                     if (isEditorMode())
                     {
                         EditorController::tick();
