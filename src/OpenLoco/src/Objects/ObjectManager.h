@@ -103,8 +103,7 @@ namespace OpenLoco::ObjectManager
         return counts[(size_t)type];
     };
 
-    constexpr size_t maxObjects = 859;
-    constexpr size_t maxObjectTypes = 34;
+    constexpr size_t kMaxObjects = 859;
 
     Object* getAny(const LoadedObjectHandle& handle);
 

@@ -484,7 +484,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047400C
-    static void setObjectIsRequiredByAnother(stdx::span<SelectedObjectsFlags> objectFlags, const ObjectHeader& objHeader)
+    static void setObjectIsRequiredByAnother(std::span<SelectedObjectsFlags> objectFlags, const ObjectHeader& objHeader)
     {
         const auto res = internalFindObjectInIndex(objHeader);
         if (!res.has_value())
@@ -501,7 +501,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x004740CF
-    static void refreshRequiredByAnother(stdx::span<SelectedObjectsFlags> objectFlags)
+    static void refreshRequiredByAnother(std::span<SelectedObjectsFlags> objectFlags)
     {
         for (auto& val : objectFlags)
         {
@@ -525,9 +525,9 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472C84
-    static void resetSelectedObjectCountsAndSize(stdx::span<SelectedObjectsFlags> objectFlags, std::array<uint16_t, maxObjectTypes>& numSelectedObjects)
+    static void resetSelectedObjectCountsAndSize(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
     {
-        std::fill(std::begin(numSelectedObjects), std::end(numSelectedObjects), 0U);
+        std::fill(std::begin(selectionMetaData.numSelectedObjects), std::end(selectionMetaData.numSelectedObjects), 0U);
 
         uint32_t totalNumImages = 0;
         auto ptr = (std::byte*)_installedObjectList;
@@ -539,15 +539,15 @@ namespace OpenLoco::ObjectManager
                 continue;
             }
 
-            numSelectedObjects[enumValue(entry._header->getType())]++;
+            selectionMetaData.numSelectedObjects[enumValue(entry._header->getType())]++;
             totalNumImages += entry._displayData->numImages;
         }
 
-        _112C209 = totalNumImages;
+        selectionMetaData.numImages = totalNumImages;
     }
 
     // 0x00473D1D
-    static bool windowEditorObjectSelectionSelectObject(uint8_t bl, bool isRecursed, const ObjectHeader& objHeader, stdx::span<SelectedObjectsFlags> objectFlags, std::array<uint16_t, maxObjectTypes>& numSelectedObjects)
+    static bool selectObjectFromIndexInternal(uint8_t bl, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
     {
         if (!isRecursed)
         {
@@ -563,7 +563,7 @@ namespace OpenLoco::ObjectManager
             GameCommands::setErrorText(StringIds::buffer_2042);
             if (isRecursed)
             {
-                resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
             }
             return false;
         }
@@ -591,23 +591,23 @@ namespace OpenLoco::ObjectManager
                 return true;
             }
 
-            if (numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
+            if (selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
             {
                 GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
 
             for (const auto& header : entry._requiredObjects)
             {
-                if (!windowEditorObjectSelectionSelectObject(bl, 1, header, objectFlags))
+                if (!selectObjectFromIndexInternal(bl, true, header, objectFlags, selectionMetaData))
                 {
                     if (isRecursed)
                     {
-                        resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                        resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                     }
                     return false;
                 }
@@ -617,7 +617,7 @@ namespace OpenLoco::ObjectManager
             {
                 if (bl & (1U << 2))
                 {
-                    windowEditorObjectSelectionSelectObject(bl, 1, header, objectFlags);
+                    selectObjectFromIndexInternal(bl, true, header, objectFlags, selectionMetaData);
                 }
             }
 
@@ -629,34 +629,34 @@ namespace OpenLoco::ObjectManager
                 GameCommands::setErrorText(StringIds::buffer_2045);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
 
-            if (entry._displayData->numImages + _112C209 > 0x40000)
+            if (entry._displayData->numImages + selectionMetaData.numImages > 0x40000)
             {
                 GameCommands::setErrorText(StringIds::not_enough_space_for_graphics);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
 
             // Its possible that we have loaded other objects so check again
-            if (numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
+            if (selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
             {
                 GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
 
-            _112C209 += entry._displayData->numImages;
-            numSelectedObjects[enumValue(objHeader.getType())]++;
+            selectionMetaData.numImages += entry._displayData->numImages;
+            selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]++;
             val |= SelectedObjectsFlags::selected;
             if (!isRecursed)
             {
@@ -680,7 +680,7 @@ namespace OpenLoco::ObjectManager
                 GameCommands::setErrorText(StringIds::this_object_is_currently_in_use);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
@@ -690,7 +690,7 @@ namespace OpenLoco::ObjectManager
                 GameCommands::setErrorText(StringIds::this_object_is_required_by_another_object);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
@@ -701,7 +701,7 @@ namespace OpenLoco::ObjectManager
                 GameCommands::setErrorText(StringIds::this_object_is_always_required);
                 if (isRecursed)
                 {
-                    resetSelectedObjectCountsAndSize(objectFlags, numSelectedObjects);
+                    resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
                 }
                 return false;
             }
@@ -710,12 +710,12 @@ namespace OpenLoco::ObjectManager
             {
                 if (bl & (1U << 2))
                 {
-                    windowEditorObjectSelectionSelectObject(bl, 1, header, objectFlags);
+                    selectObjectFromIndexInternal(bl, true, header, objectFlags, selectionMetaData);
                 }
             }
 
-            _112C209 -= entry._displayData->numImages;
-            numSelectedObjects[enumValue(objHeader.getType())]--;
+            selectionMetaData.numImages -= entry._displayData->numImages;
+            selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]--;
             val &= ~SelectedObjectsFlags::selected;
             if (!isRecursed)
             {
@@ -723,6 +723,11 @@ namespace OpenLoco::ObjectManager
             }
             return true;
         }
+    }
+
+    bool selectObjectFromIndex(uint8_t bl, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    {
+        return selectObjectFromIndexInternal(bl, false, objHeader, objectFlags, selectionMetaData);
     }
 
     ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
@@ -746,7 +751,7 @@ namespace OpenLoco::ObjectManager
         *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
-        entry._requiredObjects = stdx::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
+        entry._requiredObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
         *ptr += sizeof(uint8_t);
         for (int n = 0; n < *countA; n++)
         {
@@ -755,7 +760,7 @@ namespace OpenLoco::ObjectManager
         }
 
         uint8_t* countB = (uint8_t*)*ptr;
-        entry._alsoLoadObjects = stdx::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
+        entry._alsoLoadObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
         *ptr += sizeof(uint8_t);
         for (int n = 0; n < *countB; n++)
         {

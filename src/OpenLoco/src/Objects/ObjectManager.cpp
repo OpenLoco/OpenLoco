@@ -84,7 +84,7 @@ namespace OpenLoco::ObjectManager
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
-    loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> _objectRepository;
+    loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
 
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -590,7 +590,7 @@ namespace OpenLoco::ObjectManager
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
     {
         size_t objectType = 0;
-        while (objectType < maxObjectTypes)
+        while (objectType < kMaxObjectTypes)
         {
             auto count = getMaxObjects(static_cast<ObjectType>(objectType));
             if (index < count)
@@ -902,7 +902,7 @@ namespace OpenLoco::ObjectManager
     std::vector<ObjectHeader> getHeaders()
     {
         std::vector<ObjectHeader> entries;
-        entries.reserve(ObjectManager::maxObjects);
+        entries.reserve(ObjectManager::kMaxObjects);
 
         addAllInUseHeadersOfTypes<InterfaceSkinObject, SoundObject, CurrencyObject, SteamObject, CliffEdgeObject, WaterObject, LandObject, TownNamesObject, CargoObject, WallObject, TrainSignalObject, LevelCrossingObject, StreetLightObject, TunnelObject, BridgeObject, TrainStationObject, TrackExtraObject, TrackObject, RoadStationObject, RoadExtraObject, RoadObject, AirportObject, DockObject, VehicleObject, TreeObject, SnowObject, ClimateObject, HillShapesObject, BuildingObject, ScaffoldingObject, IndustryObject, RegionObject, CompetitorObject, ScenarioTextObject>(entries);
 

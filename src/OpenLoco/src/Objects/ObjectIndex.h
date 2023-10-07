@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <array>
 #include <optional>
 #include <span>
 #include <vector>
@@ -27,8 +28,8 @@ namespace OpenLoco::ObjectManager
         ObjectHeader3* _displayData;
         char* _filename;
         char* _name;
-        stdx::span<ObjectHeader> _requiredObjects;
-        stdx::span<ObjectHeader> _alsoLoadObjects;
+        std::span<ObjectHeader> _requiredObjects;
+        std::span<ObjectHeader> _alsoLoadObjects;
 
         static ObjectIndexEntry read(std::byte** ptr);
     };
@@ -50,4 +51,10 @@ namespace OpenLoco::ObjectManager
     bool isObjectInstalled(const ObjectHeader& objectHeader);
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     ObjIndexPair getActiveObject(ObjectType objectType, std::span<SelectedObjectsFlags> objectIndexFlags);
+    struct ObjectSelectionMeta
+    {
+        uint32_t numImages;
+        std::array<uint16_t, kMaxObjectTypes> numSelectedObjects;
+    };
+    bool selectObjectFromIndex(uint8_t bl, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
 }

@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // clang-format off
-    static constexpr std::array<TabDisplayInfo, ObjectManager::maxObjectTypes> _tabDisplayInfo = {
+    static constexpr std::array<TabDisplayInfo, kMaxObjectTypes> _tabDisplayInfo = {
         TabDisplayInfo{ StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
         TabDisplayInfo{ StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
         TabDisplayInfo{ StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
@@ -315,7 +315,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t rowCapacity = kPrimaryTabRowCapacity;
         uint8_t tabPos = 0;
 
-        for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
+        for (int8_t currentType = kMaxObjectTypes - 1; currentType >= 0; currentType--)
         {
             if (!shouldShowTab(currentType, FilterLevel(self->var_856)))
                 continue;
@@ -545,7 +545,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
+    static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
+    static loco_global<uint32_t, 0x0112C209> _112C209;
 
     static constexpr uint8_t kRowOffsetX = 10;
     static constexpr uint8_t kRowOffsetY = 24;
@@ -1308,35 +1309,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.invalidate();
     }
 
-    // 0x00473D1D
-    static bool windowEditorObjectSelectionSelectObject(uint8_t bl, uint8_t bh, const ObjectHeader& objHeader)
-    {
-        if (bh == 0)
-        {
-            // Vanilla had a few pointless no side effect loops here
-        }
-
-        auto objIndexEntry = ObjectManager::findObjectInIndex(objHeader);
-        if (!objIndexEntry.has_value())
-        {
-            auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2042));
-            buffer = strcpy(buffer, "Data for the following object not found: ");
-            objectCreateIdentifierName(buffer, objHeader);
-            GameCommands::setErrorText(StringIds::buffer_2042);
-            if (bh != 0)
-            {
-                resetSelectedObjectCountAndSize();
-            }
-            return false;
-        }
-        registers regs;
-        regs.bl = bl;
-        regs.bh = bh;
-        regs.ebp = X86Pointer(&objHeader);
-
-        return call(0x00473D1D, regs) & X86_FLAG_CARRY;
-    }
-
     // 0x00473948
     static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
@@ -1361,7 +1333,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (oldIndex != -1)
                 {
-                    windowEditorObjectSelectionSelectObject(6, 0, *oldObject._header);
+                    ObjectManager::ObjectSelectionMeta meta{};
+                    std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
+                    meta.numImages = _112C209;
+                    ObjectManager::selectObjectFromIndex(6, *oldObject._header, selectionFlags, meta);
+                    std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
+                    _112C209 = meta.numImages;
                 }
             }
         }
@@ -1375,7 +1352,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         bx |= 6;
 
-        if (!windowEditorObjectSelectionSelectObject(bx, 0, *object))
+        ObjectManager::ObjectSelectionMeta meta{};
+        std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
+        meta.numImages = _112C209;
+        bool success = ObjectManager::selectObjectFromIndex(bx, *object, selectionFlags, meta);
+        std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
+        _112C209 = meta.numImages;
+
+        if (!success)
             return;
 
         auto errorTitle = StringIds::error_unable_to_select_object;
