@@ -34,7 +34,7 @@ namespace OpenLoco
     }
 
     // 0x0046983C
-    void LandObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void LandObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(LandObject));
 

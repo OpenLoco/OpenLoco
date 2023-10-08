@@ -59,7 +59,7 @@ namespace OpenLoco
     }
 
     // 0x004A6A5F
-    void TrackObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void TrackObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(TrackObject));
 

@@ -64,7 +64,7 @@ namespace OpenLoco::ObjectManager
     };
 
     // 0x00472172
-    StringTableResult loadStringTable(stdx::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index)
+    StringTableResult loadStringTable(std::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index)
     {
         StringTableResult res;
         auto iter = data.begin();

@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -132,11 +132,11 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
-        stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
-        stdx::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
-        stdx::span<const IndustryObjectUnk38> getUnk38() const;
+        std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        std::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
+        std::span<const IndustryObjectUnk38> getUnk38() const;
 
         constexpr bool hasFlags(IndustryObjectFlags flagsToTest) const
         {

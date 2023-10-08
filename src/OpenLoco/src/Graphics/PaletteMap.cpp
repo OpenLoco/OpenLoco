@@ -60,7 +60,7 @@ namespace OpenLoco::Gfx::PaletteMap
                 // Palette maps must be of 256 entries per row.
                 assert((length % kDefaultSize) == 0);
 
-                return View(stdx::span{ g1->offset, length });
+                return View(std::span{ g1->offset, length });
             }
         }
         return std::nullopt;

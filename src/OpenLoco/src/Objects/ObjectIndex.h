@@ -2,8 +2,8 @@
 
 #include "Object.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
 #include <optional>
+#include <span>
 #include <vector>
 
 namespace OpenLoco::ObjectManager
@@ -47,5 +47,5 @@ namespace OpenLoco::ObjectManager
     std::vector<std::pair<ObjectIndexId, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     bool isObjectInstalled(const ObjectHeader& objectHeader);
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
-    ObjIndexPair getActiveObject(ObjectType objectType, stdx::span<SelectedObjectsFlags> objectIndexFlags);
+    ObjIndexPair getActiveObject(ObjectType objectType, std::span<SelectedObjectsFlags> objectIndexFlags);
 }

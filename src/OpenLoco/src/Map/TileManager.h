@@ -2,9 +2,9 @@
 
 #include "Tile.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 #include <set>
+#include <span>
 
 namespace OpenLoco::World
 {
@@ -34,14 +34,14 @@ namespace OpenLoco::World::TileManager
 
     void allocateMapElements();
     void initialise();
-    stdx::span<TileElement> getElements();
+    std::span<TileElement> getElements();
     TileElement* getElementsEnd();
     uint32_t numFreeElements();
     TileElement** getElementIndex();
     Tile get(TilePos2 pos);
     Tile get(Pos2 pos);
     Tile get(coord_t x, coord_t y);
-    void setElements(stdx::span<TileElement> elements);
+    void setElements(std::span<TileElement> elements);
     void removeElement(TileElement& element);
     // This is used with wasRemoveOnLastElement to indicate that pointer passed to removeElement is now bad
     void setRemoveElementPointerChecker(TileElement& element);

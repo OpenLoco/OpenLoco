@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
     }
 
-    static void setMapSelectedTilesFromPiece(const stdx::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
+    static void setMapSelectedTilesFromPiece(const std::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
     {
         size_t i = 0;
         for (const auto& piece : pieces)
@@ -2060,7 +2060,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(World::toTileSpace(*mapPos), height) };
     }
 
-    static int16_t getMaxPieceHeight(const stdx::span<const TrackData::PreviewTrack> piece)
+    static int16_t getMaxPieceHeight(const std::span<const TrackData::PreviewTrack> piece)
     {
         int16_t maxPieceHeight = 0;
 

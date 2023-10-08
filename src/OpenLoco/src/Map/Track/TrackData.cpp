@@ -215,7 +215,7 @@ namespace OpenLoco::World::TrackData
     };
 
     // 0x004F73D8, 0x004F78F8
-    const std::array<stdx::span<const PreviewTrack>, 44> trackPieces = { {
+    const std::array<std::span<const PreviewTrack>, 44> trackPieces = { {
         trackPiece0,
         trackPiece1,
         trackPiece2,
@@ -302,7 +302,7 @@ namespace OpenLoco::World::TrackData
     };
 
     // 0x004F6D1C, 0x004F6F1C
-    const std::array<stdx::span<const PreviewTrack>, 10> roadPieces = { {
+    const std::array<std::span<const PreviewTrack>, 10> roadPieces = { {
         roadPiece0,
         roadPiece1,
         roadPiece2,
@@ -315,13 +315,13 @@ namespace OpenLoco::World::TrackData
         roadPiece9,
     } };
 
-    const stdx::span<const PreviewTrack> getTrackPiece(size_t trackId)
+    const std::span<const PreviewTrack> getTrackPiece(size_t trackId)
     {
         assert(trackId < trackPieces.size());
         return trackPieces[trackId];
     }
 
-    const stdx::span<const PreviewTrack> getRoadPiece(size_t trackId)
+    const std::span<const PreviewTrack> getRoadPiece(size_t trackId)
     {
         assert(trackId < roadPieces.size());
         return roadPieces[trackId];

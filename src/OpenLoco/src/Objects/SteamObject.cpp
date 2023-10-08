@@ -9,7 +9,7 @@
 namespace OpenLoco
 {
     // 0x00440CAD
-    void SteamObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void SteamObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(SteamObject));
 

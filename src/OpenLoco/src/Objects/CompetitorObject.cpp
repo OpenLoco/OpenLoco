@@ -78,7 +78,7 @@ namespace OpenLoco
     }
 
     // 0x00434CA0
-    void CompetitorObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void CompetitorObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(CompetitorObject));
 

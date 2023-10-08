@@ -122,7 +122,7 @@ namespace OpenLoco::Audio
 
     static uint32_t loadSoundFromWaveMemory(const WAVEFORMATEX& format, const void* pcm, size_t pcmLen)
     {
-        const auto id = _bufferManager.allocate(stdx::span<const uint8_t>(reinterpret_cast<const uint8_t*>(pcm), pcmLen), format.nSamplesPerSec, format.nChannels == 2, format.wBitsPerSample);
+        const auto id = _bufferManager.allocate(std::span<const uint8_t>(reinterpret_cast<const uint8_t*>(pcm), pcmLen), format.nSamplesPerSec, format.nChannels == 2, format.wBitsPerSample);
         return id;
     }
 
@@ -674,7 +674,7 @@ namespace OpenLoco::Audio
             std::vector<std::uint8_t> pcm(pcmLen);
             fs.read(pcm.data(), pcmLen);
 
-            const auto id = _bufferManager.allocate(stdx::span<const uint8_t>(pcm.data(), pcmLen), sampleRate, channels == 2, bits);
+            const auto id = _bufferManager.allocate(std::span<const uint8_t>(pcm.data(), pcmLen), sampleRate, channels == 2, bits);
             _musicSamples[asset] = id;
 
             return id;

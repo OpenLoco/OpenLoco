@@ -3,11 +3,11 @@
 #include "Map/QuarterTile.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cstddef>
 #include <cstdlib>
+#include <span>
 
 namespace OpenLoco::World::TrackData
 {
@@ -54,8 +54,8 @@ namespace OpenLoco::World::TrackData
     static_assert(sizeof(TrackCoordinates) == 0x8);
 #pragma pack(pop)
 
-    const stdx::span<const PreviewTrack> getTrackPiece(size_t trackId);
-    const stdx::span<const PreviewTrack> getRoadPiece(size_t trackId);
+    const std::span<const PreviewTrack> getTrackPiece(size_t trackId);
+    const std::span<const PreviewTrack> getRoadPiece(size_t trackId);
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 

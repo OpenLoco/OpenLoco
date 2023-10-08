@@ -22,7 +22,7 @@ namespace OpenLoco
     }
 
     // 0x00498E1D
-    void TownNamesObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void TownNamesObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(TownNamesObject));
 

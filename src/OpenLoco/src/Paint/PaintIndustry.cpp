@@ -31,7 +31,7 @@ namespace OpenLoco::Paint
             sectionProgress = elIndustry.sectionProgress();
         }
 
-        stdx::span<const std::uint8_t> animationSequence{};
+        std::span<const std::uint8_t> animationSequence{};
         if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
         {
             animationSequence = indObj.getAnimationSequence(elIndustry.var_6_003F() & 0x3);

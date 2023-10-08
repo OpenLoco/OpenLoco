@@ -22,7 +22,7 @@ namespace OpenLoco
     }
 
     // 0x0042F4D0
-    void CargoObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void CargoObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(CargoObject));
 

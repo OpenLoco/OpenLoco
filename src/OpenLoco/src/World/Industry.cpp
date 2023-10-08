@@ -38,7 +38,7 @@ namespace OpenLoco
         Unk4F9274{ { 32, 32 }, 2 },
         Unk4F9274{ { 32, 0 }, 3 },
     };
-    const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type)
+    const std::span<const Unk4F9274> getBuildingTileOffsets(bool type)
     {
         if (type)
             return word_4F927C;

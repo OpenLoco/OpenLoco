@@ -259,7 +259,7 @@ void NetworkClient::receiveRequestStateResponseChunkPacket(const RequestStateRes
     }
 }
 
-void NetworkClient::processFullState(stdx::span<uint8_t const> fullData)
+void NetworkClient::processFullState(std::span<uint8_t const> fullData)
 {
     auto* extra = reinterpret_cast<const ExtraState*>(fullData.data() + fullData.size() - sizeof(ExtraState));
     _localGameCommandIndex = extra->gameCommandIndex;

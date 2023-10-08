@@ -106,9 +106,9 @@ namespace OpenLoco::World::TileManager
         getGameState().flags |= GameStateFlags::tileManagerLoaded;
     }
 
-    stdx::span<TileElement> getElements()
+    std::span<TileElement> getElements()
     {
-        return stdx::span<TileElement>(static_cast<TileElement*>(_elements), getElementsEnd());
+        return std::span<TileElement>(static_cast<TileElement*>(_elements), getElementsEnd());
     }
 
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB)
@@ -144,7 +144,7 @@ namespace OpenLoco::World::TileManager
         return maxElements - (_elementsEnd - _elements);
     }
 
-    void setElements(stdx::span<TileElement> elements)
+    void setElements(std::span<TileElement> elements)
     {
         TileElement* dst = _elements;
         std::memset(dst, 0, maxElements * sizeof(TileElement));
