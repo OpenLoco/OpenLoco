@@ -35,7 +35,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::wall;
 
-        string_id name;
+        StringId name;
         uint32_t sprite; // 0x02
         uint8_t var_06;
         WallObjectFlags flags; // 0x07

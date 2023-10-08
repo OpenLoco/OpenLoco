@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
         if (!isEditorMode())
         {
-            static constexpr std::array<const string_id, 3> kTypeToType = {
+            static constexpr std::array<const StringId, 3> kTypeToType = {
                 StringIds::title_load_game,
                 StringIds::title_quit_game,
                 StringIds::title_quit_game_alt,
@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 window->widgets[widx::caption].text = StringIds::title_quit_scenario_editor;
         }
 
-        static constexpr std::array<const string_id, 3> kTypeToPrompt = {
+        static constexpr std::array<const StringId, 3> kTypeToPrompt = {
             StringIds::prompt_save_before_loading,
             StringIds::prompt_save_before_quitting,
             StringIds::prompt_save_before_quitting_alt,

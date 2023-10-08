@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<uint16_t, 0x0113DC78> _word_113DC78;
     static loco_global<int16_t, 0x0113D84E> _dropdownHighlightedIndex;
     static loco_global<uint32_t, 0x0113DC64> _dropdownSelection;
-    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
+    static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
     static loco_global<std::byte[40][kBytesPerItem], 0x0113D8A0> _dropdownItemArgs;
     static loco_global<std::byte[40][kBytesPerItem], 0x0113D9E0> _dropdownItemArgs2;
     static loco_global<CompanyId[40], 0x00113DB20> _menuOptions;
@@ -56,14 +56,14 @@ namespace OpenLoco::Ui::Dropdown
         add(index, 0);
     }
 
-    void add(size_t index, string_id title)
+    void add(size_t index, StringId title)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
 
         _dropdownItemFormats[index] = title;
     }
 
-    void add(size_t index, string_id title, std::initializer_list<format_arg> l)
+    void add(size_t index, StringId title, std::initializer_list<format_arg> l)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
 
@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::Dropdown
         }
     }
 
-    void add(size_t index, string_id title, FormatArguments& fArgs)
+    void add(size_t index, StringId title, FormatArguments& fArgs)
     {
         add(index, title);
         std::byte* args = _dropdownItemArgs[index];
@@ -122,7 +122,7 @@ namespace OpenLoco::Ui::Dropdown
         }
     }
 
-    void add(size_t index, string_id title, format_arg l)
+    void add(size_t index, StringId title, format_arg l)
     {
         assert(index < std::numeric_limits<uint8_t>::max());
 
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6([[maybe_unused]] Window* self, Gfx::RenderTarget* rt, string_id stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
+        static void sub_494BF6([[maybe_unused]] Window* self, Gfx::RenderTarget* rt, StringId stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::Dropdown
 
                     auto dropdownItemFormat = _dropdownItemFormats[itemCount];
 
-                    if (dropdownItemFormat != (string_id)-2)
+                    if (dropdownItemFormat != (StringId)-2)
                     {
                         if (dropdownItemFormat != StringIds::null)
                         {
@@ -259,13 +259,13 @@ namespace OpenLoco::Ui::Dropdown
                         }
                     }
 
-                    if (dropdownItemFormat == (string_id)-2 || dropdownItemFormat == StringIds::null)
+                    if (dropdownItemFormat == (StringId)-2 || dropdownItemFormat == StringIds::null)
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
 
                         auto imageId = *(uint32_t*)&args;
-                        if (dropdownItemFormat == (string_id)-2 && itemCount == _dropdownHighlightedIndex)
+                        if (dropdownItemFormat == (StringId)-2 && itemCount == _dropdownHighlightedIndex)
                         {
                             imageId++;
                         }
@@ -941,7 +941,7 @@ namespace OpenLoco::Ui::Dropdown
         return *this;
     }
 
-    Builder& Builder::item(DropdownItemId id, string_id text)
+    Builder& Builder::item(DropdownItemId id, StringId text)
     {
         _items.emplace_back(id, text);
         return *this;

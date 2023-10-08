@@ -28,7 +28,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::hillShapes;
 
-        string_id name;
+        StringId name;
         uint8_t hillHeightMapCount;     // 0x02
         uint8_t mountainHeightMapCount; // 0x03
         uint32_t image;                 // 0x04

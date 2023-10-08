@@ -428,7 +428,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         for (auto i = 0u; i < std::size(availableTracks); i++)
         {
             uint32_t objImage;
-            string_id objStringId;
+            StringId objStringId;
 
             auto objIndex = availableTracks[i];
             if ((objIndex & (1 << 7)) != 0)
@@ -520,9 +520,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         uint32_t image;
         uint32_t buildImage;
-        string_id buildString;
-        string_id numSingular;
-        string_id numPlural;
+        StringId buildString;
+        StringId numSingular;
+        StringId numPlural;
     };
 
     // clang-format off
@@ -613,7 +613,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint16_t vehicle_count = vehicle_counts[vehicleType];
 
             // TODO: replace with locale-based plurals.
-            string_id vehicleStringId;
+            StringId vehicleStringId;
             if (vehicle_count == 1)
                 vehicleStringId = interfaceParam.numSingular;
             else

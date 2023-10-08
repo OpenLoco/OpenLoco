@@ -21,8 +21,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::competitor;
 
-        string_id var_00;        // 0x00
-        string_id var_02;        // 0x02
+        StringId var_00;         // 0x00
+        StringId var_02;         // 0x02
         uint32_t var_04;         // 0x04
         uint32_t var_08;         // 0x08
         uint32_t emotions;       // 0x0C
@@ -41,5 +41,5 @@ namespace OpenLoco
 #pragma pack(pop)
     static_assert(sizeof(CompetitorObject) == 0x38);
 
-    [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating);
+    [[nodiscard]] StringId aiRatingToLevel(const uint8_t rating);
 }

@@ -32,7 +32,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::building;
 
-        string_id name;                     // 0x0
+        StringId name;                      // 0x0
         uint32_t image;                     // 0x2
         uint8_t var_06;                     // 0x6
         uint8_t numVariations;              // 0x7

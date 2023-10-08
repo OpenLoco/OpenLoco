@@ -390,7 +390,7 @@ namespace OpenLoco::CompanyManager
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
-    string_id getOwnerStatus(CompanyId id, FormatArguments& args)
+    StringId getOwnerStatus(CompanyId id, FormatArguments& args)
     {
         auto* company = get(id);
         if (company == nullptr)
@@ -401,7 +401,7 @@ namespace OpenLoco::CompanyManager
         if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
             return StringIds::company_status_bankrupt;
 
-        const string_id observationStatusStrings[] = {
+        const StringId observationStatusStrings[] = {
             StringIds::company_status_empty,
             StringIds::company_status_building_track_road,
             StringIds::company_status_building_airport,
@@ -410,7 +410,7 @@ namespace OpenLoco::CompanyManager
             StringIds::company_status_surveying_landscape,
         };
 
-        string_id statusString = observationStatusStrings[company->observationStatus];
+        StringId statusString = observationStatusStrings[company->observationStatus];
         if (company->observationStatus == ObservationStatus::empty || company->observationTownId == TownId::null)
             return StringIds::company_status_empty;
 

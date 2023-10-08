@@ -37,8 +37,8 @@ namespace OpenLoco::Ui
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
 
-    void draw_11_c(Gfx::RenderTarget* rt, const Window* window, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, string_id string);
-    void draw_14(Gfx::RenderTarget* rt, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, string_id string);
+    void draw_11_c(Gfx::RenderTarget* rt, const Window* window, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, StringId string);
+    void draw_14(Gfx::RenderTarget* rt, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, StringId string);
 
     // 0x004CF3EB
     static void drawStationNameBackground(Gfx::RenderTarget* rt, [[maybe_unused]] const Window* window, [[maybe_unused]] const Widget* widget, int16_t x, int16_t y, AdvancedColour colour, int16_t width)
@@ -511,7 +511,7 @@ namespace OpenLoco::Ui
 
         int16_t x = window->x + left;
         int16_t y = window->y + std::max<int16_t>(top, (top + bottom) / 2 - 5);
-        string_id string = text;
+        StringId string = text;
 
         // TODO: Refactor out Widget type check
         if (type == WidgetType::wt_12)
@@ -534,7 +534,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB21D
-    void draw_11_c(Gfx::RenderTarget* rt, const Window* window, Widget* widget, AdvancedColour colour, bool disabled, [[maybe_unused]] int16_t x, int16_t y, string_id string)
+    void draw_11_c(Gfx::RenderTarget* rt, const Window* window, Widget* widget, AdvancedColour colour, bool disabled, [[maybe_unused]] int16_t x, int16_t y, StringId string)
     {
         colour = colour.opaque();
         if (disabled)
@@ -549,7 +549,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB263
-    void draw_14(Gfx::RenderTarget* rt, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, string_id string)
+    void draw_14(Gfx::RenderTarget* rt, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, StringId string)
     {
         x = x + 1;
 

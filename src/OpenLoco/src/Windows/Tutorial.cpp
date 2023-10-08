@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     // 0x00439B4A
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        static constexpr string_id titleStringIds[] = {
+        static constexpr StringId titleStringIds[] = {
             StringIds::tutorial_1_title,
             StringIds::tutorial_2_title,
             StringIds::tutorial_3_title,

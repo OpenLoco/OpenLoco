@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 return a->performanceIndex > b->performanceIndex;
             });
 
-        const string_id positionArray[15] = {
+        const StringId positionArray[15] = {
             StringIds::position_1st,
             StringIds::position_2nd,
             StringIds::position_3rd,

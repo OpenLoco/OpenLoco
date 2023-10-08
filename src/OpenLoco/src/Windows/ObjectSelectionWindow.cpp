@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     struct TabDisplayInfo
     {
-        string_id name;
+        StringId name;
         uint32_t image;
         ObjectTabFlags flags;
     };
@@ -852,7 +852,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
             FormatArguments args{};
-            args.push<string_id>(StringIds::buffer_1250);
+            args.push<StringId>(StringIds::buffer_1250);
             drawingCtx.drawStringLeft(*clipped, 18, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_filename, &args);
         }
     }
@@ -900,7 +900,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawSearchBox(self, rt);
 
         {
-            static constexpr std::array<string_id, 3> levelStringIds = {
+            static constexpr std::array<StringId, 3> levelStringIds = {
                 StringIds::objSelectionFilterBeginner,
                 StringIds::objSelectionFilterAdvanced,
                 StringIds::objSelectionFilterExpert,

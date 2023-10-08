@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::StationList
     struct TabDetails
     {
         widx widgetIndex;
-        string_id windowTitleId;
+        StringId windowTitleId;
         uint32_t imageId;
         StationFlags stationMask;
     };
@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 break;
             }
 
-            string_id text_colour_id = StringIds::black_stringid;
+            StringId text_colour_id = StringIds::black_stringid;
 
             // Highlight selection.
             if (stationId == StationId(window.rowHover))

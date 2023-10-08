@@ -899,9 +899,9 @@ namespace OpenLoco::GameCommands
 
     const World::Pos3& getPosition();
     void setPosition(const World::Pos3& pos);
-    void setErrorText(const string_id message);
-    string_id getErrorText();
-    void setErrorTitle(const string_id title);
+    void setErrorText(const StringId message);
+    StringId getErrorText();
+    void setErrorTitle(const StringId title);
     ExpenditureType getExpenditureType();
     void setExpenditureType(const ExpenditureType type);
     CompanyId getUpdatingCompanyId();

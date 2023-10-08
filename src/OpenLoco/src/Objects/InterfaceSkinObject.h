@@ -20,8 +20,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::interfaceSkin;
 
-        string_id name; // 0x00
-        uint32_t img;   // 0x02
+        StringId name; // 0x00
+        uint32_t img;  // 0x02
         Colour colour_06;
         Colour colour_07;
         Colour tooltipColour; // 0x08

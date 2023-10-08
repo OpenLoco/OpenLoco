@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B6BF
     static void prepareDraw(Window& self)
     {
-        const string_id captionText[] = {
+        const StringId captionText[] = {
             StringIds::title_map,
             StringIds::title_map_vehicles,
             StringIds::title_map_industries,
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             PaletteIndex::index_64,
         };
 
-        static const string_id lineNames[] = {
+        static const StringId lineNames[] = {
             StringIds::map_key_towns,
             StringIds::map_key_industries,
             StringIds::map_key_roads,
@@ -608,7 +608,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D379
     static void drawGraphKeyVehicles(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
-        static const string_id lineNames[] = {
+        static const StringId lineNames[] = {
             StringIds::forbid_trains,
             StringIds::forbid_buses,
             StringIds::forbid_trucks,
@@ -778,7 +778,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D81F
     static void formatVehicleString(Window* self, FormatArguments args)
     {
-        static const string_id vehicleStringSingular[] = {
+        static const StringId vehicleStringSingular[] = {
             StringIds::num_trains_singular,
             StringIds::num_buses_singular,
             StringIds::num_trucks_singular,
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::num_ships_singular,
         };
 
-        static const string_id vehicleStringPlural[] = {
+        static const StringId vehicleStringPlural[] = {
             StringIds::num_trains_plural,
             StringIds::num_buses_plural,
             StringIds::num_trucks_plural,

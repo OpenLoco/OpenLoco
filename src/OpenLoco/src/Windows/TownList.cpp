@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     continue;
                 }
 
-                string_id text_colour_id = StringIds::black_stringid;
+                StringId text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
                 if (townId == TownId(self.rowHover))
@@ -629,7 +629,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static WindowEventList events;
 
-        constexpr string_id townSizeNames[9] = {
+        constexpr StringId townSizeNames[9] = {
             StringIds::town_size_1,
             StringIds::town_size_2,
             StringIds::town_size_3,

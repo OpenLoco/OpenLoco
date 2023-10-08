@@ -83,7 +83,7 @@ namespace OpenLoco
         auto remainingData = data.subspan(sizeof(CompetitorObject));
 
         // Load object name string
-        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+        auto loadString = [&remainingData, &handle](StringId& dst, uint8_t num) {
             auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
             dst = strRes.str;
             remainingData = remainingData.subspan(strRes.tableLength);
@@ -124,7 +124,7 @@ namespace OpenLoco
         std::fill(std::begin(images), std::end(images), 0);
     }
 
-    static std::array<string_id, 10> aiRatingToLevelArray = {
+    static std::array<StringId, 10> aiRatingToLevelArray = {
         {
             StringIds::low,
             StringIds::low,
@@ -139,7 +139,7 @@ namespace OpenLoco
         }
     };
 
-    [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating)
+    [[nodiscard]] StringId aiRatingToLevel(const uint8_t rating)
     {
         return aiRatingToLevelArray[std::min(rating, static_cast<uint8_t>(aiRatingToLevelArray.size()))];
     }

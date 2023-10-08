@@ -31,7 +31,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::land;
 
-        string_id name;
+        StringId name;
         uint8_t costIndex; // 0x02
         uint8_t var_03;
         uint8_t var_04;

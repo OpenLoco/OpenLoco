@@ -108,8 +108,8 @@ namespace OpenLoco
             uint8_t pad_89[3];
         };
         static_assert(sizeof(unk4A8) == 0x8C);
-        string_id name;
-        string_id ownerName;
+        StringId name;
+        StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
         currency48_t cash;                // 0x08
         currency32_t currentLoan;         // 0x0E
@@ -202,7 +202,7 @@ namespace OpenLoco
     static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
     static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
 
-    string_id getCorporateRatingAsStringId(CorporateRating rating);
+    StringId getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 }

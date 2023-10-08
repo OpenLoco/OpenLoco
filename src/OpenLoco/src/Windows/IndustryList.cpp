@@ -403,7 +403,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     continue;
                 }
 
-                string_id text_colour_id = StringIds::black_stringid;
+                StringId text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
                 if (industryId == IndustryId(self.rowHover))

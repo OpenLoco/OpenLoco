@@ -24,7 +24,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::StringManager
 {
-    static const std::map<int32_t, string_id> kDayToString = {
+    static const std::map<int32_t, StringId> kDayToString = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
         { 3, StringIds::day_3rd },
@@ -58,7 +58,7 @@ namespace OpenLoco::StringManager
         { 31, StringIds::day_31st },
     };
 
-    static const std::map<MonthId, std::pair<string_id, string_id>> kMonthToStringMap = {
+    static const std::map<MonthId, std::pair<StringId, StringId>> kMonthToStringMap = {
         { MonthId::january, { StringIds::month_short_january, StringIds::month_long_january } },
         { MonthId::february, { StringIds::month_short_february, StringIds::month_long_february } },
         { MonthId::march, { StringIds::month_short_march, StringIds::month_long_march } },
@@ -73,7 +73,7 @@ namespace OpenLoco::StringManager
         { MonthId::december, { StringIds::month_short_december, StringIds::month_long_december } },
     };
 
-    std::pair<string_id, string_id> monthToString(MonthId month)
+    std::pair<StringId, StringId> monthToString(MonthId month)
     {
         return kMonthToStringMap.find(month)->second;
     }
@@ -135,13 +135,13 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id dayString = kDayToString.find(date.day)->second;
+        StringId dayString = kDayToString.find(date.day)->second;
         buffer = formatString(buffer, dayString, nullptr);
 
         *buffer = ' ';
         buffer++;
 
-        string_id monthString = monthToString(date.month).second;
+        StringId monthString = monthToString(date.month).second;
         buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
@@ -157,7 +157,7 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id monthString = monthToString(date.month).second;
+        StringId monthString = monthToString(date.month).second;
         buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
@@ -173,7 +173,7 @@ namespace OpenLoco::StringManager
     {
         auto date = calcDate(totalDays);
 
-        string_id monthString = monthToString(date.month).second;
+        StringId monthString = monthToString(date.month).second;
         buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
@@ -188,7 +188,7 @@ namespace OpenLoco::StringManager
     static char* formatRawDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto month = static_cast<MonthId>(totalDays % 12);
-        string_id monthString = monthToString(month).first;
+        StringId monthString = monthToString(month).first;
         buffer = formatString(buffer, monthString, nullptr);
 
         *buffer = ' ';
@@ -225,7 +225,7 @@ namespace OpenLoco::StringManager
         return buffer;
     }
 
-    static char* formatString(char* buffer, string_id id, ArgsWrapper& args);
+    static char* formatString(char* buffer, StringId id, ArgsWrapper& args);
 
     constexpr uint32_t hpTokW(uint32_t hp)
     {
@@ -443,14 +443,14 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::stringidArgs:
                     {
-                        string_id id = args.pop<string_id>();
+                        StringId id = args.pop<StringId>();
                         buffer = formatString(buffer, id, args);
                         break;
                     }
 
                     case ControlCodes::stringidStr:
                     {
-                        string_id id = *(string_id*)sourceStr;
+                        StringId id = *(StringId*)sourceStr;
                         sourceStr += 2;
                         buffer = formatString(buffer, id, args);
                         break;
@@ -635,7 +635,7 @@ namespace OpenLoco::StringManager
     }
 
     // 0x004958C6
-    static char* formatString(char* buffer, string_id id, ArgsWrapper& args)
+    static char* formatString(char* buffer, StringId id, ArgsWrapper& args)
     {
         if (id < kUserStringsStart)
         {
@@ -688,32 +688,32 @@ namespace OpenLoco::StringManager
         }
     }
 
-    char* formatString(char* buffer, string_id id, const void* args)
+    char* formatString(char* buffer, StringId id, const void* args)
     {
         auto wrapped = ArgsWrapper(args);
         return formatString(buffer, id, wrapped);
     }
 
-    char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, string_id id, const void* args)
+    char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, StringId id, const void* args)
     {
         return formatString(buffer, id, args);
     }
 
-    string_id isTownName(string_id stringId)
+    StringId isTownName(StringId stringId)
     {
         return stringId >= kTownNamesStart && stringId < kTownNamesEnd;
     }
 
-    string_id toTownName(string_id stringId)
+    StringId toTownName(StringId stringId)
     {
         assert(stringId < kTownNamesStart && stringId + kTownNamesStart < kTownNamesEnd);
-        return string_id(kTownNamesStart + stringId);
+        return StringId(kTownNamesStart + stringId);
     }
 
-    string_id fromTownName(string_id stringId)
+    StringId fromTownName(StringId stringId)
     {
         assert(isTownName(stringId));
-        return string_id(stringId - kTownNamesStart);
+        return StringId(stringId - kTownNamesStart);
     }
 
     int32_t internalLengthToComma1DP(const int32_t length)

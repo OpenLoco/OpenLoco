@@ -35,7 +35,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::sound;
 
-        string_id name;
+        StringId name;
         const SoundObjectData* data;
         uint8_t var_06;
         uint8_t pad_07;

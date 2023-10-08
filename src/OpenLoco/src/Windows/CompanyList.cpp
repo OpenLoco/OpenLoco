@@ -498,8 +498,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 {
                     auto args = FormatArguments();
-                    args.skip(sizeof(string_id));
-                    string_id ownerStatus = CompanyManager::getOwnerStatus(company->id(), args);
+                    args.skip(sizeof(StringId));
+                    StringId ownerStatus = CompanyManager::getOwnerStatus(company->id(), args);
                     args.rewind();
                     args.push(ownerStatus);
 
@@ -1242,7 +1242,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto args = FormatArguments();
                     args.push(recordSpeed);
 
-                    const string_id string[] = {
+                    const StringId string[] = {
                         StringIds::land_speed_record,
                         StringIds::air_speed_record,
                         StringIds::water_speed_record,

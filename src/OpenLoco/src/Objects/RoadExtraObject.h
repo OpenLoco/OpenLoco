@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::roadExtra;
 
-        string_id name;          // 0x00
+        StringId name;           // 0x00
         uint16_t roadPieces;     // 0x02
         uint8_t paintStyle;      // 0x04
         uint8_t costIndex;       // 0x05

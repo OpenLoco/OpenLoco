@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::Town
                     continue;
 
                 int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
-                string_id rank{};
+                StringId rank{};
                 if (rating >= 70)
                     rank = StringIds::town_rating_excellent;
                 else if (rating >= 60)

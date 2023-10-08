@@ -22,8 +22,8 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::townNames;
         static constexpr auto kMinNumNameCombinations = 80;
 
-        string_id name; // 0x00
-        Unk unks[6];    // 0x02
+        StringId name; // 0x00
+        Unk unks[6];   // 0x02
 
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);

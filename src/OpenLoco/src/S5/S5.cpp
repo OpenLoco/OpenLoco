@@ -50,7 +50,7 @@ namespace OpenLoco::S5
     static loco_global<char[512], 0x0112CE04> _savePath;
     static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<string_id, 0x0050C198> _loadErrorMessage;
+    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
     // TODO: move this?
     static std::vector<ObjectHeader> _loadErrorObjectsList;
@@ -507,16 +507,16 @@ namespace OpenLoco::S5
     class LoadException : public std::runtime_error
     {
     private:
-        string_id _localisedMessage;
+        StringId _localisedMessage;
 
     public:
-        LoadException(const char* message, string_id localisedMessage)
+        LoadException(const char* message, StringId localisedMessage)
             : std::runtime_error(message)
             , _localisedMessage(localisedMessage)
         {
         }
 
-        string_id getLocalisedMessage() const
+        StringId getLocalisedMessage() const
         {
             return _localisedMessage;
         }

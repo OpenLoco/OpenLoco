@@ -21,7 +21,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::scaffolding;
 
-        string_id name;
+        StringId name;
         uint32_t image;             // 0x02
         uint16_t segmentHeights[3]; // 0x06
         uint16_t roofHeights[3];    // 0x0C

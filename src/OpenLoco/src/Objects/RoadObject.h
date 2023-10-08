@@ -51,7 +51,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::road;
 
-        string_id name;
+        StringId name;
         RoadObjectPieceFlags roadPieces; // 0x02
         int16_t buildCostFactor;         // 0x04
         int16_t sellCostFactor;          // 0x06

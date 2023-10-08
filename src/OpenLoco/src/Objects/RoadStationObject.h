@@ -31,7 +31,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::roadStation;
 
-        string_id name;     // 0x00
+        StringId name;      // 0x00
         uint8_t paintStyle; // 0x02
         uint8_t pad_03;
         uint16_t roadPieces;     // 0x04

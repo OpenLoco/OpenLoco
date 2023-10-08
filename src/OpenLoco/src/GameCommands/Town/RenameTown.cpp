@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
             return 0;
 
         // Allocate a string id for the new name.
-        string_id allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+        StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
         if (allocatedStringId == StringIds::empty)
             return GameCommands::FAILURE;
 
@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Apply the new name to the town.
-        string_id oldStringId = town->name;
+        StringId oldStringId = town->name;
         town->name = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
 

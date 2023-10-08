@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::levelCrossing;
 
-        string_id name;
+        StringId name;
         int16_t costFactor;     // 0x02
         int16_t sellCostFactor; // 0x04
         uint8_t costIndex;      // 0x06

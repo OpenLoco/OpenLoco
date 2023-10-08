@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         tooltipLocation = cursor;
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);
-        auto firstArg = argsWrap.pop<string_id>();
+        auto firstArg = argsWrap.pop<StringId>();
         if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
             WindowManager::close(WindowType::mapTooltip);
@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);
-        auto firstArg = argsWrap.pop<string_id>();
+        auto firstArg = argsWrap.pop<StringId>();
         if (firstArg == StringIds::null)
         {
             return;

@@ -32,7 +32,7 @@ namespace OpenLoco
         };
         static constexpr auto kObjectType = ObjectType::steam;
 
-        string_id name;               // 0x00
+        StringId name;                // 0x00
         uint16_t numImages;           // 0x02
         uint8_t numStationaryTicks;   // 0x04 while stationary can be affected by wind
         uint8_t spriteWidth;          // 0x05

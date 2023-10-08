@@ -179,14 +179,14 @@ namespace OpenLoco
         auto remainingData = data.subspan(sizeof(IndustryObject));
 
         {
-            auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+            auto loadString = [&remainingData, &handle](StringId& dst, uint8_t num) {
                 auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
                 dst = strRes.str;
                 remainingData = remainingData.subspan(strRes.tableLength);
             };
 
             // This is actually used for initial name of the industry when two industries in same town
-            string_id notUsed{};
+            StringId notUsed{};
 
             loadString(name, 0);
             loadString(var_02, 1);

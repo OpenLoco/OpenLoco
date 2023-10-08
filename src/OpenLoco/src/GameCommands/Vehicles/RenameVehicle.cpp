@@ -72,7 +72,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        string_id allocatedStringId = StringIds::empty;
+        StringId allocatedStringId = StringIds::empty;
         if (strlen(renameStringBuffer) != 0)
         {
             allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
                 return 0;
             }
 
-            static const std::unordered_map<VehicleType, string_id> defaultVehicleStringIdMap = {
+            static const std::unordered_map<VehicleType, StringId> defaultVehicleStringIdMap = {
                 { VehicleType::train, StringIds::train_number },
                 { VehicleType::bus, StringIds::bus_number },
                 { VehicleType::truck, StringIds::truck_number },
@@ -104,7 +104,7 @@ namespace OpenLoco::GameCommands
             allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType);
         }
 
-        string_id oldStringId = vehicleHead->name;
+        StringId oldStringId = vehicleHead->name;
         vehicleHead->name = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
         Gfx::invalidateScreen();

@@ -7,7 +7,7 @@
 
 namespace OpenLoco::ObjectManager
 {
-    constexpr std::array<string_id, 16> kTemporaryObjectStringIds = {
+    constexpr std::array<StringId, 16> kTemporaryObjectStringIds = {
         StringIds::temporary_object_load_str_0,
         StringIds::temporary_object_load_str_1,
         StringIds::temporary_object_load_str_2,

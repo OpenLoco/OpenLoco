@@ -145,7 +145,7 @@ namespace OpenLoco::Paint
         _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
     }
     // 0x004FD120
-    PaintStringStruct* PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
+    PaintStringStruct* PaintSession::addToStringPlotList(const uint32_t amount, const StringId stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
         auto* psString = allocatePaintStruct<PaintStringStruct>();
         if (psString == nullptr)

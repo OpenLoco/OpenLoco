@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         browse_type type,
         char* szPath,
         const char* filter,
-        string_id titleId)
+        StringId titleId)
     {
         auto path = fs::u8path(szPath);
         auto directory = getDirectory(path);

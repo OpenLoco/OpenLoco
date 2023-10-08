@@ -43,8 +43,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 
         window.draw(rt);
 
-        static loco_global<string_id, 0x0112C826> _commonFormatArgs;
-        string_id prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
+        static loco_global<StringId, 0x0112C826> _commonFormatArgs;
+        StringId prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
         *_commonFormatArgs = prompt;
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);

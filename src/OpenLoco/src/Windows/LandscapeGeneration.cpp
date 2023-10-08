@@ -415,7 +415,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::hill_density);
         }
 
-        static const string_id landDistributionLabelIds[] = {
+        static const StringId landDistributionLabelIds[] = {
             StringIds::land_distribution_everywhere,
             StringIds::land_distribution_nowhere,
             StringIds::land_distribution_far_from_water,
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 drawingCtx.fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
 
                 // Draw current distribution setting.
-                const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
+                const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                 _commonFormatArgs[0] = distributionId;
                 drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
 
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static const string_id topographyStyleIds[] = {
+        static const StringId topographyStyleIds[] = {
             StringIds::flat_land,
             StringIds::small_hills,
             StringIds::mountains,
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             StringIds::half_mountains_half_flat,
         };
 
-        static const string_id generatorIds[] = {
+        static const StringId generatorIds[] = {
             StringIds::generator_original,
             StringIds::generator_improved,
         };
@@ -1030,7 +1030,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::max_town_size);
         }
 
-        static const string_id townSizeLabels[] = {
+        static const StringId townSizeLabels[] = {
             StringIds::town_size_1,
             StringIds::town_size_2,
             StringIds::town_size_3,
@@ -1173,7 +1173,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::number_of_industries);
         }
 
-        static const string_id numIndustriesLabels[] = {
+        static const StringId numIndustriesLabels[] = {
             StringIds::industry_size_low,
             StringIds::industry_size_medium,
             StringIds::industry_size_high,

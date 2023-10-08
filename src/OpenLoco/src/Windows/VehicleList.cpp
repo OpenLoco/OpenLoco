@@ -528,7 +528,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self.number));
         [[maybe_unused]] auto args = FormatArguments::common(company->name);
 
-        static constexpr string_id typeToCaption[] = {
+        static constexpr StringId typeToCaption[] = {
             StringIds::stringid_trains,
             StringIds::stringid_buses,
             StringIds::stringid_trucks,
@@ -595,7 +595,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self.disabledWidgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
 
         // Set appropriate tooltip
-        static constexpr std::array<string_id, 3> kFilterTooltipByType = {
+        static constexpr std::array<StringId, 3> kFilterTooltipByType = {
             StringIds::null,
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(rt, x, y, image);
 
-        static constexpr std::pair<string_id, string_id> typeToFooterStringIds[]{
+        static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
             { StringIds::num_trains_singular, StringIds::num_trains_plural },
             { StringIds::num_buses_singular, StringIds::num_buses_plural },
             { StringIds::num_trucks_singular, StringIds::num_trucks_plural },
@@ -633,13 +633,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         {
             auto& footerStringPair = typeToFooterStringIds[self.currentTab];
-            string_id footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
+            StringId footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
             args = FormatArguments::common(footerStringId, self.var_83C);
             drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
-        static constexpr std::array<string_id, 3> typeToFilterStringIds{
+        static constexpr std::array<StringId, 3> typeToFilterStringIds{
             StringIds::all_vehicles,
             StringIds::stopping_at_station,
             StringIds::transporting_cargo,
@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         {
             // Show current filter type
-            string_id filter = typeToFilterStringIds[self.var_88A];
+            StringId filter = typeToFilterStringIds[self.var_88A];
             args = FormatArguments::common(filter);
             auto* widget = &self.widgets[Widx::filter_type];
             drawingCtx.drawStringLeftClipped(*rt, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(status.status2);
                 args.push(status.status2Args);
 
-                string_id format = StringIds::vehicle_list_status_2pos;
+                StringId format = StringIds::vehicle_list_status_2pos;
                 if (status.status2 != StringIds::null)
                     format = StringIds::vehicle_list_status_3pos;
 
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Vehicle profit
             {
-                string_id format = StringIds::vehicle_list_profit_pos;
+                StringId format = StringIds::vehicle_list_profit_pos;
                 currency32_t profit = vehicle.veh2->totalRecentProfit() / 4;
                 if (profit < 0)
                 {
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Vehicle age
             {
-                string_id format = StringIds::vehicle_list_age_years;
+                StringId format = StringIds::vehicle_list_age_years;
                 auto age = (getCurrentDay() - vehicle.veh1->dayCreated) / 365;
                 if (age == 1)
                     format = StringIds::vehicle_list_age_year;
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else
             self.rowHover = -1;
 
-        string_id tooltipId = StringIds::buffer_337;
+        StringId tooltipId = StringIds::buffer_337;
         if (self.rowHover == -1)
             tooltipId = StringIds::null;
 
@@ -1089,7 +1089,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (stopOrder == nullptr)
                 continue;
 
-            string_id stopFormat = StringIds::vehicle_list_tooltip_comma_stringid;
+            StringId stopFormat = StringIds::vehicle_list_tooltip_comma_stringid;
             if (isFirstStop)
                 stopFormat = StringIds::vehicle_list_tooltip_stops_at_stringid;
 

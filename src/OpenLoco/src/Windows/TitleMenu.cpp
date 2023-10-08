@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             int16_t y = window.widgets[Widx::multiplayer_toggle_btn].top + 3 + window.y;
             int16_t x = window.width / 2 + window.x;
 
-            string_id string = StringIds::single_player_mode;
+            StringId string = StringIds::single_player_mode;
 
             if (OpenLoco::isNetworked())
             {
@@ -307,7 +307,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
                 strcpy((char*)buffer, playerName);
 
-                addr<0x112C826, string_id>() = StringIds::buffer_2039;
+                addr<0x112C826, StringId>() = StringIds::buffer_2039;
                 string = StringIds::two_player_mode_connected;
             }
 
@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         WindowManager::close(WindowType::multiplayer);
 
-        addr<0x112C826 + 8, string_id>() = StringIds::the_other_player;
+        addr<0x112C826 + 8, StringId>() = StringIds::the_other_player;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
         TextInput::openTextInput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);

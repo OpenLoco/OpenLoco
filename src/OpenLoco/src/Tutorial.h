@@ -19,7 +19,7 @@ namespace OpenLoco::Tutorial
     void stop();
 
     uint16_t nextInput();
-    string_id nextString();
+    StringId nextString();
 
     uint8_t getTutorialNumber();
 }

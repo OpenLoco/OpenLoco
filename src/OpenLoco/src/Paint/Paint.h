@@ -70,7 +70,7 @@ namespace OpenLoco::Paint
 
     struct PaintStringStruct
     {
-        string_id stringId;      // 0x00
+        StringId stringId;       // 0x00
         PaintStringStruct* next; // 0x02
         Ui::Point vpPos;         // 0x06
         uint16_t args[8];        // 0x0A
@@ -221,7 +221,7 @@ namespace OpenLoco::Paint
          * @param rotation  @<ebp>
          * @param colour    @<0xE3F0A8>
          */
-        PaintStringStruct* addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour);
+        PaintStringStruct* addToStringPlotList(const uint32_t amount, const StringId stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour);
 
         /*
          * @param rotation @<ebp>

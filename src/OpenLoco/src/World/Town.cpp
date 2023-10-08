@@ -195,9 +195,9 @@ namespace OpenLoco
         call(0x00498116, regs);
     }
 
-    string_id Town::getTownSizeString() const
+    StringId Town::getTownSizeString() const
     {
-        static string_id townSizeNames[5] = {
+        static StringId townSizeNames[5] = {
             StringIds::town_size_hamlet,
             StringIds::town_size_village,
             StringIds::town_size_town,

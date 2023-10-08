@@ -32,7 +32,7 @@ namespace OpenLoco
     {
         null = std::numeric_limits<uint16_t>::max(),
     };
-    using string_id = uint16_t;
+    using StringId = uint16_t;
     using SoundObjectId_t = uint8_t;
 
     class FormatArguments;

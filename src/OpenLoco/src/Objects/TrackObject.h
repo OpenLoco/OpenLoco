@@ -47,7 +47,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::track;
 
-        string_id name;
+        StringId name;
         TrackObjectPieceFlags trackPieces; // 0x02
         uint16_t stationTrackPieces;       // 0x04
         uint8_t var_06;

@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         for (i = 0; _availableObjects[i] != 0xFF && i < std::size(_availableObjects); i++)
         {
             uint32_t objImage;
-            string_id objStringId;
+            StringId objStringId;
 
             auto objIndex = _availableObjects[i];
             if ((objIndex & (1 << 7)) != 0)

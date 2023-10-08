@@ -82,7 +82,7 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_green : StringIds::format_currency_expense_red_negative;
+        const StringId stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_green : StringIds::format_currency_expense_red_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
         const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
 
@@ -102,7 +102,7 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_in_company_colour : StringIds::format_currency_expense_in_company_colour_negative;
+        const StringId stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_in_company_colour : StringIds::format_currency_expense_in_company_colour_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
         const int8_t* yOffsets = &kWiggleYOffsets[moneyEffect->wiggle];
         auto companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);

@@ -392,12 +392,12 @@ namespace OpenLoco::MessageManager
             {
                 // 0x00428D06
                 FormatArguments args{};
-                static constexpr string_id recordTypeStrings[3] = {
+                static constexpr StringId recordTypeStrings[3] = {
                     StringIds::land,
                     StringIds::air,
                     StringIds::water,
                 };
-                static constexpr string_id vehicleTypeStrings[6] = {
+                static constexpr StringId vehicleTypeStrings[6] = {
                     StringIds::train_2,
                     StringIds::bus_2,
                     StringIds::truck_2,

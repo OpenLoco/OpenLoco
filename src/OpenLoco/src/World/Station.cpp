@@ -602,7 +602,7 @@ namespace OpenLoco
             ptr = StringManager::formatString(ptr, unitName, &*_commonFormatArgs);
         }
 
-        string_id suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
+        StringId suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
         return StringManager::formatString(ptr, suffix);
     }
 
@@ -905,9 +905,9 @@ namespace OpenLoco
         setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
     }
 
-    string_id getTransportIconsFromStationFlags(const StationFlags flags)
+    StringId getTransportIconsFromStationFlags(const StationFlags flags)
     {
-        constexpr string_id label_icons[] = {
+        constexpr StringId label_icons[] = {
             StringIds::label_icons_none,
             StringIds::label_icons_rail,
             StringIds::label_icons_road,

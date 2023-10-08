@@ -143,7 +143,7 @@ namespace OpenLoco::EditorController
     }
 
     // 0x004747D4
-    static string_id validateHeadquarterBuilding()
+    static StringId validateHeadquarterBuilding()
     {
         size_t numHeadquarterTypes = 0;
         for (LoadedObjectId id = 0; id < ObjectManager::getMaxObjects(ObjectType::building); ++id)

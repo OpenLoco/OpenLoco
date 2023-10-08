@@ -119,9 +119,9 @@ namespace OpenLoco::Vehicles
 
     struct VehicleStatus
     {
-        string_id status1;
+        StringId status1;
         uint32_t status1Args;
-        string_id status2;
+        StringId status2;
         uint32_t status2Args;
     };
 

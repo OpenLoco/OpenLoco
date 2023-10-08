@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         drawingCtx.drawStringLeftWrapped(*rt, self.x + 3, self.y + 19, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
 
-    static string_id objectTypeToString(ObjectType type)
+    static StringId objectTypeToString(ObjectType type)
     {
         switch (type)
         {
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
                 break;
             }
 
-            string_id textColourId = StringIds::black_stringid;
+            StringId textColourId = StringIds::black_stringid;
 
             // Draw hover rectangle
             if (i == window.rowHover)

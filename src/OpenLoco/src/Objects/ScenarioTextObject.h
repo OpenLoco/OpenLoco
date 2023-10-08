@@ -15,8 +15,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::scenarioText;
 
-        string_id name;
-        string_id details;
+        StringId name;
+        StringId details;
         uint8_t pad_04[0x6 - 0x4];
 
         // 0x0043EE17

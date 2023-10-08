@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::water;
 
-        string_id name;
+        StringId name;
         uint8_t costIndex; // 0x02
         uint8_t var_03;
         int8_t costFactor; // 0x04

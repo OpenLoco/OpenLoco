@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
-    bool open(string_id captionId, string_id descriptionId, FormatArguments& descriptionArgs, string_id okButtonStringId)
+    bool open(StringId captionId, StringId descriptionId, FormatArguments& descriptionArgs, StringId okButtonStringId)
     {
         initEvents();
         auto window = WindowManager::createWindowCentred(

@@ -382,7 +382,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, string_id name)
+    static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, StringId name)
     {
         auto widgetIndex = checkboxIndex + widx::checkbox_1;
         self->widgets[widgetIndex].type = WidgetType::checkbox;
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        static string_id modString[] = {
+        static StringId modString[] = {
             StringIds::single_section,
             StringIds::block_section,
             StringIds::all_connected_track,

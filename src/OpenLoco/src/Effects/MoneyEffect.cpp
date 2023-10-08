@@ -117,7 +117,7 @@ namespace OpenLoco
             m->frame = 0;
             m->numMovements = 0;
 
-            string_id strFormat = (amount < 0) ? StringIds::format_currency_expense_red_negative : StringIds::format_currency_income_green;
+            StringId strFormat = (amount < 0) ? StringIds::format_currency_expense_red_negative : StringIds::format_currency_income_green;
             char buffer[255] = {};
             auto args = FormatArguments::common(amount);
             StringManager::formatString(buffer, strFormat, &args);

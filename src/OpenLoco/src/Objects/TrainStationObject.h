@@ -34,7 +34,7 @@ namespace OpenLoco
 
         using CargoOffset = std::array<World::Pos3, 2>;
 
-        string_id name;
+        StringId name;
         uint8_t drawStyle; // 0x02
         uint8_t var_03;
         uint16_t trackPieces;    // 0x04
