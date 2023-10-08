@@ -40,7 +40,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
@@ -63,7 +62,7 @@ namespace OpenLoco::CompanyManager
         for (auto& company : companies())
             company.name = StringIds::empty;
 
-        _byte_525FCB = 0;
+        getGameState().var_1B3 = 0;
 
         // Reset player companies depending on network mode.
         if (isNetworkHost())
@@ -223,10 +222,10 @@ namespace OpenLoco::CompanyManager
                 }
             }
 
-            _byte_525FCB++;
-            if (_byte_525FCB >= 192)
+            getGameState().var_1B3++;
+            if (getGameState().var_1B3 >= 192)
             {
-                _byte_525FCB = 0;
+                getGameState().var_1B3 = 0;
                 produceCompanies();
             }
         }
