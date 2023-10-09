@@ -34,7 +34,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Industry
     {
-        string_id name;
+        StringId name;
         coord_t x;                  // 0x02
         coord_t y;                  // 0x04
         IndustryFlags flags;        // 0x06

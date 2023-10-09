@@ -22,8 +22,8 @@ namespace OpenLoco::Ui::Windows::TextInput
     static loco_global<WindowType, 0x523364> _callingWindowType;
 
     static char _formatArgs[16];
-    static string_id _title;
-    static string_id _message;
+    static StringId _title;
+    static StringId _message;
 
     static Ui::TextInput::InputSession inputSession;
 
@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize)
+    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, void* valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         window.draw(rt);
 
-        *((string_id*)(&_commonFormatArgs[0])) = _message;
+        *((StringId*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Ui::Point position = { (int16_t)(window.x + window.width / 2), (int16_t)(window.y + 30) };
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strcpy(drawnBuffer, inputSession.buffer.c_str());
 
-        *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
+        *((StringId*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
         position = { inputSession.xOffset, 1 };
         drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
         drawnBuffer[inputSession.cursorPosition] = '\0';
 
-        *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
+        *((StringId*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
         drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);

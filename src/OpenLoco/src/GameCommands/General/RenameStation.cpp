@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
         if (strcmp(currentStationName, renameStringBuffer) == 0)
             return 0;
 
-        string_id oldStringId = station->name;
+        StringId oldStringId = station->name;
 
         // If an empty string is given, generate one instead.
         if (strlen(renameStringBuffer) == 0)
@@ -82,7 +82,7 @@ namespace OpenLoco::GameCommands
         else
         {
             // Allocate a string id for the new name.
-            string_id allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+            StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
             if (allocatedStringId == StringIds::empty)
                 return GameCommands::FAILURE;
 

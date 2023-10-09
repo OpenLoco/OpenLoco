@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::ProgressBar
     }
 
     // 0x004CF5C5
-    void begin(string_id captionStringId)
+    void begin(StringId captionStringId)
     {
         char _captionBuffer[256] = {};
         if (captionStringId != StringIds::null)

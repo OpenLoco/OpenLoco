@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // TODO: df fix this
                 // Until format arguments can allow pushing to the front we will have to call twice once for the status
                 FormatArguments args{};
-                string_id status = CompanyManager::getOwnerStatus(CompanyId(self.number), args);
+                StringId status = CompanyManager::getOwnerStatus(CompanyId(self.number), args);
                 args = FormatArguments{};
                 args.push(status);
                 // and once for the args
@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static std::array<string_id, 6> transportTypeCountString = {
+        static std::array<StringId, 6> transportTypeCountString = {
             {
                 StringIds::company_details_trains_count,
                 StringIds::company_details_buses_count,
@@ -800,7 +800,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 formatPerformanceIndex(company->performanceIndex, args);
 
-                string_id formatId = StringIds::company_details_performance;
+                StringId formatId = StringIds::company_details_performance;
                 if ((company->challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
                 {
                     formatId = StringIds::company_details_performance_decreasing;
@@ -1766,7 +1766,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     nullptr);
             }
 
-            const string_id ExpenditureLabels[] = {
+            const StringId ExpenditureLabels[] = {
                 StringIds::train_income,
                 StringIds::train_running_costs,
                 StringIds::bus_income,
@@ -1885,7 +1885,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             auto args = FormatArguments::common(StringIds::uint16_raw, columnYear);
 
-            string_id format = StringIds::wcolour2_stringid;
+            StringId format = StringIds::wcolour2_stringid;
             if (columnYear != currentYear)
             {
                 format = StringIds::black_stringid;

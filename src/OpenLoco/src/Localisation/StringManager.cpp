@@ -35,20 +35,20 @@ namespace OpenLoco::StringManager
         }
     }
 
-    const char* getString(string_id id)
+    const char* getString(StringId id)
     {
         char* str = _strings[id];
         return str;
     }
 
-    void setString(string_id id, std::string_view value)
+    void setString(StringId id, std::string_view value)
     {
         auto* dst = _strings[id];
         std::memcpy(dst, value.data(), value.size());
         dst[value.size()] = '\0';
     }
 
-    const char* swapString(string_id id, const char* src)
+    const char* swapString(StringId id, const char* src)
     {
         auto* dst = _strings[id];
         _strings[id] = const_cast<char*>(src);
@@ -56,7 +56,7 @@ namespace OpenLoco::StringManager
     }
 
     // 0x00496522
-    string_id userStringAllocate(char* str /* edi */, uint8_t cl)
+    StringId userStringAllocate(char* str /* edi */, uint8_t cl)
     {
         auto bestSlot = -1;
         for (auto i = 0u; i < Limits::kMaxUserStrings; ++i)
@@ -88,13 +88,13 @@ namespace OpenLoco::StringManager
         return bestSlot + kUserStringsStart;
     }
 
-    const char* getUserString(string_id id)
+    const char* getUserString(StringId id)
     {
         return rawUserStrings()[id];
     }
 
     // 0x004965A6
-    void emptyUserString(string_id stringId)
+    void emptyUserString(StringId stringId)
     {
         if (!isUserString(stringId))
         {
@@ -104,7 +104,7 @@ namespace OpenLoco::StringManager
         *rawUserStrings()[stringId - kUserStringsStart] = '\0';
     }
 
-    bool isUserString(string_id stringId)
+    bool isUserString(StringId stringId)
     {
         if (stringId < kUserStringsStart || stringId >= kUserStringsEnd)
         {

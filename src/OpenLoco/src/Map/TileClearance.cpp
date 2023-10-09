@@ -63,7 +63,7 @@ namespace OpenLoco::World::TileClearance
                 {
                     return;
                 }
-                constexpr std::array<string_id, 4> kStationTypeNames = {
+                constexpr std::array<StringId, 4> kStationTypeNames = {
                     StringIds::capt_station,
                     StringIds::capt_station,
                     StringIds::capt_airport,

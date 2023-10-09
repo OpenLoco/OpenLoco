@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::cliffEdge;
 
-        string_id name;
+        StringId name;
         uint32_t image; // 0x02
 
         // 0x004699FC

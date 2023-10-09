@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static void initEvents();
 
-    static std::map<EditorController::Step, string_id> _stepNames = {
+    static std::map<EditorController::Step, StringId> _stepNames = {
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
         { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
         { EditorController::Step::scenarioOptions, StringIds::editor_step_options },

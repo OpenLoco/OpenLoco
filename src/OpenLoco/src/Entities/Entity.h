@@ -73,7 +73,7 @@ namespace OpenLoco
         Pitch spritePitch;            // 0x1F
         uint8_t pad_20;               // 0x20
         CompanyId owner;              // 0x21
-        string_id name;               // 0x22, combined with ordinalNumber on vehicles
+        StringId name;                // 0x22, combined with ordinalNumber on vehicles
 
         void moveTo(const World::Pos3& loc);
         void invalidateSprite();

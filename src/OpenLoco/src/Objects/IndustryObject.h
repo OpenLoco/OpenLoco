@@ -74,15 +74,15 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::industry;
 
-        string_id name;               // 0x0
-        string_id var_02;             // 0x2
-        string_id nameClosingDown;    // 0x4
-        string_id nameUpProduction;   // 0x6
-        string_id nameDownProduction; // 0x8
-        string_id nameSingular;       // 0x0A
-        string_id namePlural;         // 0x0C
-        uint32_t var_0E;              // 0x0E shadows image id base
-        uint32_t var_12;              // 0x12 Base image id for building 0
+        StringId name;               // 0x0
+        StringId var_02;             // 0x2
+        StringId nameClosingDown;    // 0x4
+        StringId nameUpProduction;   // 0x6
+        StringId nameDownProduction; // 0x8
+        StringId nameSingular;       // 0x0A
+        StringId namePlural;         // 0x0C
+        uint32_t var_0E;             // 0x0E shadows image id base
+        uint32_t var_12;             // 0x12 Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
         uint8_t var_1E;

@@ -15,7 +15,7 @@ namespace OpenLoco
 {
     namespace StringIds
     {
-        constexpr string_id null = 0xFFFF;
+        constexpr StringId null = 0xFFFF;
     }
 }
 
@@ -30,12 +30,12 @@ namespace OpenLoco::StringManager
     constexpr uint16_t kTownNamesEnd = kTownNamesStart + kMaxTownNames;
 
     void reset();
-    void setString(string_id id, std::string_view value);
-    const char* swapString(string_id id, const char* src);
-    const char* getString(string_id id);
+    void setString(StringId id, std::string_view value);
+    const char* swapString(StringId id, const char* src);
+    const char* getString(StringId id);
 
-    string_id userStringAllocate(char* str, uint8_t cl);
-    const char* getUserString(string_id id);
-    void emptyUserString(string_id stringId);
-    bool isUserString(string_id id);
+    StringId userStringAllocate(char* str, uint8_t cl);
+    const char* getUserString(StringId id);
+    void emptyUserString(StringId stringId);
+    bool isUserString(StringId id);
 }

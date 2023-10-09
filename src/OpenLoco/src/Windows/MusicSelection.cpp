@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 break;
             }
 
-            string_id text_colour_id = StringIds::black_stringid;
+            StringId text_colour_id = StringIds::black_stringid;
 
             // Draw hovered track
             if (i == window.rowHover)
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 drawingCtx.drawStringLeft(rt, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
-            string_id music_title_id = Audio::getMusicInfo(i)->titleId;
+            StringId music_title_id = Audio::getMusicInfo(i)->titleId;
             drawingCtx.drawStringLeft(rt, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += kRowHeight;

@@ -16,7 +16,7 @@ namespace OpenLoco::Input::ShortcutManager
         return it;
     }
 
-    void add(Shortcut id, string_id displayName, const ShortcutAction& action, const char* configName, const char* defaultBinding)
+    void add(Shortcut id, StringId displayName, const ShortcutAction& action, const char* configName, const char* defaultBinding)
     {
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)
@@ -48,7 +48,7 @@ namespace OpenLoco::Input::ShortcutManager
         it->action();
     }
 
-    string_id getName(Shortcut id)
+    StringId getName(Shortcut id)
     {
         auto it = findShortcut(id);
         if (it == std::end(_shortcuts) || it->id != id)

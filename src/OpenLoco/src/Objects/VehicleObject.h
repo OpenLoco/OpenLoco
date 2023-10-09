@@ -221,7 +221,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::vehicle;
         static constexpr auto kMaxBodySprites = 4;
 
-        string_id name;     // 0x00
+        StringId name;      // 0x00
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t var_04;
@@ -281,7 +281,7 @@ namespace OpenLoco
 
     namespace StringIds
     {
-        constexpr string_id getVehicleType(const VehicleType type)
+        constexpr StringId getVehicleType(const VehicleType type)
         {
             switch (type)
             {

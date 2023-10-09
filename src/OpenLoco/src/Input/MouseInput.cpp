@@ -63,7 +63,7 @@ namespace OpenLoco::Input
 
     static loco_global<MouseButton, 0x001136FA0> _lastKnownButtonState;
 
-    static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
+    static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
@@ -118,7 +118,7 @@ namespace OpenLoco::Input
 
     static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
-    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
+    static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
 
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
 
@@ -128,7 +128,7 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static const std::map<Ui::ScrollPart, string_id> kScrollWidgetTooltips = {
+    static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
         { Ui::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
         { Ui::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
@@ -1608,7 +1608,7 @@ namespace OpenLoco::Input
             }
         }
 
-        string_id tooltipStringId = StringIds::null;
+        StringId tooltipStringId = StringIds::null;
         if (window != nullptr && widgetIndex != -1)
         {
             if (widget->type == Ui::WidgetType::scrollview)

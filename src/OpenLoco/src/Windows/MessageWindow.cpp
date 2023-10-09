@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             Common::drawTabs(&self, rt);
             auto yPos = self.widgets[widx::company_major_news].top + self.y;
 
-            const string_id newsStringIds[] = {
+            const StringId newsStringIds[] = {
                 StringIds::company_major_news,
                 StringIds::competitor_major_news,
                 StringIds::company_minor_news,
@@ -533,7 +533,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 StringIds::advice,
             };
 
-            const string_id newsDropdownStringIds[] = {
+            const StringId newsDropdownStringIds[] = {
                 StringIds::message_off,
                 StringIds::message_ticker,
                 StringIds::message_window,

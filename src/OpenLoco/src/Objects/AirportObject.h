@@ -60,7 +60,7 @@ namespace OpenLoco
             uint32_t atLeastOneClearEdges; // 0x08 Which edges must have at least one clear to use transition edge
         };
 
-        string_id name;
+        StringId name;
         int16_t buildCostFactor; // 0x02
         int16_t sellCostFactor;  // 0x04
         uint8_t costIndex;       // 0x06

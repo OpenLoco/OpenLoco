@@ -22,7 +22,7 @@ namespace OpenLoco::Tutorial
     // static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
     // static loco_global<uint16_t*, 0x009C8704> _tutorialEnd;
 
-    static loco_global<string_id, 0x009C8708> _tutorialString;
+    static loco_global<StringId, 0x009C8708> _tutorialString;
     static loco_global<uint8_t, 0x009C870A> _tutorialNumber;
 
     static std::vector<uint16_t> _tutorialData;
@@ -122,7 +122,7 @@ namespace OpenLoco::Tutorial
         _tutorialIt = _tutorialData.cbegin();
 
         // Set the first string to show.
-        static constexpr string_id openingStringIds[] = {
+        static constexpr StringId openingStringIds[] = {
             StringIds::tutorial_1_string_1,
             StringIds::tutorial_2_string_1,
             StringIds::tutorial_3_string_1,
@@ -166,9 +166,9 @@ namespace OpenLoco::Tutorial
         return next;
     }
 
-    string_id nextString()
+    StringId nextString()
     {
-        string_id currentString = *_tutorialString;
+        StringId currentString = *_tutorialString;
         _tutorialString = currentString + 1;
         return currentString;
     }

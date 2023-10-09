@@ -7,7 +7,7 @@
 namespace OpenLoco::Ui::ProgressBar
 {
     void begin(std::string_view string);
-    void begin(string_id stringId);
+    void begin(StringId stringId);
     void setProgress(int32_t value);
     void end();
     void registerHooks();

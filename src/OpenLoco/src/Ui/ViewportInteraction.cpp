@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    constexpr std::array<string_id, 7> quantityToString = {
+    constexpr std::array<StringId, 7> quantityToString = {
         StringIds::quantity_eigth,
         StringIds::quantity_quarter,
         StringIds::quantity_three_eigths,

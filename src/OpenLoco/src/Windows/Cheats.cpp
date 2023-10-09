@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     StringIds::cheat_month);
 
                 auto args = FormatArguments::common();
-                args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
+                args.push((StringId)OpenLoco::StringManager::monthToString(_date.month).second);
                 drawingCtx.drawStringLeft(
                     *rt,
                     self.x + widget.left + 1,

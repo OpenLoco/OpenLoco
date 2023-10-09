@@ -109,7 +109,7 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Ui::Windows
 {
-    void showError(string_id title, string_id message = StringIds::null, bool sound = true);
+    void showError(StringId title, StringId message = StringIds::null, bool sound = true);
 
     void showGridlines();
     void hideGridlines();
@@ -188,8 +188,8 @@ namespace OpenLoco::Ui::Windows
 
     namespace Error
     {
-        void open(string_id title, string_id message);
-        void openWithCompetitor(string_id title, string_id message, CompanyId competitorId);
+        void open(StringId title, StringId message);
+        void openWithCompetitor(StringId title, StringId message, CompanyId competitorId);
         void registerHooks();
     }
 
@@ -305,13 +305,13 @@ namespace OpenLoco::Ui::Windows
             load = 1,
             save = 2
         };
-        bool open(browse_type type, char* path, const char* filter, string_id titleId);
+        bool open(browse_type type, char* path, const char* filter, StringId titleId);
         void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace PromptOkCancel
     {
-        bool open(string_id captionId, string_id descriptionId, FormatArguments& descriptionArgs, string_id okButtonStringId);
+        bool open(StringId captionId, StringId descriptionId, FormatArguments& descriptionArgs, StringId okButtonStringId);
         void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
@@ -360,7 +360,7 @@ namespace OpenLoco::Ui::Windows
     {
         void registerHooks();
 
-        void openTextInput(Ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
+        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void handleInput(uint32_t charCode, uint32_t keyCode);
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::Windows
     {
         void registerHooks();
         void open(Ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
-        void update(Ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+        void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t x, int16_t y);
         void set_52336E(bool value);
         void closeAndReset();
         bool isTimeTooltip();

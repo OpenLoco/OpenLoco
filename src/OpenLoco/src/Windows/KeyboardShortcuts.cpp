@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
     {
-        static const std::unordered_map<uint32_t, string_id> keysToString = { {
+        static const std::unordered_map<uint32_t, StringId> keysToString = { {
             { SDLK_BACKSPACE, StringIds::keyboard_backspace },
             { SDLK_TAB, StringIds::keyboard_tab },
             { SDLK_RETURN, StringIds::keyboard_return },
@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 break;
             }
 
-            string_id format = StringIds::black_stringid;
+            StringId format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
                 drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);

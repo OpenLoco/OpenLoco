@@ -15,7 +15,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::climate;
 
-        string_id name;          // 0x00
+        StringId name;           // 0x00
         uint8_t firstSeason;     // 0x02
         uint8_t seasonLength[4]; // 0x03
         uint8_t winterSnowLine;  // 0x07

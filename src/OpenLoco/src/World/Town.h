@@ -40,7 +40,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Town
     {
-        string_id name;               // 0x00
+        StringId name;                // 0x00
         coord_t x;                    // 0x02
         coord_t y;                    // 0x04
         TownFlags flags;              // 0x06
@@ -73,7 +73,7 @@ namespace OpenLoco
         void adjustCompanyRating(CompanyId cid, int amount);
         void recalculateSize();
         void grow(int32_t growFlags);
-        string_id getTownSizeString() const;
+        StringId getTownSizeString() const;
         std::optional<RoadExtentResult> findRoadExtent() const;
         void buildInitialRoad();
     };

@@ -46,7 +46,7 @@ namespace OpenLoco::CompanyManager
     currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays);
 
     Company* getOpponent();
-    string_id getOwnerStatus(CompanyId id, FormatArguments& args);
+    StringId getOwnerStatus(CompanyId id, FormatArguments& args);
     void updateOwnerStatus();
     void updateColours();
     void setPreferredName();

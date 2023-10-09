@@ -242,7 +242,7 @@ namespace OpenLoco::ScenarioManager
 
         FormatArguments args{};
         Scenario::formatChallengeArguments(objective, progress, args);
-        StringManager::formatString(entry.objective, *reinterpret_cast<const string_id*>(&args), reinterpret_cast<const std::byte*>(&args) + sizeof(string_id));
+        StringManager::formatString(entry.objective, *reinterpret_cast<const StringId*>(&args), reinterpret_cast<const std::byte*>(&args) + sizeof(StringId));
 
         ObjectManager::freeTemporaryObject();
 

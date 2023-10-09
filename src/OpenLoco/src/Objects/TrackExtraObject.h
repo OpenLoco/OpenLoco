@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::trackExtra;
 
-        string_id name;
+        StringId name;
         uint16_t trackPieces;    // 0x02
         uint8_t paintStyle;      // 0x04
         uint8_t costIndex;       // 0x05

@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Draw widgets.
         self.draw(rt);
 
-        static const string_id scenarioGroupIds[] = {
+        static const StringId scenarioGroupIds[] = {
             StringIds::scenario_group_beginner,
             StringIds::scenario_group_easy,
             StringIds::scenario_group_medium,
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             const auto offset = self.currentTab == i ? 1 : 0;
             auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
-            const string_id caption = scenarioGroupIds[i];
+            const StringId caption = scenarioGroupIds[i];
 
             drawingCtx.drawStringCentredWrapped(*rt, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
         }
@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 10;
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
-            string_id competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
+            StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
             y = drawingCtx.drawStringLeftWrapped(*rt, x, y, 170, Colour::black, competitionStringId, &args);
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)

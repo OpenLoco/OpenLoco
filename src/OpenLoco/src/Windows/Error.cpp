@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
     }
 
-    static char* formatErrorString(string_id title, string_id message, FormatArguments args, char* buffer)
+    static char* formatErrorString(StringId title, StringId message, FormatArguments args, char* buffer)
     {
         char* ptr = (char*)buffer;
         ptr[0] = ControlCodes::Colour::black;
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::Error
         return ptr;
     }
 
-    static void createErrorWindow(string_id title, string_id message)
+    static void createErrorWindow(StringId title, StringId message)
     {
         WindowManager::close(WindowType::error);
 
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::Error
     }
 
     // 0x00431A8A
-    void open(string_id title, string_id message)
+    void open(StringId title, StringId message)
     {
         _errorCompetitorId = CompanyId::null;
 
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::Error
     }
 
     // 0x00431908
-    void openWithCompetitor(string_id title, string_id message, CompanyId competitorId)
+    void openWithCompetitor(StringId title, StringId message, CompanyId competitorId)
     {
         _errorCompetitorId = competitorId;
 

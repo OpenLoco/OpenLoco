@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            string_id screenModeStringId = StringIds::empty;
+            StringId screenModeStringId = StringIds::empty;
             switch (Config::get().display.mode)
             {
                 case Config::ScreenMode::window:
@@ -588,7 +588,7 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 w.widgets[Widx::construction_marker].text = StringIds::white;
 
-            static constexpr string_id kScaleStringIds[] = {
+            static constexpr StringId kScaleStringIds[] = {
                 StringIds::full_scale,
                 StringIds::half_scale,
                 StringIds::quarter_scale,
@@ -961,7 +961,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            string_id songName = StringIds::music_none;
+            StringId songName = StringIds::music_none;
             if (_currentSong != -1)
             {
                 songName = Audio::getMusicInfo(_currentSong)->titleId;
@@ -970,13 +970,13 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args = {};
             args.push(songName);
 
-            static const string_id playlist_string_ids[] = {
+            static const StringId playlist_string_ids[] = {
                 StringIds::play_only_music_from_current_era,
                 StringIds::play_all_music,
                 StringIds::play_custom_music_selection,
             };
 
-            string_id currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
+            StringId currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
             args.push(currentSongStringId);
 
             w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
@@ -1356,7 +1356,7 @@ namespace OpenLoco::Ui::Windows::Options
             auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
             args.push(language.nativeName.c_str());
 
-            string_id current_height_units = StringIds::height_units;
+            StringId current_height_units = StringIds::height_units;
             if (!OpenLoco::Config::get().hasFlags(Config::Flags::showHeightAsUnits))
             {
                 current_height_units = StringIds::height_real_values;
@@ -1365,7 +1365,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.skip(0x2);
             args.push(current_height_units);
 
-            string_id current_measurement_format = StringIds::imperial;
+            StringId current_measurement_format = StringIds::imperial;
             if (OpenLoco::Config::get().old.measurementFormat == Config::MeasurementFormat::metric)
             {
                 current_measurement_format = StringIds::metric;
@@ -2060,7 +2060,7 @@ namespace OpenLoco::Ui::Windows::Options
             sub_4C13BE(&w);
         }
 
-        static void drawDropdownContent(Window* w, Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex, string_id stringId, int32_t value)
+        static void drawDropdownContent(Window* w, Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
         {
             auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -2092,7 +2092,7 @@ namespace OpenLoco::Ui::Windows::Options
             drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
             auto freq = Config::get().autosaveFrequency;
-            string_id stringId;
+            StringId stringId;
             switch (freq)
             {
                 case 0:

@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, window.width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
-        static const string_id objectiveTypeLabelIds[] = {
+        static const StringId objectiveTypeLabelIds[] = {
             StringIds::objective_achieve_a_certain_company_value,
             StringIds::objective_achieve_a_certain_monthly_profit_from_vehicles,
             StringIds::objective_achieve_a_certain_performance_index,
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static string_id preferenceLabelIds[] = {
+        static StringId preferenceLabelIds[] = {
             StringIds::preference_any,
             StringIds::preference_low,
             StringIds::preference_medium,
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static string_id scenarioGroupLabelIds[] = {
+        static StringId scenarioGroupLabelIds[] = {
             StringIds::scenario_group_beginner,
             StringIds::scenario_group_easy,
             StringIds::scenario_group_medium,

@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         auto* roadObj = ObjectManager::get<TrackObject>(_trackType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto* trackObj = ObjectManager::get<TrackObject>(_trackType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(trackObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             auto* trackObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
             auto formatArgs = FormatArguments::common();
-            formatArgs.skip(3 * sizeof(string_id));
+            formatArgs.skip(3 * sizeof(StringId));
             formatArgs.push(trackObj->name);
             GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 

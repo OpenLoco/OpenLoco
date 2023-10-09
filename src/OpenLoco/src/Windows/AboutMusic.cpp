@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     // 0x0043B8BE
     static void drawScroll(Ui::Window&, Gfx::RenderTarget& rt, const uint32_t)
     {
-        static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
+        static const std::pair<StringId, StringId> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },
             { StringIds::long_dusty_road, StringIds::long_dusty_road_credit },
             { StringIds::flying_high, StringIds::flying_high_credit },

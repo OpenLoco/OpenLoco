@@ -57,10 +57,10 @@ namespace OpenLoco
 namespace OpenLoco::Ui::Dropdown
 {
     void addSeparator(size_t index);
-    void add(size_t index, string_id title);
-    void add(size_t index, string_id title, std::initializer_list<format_arg> l);
-    void add(size_t index, string_id title, format_arg l);
-    void add(size_t index, string_id title, FormatArguments& fArgs);
+    void add(size_t index, StringId title);
+    void add(size_t index, StringId title, std::initializer_list<format_arg> l);
+    void add(size_t index, StringId title, format_arg l);
+    void add(size_t index, StringId title, FormatArguments& fArgs);
     int16_t getHighlightedItem();
     void setItemDisabled(size_t index);
     void setHighlightedItem(size_t index);
@@ -89,18 +89,18 @@ namespace OpenLoco::Ui::Dropdown
     private:
         Window* _window{};
         WidgetIndex_t _widgetIndex{};
-        std::vector<std::tuple<std::optional<DropdownItemId>, string_id>> _items;
+        std::vector<std::tuple<std::optional<DropdownItemId>, StringId>> _items;
         std::optional<DropdownItemId> _highlightedId;
 
     public:
         Builder& below(Window& window, WidgetIndex_t widgetIndex);
-        Builder& item(DropdownItemId id, string_id text);
+        Builder& item(DropdownItemId id, StringId text);
         Builder& separator();
         Builder& highlight(DropdownItemId id);
         void show();
 
         template<typename T>
-        Builder& item(T id, string_id text)
+        Builder& item(T id, StringId text)
         {
             item(static_cast<int32_t>(id), text);
             return *this;

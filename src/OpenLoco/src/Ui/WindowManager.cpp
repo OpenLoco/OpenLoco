@@ -2274,7 +2274,7 @@ namespace OpenLoco::Ui::Windows
     static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
 
     // 0x00431A8A
-    void showError(string_id title, string_id message, bool sound)
+    void showError(StringId title, StringId message, bool sound)
     {
         if (!sound)
         {

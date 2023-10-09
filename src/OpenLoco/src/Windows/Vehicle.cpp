@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static size_t getNumCars(Ui::Window* const self);
         static void drawTabs(Window* const window, Gfx::RenderTarget* const rt);
         static std::optional<Vehicles::Car> getCarFromScrollView(Window* const self, const int16_t y);
-        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
+        static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
     }
 
     namespace Details
@@ -679,7 +679,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            static const std::pair<string_id, VehicleChangeRunningModeArgs::Mode> itemToGameCommandInfo[3] = {
+            static const std::pair<StringId, VehicleChangeRunningModeArgs::Mode> itemToGameCommandInfo[3] = {
                 { StringIds::cant_stop_string_id, VehicleChangeRunningModeArgs::Mode::stopVehicle },
                 { StringIds::cant_start_string_id, VehicleChangeRunningModeArgs::Mode::startVehicle },
                 { StringIds::cant_select_manual_mode_string_id, VehicleChangeRunningModeArgs::Mode::driveManually },
@@ -978,7 +978,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(status.status2);
                 args.push(status.status2Args);
 
-                string_id strFormat = StringIds::black_stringid_stringid;
+                StringId strFormat = StringIds::black_stringid_stringid;
                 if (status.status2 == StringIds::null)
                 {
                     strFormat = StringIds::black_stringid;
@@ -1308,7 +1308,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Input::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(&self, y);
-            string_id tooltipFormat = StringIds::null;
+            StringId tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
             if (car)
             {
@@ -1568,7 +1568,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 args.push(train.veh2->totalPower);
                 args.push<uint32_t>(train.veh2->totalWeight);
-                string_id str = StringIds::vehicle_details_weight;
+                StringId str = StringIds::vehicle_details_weight;
                 if (train.veh2->mode == TransportMode::rail || train.veh2->mode == TransportMode::road)
                 {
                     str = StringIds::vehicle_details_total_power_and_weight;
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push<uint16_t>(train.veh2->maxSpeed == kSpeed16Null ? 0 : train.veh2->maxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->rackRailMaxSpeed == kSpeed16Null ? 0 : train.veh2->rackRailMaxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->reliability == 0 ? 64 : train.veh2->reliability);
-                string_id str = StringIds::vehicle_details_max_speed_and_reliability;
+                StringId str = StringIds::vehicle_details_max_speed_and_reliability;
                 if (train.veh1->var_49 != 0)
                 {
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
@@ -1594,7 +1594,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Draw car count and vehicle length
                 pos.y += kVehicleDetailsLineHeight;
                 FormatArguments args = {};
-                string_id str = StringIds::vehicle_length;
+                StringId str = StringIds::vehicle_length;
                 args.push<uint32_t>(StringManager::internalLengthToComma1DP(head->getVehicleTotalLength()));
                 if (train.veh2->mode == TransportMode::rail && head->getCarCount() > 1)
                 {
@@ -1620,7 +1620,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Ui::Point pos{ 0, 0 };
             for (auto& car : train.cars)
             {
-                string_id carStr = StringIds::black_stringid;
+                StringId carStr = StringIds::black_stringid;
                 if (EntityId(self.rowHover) == car.front->id)
                 {
                     carStr = StringIds::wcolour2_stringid;
@@ -1892,19 +1892,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             head->generateCargoTotalString(buffer);
             FormatArguments args = {};
-            args.push<string_id>(StringIds::buffer_1250);
+            args.push<StringId>(StringIds::buffer_1250);
             drawingCtx.drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 25, self.width - 15, Colour::black, StringIds::total_stringid, &args);
 
             // draw cargo capacity
             buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             head->generateCargoCapacityString(buffer);
             args = {};
-            args.push<string_id>(StringIds::buffer_1250);
+            args.push<StringId>(StringIds::buffer_1250);
             drawingCtx.drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
         }
 
         // based on 0x004B40C7
-        static void drawCargoText(Gfx::RenderTarget& rt, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId stationId)
+        static void drawCargoText(Gfx::RenderTarget& rt, const int16_t x, int16_t& y, const StringId strFormat, uint8_t cargoQty, uint8_t cargoType, StationId stationId)
         {
             if (cargoQty == 0)
             {
@@ -1941,7 +1941,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             int16_t y = 0;
             for (auto& car : train.cars)
             {
-                string_id strFormat = StringIds::black_stringid;
+                StringId strFormat = StringIds::black_stringid;
                 auto front = car.front;
                 auto body = car.body;
                 if (front->id == EntityId(self.rowHover))
@@ -1970,7 +1970,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     else
                     {
                         FormatArguments args{};
-                        args.push<string_id>(StringIds::cargo_empty);
+                        args.push<StringId>(StringIds::cargo_empty);
                         drawingCtx.drawStringLeft(rt, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
                     }
                 }
@@ -2056,14 +2056,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (!cargoObject->hasFlags(CargoObjectFlags::refit))
                     continue;
 
-                string_id format = StringIds::dropdown_stringid;
+                StringId format = StringIds::dropdown_stringid;
                 if (cargoId == train.cars.firstCar.body->primaryCargo.type)
                 {
                     format = StringIds::dropdown_stringid_selected;
                 }
 
                 auto args = FormatArguments();
-                args.push<string_id>(cargoObject->unitNamePlural);
+                args.push<StringId>(cargoObject->unitNamePlural);
                 args.push<uint32_t>(Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, cargoId));
                 args.push<uint16_t>(cargoId);
                 Dropdown::add(index, format, args);
@@ -2104,7 +2104,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
 
-        static char* generateCargoTooltipDetails(char* buffer, const string_id cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
+        static char* generateCargoTooltipDetails(char* buffer, const StringId cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
         {
             if (cargoType == 0xFF)
             {
@@ -2149,7 +2149,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Input::setTooltipTimeout(2000);
             self.flags &= ~WindowFlags::notScrollView;
             auto car = Common::getCarFromScrollView(&self, y);
-            string_id tooltipFormat = StringIds::null;
+            StringId tooltipFormat = StringIds::null;
             EntityId tooltipContent = EntityId::null;
             if (car)
             {
@@ -2655,7 +2655,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4DD3
-        static void createOrderDropdown(Window* const self, const WidgetIndex_t i, const string_id orderType)
+        static void createOrderDropdown(Window* const self, const WidgetIndex_t i, const StringId orderType)
         {
             auto head = Common::getVehicle(self);
             if (head == nullptr)
@@ -3193,7 +3193,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        const std::array<string_id, 6> orderString = {
+        const std::array<StringId, 6> orderString = {
             {
                 StringIds::orders_end,
                 StringIds::orders_stop_at,
@@ -3273,7 +3273,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(Window& self, Gfx::RenderTarget& rt, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
+        static void sub_4B4A58(Window& self, Gfx::RenderTarget& rt, const StringId strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -3432,10 +3432,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->activatedWidgets |= 1ULL << (widx::tabMain + self->currentTab);
         }
 
-        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced)
+        static std::pair<uint32_t, StringId> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced)
         {
             uint32_t image = 0;
-            string_id tooltip = 0;
+            StringId tooltip = 0;
             switch (head.mode)
             {
                 case TransportMode::rail:

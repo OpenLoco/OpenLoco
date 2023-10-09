@@ -26,12 +26,12 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::cargo;
 
-        string_id name; // 0x0
+        StringId name; // 0x0
         uint16_t var_2;
         uint16_t var_4;
-        string_id unitsAndCargoName;   // 0x6
-        string_id unitNameSingular;    // 0x8
-        string_id unitNamePlural;      // 0xA
+        StringId unitsAndCargoName;    // 0x6
+        StringId unitNameSingular;     // 0x8
+        StringId unitNamePlural;       // 0xA
         uint32_t unitInlineSprite;     // 0xC
         uint16_t matchFlags;           // 0x10
         CargoObjectFlags flags;        // 0x12

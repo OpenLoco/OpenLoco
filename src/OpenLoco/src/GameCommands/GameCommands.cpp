@@ -84,11 +84,11 @@ namespace OpenLoco::GameCommands
     static loco_global<const TileElement*, 0x009C68D0> _9C68D0;
 
     static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
-    static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
-    static loco_global<string_id, 0x009C68E8> _gGameCommandErrorTitle;
+    static loco_global<StringId, 0x009C68E6> _gGameCommandErrorText;
+    static loco_global<StringId, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
-    static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
+    static loco_global<StringId[8], 0x112C826> _commonFormatArgs;
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -523,17 +523,17 @@ namespace OpenLoco::GameCommands
         _gGameCommandPosition = pos;
     }
 
-    void setErrorText(const string_id message)
+    void setErrorText(const StringId message)
     {
         _gGameCommandErrorText = message;
     }
 
-    string_id getErrorText()
+    StringId getErrorText()
     {
         return _gGameCommandErrorText;
     }
 
-    void setErrorTitle(const string_id title)
+    void setErrorTitle(const StringId title)
     {
         _gGameCommandErrorTitle = title;
     }

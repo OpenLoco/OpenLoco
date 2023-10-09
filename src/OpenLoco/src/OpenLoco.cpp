@@ -100,7 +100,7 @@ namespace OpenLoco
     loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> _last_tick_time;
     loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
-    static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
+    static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
@@ -187,7 +187,7 @@ namespace OpenLoco
     }
 
     // 0x004BE621
-    [[noreturn]] void exitWithError(string_id eax, string_id ebx)
+    [[noreturn]] void exitWithError(StringId eax, StringId ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -197,7 +197,7 @@ namespace OpenLoco
     }
 
     // 0x004BE5EB
-    [[noreturn]] void exitWithError(string_id message, uint32_t errorCode)
+    [[noreturn]] void exitWithError(StringId message, uint32_t errorCode)
     {
         // Saves the error code for later writing to error log 1.TMP.
         registers regs;
@@ -761,7 +761,7 @@ namespace OpenLoco
     }
 
     static loco_global<int8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<string_id, 0x0050C198> _loadErrorMessage;
+    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
     // 0x0046ABCB
     static void tickLogic()
@@ -797,8 +797,8 @@ namespace OpenLoco
         {
             if (_loadErrorCode == -2)
             {
-                string_id title = _loadErrorMessage;
-                string_id message = StringIds::null;
+                StringId title = _loadErrorMessage;
+                StringId message = StringIds::null;
                 Ui::Windows::showError(title, message);
             }
             else

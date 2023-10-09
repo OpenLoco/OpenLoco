@@ -188,9 +188,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static string_id getElementTypeName(const TileElement& element)
+    static StringId getElementTypeName(const TileElement& element)
     {
-        static const std::map<ElementType, string_id> typeToString = {
+        static const std::map<ElementType, StringId> typeToString = {
             { ElementType::surface, StringIds::tile_inspector_element_type_surface },
             { ElementType::track, StringIds::tile_inspector_element_type_track },
             { ElementType::station, StringIds::tile_inspector_element_type_station },
@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return typeToString.at(element.type());
     }
 
-    static string_id getObjectName(const TileElement& element)
+    static StringId getObjectName(const TileElement& element)
     {
         switch (element.type())
         {
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static string_id getOwnerName(const TileElement& element)
+    static StringId getOwnerName(const TileElement& element)
     {
         if (element.type() == ElementType::road)
         {
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
             }
 
-            string_id formatString;
+            StringId formatString;
             if (self.var_842 == rowNum)
             {
                 drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::index_0A, Drawing::RectFlags::none);
@@ -359,9 +359,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             FormatArguments args = {};
 
-            string_id elementName = getElementTypeName(element);
-            string_id objectName = getObjectName(element);
-            string_id ownerName = getOwnerName(element);
+            StringId elementName = getElementTypeName(element);
+            StringId objectName = getObjectName(element);
+            StringId ownerName = getOwnerName(element);
 
             if (ownerName != StringIds::empty)
             {

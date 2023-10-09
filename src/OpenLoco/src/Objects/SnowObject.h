@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::snow;
 
-        string_id name;
+        StringId name;
         uint32_t image; // 0x02
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;

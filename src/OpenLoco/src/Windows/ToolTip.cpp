@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             });
     }
 
-    static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
+    static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9216
-    void update(Ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
+    void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
 

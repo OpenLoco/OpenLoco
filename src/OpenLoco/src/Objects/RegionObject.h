@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::region;
 
-        string_id name;
+        StringId name;
         uint32_t image; // 0x02
         uint8_t pad_06[0x8 - 0x6];
         uint8_t var_08;

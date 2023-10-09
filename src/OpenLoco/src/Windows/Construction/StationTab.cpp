@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* airportObject = ObjectManager::get<AirportObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(airportObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         GameCommands::doCommand(*args, GameCommands::Flags::apply);
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* dockObject = ObjectManager::get<DockObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(dockObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         GameCommands::doCommand(*args, GameCommands::Flags::apply);
@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadStationObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(trainStationObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 

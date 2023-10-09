@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Allocate a string id for the new name.
-        string_id allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+        StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
         if (allocatedStringId == StringIds::empty)
             return GameCommands::FAILURE;
 
@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Apply the new name to the company.
-        string_id oldStringId = company->name;
+        StringId oldStringId = company->name;
         company->name = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
         Gfx::invalidateScreen();

@@ -186,7 +186,7 @@ namespace OpenLoco
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
     }
 
-    static std::map<CorporateRating, string_id> _ratingNames = {
+    static std::map<CorporateRating, StringId> _ratingNames = {
         { CorporateRating::platelayer, StringIds::corporate_rating_platelayer },
         { CorporateRating::engineer, StringIds::corporate_rating_engineer },
         { CorporateRating::trafficManager, StringIds::corporate_rating_traffic_manager },
@@ -199,7 +199,7 @@ namespace OpenLoco
         { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
     };
 
-    string_id getCorporateRatingAsStringId(CorporateRating rating)
+    StringId getCorporateRatingAsStringId(CorporateRating rating)
     {
         auto it = _ratingNames.find(rating);
         if (it != _ratingNames.end())
