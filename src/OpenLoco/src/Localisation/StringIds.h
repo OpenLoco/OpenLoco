@@ -1889,6 +1889,13 @@ namespace OpenLoco::StringIds
     constexpr StringId objSelectionFilterExpert = 2295;
     constexpr StringId objSelectionFilterVanilla = 2296;
     constexpr StringId objSelectionFilterCustom = 2297;
+    constexpr StringId filterComponents = 2298;
+    constexpr StringId sortByDesignYear = 2299;
+    constexpr StringId sortByName = 2300;
+    constexpr StringId componentUnpowered = 2301;
+    constexpr StringId componentPowered = 2302;
+    constexpr StringId componentUnlocked = 2303;
+    constexpr StringId componentLocked = 2304;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
