@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) {
                 const std::string_view str1 = StringManager::getString(item1.name);
                 const std::string_view str2 = StringManager::getString(item2.name);
-                return str1 > str2;
+                return str1 < str2;
             });
         }
         else
