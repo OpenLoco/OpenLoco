@@ -446,15 +446,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return { -1, ObjectManager::ObjectIndexEntry{} };
     }
 
-    // 0x00473A95
-    static void sub_473A95()
-    {
-        // Title::sub_473A95
-        registers regs;
-        regs.eax = 0;
-        call(0x00473A95, regs);
-    }
-
     // 0x00472A20
     Ui::Window* open()
     {
@@ -463,7 +454,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (window != nullptr)
             return window;
 
-        sub_473A95();
+        ObjectManager::prepareSelectionList(true);
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, &_events);
         window->widgets = widgets;

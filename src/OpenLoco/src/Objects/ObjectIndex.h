@@ -51,11 +51,15 @@ namespace OpenLoco::ObjectManager
     bool isObjectInstalled(const ObjectHeader& objectHeader);
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     ObjIndexPair getActiveObject(ObjectType objectType, std::span<SelectedObjectsFlags> objectIndexFlags);
+
+    #pragma pack(push, 1)
     struct ObjectSelectionMeta
     {
-        uint32_t numImages;
         std::array<uint16_t, kMaxObjectTypes> numSelectedObjects;
+        uint32_t numImages;
     };
+    static_assert(sizeof(ObjectSelectionMeta) == 0x48);
+
     enum class SelectObjectModes : uint8_t
     {
         none = 0,
@@ -69,4 +73,5 @@ namespace OpenLoco::ObjectManager
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SelectObjectModes);
     bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
+    void prepareSelectionList(bool markInUse);
 }

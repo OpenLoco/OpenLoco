@@ -30,6 +30,10 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    static loco_global<int32_t, 0x0050D148> _50D144refCount;
+    static loco_global<SelectedObjectsFlags*, 0x0050D144> _50D144;
+    static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+    static loco_global<std::array<uint16_t, kMaxObjectTypes>, 0x0112C181> _numObjectsPerType;
 
     static constexpr uint8_t kCurrentIndexVersion = 3;
 
@@ -753,38 +757,65 @@ namespace OpenLoco::ObjectManager
         return entry;
     }
 
-    // 0x00473A95
-    static void prepareSelectionList(bool markInUse)
+    // 0x00472D3F
+    static void markInUseObjects([[maybe_unused]] std::span<SelectedObjectsFlags> objectFlags)
     {
-        _50D148refCount++;
-        if (_50D148refCount != 1)
+        call(0x00472D3F);
+    }
+
+    // 0x00472CFD
+    static void selectRequiredObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)
+    {
+        for (const auto& header : std::array<ObjectHeader, 0>{})
+        {
+            selectObjectFromIndex(SelectObjectModes::defaultSelect | SelectObjectModes::markAsAlwaysRequired, header, objectFlags, meta);
+        }
+    }
+
+    constexpr std::array<ObjectHeader, 1> kDefaultObjects = { ObjectHeader{ static_cast<uint32_t>(enumValue(ObjectType::region)), { 'R', 'E', 'G', 'U', 'S', ' ', ' ', ' ' }, 0U } };
+
+    // 0x00472D19
+    static void selectDefaultObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)
+    {
+        for (const auto& header : kDefaultObjects)
+        {
+            selectObjectFromIndex(SelectObjectModes::defaultSelect, header, objectFlags, meta);
+        }
+    }
+
+    // 0x00473A95
+    void prepareSelectionList(bool markInUse)
+    {
+        _50D144refCount++;
+        if (_50D144refCount != 1)
         {
             // All setup already
             return;
         }
 
-        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectCount];
-        stdx::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectCount };
+        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectCount]{};
+        _50D144 = selectFlags;
+        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectCount };
         // throw on nullptr?
 
-        ObjectSelectionMeta meta{};
-        std::array<uint16_t, kMaxObjectTypes> numObjectsPerType{};
+        _objectSelectionMeta = ObjectSelectionMeta{};
+        _numObjectsPerType = std::array<uint16_t, kMaxObjectTypes>{};
 
         auto ptr = (std::byte*)_installedObjectList;
         for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
         {
             auto entry = ObjectIndexEntry::read(&ptr);
 
-            numObjectsPerType[enumValue(entry._header->getType())]++;
+            (*_numObjectsPerType)[enumValue(entry._header->getType())]++;
         }
         if (markInUse)
         {
-            sub_472D3F(objectFlags);
+            markInUseObjects(objectFlags);
         }
-        resetSelectedObjectCountsAndSize(objectFlags, meta);
-        selectRequiredObjects(objectFlags, meta); // nop
-        selectDefaultObjects(objectFlags, meta);
+        resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
+        selectRequiredObjects(objectFlags, _objectSelectionMeta); // nop
+        selectDefaultObjects(objectFlags, _objectSelectionMeta);
         refreshRequiredByAnother(objectFlags);
-        resetSelectedObjectCountsAndSize(objectFlags, meta);
+        resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
     }
 }
