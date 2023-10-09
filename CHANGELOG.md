@@ -1,5 +1,6 @@
 23.09+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2148] Build vehicle window: add search box and filters for cargo and powered/unpowered.
 - Fix: [#1685] Crash when removing a crashed vehicle.
 - Fix: [#2110] Very large signal placement cost when upgrading a signal.
 
