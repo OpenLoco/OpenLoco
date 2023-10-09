@@ -786,6 +786,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             auto index = 0U;
             auto selectedIndex = -1;
+
+            Dropdown::add(index++, StringIds::dropdown_stringid, StringIds::allCargoTypes);
+            if (_cargoSupportedFilter == 0xFF)
+                selectedIndex = 0;
+
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
             {
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
@@ -806,6 +811,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             Widget dropdown = self.widgets[widx::cargoLabel];
             Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0);
+
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
         }
@@ -837,7 +843,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
-            _cargoSupportedFilter = Dropdown::getItemArgument(itemIndex, 3);
+            if (itemIndex > 0)
+                _cargoSupportedFilter = Dropdown::getItemArgument(itemIndex, 3);
+            else
+                _cargoSupportedFilter = 0xFF;
         }
 
         sub_4B92A5(&self);
@@ -1103,6 +1112,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.widgets[widx::cargoDropdown].right = selectionList.right;
         window.widgets[widx::cargoDropdown].left = selectionList.right - 12;
 
+        if (_cargoSupportedFilter == 0xFF)
+            window.widgets[widx::cargoLabel].text = StringIds::filterCargoSupported;
+        else
+            window.widgets[widx::cargoLabel].text = StringIds::empty;
+
         window.widgets[widx::filterLabel].right = window.widgets[widx::cargoLabel].left - 1;
         window.widgets[widx::filterDropdown].right = window.widgets[widx::cargoLabel].left - 2;
         window.widgets[widx::filterDropdown].left = window.widgets[widx::filterDropdown].right - 11;
@@ -1136,6 +1150,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             drawingCtx.drawStringLeftClipped(*rt, x, y, window.width - 186, Colour::black, bottomLeftMessage, &args);
+        }
+
+        if (_cargoSupportedFilter != 0xFF)
+        {
+            auto cargoObj = ObjectManager::get<CargoObject>(_cargoSupportedFilter);
+            auto args = FormatArguments::common(StringIds::cargoIdSprite, cargoObj->name, cargoObj->unitInlineSprite);
+
+            auto& widget = window.widgets[widx::cargoLabel];
+            drawingCtx.drawStringLeftClipped(*rt, widget.left + 2, window.y + widget.top, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         if (window.rowHover == -1)
