@@ -691,6 +691,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowCount = 0;
                 window.var_83C = 0;
                 window.rowHover = -1;
+                sub_4B92A5(&window);
                 window.callOnResize();
                 window.callOnPeriodicUpdate();
                 window.callPrepareDraw();
@@ -718,6 +719,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.rowCount = 0;
                 window.var_83C = 0;
                 window.rowHover = -1;
+                sub_4B92A5(&window);
                 window.callOnResize();
                 window.callOnPeriodicUpdate();
                 window.callPrepareDraw();
