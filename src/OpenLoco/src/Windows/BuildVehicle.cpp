@@ -26,6 +26,7 @@
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -227,7 +228,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return widgetIndex - widx::tab_track_type_0;
     }
 
+    enum class VehicleFilterFlags : uint8_t
+    {
+        none = 0,
+        powered = 1 << 0,
+        unpowered = 1 << 1,
+        locked = 1 << 2,
+        unlocked = 1 << 3,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFilterFlags);
+
+    enum class VehicleSortBy : uint8_t
+    {
+        designYear = 0,
+        name = 1,
+    };
+
     static uint16_t _lastRefreshYear;
+    static VehicleFilterFlags _vehicleFilterFlags = VehicleFilterFlags::powered | VehicleFilterFlags::unpowered | VehicleFilterFlags::unlocked;
+    static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
     static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
@@ -435,6 +454,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         _numAvailableVehicles = 0;
         std::vector<BuildableVehicle> buildableVehicles;
 
+        const bool showUnpoweredVehicles = (_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none;
+        const bool showPoweredVehicles = (_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none;
+        const bool showUnlockedVehicles = (_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none;
+        const bool showLockedVehicles = (_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none;
+
         for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjIndex)
         {
             auto vehicleObj = ObjectManager::get<VehicleObject>(vehicleObjIndex);
@@ -458,7 +482,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             const auto* company = CompanyManager::get(companyId);
-            if (!Config::get().displayLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))
+            if (!(showUnlockedVehicles && company->isVehicleIndexUnlocked(vehicleObjIndex)) || (showLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex)))
             {
                 continue;
             }
@@ -496,11 +520,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->name, vehicleObj->power > 0, vehicleObj->designed });
+            const bool isPowered = vehicleObj->power > 0;
+            if (!((isPowered && showPoweredVehicles) || (!isPowered && showUnpoweredVehicles)))
+            {
+                continue;
+            }
+
+            buildableVehicles.push_back({ vehicleObjIndex, vehicleObj->name, isPowered, vehicleObj->designed });
         }
 
         // Sort by name or design year
-        if (true)
+        if (_vehicleSortBy == VehicleSortBy::name)
         {
             std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) {
                 const std::string_view str1 = StringManager::getString(item1.name);
@@ -508,13 +538,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 return str1 < str2;
             });
         }
-        else
+        else if (_vehicleSortBy == VehicleSortBy::designYear)
         {
             std::sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) { return item1.designed < item2.designed; });
         }
 
         // Group powered vehicles, if were not leaving (un)powered out
-        if (false)
+        if ((_vehicleFilterFlags & (VehicleFilterFlags::powered | VehicleFilterFlags::unpowered)) != VehicleFilterFlags::none)
         {
             std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) { return item1.isPowered > item2.isPowered; });
         }
@@ -1157,8 +1187,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         }
 
                         const auto* company = CompanyManager::get(CompanyManager::getControllingId());
-                        auto rowIsALockedVehicle = Config::get().displayLockedVehicles
-                            && !company->isVehicleIndexUnlocked(vehicleType)
+                        auto rowIsALockedVehicle = !company->isVehicleIndexUnlocked(vehicleType)
                             && !Config::get().buildLockedVehicles;
 
                         auto colouredString = StringIds::black_stringid;
