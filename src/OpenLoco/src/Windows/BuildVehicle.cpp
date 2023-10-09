@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             Widget dropdown = self.widgets[widx::cargoLabel];
-            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0);
+            Dropdown::showText(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), index, 0x80);
 
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
