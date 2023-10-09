@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (cargoObject->matchFlags == primaryCargoObj->matchFlags)
+                if (cargoObject->cargoCategory == primaryCargoObj->cargoCategory)
                 {
                     acceptedTypes |= 1 << cargoId;
                 }
