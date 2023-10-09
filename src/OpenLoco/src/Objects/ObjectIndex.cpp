@@ -9,6 +9,10 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
 #include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Timer.hpp>
@@ -760,6 +764,58 @@ namespace OpenLoco::ObjectManager
     // 0x00472D3F
     static void markInUseObjects([[maybe_unused]] std::span<SelectedObjectsFlags> objectFlags)
     {
+        std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
+        std::array<stdx::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
+        auto count = 0;
+        for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
+        {
+            const auto type = static_cast<ObjectType>(i);
+            loadedObjectFlags[i] = stdx::span<uint8_t>(allLoadedObjectFlags.begin() + count, getMaxObjects(type));
+            count += getMaxObjects(type);
+        }
+
+        for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
+        {
+            const auto type = static_cast<ObjectType>(i);
+            for (LoadedObjectId j = 0U; j < getMaxObjects(type); ++j)
+            {
+                if (getAny(LoadedObjectHandle{ type, j }) != nullptr)
+                {
+                    loadedObjectFlags[i][j] |= (1U << 1);
+                }
+            }
+        }
+
+        if ((addr<0x00525E28, uint32_t>() & 1) != 0)
+        {
+            loadedObjectFlags[enumValue(ObjectType::region)][0] |= (1U << 0);
+            // Iterate the whole map looking for things
+        }
+
+        for (const auto& v : VehicleManager::VehicleList())
+        {
+            Vehicles::Vehicle train(*v);
+            for (auto& car : train.cars)
+            {
+                for (auto& component : car)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::vehicle)][component.body->objectId] |= (1U << 0);
+                }
+            }
+        }
+
+        for (auto& ind : IndustryManager::industries())
+        {
+            loadedObjectFlags[enumValue(ObjectType::industry)][ind.objectId] = (1U << 0);
+        }
+
+        for (auto& company : CompanyManager::companies())
+        {
+            loadedObjectFlags[enumValue(ObjectType::industry)][company.competitorId] = (1U << 0);
+        }
+
+        // Copy results over 0x004730E0
+
         call(0x00472D3F);
     }
 
