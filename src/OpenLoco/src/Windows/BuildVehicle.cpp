@@ -621,9 +621,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
 
         int numRows = _numAvailableVehicles;
-        if (window->var_83C == numRows)
-            return;
-
         uint16_t* src = _availableVehicles;
         int16_t* dest = window->rowInfo;
         window->var_83C = numRows;
