@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static uint16_t _lastRefreshYear;
     static VehicleFilterFlags _vehicleFilterFlags = kMaskPoweredUnpowered | VehicleFilterFlags::unlocked;
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
-    static uint8_t _cargoSupportedFilter = 0;
+    static uint8_t _cargoSupportedFilter = 0xFF;
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
     static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
@@ -526,6 +526,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
 
                 if (sanitisedTrackType != vehicleObj->trackType)
+                {
+                    continue;
+                }
+            }
+
+            if (_cargoSupportedFilter != 0xFF)
+            {
+                auto usableCargoTypes = vehicleObj->cargoTypes[0] | vehicleObj->cargoTypes[1];
+                if ((usableCargoTypes & (1 << _cargoSupportedFilter)) == 0)
                 {
                     continue;
                 }
