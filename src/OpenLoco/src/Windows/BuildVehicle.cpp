@@ -259,7 +259,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFilterFlags);
 
     constexpr VehicleFilterFlags kMaskPoweredUnpowered = (VehicleFilterFlags::powered | VehicleFilterFlags::unpowered);
-    constexpr VehicleFilterFlags kMaskLockedUnlocked = (VehicleFilterFlags::locked | VehicleFilterFlags::unlocked);
 
     enum class VehicleSortBy : uint8_t
     {
