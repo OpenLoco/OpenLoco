@@ -752,4 +752,39 @@ namespace OpenLoco::ObjectManager
 
         return entry;
     }
+
+    // 0x00473A95
+    static void prepareSelectionList(bool markInUse)
+    {
+        _50D148refCount++;
+        if (_50D148refCount != 1)
+        {
+            // All setup already
+            return;
+        }
+
+        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectCount];
+        stdx::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectCount };
+        // throw on nullptr?
+
+        ObjectSelectionMeta meta{};
+        std::array<uint16_t, kMaxObjectTypes> numObjectsPerType{};
+
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+
+            numObjectsPerType[enumValue(entry._header->getType())]++;
+        }
+        if (markInUse)
+        {
+            sub_472D3F(objectFlags);
+        }
+        resetSelectedObjectCountsAndSize(objectFlags, meta);
+        selectRequiredObjects(objectFlags, meta); // nop
+        selectDefaultObjects(objectFlags, meta);
+        refreshRequiredByAnother(objectFlags);
+        resetSelectedObjectCountsAndSize(objectFlags, meta);
+    }
 }
