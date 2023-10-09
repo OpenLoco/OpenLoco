@@ -242,6 +242,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFilterFlags);
 
+    constexpr VehicleFilterFlags kMaskPoweredUnpowered = (VehicleFilterFlags::powered | VehicleFilterFlags::unpowered);
+    constexpr VehicleFilterFlags kMaskLockedUnlocked = (VehicleFilterFlags::locked | VehicleFilterFlags::unlocked);
+
     enum class VehicleSortBy : uint8_t
     {
         designYear = 0,
@@ -249,7 +252,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     static uint16_t _lastRefreshYear;
-    static VehicleFilterFlags _vehicleFilterFlags = VehicleFilterFlags::powered | VehicleFilterFlags::unpowered | VehicleFilterFlags::unlocked;
+    static VehicleFilterFlags _vehicleFilterFlags = kMaskPoweredUnpowered | VehicleFilterFlags::unlocked;
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
@@ -548,7 +551,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         // Group powered vehicles, if were not leaving (un)powered out
-        if ((_vehicleFilterFlags & (VehicleFilterFlags::powered | VehicleFilterFlags::unpowered)) != VehicleFilterFlags::none)
+        if ((_vehicleFilterFlags & kMaskPoweredUnpowered) == kMaskPoweredUnpowered)
         {
             std::stable_sort(buildableVehicles.begin(), buildableVehicles.end(), [](const BuildableVehicle& item1, const BuildableVehicle& item2) { return item1.isPowered > item2.isPowered; });
         }
