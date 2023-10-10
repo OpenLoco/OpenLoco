@@ -863,8 +863,14 @@ namespace OpenLoco::ObjectManager
                     }
                     else if (elSignal != nullptr)
                     {
-                        // Why only left??? this is definitly wrong
-                        loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getLeft().signalObjectId()] |= (1U << 0);
+                        if (elSignal->getLeft().hasSignal())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getLeft().signalObjectId()] |= (1U << 0);
+                        }
+                        if (elSignal->getRight().hasSignal())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getRight().signalObjectId()] |= (1U << 0);
+                        }
                     }
                     else if (elBuilding != nullptr)
                     {
