@@ -18,12 +18,15 @@
 #include "Map/WallElement.h"
 #include "ObjectManager.h"
 #include "OpenLoco.h"
+#include "RoadObject.h"
+#include "TrackObject.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
+#include "World/Station.h"
 #include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Timer.hpp>
@@ -826,13 +829,41 @@ namespace OpenLoco::ObjectManager
                     }
                     else if (elTrack != nullptr)
                     {
+                        loadedObjectFlags[enumValue(ObjectType::track)][elTrack->trackObjectId()] |= (1U << 0);
+                        if (elTrack->hasBridge())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::bridge)][elTrack->bridge()] |= (1U << 0);
+                        }
+                        for (auto i = 0U; i < 4; ++i)
+                        {
+                            if (elTrack->hasMod(i))
+                            {
+                                auto* trackObj = get<TrackObject>(elTrack->trackObjectId());
+                                loadedObjectFlags[enumValue(ObjectType::trackExtra)][trackObj->mods[i]] |= (1U << 0);
+                            }
+                        }
                     }
                     else if (elStation != nullptr)
                     {
+                        switch (elStation->stationType())
+                        {
+                            case StationType::trainStation:
+                                loadedObjectFlags[enumValue(ObjectType::trackStation)][elStation->objectId()] |= (1U << 0);
+                                break;
+                            case StationType::roadStation:
+                                loadedObjectFlags[enumValue(ObjectType::roadStation)][elStation->objectId()] |= (1U << 0);
+                                break;
+                            case StationType::airport:
+                                loadedObjectFlags[enumValue(ObjectType::airport)][elStation->objectId()] |= (1U << 0);
+                                break;
+                            case StationType::docks:
+                                loadedObjectFlags[enumValue(ObjectType::dock)][elStation->objectId()] |= (1U << 0);
+                                break;
+                        }
                     }
                     else if (elSignal != nullptr)
                     {
-                        // Why only left???
+                        // Why only left??? this is definitly wrong
                         loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getLeft().signalObjectId()] |= (1U << 0);
                     }
                     else if (elBuilding != nullptr)
@@ -853,6 +884,34 @@ namespace OpenLoco::ObjectManager
                     }
                     else if (elRoad != nullptr)
                     {
+                        loadedObjectFlags[enumValue(ObjectType::road)][elRoad->roadObjectId()] |= (1U << 0);
+                        if (elRoad->hasBridge())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::bridge)][elRoad->bridge()] |= (1U << 0);
+                        }
+                        if (elRoad->hasLevelCrossing())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::levelCrossing)][elRoad->levelCrossingObjectId()] |= (1U << 0);
+                        }
+                        else
+                        {
+                            if (elRoad->streetLightStyle() != 0)
+                            {
+                                loadedObjectFlags[enumValue(ObjectType::streetLight)][0] |= (1U << 0);
+                            }
+                        }
+
+                        auto* roadObj = get<RoadObject>(elRoad->roadObjectId());
+                        if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                        {
+                            for (auto i = 0U; i < 2; ++i)
+                            {
+                                if (elRoad->hasMod(i))
+                                {
+                                    loadedObjectFlags[enumValue(ObjectType::roadExtra)][roadObj->mods[i]] |= (1U << 0);
+                                }
+                            }
+                        }
                     }
                     else if (elIndustry != nullptr)
                     {
