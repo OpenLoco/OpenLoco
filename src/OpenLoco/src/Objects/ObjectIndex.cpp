@@ -5,6 +5,17 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Map/BuildingElement.h"
+#include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
+#include "Map/SignalElement.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileLoop.hpp"
+#include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
+#include "Map/WallElement.h"
 #include "ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui.h"
@@ -790,6 +801,68 @@ namespace OpenLoco::ObjectManager
         {
             loadedObjectFlags[enumValue(ObjectType::region)][0] |= (1U << 0);
             // Iterate the whole map looking for things
+            for (const auto pos : World::getWorldRange())
+            {
+                const auto tile = World::TileManager::get(pos);
+                for (auto el : tile)
+                {
+                    auto* elSurface = el.as<World::SurfaceElement>();
+                    auto* elTrack = el.as<World::TrackElement>();
+                    auto* elStation = el.as<World::StationElement>();
+                    auto* elSignal = el.as<World::SignalElement>();
+                    auto* elBuilding = el.as<World::BuildingElement>();
+                    auto* elTree = el.as<World::TreeElement>();
+                    auto* elWall = el.as<World::WallElement>();
+                    auto* elRoad = el.as<World::RoadElement>();
+                    auto* elIndustry = el.as<World::IndustryElement>();
+
+                    if (elSurface != nullptr)
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::land)][elSurface->terrain()] |= (1U << 0);
+                        if (elSurface->var_4_E0())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::snow)][0] |= (1U << 0);
+                        }
+                    }
+                    else if (elTrack != nullptr)
+                    {
+                    }
+                    else if (elStation != nullptr)
+                    {
+                    }
+                    else if (elSignal != nullptr)
+                    {
+                        // Why only left???
+                        loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getLeft().signalObjectId()] |= (1U << 0);
+                    }
+                    else if (elBuilding != nullptr)
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::building)][elBuilding->objectId()] |= (1U << 0);
+                        if (!elBuilding->isConstructed())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::scaffolding)][0] |= (1U << 0);
+                        }
+                    }
+                    else if (elTree != nullptr)
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::tree)][elTree->treeObjectId()] |= (1U << 0);
+                    }
+                    else if (elWall != nullptr)
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::wall)][elWall->wallObjectId()] |= (1U << 0);
+                    }
+                    else if (elRoad != nullptr)
+                    {
+                    }
+                    else if (elIndustry != nullptr)
+                    {
+                        if (!elIndustry->isConstructed())
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::scaffolding)][0] |= (1U << 0);
+                        }
+                    }
+                }
+            }
         }
 
         for (const auto& v : VehicleManager::VehicleList())
@@ -814,9 +887,27 @@ namespace OpenLoco::ObjectManager
             loadedObjectFlags[enumValue(ObjectType::industry)][company.competitorId] = (1U << 0);
         }
 
-        // Copy results over 0x004730E0
+        // Copy results over to objectFlags
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
 
-        call(0x00472D3F);
+            auto objHandle = findObjectHandle(*entry._header);
+            if (!objHandle.has_value())
+            {
+                continue;
+            }
+            const auto loadedFlags = loadedObjectFlags[enumValue(objHandle->type)][objHandle->id];
+            if (loadedFlags & (1 << 0))
+            {
+                objectFlags[i] |= SelectedObjectsFlags::selected | SelectedObjectsFlags::inUse;
+            }
+            if (loadedFlags & (1 << 1))
+            {
+                objectFlags[i] |= SelectedObjectsFlags::selected;
+            }
+        }
     }
 
     // 0x00472CFD
