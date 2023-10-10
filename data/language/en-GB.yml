@@ -2359,6 +2359,6 @@ strings:
   2304: "Locked"
   2305: "Cargo"
   2306: "All cargo types"
-  2307: "{MOVE_X 10}Supports {STRINGID} {SPRITE}"
-  2308: "»{MOVE_X 10}Supports {STRINGID} {SPRITE}"
+  2307: "{MOVE_X 10}{STRINGID} {SPRITE}"
+  2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
   2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
