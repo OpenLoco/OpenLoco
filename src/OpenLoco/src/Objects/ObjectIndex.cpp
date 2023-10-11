@@ -1058,4 +1058,50 @@ namespace OpenLoco::ObjectManager
         refreshRequiredByAnother(objectFlags);
         resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
     }
+
+    // 0x00473B91
+    void freeSelectionList()
+    {
+        _50D144refCount--;
+        if (_50D144refCount == 0)
+        {
+            delete[] _50D144;
+            _50D144 = nullptr;
+        }
+    }
+
+    // 0x00474874
+    void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            auto objects = getAvailableObjects(type);
+            for (auto [i, object] : objects)
+            {
+                if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+                {
+                    if (!findObjectHandle(*object._header))
+                    {
+                        load(*object._header);
+                    }
+                }
+            }
+        }
+    }
+
+    // 0x00474821
+    void unloadUnselectedSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            auto objects = getAvailableObjects(type);
+            for (auto [i, object] : objects)
+            {
+                if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+                {
+                    unload(*object._header);
+                }
+            }
+        }
+    }
 }

@@ -1361,54 +1361,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         Ui::Windows::Error::open(errorTitle, GameCommands::getErrorText());
     }
 
-    // 0x00474821
-    static void unloadUnselectedObjects()
-    {
-        const auto selectionFlags = getSelectedObjectFlags();
-        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
-        {
-            auto objects = ObjectManager::getAvailableObjects(type);
-            for (auto [i, object] : objects)
-            {
-                if ((selectionFlags[i] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
-                {
-                    ObjectManager::unload(*object._header);
-                }
-            }
-        }
-    }
 
-    // 0x00474874
-    static void editorLoadSelectedObjects()
-    {
-        const auto selectionFlags = getSelectedObjectFlags();
-        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
-        {
-            auto objects = ObjectManager::getAvailableObjects(type);
-            for (auto [i, object] : objects)
-            {
-                if ((selectionFlags[i] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
-                {
-                    if (!ObjectManager::findObjectHandle(*object._header))
-                    {
-                        ObjectManager::load(*object._header);
-                    }
-                }
-            }
-        }
-    }
-
-    // 0x00473B91
-    static void editorObjectFlagsFree0()
-    {
-        call(0x00473B91); // editor_object_flags_free_0
-    }
 
     // 0x004739DD
     static void onClose([[maybe_unused]] Window& self)
     {
-        unloadUnselectedObjects();
-        editorLoadSelectedObjects();
+        ObjectManager::unloadUnselectedSelectionListObjects(getSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
         ObjectManager::reloadAll();
         ObjectManager::freeTemporaryObject();
 
@@ -1423,7 +1382,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
         else
         {
-            editorObjectFlagsFree0();
+            ObjectManager::freeSelectionList();
         }
     }
 

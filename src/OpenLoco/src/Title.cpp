@@ -94,19 +94,11 @@ namespace OpenLoco::Title
     static uint16_t _waitCounter;
 
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
 
-    // 0x00474874
-    // ?load selected objects?
-    static void sub_474874()
+    static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
     {
-        call(0x00474874); // editorLoadSelectedObjects
-    }
-
-    // 0x00473B91
-    // object flags free 0
-    static void sub_473B91()
-    {
-        call(0x00473B91); // editorObjectFlagsFree0
+        return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
     }
 
     // 0x004284C8
@@ -177,8 +169,8 @@ namespace OpenLoco::Title
         setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
-        sub_474874();
-        sub_473B91();
+        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
+        ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
         Scenario::reset();
