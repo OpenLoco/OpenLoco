@@ -52,13 +52,14 @@ namespace OpenLoco::ObjectManager
     std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader);
     ObjIndexPair getActiveObject(ObjectType objectType, std::span<SelectedObjectsFlags> objectIndexFlags);
 
-    #pragma pack(push, 1)
+#pragma pack(push, 1)
     struct ObjectSelectionMeta
     {
         std::array<uint16_t, kMaxObjectTypes> numSelectedObjects;
         uint32_t numImages;
     };
     static_assert(sizeof(ObjectSelectionMeta) == 0x48);
+#pragma pack(pop)
 
     enum class SelectObjectModes : uint8_t
     {

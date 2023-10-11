@@ -779,12 +779,12 @@ namespace OpenLoco::ObjectManager
     static void markInUseObjects([[maybe_unused]] std::span<SelectedObjectsFlags> objectFlags)
     {
         std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
-        std::array<stdx::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
+        std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
         auto count = 0;
         for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
         {
             const auto type = static_cast<ObjectType>(i);
-            loadedObjectFlags[i] = stdx::span<uint8_t>(allLoadedObjectFlags.begin() + count, getMaxObjects(type));
+            loadedObjectFlags[i] = std::span<uint8_t>(allLoadedObjectFlags.begin() + count, getMaxObjects(type));
             count += getMaxObjects(type);
         }
 
