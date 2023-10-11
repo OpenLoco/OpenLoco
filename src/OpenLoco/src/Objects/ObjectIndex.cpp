@@ -1104,4 +1104,38 @@ namespace OpenLoco::ObjectManager
             }
         }
     }
+
+    static bool validateObjectTypeSelection(std::span<SelectedObjectsFlags> objectFlags, const ObjectType type, auto&& predicate)
+    {
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+            if (((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+                && type == entry._header->getType()
+                && predicate(entry))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 0x00474167
+    std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::region, [](auto&) { return true; }))
+        {
+            GameCommands::setErrorText(2112);
+            return ObjectType::region;
+        }
+
+        if (!validateObjectTypeSelection(
+                objectFlags, ObjectType::road, [](const ObjectIndexEntry& entry) {
+                    // temp load object check things...
+                }))
+        {
+            GameCommands::setErrorText(2091);
+            return ObjectType::road;
+        }
+    }
 }
