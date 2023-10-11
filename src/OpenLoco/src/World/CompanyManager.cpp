@@ -62,7 +62,7 @@ namespace OpenLoco::CompanyManager
         for (auto& company : companies())
             company.name = StringIds::empty;
 
-        getGameState().var_1B3 = 0;
+        getGameState().produceAICompanyTimeout = 0;
 
         // Reset player companies depending on network mode.
         if (isNetworkHost())
@@ -222,10 +222,10 @@ namespace OpenLoco::CompanyManager
                 }
             }
 
-            getGameState().var_1B3++;
-            if (getGameState().var_1B3 >= 192)
+            getGameState().produceAICompanyTimeout++;
+            if (getGameState().produceAICompanyTimeout >= 192)
             {
-                getGameState().var_1B3 = 0;
+                getGameState().produceAICompanyTimeout = 0;
                 produceCompanies();
             }
         }
