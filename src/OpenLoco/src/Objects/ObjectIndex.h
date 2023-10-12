@@ -78,4 +78,5 @@ namespace OpenLoco::ObjectManager
     void freeSelectionList();
     void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags);
     void unloadUnselectedSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags);
+    std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags);
 }

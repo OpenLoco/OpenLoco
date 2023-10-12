@@ -1078,7 +1078,47 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473A13
     bool tryCloseWindow()
     {
-        return !(call(0x00473A13) & X86_FLAG_CARRY);
+        const auto res = ObjectManager::validateObjectSelection(getSelectedObjectFlags());
+        if (!res.has_value())
+        {
+            // All okay selection is good!
+            auto* w = WindowManager::find(WindowType::objectSelection);
+            if (w != nullptr)
+            {
+                WindowManager::close(w);
+            }
+            return true;
+        }
+        else
+        {
+            // Selection was bad so throw up an error message
+            // and switch tabs to the bad type
+
+            Windows::Error::open(StringIds::invalid_selection_of_objects, GameCommands::getErrorText());
+
+            auto* w = WindowManager::find(WindowType::objectSelection);
+            if (w != nullptr)
+            {
+                repositionTargetTab(w, res.value());
+                w->rowHover = -1;
+                w->object = nullptr;
+                w->scrollAreas[0].contentWidth = 0;
+                ObjectManager::freeTemporaryObject();
+                w->invalidate();
+
+                populateTabObjectList(res.value(), static_cast<FilterFlags>(w->var_858));
+
+                auto objIndex = getFirstAvailableSelectedObject(w);
+                if (objIndex.index != -1)
+                {
+                    w->rowHover = objIndex.index;
+                    w->object = reinterpret_cast<std::byte*>(objIndex.object._header);
+
+                    ObjectManager::loadTemporaryObject(*objIndex.object._header);
+                }
+            }
+            return false;
+        }
     }
 
     // 0x004737BA
@@ -1360,8 +1400,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         Ui::Windows::Error::open(errorTitle, GameCommands::getErrorText());
     }
-
-
 
     // 0x004739DD
     static void onClose([[maybe_unused]] Window& self)
