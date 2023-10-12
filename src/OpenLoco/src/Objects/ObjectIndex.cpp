@@ -1107,6 +1107,7 @@ namespace OpenLoco::ObjectManager
 
     static bool validateObjectTypeSelection(std::span<SelectedObjectsFlags> objectFlags, const ObjectType type, auto&& predicate)
     {
+        auto ptr = (std::byte*)_installedObjectList;
         for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
         {
             auto entry = ObjectIndexEntry::read(&ptr);
@@ -1123,19 +1124,124 @@ namespace OpenLoco::ObjectManager
     // 0x00474167
     std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags)
     {
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::region, [](auto&) { return true; }))
+        const auto atLeastOneSelected = [](const ObjectIndexEntry&) { return true; };
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::region, atLeastOneSelected))
         {
-            GameCommands::setErrorText(2112);
+            GameCommands::setErrorText(StringIds::region_type_must_be_selected);
             return ObjectType::region;
         }
 
         if (!validateObjectTypeSelection(
                 objectFlags, ObjectType::road, [](const ObjectIndexEntry& entry) {
-                    // temp load object check things...
+                    const auto tempObj = loadTemporaryObject(*entry._header);
+                    if (!tempObj.has_value())
+                    {
+                        return false;
+                    }
+                    auto* roadObj = reinterpret_cast<RoadObject*>(getTemporaryObject());
+                    if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        freeTemporaryObject();
+                        return false;
+                    }
+                    if (roadObj->hasFlags(RoadObjectFlags::unk_00))
+                    {
+                        freeTemporaryObject();
+                        return false;
+                    }
+                    freeTemporaryObject();
+                    return true;
                 }))
         {
-            GameCommands::setErrorText(2091);
+            GameCommands::setErrorText(StringIds::at_least_one_generic_dual_direction_road_type_must_be_selected);
             return ObjectType::road;
         }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::scaffolding, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::scaffolding_type_must_be_selected);
+            return ObjectType::scaffolding;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::industry, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::industry_type_must_be_selected);
+            return ObjectType::industry;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::building, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::town_building_type_must_be_selected);
+            return ObjectType::building;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::interfaceSkin, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::interface_type_must_be_selected);
+            return ObjectType::interfaceSkin;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::vehicle, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::vehicle_type_must_be_selected);
+            return ObjectType::vehicle;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::land, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::land_type_must_be_selected);
+            return ObjectType::land;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::currency, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::currency_type_must_be_selected);
+            return ObjectType::currency;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::water, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::water_type_must_be_selected);
+            return ObjectType::water;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::townNames, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::town_name_type_must_be_selected);
+            return ObjectType::townNames;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::levelCrossing, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::level_crossing_type_must_be_selected);
+            return ObjectType::levelCrossing;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::streetLight, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::street_light_type_must_be_selected);
+            return ObjectType::streetLight;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::snow, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::snow_type_must_be_selected);
+            return ObjectType::snow;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::climate, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::climate_type_must_be_selected);
+            return ObjectType::climate;
+        }
+
+        if (!validateObjectTypeSelection(objectFlags, ObjectType::hillShapes, atLeastOneSelected))
+        {
+            GameCommands::setErrorText(StringIds::map_generation_type_must_be_selected);
+            return ObjectType::hillShapes;
+        }
+
+        return std::nullopt;
     }
 }

@@ -1696,17 +1696,29 @@ namespace OpenLoco::StringIds
     constexpr StringId missing_object_data_id_x = 2088;
     constexpr StringId export_plugin_objects = 2089;
     constexpr StringId export_plugin_objects_tip = 2090;
-
+    constexpr StringId at_least_one_generic_dual_direction_road_type_must_be_selected = 2091;
+    constexpr StringId scaffolding_type_must_be_selected = 2092;
     // Two unused strings below
     constexpr StringId object_selection_advanced = 2093;
     constexpr StringId object_selection_advanced_tooltip = 2094;
     constexpr StringId object_currency_big_font = 2095;
-
     constexpr StringId new_objects_installed_successfully = 2096;
-
+    constexpr StringId industry_type_must_be_selected = 2097;
+    constexpr StringId town_building_type_must_be_selected = 2098;
     constexpr StringId company_headquarter_building_type_must_be_selected = 2099;
     constexpr StringId only_one_company_headquarter_building_type_must_be_selected = 2100;
-
+    constexpr StringId interface_type_must_be_selected = 2101;
+    constexpr StringId vehicle_type_must_be_selected = 2102;
+    constexpr StringId land_type_must_be_selected = 2103;
+    constexpr StringId currency_type_must_be_selected = 2104;
+    constexpr StringId water_type_must_be_selected = 2105;
+    constexpr StringId town_name_type_must_be_selected = 2106;
+    constexpr StringId level_crossing_type_must_be_selected = 2107;
+    constexpr StringId street_light_type_must_be_selected = 2108;
+    constexpr StringId snow_type_must_be_selected = 2109;
+    constexpr StringId climate_type_must_be_selected = 2110;
+    constexpr StringId map_generation_type_must_be_selected = 2111;
+    constexpr StringId region_type_must_be_selected = 2112;
     constexpr StringId unit_mph = 2113;
     constexpr StringId unit_kmh = 2114;
     constexpr StringId unit_hour = 2115;

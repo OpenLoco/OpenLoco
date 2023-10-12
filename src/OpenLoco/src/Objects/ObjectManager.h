@@ -160,7 +160,7 @@ namespace OpenLoco::ObjectManager
     };
 
     void freeTemporaryObject();
-    std::optional<TempLoadMetaData> loadTemporaryObject(ObjectHeader& header);
+    std::optional<TempLoadMetaData> loadTemporaryObject(const ObjectHeader& header);
     Object* getTemporaryObject();
     bool isTemporaryObjectLoad();
 
