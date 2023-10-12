@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi);
     static void sub_4C13BE(Window* w);
-    static void sub_4C1519();
+    static void setPreferredCurrencyNameBuffer();
     static void sub_4BF935();
 
     static loco_global<uint32_t, 0x0050D430> _songProgress;
@@ -1606,6 +1606,73 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
+        static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
+        static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+
+        static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
+        {
+            return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
+        }
+
+        // 0x004C153B
+        void loadPreferredCurrencyAlways()
+        {
+            if (!Config::get().hasFlags(Config::Flags::preferredCurrencyAlways))
+            {
+                return;
+            }
+
+            const auto& preferredCurreny = Config::get().old.preferredCurrency;
+
+            if (preferredCurreny.isEmpty())
+            {
+                return;
+            }
+
+            ObjectManager::prepareSelectionList(false);
+            const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+            if (oldCurrency.index != -1)
+            {
+                ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            }
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
+            ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+            ObjectManager::reloadAll();
+            Gfx::loadCurrency();
+            ObjectManager::freeSelectionList();
+        }
+
+        // 0x004C159C
+        void loadPreferredCurrencyNewGame()
+        {
+            if (!Config::get().hasFlags(Config::Flags::preferredCurrencyForNewGames))
+            {
+                loadPreferredCurrencyAlways();
+                return;
+            }
+
+            const auto& preferredCurreny = Config::get().old.preferredCurrency;
+
+            if (preferredCurreny.isEmpty())
+            {
+                return;
+            }
+
+            ObjectManager::prepareSelectionList(false);
+            const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+            if (oldCurrency.index != -1)
+            {
+                ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            }
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+            ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
+            ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+            ObjectManager::reloadAll();
+            Gfx::loadCurrency();
+            ObjectManager::freeSelectionList();
+        }
+
         // 0x004C0E82
         static void preferredCurrencyDropdown(Window* w, int16_t ax)
         {
@@ -1625,9 +1692,9 @@ namespace OpenLoco::Ui::Windows::Options
                     auto& cfg = OpenLoco::Config::get().old;
                     cfg.preferredCurrency = *object.second._header;
 
-                    sub_4C1519();
+                    setPreferredCurrencyNameBuffer();
                     Config::write();
-                    call(0x004C153B);
+                    loadPreferredCurrencyAlways();
                     sub_4BF935();
 
                     break;
@@ -1668,7 +1735,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             Config::write();
 
-            call(0x004C153B);
+            loadPreferredCurrencyAlways();
             sub_4BF935();
 
             w->invalidate();
@@ -2448,9 +2515,15 @@ namespace OpenLoco::Ui::Windows::Options
         Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
     }
 
-    static void sub_4C1519()
+    // 0x004C1519 & 0x00474911
+    static void setPreferredCurrencyNameBuffer()
     {
-        call(0x004C1519);
+        const auto res = ObjectManager::findObjectInIndex(Config::get().old.preferredCurrency);
+        if (res.has_value())
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::preferred_currency_buffer));
+            strcpy(buffer, res->_name);
+        }
     }
 
     // 0x004BF7B9
@@ -2488,7 +2561,7 @@ namespace OpenLoco::Ui::Windows::Options
         window->setColour(WindowColour::secondary, interface->colour_10);
 
         sub_4BF8CD();
-        sub_4C1519();
+        setPreferredCurrencyNameBuffer();
 
         window->enabledWidgets = Display::enabledWidgets;
         Display::applyScreenModeRestrictions(window);

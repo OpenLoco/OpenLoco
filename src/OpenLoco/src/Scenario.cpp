@@ -366,7 +366,7 @@ namespace OpenLoco::Scenario
         savePath /= std::string(S5::getOptions().scenarioName) + S5::extensionSV5;
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        call(0x004C159C);
+        loadPreferredCurrencyNewGame();
         Gfx::loadCurrency();
         CompanyManager::reset();
         CompanyManager::createPlayerCompany();
