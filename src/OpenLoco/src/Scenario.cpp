@@ -30,6 +30,7 @@
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/OrderManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
@@ -166,13 +167,6 @@ namespace OpenLoco::Scenario
         call(0x004A8810);
     }
 
-    // TODO: Move to OrderManager::reset
-    // 0x004702EC
-    static void sub_4702EC()
-    {
-        call(0x004702EC);
-    }
-
     // TODO: Move to Terraform::reset
     // 0x004BAEC4
     static void sub_4BAEC4()
@@ -210,7 +204,7 @@ namespace OpenLoco::Scenario
         StationManager::reset();
 
         sub_4A8810();
-        sub_4702EC();
+        Vehicles::OrderManager::reset();
         sub_4BAEC4();
         sub_43C8FD();
         Title::sub_4284C8();
