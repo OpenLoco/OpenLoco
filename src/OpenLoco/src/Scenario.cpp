@@ -505,10 +505,15 @@ namespace OpenLoco::Scenario
             return;
         }
 
-        ObjectManager::prepareSelectionList(false);
+        ObjectManager::prepareSelectionList(true);
         const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
         if (oldCurrency.index != -1)
         {
+            if (*oldCurrency.object._header == preferredCurreny)
+            {
+                ObjectManager::freeSelectionList();
+                return;
+            }
             ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
         }
         ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
@@ -535,10 +540,16 @@ namespace OpenLoco::Scenario
             return;
         }
 
-        ObjectManager::prepareSelectionList(false);
+        ObjectManager::prepareSelectionList(true);
         const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+
         if (oldCurrency.index != -1)
         {
+            if (*oldCurrency.object._header == preferredCurreny)
+            {
+                ObjectManager::freeSelectionList();
+                return;
+            }
             ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
         }
         ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
