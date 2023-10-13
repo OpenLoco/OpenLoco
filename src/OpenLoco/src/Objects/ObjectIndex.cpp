@@ -956,7 +956,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472D3F
-    static void markInUseObjects([[maybe_unused]] std::span<SelectedObjectsFlags> objectFlags)
+    static void markInUseObjects(std::span<SelectedObjectsFlags> objectFlags)
     {
         std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
         std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
