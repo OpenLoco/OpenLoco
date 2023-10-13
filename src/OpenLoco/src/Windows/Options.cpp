@@ -1606,73 +1606,6 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
-        static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
-        static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
-
-        static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
-        {
-            return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
-        }
-
-        // 0x004C153B
-        void loadPreferredCurrencyAlways()
-        {
-            if (!Config::get().hasFlags(Config::Flags::preferredCurrencyAlways))
-            {
-                return;
-            }
-
-            const auto& preferredCurreny = Config::get().old.preferredCurrency;
-
-            if (preferredCurreny.isEmpty())
-            {
-                return;
-            }
-
-            ObjectManager::prepareSelectionList(false);
-            const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
-            if (oldCurrency.index != -1)
-            {
-                ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
-            }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
-            ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
-            ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
-            ObjectManager::reloadAll();
-            Gfx::loadCurrency();
-            ObjectManager::freeSelectionList();
-        }
-
-        // 0x004C159C
-        void loadPreferredCurrencyNewGame()
-        {
-            if (!Config::get().hasFlags(Config::Flags::preferredCurrencyForNewGames))
-            {
-                loadPreferredCurrencyAlways();
-                return;
-            }
-
-            const auto& preferredCurreny = Config::get().old.preferredCurrency;
-
-            if (preferredCurreny.isEmpty())
-            {
-                return;
-            }
-
-            ObjectManager::prepareSelectionList(false);
-            const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
-            if (oldCurrency.index != -1)
-            {
-                ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
-            }
-            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
-            ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
-            ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
-            ObjectManager::reloadAll();
-            Gfx::loadCurrency();
-            ObjectManager::freeSelectionList();
-        }
-
         // 0x004C0E82
         static void preferredCurrencyDropdown(Window* w, int16_t ax)
         {
@@ -1694,7 +1627,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                     setPreferredCurrencyNameBuffer();
                     Config::write();
-                    loadPreferredCurrencyAlways();
+                    Scenario::loadPreferredCurrencyAlways();
                     sub_4BF935();
 
                     break;
@@ -1735,7 +1668,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             Config::write();
 
-            loadPreferredCurrencyAlways();
+            Scenario::loadPreferredCurrencyAlways();
             sub_4BF935();
 
             w->invalidate();
