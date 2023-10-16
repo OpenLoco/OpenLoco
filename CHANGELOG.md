@@ -1,8 +1,8 @@
 23.09+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2152] Crash when too many messages to be shown.
 - Fix: [#1685] Crash when removing a crashed vehicle.
 - Fix: [#2110] Very large signal placement cost when upgrading a signal.
+- Fix: [#2152] Crash when too many messages to be shown.
 
 23.09 (2023-09-28)
 ------------------------------------------------------------------------
