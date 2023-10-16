@@ -53,6 +53,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         bool isOld = false;
         auto news = MessageManager::get(messageIndex);
+        if (news == nullptr)
+        {
+            return;
+        }
 
         if ((news->timeActive != 0) && (getScreenAge() >= 10))
         {
