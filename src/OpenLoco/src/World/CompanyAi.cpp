@@ -265,7 +265,7 @@ namespace OpenLoco
         // 27 / 8 ???
         const auto val = thought.var_7C * 3;
         const auto val2 = val + (val / 8);
-        return thought.var_84 >= val2;
+        return thought.var_84 < val2;
     }
 
     // 0x00488050
