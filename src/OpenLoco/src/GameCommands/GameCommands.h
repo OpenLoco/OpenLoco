@@ -729,6 +729,7 @@ namespace OpenLoco::GameCommands
         {
         }
 
+        // Note: pos.z must be a floored BigZ
         World::Pos3 pos;
 
         explicit operator registers() const

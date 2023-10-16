@@ -132,7 +132,7 @@ namespace OpenLoco
                             continue;
                         }
 
-                        if (elStation->baseHeight() != tileLoc.z)
+                        if (elStation->baseZ() != tileLoc.z / World::kSmallZStep)
                         {
                             continue;
                         }
@@ -152,6 +152,7 @@ namespace OpenLoco
 
                     GameCommands::AirportRemovalArgs args{};
                     args.pos = tileLoc;
+                    args.pos.z = World::heightFloor(args.pos.z);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
                 }
@@ -174,7 +175,7 @@ namespace OpenLoco
                             continue;
                         }
 
-                        if (elStation->baseHeight() != tileLoc.z)
+                        if (elStation->baseZ() != tileLoc.z / World::kSmallZStep)
                         {
                             continue;
                         }
@@ -194,6 +195,7 @@ namespace OpenLoco
 
                     GameCommands::PortRemovalArgs args{};
                     args.pos = tileLoc;
+                    args.pos.z = World::heightFloor(args.pos.z);
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
                     break;
                 }
