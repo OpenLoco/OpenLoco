@@ -2563,7 +2563,7 @@ namespace OpenLoco::Vehicles
                 auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->trackAndDirection.track.cardinalDirection();
                 auto trackId = bogie->trackAndDirection.track.id();
-                auto loadingModifier = 12;
+                auto loadingModifier = Config::get().disableVehicleLoadPenaltyCheat ? 1 : 12;
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
