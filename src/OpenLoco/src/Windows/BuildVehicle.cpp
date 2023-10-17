@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto args = FormatArguments::common(StringIds::cargoIdSprite, cargoObj->name, cargoObj->unitInlineSprite);
 
             auto& widget = window.widgets[widx::cargoLabel];
-            drawingCtx.drawStringLeftClipped(*rt, widget.left + 2, window.y + widget.top, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, window.x + widget.left + 2, window.y + widget.top, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         if (window.rowHover == -1)
