@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            if (_cargoSupportedFilter != 0xFF)
+            if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
             {
                 auto usableCargoTypes = vehicleObj->cargoTypes[0] | vehicleObj->cargoTypes[1];
                 if ((usableCargoTypes & (1 << _cargoSupportedFilter)) == 0)
@@ -577,6 +577,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             const bool isPowered = vehicleObj->power > 0;
             if (!((isPowered && showPoweredVehicles) || (!isPowered && showUnpoweredVehicles)))
+            {
+                continue;
+            }
+
+            const bool isCargoless = vehicleObj->cargoTypes[0] == 0 && vehicleObj->cargoTypes[1] == 0;
+            if (_cargoSupportedFilter == 0xFE && !isCargoless)
             {
                 continue;
             }
@@ -835,6 +841,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             if (_cargoSupportedFilter == 0xFF)
                 selectedIndex = 0;
 
+            Dropdown::add(index++, StringIds::dropdown_stringid, StringIds::filterCargoless);
+            if (_cargoSupportedFilter == 0xFE)
+                selectedIndex = 1;
+
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
             {
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
@@ -895,10 +905,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
-            if (itemIndex > 0)
+            if (itemIndex >= 2)
                 _cargoSupportedFilter = Dropdown::getItemArgument(itemIndex, 3);
-            else
+            else if (itemIndex == 0)
                 _cargoSupportedFilter = 0xFF;
+            else if (itemIndex == 1)
+                _cargoSupportedFilter = 0xFE;
         }
 
         sub_4B92A5(&self);
@@ -1176,6 +1188,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         if (_cargoSupportedFilter == 0xFF)
             window.widgets[widx::cargoLabel].text = StringIds::filterCargoSupported;
+        else if (_cargoSupportedFilter == 0xFE)
+            window.widgets[widx::cargoLabel].text = StringIds::filterCargoless;
         else
             window.widgets[widx::cargoLabel].text = StringIds::empty;
 
@@ -1245,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             drawingCtx.drawStringLeftClipped(*rt, x, y, window.width - 186, Colour::black, bottomLeftMessage, &args);
         }
 
-        if (_cargoSupportedFilter != 0xFF)
+        if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
         {
             auto cargoObj = ObjectManager::get<CargoObject>(_cargoSupportedFilter);
             auto args = FormatArguments::common(StringIds::cargoIdSprite, cargoObj->name, cargoObj->unitInlineSprite);

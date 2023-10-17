@@ -1901,6 +1901,7 @@ namespace OpenLoco::StringIds
     constexpr StringId supportsCargoIdSprite = 2307;
     constexpr StringId supportsCargoIdSpriteSelected = 2308;
     constexpr StringId cargoIdSprite = 2309;
+    constexpr StringId filterCargoless = 2310;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
