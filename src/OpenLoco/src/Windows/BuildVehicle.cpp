@@ -884,6 +884,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 _vehicleFilterFlags ^= VehicleFilterFlags::powered;
             }
+            else if (itemIndex == 5)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::unlocked;
+            }
+            else if (itemIndex == 6)
+            {
+                _vehicleFilterFlags ^= VehicleFilterFlags::locked;
+            }
         }
         else if (widgetIndex == widx::cargoDropdown)
         {
