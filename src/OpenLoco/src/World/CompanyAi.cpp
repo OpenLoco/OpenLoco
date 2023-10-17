@@ -62,7 +62,7 @@ namespace OpenLoco
     }
 
     // 0x00486ECF
-    static uint8_t sub_486ECF(Company& company, Company::AiThought& thought)
+    static uint8_t sub_486ECF(Company& company, AiThought& thought)
     {
         // some sort of purchase vehicle
         registers regs;
@@ -73,7 +73,7 @@ namespace OpenLoco
     }
 
     // 0x004876CB
-    static void sub_4876CB(Company::AiThought& thought)
+    static void sub_4876CB(AiThought& thought)
     {
         // Sets unk vehicle vars and then breakdown flag ???
         registers regs;
@@ -252,7 +252,7 @@ namespace OpenLoco
     }
 
     // 0x00487F8D
-    static bool sub_487F8D(const Company& company, const Company::AiThought& thought)
+    static bool sub_487F8D(const Company& company, const AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -269,7 +269,7 @@ namespace OpenLoco
     }
 
     // 0x00488050
-    static bool sub_488050(const Company& company, const Company::AiThought& thought)
+    static bool sub_488050(const Company& company, const AiThought& thought)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
@@ -347,7 +347,7 @@ namespace OpenLoco
     }
 
     // 0x004866C8
-    static uint8_t sub_4866C8(const Company& company, Company::AiThought& thought)
+    static uint8_t sub_4866C8(const Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -492,7 +492,7 @@ namespace OpenLoco
     }
 
     // 0x0043106B
-    static void sub_43106B(Company& company, Company::AiThought& thought)
+    static void sub_43106B(Company& company, AiThought& thought)
     {
         const auto res = sub_4866C8(company, thought);
         if (res == 2)
@@ -509,7 +509,7 @@ namespace OpenLoco
     }
 
     // 0x004869F7
-    static uint8_t sub_4869F7(const Company& company, const Company::AiThought& thought)
+    static uint8_t sub_4869F7(const Company& company, const AiThought& thought)
     {
         // gc_unk_52?
         registers regs;
@@ -520,7 +520,7 @@ namespace OpenLoco
     }
 
     // 0x0043109A
-    static void sub_43109A(Company& company, Company::AiThought& thought)
+    static void sub_43109A(Company& company, AiThought& thought)
     {
         const auto res = sub_4869F7(company, thought);
         if (res == 2)
@@ -536,7 +536,7 @@ namespace OpenLoco
     }
 
     // 0x004310C4
-    static void sub_4310C4(Company& company, Company::AiThought& thought)
+    static void sub_4310C4(Company& company, AiThought& thought)
     {
         const auto res = sub_486ECF(company, thought);
         if (res == 2)
@@ -551,14 +551,14 @@ namespace OpenLoco
     }
 
     // 0x004310E9
-    static void sub_4310E9(Company& company, Company::AiThought& thought)
+    static void sub_4310E9(Company& company, AiThought& thought)
     {
         sub_4876CB(thought);
         StationManager::sub_437F29(company.id(), 1);
         company.var_4A4 = AiThinkState::unk0;
     }
 
-    using AiThinkState4Function = void (*)(Company&, Company::AiThought&);
+    using AiThinkState4Function = void (*)(Company&, AiThought&);
 
     static constexpr std::array<AiThinkState4Function, 4> _funcs_4F9500 = {
         sub_43106B,
@@ -590,7 +590,7 @@ namespace OpenLoco
     }
 
     // 0x00487BA3
-    static bool sub_487BA3(Company::AiThought& thought)
+    static bool sub_487BA3(AiThought& thought)
     {
         // sell a vehicle ??
         registers regs;
@@ -599,7 +599,7 @@ namespace OpenLoco
     }
 
     // 0x004311B5
-    static void sub_4311B5(Company& company, Company::AiThought& thought)
+    static void sub_4311B5(Company& company, AiThought& thought)
     {
         if (sub_487BA3(thought))
         {
@@ -609,7 +609,7 @@ namespace OpenLoco
     }
 
     // 0x0048715C
-    static bool sub_48715C(Company& company, Company::AiThought& thought)
+    static bool sub_48715C(Company& company, AiThought& thought)
     {
         // fair amount of logic
         // removes roads/tracks
@@ -620,7 +620,7 @@ namespace OpenLoco
     }
 
     // 0x004311CA
-    static void sub_4311CA(Company& company, Company::AiThought& thought)
+    static void sub_4311CA(Company& company, AiThought& thought)
     {
         if (sub_48715C(company, thought))
         {
@@ -629,19 +629,19 @@ namespace OpenLoco
     }
 
     // 0x00483778
-    static void clearThought(Company::AiThought& thought)
+    static void clearThought(AiThought& thought)
     {
         thought.type = AiThoughtType::null;
     }
 
     // 0x004311DA
-    static void sub_4311DA(Company& company, Company::AiThought& thought)
+    static void sub_4311DA(Company& company, AiThought& thought)
     {
         clearThought(thought);
         company.var_4A4 = AiThinkState::unk1;
     }
 
-    using AiThinkState7Function = void (*)(Company&, Company::AiThought&);
+    using AiThinkState7Function = void (*)(Company&, AiThought&);
 
     static constexpr std::array<AiThinkState7Function, 3> _funcs_4F9524 = {
         sub_4311B5,
@@ -656,7 +656,7 @@ namespace OpenLoco
     }
 
     // 0x00487C83
-    static void sub_487C83(Company::AiThought& thought)
+    static void sub_487C83(AiThought& thought)
     {
         // Gets refund costs for vehicles and costs for track mods
         registers regs;
@@ -665,21 +665,21 @@ namespace OpenLoco
     }
 
     // 0x00431209
-    static void sub_431209(Company& company, Company::AiThought& thought)
+    static void sub_431209(Company& company, AiThought& thought)
     {
         sub_487C83(thought);
         company.var_4A5 = 1;
     }
 
     // 0x00431216
-    static void sub_431216(Company& company, Company::AiThought&)
+    static void sub_431216(Company& company, AiThought&)
     {
         // branch on sub_487E6D (which is a nop) would have made var_4A4 = 1
         company.var_4A5 = 2;
     }
 
     // 0x00487DAD
-    static uint32_t tryPlaceTrackOrRoadMods(Company::AiThought& thought, uint8_t flags)
+    static uint32_t tryPlaceTrackOrRoadMods(AiThought& thought, uint8_t flags)
     {
         if (thought.trackObjId & (1U << 7))
         {
@@ -718,7 +718,7 @@ namespace OpenLoco
     }
 
     // 0x00487E74
-    static bool sub_487E74(Company& company, Company::AiThought& thought)
+    static bool sub_487E74(Company& company, AiThought& thought)
     {
         if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
         {
@@ -734,7 +734,7 @@ namespace OpenLoco
     }
 
     // 0x0043122D
-    static void sub_43122D(Company& company, Company::AiThought& thought)
+    static void sub_43122D(Company& company, AiThought& thought)
     {
         if (sub_487E74(company, thought))
         {
@@ -747,7 +747,7 @@ namespace OpenLoco
     }
 
     // 0x00487EA0
-    static bool sub_487EA0(Company::AiThought& thought)
+    static bool sub_487EA0(AiThought& thought)
     {
         // some sort of sell of vehicle
         registers regs;
@@ -756,7 +756,7 @@ namespace OpenLoco
     }
 
     // 0x00431244
-    static void sub_431244(Company& company, Company::AiThought& thought)
+    static void sub_431244(Company& company, AiThought& thought)
     {
         if (sub_487EA0(thought))
         {
@@ -765,7 +765,7 @@ namespace OpenLoco
     }
 
     // 0x00431254
-    static void sub_431254(Company& company, Company::AiThought& thought)
+    static void sub_431254(Company& company, AiThought& thought)
     {
         const auto res = sub_486ECF(company, thought);
         if (res == 2)
@@ -780,13 +780,13 @@ namespace OpenLoco
     }
 
     // 0x00431279
-    static void sub_431279(Company& company, Company::AiThought& thought)
+    static void sub_431279(Company& company, AiThought& thought)
     {
         sub_4876CB(thought);
         company.var_4A4 = AiThinkState::unk1;
     }
 
-    using Unk4311E7ThinkFunction = void (*)(Company&, Company::AiThought&);
+    using Unk4311E7ThinkFunction = void (*)(Company&, AiThought&);
 
     static constexpr std::array<Unk4311E7ThinkFunction, 6> _funcs_4F9530 = {
         sub_431209,
