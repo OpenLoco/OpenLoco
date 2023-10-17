@@ -2814,7 +2814,7 @@ namespace OpenLoco::Vehicles
             if (var_60 != 0xFF)
             {
                 auto company = CompanyManager::get(owner);
-                company->var_4A8[var_60].var_80 += cargoProfit;
+                company->aiThoughts[var_60].var_80 += cargoProfit;
             }
             Vehicle2* veh2 = _vehicleUpdate_2;
             veh2->curMonthRevenue += cargoProfit;

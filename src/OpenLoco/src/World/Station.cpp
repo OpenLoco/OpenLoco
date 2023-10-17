@@ -500,7 +500,7 @@ namespace OpenLoco
         for (uint16_t i = 0; i < station->stationTileSize; i++)
         {
             auto pos = station->stationTiles[i];
-            pos.z &= ~((1 << 1) | (1 << 0));
+            pos.z = World::heightFloor(pos.z);
 
             auto stationElement = getStationElement(pos);
 
@@ -786,7 +786,7 @@ namespace OpenLoco
             for (auto i = 0; i < stationTileSize; ++i)
             {
                 const auto& tile = stationTiles[i];
-                Ui::ViewportManager::invalidate({ tile.x, tile.y }, tile.z & 0xFFFC, tile.z + 32, ZoomLevel::full);
+                Ui::ViewportManager::invalidate({ tile.x, tile.y }, World::heightFloor(tile.z), World::heightFloor(tile.z) + 32, ZoomLevel::full);
             }
         }
     }

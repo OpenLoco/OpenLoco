@@ -24,6 +24,12 @@ namespace OpenLoco::World
         return coord & (kTileSize - 1);
     }
 
+    constexpr int16_t heightFloor(int16_t height)
+    {
+        return height & ~(kSmallZStep - 1);
+    }
+    static_assert(heightFloor(0x62) == 0x60);
+
     struct WorldSpaceTag
     {
     };

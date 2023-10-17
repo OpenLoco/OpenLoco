@@ -223,24 +223,24 @@ namespace OpenLoco
     // 0x00487FCC
     void Company::updateQuarterly()
     {
-        for (auto& unk : var_4A8)
+        for (auto& thought : aiThoughts)
         {
-            if (unk.var_00 == 0xFF)
+            if (thought.type == AiThoughtType::null)
                 continue;
 
-            unk.var_88 = std::min(0xFF, unk.var_88 + 1);
-            unk.var_84 = unk.var_80;
-            unk.var_80 = 0;
+            thought.var_88 = std::min(0xFF, thought.var_88 + 1);
+            thought.var_84 = thought.var_80;
+            thought.var_80 = 0;
             currency32_t totalRunCost = 0;
-            for (auto i = 0; i < unk.var_44; ++i)
+            for (auto i = 0; i < thought.var_44; ++i)
             {
-                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(unk.var_66[i]);
+                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(thought.var_66[i]);
                 if (vehHead != nullptr)
                 {
                     totalRunCost += vehHead->calculateRunningCost();
                 }
             }
-            unk.var_7C = totalRunCost;
+            thought.var_7C = totalRunCost;
         }
     }
 

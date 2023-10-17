@@ -757,6 +757,15 @@ namespace OpenLoco::CompanyManager
         }
         return inUseCompetitors;
     }
+
+    // 0x00435AEF
+    void aiDestroy(const CompanyId id)
+    {
+        auto* company = get(id);
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00435AEF, regs);
+    }
 }
 
 namespace OpenLoco
