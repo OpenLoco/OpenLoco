@@ -452,7 +452,7 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection _trackAndDirection;
+            TrackAndDirection trackAndDirection;
             RoadAndDirection roadAndDirection;
             uint16_t trad;
         };                           // 0x2C
@@ -494,7 +494,7 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection _trackAndDirection;
+            TrackAndDirection trackAndDirection;
             RoadAndDirection roadAndDirection;
             uint16_t trad;
         };                           // 0x2C
@@ -549,7 +549,7 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection _trackAndDirection;
+            TrackAndDirection trackAndDirection;
             RoadAndDirection roadAndDirection;
             uint16_t trad;
         };                           // 0x2C
@@ -613,7 +613,7 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection _trackAndDirection;
+            TrackAndDirection trackAndDirection;
             RoadAndDirection roadAndDirection;
             uint16_t trad;
         };                           // 0x2C
@@ -672,7 +672,7 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection _trackAndDirection;
+            TrackAndDirection trackAndDirection;
             RoadAndDirection roadAndDirection;
             uint16_t trad;
         };                           // 0x2C

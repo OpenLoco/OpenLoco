@@ -168,8 +168,8 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                ah = _vehicle_arr_4F865C[frontBogie->_trackAndDirection._data >> 2];
-                if ((frontBogie->_trackAndDirection.id() == 12) || (frontBogie->_trackAndDirection.id() == 13))
+                ah = _vehicle_arr_4F865C[frontBogie->trackAndDirection._data >> 2];
+                if ((frontBogie->trackAndDirection.id() == 12) || (frontBogie->trackAndDirection.id() == 13))
                 {
                     if (frontBogie->subPosition >= 48)
                     {
@@ -985,9 +985,9 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->baseZ() != frontBogie->tileBaseZ)
                     continue;
-                if (track->trackId() != frontBogie->_trackAndDirection.id())
+                if (track->trackId() != frontBogie->trackAndDirection.id())
                     continue;
-                if (track->unkDirection() != frontBogie->_trackAndDirection.cardinalDirection())
+                if (track->unkDirection() != frontBogie->trackAndDirection.cardinalDirection())
                     continue;
                 if (!track->hasStationElement())
                     continue;

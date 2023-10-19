@@ -2561,8 +2561,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::rail:
             {
                 auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
-                auto direction = bogie->_trackAndDirection.cardinalDirection();
-                auto trackId = bogie->_trackAndDirection.id();
+                auto direction = bogie->trackAndDirection.cardinalDirection();
+                auto trackId = bogie->trackAndDirection.id();
                 auto loadingModifier = 12;
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
@@ -3265,7 +3265,7 @@ namespace OpenLoco::Vehicles
                 if (veh2->tileX == pos.x
                     && veh2->tileY == pos.y
                     && veh2->tileBaseZ == pos.z / World::kSmallZStep
-                    && veh2->_trackAndDirection == reverseTad)
+                    && veh2->trackAndDirection == reverseTad)
                 {
                     return true;
                 }
@@ -3292,8 +3292,8 @@ namespace OpenLoco::Vehicles
 
     static StationId tryFindStationAt(VehicleBogie* bogie)
     {
-        auto direction = bogie->_trackAndDirection.cardinalDirection();
-        auto trackId = bogie->_trackAndDirection.id();
+        auto direction = bogie->trackAndDirection.cardinalDirection();
+        auto trackId = bogie->trackAndDirection.id();
 
         auto tile = TileManager::get(World::Pos2{ bogie->tileX, bogie->tileY });
         auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
@@ -3470,10 +3470,10 @@ namespace OpenLoco::Vehicles
                 if (elTrack->isGhost() || elTrack->isFlag5())
                     continue;
 
-                if (elTrack->unkDirection() != veh->_trackAndDirection.cardinalDirection())
+                if (elTrack->unkDirection() != veh->trackAndDirection.cardinalDirection())
                     continue;
 
-                if (elTrack->trackId() != veh->_trackAndDirection.id())
+                if (elTrack->trackId() != veh->trackAndDirection.id())
                     continue;
 
                 return true;
