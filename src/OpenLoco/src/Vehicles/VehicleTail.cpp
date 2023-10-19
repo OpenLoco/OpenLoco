@@ -18,7 +18,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
     // 0x004794BC
-    static void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint16_t unk)
+    static void leaveLevelCrossing(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const uint16_t unk)
     {
         auto levelCrossingLoc = loc;
         if (trackAndDirection.isReversed())
@@ -91,18 +91,19 @@ namespace OpenLoco::Vehicles
         }
 
         const auto ref = RoutingManager::getRouting(_oldRoutingHandle);
-        TrackAndDirection trackAndDir((ref & 0x1F8) >> 3, ref & 0x7);
         RoutingManager::freeRouting(_oldRoutingHandle);
 
         if (mode == TransportMode::road)
         {
-            sub_47D959(_oldTilePos, trackAndDir.road, false);
+            RoadAndDirection roadAndDir((ref & 0x1F8) >> 3, ref & 0x7);
+            sub_47D959(_oldTilePos, roadAndDir, false);
         }
         else
         {
+            TrackAndDirection trackAndDir((ref & 0x1F8) >> 3, ref & 0x7);
             if (ref & (1 << 15))
             {
-                setSignalState(_oldTilePos, trackAndDir.track, trackType, 0);
+                setSignalState(_oldTilePos, trackAndDir, trackType, 0);
             }
 
             const auto& trackSize = World::TrackData::getUnkTrack(ref & 0x1FF);
@@ -112,9 +113,9 @@ namespace OpenLoco::Vehicles
                 nextTile -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
             auto trackAndDirection2 = trackAndDir;
-            trackAndDirection2.track.setReversed(!trackAndDirection2.track.isReversed());
-            sub_4A2AD7(nextTile, trackAndDirection2.track, owner, trackType);
-            leaveLevelCrossing(_oldTilePos, trackAndDir.track, 9);
+            trackAndDirection2.setReversed(!trackAndDirection2.isReversed());
+            sub_4A2AD7(nextTile, trackAndDirection2, owner, trackType);
+            leaveLevelCrossing(_oldTilePos, trackAndDir, 9);
         }
         return true;
     }

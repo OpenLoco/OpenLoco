@@ -298,7 +298,7 @@ namespace OpenLoco::GameCommands
                     World::Track::getTrackConnections(nextLoc, nextRotation, connections, getUpdatingCompanyId(), args.trackObjType);
                     if (connections.size != 0)
                     {
-                        Vehicles::TrackAndDirection::_TrackAndDirection tad2{ 0, 0 };
+                        Vehicles::TrackAndDirection tad2{ 0, 0 };
                         tad2._data = connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                         Vehicles::sub_4A2AD7(nextLoc, tad2, getUpdatingCompanyId(), args.trackObjType);
                     }
@@ -316,7 +316,7 @@ namespace OpenLoco::GameCommands
                 World::Track::getTrackConnections(nextTrackStart, World::kReverseRotation[trackSize.rotationEnd], connections, getUpdatingCompanyId(), args.trackObjType);
                 if (connections.size != 0)
                 {
-                    Vehicles::TrackAndDirection::_TrackAndDirection tad2{ 0, 0 };
+                    Vehicles::TrackAndDirection tad2{ 0, 0 };
                     tad2._data = connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                     Vehicles::sub_4A2AD7(nextTrackStart, tad2, getUpdatingCompanyId(), args.trackObjType);
                 }

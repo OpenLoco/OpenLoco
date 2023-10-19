@@ -3211,13 +3211,13 @@ namespace OpenLoco::Vehicles
     {
         Track::TrackConnections connections{};
         connections.size = 0;
-        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
+        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection._data);
         World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
         if (connections.size != 1)
         {
             return false;
         }
-        TrackAndDirection::_TrackAndDirection tad((connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, connections.data[0] & 0x7);
+        TrackAndDirection tad((connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, connections.data[0] & 0x7);
         return sub_4A2A58(nextPos, tad, owner, trackType) & (1 << 1);
     }
 
@@ -3229,7 +3229,7 @@ namespace OpenLoco::Vehicles
 
         Track::TrackConnections connections{};
         connections.size = 0;
-        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
+        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection._data);
         World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
         if (connections.size != 1)
         {
@@ -3246,7 +3246,7 @@ namespace OpenLoco::Vehicles
 
         for (auto i = 0U; i < connections.size; ++i)
         {
-            TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+            TrackAndDirection tad{ 0, 0 };
             tad._data = connections.data[i] & Track::AdditionalTaDFlags::basicTaDMask;
             auto& trackSize = World::TrackData::getUnkTrack(tad._data);
             auto pos = nextNextPos + trackSize.pos;
