@@ -460,15 +460,20 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_1;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
+        EntityId head;              // 0x26
+        uint32_t remainingDistance; // 0x28
+        union
+        {
+            TrackAndDirection::_TrackAndDirection _trackAndDirection;
+            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            uint16_t trad;
+        };                           // 0x2C
+        uint16_t subPosition;        // 0x2E
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        World::SmallZ tileBaseZ;     // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles
         Flags38 var_38;
         uint8_t pad_39;      // 0x39
         EntityId nextCarId;  // 0x3A
@@ -499,7 +504,12 @@ namespace OpenLoco::Vehicles
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
+        union
+        {
+            TrackAndDirection::_TrackAndDirection _trackAndDirection;
+            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            uint16_t trad;
+        };                                   // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
@@ -549,7 +559,12 @@ namespace OpenLoco::Vehicles
         ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
+        union
+        {
+            TrackAndDirection::_TrackAndDirection _trackAndDirection;
+            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            uint16_t trad;
+        };                                   // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
@@ -608,7 +623,12 @@ namespace OpenLoco::Vehicles
         ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
+        union
+        {
+            TrackAndDirection::_TrackAndDirection _trackAndDirection;
+            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            uint16_t trad;
+        };                                   // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
@@ -662,7 +682,12 @@ namespace OpenLoco::Vehicles
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
         uint32_t remainingDistance;          // 0x28
-        TrackAndDirection trackAndDirection; // 0x2C
+        union
+        {
+            TrackAndDirection::_TrackAndDirection _trackAndDirection;
+            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            uint16_t trad;
+        };                                   // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
         int16_t tileY;                       // 0x32
