@@ -130,68 +130,56 @@ namespace OpenLoco::Vehicles
 #pragma pack(push, 1)
     struct TrackAndDirection
     {
-        struct _TrackAndDirection
-        {
-            uint16_t _data;
-            constexpr _TrackAndDirection(uint8_t id, uint8_t direction)
-                : _data((id << 3) | direction)
-            {
-            }
-            constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
-            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
-            constexpr bool isReversed() const { return _data & (1 << 2); }
-            constexpr void setReversed(bool state)
-            {
-                _data &= ~(1 << 2);
-                _data |= state ? (1 << 2) : 0;
-            }
-            constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
-        };
-        struct _RoadAndDirection
-        {
-            uint16_t _data;
-            constexpr _RoadAndDirection(uint8_t id, uint8_t direction)
-                : _data((id << 3) | direction)
-            {
-            }
-            constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
-            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
-            // Used by road and tram vehicles to indicate side
-            constexpr bool isReversed() const { return _data & (1 << 2); }
-            // Road vehicles are briefly back to front when reaching dead ends
-            // Trams can stay back to front
-            constexpr bool isBackToFront() const { return _data & (1 << 7); }
-            // Related to road vehicles turning around
-            constexpr bool isUnk8() const { return _data & (1 << 8); }
-            constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
-        };
-
-        union
-        {
-            _TrackAndDirection track;
-            _RoadAndDirection road;
-        };
-
+        uint16_t _data;
         constexpr TrackAndDirection(uint8_t id, uint8_t direction)
-            : track(id, direction)
+            : _data((id << 3) | direction)
         {
         }
+        constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
+        constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+        constexpr bool isReversed() const { return _data & (1 << 2); }
+        constexpr void setReversed(bool state)
+        {
+            _data &= ~(1 << 2);
+            _data |= state ? (1 << 2) : 0;
+        }
+        constexpr bool operator==(const TrackAndDirection other) const { return _data == other._data; }
     };
     static_assert(sizeof(TrackAndDirection) == 2);
 
+    struct RoadAndDirection
+    {
+        uint16_t _data;
+        constexpr RoadAndDirection(uint8_t id, uint8_t direction)
+            : _data((id << 3) | direction)
+        {
+        }
+        constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
+        constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+        // Used by road and tram vehicles to indicate side
+        constexpr bool isReversed() const { return _data & (1 << 2); }
+        // Road vehicles are briefly back to front when reaching dead ends
+        // Trams can stay back to front
+        constexpr bool isBackToFront() const { return _data & (1 << 7); }
+        // Related to road vehicles turning around
+        constexpr bool isUnk8() const { return _data & (1 << 8); }
+        constexpr bool operator==(const RoadAndDirection other) const { return _data == other._data; }
+    };
+    static_assert(sizeof(RoadAndDirection) == 2);
+
     // TODO move to a different header
-    void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
-    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
-    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
-    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    void setSignalState(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
+    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     struct ApplyTrackModsResult
     {
         currency32_t cost;
         bool networkTooComplex;
         bool allPlacementsFailed;
     };
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
 
     void playPickupSound(Vehicles::Vehicle2* veh2);
 
@@ -270,7 +258,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
         void sub_4AA464();
-        uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
+        uint8_t sub_47D959(const World::Pos3& loc, const RoadAndDirection trackAndDirection, const bool setOccupied);
         uint32_t sub_4B15FF(uint32_t unk1);
         void explodeComponent();
     };
@@ -464,8 +452,8 @@ namespace OpenLoco::Vehicles
         uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection::_TrackAndDirection _trackAndDirection;
-            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            TrackAndDirection _trackAndDirection;
+            RoadAndDirection roadAndDirection;
             uint16_t trad;
         };                           // 0x2C
         uint16_t subPosition;        // 0x2E
@@ -502,20 +490,20 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        EntityId head;              // 0x26
+        uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection::_TrackAndDirection _trackAndDirection;
-            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            TrackAndDirection _trackAndDirection;
+            RoadAndDirection roadAndDirection;
             uint16_t trad;
-        };                                   // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
+        };                           // 0x2C
+        uint16_t subPosition;        // 0x2E
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        World::SmallZ tileBaseZ;     // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
@@ -556,21 +544,21 @@ namespace OpenLoco::Vehicles
     struct VehicleBody : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
-        ColourScheme colourScheme;           // 0x24
-        EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        ColourScheme colourScheme;  // 0x24
+        EntityId head;              // 0x26
+        uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection::_TrackAndDirection _trackAndDirection;
-            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            TrackAndDirection _trackAndDirection;
+            RoadAndDirection roadAndDirection;
             uint16_t trad;
-        };                                   // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
+        };                           // 0x2C
+        uint16_t subPosition;        // 0x2E
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        World::SmallZ tileBaseZ;     // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
@@ -620,21 +608,21 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie : VehicleBase
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
-        ColourScheme colourScheme;           // 0x24
-        EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        ColourScheme colourScheme;  // 0x24
+        EntityId head;              // 0x26
+        uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection::_TrackAndDirection _trackAndDirection;
-            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            TrackAndDirection _trackAndDirection;
+            RoadAndDirection roadAndDirection;
             uint16_t trad;
-        };                                   // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
+        };                           // 0x2C
+        uint16_t subPosition;        // 0x2E
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        World::SmallZ tileBaseZ;     // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles
         Flags38 var_38;
         uint8_t objectSpriteType; // 0x39
         EntityId nextCarId;       // 0x3A
@@ -680,20 +668,20 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto kVehicleThingType = VehicleEntityType::tail;
         uint8_t pad_24[0x26 - 0x24];
-        EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        EntityId head;              // 0x26
+        uint32_t remainingDistance; // 0x28
         union
         {
-            TrackAndDirection::_TrackAndDirection _trackAndDirection;
-            TrackAndDirection::_RoadAndDirection roadAndDirection;
+            TrackAndDirection _trackAndDirection;
+            RoadAndDirection roadAndDirection;
             uint16_t trad;
-        };                                   // 0x2C
-        uint16_t subPosition;                // 0x2E
-        int16_t tileX;                       // 0x30
-        int16_t tileY;                       // 0x32
-        World::SmallZ tileBaseZ;             // 0x34
-        uint8_t trackType;                   // 0x35 field same in all vehicles
-        RoutingHandle routingHandle;         // 0x36 field same in all vehicles
+        };                           // 0x2C
+        uint16_t subPosition;        // 0x2E
+        int16_t tileX;               // 0x30
+        int16_t tileY;               // 0x32
+        World::SmallZ tileBaseZ;     // 0x34
+        uint8_t trackType;           // 0x35 field same in all vehicles
+        RoutingHandle routingHandle; // 0x36 field same in all vehicles
         Flags38 var_38;
         uint8_t pad_39;              // 0x39
         EntityId nextCarId;          // 0x3A
