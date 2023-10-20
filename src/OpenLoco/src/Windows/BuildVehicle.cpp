@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             const auto* company = CompanyManager::get(companyId);
-            if (!(showUnlockedVehicles && company->isVehicleIndexUnlocked(vehicleObjIndex)) || (showLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex)))
+            if (!((showUnlockedVehicles && company->isVehicleIndexUnlocked(vehicleObjIndex)) || (showLockedVehicles && !company->isVehicleIndexUnlocked(vehicleObjIndex))))
             {
                 continue;
             }
