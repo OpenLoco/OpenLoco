@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace OpenLoco::Vehicles::RoutingManager
-{
+{   
     std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle();
     void freeRoutingHandle(const RoutingHandle routing);
     uint16_t getRouting(const RoutingHandle routing);

@@ -31,6 +31,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004F72FC
+    // TODO: Move to track data
     std::array<uint16_t, 10> _roadIdToCurveSpeedFraction = {
         0xFFFF, // 1.00
         0x0CCD, // 0.05
@@ -126,9 +127,81 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    // 0x004F8974
+    // TODO: Move to track data
+    std::array<uint16_t, 44> _trackIdToCurveSpeedFraction = {
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x2666, // 0.15
+        0x2666, // 0.15
+        0x4000, // 0.25
+        0x4000, // 0.25
+        0x4000, // 0.25
+        0x4000, // 0.25
+        0x2666, // 0.15
+        0x2666, // 0.15
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+    };
+
     // 0x004A97A6
     bool Vehicle1::updateRail()
     {
+        Vehicle train{ head };
+        uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
+        Speed16 maxSpeed = kSpeed16Max;
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
+        {
+            RoutingManager::RingView ring(routingHandle);
+            bool isOnRackRail = false;
+            for (auto iter = ring.rbegin(); iter != ring.rend(); ++iter)
+            {
+                auto res = RoutingManager::getRouting(*iter);
+                isOnRackRail |= (res & (1U << 13)) != 0; // rackrail
+                uint8_t trackId = (res >> 3) & 0x3F;
+                curveSpeedFraction = std::min(curveSpeedFraction, _trackIdToCurveSpeedFraction[trackId]);
+                if (res & (1U << 12))
+                {
+                    const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
+                    if (bridgeObj->maxSpeed != kSpeed16Null)
+                    {
+                        maxSpeed = std::min(bridgeObj->maxSpeed, maxSpeed);
+                    }
+                }
+            }
+        }
         registers regs;
         regs.esi = X86Pointer(this);
 
