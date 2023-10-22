@@ -972,18 +972,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.invalidate();
     }
 
-    // 0x4C3923
-    static void onPeriodicUpdate(Window& window)
+    // 0x4C377B, 0x4C3923
+    static void onUpdate(Window& window)
     {
         if (_lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
         {
             sub_4B92A5(&window);
         }
-    }
 
-    // 0x4C377B
-    static void onUpdate(Window& window)
-    {
         window.frameNo++;
         window.callPrepareDraw();
 
@@ -1827,7 +1823,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         _events.onMouseDown = onMouseDown;
         _events.onDropdown = onDropdown;
         _events.onResize = onResize;
-        _events.onPeriodicUpdate = onPeriodicUpdate;
         _events.onUpdate = onUpdate;
         _events.getScrollSize = getScrollSize;
         _events.scrollMouseDown = onScrollMouseDown;
