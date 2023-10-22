@@ -1,4 +1,9 @@
 #include "Entities/EntityManager.h"
+#include "Map/RoadElement.h"
+#include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -156,12 +161,110 @@ namespace OpenLoco::Vehicles
     // 0x004AA97A
     bool VehicleBogie::isOnRackRail()
     {
-        registers regs;
-        regs.dl = 0;
-        regs.edi = X86Pointer(this);
+        if (mode == TransportMode::rail)
+        {
+            auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+            if (!trackObj->hasFlags(TrackObjectFlags::unk_00))
+            {
+                return true;
+            }
+            auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
+            if (!vehObj->hasFlags(VehicleObjectFlags::rackRail))
+            {
+                return false;
+            }
 
-        call(0x004AA97A, regs);
-        return regs.dl != 1;
+            const auto tile = World::TileManager::get(World::Pos2{ tileX, tileY });
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack == nullptr)
+                {
+                    continue;
+                }
+
+                if (elTrack->baseZ() != tileBaseZ)
+                {
+                    continue;
+                }
+
+                if (elTrack->unkDirection() != trackAndDirection.track.cardinalDirection())
+                {
+                    continue;
+                }
+
+                if (elTrack->trackId() != trackAndDirection.track.id())
+                {
+                    continue;
+                }
+
+                for (auto i = 0; i < 4; ++i)
+                {
+                    if (elTrack->hasMod(i) && trackObj->mods[i] == vehObj->rackRailType)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        else if (mode == TransportMode::road)
+        {
+            if (trackType == 0xFFU)
+            {
+                return true;
+            }
+            auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+            if (!roadObj->hasFlags(RoadObjectFlags::unk_05))
+            {
+                return true;
+            }
+
+            auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
+            if (!vehObj->hasFlags(VehicleObjectFlags::rackRail))
+            {
+                return false;
+            }
+
+            const auto tile = World::TileManager::get(World::Pos2{ tileX, tileY });
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+
+                if (elRoad->baseZ() != tileBaseZ)
+                {
+                    continue;
+                }
+
+                if (elRoad->unkDirection() != trackAndDirection.road.cardinalDirection())
+                {
+                    continue;
+                }
+
+                if (elRoad->roadId() != trackAndDirection.road.id())
+                {
+                    continue;
+                }
+
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (elRoad->hasMod(i) && roadObj->mods[i] == vehObj->rackRailType)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        else
+        {
+            assert(false);
+            return true;
+        }
     }
 
     // 0x004AF16A
