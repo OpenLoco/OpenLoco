@@ -43,7 +43,7 @@ TEST(PrngTests, misc)
     }
     {
         constexpr int32_t kMaxVal = -1;
-        constexpr size_t kMinVal = -10;
+        constexpr int32_t kMinVal = -10;
         EXPECT_EQ(prng.randNext(kMinVal, kMaxVal), -4);
         for (auto i = 0; i < 1000; ++i)
         {
