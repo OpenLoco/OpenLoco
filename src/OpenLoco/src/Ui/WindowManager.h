@@ -131,6 +131,7 @@ namespace OpenLoco::Ui::Windows
         Window* open(uint32_t vehicle, uint32_t flags);
         void sub_4B92A5(Ui::Window* window);
         void drawVehicleOverview(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
+        void handleInput(uint32_t charCode, uint32_t keyCode);
         void registerHooks();
     }
 
