@@ -1,5 +1,6 @@
 #include "Objects/BridgeObject.h"
 #include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "RoutingManager.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -176,16 +177,24 @@ namespace OpenLoco::Vehicles
         0x0CCD, // 0.05
     };
 
+    // 0x004B98DA
+    static void railProduceCrossingWhistle(const Vehicle2& veh2)
+    {
+        registers regs{};
+        regs.edi = X86Pointer(&veh2);
+        call(0x004B98DA, regs);
+    }
+
     // 0x004A97A6
     bool Vehicle1::updateRail()
     {
         Vehicle train{ head };
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
         Speed16 maxSpeed = kSpeed16Max;
+        bool isOnRackRail = false;
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
             RoutingManager::RingView ring(routingHandle);
-            bool isOnRackRail = false;
             for (auto iter = ring.rbegin(); iter != ring.rend(); ++iter)
             {
                 auto res = RoutingManager::getRouting(*iter);
@@ -202,10 +211,70 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        registers regs;
-        regs.esi = X86Pointer(this);
 
-        return !(call(0x004A97A6, regs) & X86_FLAG_CARRY);
+        const auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+        const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * trackObj->curveSpeed.getRaw());
+        maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
+
+        if (train.head->has38Flags(Flags38::unk_5))
+        {
+            maxSpeed += maxSpeed / 4;
+            maxSpeed = std::min(trackObj->curveSpeed, maxSpeed);
+        }
+
+        const auto veh2MaxSpeed = [veh2 = train.veh2]() {
+            if (veh2->has73Flags(Flags73::isBrokenDown))
+            {
+                return veh2->maxSpeed / 4;
+            }
+            return veh2->maxSpeed;
+        }();
+
+        maxSpeed = std::min(maxSpeed, veh2MaxSpeed);
+        if (isOnRackRail)
+        {
+            maxSpeed = std::min(maxSpeed, train.veh2->rackRailMaxSpeed);
+        }
+
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
+        {
+            maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
+        }
+
+        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= -20)
+            || train.head->hasVehicleFlags(VehicleFlags::commandStop))
+        {
+            if (train.veh2->currentSpeed == 0.0_mph)
+            {
+                maxSpeed = 0_mph;
+            }
+        }
+        var_44 = maxSpeed;
+
+        _vehicleUpdate_var_1136134 = maxSpeed;
+        int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
+        const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
+
+        distance1 = std::min(distance1, unk2);
+        _vehicleUpdate_var_1136114 = 0;
+        var_3C += distance1 - sub_4B15FF(distance1);
+
+        if (!(_vehicleUpdate_var_1136114 & (1U << 1)))
+        {
+            if (_vehicleUpdate_var_1136114 & (1U << 4))
+            {
+                railProduceCrossingWhistle(*train.veh2);
+            }
+            return true;
+        }
+
+        train.head->sub_4AD93A();
+        if (train.head->status == Status::approaching)
+        {
+            train.head->status = Status::travelling;
+        }
+
+        return true;
     }
 
     // 0x0047CA71
