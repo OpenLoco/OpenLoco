@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
             // Copy the string as it needs some processing
             std::string objectName = object.second._name;
             // Not sure what ControlCodes::pop16 is doing in the object name but it is at the start of all the object names
-            objectName.erase(std::remove(std::begin(objectName), std::end(objectName), ControlCodes::pop16));
+            objectName.erase(std::remove(std::begin(objectName), std::end(objectName), static_cast<char>(ControlCodes::pop16)));
 
             auto strcmpSpecial = [](const char* lhs, const char* rhs) {
                 while (*lhs && *rhs)
