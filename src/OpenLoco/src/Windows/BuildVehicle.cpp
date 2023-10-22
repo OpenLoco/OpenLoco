@@ -261,7 +261,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(VehicleFilterFlags);
 
-    constexpr VehicleFilterFlags kMaskPoweredUnpowered = (VehicleFilterFlags::powered | VehicleFilterFlags::unpowered);
+    constexpr VehicleFilterFlags kMaskPoweredUnpowered = VehicleFilterFlags::powered | VehicleFilterFlags::unpowered;
+    constexpr VehicleFilterFlags kMaskLockedUnlocked = VehicleFilterFlags::locked | VehicleFilterFlags::unlocked;
 
     enum class VehicleSortBy : uint8_t
     {
@@ -270,7 +271,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     static uint16_t _lastRefreshYear;
-    static VehicleFilterFlags _vehicleFilterFlags = kMaskPoweredUnpowered | VehicleFilterFlags::unlocked;
+    static VehicleFilterFlags _vehicleFilterFlags = kMaskPoweredUnpowered | kMaskLockedUnlocked;
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
     static uint8_t _cargoSupportedFilter = 0xFF;
 
@@ -495,7 +496,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         const bool showUnpoweredVehicles = (_vehicleFilterFlags & VehicleFilterFlags::unpowered) != VehicleFilterFlags::none;
         const bool showPoweredVehicles = (_vehicleFilterFlags & VehicleFilterFlags::powered) != VehicleFilterFlags::none;
         const bool showUnlockedVehicles = (_vehicleFilterFlags & VehicleFilterFlags::unlocked) != VehicleFilterFlags::none;
-        const bool showLockedVehicles = (_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none;
+        const bool showLockedVehicles = (_vehicleFilterFlags & VehicleFilterFlags::locked) != VehicleFilterFlags::none && Config::get().displayLockedVehicles;
 
         for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjIndex)
         {
