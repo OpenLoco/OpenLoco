@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#1685] Crash when removing a crashed vehicle.
 - Fix: [#2110] Very large signal placement cost when upgrading a signal.
+- Fix: [#2153] Hang on scenario load when enabling custom owner name feature.
 
 23.09 (2023-09-28)
 ------------------------------------------------------------------------
