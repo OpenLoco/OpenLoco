@@ -272,7 +272,7 @@ namespace OpenLoco::Vehicles
         bool updateComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
-        uint32_t sub_4B15FF(uint32_t unk1);
+        uint32_t updateTrackMotion(uint32_t unk1);
         void explodeComponent();
     };
 

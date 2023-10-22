@@ -286,7 +286,7 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
         _vehicleUpdate_var_1136114 = (1 << 15);
-        auto res = sub_4B15FF(_vehicleUpdate_var_113612C);
+        auto res = updateTrackMotion(_vehicleUpdate_var_113612C);
         _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res;
         _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
         if (_vehicleUpdate_var_1136114 & (1 << 1))

@@ -37,7 +37,7 @@ namespace OpenLoco::Vehicles
 
         const auto oldPos = position;
         _vehicleUpdate_var_1136114 = 0;
-        sub_4B15FF(_vehicleUpdate_var_113612C);
+        updateTrackMotion(_vehicleUpdate_var_113612C);
 
         const auto hasMoved = oldPos != position;
         _vehicleUpdate_backBogieHasMoved = _vehicleUpdate_frontBogieHasMoved;

@@ -257,7 +257,7 @@ namespace OpenLoco::Vehicles
 
         distance1 = std::min(distance1, unk2);
         _vehicleUpdate_var_1136114 = 0;
-        var_3C += distance1 - sub_4B15FF(distance1);
+        var_3C += distance1 - updateTrackMotion(distance1);
 
         if (!(_vehicleUpdate_var_1136114 & (1U << 1)))
         {

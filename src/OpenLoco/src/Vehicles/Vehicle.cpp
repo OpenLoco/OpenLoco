@@ -115,7 +115,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B15FF
-    uint32_t VehicleBase::sub_4B15FF(uint32_t unk1)
+    uint32_t VehicleBase::updateTrackMotion(uint32_t unk1)
     {
         registers regs;
         regs.eax = unk1;
