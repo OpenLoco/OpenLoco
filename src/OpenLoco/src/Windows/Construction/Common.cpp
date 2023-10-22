@@ -788,7 +788,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         drawingCtx.drawImage(&*clipped, -4, -10, imageId);
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_station);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_station);
                 }
             }
             // Overhead tab
@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         }
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_overhead);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_overhead);
                 }
             }
         }
@@ -882,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 drawingCtx.drawImage(&*clipped, -4, -9, imageId);
                             }
 
-                            Widget::drawTab(self, rt, -2, widx::tab_station);
+                            Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_station);
                         }
                     }
                 }
@@ -916,7 +916,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         drawingCtx.drawImage(&*clipped, 15, 31, imageId);
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_signal);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_signal);
                 }
             }
             // Overhead Tab
@@ -939,7 +939,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         }
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_overhead);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_overhead);
                 }
             }
         }

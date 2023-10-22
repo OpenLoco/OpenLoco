@@ -980,7 +980,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CF194
-    void Widget::drawTab(Window* w, Gfx::RenderTarget* rt, int32_t imageId, WidgetIndex_t index)
+    void Widget::drawTab(Window* w, Gfx::RenderTarget* rt, uint32_t imageId, WidgetIndex_t index)
     {
         auto widget = &w->widgets[index];
 

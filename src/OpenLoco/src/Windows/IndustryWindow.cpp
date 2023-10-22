@@ -849,7 +849,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
                 drawingCtx.drawImage(rt, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
 
-                Widget::drawTab(self, rt, -2, tab);
+                Widget::drawTab(self, rt, Widget::kContentUnk, tab);
             }
         }
 
