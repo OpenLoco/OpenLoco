@@ -507,7 +507,7 @@ namespace OpenLoco::GameCommands
         {
             return true;
         }
-        _gGameCommandErrorText = -2;
+        _gGameCommandErrorText = 0xFFFEU;
         _errorCompanyId = company;
         _9C68D0 = tile == nullptr ? World::TileManager::kInvalidTile : tile;
         return false;

@@ -264,14 +264,14 @@ namespace OpenLoco
                 }
                 else
                 {
-                    cargoSearchState.filter(~0);
+                    cargoSearchState.filter(~0U);
                 }
             }
         }
 
         if (cargoSearchState.filter() == 0)
         {
-            cargoSearchState.filter(~0);
+            cargoSearchState.filter(~0U);
         }
 
         for (tile_coord_t ty = 0; ty < kMapColumns; ty++)

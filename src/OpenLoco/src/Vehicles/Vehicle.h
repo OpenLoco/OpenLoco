@@ -125,7 +125,8 @@ namespace OpenLoco::Vehicles
         uint32_t status2Args;
     };
 
-    constexpr uint8_t cAirportMovementNodeNull = 0xFF;
+    constexpr uint8_t kAirportMovementNodeNull = 0xFF;
+    constexpr uint8_t kAirportMovementNoValidEdge = 0xFE;
 
 #pragma pack(push, 1)
     struct TrackAndDirection

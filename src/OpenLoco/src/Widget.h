@@ -19,9 +19,9 @@ namespace OpenLoco::Ui
         // Indicates that the imageId has a colour set and not to replace it with the window colour
         // This reuses the ImageIdFlags::translucent flag for use in widget draw
         // Flag *MUST* be removed before passing to drawingCtx.drawImage functions
-        static constexpr uint32_t kImageIdColourSet = (1 << 30);
-        static constexpr int32_t kContentNull = 0xFFFFFFFF;
-        static constexpr int32_t kContentUnk = 0xFFFFFFFE;
+        static constexpr uint32_t kImageIdColourSet = (1U << 30);
+        static constexpr uint32_t kContentNull = 0xFFFFFFFFU;
+        static constexpr uint32_t kContentUnk = 0xFFFFFFFEU;
 
         WidgetType type;           // 0x00
         WindowColour windowColour; // 0x01
@@ -33,7 +33,7 @@ namespace OpenLoco::Ui
         {
             uint32_t image;
             StringId text;
-            int32_t content;
+            uint32_t content;
         };
         StringId tooltip; // 0x0E
 
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui
         Widget out = makeWidget(origin, size, type, colour, content, tooltip);
 
         // TODO: implement this as a constant.
-        out.content |= (1 << 29);
+        out.content |= (1U << 29);
 
         return out;
     }

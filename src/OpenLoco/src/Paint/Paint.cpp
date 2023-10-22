@@ -333,7 +333,7 @@ namespace OpenLoco::Paint
         {
             quadrant = nullptr;
         }
-        _quadrantBackIndex = -1;
+        _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
         _quadrantFrontIndex = 0;
         _lastPaintString = 0;
         _paintStringHead = 0;

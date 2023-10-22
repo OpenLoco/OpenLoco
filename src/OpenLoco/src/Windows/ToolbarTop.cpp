@@ -508,11 +508,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (_lastPortOption == 0)
         {
-            Construction::openWithFlags(1 << 31);
+            Construction::openWithFlags(1U << 31);
         }
         else if (_lastPortOption == 1)
         {
-            Construction::openWithFlags(1 << 30);
+            Construction::openWithFlags(1U << 30);
         }
     }
 
@@ -576,7 +576,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         itemIndex = _menuOptions[itemIndex];
         LastGameOptionManager::setLastBuildVehiclesOption(itemIndex);
 
-        BuildVehicle::open(itemIndex, 1 << 31);
+        BuildVehicle::open(itemIndex, 1U << 31);
     }
 
     // 0x0043ABCB

@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static uint8_t getAverageTransportedCargo(const OpenLoco::Industry& industry)
         {
             auto industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
-            uint8_t productionTransported = -1;
+            uint8_t productionTransported = 0xFFU;
 
             if (industryObj->producesCargo())
             {
@@ -1191,7 +1191,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self->var_83C = 0;
             self->rowHover = -1;
-            self->var_846 = -1;
+            self->var_846 = 0xFFFFU;
 
             updateBuildableIndustries(self);
 

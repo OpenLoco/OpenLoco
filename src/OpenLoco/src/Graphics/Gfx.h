@@ -102,9 +102,9 @@ namespace OpenLoco::Gfx
 
     namespace ImageIdFlags
     {
-        constexpr uint32_t remap = 1 << 29;
-        constexpr uint32_t translucent = 1 << 30;
-        constexpr uint32_t remap2 = 1 << 31;
+        constexpr uint32_t remap = 1U << 29;
+        constexpr uint32_t translucent = 1U << 30;
+        constexpr uint32_t remap2 = 1U << 31;
     }
 
     void loadG1();

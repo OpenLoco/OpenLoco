@@ -147,7 +147,7 @@ namespace OpenLoco::Input
     {
         _pressedWindowType = Ui::WindowType::undefined;
 
-        _tooltipNotShownTicks = -1;
+        _tooltipNotShownTicks = 0xFFFFU;
         _hoverWindowType = Ui::WindowType::undefined;
 
         _5233AE = 0;

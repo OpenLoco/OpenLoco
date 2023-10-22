@@ -896,7 +896,7 @@ namespace OpenLoco::Ui::Dropdown
 
             if (highlightedIndex > Limits::kMaxCompanies)
             {
-                highlightedIndex = -1;
+                highlightedIndex = std::numeric_limits<size_t>::max();
                 break;
             }
         }

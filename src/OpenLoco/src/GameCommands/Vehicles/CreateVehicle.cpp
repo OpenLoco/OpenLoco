@@ -456,8 +456,8 @@ namespace OpenLoco::GameCommands
         newHead->status = Status::unk_0;
         newHead->stationId = StationId::null;
         newHead->breakdownFlags = BreakdownFlags::none;
-        newHead->var_60 = -1;
-        newHead->var_61 = -1;
+        newHead->var_60 = 0xFFU;
+        newHead->var_61 = 0xFFU;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0;
         newHead->var_79 = 0;
@@ -519,7 +519,7 @@ namespace OpenLoco::GameCommands
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
-        newVeh2->objectId = -1;
+        newVeh2->objectId = 0xFFFFU;
         newVeh2->soundFlags = Vehicles::SoundFlags::none;
         newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
@@ -552,7 +552,7 @@ namespace OpenLoco::GameCommands
         newTail->spriteHeightPositive = 0;
         newTail->var_38 = Flags38::none;
         newTail->drivingSoundId = SoundObjectId::null;
-        newTail->objectId = -1;
+        newTail->objectId = 0xFFFFU;
         newTail->soundFlags = Vehicles::SoundFlags::none;
         newTail->trainDanglingTimeout = 0;
         lastVeh->setNextCar(newTail->id);
