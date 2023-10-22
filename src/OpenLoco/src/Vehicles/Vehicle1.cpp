@@ -1,6 +1,8 @@
+#include "Map/TileManager.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Random.h"
 #include "RoutingManager.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -180,9 +182,23 @@ namespace OpenLoco::Vehicles
     // 0x004B98DA
     static void railProduceCrossingWhistle(const Vehicle2& veh2)
     {
-        registers regs{};
-        regs.edi = X86Pointer(&veh2);
-        call(0x004B98DA, regs);
+        Vehicle train{ veh2.head };
+        auto* vehObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+
+        if (vehObj->numStartSounds == 0)
+        {
+            return;
+        }
+
+        gPrng1().randNext(); // ???
+
+        const auto soundNum = (vehObj->numStartSounds & NumStartSounds::kMask) - 1;
+        const auto soundObjId = vehObj->startSounds[soundNum];
+
+        const auto height = World::TileManager::getHeight(veh2.position);
+        const auto volume = veh2.position.z < height.landHeight ? -1500 : 0;
+
+        Audio::playSound(Audio::makeObjectSoundId(soundObjId), veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
     }
 
     // 0x004A97A6
