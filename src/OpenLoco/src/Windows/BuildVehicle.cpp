@@ -270,6 +270,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         name = 1,
     };
 
+    static bool _lastDisplayLockedVehiclesState;
     static uint16_t _lastRefreshYear;
     static VehicleFilterFlags _vehicleFilterFlags = kMaskPoweredUnpowered | kMaskLockedUnlocked;
     static VehicleSortBy _vehicleSortBy = VehicleSortBy::designYear;
@@ -622,6 +623,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         _numAvailableVehicles = static_cast<int16_t>(buildableVehicles.size());
         _lastRefreshYear = getCurrentYear();
+        _lastDisplayLockedVehiclesState = Config::get().displayLockedVehicles;
     }
 
     static Ui::Window* getTopEditingVehicleWindow()
@@ -973,7 +975,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C3923
     static void onPeriodicUpdate(Window& window)
     {
-        if (_lastRefreshYear != getCurrentYear())
+        if (_lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
         {
             sub_4B92A5(&window);
         }
