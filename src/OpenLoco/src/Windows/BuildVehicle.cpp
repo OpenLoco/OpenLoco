@@ -60,14 +60,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         tab_track_type_5,
         tab_track_type_6,
         tab_track_type_7,
+        scrollview_vehicle_selection,
+        scrollview_vehicle_preview,
         searchBox,
         searchClearButton,
         filterLabel,
         filterDropdown,
         cargoLabel,
-        cargoDropdown,
-        scrollview_vehicle_selection,
-        scrollview_vehicle_preview
+        cargoDropdown
     };
 
     enum scrollIdx
@@ -231,15 +231,18 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
         makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
 
+        // Scroll and preview areas
+        makeWidget({ 3, 102 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::none),
+
         // Filter options
+        // NB: deliberately defined after scrollview definitions to keep enums the same as original
+        // TODO: can be moved after drawVehicleOverview has been implemented
         makeWidget({ 4, 72 }, { 246, 14 }, WidgetType::textbox, WindowColour::secondary),
         makeWidget({ 50, 72 }, { 38, 14 }, WidgetType::button, WindowColour::secondary, StringIds::clearInput),
         makeDropdownWidgets({ 3, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterComponents),
         makeDropdownWidgets({ 48, 87 }, { 90, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::filterCargoSupported),
 
-        // Scroll and preview areas
-        makeWidget({ 3, 102 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::none),
         widgetEnd(),
     };
 
