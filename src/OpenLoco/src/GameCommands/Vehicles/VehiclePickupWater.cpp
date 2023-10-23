@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
         {
             for (auto& component : car)
             {
-                component.front->carComponent_sub_4AF16A();
+                removeAllCargo(component);
             }
         }
         return 0;
