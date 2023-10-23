@@ -686,7 +686,6 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             if (Config::get().disableVehicleLoadPenaltyCheat)
             {
-
                 self.activatedWidgets |= (1 << Widx::checkbox_disable_vehicle_load_penalty);
             }
             else
