@@ -3,6 +3,7 @@
 - Feature: [#2148] Build vehicle window: add search box and filters for cargo and powered/unpowered.
 - Fix: [#1685] Crash when removing a crashed vehicle.
 - Fix: [#2110] Very large signal placement cost when upgrading a signal.
+- Fix: [#2152] Crash when too many messages to be shown.
 - Fix: [#2153] Hang on scenario load when enabling custom owner name feature.
 
 23.09 (2023-09-28)
