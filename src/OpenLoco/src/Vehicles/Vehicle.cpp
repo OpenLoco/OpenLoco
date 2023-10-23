@@ -140,7 +140,7 @@ namespace OpenLoco::Vehicles
     // bp : trackAndDirection
     // ebp : bp | (setOccupied << 31)
     // returns dh : trackType
-    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied)
+    uint8_t VehicleBase::sub_47D959(const World::Pos3& loc, const RoadAndDirection trackAndDirection, const bool setOccupied)
     {
         auto trackType = getTrackType();
         auto tile = World::TileManager::get(loc);

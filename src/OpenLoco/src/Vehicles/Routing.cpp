@@ -44,9 +44,9 @@ namespace OpenLoco::Vehicles
             return (loc == rhs.loc) && (trackAndDirection == rhs.trackAndDirection) && (company == rhs.company) && (trackType == rhs.trackType);
         }
 
-        TrackAndDirection::_TrackAndDirection tad() const
+        TrackAndDirection tad() const
         {
-            return TrackAndDirection::_TrackAndDirection((trackAndDirection & 0x1F8) >> 3, trackAndDirection & 0x7);
+            return TrackAndDirection((trackAndDirection & 0x1F8) >> 3, trackAndDirection & 0x7);
         }
     };
 
@@ -181,7 +181,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136085> _1136085;
     static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
 
-    static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
+    static std::optional<std::pair<World::SignalElement*, World::TrackElement*>> findSignalOnTrack(const World::Pos3& signalLoc, const TrackAndDirection trackAndDirection, const uint8_t trackType, const uint8_t index)
     {
         auto tile = World::TileManager::get(signalLoc);
         for (auto& el : tile)
@@ -227,7 +227,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0048963F but only when flags are 0xXXXX_XXXA
-    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
         auto trackStart = loc;
         if (trackAndDirection.isReversed())
@@ -294,7 +294,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0048963F
-    void setSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
+    void setSignalState(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags)
     {
         const auto unk1 = flags & 0xFFFF;
         assert(unk1 != 10); // Only happens if wrong function was called call getSignalState
@@ -441,13 +441,13 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (vehicle->getTrackLoc() == interest.loc && vehicle->getTrackAndDirection().track == tad)
+                if (vehicle->getTrackLoc() == interest.loc && vehicle->getTrackAndDirection() == tad)
                 {
                     routingTransformData = 1;
                     break;
                 }
 
-                if (vehicle->getTrackLoc() == nextLoc && vehicle->getTrackAndDirection().track == backwardTaD)
+                if (vehicle->getTrackLoc() == nextLoc && vehicle->getTrackAndDirection() == backwardTaD)
                 {
                     routingTransformData = 1;
                     break;
@@ -558,7 +558,7 @@ namespace OpenLoco::Vehicles
 
                 const auto startTargetPos2 = World::Pos2{ pieceLoc } - Math::Vector::rotate(World::Pos2{ targetPiece.x, targetPiece.y }, elTrack->unkDirection());
                 const auto startTargetPos = World::Pos3{ startTargetPos2, static_cast<int16_t>(elTrack->baseHeight() - targetPiece.z) };
-                TrackAndDirection::_TrackAndDirection tad2(elTrack->trackId(), elTrack->unkDirection());
+                TrackAndDirection tad2(elTrack->trackId(), elTrack->unkDirection());
                 LocationOfInterest newInterest{ startTargetPos, tad2._data, elTrack->owner(), elTrack->trackObjectId() };
 
                 if (hashMap.tryAdd(newInterest))
@@ -660,7 +660,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004A2E46 & 0x004A2DE4
     template<typename FilterFunction, typename TransformFunction>
-    static void findAllTracksFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
+    static void findAllTracksFilterTransform(LocationOfInterestHashMap& interestMap, TrackNetworkSearchFlags searchFlags, const World::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType, FilterFunction&& filterFunction, TransformFunction&& transformFunction)
     {
         // _1135F06 = &interestMap;
         // _filterFunction = filterFunction;
@@ -682,7 +682,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A2AD7
-    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t routingTransformData = 0;
@@ -702,7 +702,7 @@ namespace OpenLoco::Vehicles
             transformFunction);
     }
 
-    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
+    uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType)
     {
         // 0x001135F88
         uint16_t unk = 0;
@@ -1021,7 +1021,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
     {
         ApplyTrackModsResult result{};
         result.cost = 0;
@@ -1045,7 +1045,7 @@ namespace OpenLoco::Vehicles
         return result;
     }
 
-    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds)
     {
         currency32_t cost = 0;
         if (modSelection == 0)

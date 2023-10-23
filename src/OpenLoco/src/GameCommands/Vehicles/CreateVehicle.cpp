@@ -135,7 +135,7 @@ namespace OpenLoco::GameCommands
         newBogie->tileY = 0;
         newBogie->tileBaseZ = 0;
         newBogie->subPosition = 0;
-        newBogie->trackAndDirection = TrackAndDirection(0, 0);
+        newBogie->trad = 0;
         newBogie->routingHandle = lastVeh->getRoutingHandle();
         newBogie->objectId = vehicleTypeId;
 
@@ -254,7 +254,7 @@ namespace OpenLoco::GameCommands
         newBody->tileY = 0;
         newBody->tileBaseZ = 0;
         newBody->subPosition = 0;
-        newBody->trackAndDirection = TrackAndDirection(0, 0);
+        newBody->trad = 0;
         newBody->routingHandle = lastVeh->getRoutingHandle();
         newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->objectId = vehicleTypeId;
@@ -478,7 +478,7 @@ namespace OpenLoco::GameCommands
         newVeh1->tileBaseZ = 0;
         newVeh1->remainingDistance = 0;
         newVeh1->subPosition = 0;
-        newVeh1->trackAndDirection = TrackAndDirection(0, 0);
+        newVeh1->trad = 0;
         newVeh1->routingHandle = lastVeh->getRoutingHandle();
         newVeh1->spriteWidth = 0;
         newVeh1->spriteHeightNegative = 0;
@@ -509,7 +509,7 @@ namespace OpenLoco::GameCommands
         newVeh2->tileBaseZ = 0;
         newVeh2->remainingDistance = 0;
         newVeh2->subPosition = 0;
-        newVeh2->trackAndDirection = TrackAndDirection(0, 0);
+        newVeh2->trad = 0;
         newVeh2->routingHandle = lastVeh->getRoutingHandle();
         newVeh2->spriteWidth = 0;
         newVeh2->spriteHeightNegative = 0;
@@ -545,7 +545,7 @@ namespace OpenLoco::GameCommands
         newTail->tileBaseZ = 0;
         newTail->remainingDistance = 0;
         newTail->subPosition = 0;
-        newTail->trackAndDirection = TrackAndDirection(0, 0);
+        newTail->trad = 0;
         newTail->routingHandle = lastVeh->getRoutingHandle();
         newTail->spriteWidth = 0;
         newTail->spriteHeightNegative = 0;

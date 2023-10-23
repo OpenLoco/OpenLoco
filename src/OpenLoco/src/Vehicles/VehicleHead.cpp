@@ -977,7 +977,7 @@ namespace OpenLoco::Vehicles
 
         if (trackType == 0xFF || ObjectManager::get<RoadObject>(trackType)->hasFlags(RoadObjectFlags::isRoad))
         {
-            if (train.veh1->trackAndDirection.road.isBackToFront())
+            if (train.veh1->roadAndDirection.isBackToFront())
             {
                 param1 = 128;
                 turnaroundAtSignalTimeout = 544;
@@ -987,7 +987,7 @@ namespace OpenLoco::Vehicles
         {
             // Tram
             turnaroundAtSignalTimeout = kTramSignalTimeout;
-            if (train.veh1->trackAndDirection.road.isBackToFront())
+            if (train.veh1->roadAndDirection.isBackToFront())
             {
                 param1 = 64;
                 turnaroundAtSignalTimeout = 128;
@@ -2561,8 +2561,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::rail:
             {
                 auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
-                auto direction = bogie->trackAndDirection.track.cardinalDirection();
-                auto trackId = bogie->trackAndDirection.track.id();
+                auto direction = bogie->trackAndDirection.cardinalDirection();
+                auto trackId = bogie->trackAndDirection.id();
                 auto loadingModifier = 12;
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
@@ -2580,8 +2580,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::road:
             {
                 auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
-                auto direction = bogie->trackAndDirection.road.cardinalDirection();
-                auto roadId = bogie->trackAndDirection.road.id();
+                auto direction = bogie->roadAndDirection.cardinalDirection();
+                auto roadId = bogie->roadAndDirection.id();
                 auto loadingModifier = 2;
                 auto* elStation = tile.roadStation(roadId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
@@ -3211,13 +3211,13 @@ namespace OpenLoco::Vehicles
     {
         Track::TrackConnections connections{};
         connections.size = 0;
-        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
+        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection._data);
         World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
         if (connections.size != 1)
         {
             return false;
         }
-        TrackAndDirection::_TrackAndDirection tad((connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, connections.data[0] & 0x7);
+        TrackAndDirection tad((connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, connections.data[0] & 0x7);
         return sub_4A2A58(nextPos, tad, owner, trackType) & (1 << 1);
     }
 
@@ -3229,7 +3229,7 @@ namespace OpenLoco::Vehicles
 
         Track::TrackConnections connections{};
         connections.size = 0;
-        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
+        const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection._data);
         World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
         if (connections.size != 1)
         {
@@ -3246,7 +3246,7 @@ namespace OpenLoco::Vehicles
 
         for (auto i = 0U; i < connections.size; ++i)
         {
-            TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
+            TrackAndDirection tad{ 0, 0 };
             tad._data = connections.data[i] & Track::AdditionalTaDFlags::basicTaDMask;
             auto& trackSize = World::TrackData::getUnkTrack(tad._data);
             auto pos = nextNextPos + trackSize.pos;
@@ -3265,7 +3265,7 @@ namespace OpenLoco::Vehicles
                 if (veh2->tileX == pos.x
                     && veh2->tileY == pos.y
                     && veh2->tileBaseZ == pos.z / World::kSmallZStep
-                    && veh2->trackAndDirection.track == reverseTad)
+                    && veh2->trackAndDirection == reverseTad)
                 {
                     return true;
                 }
@@ -3292,8 +3292,8 @@ namespace OpenLoco::Vehicles
 
     static StationId tryFindStationAt(VehicleBogie* bogie)
     {
-        auto direction = bogie->trackAndDirection.track.cardinalDirection();
-        auto trackId = bogie->trackAndDirection.track.id();
+        auto direction = bogie->trackAndDirection.cardinalDirection();
+        auto trackId = bogie->trackAndDirection.id();
 
         auto tile = TileManager::get(World::Pos2{ bogie->tileX, bogie->tileY });
         auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
@@ -3448,7 +3448,7 @@ namespace OpenLoco::Vehicles
                 if (elRoad->isGhost() || elRoad->isFlag5())
                     continue;
 
-                if (elRoad->roadId() != veh->trackAndDirection.road.id())
+                if (elRoad->roadId() != veh->roadAndDirection.id())
                     continue;
 
                 return true;
@@ -3470,10 +3470,10 @@ namespace OpenLoco::Vehicles
                 if (elTrack->isGhost() || elTrack->isFlag5())
                     continue;
 
-                if (elTrack->unkDirection() != veh->trackAndDirection.track.cardinalDirection())
+                if (elTrack->unkDirection() != veh->trackAndDirection.cardinalDirection())
                     continue;
 
-                if (elTrack->trackId() != veh->trackAndDirection.track.id())
+                if (elTrack->trackId() != veh->trackAndDirection.id())
                     continue;
 
                 return true;

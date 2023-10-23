@@ -73,7 +73,7 @@ namespace OpenLoco::GameCommands
             piece.z
         };
         const auto firstTilePos = args.pos - offsetToFirstTile;
-        const auto tad = Vehicles::TrackAndDirection::_TrackAndDirection(elTrack->trackId(), elTrack->unkDirection());
+        const auto tad = Vehicles::TrackAndDirection(elTrack->trackId(), elTrack->unkDirection());
 
         auto cost = Vehicles::removeTrackModsToTrackNetwork(firstTilePos, tad, elTrack->owner(), args.trackObjType, flags, args.modSection, args.type);
 
