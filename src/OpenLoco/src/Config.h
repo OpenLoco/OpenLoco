@@ -186,6 +186,7 @@ namespace OpenLoco::Config
         bool invertRightMouseViewPan = false;
         bool cashPopupRendering = true;
         bool allowMultipleInstances = false;
+        bool disableVehicleLoadPenaltyCheat = false;
         LocoConfig old;
 
         constexpr bool hasFlags(Flags flagsToTest) const

@@ -279,6 +279,8 @@ namespace OpenLoco::Config
             _newConfig.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>();
         if (config["cashPopupRendering"])
             _newConfig.cashPopupRendering = config["cashPopupRendering"].as<bool>();
+        if (config["disableVehicleLoadPenaltyCheat"])
+            _newConfig.disableVehicleLoadPenaltyCheat = config["disableVehicleLoadPenaltyCheat"].as<bool>();
 
         auto& scNode = config["shortcuts"];
         // Protect from empty shortcuts
@@ -353,6 +355,7 @@ namespace OpenLoco::Config
         node["buildLockedVehicles"] = _newConfig.buildLockedVehicles;
         node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
         node["cashPopupRendering"] = _newConfig.cashPopupRendering;
+        node["disableVehicleLoadPenaltyCheat"] = _newConfig.disableVehicleLoadPenaltyCheat;
 
         // Shortcuts
         const auto& shortcuts = _newConfig.shortcuts;

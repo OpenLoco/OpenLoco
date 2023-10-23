@@ -2552,18 +2552,22 @@ namespace OpenLoco::Vehicles
 
     uint8_t VehicleHead::getLoadingModifier(const VehicleBogie* bogie)
     {
+        constexpr uint8_t kMinVehiclePastStationPenalty = 1;
+        constexpr uint8_t kRailVehiclePastStationPenalty = 12;
+        constexpr uint8_t kRoadVehiclePastStationPenalty = 2;
+
         switch (mode)
         {
             default:
             case TransportMode::air:
             case TransportMode::water:
-                return 1;
+                return kMinVehiclePastStationPenalty;
             case TransportMode::rail:
             {
                 auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->trackAndDirection.track.cardinalDirection();
                 auto trackId = bogie->trackAndDirection.track.id();
-                auto loadingModifier = 12;
+                auto loadingModifier = Config::get().disableVehicleLoadPenaltyCheat ? kMinVehiclePastStationPenalty : kRailVehiclePastStationPenalty;
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
@@ -2573,7 +2577,7 @@ namespace OpenLoco::Vehicles
                     if (elStation->stationId() != stationId)
                         break;
 
-                    loadingModifier = 1;
+                    loadingModifier = kMinVehiclePastStationPenalty;
                 }
                 return loadingModifier;
             }
@@ -2582,7 +2586,7 @@ namespace OpenLoco::Vehicles
                 auto tile = World::TileManager::get(Pos2{ bogie->tileX, bogie->tileY });
                 auto direction = bogie->trackAndDirection.road.cardinalDirection();
                 auto roadId = bogie->trackAndDirection.road.id();
-                auto loadingModifier = 2;
+                auto loadingModifier = Config::get().disableVehicleLoadPenaltyCheat ? kMinVehiclePastStationPenalty : kRoadVehiclePastStationPenalty;
                 auto* elStation = tile.roadStation(roadId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
@@ -2597,12 +2601,12 @@ namespace OpenLoco::Vehicles
                     {
                         breakdownFlags |= BreakdownFlags::unk_0;
                     }
-                    loadingModifier = 1;
+                    loadingModifier = kMinVehiclePastStationPenalty;
                 }
                 return loadingModifier;
             }
         }
-        return 1;
+        return kMinVehiclePastStationPenalty;
     }
 
     // 0x004B9A88

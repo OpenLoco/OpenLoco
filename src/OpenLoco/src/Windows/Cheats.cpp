@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        static constexpr Ui::Size kWindowSize = { 250, 155 };
+        static constexpr Ui::Size kWindowSize = { 250, 173 };
 
         static WindowEventList _events;
 
@@ -642,6 +642,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 vehicle_locked_group,
                 checkbox_display_locked_vehicles,
                 checkbox_build_locked_vehicles,
+                checkbox_disable_vehicle_load_penalty,
             };
         }
 
@@ -653,10 +654,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 102 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
             makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
+            makeWidget({ 10, 156 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred) | (1 << Widx::checkbox_display_locked_vehicles) | (1 << Widx::checkbox_build_locked_vehicles) | (1 << Widx::checkbox_disable_vehicle_load_penalty);
 
         static void prepareDraw(Window& self)
         {
@@ -680,6 +682,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             else
             {
                 self.activatedWidgets &= ~(1 << Widx::checkbox_build_locked_vehicles);
+            }
+
+            if (Config::get().disableVehicleLoadPenaltyCheat)
+            {
+                self.activatedWidgets |= (1 << Widx::checkbox_disable_vehicle_load_penalty);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << Widx::checkbox_disable_vehicle_load_penalty);
             }
         }
 
@@ -747,6 +758,11 @@ namespace OpenLoco::Ui::Windows::Cheats
                         WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_build_locked_vehicles);
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }
+                    break;
+
+                case Widx::checkbox_disable_vehicle_load_penalty:
+                    Config::get().disableVehicleLoadPenaltyCheat = !Config::get().disableVehicleLoadPenaltyCheat;
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_disable_vehicle_load_penalty);
                     break;
             }
         }

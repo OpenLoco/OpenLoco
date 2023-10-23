@@ -2363,3 +2363,5 @@ strings:
   2308: "»{MOVE_X 10}{STRINGID} {SPRITE}"
   2309: "{COLOUR BLACK}{STRINGID} {SPRITE}"
   2310: "Cargoless"
+  2311: "Disable vehicle load penalty"
+  2312: "{SMALLFONT}{COLOUR BLACK}When enabled, disables the vehicle loading speed penalty when vehicle length exceeds station length"
