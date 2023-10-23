@@ -61,4 +61,6 @@ namespace OpenLoco::CompanyManager
 
     // Vector of competitor object index's that are in use that aren't @id's competitor object index.
     std::vector<uint32_t> findAllOtherInUseCompetitors(const CompanyId id);
+
+    void aiDestroy(const CompanyId id);
 }

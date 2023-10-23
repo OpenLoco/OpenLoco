@@ -1188,7 +1188,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (widgetIndex == widx::filterDropdown)
         {
             auto& dropdown = self.widgets[widx::filterLabel];
-            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 6, 0x80);
+            Dropdown::show(self.x + dropdown.left, self.y + dropdown.top, dropdown.width() - 4, dropdown.height(), self.getColour(WindowColour::secondary), 6, 0);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::objSelectionFilterBeginner);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::objSelectionFilterAdvanced);

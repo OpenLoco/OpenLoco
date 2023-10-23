@@ -26,7 +26,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<GhostVisibilityFlags, 0x00522096> _ghostVisibilityFlags;
-    static loco_global<bool, 0x00525FAE> _trafficHandedness; // boolean true for right false for left
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;

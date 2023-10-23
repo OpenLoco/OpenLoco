@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CompanyAi.h"
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
 #include "Types.hpp"
@@ -93,21 +94,6 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Company
     {
-        struct unk4A8
-        {
-            uint8_t var_00;
-            uint8_t var_01;
-            uint8_t pad_02[0x42];
-            uint8_t var_44; // 0x4EC size of var_66
-            uint8_t pad_45[0x66 - 0x45];
-            EntityId var_66[11]; // 0x50E unsure on size
-            currency32_t var_7C; // 0x524
-            uint32_t var_80;     // 0x528
-            uint32_t var_84;     // 0x52C
-            uint8_t var_88;      // 0x530
-            uint8_t pad_89[3];
-        };
-        static_assert(sizeof(unk4A8) == 0x8C);
         StringId name;
         StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
@@ -128,21 +114,29 @@ namespace OpenLoco
         uint32_t startedDate;                                                          // 0x0498
         uint32_t var_49C;
         uint32_t var_4A0;
-        uint8_t var_4A4;
+        AiThinkState var_4A4; // 0x04A4
         uint8_t var_4A5;
         uint8_t var_4A6;
         uint8_t var_4A7;
-        unk4A8 var_4A8[60];
-        uint8_t var_2578;
+        AiThought aiThoughts[60];    // 0x04A8
+        uint8_t var_2578;            // 0x2578 activeThought?
         World::SmallZ headquartersZ; // 0x2579
         coord_t headquartersX;       // 0x257A -1 on no headquarter placed
         coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x85C4 - 0x25A2];
+        uint8_t pad_25A2[0x85C2 - 0x25A2];
+        uint8_t var_85C2;
+        uint8_t var_85C3;
         uint16_t var_85C4;
         uint16_t var_85C6;
-        uint8_t pad_85C8[0x85F6 - 0x85C8];
+        uint8_t pad_85C8[0x85DE - 0x85C8];
+        uint32_t var_85DE;
+        uint8_t pad_85E2[0x85EA - 0x85E2];
+        uint32_t var_85EA;
+        uint8_t pad_85EE[0x85F0 - 0x85EE];
+        uint16_t var_85F0;
+        uint8_t pad_85F2[0x85F6 - 0x85F2];
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
