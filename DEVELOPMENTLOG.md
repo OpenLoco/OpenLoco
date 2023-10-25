@@ -1,5 +1,61 @@
 # OpenLoco version 23.09+ (???)
 
+## Switch codebase to C++20 (#1843, #2136, #2144)
+
+Pretty much since the project got started, we've been adhering to the C++17 standard. This allowed us to
+use modern C++, including the modern filesystem classes. However, as the name C++20 suggests, a new
+standard has been out for a while. There were a few blockers that prevented us from switching, however.
+This month, the last blockers were resolved by @Duncanspumpkin and @ZehMatt, and so we can now compile
+the entire codebase as C++20!
+
+Happily, this also removed the need to use a 3rd-party library for `span` support, as we can now
+just use the C++ standard library for this. Code-wise, we look forward to using more C++20 types everywhere,
+which should make our lives a little easier.
+
+## Add filters to Build Vehicle window (#2148)
+
+One of the frequent remarks we got from players, is how tedious it can be to find the right components
+when building a vehicle. This month, @AaronVanGeffen set out to make this easier. The Build Vehicle
+window now allows you to filter vehicle components by powered/unpowered types, as well as supported cargo.
+If that isn't enough, you can even search for vehicle components by name. We hope this will help in
+your vehicle-building needs!
+
+PS: It's already been suggested we add these new filters to the Object Selection window as well.
+We can't do this easily yet, but it's on our List of Things To Do.
+
+## Add cheat to remove station loading penalty for long vehicles (#2151)
+
+A dedicated part of the game's fan base is eager to make rich dioramas with very long vehicles.
+Long-time players have relied on the 'Long Station Patch' to make stations that can actually accommodate
+such long vehicles. For various reasons, OpenLoco cannot provide these newer limits *yet*.
+However, as a compromise, players can now choose to disable the slow (un)loading that would be the
+result of stationing overly long vehicles in shorter stations.
+We hope this will allow more players to enjoy OpenLoco, even without longer stations.
+
+## Use global game state everywhere (#2129, #2131, #2132, #2133, #2137, #2139, #2142, #2145)
+
+When the project was started, the idea of the `loco_global` struct was conceived: a high-level wrapper around
+a particular memory address. This ensured that we could start using strongly typed C++ from the get go,
+instead of having to rely on raw addresses for longer. After, we introduced a `GameState` struct that encompasses
+the memory space dealing with is, in effect, how the landscape and everything in it is stored.
+
+This month, @memellis has continued working on reducing the number of these `loco_global` variables
+in the codebase, by making these code use of the global `GameState` instead. As we wrote last month,
+this is an important task that needs to be completed before we can start looking at increasing limits of OpenLoco, and it improves the structure of the codebase.
+
+At this point, there are very few `loco_global` variables left that can be replaced with a `GameState`
+reference. There are plenty remaining, though. Most of these have to do with more transient variables,
+such as anything to do with UI. As most of the code paths involved are no longer shared with vanilla,
+we can look into integrating these soon.
+
+## Demystifying the Locomotion AI (#2052)
+
+Locomotion's AI companies are responsible for some of the most contrived, spaghetti-like transport
+networks in game. However, before we can improve on this, we first have to understand and reimplement
+the existing AI. @Duncanspumpkin has set out to do exactly that. It's been rather tedious to do,
+so don't expect an improved AI in the immediate future. However, progress is progress, and we're
+happy Duncan's on the job!
+
 # OpenLoco version 23.09 (2023-09-28)
 
 A bit of a quiet month compared to last one, but there was still a good bit of work done.
