@@ -1,4 +1,4 @@
-23.09+ (???)
+23.10 (2023-10-25)
 ------------------------------------------------------------------------
 - Feature: [#2148] Build vehicle window: add search box and filters for cargo and powered/unpowered.
 - Feature: [#2151] Add a cheat to disable the loading penalty at stations when vehicle length exceeds station length.
