@@ -1,3 +1,5 @@
+# OpenLoco version 23.10+ (???)
+
 # OpenLoco version 23.10 (2023-10-25)
 
 ## Switch codebase to C++20 (#1843, #2136, #2144)
