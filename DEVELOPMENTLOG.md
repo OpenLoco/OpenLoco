@@ -29,7 +29,7 @@ A dedicated part of the game's fan base is eager to make rich dioramas with very
 Long-time players have relied on the 'Long Station Patch' to make stations that can actually accommodate
 such long vehicles. For various reasons, OpenLoco cannot provide these newer limits *yet*.
 However, as a compromise, players can now choose to disable the slow (un)loading that would be the
-result of stationing overly long vehicles in shorter stations.
+result of stationing overly long vehicles in shorter stations. Thanks, @LeftOfZen!
 We hope this will allow more players to enjoy OpenLoco, even without longer stations.
 
 ## Use global game state everywhere (#2129, #2131, #2132, #2133, #2137, #2139, #2142, #2145)
@@ -37,16 +37,17 @@ We hope this will allow more players to enjoy OpenLoco, even without longer stat
 When the project was started, the idea of the `loco_global` struct was conceived: a high-level wrapper around
 a particular memory address. This ensured that we could start using strongly typed C++ from the get go,
 instead of having to rely on raw addresses for longer. After, we introduced a `GameState` struct that encompasses
-the memory space dealing with is, in effect, how the landscape and everything in it is stored.
+the memory space dealing with, in effect, how the landscape and everything in it is stored.
 
 This month, @memellis has continued working on reducing the number of these `loco_global` variables
 in the codebase, by making these code use of the global `GameState` instead. As we wrote last month,
-this is an important task that needs to be completed before we can start looking at increasing limits of OpenLoco, and it improves the structure of the codebase.
+this is an important task that needs to be completed before we can start looking at increasing the
+in-game limits of OpenLoco, and it improves the structure of the codebase.
 
 At this point, there are very few `loco_global` variables left that can be replaced with a `GameState`
-reference. There are plenty remaining, though. Most of these have to do with more transient variables,
-such as anything to do with UI. As most of the code paths involved are no longer shared with vanilla,
-we can look into integrating these soon.
+reference. There are plenty other `loco_global`s remaining, though. Most of these have to do with more
+transient variables, though, such as anything to do with UI. As most of the code paths involved are no
+longer shared with vanilla, we can look into integrating these soon.
 
 ## Demystifying the Locomotion AI (#2052)
 
