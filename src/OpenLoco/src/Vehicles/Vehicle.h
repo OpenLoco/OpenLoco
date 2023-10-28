@@ -329,7 +329,7 @@ namespace OpenLoco::Vehicles
         uint16_t sizeOfOrderTable; // 0x4C size of Order Table
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
-        uint8_t pad_53;
+        uint8_t var_53;                // 0x53 mods?
         StationId stationId;           // 0x54
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
@@ -479,7 +479,7 @@ namespace OpenLoco::Vehicles
         Speed16 targetSpeed;   // 0x44
         uint16_t timeAtSignal; // 0x46
         Flags48 var_48;
-        uint8_t var_49;
+        uint8_t var_49;      // 0x49 rackrail mod?
         uint32_t dayCreated; // 0x4A
         uint16_t var_4E;
         uint16_t var_50;

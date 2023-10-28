@@ -64,6 +64,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
     static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
+    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
+
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
     static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
@@ -3278,9 +3280,52 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
+    // 0x0047DFD0
+    static void sub_47DFD0(VehicleHead& head, Track::TrackConnections& connections)
+    {
+        // NOTE: Needs to pass the connections via global
+        registers regs;
+        regs.esi = X86Pointer(&head);
+        call(0x0047DFD0, regs);
+    }
+
     // 0x004ACCDC
     bool VehicleHead::sub_4ACCDC()
     {
+        if (mode == TransportMode::rail)
+        {
+        }
+        else
+        {
+            if (trackType != 0xFFU)
+            {
+                auto* roadObj = ObjectManager::get<RoadObject>(trackType);
+                if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+                {
+                    return false;
+                }
+            }
+
+            auto train = Vehicle(head);
+            _113601A[0] = var_53;
+            _113601A[1] = train.veh1->var_49;
+            Track::TrackConnections connections{};
+            World::Track::getRoadConnections(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), connections, owner, trackType, trackAndDirection.road._data & 0x7F);
+            if (connections.size == 0)
+            {
+                return false;
+            }
+
+            sub_47DFD0(*this, connections);
+
+            Track::TrackConnections tailConnections{};
+            auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
+            const auto trackSize = TrackData::getUnkRoad(tailTaD);
+            auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep);
+            // pos + trackSize
+            // tad stuff
+            World::Track::getRoadConnections(pos, tailConnections, train.tail->owner, train.tail->trackType, tailTaD);
+        }
         registers regs;
         regs.esi = X86Pointer(this);
         return call(0x004ACCDC, regs) & X86_FLAG_CARRY;
