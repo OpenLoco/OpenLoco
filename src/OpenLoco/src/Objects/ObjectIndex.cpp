@@ -591,8 +591,8 @@ namespace OpenLoco::ObjectManager
             }
         }
 
-        // When in don't load depenedent objects (required or also loads) mode then
-        // fail to select if this is a depenedent object.
+        // When in "Don't select dependent objects" mode
+        // fail to select rather than select the dependent object.
         // Note: This mode is never used in vanilla!
         if (isRecursed && (mode & SelectObjectModes::selectDependents) == SelectObjectModes::none)
         {
@@ -670,11 +670,6 @@ namespace OpenLoco::ObjectManager
     // 0x00473D1D
     static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
     {
-        if (!isRecursed)
-        {
-            // Vanilla had a few pointless no side effect loops here
-        }
-
         auto objIndexEntry = internalFindObjectInIndex(objHeader);
         if (!objIndexEntry.has_value())
         {
