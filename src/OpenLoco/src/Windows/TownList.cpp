@@ -1433,7 +1433,7 @@ namespace OpenLoco::Ui::Windows::TownList
             _dword_1135C34 = GameCommands::FAILURE;
             self->var_83C = 0;
             self->rowHover = -1;
-            self->var_846 = -1;
+            self->var_846 = 0xFFFFU;
 
             updateBuildingList(self);
             updateBuildingColours(self);

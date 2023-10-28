@@ -63,7 +63,6 @@ function(loco_target_compile_link_flags TARGET)
         /wd4200                  #   4200: nonstandard extension used : zero-sized array in struct/union
         /wd4201                  #   4201: nonstandard extension used : nameless struct/union
         /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
-        /wd4245                  #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
         /Zc:char8_t-             # Enable char8_t<->char conversion :(
     )
 

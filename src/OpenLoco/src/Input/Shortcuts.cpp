@@ -263,7 +263,7 @@ namespace OpenLoco::Input::Shortcuts
         if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(1 << 31);
+        Windows::Construction::openWithFlags(1U << 31);
     }
 
     // 0x004BF295
@@ -275,7 +275,7 @@ namespace OpenLoco::Input::Shortcuts
         if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(1 << 30);
+        Windows::Construction::openWithFlags(1U << 30);
     }
 
     // 0x004BF2B4
@@ -287,7 +287,7 @@ namespace OpenLoco::Input::Shortcuts
         if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1 << 31);
+        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1U << 31);
     }
 
     // 0x004BF2D1

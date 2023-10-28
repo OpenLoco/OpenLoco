@@ -412,9 +412,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBEDF
         static void event_08(Window& self)
         {
-            if (self.var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFFU)
             {
-                self.var_846 = -1;
+                self.var_846 = 0xFFFFU;
                 self.invalidate();
             }
         }
@@ -2134,9 +2134,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC377
         static void event_08(Window& self)
         {
-            if (self.var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFFU)
             {
-                self.var_846 = -1;
+                self.var_846 = 0xFFFFU;
                 self.invalidate();
             }
         }

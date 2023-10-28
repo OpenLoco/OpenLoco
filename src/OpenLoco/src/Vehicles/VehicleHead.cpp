@@ -1496,7 +1496,7 @@ namespace OpenLoco::Vehicles
         else
         {
             uint32_t targetTolerance = 480;
-            if (airportMovementEdge != cAirportMovementNodeNull)
+            if (airportMovementEdge != kAirportMovementNodeNull)
             {
                 targetTolerance = 5;
                 if (vehType2->currentSpeed >= 70.0_mph)
@@ -1511,7 +1511,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (stationId != StationId::null && airportMovementEdge != cAirportMovementNodeNull)
+        if (stationId != StationId::null && airportMovementEdge != kAirportMovementNodeNull)
         {
             auto flags = airportGetMovementEdgeTarget(stationId, airportMovementEdge).first;
 
@@ -1530,7 +1530,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        auto movementEdge = cAirportMovementNodeNull;
+        auto movementEdge = kAirportMovementNodeNull;
         if (stationId != StationId::null)
         {
             movementEdge = airportMovementEdge;
@@ -1559,7 +1559,7 @@ namespace OpenLoco::Vehicles
     std::pair<Status, Speed16> VehicleHead::airplaneGetNewStatus()
     {
         Vehicle train(head);
-        if (stationId == StationId::null || airportMovementEdge == cAirportMovementNodeNull)
+        if (stationId == StationId::null || airportMovementEdge == kAirportMovementNodeNull)
         {
             auto veh2 = train.veh2;
             auto targetSpeed = veh2->maxSpeed;
@@ -1675,7 +1675,7 @@ namespace OpenLoco::Vehicles
         status = Status::travelling;
         status = airplaneGetNewStatus().first;
 
-        auto movementEdge = cAirportMovementNodeNull;
+        auto movementEdge = kAirportMovementNodeNull;
         if (stationId != StationId::null)
         {
             movementEdge = airportMovementEdge;
@@ -1761,19 +1761,19 @@ namespace OpenLoco::Vehicles
 
     bool VehicleHead::sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ)
     {
-        if (stationId != StationId::null && airportMovementEdge != cAirportMovementNodeNull)
+        if (stationId != StationId::null && airportMovementEdge != kAirportMovementNodeNull)
         {
             StationManager::get(stationId)->airportMovementOccupiedEdges &= ~(1 << airportMovementEdge);
         }
 
-        if (newMovementEdge == cAirportMovementNodeNull)
+        if (newMovementEdge == kAirportMovementNodeNull)
         {
             beginNewJourney();
 
             if (sizeOfOrderTable == 1)
             {
                 // 0x4a94a5
-                airportMovementEdge = cAirportMovementNodeNull;
+                airportMovementEdge = kAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
             }
 
@@ -1781,7 +1781,7 @@ namespace OpenLoco::Vehicles
             auto* order = orders.begin()->as<OrderStopAt>();
             if (order == nullptr)
             {
-                airportMovementEdge = cAirportMovementNodeNull;
+                airportMovementEdge = kAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
             }
 
@@ -1791,14 +1791,14 @@ namespace OpenLoco::Vehicles
 
             if (station == nullptr || (station->flags & StationFlags::flag_6) == StationFlags::none)
             {
-                airportMovementEdge = cAirportMovementNodeNull;
+                airportMovementEdge = kAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
             }
 
             if (!CompanyManager::isPlayerCompany(owner))
             {
                 stationId = orderStationId;
-                airportMovementEdge = cAirportMovementNodeNull;
+                airportMovementEdge = kAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
             }
 
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Vehicles
                 if (airportObject->allowedPlaneTypes & planeType)
                 {
                     stationId = orderStationId;
-                    airportMovementEdge = cAirportMovementNodeNull;
+                    airportMovementEdge = kAirportMovementNodeNull;
                     return airplaneApproachTarget(targetZ);
                 }
 
@@ -1838,7 +1838,7 @@ namespace OpenLoco::Vehicles
                         enumValue(orderStationId));
                 }
 
-                airportMovementEdge = cAirportMovementNodeNull;
+                airportMovementEdge = kAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
             }
 
@@ -1982,7 +1982,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (airportMovementEdge == cAirportMovementNodeNull)
+            if (airportMovementEdge == kAirportMovementNodeNull)
             {
                 targetStationId = stationId;
             }
@@ -2055,7 +2055,7 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
-            if (curEdge == cAirportMovementNodeNull)
+            if (curEdge == kAirportMovementNodeNull)
             {
                 for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                 {
@@ -2083,14 +2083,14 @@ namespace OpenLoco::Vehicles
 
                     return movementEdge;
                 }
-                return -2;
+                return kAirportMovementNoValidEdge;
             }
             else
             {
                 uint8_t targetNode = airportObject->movementEdges[curEdge].nextNode;
                 if (status == Status::takingOff && airportObject->movementNodes[targetNode].hasFlags(AirportMovementNodeFlags::takeoffEnd))
                 {
-                    return cAirportMovementNodeNull;
+                    return kAirportMovementNodeNull;
                 }
                 // 0x4272A5
                 Vehicle train(head);
@@ -2129,7 +2129,7 @@ namespace OpenLoco::Vehicles
                         return movementEdge;
                     }
 
-                    return -2;
+                    return kAirportMovementNoValidEdge;
                 }
                 else
                 {
@@ -2164,14 +2164,14 @@ namespace OpenLoco::Vehicles
 
                         return movementEdge;
                     }
-                    return -2;
+                    return kAirportMovementNoValidEdge;
                 }
             }
         }
 
         // Tile not found. Todo: fail gracefully
         assert(false);
-        return cAirportMovementNodeNull;
+        return kAirportMovementNodeNull;
     }
 
     // 0x00426E26

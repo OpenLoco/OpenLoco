@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                             case MessageItemArgumentType::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
-                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
+                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1U << 31));
                                 window->rowHover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {
@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)-1;
+            view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
             switch (itemType)
             {
@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::company:
                     // Used to indicate to drawNewsSubjectImages to draw a company image
                     // TODO: Do this better
-                    view.zoomLevel = (ZoomLevel)-2;
+                    view.zoomLevel = (ZoomLevel)0xFEU;
                     self->invalidate();
                     *selectable = true;
                     break;
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicleTab:
                     // Used to indicate to drawNewsSubjectImages to draw a vehicle image
                     // TODO: Do this better
-                    view.zoomLevel = (ZoomLevel)-3;
+                    view.zoomLevel = (ZoomLevel)0xFDU;
                     self->invalidate();
                     *selectable = true;
                     break;
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)-1;
+            view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
             auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)-1;
+            view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
             selectable = false;
 
