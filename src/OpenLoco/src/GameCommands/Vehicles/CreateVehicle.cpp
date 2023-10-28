@@ -485,7 +485,7 @@ namespace OpenLoco::GameCommands
         newVeh1->spriteHeightPositive = 0;
         newVeh1->var_38 = Flags38::none;
         newVeh1->var_3C = 0;
-        newVeh1->var_44 = 0_mph;
+        newVeh1->targetSpeed = 0_mph;
         newVeh1->timeAtSignal = 0;
         newVeh1->var_48 = Flags48::none;
         newVeh1->var_52 = 0;

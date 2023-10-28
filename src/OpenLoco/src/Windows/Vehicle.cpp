@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 drawingCtx.drawImage(
                     rt,
                     self.x + speedWidget.left + 1,
-                    self.y + speedWidget.top + 57 - veh->var_6E,
+                    self.y + speedWidget.top + 57 - veh->manualPower,
                     Gfx::recolour(ImageIds::speed_control_thumb, self.getColour(WindowColour::secondary).c()));
             }
 

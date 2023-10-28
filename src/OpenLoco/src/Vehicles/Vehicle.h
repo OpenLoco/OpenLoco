@@ -344,7 +344,7 @@ namespace OpenLoco::Vehicles
         uint8_t airportMovementEdge; // 0x68
         uint32_t totalRefundCost;    // 0x69
         uint8_t pad_6D;
-        int8_t var_6E;             // manual speed/brake
+        int8_t manualPower;        // 0x6E manual power control VehicleFlags::manualControl
         int16_t var_6F;            // 0x6F x
         int16_t var_71;            // 0x6F y
         uint32_t var_73;           // 0x73 ticks since journey start
@@ -477,7 +477,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
-        Speed16 var_44;
+        Speed16 targetSpeed;   // 0x44
         uint16_t timeAtSignal; // 0x46
         Flags48 var_48;
         uint8_t var_49;

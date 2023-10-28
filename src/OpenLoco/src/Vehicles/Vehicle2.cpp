@@ -66,7 +66,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= 10)
+        if (train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= 10)
         {
             return false;
         }
@@ -208,7 +208,7 @@ namespace OpenLoco::Vehicles
 
             if (train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
-                const auto manualSpeed = train.head->var_6E;
+                const auto manualSpeed = train.head->manualPower;
                 if (manualSpeed < 0)
                 {
                     if (manualSpeed <= -10)

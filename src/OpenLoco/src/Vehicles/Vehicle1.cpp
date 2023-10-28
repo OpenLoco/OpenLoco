@@ -16,6 +16,18 @@ namespace OpenLoco::Vehicles
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
+    // If distance traveled in one tick this is the speed
+    constexpr Speed32 speedFromDistanceInATick(int32_t distance)
+    {
+        return Speed32(distance * 2);
+    }
+
+    constexpr int32_t distanceTraveledInATick(Speed32 speed)
+    {
+        return (speed / 2).getRaw();
+    }
+    static_assert(distanceTraveledInATick(speedFromDistanceInATick(100)) == 100);
+
     // 0x004A9788
     bool Vehicle1::update()
     {
@@ -52,7 +64,7 @@ namespace OpenLoco::Vehicles
     bool Vehicle1::updateRoad()
     {
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
-        Speed16 maxSpeed = kSpeed16Max;
+        Speed16 newTargetSpeed = kSpeed16Max;
         RoutingManager::RingView ring(routingHandle);
         bool isOnRackRail = false;
         for (auto iter = ring.rbegin(); iter != ring.rend(); ++iter)
@@ -66,7 +78,7 @@ namespace OpenLoco::Vehicles
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
                 if (bridgeObj->maxSpeed != kSpeed16Null)
                 {
-                    maxSpeed = std::min(bridgeObj->maxSpeed, maxSpeed);
+                    newTargetSpeed = std::min(bridgeObj->maxSpeed, newTargetSpeed);
                 }
             }
         }
@@ -76,42 +88,41 @@ namespace OpenLoco::Vehicles
         {
             const auto* roadObj = ObjectManager::get<RoadObject>(train.veh2->var_4F);
             const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * roadObj->maxSpeed.getRaw());
-            maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
-            maxSpeed = std::max(maxSpeed, 12_mph);
+            newTargetSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), newTargetSpeed);
+            newTargetSpeed = std::max(newTargetSpeed, 12_mph);
 
             if (train.head->has38Flags(Flags38::unk_5))
             {
-                maxSpeed += maxSpeed / 4;
-                maxSpeed = std::min(roadObj->maxSpeed, maxSpeed);
+                newTargetSpeed += newTargetSpeed / 4;
+                newTargetSpeed = std::min(roadObj->maxSpeed, newTargetSpeed);
             }
         }
         else
         {
             const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * (60_mph).getRaw());
-            maxSpeed = toSpeed16(fractionalSpeed);
+            newTargetSpeed = toSpeed16(fractionalSpeed);
         }
 
-        maxSpeed = std::min(maxSpeed, train.veh2->maxSpeed);
+        newTargetSpeed = std::min(newTargetSpeed, train.veh2->maxSpeed);
         if (isOnRackRail)
         {
-            maxSpeed = std::min(maxSpeed, train.veh2->rackRailMaxSpeed);
+            newTargetSpeed = std::min(newTargetSpeed, train.veh2->rackRailMaxSpeed);
         }
 
-        // Distance to speed32 would be var_3C * 2 but since maxspeed is interms of speed16 we have this awkward 32768
-        maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
+        newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
 
-        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= -20)
+        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
             || train.head->hasVehicleFlags(VehicleFlags::commandStop))
         {
             if (train.veh2->currentSpeed == 0.0_mph)
             {
-                maxSpeed = 0_mph;
+                newTargetSpeed = 0_mph;
             }
         }
-        var_44 = maxSpeed;
+        targetSpeed = newTargetSpeed;
 
-        _vehicleUpdate_var_1136134 = maxSpeed;
-        int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
+        _vehicleUpdate_var_1136134 = newTargetSpeed;
+        int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
@@ -190,7 +201,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        gPrng1().randNext(); // ???
+        gPrng1().randNext(); // TODO: Remove when we can diverge from vanilla
 
         const auto soundNum = (vehObj->numStartSounds & NumStartSounds::kMask) - 1;
         const auto soundObjId = vehObj->startSounds[soundNum];
@@ -206,7 +217,7 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train{ head };
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
-        Speed16 maxSpeed = kSpeed16Max;
+        Speed16 newTargetSpeed = kSpeed16Max;
         bool isOnRackRail = false;
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
@@ -222,7 +233,7 @@ namespace OpenLoco::Vehicles
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
                     if (bridgeObj->maxSpeed != kSpeed16Null)
                     {
-                        maxSpeed = std::min(bridgeObj->maxSpeed, maxSpeed);
+                        newTargetSpeed = std::min(bridgeObj->maxSpeed, newTargetSpeed);
                     }
                 }
             }
@@ -230,12 +241,12 @@ namespace OpenLoco::Vehicles
 
         const auto* trackObj = ObjectManager::get<TrackObject>(trackType);
         const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * trackObj->curveSpeed.getRaw());
-        maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
+        newTargetSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), newTargetSpeed);
 
         if (train.head->has38Flags(Flags38::unk_5))
         {
-            maxSpeed += maxSpeed / 4;
-            maxSpeed = std::min(trackObj->curveSpeed, maxSpeed);
+            newTargetSpeed += newTargetSpeed / 4;
+            newTargetSpeed = std::min(trackObj->curveSpeed, newTargetSpeed);
         }
 
         const auto veh2MaxSpeed = [veh2 = train.veh2]() {
@@ -246,29 +257,29 @@ namespace OpenLoco::Vehicles
             return veh2->maxSpeed;
         }();
 
-        maxSpeed = std::min(maxSpeed, veh2MaxSpeed);
+        newTargetSpeed = std::min(newTargetSpeed, veh2MaxSpeed);
         if (isOnRackRail)
         {
-            maxSpeed = std::min(maxSpeed, train.veh2->rackRailMaxSpeed);
+            newTargetSpeed = std::min(newTargetSpeed, train.veh2->rackRailMaxSpeed);
         }
 
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
-            maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
+            newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
         }
 
-        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= -20)
+        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
             || train.head->hasVehicleFlags(VehicleFlags::commandStop))
         {
             if (train.veh2->currentSpeed == 0.0_mph)
             {
-                maxSpeed = 0_mph;
+                newTargetSpeed = 0_mph;
             }
         }
-        var_44 = maxSpeed;
+        targetSpeed = newTargetSpeed;
 
-        _vehicleUpdate_var_1136134 = maxSpeed;
-        int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
+        _vehicleUpdate_var_1136134 = newTargetSpeed;
+        int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
