@@ -60,6 +60,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<int16_t, 0x01136168> _vehicleUpdate_targetZ;
+    static loco_global<uint16_t, 0x01136458> _1136458; // Actually just a bool
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
@@ -3281,11 +3282,12 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047DFD0
-    static void sub_47DFD0(VehicleHead& head, Track::TrackConnections& connections)
+    static void sub_47DFD0(VehicleHead& head, Track::TrackConnections& connections, bool unk)
     {
         // NOTE: Needs to pass the connections via global
         registers regs;
         regs.esi = X86Pointer(&head);
+        regs.edx = unk ? 0x8000 : 0;
         call(0x0047DFD0, regs);
     }
 
@@ -3310,21 +3312,30 @@ namespace OpenLoco::Vehicles
             _113601A[0] = var_53;
             _113601A[1] = train.veh1->var_49;
             Track::TrackConnections connections{};
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), trackAndDirection.road._data & 0x7F);
             World::Track::getRoadConnections(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), connections, owner, trackType, trackAndDirection.road._data & 0x7F);
             if (connections.size == 0)
             {
                 return false;
             }
 
-            sub_47DFD0(*this, connections);
+            sub_47DFD0(*this, connections, false);
 
             Track::TrackConnections tailConnections{};
             auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
-            const auto trackSize = TrackData::getUnkRoad(tailTaD);
-            auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep);
-            // pos + trackSize
-            // tad stuff
+            const auto& trackSize = TrackData::getUnkRoad(tailTaD);
+            const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
+            tailTaD ^= (1U << 2); // Reverse
             World::Track::getRoadConnections(pos, tailConnections, train.tail->owner, train.tail->trackType, tailTaD);
+
+            if (connections.size == 0)
+            {
+                return false;
+            }
+
+            _1136458 = 0;
+            sub_47DFD0(*this, connections, true);
+            return _1136458 != 0;
         }
         registers regs;
         regs.esi = X86Pointer(this);
