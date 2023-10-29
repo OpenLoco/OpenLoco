@@ -28,14 +28,21 @@ namespace OpenLoco::World::Track
     static loco_global<uint16_t, 0x01136087> _1136087;
     static loco_global<uint8_t, 0x0113607D> _113607D;
 
-    // 0x00478895
-    void getRoadConnections(const World::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
+    // Part of 0x00478895
+    // For 0x00478895 call this followed by getRoadConnections
+    std::pair<World::Pos3, uint8_t> getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
-        const auto nextTrackPos = pos + TrackData::getUnkRoad(trackAndDirection).pos;
+        const auto& roadData = TrackData::getUnkRoad(trackAndDirection);
+
+        return std::make_pair(pos + roadData.pos, roadData.rotationEnd);
+    }
+
+    // 0x004788C8
+    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId)
+    {
         _1135FAE = StationId::null; // stationId
 
         uint8_t baseZ = nextTrackPos.z / 4;
-        uint8_t nextRotation = TrackData::getUnkRoad(trackAndDirection).rotationEnd;
         _112C2EE = nextRotation;
 
         const auto tile = World::TileManager::get(nextTrackPos);
