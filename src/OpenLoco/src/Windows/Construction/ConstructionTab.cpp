@@ -412,7 +412,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _113601A[0] = 0;
         _113601A[1] = 0;
         _113609C->size = 0;
-        World::Track::getRoadConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), trackAndDirection);
+        const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
+        World::Track::getRoadConnections(roadEnd.first, roadEnd.second, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7));
 
         if (_113609C->size == 0)
         {
