@@ -542,7 +542,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleStatus vehStatus{};
 
-        if (hasVehicleFlags(VehicleFlags::commandStop) || (hasVehicleFlags(VehicleFlags::manualControl) && var_6E <= -20))
+        if (hasVehicleFlags(VehicleFlags::commandStop) || (hasVehicleFlags(VehicleFlags::manualControl) && manualPower <= -20))
         {
             vehStatus.status1 = StringIds::vehicle_status_stopping;
         }
@@ -901,7 +901,7 @@ namespace OpenLoco::Vehicles
             }
             else if (hasVehicleFlags(VehicleFlags::manualControl))
             {
-                if (var_6E <= -20)
+                if (manualPower <= -20)
                 {
                     return sub_4A8C81();
                 }
@@ -936,7 +936,7 @@ namespace OpenLoco::Vehicles
 
             if (!vehType2->has73Flags(Flags73::isBrokenDown) || vehType2->has73Flags(Flags73::isStillPowered))
             {
-                if (!hasVehicleFlags(VehicleFlags::manualControl) || var_6E > -20)
+                if (!hasVehicleFlags(VehicleFlags::manualControl) || manualPower > -20)
                 {
                     if (!hasVehicleFlags(VehicleFlags::commandStop))
                     {
@@ -1359,10 +1359,10 @@ namespace OpenLoco::Vehicles
 
         status = newStatus;
         Vehicle1* vehType1 = _vehicleUpdate_1;
-        vehType1->var_44 = targetSpeed;
+        vehType1->targetSpeed = targetSpeed;
 
         advanceToNextRoutableOrder();
-        Speed32 type1speed = vehType1->var_44;
+        Speed32 type1speed = vehType1->targetSpeed;
         auto type2speed = vehType2->currentSpeed;
 
         if (type2speed == type1speed)

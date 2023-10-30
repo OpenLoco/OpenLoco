@@ -66,7 +66,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        if (train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= 10)
+        if (train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= 10)
         {
             return false;
         }
@@ -208,7 +208,7 @@ namespace OpenLoco::Vehicles
 
             if (train.head->hasVehicleFlags(VehicleFlags::manualControl))
             {
-                const auto manualSpeed = train.head->var_6E;
+                const auto manualSpeed = train.head->manualPower;
                 if (manualSpeed < 0)
                 {
                     if (manualSpeed <= -10)
@@ -286,7 +286,7 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(head);
         _vehicleUpdate_var_1136114 = (1 << 15);
-        auto res = sub_4B15FF(_vehicleUpdate_var_113612C);
+        auto res = updateTrackMotion(_vehicleUpdate_var_113612C);
         _vehicleUpdate_var_113612C = _vehicleUpdate_var_113612C - res;
         _vehicleUpdate_var_1136130 = _vehicleUpdate_var_1136130 - res;
         if (_vehicleUpdate_var_1136114 & (1 << 1))

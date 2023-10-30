@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Object.h"
+#include "Speed.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <span>
@@ -63,7 +64,7 @@ namespace OpenLoco
         int16_t tunnelCostFactor;  // 0x18
         uint8_t costIndex;         // 0x1A
         uint8_t tunnel;            // 0x1B
-        uint16_t curveSpeed;       // 0x1C
+        Speed16 curveSpeed;        // 0x1C
         uint32_t image;            // 0x1E
         TrackObjectFlags flags;    // 0x22
         uint8_t numBridges;        // 0x24

@@ -109,11 +109,11 @@ namespace OpenLoco
             }
         }
 
-        for (size_t i = 0; i < sizeof(var_6E) / sizeof(var_6E[0]); ++i)
+        for (size_t i = 0; i < sizeof(manualPower) / sizeof(manualPower[0]); ++i)
         {
-            var_6E[i] = reinterpret_cast<const std::byte*>(remainingData.data());
+            manualPower[i] = reinterpret_cast<const std::byte*>(remainingData.data());
 
-            auto* bytes = reinterpret_cast<const int8_t*>(var_6E[i]);
+            auto* bytes = reinterpret_cast<const int8_t*>(manualPower[i]);
             bytes++; // z?
             auto length = 1;
             while (*bytes != -1)
@@ -146,7 +146,7 @@ namespace OpenLoco
         std::fill(std::begin(var_12), std::end(var_12), 0);
         std::fill(std::begin(mods), std::end(mods), 0);
         std::fill(&cargoOffsetBytes[0][0], &cargoOffsetBytes[0][0] + sizeof(cargoOffsetBytes) / sizeof(std::byte*), nullptr);
-        std::fill(std::begin(var_6E), std::end(var_6E), nullptr);
+        std::fill(std::begin(manualPower), std::end(manualPower), nullptr);
     }
 
     std::vector<TrainStationObject::CargoOffset> TrainStationObject::getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const

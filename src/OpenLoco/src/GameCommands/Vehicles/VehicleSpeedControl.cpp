@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        head->var_6E = args.speed;
+        head->manualPower = args.speed;
 
         if (head->hasVehicleFlags(VehicleFlags::commandStop))
         {

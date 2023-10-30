@@ -104,7 +104,7 @@ namespace OpenLoco::GameCommands
         }
 
         train.head->vehicleFlags ^= VehicleFlags::manualControl;
-        train.head->var_6E = -40;
+        train.head->manualPower = -40;
 
         if ((train.head->vehicleFlags & VehicleFlags::manualControl) != VehicleFlags::none)
         {
