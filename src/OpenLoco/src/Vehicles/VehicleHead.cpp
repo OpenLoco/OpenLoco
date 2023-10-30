@@ -3318,32 +3318,35 @@ namespace OpenLoco::Vehicles
             auto train = Vehicle(head);
             _113601A[0] = var_53;
             _113601A[1] = train.veh1->var_49;
-            Track::TrackConnections connections{};
-            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), trackAndDirection.road._data & 0x7F);
-            World::Track::getRoadConnections(nextPos, nextRotation, connections, owner, trackType);
-            if (connections.size == 0)
             {
-                return false;
+                Track::TrackConnections connections{};
+                auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), trackAndDirection.road._data & 0x7F);
+                World::Track::getRoadConnections(nextPos, nextRotation, connections, owner, trackType);
+                if (connections.size == 0)
+                {
+                    return false;
+                }
+
+                sub_47DFD0(*this, nextPos, connections, false);
             }
-
-            sub_47DFD0(*this, nextPos, connections, false);
-
-            Track::TrackConnections tailConnections{};
-            auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
-            const auto& trackSize = TrackData::getUnkRoad(tailTaD);
-            const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
-            tailTaD ^= (1U << 2); // Reverse
-            auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
-            World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
-
-            if (connections.size == 0)
             {
-                return false;
-            }
+                Track::TrackConnections tailConnections{};
+                auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
+                const auto& trackSize = TrackData::getUnkRoad(tailTaD);
+                const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
+                tailTaD ^= (1U << 2); // Reverse
+                auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
+                World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
 
-            _1136458 = 0;
-            sub_47DFD0(*this, nextTailPos, connections, true);
-            return _1136458 != 0;
+                if (tailConnections.size == 0)
+                {
+                    return false;
+                }
+
+                _1136458 = 0;
+                sub_47DFD0(*this, nextTailPos, tailConnections, true);
+                return _1136458 != 0;
+            }
         }
     }
 
