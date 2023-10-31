@@ -49,11 +49,11 @@
 #include "WaterObject.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <bit>
 #include <vector>
 
 using namespace OpenLoco::Interop;
@@ -346,7 +346,7 @@ namespace OpenLoco::ObjectManager
         auto checksum = seed;
         for (auto d : data)
         {
-            checksum = Numerics::rol(checksum ^ static_cast<uint8_t>(d), 11);
+            checksum = std::rotl(checksum ^ static_cast<uint8_t>(d), 11);
         }
         return checksum;
     }

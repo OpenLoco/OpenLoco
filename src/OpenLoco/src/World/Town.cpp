@@ -324,7 +324,7 @@ namespace OpenLoco
                 if (res.has_value())
                 {
                     bool bitRes = randVal & 1;
-                    randVal = Numerics::ror(randVal, 1);
+                    randVal = std::rotr(randVal, 1);
                     if (bitRes)
                     {
                         return true;
