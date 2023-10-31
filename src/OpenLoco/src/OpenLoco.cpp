@@ -95,6 +95,8 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
+    static std::unique_ptr<S5::S5File> refFile;
+
     loco_global<char[256], 0x005060D0> _gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
@@ -1143,6 +1145,128 @@ namespace OpenLoco
             }
         }
         tickLogic(ticks);
+    }
+
+    namespace unsafe
+    {
+        template<typename T>
+        constexpr auto begin(const T& item)
+        {
+            return reinterpret_cast<const char*>(&item);
+        }
+        template<typename T>
+        constexpr auto end(const T& item)
+        {
+            return reinterpret_cast<const char*>(&item) + sizeof(T);
+        }
+        template<typename T>
+        auto bitwise_equal(const T& lhs, const T& rhs)
+        {
+            return std::equal(begin(lhs), end(lhs), // will become constexpr with C++20
+                              begin(rhs),
+                              end(rhs));
+        }
+        template<typename T1, typename T2>
+        auto bitwise_equal(const T1& lhs, const T2& rhs)
+        {
+            return std::equal(begin(lhs), end(lhs), // will become constexpr with C++20
+                              begin(rhs),
+                              end(rhs));
+        }
+
+        template<typename T1, typename T2>
+        void bitWiseLogDivergence(const std::string entity, const T1& lhs, const T2& rhs)
+        {
+            size_t size = sizeof(T1) / sizeof(char);
+            char* array_lhs = (char*)(&lhs);
+            char* array_rhs = (char*)(&rhs);
+
+            for (size_t offset = 0; offset < size; offset++)
+            {
+                if (array_lhs[offset] != array_rhs[offset])
+                {
+                    Logging::info("DIVERGENCE");
+                    Logging::info("ENTITY: {{ {} }}", entity);
+                    Logging::info("\tOFFSET: {{ {} }}", offset);
+                    Logging::info("\t   LHS: {{ {:#x} }}", array_lhs[offset]);
+                    Logging::info("\t   RHS: {{ {:#x} }}", array_rhs[offset]);
+                }
+            }
+        }
+    }
+
+    template<typename T1, typename T2>
+    void logEntityDivergence(const std::string entity, const T1& lhs, const T2& rhs) {
+        for (int offset = 0; offset < sizeof(lhs); offset++)
+            unsafe::bitWiseLogDivergence(entity + "[" + std::to_string(offset) + "]", lhs[offset], rhs[offset]);
+    }
+
+    template<typename T1, typename T2>
+    void logEntityDivergence(const std::string entity, const T1& lhs, const T2& rhs, int arraySize)
+    {
+        for (int offset = 0; offset < arraySize; offset++)
+            unsafe::bitWiseLogDivergence(entity + "[" + std::to_string(offset) + "]", lhs[offset], rhs[offset]);
+    }
+
+    template<typename T>
+    void logDivergentGameStateField(const std::string entity, int offset, const T &lhs, const T &rhs)
+    {
+        if (!unsafe::bitwise_equal(lhs, rhs))
+        {
+            Logging::info("DIVERGENCE");
+            Logging::info("ENTITY: {{ {} }}", entity);
+            Logging::info("\tOFFSET: {{ {} }}", offset);
+            Logging::info("\t   LHS: {{ {:#x} }}", lhs);
+            Logging::info("\t   RHS: {{ {:#x} }}", rhs);
+        }
+    }
+
+    void compareGameStates(const fs::path& path)
+    {
+        Logging::info("Comparing reference file {} to current GameState frame", path);
+        refFile = std::move(S5::importSave(path));
+        S5::GameState& refGameState = refFile.get()->gameState;
+
+        logDivergentGameStateField("rng_0:", 0, getGameState().rng.srand_0(), refGameState.rng[0]);
+        logDivergentGameStateField("rng_1:", 0, getGameState().rng.srand_1(), refGameState.rng[1]);
+
+        if (getGameState().flags != refGameState.flags)
+        {
+            auto flags1 = static_cast<uint32_t>(getGameState().flags);
+            auto flags2 = static_cast<uint32_t>(refGameState.flags);
+            Logging::info("DIVERGENCE");
+            Logging::info("ENTITY: {{ {} }}", "flags");
+            Logging::info("\tOFFSET: {{ {} }}", 0);
+            Logging::info("\tflags:    LHS: {{ {:#x} }}", flags1);
+            Logging::info("\tflags:    LHS: {{ {:#x} }}", flags2);
+        }
+
+        logDivergentGameStateField("currentDay:", 0, getGameState().currentDay, refGameState.currentDay);
+        logDivergentGameStateField("dayCounter:", 0, getGameState().dayCounter, refGameState.dayCounter);
+        logDivergentGameStateField("currentYear:", 0, getGameState().currentYear, refGameState.currentYear);
+        logDivergentGameStateField("currentMonth:", 0, getGameState().currentMonth, refGameState.currentMonth);
+        logDivergentGameStateField("currentMonthOfMonth:", 0, getGameState().currentDayOfMonth, refGameState.currentDayOfMonth);
+
+        logEntityDivergence("companies", getGameState().companies, refGameState.companies, Limits::kMaxCompanies);
+        logEntityDivergence("towns", getGameState().towns, refGameState.towns, Limits::kMaxTowns);
+        logEntityDivergence("industries", getGameState().industries, refGameState.industries, Limits::kMaxIndustries);
+        logEntityDivergence("stations", getGameState().stations, refGameState.stations, Limits::kMaxStations);
+        logEntityDivergence("entities", getGameState().entities, refGameState.entities, Limits::kMaxEntities);
+        logEntityDivergence("animations", getGameState().animations, refGameState.animations, Limits::kMaxAnimations);
+        logEntityDivergence("waves", getGameState().waves, refGameState.waves, Limits::kMaxWaves);
+        logEntityDivergence("userStrings ", getGameState().userStrings, refGameState.userStrings, Limits::kMaxUserStrings);
+
+        for (int route = 0; route < Limits::kMaxVehicles; route++)
+            for (int routePerVehicle = 0; routePerVehicle < Limits::kMaxRoutingsPerVehicle; routePerVehicle++)
+            {
+                logDivergentGameStateField(
+                    "routings[" + std::to_string(route) + "][" + std::to_string(routePerVehicle) + "]",
+                    route * Limits::kMaxOrdersPerVehicle + routePerVehicle,
+                    getGameState().routings[route][routePerVehicle],
+                    refGameState.routings[route][routePerVehicle]);
+            }
+
+        logEntityDivergence("orders", getGameState().orders, refGameState.orders);
     }
 
     // 0x00406D13

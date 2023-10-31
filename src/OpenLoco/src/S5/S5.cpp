@@ -484,6 +484,13 @@ namespace OpenLoco::S5
         return file;
     }
 
+    std::unique_ptr<S5File> importSave(const fs::path& path)
+    {
+        FileStream stream(path, StreamMode::read);
+        return importSave(stream);
+    }
+
+
     // 0x00444D76
     static void setObjectErrorMessage(const ObjectHeader& header)
     {

@@ -24,6 +24,7 @@ namespace OpenLoco
         CommandLineAction action = CommandLineAction::none;
         std::string address;
         std::string path;
+        std::string path2;
         std::optional<int32_t> ticks;
         std::string outputPath;
         std::string bind;

@@ -342,6 +342,7 @@ namespace OpenLoco
                 options.action = CommandLineAction::simulate;
                 options.path = parser.getArg(1);
                 options.ticks = parser.getArg<int32_t>(2);
+                options.path2 = parser.getArg(3);
             }
             else
             {
@@ -375,7 +376,7 @@ namespace OpenLoco
         std::cout << "                host [options] <path>" << std::endl;
         std::cout << "                join [options] <address>" << std::endl;
         std::cout << "                uncompress [options] <path>" << std::endl;
-        std::cout << "                simulate [options] <path> <ticks>" << std::endl;
+        std::cout << "                simulate [options] <path> <ticks> [path]" << std::endl;
         std::cout << std::endl;
         std::cout << "options:" << std::endl;
         std::cout << "--bind            Address to bind to when hosting a server" << std::endl;
@@ -507,6 +508,7 @@ namespace OpenLoco
 
         auto inPath = fs::u8path(options.path);
         auto outPath = fs::u8path(options.outputPath);
+        auto comparePath = fs::u8path(options.path2);
 
         const auto timeStarted = std::chrono::high_resolution_clock::now();
 
@@ -517,6 +519,11 @@ namespace OpenLoco
         catch (...)
         {
             Logging::error("Unable to load and simulate {}", inPath.u8string());
+        }
+
+        if (!options.path2.empty())
+        {
+            OpenLoco::compareGameStates(comparePath);
         }
 
         const auto timeElapsed = std::chrono::high_resolution_clock::now() - timeStarted;
