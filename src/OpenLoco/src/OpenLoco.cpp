@@ -1198,7 +1198,7 @@ namespace OpenLoco
     template<typename T1, typename T2>
     void logEntityDivergence(const std::string entity, const T1& lhs, const T2& rhs)
     {
-        for (int offset = 0; offset < sizeof(lhs); offset++)
+        for (unsigned int offset = 0; offset < sizeof(lhs); offset++)
             unsafe::bitWiseLogDivergence(entity + "[" + std::to_string(offset) + "]", lhs[offset], rhs[offset]);
     }
 
@@ -1257,8 +1257,8 @@ namespace OpenLoco
         logEntityDivergence("waves", getGameState().waves, refGameState.waves, Limits::kMaxWaves);
         logEntityDivergence("userStrings ", getGameState().userStrings, refGameState.userStrings, Limits::kMaxUserStrings);
 
-        for (int route = 0; route < Limits::kMaxVehicles; route++)
-            for (int routePerVehicle = 0; routePerVehicle < Limits::kMaxRoutingsPerVehicle; routePerVehicle++)
+        for (unsigned int route = 0; route < Limits::kMaxVehicles; route++)
+            for (unsigned int routePerVehicle = 0; routePerVehicle < Limits::kMaxRoutingsPerVehicle; routePerVehicle++)
             {
                 logDivergentGameStateField(
                     "routings[" + std::to_string(route) + "][" + std::to_string(routePerVehicle) + "]",
