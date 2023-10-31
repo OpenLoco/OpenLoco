@@ -1,3 +1,5 @@
+#include "Effects/ExplosionEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
@@ -20,10 +22,28 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
+    // 0x004AA407
+    template<typename T>
+    void explodeComponent(T& component)
+    {
+        assert(component.getSubType() == VehicleEntityType::bogie || component.getSubType() == VehicleEntityType::body_start || component.getSubType() == VehicleEntityType::body_continued);
+
+        const auto pos = component.position + World::Pos3{ 0, 0, 22 };
+        Audio::playSound(Audio::SoundId::crash, pos);
+
+        ExplosionCloud::create(pos);
+
+        const auto numParticles = std::min(component.spriteWidth / 4, 7);
+        for (auto i = 0; i < numParticles; ++i)
+        {
+            VehicleCrashParticle::create(pos, component.colourScheme);
+        }
+    }
+
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
-        component.explodeComponent();
+        explodeComponent(component);
         component.var_5A &= ~(1u << 31);
         component.var_5A >>= 3;
         component.var_5A |= (1u << 31);

@@ -125,15 +125,6 @@ namespace OpenLoco::Vehicles
         return regs.eax;
     }
 
-    // 0x004AA407
-    void VehicleBase::explodeComponent()
-    {
-        assert(getSubType() == VehicleEntityType::bogie || getSubType() == VehicleEntityType::body_start || getSubType() == VehicleEntityType::body_continued);
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA407, regs);
-    }
-
     // 0x0047D959
     // ax : loc.x
     // cx : loc.y
