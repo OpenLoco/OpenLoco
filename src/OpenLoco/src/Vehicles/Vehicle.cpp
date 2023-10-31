@@ -332,6 +332,10 @@ namespace OpenLoco::Vehicles
         carComponent.body->primaryCargo.qty = 0;
 
         auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
+        if (head == nullptr)
+        {
+            throw Exception::RuntimeError("Invalid Vehicle head");
+        }
         head->sub_4B7CC3();
 
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
