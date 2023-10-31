@@ -95,8 +95,6 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    static std::unique_ptr<S5::S5File> refFile;
-
     loco_global<char[256], 0x005060D0> _gCDKey;
 
     loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
@@ -1225,7 +1223,7 @@ namespace OpenLoco
     void compareGameStates(const fs::path& path)
     {
         Logging::info("Comparing reference file {} to current GameState frame", path);
-        refFile = std::move(S5::importSave(path));
+        std::unique_ptr<S5::S5File> refFile = std::move(S5::importSave(path));
         S5::GameState& refGameState = refFile.get()->gameState;
 
         logDivergentGameStateField("rng_0:", 0, getGameState().rng.srand_0(), refGameState.rng[0]);
