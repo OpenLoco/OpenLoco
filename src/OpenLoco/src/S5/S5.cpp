@@ -490,7 +490,6 @@ namespace OpenLoco::S5
         return importSave(stream);
     }
 
-
     // 0x00444D76
     static void setObjectErrorMessage(const ObjectHeader& header)
     {

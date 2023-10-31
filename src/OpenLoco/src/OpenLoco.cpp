@@ -1196,7 +1196,8 @@ namespace OpenLoco
     }
 
     template<typename T1, typename T2>
-    void logEntityDivergence(const std::string entity, const T1& lhs, const T2& rhs) {
+    void logEntityDivergence(const std::string entity, const T1& lhs, const T2& rhs)
+    {
         for (int offset = 0; offset < sizeof(lhs); offset++)
             unsafe::bitWiseLogDivergence(entity + "[" + std::to_string(offset) + "]", lhs[offset], rhs[offset]);
     }
@@ -1209,7 +1210,7 @@ namespace OpenLoco
     }
 
     template<typename T>
-    void logDivergentGameStateField(const std::string entity, int offset, const T &lhs, const T &rhs)
+    void logDivergentGameStateField(const std::string entity, int offset, const T& lhs, const T& rhs)
     {
         if (!unsafe::bitwise_equal(lhs, rhs))
         {
