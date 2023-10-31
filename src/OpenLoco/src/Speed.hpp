@@ -1,5 +1,6 @@
 #pragma once
 
+#include <compare>
 #include <cstdint>
 #include <type_traits>
 
@@ -38,25 +39,11 @@ namespace OpenLoco
             return BestType<RhsT>(*this).value == BestType<RhsT>(rhs).value;
         }
         template<typename RhsT>
-        constexpr bool operator>(SpeedTemplate<RhsT> const& rhs) const
+        constexpr std::strong_ordering operator<=>(SpeedTemplate<RhsT> const& rhs) const
         {
-            return BestType<RhsT>(*this).value > BestType<RhsT>(rhs).value;
+            return BestType<RhsT>(*this).value <=> BestType<RhsT>(rhs).value;
         }
-        template<typename RhsT>
-        constexpr bool operator<=(SpeedTemplate<RhsT> const& rhs) const
-        {
-            return !(*this > rhs);
-        }
-        template<typename RhsT>
-        constexpr bool operator<(SpeedTemplate<RhsT> const& rhs) const
-        {
-            return BestType<RhsT>(*this).value < BestType<RhsT>(rhs).value;
-        }
-        template<typename RhsT>
-        constexpr bool operator>=(SpeedTemplate<RhsT> const& rhs) const
-        {
-            return !(*this < rhs);
-        }
+
         constexpr SpeedTemplate& operator-()
         {
             value = -value;
