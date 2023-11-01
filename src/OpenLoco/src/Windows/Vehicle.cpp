@@ -2328,7 +2328,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             pos.y += 5;
 
-            if (head->lastAverageSpeed != 0)
+            if (head->lastAverageSpeed != 0_mph)
             {
                 // Last journey average speed: {VELOCITY}
                 auto args = FormatArguments();
