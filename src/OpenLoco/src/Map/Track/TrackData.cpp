@@ -2,6 +2,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
+#include <bit>
 #include <cassert>
 
 namespace OpenLoco::World::TrackData
@@ -10,9 +11,9 @@ namespace OpenLoco::World::TrackData
     {
         return {
             connection,
-            Numerics::rol(connection, 2),
-            Numerics::rol(connection, 4),
-            Numerics::rol(connection, 6),
+            std::rotl(connection, 2),
+            std::rotl(connection, 4),
+            std::rotl(connection, 6),
         };
     }
 

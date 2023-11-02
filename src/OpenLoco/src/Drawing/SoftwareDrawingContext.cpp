@@ -2115,7 +2115,7 @@ namespace OpenLoco::Drawing
                 for (auto y = 0; y < drawRect.height(); y++)
                 {
                     auto* nextDst = dst + step * y;
-                    auto p = Numerics::ror(crossPattern, 1);
+                    auto p = std::rotr(crossPattern, 1);
 
                     // Fill every other pixel with the colour
                     for (auto x = 0; x < drawRect.width(); x++)

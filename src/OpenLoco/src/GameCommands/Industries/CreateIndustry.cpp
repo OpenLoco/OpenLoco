@@ -644,7 +644,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 0;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
@@ -652,7 +652,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 2;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
@@ -660,7 +660,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 3;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
@@ -668,7 +668,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 1;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }

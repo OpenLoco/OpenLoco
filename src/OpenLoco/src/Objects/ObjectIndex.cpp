@@ -70,7 +70,7 @@ namespace OpenLoco::ObjectManager
             currentState.numObjects++;
             const auto lastWrite = file.last_write_time().time_since_epoch().count();
             currentState.dateHash ^= ((lastWrite >> 32) ^ (lastWrite & 0xFFFFFFFF));
-            currentState.dateHash = Numerics::ror(currentState.dateHash, 5);
+            currentState.dateHash = std::rotr(currentState.dateHash, 5);
             currentState.totalFileSize += file.file_size();
         }
 
