@@ -275,6 +275,7 @@ namespace OpenLoco::Vehicles
         TrackAndDirection getTrackAndDirection() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
+        uint32_t getRemainingDistance() const;
         void setNextCar(const EntityId newNextCar);
         bool has38Flags(Flags38 flagsToTest) const;
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
