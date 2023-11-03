@@ -291,7 +291,6 @@ namespace OpenLoco::Vehicles
             }
             if (hasMoved)
             {
-                const auto startPosition = component.position;
                 Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
                 component.moveTo(intermediatePosition);
                 Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
