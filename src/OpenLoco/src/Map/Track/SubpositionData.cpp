@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
+#include <vector>
 
 using namespace OpenLoco::Interop;
 
@@ -18513,7 +18514,7 @@ namespace OpenLoco::World::TrackData
 
     static loco_global<const MoveInfo* [80], 0x04D9CA4> _4D9CA4; // 10 roadId's * 8 directions
 
-    const std::vector<MoveInfo> getRoadSubPositon(const uint16_t trackAndDirection)
+    std::span<const MoveInfo> getRoadSubPositon(const uint16_t trackAndDirection)
     {
         // TODO: rework after 0x0047D9F2 is implemented and hooked
         // 0x005253B0
@@ -18521,22 +18522,16 @@ namespace OpenLoco::World::TrackData
         return data[trackAndDirection & (1 << 8) ? 1 : 0][trackAndDirection & (1 << 7) ? 1 : 0][trackAndDirection & 0x7F];
     }
 
-    const std::vector<MoveInfo> getTrackSubPositon(const uint16_t trackAndDirection)
+    std::span<const MoveInfo> getTrackSubPositon(const uint16_t trackAndDirection)
     {
         return _4D9724[trackAndDirection];
     }
 
-    const std::vector<MoveInfo> getRoadPlacementSubPositon(const uint16_t trackAndDirection)
+    std::span<const MoveInfo> getRoadPlacementSubPositon(const uint16_t trackAndDirection)
     {
         // TODO: investigate if this mirrors one side of getRoadSubPositon
         auto* moveInfoStart = _4D9CA4[trackAndDirection];
         auto moveInfoSize = *(reinterpret_cast<const uint16_t*>(moveInfoStart) - 1);
-        std::vector<MoveInfo> moveInfoArr;
-        moveInfoArr.resize(moveInfoSize);
-        for (auto i = 0; i < moveInfoSize; ++i)
-        {
-            moveInfoArr[i] = moveInfoStart[i];
-        }
-        return moveInfoArr;
+        return std::span<const MoveInfo>(moveInfoStart, moveInfoSize);
     }
 }
