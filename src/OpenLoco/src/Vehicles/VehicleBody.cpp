@@ -1303,6 +1303,8 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC039
+    // Note: Vanilla often called this from bogies which would
+    // just return immediately
     void VehicleBody::updateCargoSprite()
     {
         if (objectSpriteType == 0xFF)

@@ -4,6 +4,7 @@
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
+#include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -321,5 +322,25 @@ namespace OpenLoco::Vehicles
             return (1 << 3) | (1 << 2);
         }
         return 1 << 3;
+    }
+
+    // 0x004AF16A
+    void removeAllCargo(CarComponent& carComponent)
+    {
+        carComponent.front->secondaryCargo.qty = 0;
+        carComponent.back->secondaryCargo.qty = 0;
+        carComponent.body->primaryCargo.qty = 0;
+
+        auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
+        if (head == nullptr)
+        {
+            throw Exception::RuntimeError("Invalid Vehicle head");
+        }
+        head->sub_4B7CC3();
+
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
+
+        // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
+        carComponent.body->updateCargoSprite();
     }
 }

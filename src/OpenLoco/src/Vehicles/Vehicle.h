@@ -624,8 +624,8 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
-        uint8_t var_46; // 0x46 roll
-        uint8_t var_47;
+        uint8_t var_46;              // 0x46 roll
+        uint8_t var_47;              // 0x47 cargo sprite index (unused)
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint16_t var_52;
         uint8_t bodyIndex; // 0x54
@@ -645,7 +645,6 @@ namespace OpenLoco::Vehicles
         uint16_t getPlaneType();
         bool update();
         bool isOnRackRail();
-        void carComponent_sub_4AF16A();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
@@ -936,4 +935,5 @@ namespace OpenLoco::Vehicles
 
     // TODO: move this?
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
+    void removeAllCargo(CarComponent& carComponent);
 }
