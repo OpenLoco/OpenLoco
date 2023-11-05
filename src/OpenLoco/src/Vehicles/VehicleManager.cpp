@@ -135,9 +135,48 @@ namespace OpenLoco::VehicleManager
     // 0x004AEFB5
     void deleteCar(Vehicles::Car& car)
     {
-        registers regs;
-        regs.esi = X86Pointer(car.front);
-        call(0x004AEFB5, regs);
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(car.front->head));
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList);
+
+        // Component before this car
+        Vehicles::VehicleBase* previous = [&car]() {
+            // Points to one behind the iterator
+            Vehicles::VehicleBase* previousIter = nullptr;
+            for (auto* iter = EntityManager::get<Vehicles::VehicleBase>(car.front->head);
+                 iter != car.front;
+                 iter = iter->nextVehicleComponent())
+            {
+                previousIter = iter;
+            }
+            return previousIter;
+        }();
+
+        // Component after this car
+        Vehicles::VehicleBase* next = [&car]() {
+            auto carIter = car.begin();
+            // Points to one behind the iterator
+            auto previousCarIter = carIter;
+            while (carIter != car.end())
+            {
+                previousCarIter = carIter;
+                carIter++;
+            }
+            // Last component of a car component is a body
+            return (*previousCarIter).body->nextVehicleComponent();
+        }();
+
+        // Remove the whole car from the linked list
+        previous->setNextCar(next->id);
+
+        for (auto* toDeleteComponent = static_cast<Vehicles::VehicleBase*>(car.front);
+             toDeleteComponent != next;)
+        {
+            // Must fetch the next before deleting the current!
+            auto* nextDeletion = toDeleteComponent->nextVehicleComponent();
+
+            EntityManager::freeEntity(toDeleteComponent);
+            toDeleteComponent = nextDeletion;
+        }
     }
 
     // 0x004AF06E
