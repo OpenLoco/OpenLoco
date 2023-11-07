@@ -1353,7 +1353,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             FormatArguments args = {};
 
-            auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
+            auto language = Localisation::getDescriptorForLanguage(Config::get().language);
             args.push(language.nativeName.c_str());
 
             StringId current_height_units = StringIds::height_units;
