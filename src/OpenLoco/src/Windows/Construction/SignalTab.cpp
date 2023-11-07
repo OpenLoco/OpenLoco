@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         {
             auto args = FormatArguments();
-            args.push(trainSignalObject->var_0C);
+            args.push(trainSignalObject->description);
 
             drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
