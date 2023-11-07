@@ -76,6 +76,18 @@
                 "OPENLOCO_USE_CCACHE": {
                     "type": "BOOL",
                     "value": false
+                },
+                "PNG_LIBRARY": {
+                    "type": "FILEPATH",
+                    "value": "/usr/lib/i386-linux-gnu/libpng16.so"
+                },
+                "PNG_PNG_INCLUDE_DIR": {
+                    "type": "PATH",
+                    "value": "/usr/include"
+                },
+                "ZLIB_LIBRARY": {
+                    "type": "FILEPATH",
+                    "value": "/usr/lib/i386-linux-gnu/libz.so"
                 }
             }
         },
