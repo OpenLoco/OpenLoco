@@ -6,6 +6,7 @@
 #include "Effects/SmokeEffect.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -30,6 +31,7 @@
 #include "Random.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
+#include "Tutorial.h"
 #include "Ui/WindowManager.h"
 #include "Vehicle.h"
 #include "VehicleManager.h"
@@ -186,6 +188,42 @@ namespace OpenLoco::Vehicles
     // 0x004B9509
     void VehicleHead::updateDaily()
     {
+        bool resetStoppedTimeout = true;
+        if (status == Status::stopped)
+        {
+            if (mode == TransportMode::road)
+            {
+                if (tileX != -1
+                    && hasVehicleFlags(VehicleFlags::commandStop))
+                {
+                    if (Tutorial::state() == Tutorial::State::none)
+                    {
+                        var_79++;
+                        if (var_79 >= 20)
+                        {
+                            GameCommands::VehicleChangeRunningModeArgs args{};
+                            args.head = head;
+                            args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
+                            auto regs = Interop::registers(args);
+                            regs.bl = GameCommands::Flags::apply;
+                            GameCommands::vehicleChangeRunningMode(regs);
+                        }
+                        else
+                        {
+                            resetStoppedTimeout = false;
+                        }
+                    }
+                    else
+                    {
+                        resetStoppedTimeout = false;
+                    }
+                }
+            }
+            else
+            {
+                resetStoppedTimeout = false;
+            }
+        }
         registers regs{};
         regs.esi = X86Pointer(this);
         call(0x004B9509, regs);
