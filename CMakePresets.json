@@ -58,6 +58,7 @@
             "description": "Ninja configure environment for linux",
             "generator": "Ninja Multi-Config",
             "binaryDir": "${sourceDir}/build/${presetName}",
+            "toolchainFile": "${sourceDir}/cmake/linux_x86_toolchain.cmake",
             "vendor": {"microsoft.com/VisualStudioSettings/CMake/1.0": {"intelliSenseMode": "linux-gcc-x86"}},
             "condition": {
                 "type": "not",
@@ -75,26 +76,6 @@
                 "OPENLOCO_USE_CCACHE": {
                     "type": "BOOL",
                     "value": false
-                },
-                "SDL2_DIR": {
-                    "type": "PATH",
-                    "value": "/usr/lib/i386-linux-gnu/cmake/SDL2"
-                },
-                "PNG_LIBRARY": {
-                    "type": "FILEPATH",
-                    "value": "/usr/lib/i386-linux-gnu/libpng16.so"
-                },
-                "PNG_PNG_INCLUDE_DIR": {
-                    "type": "PATH",
-                    "value": "/usr/include"
-                },
-                "ZLIB_LIBRARY": {
-                    "type": "FILEPATH",
-                    "value": "/usr/lib/i386-linux-gnu/libz.so"
-                },
-                "GTEST_ROOT": {
-                    "type": "FILEPATH",
-                    "value": "/usr/lib/i386-linux-gnu"
                 }
             }
         },
@@ -104,6 +85,7 @@
             "description": "Ninja configure environment for MinGW32",
             "generator": "Ninja Multi-Config",
             "binaryDir": "${sourceDir}/build/${presetName}",
+            "toolchainFile": "${sourceDir}/cmake/mingw32_toolchain.cmake",
             "condition": {
                 "type": "not",
                 "condition": {
@@ -112,23 +94,10 @@
                     "rhs": "Windows"
                 }
             },
-            "toolchainFile": "${sourceDir}/CMakeLists_mingw.txt",
             "cacheVariables": {
                 "OPENLOCO_USE_CCACHE": {
                     "type": "BOOL",
                     "value": false
-                },
-                "SDL2_DIR": {
-                    "type": "PATH",
-                    "value": "/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2"
-                },
-                "PNG_LIBRARY": {
-                    "type": "FILEPATH",
-                    "value": "/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll"
-                },
-                "PNG_PNG_INCLUDE_DIR": {
-                    "type": "PATH",
-                    "value": "/usr/i686-w64-mingw32/sys-root/mingw/include"
                 },
                 "OPENLOCO_BUILD_TESTS": {
                     "type": "BOOL",
