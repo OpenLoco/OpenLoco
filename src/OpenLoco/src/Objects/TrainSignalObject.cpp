@@ -65,7 +65,7 @@ namespace OpenLoco
         };
 
         loadString(name, 0);
-        loadString(var_0C, 1);
+        loadString(description, 1);
 
         // NOTE: These aren't dependent objects as this can load without the
         // related object.
@@ -92,7 +92,7 @@ namespace OpenLoco
     void TrainSignalObject::unload()
     {
         name = 0;
-        var_0C = 0;
+        description = 0;
         image = 0;
         std::fill(std::begin(mods), std::end(mods), 0);
     }

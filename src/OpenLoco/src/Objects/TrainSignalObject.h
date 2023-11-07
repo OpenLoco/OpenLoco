@@ -45,7 +45,7 @@ namespace OpenLoco
         int16_t sellCostFactor;       // 0x08
         uint8_t costIndex;            // 0x0A
         uint8_t var_0B;
-        uint16_t var_0C;
+        StringId description;  // 0x0C
         uint32_t image;        // 0x0E
         uint8_t numCompatible; // 0x12
         uint8_t mods[7];       // 0x13
