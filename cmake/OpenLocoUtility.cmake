@@ -79,6 +79,7 @@ function(loco_target_compile_link_flags TARGET)
         # -Warray-bounds
         # compilers often get confused about our memory access patterns, disable some of the warnings
         -Wno-array-bounds
+        -Wno-deprecated-declarations
         $<$<CXX_COMPILER_ID:GNU>:-Wno-stringop-overflow> # clang does not understand following options and errors with -Wunknown-warning-option
         $<$<CXX_COMPILER_ID:GNU>:-Wno-stringop-overread>
         $<$<CXX_COMPILER_ID:GNU>:-Wno-stringop-truncation>
