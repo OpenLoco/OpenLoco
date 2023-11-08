@@ -353,7 +353,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_63[0x68 - 0x63];
         uint8_t airportMovementEdge; // 0x68
         uint32_t totalRefundCost;    // 0x69
-        uint8_t pad_6D;
+        uint8_t crashedTimeout;      // 0x6D
         int8_t manualPower;          // 0x6E manual power control VehicleFlags::manualControl
         World::Pos2 journeyStartPos; // 0x6F journey start position
         uint32_t journeyStartTicks;  // 0x73 ticks since journey start

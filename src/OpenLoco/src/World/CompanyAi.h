@@ -97,5 +97,7 @@ namespace OpenLoco
     static_assert(sizeof(AiThought) == 0x8C);
 
     void aiThink(CompanyId id);
+
     void setAiObservation(CompanyId id);
+    void removeEntityFromThought(AiThought& thought, EntityId id);
 }
