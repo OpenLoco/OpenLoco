@@ -1425,4 +1425,21 @@ namespace OpenLoco
             }
         }
     }
+
+    void removeEntityFromThought(AiThought& thought, EntityId id)
+    {
+        auto iter = std::find(std::begin(thought.var_66), std::end(thought.var_66), id);
+        if (iter == std::end(thought.var_66))
+        {
+            return;
+        }
+        // Original would copy the value from var_66 + 2 which
+        // would mean it would copy currency var_76 if var_44 was 7
+        // I don't think that is possible but lets just add an assert.
+        assert(thought.var_44 < 7);
+
+        *iter = thought.var_66[sizeof(thought.var_66) - 1];
+        std::rotate(iter, iter + 1, std::end(thought.var_66));
+        thought.var_44--;
+    }
 }
