@@ -7,6 +7,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
+#include "GameCommands/Vehicles/VehicleSell.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -224,6 +225,40 @@ namespace OpenLoco::Vehicles
                 resetStoppedTimeout = false;
             }
         }
+        if (resetStoppedTimeout)
+        {
+            var_79 = 0;
+        }
+
+        if (status == Status::crashed || status == Status::stuck)
+        {
+            crashedTimeout = Math::Bound::add(crashedTimeout, 1U);
+            if (!CompanyManager::isPlayerCompany(owner))
+            {
+                if (crashedTimeout > 14 && var_60 != 0xFF)
+                {
+                    auto* aiCompany = CompanyManager::get(owner);
+                    auto& aiThought = aiCompany->aiThoughts[var_60];
+                    const auto toBeRemovedId = id;
+                    sub_4AD778();
+                    status = Status::stopped;
+                    Vehicle train(*this);
+                    train.veh2->currentSpeed = 0_mph;
+
+                    auto stashOwner = GameCommands::getUpdatingCompanyId();
+                    GameCommands::setUpdatingCompanyId(owner);
+
+                    GameCommands::VehicleSellArgs args{};
+                    args.car = toBeRemovedId;
+                    GameCommands::doCommand(&args, GameCommands::Flags::apply);
+                    // 'this' pointer is invalid at this point!
+                    GameCommands::setUpdatingCompanyId(stashOwner);
+                    removeEntityFromThought(aiThought, toBeRemovedId);
+                    return;
+                }
+            }
+        }
+        // 0x004B962B
         registers regs{};
         regs.esi = X86Pointer(this);
         call(0x004B9509, regs);
