@@ -343,13 +343,13 @@ namespace OpenLoco::Vehicles
         uint8_t pad_63[0x68 - 0x63];
         uint8_t airportMovementEdge; // 0x68
         uint32_t totalRefundCost;    // 0x69
-        uint8_t pad_6D;
-        int8_t manualPower;        // 0x6E manual power control VehicleFlags::manualControl
-        int16_t var_6F;            // 0x6F x
-        int16_t var_71;            // 0x6F y
-        uint32_t var_73;           // 0x73 ticks since journey start
-        uint16_t lastAverageSpeed; // 0x77
-        uint8_t var_79;            // 0x79 timeout before auto starting trams/buses
+        uint8_t crashedTimeout;      // 0x6D
+        int8_t manualPower;          // 0x6E manual power control VehicleFlags::manualControl
+        int16_t var_6F;              // 0x6F x
+        int16_t var_71;              // 0x6F y
+        uint32_t var_73;             // 0x73 ticks since journey start
+        uint16_t lastAverageSpeed;   // 0x77
+        uint8_t var_79;              // 0x79 timeout before auto starting trams/buses
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
