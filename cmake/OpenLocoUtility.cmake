@@ -11,7 +11,6 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
 
     # GNU/CLANG
     set(COMMON_COMPILE_OPTIONS_GNU
-        -m32
         -fno-char8_t             # Enable char8_t<->char conversion :(
     )
 
@@ -32,7 +31,6 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
 
     # GNU/CLANG
     set(COMMON_LINK_OPTIONS_GNU
-        -m32
     )
 
     set(COMMON_LINK_OPTIONS
@@ -96,7 +94,6 @@ function(loco_target_compile_link_flags TARGET)
         -Wstrict-overflow=1
         -Wundef
         -Wunreachable-code
-        -m32
         -fno-char8_t             # Enable char8_t<->char conversion :(
     )
 
@@ -117,7 +114,6 @@ function(loco_target_compile_link_flags TARGET)
 
     # GNU/CLANG
     set(COMMON_LINK_OPTIONS_GNU
-        -m32
     )
 
     set(COMMON_LINK_OPTIONS

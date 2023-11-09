@@ -8,10 +8,13 @@ SET(CMAKE_PKGCONFIG_EXECUTABLE ${COMPILER_PREFIX}pkg-config)
 SET(PKG_CONFIG_EXECUTABLE ${COMPILER_PREFIX}pkg-config)
 SET(CMAKE_SYSTEM_PROCESSOR x86)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+
 if(APPLE)
-     SET(TARGET_ENVIRONMENT /usr/local/mingw-w32-bin_i686-darwin/i686-w64-mingw32)
+     SET(TARGET_ENVIRONMENT "/usr/local/mingw-w32-bin_i686-darwin/i686-w64-mingw32")
 else()
-     SET(TARGET_ENVIRONMENT /usr/i686-w64-mingw32)
+     SET(TARGET_ENVIRONMENT "/usr/i686-w64-mingw32/sys-root/mingw/")
 endif(APPLE)
 
 # here is the target environment located
