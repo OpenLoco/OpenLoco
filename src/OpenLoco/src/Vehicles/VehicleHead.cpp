@@ -186,6 +186,23 @@ namespace OpenLoco::Vehicles
         calculateRefundCost();
     }
 
+    // 0x004B8340
+    void RecalculateTrainMinReliability(VehicleHead& head)
+    {
+        Vehicle train(head);
+        const auto getReliabilty = [](const Car& car) -> uint16_t {
+            if (car.front->reliability == 0)
+            {
+                return 0xFFFFU;
+            }
+            return car.front->reliability;
+        };
+        const auto minReliability = (*std::min_element(train.cars.begin(), train.cars.end(), [&getReliabilty](const Car& carLhs, const Car& carRhs) {
+                                        return getReliabilty(carLhs) < getReliabilty(carRhs);
+                                    })).front->reliability;
+        train.veh2->reliability = minReliability == 0xFFFFU ? 0 : minReliability / 256;
+    }
+
     // 0x004B9509
     void VehicleHead::updateDaily()
     {
@@ -205,7 +222,7 @@ namespace OpenLoco::Vehicles
                             GameCommands::VehicleChangeRunningModeArgs args{};
                             args.head = head;
                             args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::startVehicle;
-                            auto regs = Interop::registers(args);
+                            auto regs = static_cast<Interop::registers>(args);
                             regs.bl = GameCommands::Flags::apply;
                             GameCommands::vehicleChangeRunningMode(regs);
                         }
@@ -250,7 +267,7 @@ namespace OpenLoco::Vehicles
 
                     GameCommands::VehicleSellArgs args{};
                     args.car = toBeRemovedId;
-                    GameCommands::doCommand(&args, GameCommands::Flags::apply);
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     // 'this' pointer is invalid at this point!
                     GameCommands::setUpdatingCompanyId(stashOwner);
                     removeEntityFromThought(aiThought, toBeRemovedId);
@@ -258,10 +275,69 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        // 0x004B962B
-        registers regs{};
-        regs.esi = X86Pointer(this);
-        call(0x004B9509, regs);
+
+        Vehicle train(*this);
+        for (auto& car : train.cars)
+        {
+            // Bit of overkill iterating the whole car
+            // as only the first carComponent has cargo
+            // but matches vanilla. Remove when confirmed
+            // not used.
+            for (auto& carComponent : car)
+            {
+                if (carComponent.front->secondaryCargo.qty != 0)
+                {
+                    carComponent.front->secondaryCargo.numDays = Math::Bound::add(carComponent.front->secondaryCargo.numDays, 1U);
+                }
+                // Bit of overkill as back doesn't hold cargo but
+                // it matches vanilla. Remove when confirmed not used
+                if (carComponent.back->secondaryCargo.qty != 0)
+                {
+                    carComponent.back->secondaryCargo.numDays = Math::Bound::add(carComponent.back->secondaryCargo.numDays, 1U);
+                }
+                if (carComponent.body->primaryCargo.qty != 0)
+                {
+                    carComponent.body->primaryCargo.numDays = Math::Bound::add(carComponent.body->primaryCargo.numDays, 1U);
+                }
+            }
+        }
+
+        for (auto& car : train.cars)
+        {
+            auto& front = *car.front;
+            if (front.reliability == 0)
+            {
+                continue;
+            }
+
+            if (front.hasBreakdownFlags(BreakdownFlags::brokenDown))
+            {
+                front.var_6A--;
+                if (front.var_6A == 0)
+                {
+                    front.breakdownFlags &= ~BreakdownFlags::brokenDown;
+                    applyBreakdownToTrain();
+                }
+            }
+            else if (front.var_68 != 0xFFFFU)
+            {
+                if (front.var_68 != 0)
+                {
+                    front.var_68--;
+                }
+                if (front.var_68 != 0)
+                {
+                    sub_4BA873(front);
+                    front.breakdownFlags |= BreakdownFlags::breakdownPending;
+                }
+            }
+            auto newReliabilty = front.reliability;
+            auto* vehObj = ObjectManager::get<VehicleObject>(front.objectId);
+            newReliabilty -= vehObj->obsolete <= getCurrentYear() ? 10 : 4;
+            newReliabilty = std::max<uint16_t>(newReliabilty, 100);
+            front.reliability = newReliabilty;
+        }
+        RecalculateTrainMinReliability(*this);
     }
 
     // 0x004BA8D4
