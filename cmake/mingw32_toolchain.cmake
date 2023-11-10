@@ -1,24 +1,26 @@
-SET(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_NAME Windows)
 
-SET(COMPILER_PREFIX i686-w64-mingw32-)
-SET(CMAKE_C_COMPILER ${COMPILER_PREFIX}gcc)
-SET(CMAKE_CXX_COMPILER ${COMPILER_PREFIX}c++)
-SET(CMAKE_RC_COMPILER ${COMPILER_PREFIX}windres)
-SET(CMAKE_PKGCONFIG_EXECUTABLE ${COMPILER_PREFIX}pkg-config)
-SET(PKG_CONFIG_EXECUTABLE ${COMPILER_PREFIX}pkg-config)
-SET(CMAKE_SYSTEM_PROCESSOR x86)
+set(COMPILER_PREFIX i686-w64-mingw32-)
+set(CMAKE_C_COMPILER ${COMPILER_PREFIX}gcc)
+set(CMAKE_CXX_COMPILER ${COMPILER_PREFIX}c++)
+set(CMAKE_RC_COMPILER ${COMPILER_PREFIX}windres)
+set(CMAKE_PKGCONFIG_EXECUTABLE ${COMPILER_PREFIX}pkg-config)
+set(PKG_CONFIG_EXECUTABLE ${COMPILER_PREFIX}pkg-config)
+set(CMAKE_SYSTEM_PROCESSOR x86)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
 
 if(APPLE)
-     SET(TARGET_ENVIRONMENT "/usr/local/mingw-w32-bin_i686-darwin/i686-w64-mingw32")
+     set(TARGET_ENVIRONMENT "/usr/local/mingw-w32-bin_i686-darwin/i686-w64-mingw32")
 else()
-     SET(TARGET_ENVIRONMENT "/usr/i686-w64-mingw32/sys-root/mingw/")
-endif(APPLE)
+     set(TARGET_ENVIRONMENT "/usr/i686-w64-mingw32/sys-root/mingw/")
+endif()
+
+set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 # here is the target environment located
-SET(CMAKE_FIND_ROOT_PATH ${TARGET_ENVIRONMENT})
+set(CMAKE_FIND_ROOT_PATH ${TARGET_ENVIRONMENT})
 
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search
