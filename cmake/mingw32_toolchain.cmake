@@ -17,8 +17,6 @@ else()
      set(TARGET_ENVIRONMENT "/usr/i686-w64-mingw32/sys-root/mingw/")
 endif()
 
-set(CMAKE_SHARED_LIBRARY_PREFIX "")
-
 # here is the target environment located
 set(CMAKE_FIND_ROOT_PATH ${TARGET_ENVIRONMENT})
 
