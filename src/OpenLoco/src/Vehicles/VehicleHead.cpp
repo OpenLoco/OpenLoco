@@ -187,7 +187,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B8340
-    void RecalculateTrainMinReliability(VehicleHead& head)
+    static void RecalculateTrainMinReliability(VehicleHead& head)
     {
         Vehicle train(head);
         const auto getReliabilty = [](const Car& car) -> uint16_t {
