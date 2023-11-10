@@ -95,6 +95,7 @@ function(loco_target_compile_link_flags TARGET)
         -Wundef
         -Wunreachable-code
         -fno-char8_t             # Enable char8_t<->char conversion :(
+        -Wno-deprecated-declarations
     )
 
     set(COMMON_COMPILE_OPTIONS
