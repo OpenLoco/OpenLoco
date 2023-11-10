@@ -648,6 +648,8 @@ target_link_libraries(OpenLoco
 
 if (WIN32)
     target_link_libraries(OpenLoco winmm ws2_32 Resources)
+    # Loco.exe is looking for openloco.dll. Remove this when standalone.
+    set_target_properties(OpenLoco PROPERTIES OUTPUT_NAME "openloco")
 endif ()
 
 if (NOT WIN32)
