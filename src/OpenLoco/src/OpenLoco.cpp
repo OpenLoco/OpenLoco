@@ -1187,7 +1187,6 @@ namespace OpenLoco
 
             Ui::createWindow(cfg.display);
             call(0x004078FE); // getSystemInfo used for some config, multiplayer name,
-            call(0x00407B26); // videoCreate used for creating window (dead code?)
             Ui::initialiseInput();
             Audio::initialiseDSound();
             run();
