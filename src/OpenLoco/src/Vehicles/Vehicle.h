@@ -273,7 +273,6 @@ namespace OpenLoco::Vehicles
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
         uint32_t updateTrackMotion(uint32_t unk1);
-        void explodeComponent();
     };
 
     struct Vehicle2or6 : VehicleBase

@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "Entities/EntityManager.h"
 #include "Map/TileManager.h"
+#include "Random.h"
 #include "SplashEffect.h"
 
 #include <OpenLoco/Interop/Interop.hpp>
@@ -80,5 +81,33 @@ namespace OpenLoco
         {
             frame = 0;
         }
+    }
+
+    // 0x00440B0A
+    VehicleCrashParticle* VehicleCrashParticle::create(const World::Pos3& loc, const ColourScheme colourScheme)
+    {
+        auto t = static_cast<VehicleCrashParticle*>(EntityManager::createEntityMisc());
+        if (t != nullptr)
+        {
+            t->colourScheme = colourScheme;
+            t->spriteWidth = 8;
+            t->spriteHeightNegative = 8;
+            t->spriteHeightPositive = 8;
+            t->baseType = EntityBaseType::effect;
+            t->moveTo(loc);
+            t->setSubType(EffectType::vehicleCrashParticle);
+
+            const auto rand = gPrng1().randNext();
+            t->frame = (rand & 0xFF) * 12;
+            t->timeToLive = 140 + (rand & 0x7F);
+            // rand value from 0 - 4 inclusive
+            t->crashedSpriteBase = (((rand >> 23) & 0xFF) * 5) >> 8;
+
+            t->accelerationX = static_cast<int16_t>(rand & 0xFFFF) * 4;
+            t->accelerationY = static_cast<int16_t>((rand >> 16) & 0xFFFF) * 4;
+            t->accelerationZ = ((rand >> 8) & 0xFFFF) * 4 + 0x10000;
+            t->velocity = { 0, 0, 0 };
+        }
+        return t;
     }
 }
