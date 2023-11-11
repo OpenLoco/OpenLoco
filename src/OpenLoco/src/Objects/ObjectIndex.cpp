@@ -1,5 +1,8 @@
 #include "ObjectIndex.h"
 #include "Environment.h"
+#include "GameCommands/GameCommands.h"
+#include "Graphics/Gfx.h"
+#include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "ObjectManager.h"
@@ -440,11 +443,21 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
+    static std::optional<std::pair<ObjectIndexId, ObjectIndexEntry>> internalFindObjectInIndex(const ObjectHeader& objectHeader)
     {
         const auto objects = getAvailableObjects(objectHeader.getType());
         auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
         if (res == std::end(objects))
+        {
+            return std::nullopt;
+        }
+        return *res;
+    }
+
+    std::optional<ObjectIndexEntry> findObjectInIndex(const ObjectHeader& objectHeader)
+    {
+        auto res = internalFindObjectInIndex(objectHeader);
+        if (!res.has_value())
         {
             return std::nullopt;
         }
@@ -472,6 +485,233 @@ namespace OpenLoco::ObjectManager
         return { -1, ObjectIndexEntry{} };
     }
 
+    // 0x0047400C
+    static void setObjectIsRequiredByAnother(std::span<SelectedObjectsFlags> objectFlags, const ObjectHeader& objHeader)
+    {
+        const auto res = internalFindObjectInIndex(objHeader);
+        if (!res.has_value())
+        {
+            return;
+        }
+        auto& [index, entry] = *res;
+        objectFlags[index] |= SelectedObjectsFlags::requiredByAnother;
+
+        for (auto& objHeader2 : entry._requiredObjects)
+        {
+            setObjectIsRequiredByAnother(objectFlags, objHeader2);
+        }
+    }
+
+    // 0x004740CF
+    static void refreshRequiredByAnother(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        for (auto& val : objectFlags)
+        {
+            val &= ~SelectedObjectsFlags::requiredByAnother;
+        }
+
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+            if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+            {
+                continue;
+            }
+
+            for (auto& objHeader : entry._requiredObjects)
+            {
+                setObjectIsRequiredByAnother(objectFlags, objHeader);
+            }
+        }
+    }
+
+    // 0x00472C84
+    static void resetSelectedObjectCountsAndSize(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    {
+        std::fill(std::begin(selectionMetaData.numSelectedObjects), std::end(selectionMetaData.numSelectedObjects), 0U);
+
+        uint32_t totalNumImages = 0;
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+            if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+            {
+                continue;
+            }
+
+            selectionMetaData.numSelectedObjects[enumValue(entry._header->getType())]++;
+            totalNumImages += entry._displayData->numImages;
+        }
+
+        selectionMetaData.numImages = totalNumImages;
+    }
+
+    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
+
+    static bool selectObjectInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry& entry)
+    {
+        if (!isRecursed)
+        {
+            if ((mode & SelectObjectModes::markAsAlwaysRequired) != SelectObjectModes::none)
+            {
+                objectFlags[index] |= SelectedObjectsFlags::alwaysRequired;
+            }
+        }
+
+        // Object already selected so skip
+        if ((objectFlags[index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+        {
+            return true;
+        }
+
+        // If this was selected too many objects would be selected
+        if (selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
+        {
+            GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
+            return false;
+        }
+
+        // All required objects must select if this selects
+        for (const auto& header : entry._requiredObjects)
+        {
+            if (!selectObjectFromIndexInternal(mode, true, header, objectFlags, selectionMetaData))
+            {
+                return false;
+            }
+        }
+
+        // With also load objects it doesn't matter if they can't load
+        for (const auto& header : entry._alsoLoadObjects)
+        {
+            if ((mode & SelectObjectModes::selectAlsoLoads) != SelectObjectModes::none)
+            {
+                selectObjectFromIndexInternal(mode, true, header, objectFlags, selectionMetaData);
+            }
+        }
+
+        // When in "Don't select dependent objects" mode
+        // fail to select rather than select the dependent object.
+        // Note: This mode is never used in vanilla!
+        if (isRecursed && (mode & SelectObjectModes::selectDependents) == SelectObjectModes::none)
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+            buffer = StringManager::formatString(buffer, sizeof(buffer), StringIds::the_following_object_must_be_selected_first);
+            objectCreateIdentifierName(buffer, objHeader);
+            GameCommands::setErrorText(StringIds::buffer_2040);
+            return false;
+        }
+
+        // If this object was selected too many images would be needed when loading
+        if (entry._displayData->numImages + selectionMetaData.numImages > Gfx::G1ExpectedCount::kObjects)
+        {
+            GameCommands::setErrorText(StringIds::not_enough_space_for_graphics);
+            return false;
+        }
+
+        // Its possible that we have loaded other objects so check again that we haven't exceeded object counts
+        if (selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())] >= getMaxObjects(objHeader.getType()))
+        {
+            GameCommands::setErrorText(StringIds::too_many_objects_of_this_type_selected);
+            return false;
+        }
+
+        selectionMetaData.numImages += entry._displayData->numImages;
+        selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]++;
+        objectFlags[index] |= SelectedObjectsFlags::selected;
+        return true;
+    }
+
+    static bool deselectObjectInternal(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData, ObjectIndexId index, const ObjectIndexEntry& entry)
+    {
+        // Object already deselected
+        if ((objectFlags[index] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+        {
+            return true;
+        }
+
+        // Can't deselect in use objects (placed on map)
+        if ((objectFlags[index] & SelectedObjectsFlags::inUse) != SelectedObjectsFlags::none)
+        {
+            GameCommands::setErrorText(StringIds::this_object_is_currently_in_use);
+            return false;
+        }
+
+        // Can't deselect objects required by others
+        if ((objectFlags[index] & SelectedObjectsFlags::requiredByAnother) != SelectedObjectsFlags::none)
+        {
+            GameCommands::setErrorText(StringIds::this_object_is_required_by_another_object);
+            return false;
+        }
+
+        // Can't deselect always required objects
+        // Note: Not used in Locomotion (RCT2 only)
+        if ((objectFlags[index] & SelectedObjectsFlags::alwaysRequired) != SelectedObjectsFlags::none)
+        {
+            GameCommands::setErrorText(StringIds::this_object_is_always_required);
+            return false;
+        }
+
+        for (const auto& header : entry._alsoLoadObjects)
+        {
+            if ((mode & SelectObjectModes::selectAlsoLoads) != SelectObjectModes::none)
+            {
+                selectObjectFromIndexInternal(mode, true, header, objectFlags, selectionMetaData);
+            }
+        }
+
+        selectionMetaData.numImages -= entry._displayData->numImages;
+        selectionMetaData.numSelectedObjects[enumValue(objHeader.getType())]--;
+        objectFlags[index] &= ~SelectedObjectsFlags::selected;
+        return true;
+    }
+
+    // 0x00473D1D
+    static bool selectObjectFromIndexInternal(SelectObjectModes mode, bool isRecursed, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    {
+        auto objIndexEntry = internalFindObjectInIndex(objHeader);
+        if (!objIndexEntry.has_value())
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+            buffer = StringManager::formatString(buffer, sizeof(buffer), StringIds::data_for_following_object_not_found);
+            objectCreateIdentifierName(buffer, objHeader);
+            GameCommands::setErrorText(StringIds::buffer_2040);
+            if (isRecursed)
+            {
+                resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
+            }
+            return false;
+        }
+
+        auto& [index, entry] = *objIndexEntry;
+
+        bool success = (mode & SelectObjectModes::select) != SelectObjectModes::none
+            ? selectObjectInternal(mode, isRecursed, objHeader, objectFlags, selectionMetaData, index, entry)
+            : deselectObjectInternal(mode, objHeader, objectFlags, selectionMetaData, index, entry);
+
+        if (success)
+        {
+            if (!isRecursed)
+            {
+                refreshRequiredByAnother(objectFlags);
+            }
+        }
+        else
+        {
+            if (isRecursed)
+            {
+                resetSelectedObjectCountsAndSize(objectFlags, selectionMetaData);
+            }
+        }
+        return success;
+    }
+
+    bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData)
+    {
+        return selectObjectFromIndexInternal(mode, false, objHeader, objectFlags, selectionMetaData);
+    }
+
     ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
     {
         ObjectIndexEntry entry{};
@@ -494,6 +734,7 @@ namespace OpenLoco::ObjectManager
 
         uint8_t* countA = (uint8_t*)*ptr;
         *ptr += sizeof(uint8_t);
+        entry._requiredObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countA);
         for (int n = 0; n < *countA; n++)
         {
             // header* subh = (header*)ptr;
@@ -502,6 +743,7 @@ namespace OpenLoco::ObjectManager
 
         uint8_t* countB = (uint8_t*)*ptr;
         *ptr += sizeof(uint8_t);
+        entry._alsoLoadObjects = std::span<ObjectHeader>(reinterpret_cast<ObjectHeader*>(*ptr), *countB);
         for (int n = 0; n < *countB; n++)
         {
             // header* subh = (header*)ptr;

@@ -1647,10 +1647,13 @@ namespace OpenLoco::StringIds
     constexpr StringId buffer_2039 = 2039;
     constexpr StringId buffer_2040 = 2040;
 
-    constexpr StringId buffer_2042 = 2042;
-
-    constexpr StringId buffer_2045 = 2045;
-
+    constexpr StringId data_for_following_object_not_found = 2042;
+    constexpr StringId not_enough_space_for_graphics = 2043;
+    constexpr StringId too_many_objects_of_this_type_selected = 2044;
+    constexpr StringId the_following_object_must_be_selected_first = 2045;
+    constexpr StringId this_object_is_currently_in_use = 2046;
+    constexpr StringId this_object_is_required_by_another_object = 2047;
+    constexpr StringId this_object_is_always_required = 2048;
     constexpr StringId error_unable_to_select_object = 2049;
     constexpr StringId error_unable_to_deselect_object = 2050;
     constexpr StringId invalid_selection_of_objects = 2051;

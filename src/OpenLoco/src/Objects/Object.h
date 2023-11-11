@@ -45,6 +45,7 @@ namespace OpenLoco
         scenarioText,
     };
 
+    constexpr size_t kMaxObjectTypes = 34;
 #pragma pack(push, 1)
     struct ObjectHeader
     {

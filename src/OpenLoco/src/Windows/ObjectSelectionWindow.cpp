@@ -51,6 +51,7 @@
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
+#include <numeric>
 
 using namespace OpenLoco::Diagnostics;
 using namespace OpenLoco::Interop;
@@ -82,7 +83,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // clang-format off
-    static constexpr std::array<TabDisplayInfo, ObjectManager::maxObjectTypes> _tabDisplayInfo = {
+    static constexpr std::array<TabDisplayInfo, kMaxObjectTypes> _tabDisplayInfo = {
         TabDisplayInfo{ StringIds::object_interface_styles,      ImageIds::tab_object_settings,        ObjectTabFlags::advanced },
         TabDisplayInfo{ StringIds::object_sounds,                ImageIds::tab_object_audio,           ObjectTabFlags::advanced | ObjectTabFlags::alwaysHidden },
         TabDisplayInfo{ StringIds::object_currency,              ImageIds::tab_object_currency,        ObjectTabFlags::advanced },
@@ -314,7 +315,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         uint8_t rowCapacity = kPrimaryTabRowCapacity;
         uint8_t tabPos = 0;
 
-        for (int8_t currentType = ObjectManager::maxObjectTypes - 1; currentType >= 0; currentType--)
+        for (int8_t currentType = kMaxObjectTypes - 1; currentType >= 0; currentType--)
         {
             if (!shouldShowTab(currentType, FilterLevel(self->var_856)))
                 continue;
@@ -544,7 +545,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
+    static loco_global<uint16_t[kMaxObjectTypes], 0x0112C1C5> _112C1C5;
+    static loco_global<uint32_t, 0x0112C209> _112C209;
 
     static constexpr uint8_t kRowOffsetX = 10;
     static constexpr uint8_t kRowOffsetY = 24;
@@ -1307,16 +1309,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self.invalidate();
     }
 
-    // 0x00473D1D
-    static bool windowEditorObjectSelectionSelectObject(uint16_t bx, void* ebp)
-    {
-        registers regs;
-        regs.bx = bx;
-        regs.ebp = X86Pointer(ebp);
-
-        return call(0x00473D1D, regs) & X86_FLAG_CARRY;
-    }
-
     // 0x00473948
     static void onScrollMouseDown(Ui::Window& self, [[maybe_unused]] int16_t x, int16_t y, [[maybe_unused]] uint8_t scroll_index)
     {
@@ -1341,26 +1333,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (oldIndex != -1)
                 {
-                    windowEditorObjectSelectionSelectObject(6, oldObject._header);
+                    ObjectManager::ObjectSelectionMeta meta{};
+                    std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
+                    meta.numImages = _112C209;
+                    ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldObject._header, selectionFlags, meta);
+                    std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
+                    _112C209 = meta.numImages;
                 }
             }
         }
 
-        auto bx = 0;
+        auto mode = ObjectManager::SelectObjectModes::defaultDeselect;
 
         if ((selectionFlags[index] & ObjectManager::SelectedObjectsFlags::selected) == ObjectManager::SelectedObjectsFlags::none)
         {
-            bx |= (1 << 0); // Selection mode
+            mode = ObjectManager::SelectObjectModes::defaultSelect;
         }
 
-        bx |= 6;
+        ObjectManager::ObjectSelectionMeta meta{};
+        std::copy(std::begin(_112C1C5), std::end(_112C1C5), std::begin(meta.numSelectedObjects));
+        meta.numImages = _112C209;
+        bool success = ObjectManager::selectObjectFromIndex(mode, *object, selectionFlags, meta);
+        std::copy(std::begin(meta.numSelectedObjects), std::end(meta.numSelectedObjects), std::begin(_112C1C5));
+        _112C209 = meta.numImages;
 
-        if (!windowEditorObjectSelectionSelectObject(bx, object))
+        if (success)
             return;
 
         auto errorTitle = StringIds::error_unable_to_select_object;
 
-        if (!(bx & (1 << 0)))
+        if ((mode & ObjectManager::SelectObjectModes::select) == ObjectManager::SelectObjectModes::none)
         {
             errorTitle = StringIds::error_unable_to_deselect_object;
         }

@@ -103,8 +103,7 @@ namespace OpenLoco::ObjectManager
         return counts[(size_t)type];
     };
 
-    constexpr size_t maxObjects = 859;
-    constexpr size_t maxObjectTypes = 34;
+    constexpr size_t kMaxObjects = 859;
 
     Object* getAny(const LoadedObjectHandle& handle);
 
@@ -127,6 +126,7 @@ namespace OpenLoco::ObjectManager
     {
         uint32_t decodedFileSize;
     };
+    static_assert(sizeof(ObjectHeader2) == 0x4);
 
     struct ObjectHeader3
     {
@@ -137,6 +137,7 @@ namespace OpenLoco::ObjectManager
         uint8_t vehicleSubType;  // 0x7
         uint8_t pad_08[0x4];
     };
+    static_assert(sizeof(ObjectHeader3) == 0xC);
 
 #pragma pack(pop)
 
