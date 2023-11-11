@@ -127,7 +127,8 @@ namespace OpenLoco::Vehicles::OrderManager
     void insertOrder(VehicleHead* head, uint16_t orderOffset, const Order* order);
 
     void deleteOrder(VehicleHead* head, uint16_t orderOffset);
-    void zeroOrderTable();
+    void zeroUnusedOrderTable();
+    void reset();
     void freeOrders(VehicleHead* const head);
 
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);

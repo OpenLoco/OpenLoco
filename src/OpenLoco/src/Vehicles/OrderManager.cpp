@@ -193,9 +193,17 @@ namespace OpenLoco::Vehicles::OrderManager
     }
 
     // 0x004702F7
-    void zeroOrderTable()
+    void zeroUnusedOrderTable()
     {
-        call(0x004702F7);
+        // Zero all the unused entries after the end of the order table
+        std::fill(std::begin(getGameState().orders) + orderTableLength(), std::end(getGameState().orders), 0);
+    }
+
+    // 0x004702EC
+    void reset()
+    {
+        // No need to zero order table as it will get cleaned up on save
+        orderTableLength() = 0;
     }
 
     // 0x00470334

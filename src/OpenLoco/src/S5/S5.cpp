@@ -274,7 +274,7 @@ namespace OpenLoco::S5
             EntityManager::resetSpatialIndex();
             EntityManager::zeroUnused();
             StationManager::zeroUnused();
-            Vehicles::OrderManager::zeroOrderTable();
+            Vehicles::OrderManager::zeroUnusedOrderTable();
         }
 
         bool saveResult;
