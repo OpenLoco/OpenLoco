@@ -3311,90 +3311,104 @@ namespace OpenLoco::Vehicles
         call(0x004AC3D3, regs);
     }
 
+    // 0x004ACCE6
+    static bool trackSub_4ACCE6(VehicleHead& head)
+    {
+        auto train = Vehicle(head);
+
+        _113601A[0] = head.var_53;
+        _113601A[1] = train.veh1->var_49;
+        {
+            Track::TrackConnections connections{};
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.track._data);
+            World::Track::getTrackConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
+            if (connections.size == 0)
+            {
+                return false;
+            }
+
+            sub_4AC3D3(head, nextPos, connections, false);
+        }
+        {
+            Track::TrackConnections tailConnections{};
+            auto tailTaD = train.tail->trackAndDirection.track._data;
+            const auto& trackSize = TrackData::getUnkTrack(tailTaD);
+            auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = Track::getTrackConnectionEnd(pos, tailTaD);
+            World::Track::getTrackConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+
+            if (tailConnections.size == 0)
+            {
+                return false;
+            }
+
+            _1136458 = 0;
+            sub_4AC3D3(head, nextTailPos, tailConnections, true);
+            return _1136458 != 0;
+        }
+    }
+
+    // 0x004ACDE0
+    static bool roadSub_4ACDE0(VehicleHead& head)
+    {
+        auto train = Vehicle(head);
+        if (head.trackType != 0xFFU)
+        {
+            auto* roadObj = ObjectManager::get<RoadObject>(head.trackType);
+            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+            {
+                return false;
+            }
+        }
+
+        _113601A[0] = head.var_53;
+        _113601A[1] = train.veh1->var_49;
+        {
+            Track::TrackConnections connections{};
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
+            World::Track::getRoadConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
+            if (connections.size == 0)
+            {
+                return false;
+            }
+
+            sub_47DFD0(head, nextPos, connections, false);
+        }
+        {
+            Track::TrackConnections tailConnections{};
+            auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
+            const auto& trackSize = TrackData::getUnkRoad(tailTaD);
+            const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
+            World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+
+            if (tailConnections.size == 0)
+            {
+                return false;
+            }
+
+            _1136458 = 0;
+            sub_47DFD0(head, nextTailPos, tailConnections, true);
+            return _1136458 != 0;
+        }
+    }
+
     // 0x004ACCDC
     bool VehicleHead::sub_4ACCDC()
     {
-        auto train = Vehicle(head);
         if (mode == TransportMode::rail)
         {
-            _113601A[0] = var_53;
-            _113601A[1] = train.veh1->var_49;
-            {
-                Track::TrackConnections connections{};
-                auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), trackAndDirection.track._data);
-                World::Track::getTrackConnections(nextPos, nextRotation, connections, owner, trackType);
-                if (connections.size == 0)
-                {
-                    return false;
-                }
-
-                sub_4AC3D3(*this, nextPos, connections, false);
-            }
-            {
-                Track::TrackConnections tailConnections{};
-                auto tailTaD = train.tail->trackAndDirection.track._data;
-                const auto& trackSize = TrackData::getUnkTrack(tailTaD);
-                auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
-                if (trackSize.rotationEnd < 12)
-                {
-                    pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
-                }
-                tailTaD ^= (1U << 2); // Reverse
-                auto [nextTailPos, nextTailRotation] = Track::getTrackConnectionEnd(pos, tailTaD);
-                World::Track::getTrackConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
-
-                if (tailConnections.size == 0)
-                {
-                    return false;
-                }
-
-                _1136458 = 0;
-                sub_4AC3D3(*this, nextTailPos, tailConnections, true);
-                return _1136458 != 0;
-            }
+            return trackSub_4ACCE6(*this);
         }
         else
         {
-            if (trackType != 0xFFU)
-            {
-                auto* roadObj = ObjectManager::get<RoadObject>(trackType);
-                if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
-                {
-                    return false;
-                }
-            }
-
-            _113601A[0] = var_53;
-            _113601A[1] = train.veh1->var_49;
-            {
-                Track::TrackConnections connections{};
-                auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep), trackAndDirection.road._data & 0x7F);
-                World::Track::getRoadConnections(nextPos, nextRotation, connections, owner, trackType);
-                if (connections.size == 0)
-                {
-                    return false;
-                }
-
-                sub_47DFD0(*this, nextPos, connections, false);
-            }
-            {
-                Track::TrackConnections tailConnections{};
-                auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
-                const auto& trackSize = TrackData::getUnkRoad(tailTaD);
-                const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
-                tailTaD ^= (1U << 2); // Reverse
-                auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
-                World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
-
-                if (tailConnections.size == 0)
-                {
-                    return false;
-                }
-
-                _1136458 = 0;
-                sub_47DFD0(*this, nextTailPos, tailConnections, true);
-                return _1136458 != 0;
-            }
+            return roadSub_4ACDE0(*this);
         }
     }
 
