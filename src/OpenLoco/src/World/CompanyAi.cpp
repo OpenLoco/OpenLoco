@@ -906,7 +906,6 @@ namespace OpenLoco
     // 0x00431287
     static void aiThinkEndCompany(Company& company)
     {
-
         if (!removeAllCompanyAssetsOnMapByChunk(company))
         {
             return;
