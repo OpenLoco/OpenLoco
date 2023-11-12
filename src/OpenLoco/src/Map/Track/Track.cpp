@@ -68,7 +68,7 @@ namespace OpenLoco::World::Track
                 {
                     continue;
                 }
-                if (!(getGameState().roadObjectIdIsFlag7 & (1 << roadObjectId)))
+                if (!(getGameState().roadObjectIdIsTram & (1 << elRoad->roadObjectId())))
                 {
                     continue;
                 }

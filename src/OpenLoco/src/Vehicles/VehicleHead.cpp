@@ -60,10 +60,13 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<int16_t, 0x01136168> _vehicleUpdate_targetZ;
+    static loco_global<uint16_t, 0x01136458> _1136458; // Actually just a bool
     static loco_global<Status, 0x0113646C> _vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> _vehicleUpdate_helicopterTargetYaw;
     static loco_global<AirportMovementNodeFlags, 0x00525BB0> _vehicleUpdate_helicopterAirportMovement;
     static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
+    static loco_global<uint8_t[2], 0x0113601A> _113601A; // Track Connection mod global
+
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
     static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
@@ -3278,12 +3281,135 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
+    // 0x0047DFD0
+    static void sub_47DFD0(VehicleHead& head, World::Pos3 pos, Track::TrackConnections& connections, bool unk)
+    {
+        // ROAD only
+        static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
+        _113609C = connections;
+
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z | (unk ? 0x8000 : 0);
+        regs.esi = X86Pointer(&head);
+        call(0x0047DFD0, regs);
+    }
+
+    // 0x004AC3D3
+    static void sub_4AC3D3(VehicleHead& head, World::Pos3 pos, Track::TrackConnections& connections, bool unk)
+    {
+        // TRACK only
+        static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
+        _113609C = connections;
+
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z | (unk ? 0x8000 : 0);
+        regs.esi = X86Pointer(&head);
+        call(0x004AC3D3, regs);
+    }
+
+    // 0x004ACCE6
+    static bool trackSub_4ACCE6(VehicleHead& head)
+    {
+        auto train = Vehicle(head);
+
+        _113601A[0] = head.var_53;
+        _113601A[1] = train.veh1->var_49;
+        {
+            Track::TrackConnections connections{};
+            auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.track._data);
+            World::Track::getTrackConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
+            if (connections.size == 0)
+            {
+                return false;
+            }
+
+            sub_4AC3D3(head, nextPos, connections, false);
+        }
+        {
+            Track::TrackConnections tailConnections{};
+            auto tailTaD = train.tail->trackAndDirection.track._data;
+            const auto& trackSize = TrackData::getUnkTrack(tailTaD);
+            auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                pos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = Track::getTrackConnectionEnd(pos, tailTaD);
+            World::Track::getTrackConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+
+            if (tailConnections.size == 0)
+            {
+                return false;
+            }
+
+            _1136458 = 0;
+            sub_4AC3D3(head, nextTailPos, tailConnections, true);
+            return _1136458 != 0;
+        }
+    }
+
+    // 0x004ACDE0
+    static bool roadSub_4ACDE0(VehicleHead& head)
+    {
+        auto train = Vehicle(head);
+        if (head.trackType != 0xFFU)
+        {
+            auto* roadObj = ObjectManager::get<RoadObject>(head.trackType);
+            if (!roadObj->hasFlags(RoadObjectFlags::isRoad))
+            {
+                return false;
+            }
+        }
+
+        _113601A[0] = head.var_53;
+        _113601A[1] = train.veh1->var_49;
+        {
+            Track::TrackConnections connections{};
+            auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
+            World::Track::getRoadConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
+            if (connections.size == 0)
+            {
+                return false;
+            }
+
+            sub_47DFD0(head, nextPos, connections, false);
+        }
+        {
+            Track::TrackConnections tailConnections{};
+            auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
+            const auto& trackSize = TrackData::getUnkRoad(tailTaD);
+            const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
+            World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+
+            if (tailConnections.size == 0)
+            {
+                return false;
+            }
+
+            _1136458 = 0;
+            sub_47DFD0(head, nextTailPos, tailConnections, true);
+            return _1136458 != 0;
+        }
+    }
+
     // 0x004ACCDC
     bool VehicleHead::sub_4ACCDC()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        return call(0x004ACCDC, regs) & X86_FLAG_CARRY;
+        if (mode == TransportMode::rail)
+        {
+            return trackSub_4ACCE6(*this);
+        }
+        else
+        {
+            return roadSub_4ACDE0(*this);
+        }
     }
 
     // 0x004AD93A
