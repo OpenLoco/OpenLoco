@@ -332,12 +332,77 @@ namespace OpenLoco
         call(0x004309FD, regs);
     }
 
-    // 0x00430DB6
-    static void aiThinkState3(Company& company)
+    // 0x00430DDF
+    static void sub_430DDF(Company& company, AiThought& thought)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        call(0x00430DB6, regs);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430DDF, regs);
+    }
+
+    // 0x00430E21
+    static void sub_430E21(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430E21, regs);
+    }
+
+    // 0x00430EB5
+    static void sub_430EB5(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430EB5, regs);
+    }
+
+    // 0x00430EEF
+    static void sub_430EEF(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430EEF, regs);
+    }
+
+    // 0x00430F50
+    static void sub_430F50(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430F50, regs);
+    }
+
+    // 0x00430F87
+    static void sub_430F87(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430F87, regs);
+    }
+
+    using AiThinkState3Function = void (*)(Company&, AiThought&);
+
+    static constexpr std::array<AiThinkState3Function, 6> _funcs_4F94E8 = {
+        sub_430DDF,
+        sub_430E21,
+        sub_430EB5,
+        sub_430EEF,
+        sub_430F50,
+        sub_430F87,
+    };
+
+    // 0x00430DB6
+    static void aiThinkState3(Company& company)
+    {
+        company.var_85F6++;
+
+        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.var_2578]);
     }
 
     // 0x0047BA2C
