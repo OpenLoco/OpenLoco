@@ -332,13 +332,59 @@ namespace OpenLoco
         call(0x004309FD, regs);
     }
 
-    // 0x00430DDF
-    static void sub_430DDF(Company& company, AiThought& thought)
+    // 0x0048259F
+    static uint8_t sub_48259F(const Company& company, const AiThought& thought)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
-        call(0x00430DDF, regs);
+        call(0x0048259F, regs);
+        return regs.al;
+    }
+
+    // 0x0048377C
+    static void sub_48377C(Company& company, AiThought& thought)
+    {
+        company.var_85C2 = 0xFFU;
+        company.var_85C3 = 0;
+        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 17))
+        {
+            company.var_85C3 |= (1U << 3);
+        }
+        if (thought.var_8B & (1U << 0))
+        {
+            company.var_85C3 |= (1U << 2);
+        }
+        if (thought.var_8B & (1U << 1))
+        {
+            company.var_85C3 |= (1U << 4);
+        }
+    }
+
+    // 0x00430DDF
+    static void sub_430DDF(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 3;
+        }
+        else
+        {
+            switch (sub_48259F(company, thought))
+            {
+                case 1:
+                    company.var_4A4 = AiThinkState::unk6;
+                    company.var_4A5 = 3;
+                    break;
+                case 2:
+                    company.var_4A5 = 1;
+                    sub_48377C(company, thought);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     // 0x00430E21

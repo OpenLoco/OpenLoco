@@ -94,6 +94,13 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Company
     {
+        struct Unk25C0HashTableEntry
+        {
+            uint16_t var_00;
+            uint16_t var_02;
+            uint8_t var_04;
+            uint8_t var_05;
+        };
         StringId name;
         StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
@@ -125,7 +132,9 @@ namespace OpenLoco
         coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x85C2 - 0x25A2];
+        uint8_t pad_25A2[0x25C0 - 0x25A2];
+        Unk25C0HashTableEntry var_25C0[0x1000]; // Hash table entries
+        uint16_t var_25C0_length;               // Hash table length
         uint8_t var_85C2;
         uint8_t var_85C3;
         World::Pos2 var_85C4;
