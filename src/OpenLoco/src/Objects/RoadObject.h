@@ -40,7 +40,7 @@ namespace OpenLoco
         track = 1U << 1,
         slope = 1U << 2,
         steepSlope = 1U << 3,
-        intersection = 1U << 2,
+        intersection = 1U << 4,
         oneSided = 1U << 5,
         overtake = 1U << 6,
         streetLights = 1U << 8,
