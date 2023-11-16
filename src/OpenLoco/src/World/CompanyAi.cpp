@@ -399,6 +399,78 @@ namespace OpenLoco
     // 0x004837C2
     static bool sub_4837C2(Company& company, AiThought& thought)
     {
+        company.var_85C3 &= ~((1U << 0) | (1U << 1));
+
+        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        {
+            return true;
+        }
+
+        auto findRequiredUnk = [&thought, &company]() -> int8_t {
+            for (auto i = 0U; i < thought.var_03; ++i)
+            {
+                const auto& unk4AE = thought.var_06[i];
+                if (unk4AE.var_9 != 0xFFU)
+                {
+                    if (unk4AE.var_B & ((1U << 2) | (1U << 1)))
+                    {
+                        return i;
+                    }
+                    if (unk4AE.var_B & (1U << 0))
+                    {
+                        if (!(unk4AE.var_B & ((1U << 4) | (1U << 3))))
+                        {
+                            return i;
+                        }
+                    }
+                }
+                if (unk4AE.var_A != 0xFFU)
+                {
+                    if (unk4AE.var_C & ((1U << 2) | (1U << 1)))
+                    {
+                        company.var_85C3 |= 1U << 0;
+                        return i;
+                    }
+                    if (unk4AE.var_C & (1U << 0))
+                    {
+                        if (!(unk4AE.var_C & ((1U << 4) | (1U << 3))))
+                        {
+                            company.var_85C3 |= 1U << 0;
+                            return i;
+                        }
+                    }
+                }
+            }
+            return -1;
+        }();
+
+        if (findRequiredUnk == -1)
+        {
+            return true;
+        }
+
+        company.var_85C2 = findRequiredUnk;
+        const auto& unk4AE = thought.var_06[findRequiredUnk];
+        auto pos = unk4AE.pos;
+        auto rotation = unk4AE.rotation;
+        if (company.var_85C3 & (1U << 0))
+        {
+            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+            {
+                const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                pos += stationEndDiff;
+            }
+            rotation ^= (1U << 1);
+        }
+        rotation ^= (1U << 1);
+
+        company.var_85C4 = pos;
+        company.var_85C8 = unk4AE.baseZ;
+        company.var_85CE = rotation;
+        company.var_85D0 = pos;
+        company.var_85D4 = unk4AE.baseZ;
+        // 0x004838C9
+
         // self contained. implement
         registers regs;
         regs.esi = X86Pointer(&company);

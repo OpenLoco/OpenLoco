@@ -59,7 +59,11 @@ namespace OpenLoco
             uint8_t rotation; // 0x3
             World::Pos2 pos;  // 0x4
             uint8_t baseZ;    // 0x8
-            uint8_t pad_9[0xE - 0x9];
+            uint8_t var_9;    // 0x9
+            uint8_t var_A;    // 0xA
+            uint8_t var_B;    // 0xB
+            uint8_t var_C;    // 0xC
+            uint8_t pad_D[0xE - 0xD];
         };
         static_assert(sizeof(unk4AE) == 0xE);
         AiThoughtType type; // 0x00 0x4A8
