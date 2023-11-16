@@ -86,8 +86,8 @@ namespace OpenLoco
         currency32_t var_84; // 0x52C
         uint8_t var_88;      // 0x530
         uint8_t var_89;      // 0x531 station obj type?
-        uint8_t pad_8A;
-        uint8_t var_8B; // 0x533
+        uint8_t var_8A;      // 0x532
+        uint8_t var_8B;      // 0x533
     };
 #pragma pack(pop)
     static_assert(sizeof(AiThought) == 0x8C);

@@ -387,13 +387,85 @@ namespace OpenLoco
         }
     }
 
-    // 0x00430E21
-    static void sub_430E21(Company& company, AiThought& thought)
+    // 0x00483FBA
+    static bool sub_483FBA(Company& company, AiThought& thought)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
-        call(0x00430E21, regs);
+        return call(0x00430EB5, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x004837C2
+    static bool sub_4837C2(Company& company, AiThought& thought)
+    {
+        // self contained. implement
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        return call(0x004837C2, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x00486324
+    static bool sub_486324(Company& company, AiThought& thought)
+    {
+        if (thought.trackObjId & (1U << 7))
+        {
+            return false;
+        }
+
+        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        {
+            return false;
+        }
+
+        if (!(kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 17) | (1U << 6))))
+        {
+            return false;
+        }
+
+        if (thought.var_8A == 0xFFU)
+        {
+            return true;
+        }
+
+        company.var_85C2 = 0;
+        return false;
+    }
+
+    // 0x00430E21
+    static void sub_430E21(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2(0, 0);
+            return;
+        }
+
+        if (company.var_85C2 != 0xFFU)
+        {
+            if (sub_483FBA(company, thought))
+            {
+                company.var_4A4 = AiThinkState::unk6;
+                company.var_4A5 = 2;
+                company.var_85C4 = World::Pos2(0, 0);
+            }
+        }
+        else
+        {
+            if (sub_4837C2(company, thought))
+            {
+                company.var_4A5 = 2;
+                if (sub_486324(company, thought))
+                {
+                    company.var_4A4 = AiThinkState::unk6;
+                    company.var_4A5 = 2;
+                    company.var_85C4 = World::Pos2(0, 0);
+                }
+            }
+        }
     }
 
     // 0x00430EB5
