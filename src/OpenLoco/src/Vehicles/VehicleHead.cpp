@@ -2702,7 +2702,7 @@ namespace OpenLoco::Vehicles
             auto* sourceStation = StationManager::get(cargo.townFrom);
             auto stationLoc = World::Pos2{ station->x, station->y };
             auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
-            auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
+            auto tilesDistance = Math::Vector::distanceXY(stationLoc, sourceLoc) / 32;
 
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(owner));
             auto* company = CompanyManager::get(owner);
@@ -2804,11 +2804,11 @@ namespace OpenLoco::Vehicles
                 auto stationLoc = World::Pos2{ station->x, station->y };
                 auto cargoSourceLoc = World::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
-                auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
+                auto stationSourceDistance = Math::Vector::distanceXY(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
                 auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
-                auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
+                auto cargoSourceDistance = Math::Vector::distanceXY(stationLoc, sourceLoc);
                 if (cargoSourceDistance > stationSourceDistance)
                 {
                     setOrigin = false;
@@ -3027,11 +3027,11 @@ namespace OpenLoco::Vehicles
                 auto stationLoc = World::Pos2{ station->x, station->y };
                 auto cargoSourceLoc = World::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
-                auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
+                auto stationSourceDistance = Math::Vector::distanceXY(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
                 auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
-                auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
+                auto cargoSourceDistance = Math::Vector::distanceXY(stationLoc, sourceLoc);
                 if (cargoSourceDistance >= stationSourceDistance)
                 {
                     cargo.townFrom = stationCargo.origin;

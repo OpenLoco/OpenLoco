@@ -393,7 +393,7 @@ namespace OpenLoco
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
-        return call(0x00430EB5, regs) & X86_FLAG_CARRY;
+        return call(0x00483FBA, regs) & X86_FLAG_CARRY;
     }
 
     // 0x004837C2
@@ -449,38 +449,75 @@ namespace OpenLoco
             return true;
         }
 
-        company.var_85C2 = findRequiredUnk;
-        const auto& unk4AE = thought.var_06[findRequiredUnk];
-        auto pos = unk4AE.pos;
-        auto rotation = unk4AE.rotation;
-        if (company.var_85C3 & (1U << 0))
         {
-            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+            company.var_85C2 = findRequiredUnk;
+            const auto& unk4AE = thought.var_06[findRequiredUnk];
+            auto pos = unk4AE.pos;
+            auto rotation = unk4AE.rotation;
+            if (company.var_85C3 & (1U << 0))
             {
-                const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
-                pos += stationEndDiff;
+                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                {
+                    const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                    pos += stationEndDiff;
+                }
+                rotation ^= (1U << 1);
             }
             rotation ^= (1U << 1);
+
+            company.var_85C4 = pos;
+            company.var_85C8 = unk4AE.baseZ;
+            company.var_85CE = rotation;
+            company.var_85D0 = pos;
+            company.var_85D4 = unk4AE.baseZ;
+            company.var_85D5 = rotation;
         }
-        rotation ^= (1U << 1);
+        {
+            const auto unk = (company.var_85C3 & (1U << 0)) ? thought.var_06[findRequiredUnk].var_A : thought.var_06[findRequiredUnk].var_9;
+            const auto& unk4AE = thought.var_06[unk];
+            if (unk4AE.var_9 == company.var_85C2)
+            {
+                company.var_85C3 |= (1U << 1);
+            }
+            auto pos = unk4AE.pos;
+            auto rotation = unk4AE.rotation;
+            if (company.var_85C3 & (1U << 1))
+            {
+                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                {
+                    const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                    pos += stationEndDiff;
+                }
+                rotation ^= (1U << 1);
+            }
+            rotation ^= (1U << 1);
 
-        company.var_85C4 = pos;
-        company.var_85C8 = unk4AE.baseZ;
-        company.var_85CE = rotation;
-        company.var_85D0 = pos;
-        company.var_85D4 = unk4AE.baseZ;
-        // 0x004838C9
+            company.var_85C9 = pos;
+            company.var_85CD = unk4AE.baseZ;
+            company.var_85CF = rotation;
+            company.var_85D7 = pos;
+            company.var_85DB = unk4AE.baseZ;
+            company.var_85DC = rotation;
+        }
+        company.var_85F0 = 0;
+        company.var_85EE = 0;
+        company.var_85EF = 0;
+        company.var_85DE = 0;
+        company.var_85E2 = 0;
+        company.var_85E8 = 0;
 
-        // self contained. implement
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        regs.edi = X86Pointer(&thought);
-        return call(0x004837C2, regs) & X86_FLAG_CARRY;
+        const auto distance = std::min<uint16_t>(256, Math::Vector::distanceXYZ(World::Pos3(company.var_85C4, company.var_85C8 * World::kSmallZStep), World::Pos3(company.var_85C9, company.var_85CD * World::kSmallZStep)));
+        company.var_85EA = distance / 2 + distance * 2;
+        std::fill(std::begin(company.var_25C0), std::end(company.var_25C0), 0xFFFFU);
+        company.var_25C0_length = 0;
+        return false;
     }
 
     // 0x00486324
     static bool sub_486324(Company& company, AiThought& thought)
     {
+        // Likely this is asking if the track/road should try place a signal
+
         if (thought.trackObjId & (1U << 7))
         {
             return false;
@@ -543,6 +580,7 @@ namespace OpenLoco
     // 0x00430EB5
     static void sub_430EB5(Company& company, AiThought& thought)
     {
+        // place signals ?
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
@@ -552,6 +590,7 @@ namespace OpenLoco
     // 0x00430EEF
     static void sub_430EEF(Company& company, AiThought& thought)
     {
+        // Decide if station placement attempt
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
@@ -561,6 +600,7 @@ namespace OpenLoco
     // 0x00430F50
     static void sub_430F50(Company& company, AiThought& thought)
     {
+        // Calculate station cost?
         registers regs;
         regs.esi = X86Pointer(&company);
         regs.edi = X86Pointer(&thought);
