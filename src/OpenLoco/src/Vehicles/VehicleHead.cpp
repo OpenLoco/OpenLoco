@@ -2308,7 +2308,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(*this);
 
         breakdownFlags &= ~BreakdownFlags::journeyStarted;
-        const auto distanceTravelled = Math::Vector::distance(journeyStartPos, Pos2(train.veh2->position));
+        const auto distanceTravelled = Math::Vector::distanceXY(journeyStartPos, Pos2(train.veh2->position));
 
         const auto timeInTicks = ScenarioManager::getScenarioTicks() - journeyStartTicks;
 

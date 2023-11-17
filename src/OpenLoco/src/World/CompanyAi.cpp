@@ -508,7 +508,7 @@ namespace OpenLoco
 
         const auto distance = std::min<uint16_t>(256, Math::Vector::distanceXYZ(World::Pos3(company.var_85C4, company.var_85C8 * World::kSmallZStep), World::Pos3(company.var_85C9, company.var_85CD * World::kSmallZStep)));
         company.var_85EA = distance / 2 + distance * 2;
-        std::fill(std::begin(company.var_25C0), std::end(company.var_25C0), 0xFFFFU);
+        std::fill(std::begin(company.var_25C0), std::end(company.var_25C0), Company::kNullHashTableEntry);
         company.var_25C0_length = 0;
         return false;
     }

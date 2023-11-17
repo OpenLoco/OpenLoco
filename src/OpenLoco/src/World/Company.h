@@ -101,6 +101,8 @@ namespace OpenLoco
             uint8_t var_04;
             uint8_t var_05;
         };
+        static constexpr Unk25C0HashTableEntry kNullHashTableEntry = Unk25C0HashTableEntry{ 0xFFFFU, 0xFFFFU, 0xFFU, 0xFFU };
+
         StringId name;
         StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
