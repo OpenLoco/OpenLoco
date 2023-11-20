@@ -1,5 +1,6 @@
 23.10+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2114] The company face preview in the object selection window is the wrong size.
 - Fix: [#2184] The game is stuck on a black screen for a long time on some double-density screen set-ups.
 
 23.10 (2023-10-25)
