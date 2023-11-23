@@ -1,5 +1,6 @@
 23.10+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2111] Crash when viewing the orders of a vehicle and ai deletes a train.
 - Fix: [#2184] The game is stuck on a black screen for a long time on some double-density screen set-ups.
 
 23.10 (2023-10-25)
