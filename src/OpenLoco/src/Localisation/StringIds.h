@@ -160,6 +160,7 @@ namespace OpenLoco::StringIds
     constexpr StringId capt_station = 159;
     constexpr StringId capt_airport = 160;
     constexpr StringId capt_ship_port = 161;
+    constexpr StringId station_in_the_way = 162;
 
     constexpr StringId cant_remove_airport = 164;
     constexpr StringId cant_remove_ship_port = 165;
@@ -553,7 +554,7 @@ namespace OpenLoco::StringIds
     constexpr StringId town_size_city = 620;
     constexpr StringId town_size_metropolis = 621;
     constexpr StringId track_road_unsuitable = 622;
-
+    constexpr StringId track_road_unsuitable_for_station = 623;
     constexpr StringId signals_cannot_be_built_on_a_junction = 624;
     constexpr StringId signals_cannot_be_built_on_a_junction_2 = 625; // identical to 624
     constexpr StringId signals_cannot_be_built_in_stations = 626;
@@ -882,12 +883,14 @@ namespace OpenLoco::StringIds
     constexpr StringId cargo_capacity = 1173;
     constexpr StringId cargo_capacity_plus = 1174;
 
+    constexpr StringId station_too_large = 1176;
+
     constexpr StringId tab_map_overall = 1178;
     constexpr StringId tab_map_vehicles = 1179;
     constexpr StringId tab_map_industries = 1180;
     constexpr StringId tab_map_routes = 1181;
     constexpr StringId tab_map_ownership = 1182;
-
+    constexpr StringId station_too_spread_out = 1183;
     constexpr StringId cant_add_pop_5_string_id_string_id = 1184;
     constexpr StringId cant_build_pop_5_string_id = 1185;
     constexpr StringId select_new_vehicle = 1186;
