@@ -445,7 +445,7 @@ namespace OpenLoco::ObjectManager
 
     // 0x0047176D
     // TODO: Return a std::unique_ptr and a ObjectHeader3 & ObjectHeader2 for the metadata
-    std::optional<TempLoadMetaData> loadTemporaryObject(ObjectHeader& header)
+    std::optional<TempLoadMetaData> loadTemporaryObject(const ObjectHeader& header)
     {
         auto preLoadObj = findAndPreLoadObject(header);
         if (!preLoadObj.has_value())

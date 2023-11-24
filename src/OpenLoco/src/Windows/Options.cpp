@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi);
     static void sub_4C13BE(Window* w);
-    static void sub_4C1519();
+    static void setPreferredCurrencyNameBuffer();
     static void sub_4BF935();
 
     static loco_global<uint32_t, 0x0050D430> _songProgress;
@@ -1625,9 +1625,9 @@ namespace OpenLoco::Ui::Windows::Options
                     auto& cfg = OpenLoco::Config::get().old;
                     cfg.preferredCurrency = *object.second._header;
 
-                    sub_4C1519();
+                    setPreferredCurrencyNameBuffer();
                     Config::write();
-                    call(0x004C153B);
+                    Scenario::loadPreferredCurrencyAlways();
                     sub_4BF935();
 
                     break;
@@ -1668,7 +1668,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             Config::write();
 
-            call(0x004C153B);
+            Scenario::loadPreferredCurrencyAlways();
             sub_4BF935();
 
             w->invalidate();
@@ -2428,7 +2428,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void sub_4BF935()
     {
-        // TODO: implement
+        // TODO: implement simiplified ObjectManager::markInUseObjects that doesn't do the inUse part only the loaded part
         call(0x004BF935);
     }
 
@@ -2448,9 +2448,15 @@ namespace OpenLoco::Ui::Windows::Options
         Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
     }
 
-    static void sub_4C1519()
+    // 0x004C1519 & 0x00474911
+    static void setPreferredCurrencyNameBuffer()
     {
-        call(0x004C1519);
+        const auto res = ObjectManager::findObjectInIndex(Config::get().old.preferredCurrency);
+        if (res.has_value())
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::preferred_currency_buffer));
+            strcpy(buffer, res->_name);
+        }
     }
 
     // 0x004BF7B9
@@ -2488,7 +2494,7 @@ namespace OpenLoco::Ui::Windows::Options
         window->setColour(WindowColour::secondary, interface->colour_10);
 
         sub_4BF8CD();
-        sub_4C1519();
+        setPreferredCurrencyNameBuffer();
 
         window->enabledWidgets = Display::enabledWidgets;
         Display::applyScreenModeRestrictions(window);

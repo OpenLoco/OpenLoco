@@ -496,7 +496,7 @@ namespace OpenLoco::ObjectManager
     {
         const auto objects = getAvailableObjects(objectType);
 
-        for (auto [index, object] : objects)
+        for (auto& [index, object] : objects)
         {
             if ((objectIndexFlags[index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
@@ -956,7 +956,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472D3F
-    static void markInUseObjects([[maybe_unused]] std::span<SelectedObjectsFlags> objectFlags)
+    static void markInUseObjects(std::span<SelectedObjectsFlags> objectFlags)
     {
         std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
         std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
@@ -1057,5 +1057,131 @@ namespace OpenLoco::ObjectManager
         selectDefaultObjects(objectFlags, _objectSelectionMeta);
         refreshRequiredByAnother(objectFlags);
         resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
+    }
+
+    // 0x00473B91
+    void freeSelectionList()
+    {
+        _50D144refCount--;
+        if (_50D144refCount == 0)
+        {
+            delete[] _50D144;
+            _50D144 = nullptr;
+        }
+    }
+
+    // 0x00474874
+    void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            auto objects = getAvailableObjects(type);
+            for (auto& [i, object] : objects)
+            {
+                if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+                {
+                    if (!findObjectHandle(*object._header))
+                    {
+                        load(*object._header);
+                    }
+                }
+            }
+        }
+    }
+
+    // 0x00474821
+    void unloadUnselectedSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            auto objects = getAvailableObjects(type);
+            for (auto& [i, object] : objects)
+            {
+                if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
+                {
+                    unload(*object._header);
+                }
+            }
+        }
+    }
+
+    static bool validateObjectTypeSelection(std::span<SelectedObjectsFlags> objectFlags, const ObjectType type, auto&& predicate)
+    {
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+            if (((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
+                && type == entry._header->getType()
+                && predicate(entry))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    constexpr std::array<std::pair<ObjectType, StringId>, 15> kValidateTypeAndErrorMessage = {
+        std::make_pair(ObjectType::region, StringIds::region_type_must_be_selected),
+        std::make_pair(ObjectType::scaffolding, StringIds::scaffolding_type_must_be_selected),
+        std::make_pair(ObjectType::industry, StringIds::industry_type_must_be_selected),
+        std::make_pair(ObjectType::building, StringIds::town_building_type_must_be_selected),
+        std::make_pair(ObjectType::interfaceSkin, StringIds::interface_type_must_be_selected),
+        std::make_pair(ObjectType::vehicle, StringIds::vehicle_type_must_be_selected),
+        std::make_pair(ObjectType::land, StringIds::land_type_must_be_selected),
+        std::make_pair(ObjectType::currency, StringIds::currency_type_must_be_selected),
+        std::make_pair(ObjectType::water, StringIds::water_type_must_be_selected),
+        std::make_pair(ObjectType::townNames, StringIds::town_name_type_must_be_selected),
+        std::make_pair(ObjectType::levelCrossing, StringIds::level_crossing_type_must_be_selected),
+        std::make_pair(ObjectType::streetLight, StringIds::street_light_type_must_be_selected),
+        std::make_pair(ObjectType::snow, StringIds::snow_type_must_be_selected),
+        std::make_pair(ObjectType::climate, StringIds::climate_type_must_be_selected),
+        std::make_pair(ObjectType::hillShapes, StringIds::map_generation_type_must_be_selected),
+    };
+
+    // 0x00474167
+    std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        const auto atLeastOneSelected = [](const ObjectIndexEntry&) { return true; };
+        // Validate all the simple object types that
+        // require at least one item selected of the type
+        for (auto& [objectType, errorMessage] : kValidateTypeAndErrorMessage)
+        {
+            if (!validateObjectTypeSelection(objectFlags, objectType, atLeastOneSelected))
+            {
+                GameCommands::setErrorText(errorMessage);
+                return objectType;
+            }
+        }
+
+        // Validate the more complex road object type that
+        // has more complex logic
+        if (!validateObjectTypeSelection(
+                objectFlags, ObjectType::road, [](const ObjectIndexEntry& entry) {
+                    const auto tempObj = loadTemporaryObject(*entry._header);
+                    if (!tempObj.has_value())
+                    {
+                        return false;
+                    }
+                    auto* roadObj = reinterpret_cast<RoadObject*>(getTemporaryObject());
+                    if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        freeTemporaryObject();
+                        return false;
+                    }
+                    if (roadObj->hasFlags(RoadObjectFlags::unk_00))
+                    {
+                        freeTemporaryObject();
+                        return false;
+                    }
+                    freeTemporaryObject();
+                    return true;
+                }))
+        {
+            GameCommands::setErrorText(StringIds::at_least_one_generic_dual_direction_road_type_must_be_selected);
+            return ObjectType::road;
+        }
+
+        return std::nullopt;
     }
 }
