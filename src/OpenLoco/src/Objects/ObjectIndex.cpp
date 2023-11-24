@@ -5,10 +5,28 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Map/BuildingElement.h"
+#include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
+#include "Map/SignalElement.h"
+#include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
+#include "Map/TileLoop.hpp"
+#include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
+#include "Map/WallElement.h"
 #include "ObjectManager.h"
 #include "OpenLoco.h"
+#include "RoadObject.h"
+#include "TrackObject.h"
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
+#include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
+#include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+#include "World/Station.h"
 #include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Timer.hpp>
@@ -30,6 +48,10 @@ namespace OpenLoco::ObjectManager
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
     static loco_global<bool, 0x0050AEAD> _isFirstTime;
     static loco_global<bool, 0x0050D161> _isPartialLoaded;
+    static loco_global<int32_t, 0x0050D148> _50D144refCount;
+    static loco_global<SelectedObjectsFlags*, 0x0050D144> _50D144;
+    static loco_global<ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+    static loco_global<std::array<uint16_t, kMaxObjectTypes>, 0x0112C181> _numObjectsPerType;
 
     static constexpr uint8_t kCurrentIndexVersion = 3;
 
@@ -751,5 +773,289 @@ namespace OpenLoco::ObjectManager
         }
 
         return entry;
+    }
+
+    // 0x00472DA1
+    static void markInUseObjectsByTile(std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
+    {
+        // Iterate the whole map looking for things
+        for (const auto pos : World::getWorldRange())
+        {
+            const auto tile = World::TileManager::get(pos);
+            for (auto el : tile)
+            {
+                auto* elSurface = el.as<World::SurfaceElement>();
+                auto* elTrack = el.as<World::TrackElement>();
+                auto* elStation = el.as<World::StationElement>();
+                auto* elSignal = el.as<World::SignalElement>();
+                auto* elBuilding = el.as<World::BuildingElement>();
+                auto* elTree = el.as<World::TreeElement>();
+                auto* elWall = el.as<World::WallElement>();
+                auto* elRoad = el.as<World::RoadElement>();
+                auto* elIndustry = el.as<World::IndustryElement>();
+
+                if (elSurface != nullptr)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::land)][elSurface->terrain()] |= (1U << 0);
+                    if (elSurface->var_4_E0())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::snow)][0] |= (1U << 0);
+                    }
+                }
+                else if (elTrack != nullptr)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::track)][elTrack->trackObjectId()] |= (1U << 0);
+                    if (elTrack->hasBridge())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::bridge)][elTrack->bridge()] |= (1U << 0);
+                    }
+                    for (auto i = 0U; i < 4; ++i)
+                    {
+                        if (elTrack->hasMod(i))
+                        {
+                            auto* trackObj = get<TrackObject>(elTrack->trackObjectId());
+                            loadedObjectFlags[enumValue(ObjectType::trackExtra)][trackObj->mods[i]] |= (1U << 0);
+                        }
+                    }
+                }
+                else if (elStation != nullptr)
+                {
+                    switch (elStation->stationType())
+                    {
+                        case StationType::trainStation:
+                            loadedObjectFlags[enumValue(ObjectType::trackStation)][elStation->objectId()] |= (1U << 0);
+                            break;
+                        case StationType::roadStation:
+                            loadedObjectFlags[enumValue(ObjectType::roadStation)][elStation->objectId()] |= (1U << 0);
+                            break;
+                        case StationType::airport:
+                            loadedObjectFlags[enumValue(ObjectType::airport)][elStation->objectId()] |= (1U << 0);
+                            break;
+                        case StationType::docks:
+                            loadedObjectFlags[enumValue(ObjectType::dock)][elStation->objectId()] |= (1U << 0);
+                            break;
+                    }
+                }
+                else if (elSignal != nullptr)
+                {
+                    if (elSignal->getLeft().hasSignal())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getLeft().signalObjectId()] |= (1U << 0);
+                    }
+                    if (elSignal->getRight().hasSignal())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::trackSignal)][elSignal->getRight().signalObjectId()] |= (1U << 0);
+                    }
+                }
+                else if (elBuilding != nullptr)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::building)][elBuilding->objectId()] |= (1U << 0);
+                    if (!elBuilding->isConstructed())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::scaffolding)][0] |= (1U << 0);
+                    }
+                }
+                else if (elTree != nullptr)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::tree)][elTree->treeObjectId()] |= (1U << 0);
+                }
+                else if (elWall != nullptr)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::wall)][elWall->wallObjectId()] |= (1U << 0);
+                }
+                else if (elRoad != nullptr)
+                {
+                    loadedObjectFlags[enumValue(ObjectType::road)][elRoad->roadObjectId()] |= (1U << 0);
+                    if (elRoad->hasBridge())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::bridge)][elRoad->bridge()] |= (1U << 0);
+                    }
+                    if (elRoad->hasLevelCrossing())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::levelCrossing)][elRoad->levelCrossingObjectId()] |= (1U << 0);
+                    }
+                    else
+                    {
+                        if (elRoad->streetLightStyle() != 0)
+                        {
+                            loadedObjectFlags[enumValue(ObjectType::streetLight)][0] |= (1U << 0);
+                        }
+                    }
+
+                    auto* roadObj = get<RoadObject>(elRoad->roadObjectId());
+                    if (!roadObj->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        for (auto i = 0U; i < 2; ++i)
+                        {
+                            if (elRoad->hasMod(i))
+                            {
+                                loadedObjectFlags[enumValue(ObjectType::roadExtra)][roadObj->mods[i]] |= (1U << 0);
+                            }
+                        }
+                    }
+                }
+                else if (elIndustry != nullptr)
+                {
+                    if (!elIndustry->isConstructed())
+                    {
+                        loadedObjectFlags[enumValue(ObjectType::scaffolding)][0] |= (1U << 0);
+                    }
+                }
+            }
+        }
+    }
+
+    // 0x00473050
+    static void markInUseVehicleObjects(std::span<uint8_t> vehicleObjectFlags)
+    {
+        for (const auto& v : VehicleManager::VehicleList())
+        {
+            Vehicles::Vehicle train(*v);
+            for (auto& car : train.cars)
+            {
+                for (auto& component : car)
+                {
+                    vehicleObjectFlags[component.body->objectId] |= (1U << 0);
+                }
+            }
+        }
+    }
+
+    // 0x00473098
+    static void markInUseIndustryObjects(std::span<uint8_t> industryObjectFlags)
+    {
+        for (auto& ind : IndustryManager::industries())
+        {
+            industryObjectFlags[ind.objectId] = (1U << 0);
+        }
+    }
+
+    // 0x004730BC
+    static void markInUseCompetitorObjects(std::span<uint8_t> competitorObjectFlags)
+    {
+        for (auto& company : CompanyManager::companies())
+        {
+            competitorObjectFlags[company.competitorId] = (1U << 0);
+        }
+    }
+
+    // 0x00472D70
+    static void markLoadedObjects(std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
+    {
+        for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
+        {
+            const auto type = static_cast<ObjectType>(i);
+            for (LoadedObjectId j = 0U; j < getMaxObjects(type); ++j)
+            {
+                if (getAny(LoadedObjectHandle{ type, j }) != nullptr)
+                {
+                    loadedObjectFlags[i][j] |= (1U << 1);
+                }
+            }
+        }
+    }
+
+    // 0x00472D3F
+    static void markInUseObjects([[maybe_unused]] std::span<SelectedObjectsFlags> objectFlags)
+    {
+        std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
+        std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
+        auto count = 0;
+        for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
+        {
+            const auto type = static_cast<ObjectType>(i);
+            loadedObjectFlags[i] = std::span<uint8_t>(allLoadedObjectFlags.begin() + count, getMaxObjects(type));
+            count += getMaxObjects(type);
+        }
+
+        markLoadedObjects(loadedObjectFlags);
+
+        if ((addr<0x00525E28, uint32_t>() & 1) != 0)
+        {
+            loadedObjectFlags[enumValue(ObjectType::region)][0] |= (1U << 0);
+            markInUseObjectsByTile(loadedObjectFlags);
+        }
+
+        markInUseVehicleObjects(loadedObjectFlags[enumValue(ObjectType::vehicle)]);
+        markInUseIndustryObjects(loadedObjectFlags[enumValue(ObjectType::industry)]);
+        markInUseCompetitorObjects(loadedObjectFlags[enumValue(ObjectType::competitor)]);
+
+        // Copy results over to objectFlags
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+
+            auto objHandle = findObjectHandle(*entry._header);
+            if (!objHandle.has_value())
+            {
+                continue;
+            }
+            const auto loadedFlags = loadedObjectFlags[enumValue(objHandle->type)][objHandle->id];
+            if (loadedFlags & (1 << 0))
+            {
+                objectFlags[i] |= SelectedObjectsFlags::selected | SelectedObjectsFlags::inUse;
+            }
+            if (loadedFlags & (1 << 1))
+            {
+                objectFlags[i] |= SelectedObjectsFlags::selected;
+            }
+        }
+    }
+
+    // 0x00472CFD
+    static void selectRequiredObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)
+    {
+        for (const auto& header : std::array<ObjectHeader, 0>{})
+        {
+            selectObjectFromIndex(SelectObjectModes::defaultSelect | SelectObjectModes::markAsAlwaysRequired, header, objectFlags, meta);
+        }
+    }
+
+    constexpr std::array<ObjectHeader, 1> kDefaultObjects = { ObjectHeader{ static_cast<uint32_t>(enumValue(ObjectType::region)), { 'R', 'E', 'G', 'U', 'S', ' ', ' ', ' ' }, 0U } };
+
+    // 0x00472D19
+    static void selectDefaultObjects(std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& meta)
+    {
+        for (const auto& header : kDefaultObjects)
+        {
+            selectObjectFromIndex(SelectObjectModes::defaultSelect, header, objectFlags, meta);
+        }
+    }
+
+    // 0x00473A95
+    void prepareSelectionList(bool markInUse)
+    {
+        _50D144refCount++;
+        if (_50D144refCount != 1)
+        {
+            // All setup already
+            return;
+        }
+
+        SelectedObjectsFlags* selectFlags = new SelectedObjectsFlags[_installedObjectCount]{};
+        _50D144 = selectFlags;
+        std::span<SelectedObjectsFlags> objectFlags{ selectFlags, _installedObjectCount };
+        // throw on nullptr?
+
+        _objectSelectionMeta = ObjectSelectionMeta{};
+        _numObjectsPerType = std::array<uint16_t, kMaxObjectTypes>{};
+
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            auto entry = ObjectIndexEntry::read(&ptr);
+
+            (*_numObjectsPerType)[enumValue(entry._header->getType())]++;
+        }
+        if (markInUse)
+        {
+            markInUseObjects(objectFlags);
+        }
+        resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
+        selectRequiredObjects(objectFlags, _objectSelectionMeta); // nop
+        selectDefaultObjects(objectFlags, _objectSelectionMeta);
+        refreshRequiredByAnother(objectFlags);
+        resetSelectedObjectCountsAndSize(objectFlags, _objectSelectionMeta);
     }
 }

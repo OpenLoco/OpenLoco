@@ -117,6 +117,11 @@ namespace OpenLoco::Vehicles::OrderManager
                 head->orderTableOffset += sizeOfRemovedOrderTable;
             }
         }
+
+        for (auto& frame : _displayFrames)
+        {
+            frame.orderOffset += sizeOfRemovedOrderTable;
+        }
     }
 
     bool spaceLeftInGlobalOrderTableForOrder(const Order* order)

@@ -10,6 +10,7 @@
 #include "Gui.h"
 #include "Intro.h"
 #include "Map/TileManager.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
@@ -94,8 +95,6 @@ namespace OpenLoco::Title
 
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
 
-    static void sub_473A95(int32_t eax);
-
     // 0x00474874
     // ?load selected objects?
     static void sub_474874()
@@ -177,7 +176,7 @@ namespace OpenLoco::Title
         setScreenFlag(ScreenFlags::title);
         setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
-        sub_473A95(1);
+        ObjectManager::prepareSelectionList(false);
         sub_474874();
         sub_473B91();
         ObjectManager::reloadAll();
@@ -260,14 +259,6 @@ namespace OpenLoco::Title
                        },
                        command);
         } while (_waitCounter == 0);
-    }
-
-    // 0x00473A95
-    static void sub_473A95(int32_t eax)
-    {
-        registers regs;
-        regs.eax = eax;
-        call(0x00473A95, regs);
     }
 
     void registerHooks()
