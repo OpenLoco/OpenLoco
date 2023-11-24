@@ -25,7 +25,7 @@ namespace OpenLoco
 
         drawingCtx.drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Drawing::RectFlags::none);
 
-        auto image = Gfx::recolour(images[0], Colour::mutedSeaGreen);
+        auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);
         drawingCtx.drawImage(&rt, x - 32, y - 32, image);
     }
 
