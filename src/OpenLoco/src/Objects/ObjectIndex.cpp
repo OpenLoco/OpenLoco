@@ -496,7 +496,7 @@ namespace OpenLoco::ObjectManager
     {
         const auto objects = getAvailableObjects(objectType);
 
-        for (auto [index, object] : objects)
+        for (auto& [index, object] : objects)
         {
             if ((objectIndexFlags[index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
@@ -1076,7 +1076,7 @@ namespace OpenLoco::ObjectManager
         for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
             auto objects = getAvailableObjects(type);
-            for (auto [i, object] : objects)
+            for (auto& [i, object] : objects)
             {
                 if ((objectFlags[i] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
                 {
@@ -1095,7 +1095,7 @@ namespace OpenLoco::ObjectManager
         for (ObjectType type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
         {
             auto objects = getAvailableObjects(type);
-            for (auto [i, object] : objects)
+            for (auto& [i, object] : objects)
             {
                 if ((objectFlags[i] & SelectedObjectsFlags::selected) == SelectedObjectsFlags::none)
                 {
@@ -1121,17 +1121,41 @@ namespace OpenLoco::ObjectManager
         return false;
     }
 
+    constexpr std::array<std::pair<ObjectType, StringId>, 15> kValidateTypeAndErrorMessage = {
+        std::make_pair(ObjectType::region, StringIds::region_type_must_be_selected),
+        std::make_pair(ObjectType::scaffolding, StringIds::scaffolding_type_must_be_selected),
+        std::make_pair(ObjectType::industry, StringIds::industry_type_must_be_selected),
+        std::make_pair(ObjectType::building, StringIds::town_building_type_must_be_selected),
+        std::make_pair(ObjectType::interfaceSkin, StringIds::interface_type_must_be_selected),
+        std::make_pair(ObjectType::vehicle, StringIds::vehicle_type_must_be_selected),
+        std::make_pair(ObjectType::land, StringIds::land_type_must_be_selected),
+        std::make_pair(ObjectType::currency, StringIds::currency_type_must_be_selected),
+        std::make_pair(ObjectType::water, StringIds::water_type_must_be_selected),
+        std::make_pair(ObjectType::townNames, StringIds::town_name_type_must_be_selected),
+        std::make_pair(ObjectType::levelCrossing, StringIds::level_crossing_type_must_be_selected),
+        std::make_pair(ObjectType::streetLight, StringIds::street_light_type_must_be_selected),
+        std::make_pair(ObjectType::snow, StringIds::snow_type_must_be_selected),
+        std::make_pair(ObjectType::climate, StringIds::climate_type_must_be_selected),
+        std::make_pair(ObjectType::hillShapes, StringIds::map_generation_type_must_be_selected),
+    };
+
     // 0x00474167
     std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags)
     {
         const auto atLeastOneSelected = [](const ObjectIndexEntry&) { return true; };
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::region, atLeastOneSelected))
+        // Validate all the simple object types that
+        // require at least one item selected of the type
+        for (auto& [objectType, errorMessage] : kValidateTypeAndErrorMessage)
         {
-            GameCommands::setErrorText(StringIds::region_type_must_be_selected);
-            return ObjectType::region;
+            if (!validateObjectTypeSelection(objectFlags, objectType, atLeastOneSelected))
+            {
+                GameCommands::setErrorText(errorMessage);
+                return objectType;
+            }
         }
 
+        // Validate the more complex road object type that
+        // has more complex logic
         if (!validateObjectTypeSelection(
                 objectFlags, ObjectType::road, [](const ObjectIndexEntry& entry) {
                     const auto tempObj = loadTemporaryObject(*entry._header);
@@ -1156,90 +1180,6 @@ namespace OpenLoco::ObjectManager
         {
             GameCommands::setErrorText(StringIds::at_least_one_generic_dual_direction_road_type_must_be_selected);
             return ObjectType::road;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::scaffolding, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::scaffolding_type_must_be_selected);
-            return ObjectType::scaffolding;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::industry, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::industry_type_must_be_selected);
-            return ObjectType::industry;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::building, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::town_building_type_must_be_selected);
-            return ObjectType::building;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::interfaceSkin, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::interface_type_must_be_selected);
-            return ObjectType::interfaceSkin;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::vehicle, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::vehicle_type_must_be_selected);
-            return ObjectType::vehicle;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::land, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::land_type_must_be_selected);
-            return ObjectType::land;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::currency, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::currency_type_must_be_selected);
-            return ObjectType::currency;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::water, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::water_type_must_be_selected);
-            return ObjectType::water;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::townNames, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::town_name_type_must_be_selected);
-            return ObjectType::townNames;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::levelCrossing, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::level_crossing_type_must_be_selected);
-            return ObjectType::levelCrossing;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::streetLight, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::street_light_type_must_be_selected);
-            return ObjectType::streetLight;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::snow, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::snow_type_must_be_selected);
-            return ObjectType::snow;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::climate, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::climate_type_must_be_selected);
-            return ObjectType::climate;
-        }
-
-        if (!validateObjectTypeSelection(objectFlags, ObjectType::hillShapes, atLeastOneSelected))
-        {
-            GameCommands::setErrorText(StringIds::map_generation_type_must_be_selected);
-            return ObjectType::hillShapes;
         }
 
         return std::nullopt;
