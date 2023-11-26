@@ -1,5 +1,55 @@
 # OpenLoco version 23.10+ (???)
 
+## Object Selection (#2128, #2149, #2185)
+
+Some of our recent features have had to do with the object selection window. Sadly, though,
+we can't add much more due to limitations with the internal object index structure. The
+solution is to move to a new, OpenLoco-specific structure. To allow us to do that, though,
+we need to have reimplemented every function that uses it. Hence, this trio of PR's that
+finishes off almost all of the functions. Whilst implementing them, one or two little
+mistakes were fixed. Error messages for some object selection errors have been improved,
+and 'object in use' errors now correctly handle signals.
+
+## Vehicle Functions (#2158, #2164, #2165, #2166, #2169, #2175, #2177)
+
+@duncanspumpkin had the urge to implement a number of vehicle functions this month. Most of
+these had been left on the to do pile due to there being too many unknowns about tracks.
+However, earlier in the year we had a bit of a breakthrough of knowledge in that area,
+so these were easy to finish off. Hopefully, next year we can finish off `Vehicle::update`!
+
+## Fix slow start-up with blank game window (#2184)
+
+OpenLoco introduces ways to play the game at higher resolutions than the game was designed for,
+including ways to scale the game canvas. This is particularly needed on double-density displays,
+where pixels are smaller than they were on traditional displays. However, a problem that had
+been plaguing the game for a while, was slow game start-up times when such large-resolution
+displays were used. After much debugging, it turns out that we were still invoking the
+vanilla Locomotion graphics initialisation routine -- something that hasn't been necessary
+for a long time. Our C++ code was actually able to handle such larger displays just fine.
+Removing the call to the vanilla routine solved the problem, making the game start up
+much faster.
+
+## Use more C++20 features (#2170)
+
+Now that we are using C++20, we no longer require some of our custom utility functions.
+This PR removed `popcount`, `rol`, `ror`, and introduced the 'spaceship' operator to a
+number of our custom types. The spaceship operator is the most fun of the four: the
+compiler can now generate <, <=, >, >= operations by just implementing a spaceship,
+`<=>`. This should improve the code generation and simplifies the codebase.
+
+## Build improvements (#2172, #2178, #2181, #2183)
+
+The latest GCC 13 was released and generated a number of warnings when compiling our
+codebase. These have been addressed where doable. We've also added new CI images that
+compile against GCC 13 and improved our build setup for this.
+
+## Object Structure (#2179, #2188)
+
+@LeftOfZen has been working on a C# object tool, and whilst implementing it, he noticed
+a few little improvements/fixes that could be made. It's great to have another
+implementation of the object code, as it will mean we can identify more of the
+unknowns and reduce the number of bugs.
+
 # OpenLoco version 23.10 (2023-10-25)
 
 ## Switch codebase to C++20 (#1843, #2136, #2144)
