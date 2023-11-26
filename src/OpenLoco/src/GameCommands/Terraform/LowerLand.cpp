@@ -21,7 +21,7 @@ using namespace OpenLoco::World::SurfaceSlope;
 namespace OpenLoco::GameCommands
 {
     // 0x004638C6, 0x004638CF
-    static uint32_t lowerLand(const LowerLandArgs& args, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
+    uint32_t lowerLand(const LowerLandArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
     {
         if (flags & Flags::apply)
         {
