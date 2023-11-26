@@ -161,7 +161,7 @@ namespace OpenLoco::StringIds
     constexpr StringId capt_airport = 160;
     constexpr StringId capt_ship_port = 161;
     constexpr StringId station_in_the_way = 162;
-
+    constexpr StringId signal_in_the_way = 163;
     constexpr StringId cant_remove_airport = 164;
     constexpr StringId cant_remove_ship_port = 165;
     constexpr StringId cant_remove_station = 166;

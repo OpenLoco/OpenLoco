@@ -110,6 +110,41 @@ namespace OpenLoco::GameCommands
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
 
+    World::TrackElement* getElTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjectId, uint8_t trackId, uint8_t index)
+    {
+        auto tile = World::TileManager::get(pos);
+        for (auto& el : tile)
+        {
+            auto* elTrack = el.as<World::TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+            if (elTrack->baseHeight() != pos.z)
+            {
+                continue;
+            }
+            if (elTrack->unkDirection() != rotation)
+            {
+                continue;
+            }
+            if (elTrack->trackId() != trackId)
+            {
+                continue;
+            }
+            if (elTrack->trackObjectId() != trackObjectId)
+            {
+                continue;
+            }
+            if (elTrack->sequenceIndex() != index)
+            {
+                continue;
+            }
+            return elTrack;
+        }
+        return nullptr;
+    }
+
     // 0x0048BB20
     currency32_t createTrainStation(const TrackStationPlacementArgs& args, const uint8_t flags)
     {
@@ -135,43 +170,11 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        auto elTrack = [&args]() -> World::TrackElement* {
-            auto tile = World::TileManager::get(args.pos);
-            for (auto& el : tile)
-            {
-                auto* elTrack = el.as<World::TrackElement>();
-                if (elTrack == nullptr)
-                {
-                    continue;
-                }
-                if (elTrack->baseHeight() != args.pos.z)
-                {
-                    continue;
-                }
-                if (elTrack->unkDirection() != args.rotation)
-                {
-                    continue;
-                }
-                if (elTrack->trackId() != args.trackId)
-                {
-                    continue;
-                }
-                if (elTrack->trackObjectId() != args.trackObjectId)
-                {
-                    continue;
-                }
-                if (elTrack->sequenceIndex() != args.index)
-                {
-                    continue;
-                }
-                return elTrack;
-            }
-            return nullptr;
-        }();
+        auto* initialElTrack = getElTrack(args.pos, args.rotation, args.trackObjectId, args.trackId, args.index);
 
         auto index = args.index;
 
-        if (elTrack == nullptr)
+        if (initialElTrack == nullptr)
         {
             if (flags & Flags::apply)
             {
@@ -186,13 +189,13 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (elTrack->hasStationElement())
+            if (initialElTrack->hasStationElement())
             {
                 setErrorText(StringIds::station_in_the_way);
                 return FAILURE;
             }
 
-            if (!sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
+            if (!sub_431E6A(initialElTrack->owner(), reinterpret_cast<World::TileElement*>(initialElTrack)))
             {
                 return FAILURE;
             }
@@ -262,7 +265,30 @@ namespace OpenLoco::GameCommands
 
         for (auto& piece : trackPieces)
         {
-            // 0x0048BE64
+            const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
+
+            auto* elTrack = getElTrack(trackLoc, args.rotation, args.trackObjectId, args.trackId, piece.index);
+            if (elTrack == nullptr)
+            {
+                // 0x0048BEC7
+                // Why are we doing anything???
+            }
+            else
+            {
+                if (elTrack->hasSignal())
+                {
+                    setErrorText(StringIds::signal_in_the_way);
+                    return FAILURE;
+                }
+                if (elTrack->hasLevelCrossing())
+                {
+                    setErrorText(StringIds::level_crossing_in_the_way);
+                    return FAILURE;
+                }
+                // Connect flags validation
+                piece.connectFlags;
+                // 0x0048BF1F
+            }
         }
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
