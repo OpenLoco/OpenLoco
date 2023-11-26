@@ -17,6 +17,18 @@ these had been left on the to do pile due to there being too many unknowns about
 However, earlier in the year we had a bit of a breakthrough of knowledge in that area,
 so these were easy to finish off. Hopefully, next year we can finish off `Vehicle::update`!
 
+## Fix slow start-up with blank game window (#2184)
+
+OpenLoco introduces ways to play the game at higher resolutions than the game was designed for,
+including ways to scale the game canvas. This is particularly needed on double-density displays,
+where pixels are smaller than they were on traditional displays. However, a problem that had
+been plaguing the game for a while, was slow game start-up times when such large-resolution
+displays were used. After much debugging, it turns out that we were still invoking the
+vanilla Locomotion graphics initialisation routine -- something that hasn't been necessary
+for a long time. Our C++ code was actually able to handle such larger displays just fine.
+Removing the call to the vanilla routine solved the problem, making the game start up
+much faster.
+
 ## Use more C++20 features (#2170)
 
 Now that we are using C++20, we no longer require some of our custom utility functions.
