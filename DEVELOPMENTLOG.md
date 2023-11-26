@@ -1,5 +1,25 @@
 # OpenLoco version 23.10+ (???)
 
+## Object Selection (#2128, #2149, #2185)
+
+Some of our recent features have been to do with the object selection window. Sadly though we can't add much more due to limitations with the internal object index structure. The solution is to move to a new OpenLoco specific structure. To allow us to do that though we need to have implemented every function that uses it. Hence this trio of PR's that finish off almost all of the functions. Whilst implementing them one or two little mistakes were fixed. Error messages for some object selection errors are improved and object in use now correctly handles signals.
+
+## Vehicle Functions (#2158, #2164, #2165, #2166, #2169, #2175, #2177)
+
+@duncanspumpkin had the urge to implement a number of vehicle functions this month. Most of these had been left on the to do pile due to too many unknowns about tracks but earlier in the year we had a bit of a breakthrough of knowledge in that area, so these were easy to finish off. Hopefully next year we can finish off Vehicle::update!
+
+## Use more C++20 features (#2170)
+
+Now that we are using C++20 we no longer require some of our utility functions. This PR removed popcount, rol, ror and introduced the spaceship operator to a number of our custom types. The spaceship operator is the most fun of the 4 the compiler can now generate <, <=, >, >= operations by just implementing a spaceship <=>. This should improve the code generation and simplifies the codebase.
+
+## Build improvements (#2172, #2178, #2181, #2183)
+
+The latest Gcc 13 was released and had a number of warnings about our codebase. These have been addressed where doable. We've also added new CI images that compile against Gcc 13 and improved our build setup for this.
+
+## Object Structure (#2179, #2188)
+
+@LeftOfZen has been working on a C# object tool and whilst implementing it he noticed a few little improvements/fixes that could be made. Its great to have another implementation of the object code as it will mean we can identify more of the unknowns and reduce the number of bugs.
+
 # OpenLoco version 23.10 (2023-10-25)
 
 ## Switch codebase to C++20 (#1843, #2136, #2144)
