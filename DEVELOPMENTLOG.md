@@ -1,3 +1,5 @@
+# OpenLoco version 23.11+ (???)
+
 # OpenLoco version 23.11 (2023-11-26)
 
 ## Object Selection (#2128, #2149, #2185)
