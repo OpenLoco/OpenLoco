@@ -536,6 +536,33 @@ namespace OpenLoco::StationManager
         return deliverCargoToStations(foundStations, cargoType, cargoQty);
     }
 
+    // 0x0048F8A0
+    StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode)
+    {
+        // Quite a simple function
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z;
+        regs.bl = mode;
+        // Owner is passed by _updatingCompanyId
+        auto allocated = !(call(0x0048F8A0, regs) & X86_FLAG_CARRY);
+        if (allocated)
+        {
+            return static_cast<StationId>(regs.bx);
+        }
+        return StationId::null;
+    }
+
+    // 0x0048F7D1
+    void deallocateStation(const StationId stationId)
+    {
+        // Quite a simple function
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x0048F7D1, regs);
+    }
+
     void registerHooks()
     {
         // Can be removed once the createStation function has been implemented (used by place.*Station game commands)

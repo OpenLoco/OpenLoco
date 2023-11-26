@@ -21,4 +21,6 @@ namespace OpenLoco::StationManager
     void registerHooks();
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const World::Pos2& pos, const World::TilePos2& size);
     uint16_t deliverCargoToStations(const std::vector<StationId>& stations, const uint8_t cargoType, const uint8_t cargoQty);
+    StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode);
+    void deallocateStation(const StationId stationId);
 }
