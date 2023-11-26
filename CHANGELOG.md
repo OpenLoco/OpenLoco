@@ -1,4 +1,4 @@
-23.10+ (???)
+23.11 (2023-11-26)
 ------------------------------------------------------------------------
 - Fix: [#2111] Crash when viewing the orders of a vehicle and ai deletes a train.
 - Fix: [#2114] The company face preview in the object selection window is the wrong size.
