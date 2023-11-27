@@ -81,14 +81,29 @@ namespace OpenLoco::GameCommands
         // If we're inserting the same stop order once more, change its type to route through
         if (order->getType() == OrderType::StopAt && !(head->mode == TransportMode::water || head->mode == TransportMode::air))
         {
-            // 0x004704AB
-            auto orderTable = OrderRingView(head->orderTableOffset, args.orderOffset);
-            auto* existingOrder = (*orderTable.begin()).as<OrderStopAt>();
+            // To get the previous order (to check if it was also the same stop order)
+            // its a bit convoluted we need to iterate the order table keeping
+            // a lagging previous iterator. Once the iterator either points at the
+            // target order or its reached the end then we have the previous order.
+            auto orderTable = OrderRingView(head->orderTableOffset, 0);
+            auto iter = orderTable.begin();
+            auto targetOrder = head->orderTableOffset + args.orderOffset;
+            auto previous = iter;
+            if (iter->getOffset() != targetOrder && iter != orderTable.end())
+            {
+                iter++;
+                while (iter->getOffset() != targetOrder && iter != orderTable.end())
+                {
+                    iter++;
+                    previous++;
+                }
+            }
+
+            auto* existingOrder = previous->as<OrderStopAt>();
             auto* newOrder = order->as<OrderStopAt>();
 
             if (existingOrder != nullptr && newOrder != nullptr && existingOrder->getStation() == newOrder->getStation())
             {
-                // 0x00470499
                 existingOrder->setType(OrderType::RouteThrough);
                 return 0;
             }
