@@ -555,8 +555,8 @@ namespace OpenLoco::StringIds
     constexpr StringId town_size_metropolis = 621;
     constexpr StringId track_road_unsuitable = 622;
     constexpr StringId track_road_unsuitable_for_station = 623;
-    constexpr StringId signals_cannot_be_built_on_a_junction = 624;
-    constexpr StringId signals_cannot_be_built_on_a_junction_2 = 625; // identical to 624
+    constexpr StringId station_cannot_be_built_on_a_junction = 624;
+    constexpr StringId signals_cannot_be_built_on_a_junction = 625;
     constexpr StringId signals_cannot_be_built_in_stations = 626;
     constexpr StringId wcolour3_stringid_2 = 627; // identical to 628
     constexpr StringId wcolour3_stringid = 628;

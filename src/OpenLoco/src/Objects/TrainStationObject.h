@@ -35,8 +35,8 @@ namespace OpenLoco
         using CargoOffset = std::array<World::Pos3, 2>;
 
         StringId name;
-        uint8_t drawStyle; // 0x02
-        uint8_t var_03;
+        uint8_t drawStyle;       // 0x02
+        uint8_t height;          // 0x03 despite being uint8_t this is bigZ not smallZ
         uint16_t trackPieces;    // 0x04
         int16_t buildCostFactor; // 0x06
         int16_t sellCostFactor;  // 0x08

@@ -1,11 +1,15 @@
 #include "CreateTrainStation.h"
+#include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
+#include "Map/StationElement.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
+#include "ViewportManager.h"
 #include "World/StationManager.h"
 
 namespace OpenLoco::GameCommands
@@ -263,6 +267,8 @@ namespace OpenLoco::GameCommands
             }
         }
 
+        currency32_t totalCost = 0;
+
         for (auto& piece : trackPieces)
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
@@ -286,8 +292,118 @@ namespace OpenLoco::GameCommands
                     return FAILURE;
                 }
                 // Connect flags validation
-                piece.connectFlags;
-                // 0x0048BF1F
+                const auto connectFlags = piece.connectFlags[elTrack->unkDirection()];
+                auto tile = World::TileManager::get(trackLoc);
+                for (auto& el : tile)
+                {
+                    auto* elConnectTrack = el.as<World::TrackElement>();
+                    if (elConnectTrack == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elConnectTrack == elTrack)
+                    {
+                        continue;
+                    }
+                    if (elConnectTrack->baseHeight() != trackLoc.z)
+                    {
+                        continue;
+                    }
+                    if (elConnectTrack->isGhost())
+                    {
+                        continue;
+                    }
+                    auto& connectPiece = World::TrackData::getTrackPiece(elConnectTrack->trackId())[elConnectTrack->sequenceIndex()];
+                    if (connectFlags & connectPiece.connectFlags[elConnectTrack->unkDirection()])
+                    {
+                        setErrorText(StringIds::station_cannot_be_built_on_a_junction);
+                        return FAILURE;
+                    }
+                }
+
+                // Calculate station costs
+                if (piece.index == 0)
+                {
+                    bool calculateCost = true;
+                    // Why?? we already block this from occurring???
+                    if (elTrack->hasStationElement())
+                    {
+                        auto* elStation = elTrack->next()->as<World::StationElement>();
+                        if (elStation == nullptr)
+                        {
+                            return FAILURE;
+                        }
+                        if (elStation->objectId() == args.type)
+                        {
+                            calculateCost = false;
+                        }
+                        else
+                        {
+                            auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
+                            auto removeCostBase = Economy::getInflationAdjustedCost(oldStationObj->sellCostFactor, oldStationObj->costIndex, 8);
+                            const auto cost = (removeCostBase * World::TrackData::getTrackCostFactor(elTrack->trackId())) / 256;
+                            totalCost += cost;
+                        }
+                    }
+                    if (calculateCost)
+                    {
+                        auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                        const auto cost = (removeCostBase * World::TrackData::getTrackCostFactor(elTrack->trackId())) / 256;
+                        totalCost += cost;
+                    }
+                }
+
+                // Perform clearance
+                const auto baseZ = elTrack->baseZ() + 8;
+                const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
+                World::QuarterTile qt(elTrack->occupiedQuarter(), 0);
+                if (!(flags & Flags::flag_4))
+                {
+                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2))
+                    {
+                        return FAILURE;
+                    }
+                }
+                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAE5))
+                {
+                    return FAILURE;
+                }
+
+                // TODO: This is dangerous pointer might be invalid?
+                if (elTrack->hasStationElement() && (flags & Flags::ghost))
+                {
+                    // ?????
+                    setErrorText(StringIds::empty);
+                    return FAILURE;
+                }
+
+                if (!(flags & Flags::apply))
+                {
+                    continue;
+                }
+
+                World::StationElement* newStationElement = nullptr;
+                // Actually place the new station
+                if (elTrack->hasStationElement())
+                {
+                    auto* elStation = elTrack->next()->as<World::StationElement>();
+                    if (elStation == nullptr)
+                    {
+                        return FAILURE;
+                    }
+                    auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
+                    elTrack->setClearZ(elTrack->clearZ() - oldStationObj->height / World::kSmallZStep);
+                    elStation->setRotation(0);
+                    elStation->setMultiTileIndex(0);
+                    _112C7A9 = false;
+                    Ui::ViewportManager::invalidate(trackLoc, elStation->baseHeight(), elStation->clearHeight());
+                    newStationElement = elStation;
+                }
+                else
+                {
+                    // 0x0048C0E2
+                }
+                // 0x0048C25D
             }
         }
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
