@@ -236,6 +236,7 @@ namespace OpenLoco::GameCommands
                             station->updateLabel();
                         }
                     }
+                    break;
                     case NearbyStationValidation::okay:
                         _lastPlacedTrackStationId = nearbyStationId;
                         break;
@@ -260,6 +261,7 @@ namespace OpenLoco::GameCommands
                         StationManager::deallocateStation(newStationId);
                         // _lastPlacedTrackStationId not set but thats fine since this is the no apply side
                     }
+                    break;
                     case NearbyStationValidation::okay:
                         _lastPlacedTrackStationId = nearbyStationId;
                         break;
