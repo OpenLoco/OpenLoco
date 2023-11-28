@@ -249,7 +249,7 @@ namespace OpenLoco::GameCommands
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
-                        break;
+                        return FAILURE;
                     case NearbyStationValidation::requiresNewStation:
                     {
                         const auto newStationId = StationManager::allocateNewStation(trackStart, getUpdatingCompanyId(), 0);
