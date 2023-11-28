@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BDCE & 0x0048BD40
-    std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint8_t rotation, const uint16_t tad, uint8_t trackObjectId, const uint8_t flags)
+    std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
     {
         auto func = (flags & Flags::flag_4) ? &sub_48FFF7 : &sub_48FF36;
         auto nearbyStation = func(pos, tad, trackObjectId);
@@ -163,7 +163,7 @@ namespace OpenLoco::GameCommands
         auto* stationObj = ObjectManager::get<TrainStationObject>(args.type);
 
         const auto compatibleTrack = trackObj->stationTrackPieces & stationObj->trackPieces & World::TrackData::getTrackCompatibleFlags(args.trackId);
-        if (compatibleTrack == 0)
+        if (compatibleTrack != 0)
         {
             setErrorText(StringIds::track_road_unsuitable_for_station);
             return FAILURE;
@@ -220,7 +220,7 @@ namespace OpenLoco::GameCommands
         {
             if (flags & Flags::apply)
             {
-                auto [result, nearbyStationId] = validateNearbyStation(trackStart, args.rotation, (args.trackId << 3) | args.rotation, args.trackObjectId, flags);
+                auto [result, nearbyStationId] = validateNearbyStation(trackStart, (args.trackId << 3) | args.rotation, args.trackObjectId, flags);
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
@@ -245,7 +245,7 @@ namespace OpenLoco::GameCommands
             else
             {
                 // Same as the other branch but deallocate after allocating and return failure on failure
-                auto [result, nearbyStationId] = validateNearbyStation(trackStart, args.rotation, (args.trackId << 3) | args.rotation, args.trackObjectId, flags);
+                auto [result, nearbyStationId] = validateNearbyStation(trackStart, (args.trackId << 3) | args.rotation, args.trackObjectId, flags);
                 switch (result)
                 {
                     case NearbyStationValidation::failure:
@@ -393,7 +393,6 @@ namespace OpenLoco::GameCommands
                     }
                     auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
                     elTrack->setClearZ(elTrack->clearZ() - oldStationObj->height / World::kSmallZStep);
-                    elStation->setRotation(0);
                     elStation->setMultiTileIndex(0);
                     _112C7A9 = false;
                     Ui::ViewportManager::invalidate(trackLoc, elStation->baseHeight(), elStation->clearHeight());
@@ -401,15 +400,40 @@ namespace OpenLoco::GameCommands
                 }
                 else
                 {
-                    // 0x0048C0E2
+                    newStationElement = World::TileManager::insertElementAfterNoReorg<World::StationElement>(
+                        reinterpret_cast<World::TileElement*>(elTrack),
+                        trackLoc,
+                        elTrack->baseZ(),
+                        elTrack->occupiedQuarter());
+                    newStationElement->setRotation(elTrack->unkDirection());
+                    newStationElement->setGhost(flags & Flags::ghost);
+                    newStationElement->setFlag5(flags & Flags::flag_4);
+                    newStationElement->setMultiTileIndex(0);
+                    newStationElement->setUnk4SLR4(0);
+                    newStationElement->setStationType(StationType::trainStation);
+                    newStationElement->setUnk7SLR2(0);
+                    if (!(flags & Flags::ghost))
+                    {
+                        newStationElement->setStationId(_lastPlacedTrackStationId);
+                    }
+                    else
+                    {
+                        newStationElement->setStationId(static_cast<StationId>(0));
+                    }
+                    elTrack->setHasStationElement(true);
                 }
-                // 0x0048C25D
+                newStationElement->setObjectId(args.type);
+                newStationElement->setClearZ(newStationElement->clearZ() + stationObj->height / World::kSmallZStep);
+                elTrack->setClearZ(newStationElement->clearZ());
+                newStationElement->setOwner(getUpdatingCompanyId());
+                Ui::ViewportManager::invalidate(trackLoc, newStationElement->baseHeight(), newStationElement->clearHeight());
             }
         }
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
             // 0x0048C2CD
         }
+        return totalCost;
     }
 
     void createTrainStation(registers& regs)

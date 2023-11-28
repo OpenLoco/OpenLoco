@@ -537,7 +537,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0048F8A0
-    StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode)
+    StationId allocateNewStation(const World::Pos3 pos, [[maybe_unused]] const CompanyId owner, const uint8_t mode)
     {
         // Quite a simple function
         registers regs;

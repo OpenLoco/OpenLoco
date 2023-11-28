@@ -176,7 +176,11 @@ namespace OpenLoco::World
     }
 
     StationType StationElement::stationType() const { return StationType(_5 >> 5); }
-
+    void StationElement::setStationType(StationType type)
+    {
+        _5 &= ~0xE0;
+        _5 |= (enumValue(type) & 0x7) << 5;
+    }
     /**
      *
      * @param x @<ax>

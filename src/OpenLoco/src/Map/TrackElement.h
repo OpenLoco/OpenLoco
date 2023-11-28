@@ -22,6 +22,11 @@ namespace OpenLoco::World
         TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
 
         bool hasStationElement() const { return (_type & 0x80) != 0; }
+        void setHasStationElement(bool state)
+        {
+            _type &= ~0x80;
+            _type |= state ? 0x80 : 0;
+        }
         bool hasSignal() const { return (_type & 0x40) != 0; }
         void setHasSignal(bool state)
         {
