@@ -441,11 +441,21 @@ namespace OpenLoco::GameCommands
                 }
                 else
                 {
+                    // elTrack pointer will be invalid after this call
                     newStationElement = World::TileManager::insertElementAfterNoReorg<World::StationElement>(
                         reinterpret_cast<World::TileElement*>(elTrack),
                         trackLoc,
                         elTrack->baseZ(),
                         elTrack->occupiedQuarter());
+                    if (newStationElement == nullptr)
+                    {
+                        return FAILURE;
+                    }
+                    elTrack = newStationElement->prev()->as<World::TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        return FAILURE;
+                    }
                     newStationElement->setRotation(elTrack->unkDirection());
                     newStationElement->setGhost(flags & Flags::ghost);
                     newStationElement->setFlag5(flags & Flags::flag_4);
