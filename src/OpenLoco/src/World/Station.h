@@ -101,7 +101,7 @@ namespace OpenLoco
         TownId town{};                                // 0x2C
         StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E
         uint16_t stationTileSize{};                   // 0x1CE
-        World::Pos3 stationTiles[80];                 // 0x1D0 Note: z coordinate might need flooring
+        World::Pos3 stationTiles[80];                 // 0x1D0 Note: z coordinate also contains rotation so always floor
         uint8_t var_3B0{};
         uint8_t var_3B1{};
         uint16_t var_3B2{};
