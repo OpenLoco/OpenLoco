@@ -1347,8 +1347,9 @@ namespace OpenLoco
     void logVehicleTypeAndSubTYpe(int offset, const OpenLoco::Entity& entity)
     {
         auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
-        Vehicles::VehicleBase vehicleBase = static_cast<Vehicles::VehicleBase>(entity);
-        auto vechicleSubTypeName = getVehicleSubType(vehicleBase.getSubType());
+        char* entityBase = (char*)(&entity);
+        Vehicles::VehicleBase* vehicleBase = reinterpret_cast<Vehicles::VehicleBase*>(entityBase);
+        auto vechicleSubTypeName = getVehicleSubType(vehicleBase->getSubType());
         Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
     }
 
@@ -1490,8 +1491,6 @@ namespace OpenLoco
             {
                 auto tile1 = tileElements1.at(elementCount);
                 auto tile2 = tileElements2.at(elementCount);
-
-                Logging::info("TILE ELEMENT[{}]", elementCount);
 
                 if (!unsafe::bitWiseEqual(tile1, tile2))
                 {
