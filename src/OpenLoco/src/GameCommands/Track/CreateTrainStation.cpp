@@ -2,6 +2,7 @@
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
@@ -188,6 +189,36 @@ namespace OpenLoco::GameCommands
         call(0x0048D794, regs);
     }
 
+    // 0x0048BAC2
+    static World::TileClearance::ClearFuncResult clearFuncAiReservation(World::TileElement& el, World::TrackElement& elReferenceTrack)
+    {
+        auto* elStation = el.as<World::StationElement>();
+        auto* elTrack = el.as<World::TrackElement>();
+        if (elStation != nullptr)
+        {
+            if (elStation->stationType() == StationType::trainStation)
+            {
+                return World::TileClearance::ClearFuncResult::noCollision;
+            }
+        }
+        else if (elTrack != nullptr && elTrack == &elReferenceTrack)
+        {
+            return World::TileClearance::ClearFuncResult::noCollision;
+        }
+        return World::TileClearance::ClearFuncResult::collision;
+    };
+
+    // 0x0048BAE5
+    static World::TileClearance::ClearFuncResult clearFuncCollideWithNotSurface(World::TileElement& el)
+    {
+        auto* elSurface = el.as<World::SurfaceElement>();
+        if (elSurface != nullptr)
+        {
+            return World::TileClearance::ClearFuncResult::noCollision;
+        }
+        return World::TileClearance::ClearFuncResult::collision;
+    };
+
     // 0x0048BB20
     static currency32_t createTrainStation(const TrackStationPlacementArgs& args, const uint8_t flags)
     {
@@ -315,6 +346,7 @@ namespace OpenLoco::GameCommands
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
             auto* elTrack = getElTrack(trackLoc, args.rotation, args.trackObjectId, args.trackId, piece.index);
+
             if (elTrack == nullptr)
             {
                 // 0x0048BEC7
@@ -337,12 +369,13 @@ namespace OpenLoco::GameCommands
                 World::QuarterTile qt(0xF /* lastEl->occupiedQuarter() */, 0);
                 if (!(flags & Flags::flag_4))
                 {
-                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2))
+                    // Again this does not make sense clearFuncAiReservation would need to access the lastEl
+                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2 /*clearFuncAiReservation*/))
                     {
                         return FAILURE;
                     }
                 }
-                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAE5))
+                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithNotSurface))
                 {
                     return FAILURE;
                 }
@@ -394,7 +427,7 @@ namespace OpenLoco::GameCommands
                 if (piece.index == 0)
                 {
                     bool calculateCost = true;
-                    // Why?? we already block this from occurring???
+                    // Why?? we already blocked this from occurring???
                     if (elTrack->hasStationElement())
                     {
                         auto* elStation = elTrack->next()->as<World::StationElement>();
@@ -428,12 +461,15 @@ namespace OpenLoco::GameCommands
                 World::QuarterTile qt(elTrack->occupiedQuarter(), 0);
                 if (!(flags & Flags::flag_4))
                 {
-                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2))
+                    auto clearFunc = [&elTrack](World::TileElement& el) {
+                        return clearFuncAiReservation(el, *elTrack);
+                    };
+                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFunc))
                     {
                         return FAILURE;
                     }
                 }
-                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAE5))
+                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithNotSurface))
                 {
                     return FAILURE;
                 }
