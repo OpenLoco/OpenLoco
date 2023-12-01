@@ -213,6 +213,15 @@ namespace OpenLoco::GameCommands
             regs.ebx = backup.ebx;
             return 0;
         });
+
+        // Used by a gc_unk_51 of going via doCommand
+        registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createTrainStation(backup);
+
+            regs.ebx = backup.ebx;
+            return 0;
+        });
     }
 
     static uint32_t loc_4314EA();
