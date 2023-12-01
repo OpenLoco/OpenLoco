@@ -117,9 +117,11 @@ namespace OpenLoco
     static void tickLogic();
     static void dateTick();
     static void sub_46FFCA();
+    static void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset);
     static std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
     static std::string getEffectSubType(const EffectType effectSubType);
     static void compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2);
+    static void compareGameStates(OpenLoco::GameState& gameState1, S5::GameState& gameState2);
 
     std::string getVersionInfo()
     {
