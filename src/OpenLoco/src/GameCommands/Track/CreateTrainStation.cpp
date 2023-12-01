@@ -362,10 +362,11 @@ namespace OpenLoco::GameCommands
                 }
 
                 // Perform clearance
+                // Subtly different to below (baseZ and qt stuff)
+                const auto baseZ = trackLoc.z / World::kSmallZStep + 8;
+                const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
                 // Vanilla would access whatever was the last element on the tile here
                 // which further reinforces the ??? why are we doing anything
-                const auto baseZ = trackLoc.z / World::kSmallZStep /* lastEl->baseZ()*/ + 8;
-                const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
                 World::QuarterTile qt(0xF /* lastEl->occupiedQuarter() */, 0);
                 if (!(flags & Flags::flag_4))
                 {
