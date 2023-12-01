@@ -117,9 +117,12 @@ namespace OpenLoco
     static void tickLogic();
     static void dateTick();
     static void sub_46FFCA();
+
     static void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset);
     static std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
     static std::string getEffectSubType(const EffectType effectSubType);
+    static void logVehicleTypeAndSubTYpe(int offset, const OpenLoco::Entity& entity);
+    static void logEffectType(int offset, const OpenLoco::Entity& entity);
     static void compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2);
     static void compareGameStates(OpenLoco::GameState& gameState1, S5::GameState& gameState2);
 
@@ -1341,49 +1344,51 @@ namespace OpenLoco
         return effectSubTypeName;
     }
 
+    void logVehicleTypeAndSubTYpe(int offset, const OpenLoco::Entity& entity)
+    {
+        auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
+        Vehicles::VehicleBase vehicleBase = static_cast<Vehicles::VehicleBase>(entity);
+        auto vechicleSubTypeName = getVehicleSubType(vehicleBase.getSubType());
+        Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
+    }
+
+    void logEffectType(int offset, const OpenLoco::Entity& entity)
+    {
+        auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
+        char* effect = (char*)(&entity);
+        EffectEntity* effectEntity = reinterpret_cast<EffectEntity*>(effect);
+        auto effectSubTYpeName = getEffectSubType(effectEntity->getSubType());
+        Logging::info("{} {}", effectTypeName, effectSubTYpeName);
+    }
+
     void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset)
     {
         if (!unsafe::bitWiseEqual(lhs, rhs))
         {
-            /*OpenLoco::Entity rhsEntity;
-            std::memcpy(&rhsEntity, &rhs, sizeof(Entity));*/
-
             char* entity = (char*)(&rhs);
             OpenLoco::Entity* rhsEntity = reinterpret_cast<OpenLoco::Entity*>(entity);
 
             Logging::info("DIVERGENCE");
             if (lhs.baseType == EntityBaseType::vehicle)
             {
-                auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
-                Vehicles::VehicleBase vehicleBase = static_cast<Vehicles::VehicleBase>(lhs);
-                auto vechicleSubTypeName = getVehicleSubType(vehicleBase.getSubType());
-                Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
+                logVehicleTypeAndSubTYpe(offset, lhs);
             }
             if (lhs.baseType != rhsEntity->baseType)
             {
                 if (rhsEntity->baseType == EntityBaseType::vehicle)
                 {
-                    auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
-                    Vehicles::VehicleBase vehicleBase = static_cast<Vehicles::VehicleBase>(*rhsEntity);
-                    auto vechicleSubTypeName = getVehicleSubType(vehicleBase.getSubType());
-                    Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
+                    logVehicleTypeAndSubTYpe(offset, *rhsEntity);
                 }
             }
             if (lhs.baseType == EntityBaseType::effect)
             {
-                auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
-                EffectEntity effectEntity = static_cast<EffectEntity>(lhs);
-                auto effectSubTYpeName = getEffectSubType(effectEntity.getSubType());
-                Logging::info("{} {}", effectTypeName, effectSubTYpeName);
+                logEffectType(offset, lhs);
             }
             if (lhs.baseType != rhsEntity->baseType)
             {
                 if (rhsEntity->baseType == EntityBaseType::effect)
                 {
-                    auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
-                    EffectEntity effectEntity = static_cast<EffectEntity>(lhs);
-                    auto effectSubTYpeName = getEffectSubType(effectEntity.getSubType());
-                    Logging::info("{} {}", effectTypeName, effectSubTYpeName);
+                    logEffectType(offset, *rhsEntity);
                 }
             }
             if (lhs.baseType == EntityBaseType::null)
@@ -1507,7 +1512,6 @@ namespace OpenLoco
 
         S5::setGameState(S5::importSave(path1));
         compareGameStates(getGameState(), S5::importSave(path2).get()->gameState);
-
         compareElements(S5::importSave(path1).get()->tileElements, S5::importSave(path2).get()->tileElements);
     }
 
