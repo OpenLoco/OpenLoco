@@ -14,6 +14,7 @@ namespace OpenLoco
         join,
         uncompress,
         simulate,
+        compare,
         help,
         version,
         intro,

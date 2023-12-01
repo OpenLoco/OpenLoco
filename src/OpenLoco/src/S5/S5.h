@@ -459,6 +459,7 @@ namespace OpenLoco::S5
     const std::vector<ObjectHeader>& getObjectErrorList();
 
     std::unique_ptr<S5File> importSave(const fs::path& path);
+    void setGameState(std::unique_ptr<S5File> importSave);
     bool importSaveToGameState(const fs::path& path, LoadFlags flags);
     bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);

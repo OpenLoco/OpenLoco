@@ -20,6 +20,7 @@ namespace OpenLoco
 
     static int uncompressFile(const CommandLineOptions& options);
     static int simulate(const CommandLineOptions& options);
+    static int compare(const CommandLineOptions& options);
 
     const CommandLineOptions& getCommandLineOptions()
     {
@@ -344,6 +345,12 @@ namespace OpenLoco
                 options.ticks = parser.getArg<int32_t>(2);
                 options.path2 = parser.getArg(3);
             }
+            else if (firstArg == "compare")
+            {
+                options.action = CommandLineAction::compare;
+                options.path = parser.getArg(1);
+                options.path2 = parser.getArg(2);
+            }
             else
             {
                 options.path = parser.getArg(0);
@@ -377,6 +384,7 @@ namespace OpenLoco
         std::cout << "                join [options] <address>" << std::endl;
         std::cout << "                uncompress [options] <path>" << std::endl;
         std::cout << "                simulate [options] <path> <ticks> [path]" << std::endl;
+        std::cout << "                compare [options] <path1> [path2]" << std::endl;
         std::cout << std::endl;
         std::cout << "options:" << std::endl;
         std::cout << "--bind            Address to bind to when hosting a server" << std::endl;
@@ -406,6 +414,8 @@ namespace OpenLoco
                 return uncompressFile(options);
             case CommandLineAction::simulate:
                 return simulate(options);
+            case CommandLineAction::compare:
+                return compare(options);
             default:
                 return {};
         }
@@ -551,6 +561,24 @@ namespace OpenLoco
             {
                 Logging::error("Unable to save game to {}", outPath.u8string());
             }
+        }
+
+        return 0;
+    }
+
+    static int compare(const CommandLineOptions& options)
+    {
+        auto file1 = fs::u8path(options.path);
+        auto file2 = fs::u8path(options.path2);
+
+        try
+        {
+            OpenLoco::compareGameStates(file1, file2);
+        }
+        catch (std::exception& e)
+        {
+            Logging::error("Unable to compare gamestates: {} to {}", file1, file2);
+            Logging::error("Execption reason {}", e.what());
         }
 
         return 0;

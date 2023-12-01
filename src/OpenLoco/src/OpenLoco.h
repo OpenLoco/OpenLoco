@@ -24,6 +24,7 @@ namespace OpenLoco
     void initialiseViewports();
     void simulateGame(const fs::path& path, int32_t ticks);
     void compareGameStates(const fs::path& path);
+    void compareGameStates(const fs::path& path1, const fs::path& path2);
 
     void sub_431695(uint16_t var_F253A0);
     int main(std::vector<std::string>&& argv);
