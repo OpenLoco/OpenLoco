@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048FF36
-    NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
+    static NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
         registers regs;
         regs.ax = pos.x;
@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
         return result;
     }
 
-    bool sub_48FEF4(StationId id, World::Pos3 pos)
+    static bool sub_48FEF4(StationId id, World::Pos3 pos)
     {
         registers regs;
         regs.ax = pos.x;
@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048FFF7
-    NearbyStation sub_48FFF7(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
+    static NearbyStation sub_48FFF7(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
         // This one is for ai preview allocated track
         registers regs;
@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BDCE & 0x0048BD40
-    std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
+    static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
     {
         auto func = (flags & Flags::flag_4) ? &sub_48FFF7 : &sub_48FF36;
         auto nearbyStation = func(pos, tad, trackObjectId);
@@ -114,7 +114,7 @@ namespace OpenLoco::GameCommands
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
 
-    World::TrackElement* getElTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjectId, uint8_t trackId, uint8_t index)
+    static World::TrackElement* getElTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjectId, uint8_t trackId, uint8_t index)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -150,7 +150,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048F321
-    void sub_48F321(StationId stationId, World::Pos3 newTilePos, uint8_t newTileRotation)
+    static void sub_48F321(StationId stationId, World::Pos3 newTilePos, uint8_t newTileRotation)
     {
         // Likely adds tile to station
         registers regs;
@@ -162,7 +162,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048F529
-    void sub_48F529(StationId stationId)
+    static void sub_48F529(StationId stationId)
     {
         // Reset some station flags and cargo stuff
         registers regs;
@@ -171,7 +171,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048F716
-    void sub_48F716(StationId stationId)
+    static void sub_48F716(StationId stationId)
     {
         // Recalculate station centre
         registers regs;
@@ -180,7 +180,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048D794
-    void sub_48D794(Station& station)
+    static void sub_48D794(Station& station)
     {
         // ?? Probably work out station multi tile index's
         registers regs;
@@ -189,7 +189,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048BB20
-    currency32_t createTrainStation(const TrackStationPlacementArgs& args, const uint8_t flags)
+    static currency32_t createTrainStation(const TrackStationPlacementArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -318,7 +318,35 @@ namespace OpenLoco::GameCommands
             if (elTrack == nullptr)
             {
                 // 0x0048BEC7
-                // Why are we doing anything???
+                // Why are we doing anything??? ai placement??
+
+                // Common with below code. Extract out
+                // Calculate station costs
+                if (piece.index == 0)
+                {
+                    auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                    const auto cost = (placementCostBase * World::TrackData::getTrackCostFactor(elTrack->trackId())) / 256;
+                    totalCost += cost;
+                }
+
+                // Perform clearance
+                // Vanilla would access whatever was the last element on the tile here
+                // which further reinforces the ??? why are we doing anything
+                const auto baseZ = trackLoc.z / World::kSmallZStep /* lastEl->baseZ()*/ + 8;
+                const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
+                World::QuarterTile qt(0xF /* lastEl->occupiedQuarter() */, 0);
+                if (!(flags & Flags::flag_4))
+                {
+                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2))
+                    {
+                        return FAILURE;
+                    }
+                }
+                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAE5))
+                {
+                    return FAILURE;
+                }
+                continue;
             }
             else
             {
@@ -388,8 +416,8 @@ namespace OpenLoco::GameCommands
                     }
                     if (calculateCost)
                     {
-                        auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
-                        const auto cost = (removeCostBase * World::TrackData::getTrackCostFactor(elTrack->trackId())) / 256;
+                        auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
+                        const auto cost = (placementCostBase * World::TrackData::getTrackCostFactor(elTrack->trackId())) / 256;
                         totalCost += cost;
                     }
                 }
