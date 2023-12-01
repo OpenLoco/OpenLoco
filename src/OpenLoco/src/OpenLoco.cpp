@@ -117,6 +117,9 @@ namespace OpenLoco
     static void tickLogic();
     static void dateTick();
     static void sub_46FFCA();
+    static std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
+    static std::string getEffectSubType(const EffectType effectSubType);
+    static void compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2);
 
     std::string getVersionInfo()
     {
@@ -1247,7 +1250,7 @@ namespace OpenLoco
     }
 
     template<typename T>
-    void logDivergentGameStateFieldNoHeader(const std::string type, int offset, const T& lhs, const T& rhs)
+    void logDivergentGameStateFieldNoHeader(int offset, const T& lhs, const T& rhs)
     {
         if (!unsafe::bitWiseEqual(lhs, rhs))
         {
@@ -1258,10 +1261,10 @@ namespace OpenLoco
     }
 
     template<typename T1, typename T2>
-    void logDivergentEntity(const std::string type, const T1& lhs, const T2& rhs, int arraySize)
+    void logDivergentEntity(const T1& lhs, const T2& rhs, int arraySize)
     {
         for (int offset = 0; offset < arraySize; offset++)
-            logDivergentEntity(lhs[offset], rhs[offset], offset);
+            logDivergentEntityOffset(lhs[offset], rhs[offset], offset);
     }
 
     std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType)
@@ -1336,13 +1339,15 @@ namespace OpenLoco
         return effectSubTypeName;
     }
 
-    template<typename T1, typename T2>
-    void logDivergentEntity(const T1& lhs, const T2& rhs, int offset)
+    void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset)
     {
         if (!unsafe::bitWiseEqual(lhs, rhs))
         {
-            OpenLoco::Entity rhsEntity;
-            std::memcpy(&rhsEntity, &rhs, sizeof(Entity));
+            /*OpenLoco::Entity rhsEntity;
+            std::memcpy(&rhsEntity, &rhs, sizeof(Entity));*/
+
+            char* entity = (char*)(&rhs);
+            OpenLoco::Entity* rhsEntity = reinterpret_cast<OpenLoco::Entity*>(entity);
 
             Logging::info("DIVERGENCE");
             if (lhs.baseType == EntityBaseType::vehicle)
@@ -1352,12 +1357,12 @@ namespace OpenLoco
                 auto vechicleSubTypeName = getVehicleSubType(vehicleBase.getSubType());
                 Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
             }
-            if (lhs.baseType != rhsEntity.baseType)
+            if (lhs.baseType != rhsEntity->baseType)
             {
-                if (rhsEntity.baseType == EntityBaseType::vehicle)
+                if (rhsEntity->baseType == EntityBaseType::vehicle)
                 {
                     auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
-                    Vehicles::VehicleBase vehicleBase = static_cast<Vehicles::VehicleBase>(rhsEntity);
+                    Vehicles::VehicleBase vehicleBase = static_cast<Vehicles::VehicleBase>(*rhsEntity);
                     auto vechicleSubTypeName = getVehicleSubType(vehicleBase.getSubType());
                     Logging::info("{} {}", vehicleTypeName, vechicleSubTypeName);
                 }
@@ -1369,9 +1374,9 @@ namespace OpenLoco
                 auto effectSubTYpeName = getEffectSubType(effectEntity.getSubType());
                 Logging::info("{} {}", effectTypeName, effectSubTYpeName);
             }
-            if (lhs.baseType != rhsEntity.baseType)
+            if (lhs.baseType != rhsEntity->baseType)
             {
-                if (rhsEntity.baseType == EntityBaseType::effect)
+                if (rhsEntity->baseType == EntityBaseType::effect)
                 {
                     auto effectTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] EFFECT";
                     EffectEntity effectEntity = static_cast<EffectEntity>(lhs);
@@ -1381,9 +1386,9 @@ namespace OpenLoco
             }
             if (lhs.baseType == EntityBaseType::null)
                 Logging::info("TYPE: ENTITY [{}] NULL", offset);
-            if (lhs.baseType != rhsEntity.baseType)
+            if (lhs.baseType != rhsEntity->baseType)
             {
-                if (rhsEntity.baseType == EntityBaseType::null)
+                if (rhsEntity->baseType == EntityBaseType::null)
                     Logging::info("TYPE: ENTITY [{}] NULL", offset);
             }
             unsafe::bitWiseLogDivergence("", lhs, rhs, false);
@@ -1416,7 +1421,7 @@ namespace OpenLoco
         logDivergence("towns", gameState1.towns, gameState2.towns, Limits::kMaxTowns);
         logDivergence("industries", gameState1.industries, gameState2.industries, Limits::kMaxIndustries);
         logDivergence("stations", gameState1.stations, gameState2.stations, Limits::kMaxStations);
-        logDivergentEntity("entities", gameState1.entities, gameState2.entities, Limits::kMaxEntities);
+        logDivergentEntity(gameState1.entities, gameState2.entities, Limits::kMaxEntities);
 
         logDivergence("animations", gameState1.animations, gameState2.animations, Limits::kMaxAnimations);
         logDivergence("waves", gameState1.waves, gameState2.waves, Limits::kMaxWaves);
@@ -1439,7 +1444,6 @@ namespace OpenLoco
                 }
 
                 logDivergentGameStateFieldNoHeader(
-                    "routings[" + std::to_string(route) + "][" + std::to_string(routePerVehicle) + "]",
                     route * Limits::kMaxOrdersPerVehicle + routePerVehicle,
                     gameState1.routings[route][routePerVehicle],
                     gameState2.routings[route][routePerVehicle]);
@@ -1469,11 +1473,11 @@ namespace OpenLoco
 
         if (tileElements1.size() != tileElements2.size())
         {
-            Logging::info("The TileElements sizes are different. WIll compare up to the smallest TileElements size.");
+            Logging::info("The TileElements sizes are different. Will compare up to the smallest TileElements size.");
         }
         int elementCount = 0;
-        auto iterator2 = larger.begin();
-        for (auto iterator1 : smaller)
+        for (auto iterator1 = smaller.begin(), iterator2 = larger.begin(); iterator1 != smaller.end();
+             ++iterator1, ++iterator2)
         {
             if (iterator2 != larger.end())
             {
@@ -1489,7 +1493,6 @@ namespace OpenLoco
                     unsafe::bitWiseLogDivergence("Elements[{}]" + std::to_string(elementCount), tile1, tile2, false);
                 }
                 elementCount++;
-                iterator2++;
             }
         }
     }
