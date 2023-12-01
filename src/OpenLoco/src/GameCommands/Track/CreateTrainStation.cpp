@@ -474,7 +474,8 @@ namespace OpenLoco::GameCommands
                     return FAILURE;
                 }
 
-                // TODO: This is dangerous pointer might be invalid?
+                // elTrack is still valid as applyClearAtStandardHeight set to not remove anything
+                // this will need changed if ever a different clear function is used
                 if (elTrack->hasStationElement() && (flags & Flags::ghost))
                 {
                     // ?????
