@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* station = tileElement->as<StationElement>();
         if (station == nullptr)
             return false;
-        if (station->isFlag5())
+        if (station->isAiAllocated())
             return false;
 
         interaction.type = InteractionItem::trackStation;
@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         interaction.object = station;
         interaction.type = InteractionItem::dock;
-        if (station->isFlag5())
+        if (station->isAiAllocated())
             return false;
 
         interaction.type = InteractionItem::roadStation;

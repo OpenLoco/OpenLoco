@@ -242,7 +242,7 @@ namespace OpenLoco::GameCommands
                     }
                     newSignal->setRotation(pieceElTrack->unkDirection());
                     newSignal->setGhost(flags & Flags::ghost);
-                    newSignal->setFlag5(flags & Flags::flag_4);
+                    newSignal->setAiAllocated(flags & Flags::aiAllocated);
                     newSignal->setClearZ(pieceElTrack->clearZ());
                     newSignal->getLeft() = World::SignalElement::Side{};
                     newSignal->getRight() = World::SignalElement::Side{};
@@ -288,7 +288,7 @@ namespace OpenLoco::GameCommands
 
         if (flags & Flags::apply)
         {
-            if (!(flags & (Flags::flag_4 | Flags::ghost)))
+            if (!(flags & (Flags::aiAllocated | Flags::ghost)))
             {
                 const uint16_t tad = args.rotation | (args.trackId << 3);
                 {

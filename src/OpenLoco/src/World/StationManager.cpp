@@ -486,7 +486,7 @@ namespace OpenLoco::StationManager
                         continue;
                     }
 
-                    if (elStation->isFlag5() || elStation->isGhost())
+                    if (elStation->isAiAllocated() || elStation->isGhost())
                     {
                         continue;
                     }

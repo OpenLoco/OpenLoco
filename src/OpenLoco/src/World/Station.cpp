@@ -830,7 +830,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (!stationElement->isFlag5())
+            if (!stationElement->isAiAllocated())
             {
                 return stationElement;
             }

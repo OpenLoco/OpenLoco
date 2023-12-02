@@ -66,7 +66,7 @@ namespace OpenLoco
         const auto highZ = lowZ + 6;
         for (const auto& el : tile)
         {
-            if (el.isFlag5() || el.isGhost())
+            if (el.isAiAllocated() || el.isGhost())
             {
                 continue;
             }
@@ -91,7 +91,7 @@ namespace OpenLoco
             {
                 continue;
             }
-            if (elStation->isFlag5() || elStation->isGhost())
+            if (elStation->isAiAllocated() || elStation->isGhost())
             {
                 continue;
             }

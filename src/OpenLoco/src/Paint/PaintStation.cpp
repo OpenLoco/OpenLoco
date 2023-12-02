@@ -448,7 +448,7 @@ namespace OpenLoco::Paint
     // 0x0048B313
     void paintStation(PaintSession& session, const World::StationElement& elStation)
     {
-        if (elStation.isFlag5())
+        if (elStation.isAiAllocated())
         {
             return;
         }
