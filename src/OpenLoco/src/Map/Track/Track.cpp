@@ -79,7 +79,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elRoad->isGhost() || elRoad->isFlag5())
+            if (elRoad->isGhost() || elRoad->isAiAllocated())
             {
                 continue;
             }
@@ -111,7 +111,7 @@ namespace OpenLoco::World::Track
                                 continue;
                             }
 
-                            if (!elStation->isFlag5() && !elStation->isGhost())
+                            if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
                                 _1135FAE = elStation->stationId();
                                 _1136087 = elStation->objectId();
@@ -158,7 +158,7 @@ namespace OpenLoco::World::Track
                     continue;
                 }
 
-                if (!elStation->isFlag5() && !elStation->isGhost())
+                if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
                     _1135FAE = elStation->stationId();
                     _1136087 = elStation->objectId();
@@ -209,7 +209,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elTrack->isGhost() || elTrack->isFlag5())
+            if (elTrack->isGhost() || elTrack->isAiAllocated())
             {
                 continue;
             }
@@ -241,7 +241,7 @@ namespace OpenLoco::World::Track
                                 continue;
                             }
 
-                            if (!elStation->isFlag5() && !elStation->isGhost())
+                            if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
                                 _1135FAE = elStation->stationId();
                             }
@@ -260,7 +260,7 @@ namespace OpenLoco::World::Track
                                 continue;
                             }
 
-                            if (!elSignal->isFlag5() && !elSignal->isGhost())
+                            if (!elSignal->isAiAllocated() && !elSignal->isGhost())
                             {
                                 trackAndDirection2 |= (1 << 15);
                             }
@@ -306,7 +306,7 @@ namespace OpenLoco::World::Track
                     continue;
                 }
 
-                if (!elStation->isFlag5() && !elStation->isGhost())
+                if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
                     _1135FAE = elStation->stationId();
                 }
@@ -325,7 +325,7 @@ namespace OpenLoco::World::Track
                     continue;
                 }
 
-                if (!elSignal->isFlag5() && !elSignal->isGhost())
+                if (!elSignal->isAiAllocated() && !elSignal->isGhost())
                 {
                     trackAndDirection2 |= (1 << 15);
                 }

@@ -228,7 +228,7 @@ namespace OpenLoco::World
                     {
                         continue;
                     }
-                    if (elStation->isGhost() || elStation->isFlag5())
+                    if (elStation->isGhost() || elStation->isAiAllocated())
                     {
                         continue;
                     }

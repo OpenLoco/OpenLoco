@@ -29,7 +29,7 @@ namespace OpenLoco::Paint
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
-        if (elTrack.isFlag5())
+        if (elTrack.isAiAllocated())
         {
             return;
         }

@@ -3701,7 +3701,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             continue;
                         }
 
-                        if (elStation->isFlag5() || elStation->isGhost())
+                        if (elStation->isAiAllocated() || elStation->isGhost())
                         {
                             continue;
                         }
@@ -3722,7 +3722,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
 
-            if (elStation->isFlag5() || elStation->isGhost())
+            if (elStation->isAiAllocated() || elStation->isGhost())
             {
                 return {};
             }

@@ -972,7 +972,7 @@ namespace OpenLoco::Vehicles
 
             for (auto& el : tile)
             {
-                if (stationFound && !(el.isGhost() || el.isFlag5()))
+                if (stationFound && !(el.isGhost() || el.isAiAllocated()))
                 {
                     break;
                 }

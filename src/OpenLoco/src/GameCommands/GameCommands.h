@@ -29,7 +29,7 @@ namespace OpenLoco::GameCommands
         constexpr uint8_t flag_1 = 1 << 1;        // 0x02
         constexpr uint8_t flag_2 = 1 << 2;        // 0x04
         constexpr uint8_t noErrorWindow = 1 << 3; // 0x08 do not show an error window even on failure (use this with ghosts)
-        constexpr uint8_t flag_4 = 1 << 4;        // 0x10
+        constexpr uint8_t aiAllocated = 1 << 4;   // 0x10 ai can place down invisible ghosts with this that blocks players
         constexpr uint8_t noPayment = 1 << 5;     // 0x20 calculates cost but does not deduct it
         constexpr uint8_t ghost = 1 << 6;         // 0x40
         constexpr uint8_t flag_7 = 1 << 7;        // 0x80

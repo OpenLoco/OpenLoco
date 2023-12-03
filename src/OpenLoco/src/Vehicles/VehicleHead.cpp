@@ -2467,7 +2467,7 @@ namespace OpenLoco::Vehicles
                     {
                         continue;
                     }
-                    if (station->isGhost() || station->isFlag5())
+                    if (station->isGhost() || station->isAiAllocated())
                     {
                         continue;
                     }
@@ -2498,7 +2498,7 @@ namespace OpenLoco::Vehicles
                     {
                         continue;
                     }
-                    if (station->isGhost() || station->isFlag5())
+                    if (station->isGhost() || station->isAiAllocated())
                     {
                         continue;
                     }
@@ -2574,7 +2574,7 @@ namespace OpenLoco::Vehicles
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
-                    if (elStation->isFlag5() || elStation->isGhost())
+                    if (elStation->isAiAllocated() || elStation->isGhost())
                         break;
 
                     if (elStation->stationId() != stationId)
@@ -2593,7 +2593,7 @@ namespace OpenLoco::Vehicles
                 auto* elStation = tile.roadStation(roadId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
-                    if (elStation->isFlag5() || elStation->isGhost())
+                    if (elStation->isAiAllocated() || elStation->isGhost())
                         break;
 
                     if (elStation->stationId() != stationId)
@@ -3431,7 +3431,7 @@ namespace OpenLoco::Vehicles
         {
             return StationId::null;
         }
-        if (elStation->isFlag5() || elStation->isGhost())
+        if (elStation->isAiAllocated() || elStation->isGhost())
         {
             return StationId::null;
         }
@@ -3575,7 +3575,7 @@ namespace OpenLoco::Vehicles
                 if (heightDiff > 4)
                     continue;
 
-                if (elRoad->isGhost() || elRoad->isFlag5())
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
                     continue;
 
                 if (elRoad->roadId() != veh->trackAndDirection.road.id())
@@ -3597,7 +3597,7 @@ namespace OpenLoco::Vehicles
                 if (heightDiff > 4)
                     continue;
 
-                if (elTrack->isGhost() || elTrack->isFlag5())
+                if (elTrack->isGhost() || elTrack->isAiAllocated())
                     continue;
 
                 if (elTrack->unkDirection() != veh->trackAndDirection.track.cardinalDirection())

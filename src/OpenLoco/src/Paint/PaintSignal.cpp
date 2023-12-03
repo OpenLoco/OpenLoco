@@ -213,7 +213,7 @@ namespace OpenLoco::Paint
     // 0x0048864C
     void paintSignal(PaintSession& session, const World::SignalElement& elSignal)
     {
-        if (elSignal.isFlag5())
+        if (elSignal.isAiAllocated())
         {
             return;
         }
