@@ -79,7 +79,7 @@ namespace OpenLoco::GameCommands
     // 0x0048BDCE & 0x0048BD40
     static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
     {
-        auto func = (flags & Flags::flag_4) ? &sub_48FFF7 : &sub_48FF36;
+        auto func = (flags & Flags::aiAllocated) ? &sub_48FFF7 : &sub_48FF36;
         auto nearbyStation = func(pos, tad, trackObjectId);
         if (nearbyStation.id == StationId::null)
         {
@@ -99,7 +99,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (!(flags & Flags::flag_4))
+            if (!(flags & Flags::aiAllocated))
             {
                 if (sub_48FEF4(nearbyStation.id, pos))
                 {
@@ -254,7 +254,7 @@ namespace OpenLoco::GameCommands
             {
                 return FAILURE;
             }
-            if (!(flags & Flags::flag_4))
+            if (!(flags & Flags::aiAllocated))
             {
                 return FAILURE;
             }
@@ -368,7 +368,7 @@ namespace OpenLoco::GameCommands
                 // Vanilla would access whatever was the last element on the tile here
                 // which further reinforces the ??? why are we doing anything
                 World::QuarterTile qt(0xF /* lastEl->occupiedQuarter() */, 0);
-                if (!(flags & Flags::flag_4))
+                if (!(flags & Flags::aiAllocated))
                 {
                     // Again this does not make sense clearFuncAiReservation would need to access the lastEl
                     if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2 /*clearFuncAiReservation*/))
@@ -460,7 +460,7 @@ namespace OpenLoco::GameCommands
                 const auto baseZ = elTrack->baseZ() + 8;
                 const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
                 World::QuarterTile qt(elTrack->occupiedQuarter(), 0);
-                if (!(flags & Flags::flag_4))
+                if (!(flags & Flags::aiAllocated))
                 {
                     auto clearFunc = [&elTrack](World::TileElement& el) {
                         return clearFuncAiReservation(el, *elTrack);
@@ -524,7 +524,7 @@ namespace OpenLoco::GameCommands
                     }
                     newStationElement->setRotation(elTrack->unkDirection());
                     newStationElement->setGhost(flags & Flags::ghost);
-                    newStationElement->setFlag5(flags & Flags::flag_4);
+                    newStationElement->setAiAllocated(flags & Flags::aiAllocated);
                     newStationElement->setMultiTileIndex(0);
                     newStationElement->setUnk4SLR4(0);
                     newStationElement->setStationType(StationType::trainStation);
