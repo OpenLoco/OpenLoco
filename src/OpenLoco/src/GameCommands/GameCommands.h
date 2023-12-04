@@ -138,29 +138,6 @@ namespace OpenLoco::GameCommands
         return doCommand(T::command, regs);
     }
 
-    struct VehicleRearrangeArgs
-    {
-        static constexpr auto command = GameCommand::vehicleRearrange;
-
-        VehicleRearrangeArgs() = default;
-        explicit VehicleRearrangeArgs(const registers& regs)
-            : source(static_cast<EntityId>(regs.dx))
-            , dest(static_cast<EntityId>(regs.di))
-        {
-        }
-
-        EntityId source;
-        EntityId dest;
-
-        explicit operator registers() const
-        {
-            registers regs;
-            regs.di = enumValue(dest);
-            regs.dx = enumValue(source);
-            return regs;
-        }
-    };
-
     struct VehiclePlacementArgs
     {
         static constexpr auto command = GameCommand::vehiclePlace;
