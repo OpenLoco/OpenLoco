@@ -1,13 +1,35 @@
 #include "VehicleRearrange.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
+#include "VehiclePickupAir.h"
+#include "VehiclePickupWater.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 
 namespace OpenLoco::GameCommands
 {
-    currency32_t vehicleRearrange(const VehicleRearrangeArgs& args, uint8_t flags)
+    struct PlacementBackup
     {
-        setExpenditureType(ExpenditureType::Miscellaneous);
+        int16_t tileX;
+        int16_t tileY;
+        World::SmallZ tileBaseZ;
+        Vehicles::TrackAndDirection trackAndDirection;
+        uint16_t subPosition;
+        EntityId head;
+    };
+
+    // 0x004AF4D6
+    static void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBogie& dest)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(&source);
+        regs.edi = X86Pointer(&dest);
+        call(0x004AF4D6, regs);
+    }
+
+    static currency32_t vehicleRearrange(const VehicleRearrangeArgs& args, uint8_t flags)
+    {
+        setExpenditureType(ExpenditureType::TrainRunningCosts);
 
         auto* sourceVehicle = EntityManager::get<Vehicles::VehicleBase>(args.source);
         auto* destVehicle = EntityManager::get<Vehicles::VehicleBase>(args.dest);
@@ -57,9 +79,98 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            // 0x004AF2A1
+            auto* sourceBogie = sourceVehicle->asVehicleBogie();
+            if (sourceBogie == nullptr)
+            {
+                return FAILURE;
+            }
+            auto* destBogie = destVehicle->asVehicleBogie();
+            if (destBogie == nullptr)
+            {
+                return FAILURE;
+            }
+
+            Vehicles::Vehicle sourceTrain(sourceBogie->head);
+            Vehicles::Vehicle destTrain(destBogie->head);
+
+            if (destVehicle->getHead() != sourceVehicle->getHead())
+            {
+                [&train = sourceTrain, &targetBogie = *sourceBogie]() {
+                    for (auto& car : train.cars)
+                    {
+                        for (auto& carComponet : car)
+                        {
+                            if (carComponet.front == &targetBogie)
+                            {
+                                Vehicles::removeAllCargo(carComponet);
+                                return;
+                            }
+                        }
+                    }
+                }();
+            }
+
+            auto tryPickupTrain = [](Vehicles::Vehicle& train) -> std::optional<PlacementBackup> {
+                if (train.head->tileX == -1)
+                {
+                    return std::nullopt;
+                }
+                const auto res = PlacementBackup{ train.head->tileX, train.head->tileY, train.head->tileBaseZ, train.head->trackAndDirection, train.head->subPosition, train.head->head };
+                switch (train.head->mode)
+                {
+                    case TransportMode::rail:
+                    case TransportMode::road:
+                        train.head->liftUpVehicle();
+                        break;
+                    case TransportMode::air:
+                    {
+                        // Calling this GC directly as we need the result immediately
+                        // perhaps in the future this could be changed.
+                        GameCommands::VehiclePickupAirArgs airArgs{};
+                        airArgs.head = train.head->id;
+                        registers regs = static_cast<registers>(airArgs);
+                        regs.bl = GameCommands::Flags::apply;
+                        GameCommands::vehiclePickupAir(regs);
+                        break;
+                    }
+                    case TransportMode::water:
+                    {
+                        // Calling this GC directly as we need the result immediately
+                        // perhaps in the future this could be changed.
+                        GameCommands::VehiclePickupWaterArgs waterArgs{};
+                        waterArgs.head = train.head->id;
+                        registers regs = static_cast<registers>(waterArgs);
+                        regs.bl = GameCommands::Flags::apply;
+                        GameCommands::vehiclePickupWater(regs);
+                    }
+                }
+                setExpenditureType(ExpenditureType::TrainRunningCosts);
+                return res;
+            };
+
+            std::optional<PlacementBackup> sourcePlacement = tryPickupTrain(sourceTrain);
+            std::optional<PlacementBackup> destPlacement = tryPickupTrain(destTrain);
+
+            sub_4AF4D6(*sourceBogie, *destBogie);
+
+            destTrain.head->sub_4AF7A4();
+            destTrain.head->sub_4B7CC3();
+            if (sourceTrain.head != destTrain.head)
+            {
+                sourceTrain.head->sub_4AF7A4();
+                sourceTrain.head->sub_4B7CC3();
+            }
+
+            if (sourcePlacement.has_value())
+            {
+                VehicleManager::placeDownVehicle(sourceTrain.head, sourcePlacement->tileX, sourcePlacement->tileY, sourcePlacement->tileBaseZ, sourcePlacement->trackAndDirection, sourcePlacement->subPosition);
+            }
+            if (destPlacement.has_value())
+            {
+                VehicleManager::placeDownVehicle(destTrain.head, destPlacement->tileX, destPlacement->tileY, destPlacement->tileBaseZ, destPlacement->trackAndDirection, destPlacement->subPosition);
+            }
+            return 0;
         }
-        return FAILURE;
     }
 
     // 0x004AF1DF
