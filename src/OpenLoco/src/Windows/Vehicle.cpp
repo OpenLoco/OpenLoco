@@ -1794,6 +1794,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
+                    GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
                     GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
                 }
@@ -1805,6 +1806,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         GameCommands::VehicleRearrangeArgs args{};
                         args.source = (*_dragCarComponent)->id;
                         args.dest = car->id;
+
+                        GameCommands::setErrorTitle(StringIds::cant_move_vehicle);
                         GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;

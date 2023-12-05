@@ -378,8 +378,9 @@ namespace OpenLoco::StringIds
     constexpr StringId prompt_type_new_station_name = 384;
     constexpr StringId error_cant_rename_station = 385;
 
+    constexpr StringId cant_move_vehicle = 387;
     constexpr StringId cant_reverse_train = 388;
-
+    constexpr StringId cant_sell_vehicle = 389;
     constexpr StringId cant_sell_string_id = 390;
     constexpr StringId quote_string_quote = 391;
     constexpr StringId quote_string_quote2 = 392;

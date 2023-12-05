@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x004AF4D6
-    static void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBogie& dest)
+    static void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBase& dest)
     {
         registers regs{};
         regs.esi = X86Pointer(&source);
@@ -27,6 +27,7 @@ namespace OpenLoco::GameCommands
         call(0x004AF4D6, regs);
     }
 
+    // 0x004AF1DF
     static currency32_t vehicleRearrange(const VehicleRearrangeArgs& args, uint8_t flags)
     {
         setExpenditureType(ExpenditureType::TrainRunningCosts);
@@ -84,14 +85,9 @@ namespace OpenLoco::GameCommands
             {
                 return FAILURE;
             }
-            auto* destBogie = destVehicle->asVehicleBogie();
-            if (destBogie == nullptr)
-            {
-                return FAILURE;
-            }
 
             Vehicles::Vehicle sourceTrain(sourceBogie->head);
-            Vehicles::Vehicle destTrain(destBogie->head);
+            Vehicles::Vehicle destTrain(destVehicle->getHead());
 
             if (destVehicle->getHead() != sourceVehicle->getHead())
             {
@@ -151,7 +147,7 @@ namespace OpenLoco::GameCommands
             std::optional<PlacementBackup> sourcePlacement = tryPickupTrain(sourceTrain);
             std::optional<PlacementBackup> destPlacement = tryPickupTrain(destTrain);
 
-            sub_4AF4D6(*sourceBogie, *destBogie);
+            sub_4AF4D6(*sourceBogie, *destVehicle);
 
             destTrain.head->sub_4AF7A4();
             destTrain.head->sub_4B7CC3();
@@ -173,7 +169,6 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    // 0x004AF1DF
     void vehicleRearrange(registers& regs)
     {
         regs.ebx = vehicleRearrange(VehicleRearrangeArgs(regs), regs.bl);
