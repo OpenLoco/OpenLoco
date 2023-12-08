@@ -15,6 +15,14 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::GameSaveCompare
 {
+    std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
+    std::string getEffectSubType(const EffectType effectSubType);
+    void logVehicleTypeAndSubTYpe(int offset, const OpenLoco::Entity& entity);
+    void logEffectType(int offset, const OpenLoco::Entity& entity);
+    void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset);
+    void compareGameStates(GameState& gameState1, S5::GameState& gameState2);
+    void compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2);
+
     namespace unsafe
     {
         template<typename T>
