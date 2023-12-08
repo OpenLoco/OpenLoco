@@ -1,4 +1,5 @@
 #include "CommandLine.h"
+#include "GameSaveCompare.h"
 #include "GameState.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
@@ -533,7 +534,7 @@ namespace OpenLoco
 
         if (!options.path2.empty())
         {
-            OpenLoco::compareGameStates(comparePath);
+            OpenLoco::GameSaveCompare::compareGameStates(comparePath);
         }
 
         const auto timeElapsed = std::chrono::high_resolution_clock::now() - timeStarted;
@@ -573,7 +574,7 @@ namespace OpenLoco
 
         try
         {
-            OpenLoco::compareGameStates(file1, file2);
+            OpenLoco::GameSaveCompare::compareGameStates(file1, file2);
         }
         catch (std::exception& e)
         {
