@@ -212,7 +212,9 @@ namespace OpenLoco::Paint
         void resetTunnels();
         void resetLastPS() { _lastPS = nullptr; }
         void setBoundingBoxOffset(const World::Pos3& bbox) { _boundingBoxOffset = bbox; }
-        World::Pos3 getBoundingBoxOffset() { return _boundingBoxOffset; }
+        World::Pos3 getBoundingBoxOffset() const { return _boundingBoxOffset; }
+        void finaliseTrackRoadOrdering();
+        void finaliseTrackRoadAdditionsOrdering();
 
         /*
          * @param amount    @<eax>
@@ -283,7 +285,7 @@ namespace OpenLoco::Paint
         /*
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
-         * @param ecx @<ecx>
+         * @param priority @<ecx>
          * @param offsetZ @<dx>
          * @param boundBoxLengthX @<di>
          * @param boundBoxLengthY @<si>
@@ -292,7 +294,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotList4FD180(ImageId imageId, uint32_t ecx, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
+        void addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -346,12 +348,12 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
         inline static Interop::loco_global<PaintStruct*, 0x00E400C8> _savedPSCur;  // Unused.
         inline static Interop::loco_global<PaintStruct*, 0x00E400CC> _savedPSCur2; // Unused.
-        inline static Interop::loco_global<PaintEntry* [5], 0x00E400D0> _trackRoadPaintStructs;
+        inline static Interop::loco_global<PaintStruct* [5], 0x00E400D0> _trackRoadPaintStructs;
         inline static Interop::loco_global<int32_t, 0x00E400D4> _E400D4;
         inline static Interop::loco_global<int32_t, 0x00E400D8> _E400D8;
         inline static Interop::loco_global<int32_t, 0x00E400DC> _E400DC;
         inline static Interop::loco_global<int32_t, 0x00E400E0> _E400E0;
-        inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _trackRoadAdditionsPaintStructs;
+        inline static Interop::loco_global<PaintStruct* [2], 0x00E400E4> _trackRoadAdditionsPaintStructs;
         inline static Interop::loco_global<int32_t, 0x00E400E8> _E400E8;
         inline static Interop::loco_global<int32_t, 0x00E400EC> _E400EC;
         inline static Interop::loco_global<int16_t, 0x00E400F0> _E400F0;

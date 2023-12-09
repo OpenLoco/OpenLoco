@@ -217,7 +217,7 @@ namespace OpenLoco::Paint
         // Paint Canopy of platform
         {
             World::Pos3 bbOffset = platformImages.canopy.bbOffset + heightOffset;
-            session.addToPlotList4FD180(imageBase.withIndexOffset(platformImages.canopy.imageId), 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
+            session.addToPlotListTrackRoadAddition(imageBase.withIndexOffset(platformImages.canopy.imageId), 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
             session.attachToPrevious(imageTranslucentBase.withIndexOffset(platformImages.canopyTranslucent.imageId), { 0, 0 });
         }
         session.set525CF8(session.get525CF8() | 0x1FF);
@@ -296,7 +296,7 @@ namespace OpenLoco::Paint
         const World::Pos3 heightOffset(0, 0, elStation.baseHeight());
         World::Pos3 bbOffset = World::Pos3{ 0, 0, 26 } + heightOffset;
         World::Pos3 bbSize = World::Pos3{ 30, 30, 1 };
-        session.addToPlotList4FD180(imageBase.withIndexOffset(TrainStation::ImageIds::Style0::diagonalSE3), 1, heightOffset, bbOffset, bbSize);
+        session.addToPlotListTrackRoadAddition(imageBase.withIndexOffset(TrainStation::ImageIds::Style0::diagonalSE3), 1, heightOffset, bbOffset, bbSize);
         session.attachToPrevious(imageTranslucentBase.withIndexOffset(TrainStation::ImageIds::Style0::diagonalCanopyTranslucentSE3), { 0, 0 });
     }
 
