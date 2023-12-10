@@ -265,7 +265,9 @@ namespace OpenLoco::Vehicles
 
         if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
         {
-            newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
+            // TODO: Original CS Bug. Fix when we diverge on replays
+            // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
+            newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
         }
 
         if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
