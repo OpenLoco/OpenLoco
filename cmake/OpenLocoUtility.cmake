@@ -3,10 +3,12 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
 
     # MSVC
     set(COMMON_COMPILE_OPTIONS_MSVC
-        /MP                      # Multithreaded compilation
-        $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
-        $<$<CONFIG:Release>:/Zi> # Debug information in release
-        /Zc:char8_t-             # Enable char8_t<->char conversion :(
+        /MP                                 # Multithreaded compilation
+        $<$<CONFIG:Debug>:/ZI>              # Debug Edit and Continue (Hot reload)
+        $<$<CONFIG:Release>:/Zi>            # Debug information in release
+        $<$<CONFIG:Release>:/Oi>            # Intrinsics
+        $<$<CONFIG:RelWithDebInfo>:/Oi>     # Intrinsics
+        /Zc:char8_t-                        # Enable char8_t<->char conversion :(
     )
 
     # GNU/CLANG
@@ -24,9 +26,13 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
 
     # MSVC
     set(COMMON_LINK_OPTIONS_MSVC
-        $<$<CONFIG:Release>:/DEBUG>         # Generate debug symbols even in release
-        $<$<CONFIG:Debug>:/INCREMENTAL>     # Incremental linking required for hot reload
-        $<$<CONFIG:Debug>:/SAFESEH:NO>    # No safeseh linking required for hot reload
+        $<$<CONFIG:Release>:/DEBUG>             # Generate debug symbols even in release
+        $<$<CONFIG:Debug>:/INCREMENTAL>         # Incremental linking required for hot reload
+        $<$<CONFIG:Debug>:/SAFESEH:NO>          # No safeseh linking required for hot reload
+        $<$<CONFIG:Release>:/OPT:ICF>           # COMDAT folding
+        $<$<CONFIG:Release>:/OPT:REF>           # Eliminate unreferenced code/data
+        $<$<CONFIG:RelWithDebInfo>:/OPT:ICF>    # COMDAT folding
+        $<$<CONFIG:RelWithDebInfo>:/OPT:REF>    # Eliminate unreferenced code/data
     )
 
     # GNU/CLANG

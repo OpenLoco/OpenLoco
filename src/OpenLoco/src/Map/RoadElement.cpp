@@ -26,7 +26,7 @@ namespace OpenLoco::World
         if (hasUnk7_10() || hasLevelCrossing() || mods())
             return true;
 
-        if (isGhost() || isFlag5())
+        if (isGhost() || isAiAllocated())
             return true;
 
         if (hasStationElement())
@@ -56,7 +56,7 @@ namespace OpenLoco::World
             if (hasUnk7_10() || hasLevelCrossing() || mods())
                 return true;
 
-            if (roadEl->isGhost() || roadEl->isFlag5())
+            if (roadEl->isGhost() || roadEl->isAiAllocated())
                 return true;
 
             if (roadEl->hasStationElement())

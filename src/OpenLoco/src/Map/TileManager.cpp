@@ -1007,7 +1007,7 @@ namespace OpenLoco::World::TileManager
     // cx = pos.y;
     void removeTree(World::TreeElement& element, const uint8_t flags, const World::Pos2& pos)
     {
-        if ((!element.isGhost() && !element.isFlag5())
+        if ((!element.isGhost() && !element.isAiAllocated())
             && GameCommands::getUpdatingCompanyId() != CompanyId::neutral)
         {
             auto loc = World::Pos3(pos.x, pos.y, element.baseHeight());
@@ -1039,7 +1039,7 @@ namespace OpenLoco::World::TileManager
     // 0x0042D8FF
     void removeBuildingElement(BuildingElement& elBuilding, const World::Pos2& pos)
     {
-        if (!elBuilding.isGhost() && !elBuilding.isFlag5())
+        if (!elBuilding.isGhost() && !elBuilding.isAiAllocated())
         {
             if (CompanyManager::getUpdatingCompanyId() != CompanyId::neutral)
             {

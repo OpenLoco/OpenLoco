@@ -57,6 +57,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         return CursorId::dragHand;
     }
 
+    // 0x004B6271
     static void onMove(Window& self, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
     {
         self.height = 0; // Set to zero so that skipped in window find
@@ -66,6 +67,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, enumValue(*_dragVehicleHead));
     }
 
+    // 0x004B6197
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
         auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(self.x, self.y, self.width, self.height));

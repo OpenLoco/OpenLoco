@@ -535,7 +535,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                if (elTrack->isFlag5() || elTrack->isGhost())
+                if (elTrack->isAiAllocated() || elTrack->isGhost())
                 {
                     continue;
                 }

@@ -61,6 +61,7 @@
 #include "Vehicles/VehiclePickup.h"
 #include "Vehicles/VehiclePickupAir.h"
 #include "Vehicles/VehiclePickupWater.h"
+#include "Vehicles/VehicleRearrange.h"
 #include "Vehicles/VehicleRefit.h"
 #include "Vehicles/VehicleReverse.h"
 #include "Vehicles/VehicleSell.h"
@@ -217,7 +218,7 @@ namespace OpenLoco::GameCommands
 
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
-        if ((flags & (Flags::flag_4 | Flags::ghost)) != 0)
+        if ((flags & (Flags::aiAllocated | Flags::ghost)) != 0)
             return false;
 
         auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];

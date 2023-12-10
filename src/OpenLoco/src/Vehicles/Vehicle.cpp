@@ -160,7 +160,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elRoad->isFlag5())
+            if (elRoad->isAiAllocated())
             {
                 continue;
             }

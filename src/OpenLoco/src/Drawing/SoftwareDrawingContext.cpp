@@ -153,12 +153,12 @@ namespace OpenLoco::Drawing
                         break;
 
                     default:
-                        if (*chr <= 0x16)
+                        if (static_cast<uint8_t>(*chr) <= 0x16)
                         {
                             curString.push_back(*++chr);
                             curString.push_back(*++chr);
                         }
-                        else if (*chr < 32)
+                        else if (static_cast<uint8_t>(*chr) < 32)
                         {
                             curString.push_back(*++chr);
                             curString.push_back(*++chr);

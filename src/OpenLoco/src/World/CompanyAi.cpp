@@ -382,7 +382,7 @@ namespace OpenLoco
             {
                 GameCommands::AirportRemovalArgs removeArgs{};
                 removeArgs.pos = pos;
-                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_4);
+                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::aiAllocated);
             }
 
             GameCommands::AirportPlacementArgs placeArgs{};
@@ -408,7 +408,7 @@ namespace OpenLoco
             {
                 GameCommands::PortRemovalArgs removeArgs{};
                 removeArgs.pos = pos;
-                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::flag_4);
+                GameCommands::doCommand(removeArgs, GameCommands::Flags::apply | GameCommands::Flags::noPayment | GameCommands::Flags::aiAllocated);
             }
 
             GameCommands::PortPlacementArgs placeArgs{};

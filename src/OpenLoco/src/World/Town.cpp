@@ -307,7 +307,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (elRoad->isGhost() || elRoad->isFlag5())
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
                 {
                     continue;
                 }

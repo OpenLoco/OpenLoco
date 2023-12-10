@@ -15,6 +15,7 @@
 #include "GameCommands/Vehicles/VehiclePickup.h"
 #include "GameCommands/Vehicles/VehiclePickupAir.h"
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
+#include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"
 #include "GameCommands/Vehicles/VehicleSell.h"
@@ -1793,6 +1794,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     GameCommands::VehicleSellArgs gcArgs{};
                     gcArgs.car = (*_dragCarComponent)->id;
 
+                    GameCommands::setErrorTitle(StringIds::cant_sell_vehicle);
                     GameCommands::doCommand(gcArgs, GameCommands::Flags::apply);
                     break;
                 }
@@ -1804,6 +1806,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         GameCommands::VehicleRearrangeArgs args{};
                         args.source = (*_dragCarComponent)->id;
                         args.dest = car->id;
+
+                        GameCommands::setErrorTitle(StringIds::cant_move_vehicle);
                         GameCommands::doCommand(args, GameCommands::Flags::apply);
                     }
                     break;
@@ -3701,7 +3705,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             continue;
                         }
 
-                        if (elStation->isFlag5() || elStation->isGhost())
+                        if (elStation->isAiAllocated() || elStation->isGhost())
                         {
                             continue;
                         }
@@ -3722,7 +3726,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
 
-            if (elStation->isFlag5() || elStation->isGhost())
+            if (elStation->isAiAllocated() || elStation->isGhost())
             {
                 return {};
             }
