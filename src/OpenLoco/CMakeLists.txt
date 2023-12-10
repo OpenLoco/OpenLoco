@@ -400,6 +400,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/CreateTree.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/CreateWall.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/LowerLand.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/LowerRaiseLandMountain.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/LowerWater.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/RaiseLand.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/RaiseWater.h"

@@ -7,6 +7,7 @@
 #include "GameCommands/Terraform/CreateTree.h"
 #include "GameCommands/Terraform/CreateWall.h"
 #include "GameCommands/Terraform/LowerLand.h"
+#include "GameCommands/Terraform/LowerRaiseLandMountain.h"
 #include "GameCommands/Terraform/LowerWater.h"
 #include "GameCommands/Terraform/RaiseLand.h"
 #include "GameCommands/Terraform/RaiseWater.h"
@@ -1334,7 +1335,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                args.di = 0xFFFF;
+                args.adjustment = -1;
                 cost = GameCommands::doCommand(args, flags);
             }
             else
@@ -1366,7 +1367,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                args.di = 1;
+                args.adjustment = 1;
                 cost = GameCommands::doCommand(args, flags);
             }
             else
