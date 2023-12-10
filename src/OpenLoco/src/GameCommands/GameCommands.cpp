@@ -34,7 +34,7 @@
 #include "Terraform/CreateTree.h"
 #include "Terraform/CreateWall.h"
 #include "Terraform/LowerLand.h"
-#include "Terraform/lowerRaiseLandMountain.h"
+#include "Terraform/LowerRaiseLandMountain.h"
 #include "Terraform/LowerWater.h"
 #include "Terraform/RaiseLand.h"
 #include "Terraform/RaiseWater.h"

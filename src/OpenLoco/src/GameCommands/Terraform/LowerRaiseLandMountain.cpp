@@ -19,7 +19,7 @@ namespace OpenLoco::GameCommands
             0x004633F6,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4633F6({regs.ax, regs.cx});
+                sub_4633F6({ regs.ax, regs.cx });
                 regs = backup;
                 return 0;
             });
@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
             0x004634B9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4634B9({regs.ax, regs.cx});
+                sub_4634B9({ regs.ax, regs.cx });
                 regs = backup;
                 return 0;
             });
@@ -37,7 +37,7 @@ namespace OpenLoco::GameCommands
             0x0046357C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_46357C({regs.ax, regs.cx});
+                sub_46357C({ regs.ax, regs.cx });
                 regs = backup;
                 return 0;
             });
@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
             0x0046363F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_46363F({regs.ax, regs.cx});
+                sub_46363F({ regs.ax, regs.cx });
                 regs = backup;
                 return 0;
             });
