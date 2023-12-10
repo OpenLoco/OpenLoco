@@ -145,15 +145,56 @@ namespace OpenLoco::GameCommands
 
         auto tile = TileManager::get(pos);
         const auto* surface = tile.surface();
-        auto baseZ = TileManager::getSurfaceCornerHeight(*surface);
+        auto cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
+        auto baseZDiff = cornerBaseZ - targetBaseZ;
+        uint8_t slopeFlags;
 
         // 0x00463513
-        if (baseZ < targetBaseZ)
+        if (baseZDiff == 0)
         {
             return;
         }
-        else
+        else if (baseZDiff > 0)
         {
+            if (baseZDiff <= _F00155)
+            {
+                return;
+            }
+
+            // TODO: only user; integrate
+            static loco_global<uint8_t[32], 0x004FD43C> _4FD43C;
+            slopeFlags = _4FD43C[surface->slope()];
+
+            targetBaseZ = surface->baseZ();
+            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
+            {
+                targetBaseZ -= kSmallZStep;
+                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
+            }
+        }
+        else if (baseZDiff < 0)
+        {
+            if (-baseZDiff <= _F00155)
+            {
+                return;
+            }
+
+            // TODO: only user; integrate
+            static loco_global<uint8_t[32], 0x004FD39C> _4FD39C;
+            slopeFlags = _4FD39C[surface->slope()];
+
+            targetBaseZ = surface->baseZ();
+            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
+            {
+                targetBaseZ += kSmallZStep;
+                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
+            }
+        }
+
+        auto result = TileManager::adjustSurfaceHeight(pos, targetBaseZ, slopeFlags, removedBuildings, mtnToolGCFlags);
+        if (result != FAILURE)
+        {
+            mtnToolCost += result;
         }
     }
 
