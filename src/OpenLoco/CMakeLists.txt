@@ -102,6 +102,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/CreateTree.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/CreateWall.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/LowerLand.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/LowerRaiseLandMountain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/LowerWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/RaiseLand.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Terraform/RaiseWater.cpp"

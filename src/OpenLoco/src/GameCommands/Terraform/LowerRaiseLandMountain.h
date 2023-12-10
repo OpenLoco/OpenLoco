@@ -32,4 +32,10 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void registerMountainHooks();
+    void sub_4633F6(World::Pos2 pos);
+    void sub_4634B9(World::Pos2 pos);
+    void sub_46357C(World::Pos2 pos);
+    void sub_46363F(World::Pos2 pos);
 }

@@ -34,6 +34,7 @@
 #include "Terraform/CreateTree.h"
 #include "Terraform/CreateWall.h"
 #include "Terraform/LowerLand.h"
+#include "Terraform/lowerRaiseLandMountain.h"
 #include "Terraform/LowerWater.h"
 #include "Terraform/RaiseLand.h"
 #include "Terraform/RaiseWater.h"
@@ -211,6 +212,8 @@ namespace OpenLoco::GameCommands
             regs.ebx = backup.ebx;
             return 0;
         });
+
+        registerMountainHooks();
     }
 
     static uint32_t loc_4314EA();
