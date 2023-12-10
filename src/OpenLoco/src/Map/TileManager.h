@@ -62,6 +62,7 @@ namespace OpenLoco::World::TileManager
     }
     TileHeight getHeight(const Pos2& pos);
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
+    SmallZ getSurfaceCornerHeight(const SurfaceElement& surface, const uint8_t cornerMask);
     void updateTilePointers();
     void reorganise();
     bool checkFreeElementsAndReorganise();

@@ -80,7 +80,7 @@ namespace OpenLoco::GameCommands
 
         auto tile = TileManager::get(pos);
         const auto* surface = tile.surface();
-        auto cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface);
+        auto cornerBaseZ = TileManager::getSurfaceCornerHeight(surface, SurfaceSlope::CornerUp::south);
         auto baseZDiff = cornerBaseZ - targetBaseZ;
         uint8_t slopeFlags;
 
