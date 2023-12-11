@@ -318,14 +318,6 @@ namespace OpenLoco::Paint
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
 
-        inline static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C077> _tunnels0;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0BB> _tunnels1;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0FF> _tunnels2;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C143> _tunnels3;
-        inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
-        inline static Interop::loco_global<uint8_t, 0x00525CF0> _525CF0;
-        inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
@@ -343,16 +335,58 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00E3F0A6> _foregroundCullingHeight;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
         inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;
+        // 2 byte align.
         inline static Interop::loco_global<World::Pos2, 0x00E3F0B0> _mapPosition;
         inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
+        uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as separate item
+        inline static Interop::loco_global<Ui::ViewportFlags, 0x00E3F0BC> _viewFlags;
+        // 2 byte align.
         inline static Interop::loco_global<PaintStruct* [kMaxPaintQuadrants], 0x00E3F0C0> _quadrants;
         inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
         inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
-        inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _E400E4;
+        inline static Interop::loco_global<PaintStruct*, 0x00E400C8> _savedPSCur;  // Unused.
+        inline static Interop::loco_global<PaintStruct*, 0x00E400CC> _savedPSCur2; // Unused.
         inline static Interop::loco_global<PaintEntry* [5], 0x00E400D0> _E400D0;
+        inline static Interop::loco_global<int32_t, 0x00E400D4> _E400D4;
+        inline static Interop::loco_global<int32_t, 0x00E400D8> _E400D8;
+        inline static Interop::loco_global<int32_t, 0x00E400DC> _E400DC;
+        inline static Interop::loco_global<int32_t, 0x00E400E0> _E400E0;
+        inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _E400E4;
+        inline static Interop::loco_global<int32_t, 0x00E400E8> _E400E8;
+        inline static Interop::loco_global<int32_t, 0x00E400EC> _E400EC;
+        inline static Interop::loco_global<int16_t, 0x00E400F0> _E400F0;
+        inline static Interop::loco_global<int16_t, 0x00E400F2> _E400F2;
+        inline static Interop::loco_global<int32_t, 0x00E400F4> _E400F4;
+        inline static Interop::loco_global<int32_t, 0x00E400F8> _E400F8;
+        inline static Interop::loco_global<int32_t, 0x00E400FC> _E400FC;
+        inline static Interop::loco_global<int32_t, 0x00E40100> _E40100;
+        inline static Interop::loco_global<int16_t, 0x00E40104> _E40104;
+        // 2 byte align
+        inline static Interop::loco_global<int32_t, 0x00E40108> _E40108;
+        inline static Interop::loco_global<int32_t, 0x00E4010C> _E4010C;
+        inline static Interop::loco_global<int32_t, 0x00E40110> _E40110;
+        // byte_00E40114 _interactionResult
+        // 3 byte align
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
         inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
+        // dword_E40124
+        // word_E40128
+        // word_E4012A
+        // 00E4012C dw interactionResult
+        // 00E4012E dw interactionCoordY
+        // 00E40130 dw interactionCoordX
+        // byte_E40132
+
+        // Different globals that don't really belong to PaintSession.
+        inline static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C077> _tunnels0;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0BB> _tunnels1;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0FF> _tunnels2;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C143> _tunnels3;
+        inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
+        inline static Interop::loco_global<uint8_t, 0x00525CF0> _525CF0;
+        inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;
         inline static Interop::loco_global<uint16_t, 0x00F003F4> _F003F4;
@@ -363,8 +397,6 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
         inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
         inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
-        inline static Interop::loco_global<Ui::ViewportFlags, 0x00E3F0BC> _viewFlags;
-        uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent
