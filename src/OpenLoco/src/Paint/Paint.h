@@ -6,6 +6,7 @@
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <span>
 
 namespace OpenLoco::World
 {
@@ -319,6 +320,7 @@ namespace OpenLoco::Paint
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
+        void finaliseOrdering(std::span<PaintStruct*> paintStructs);
 
         inline static Interop::loco_global<Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
