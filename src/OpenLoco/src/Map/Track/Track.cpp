@@ -98,7 +98,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if (_113601A[1] != elRoad->mods())
+                        if ((_113601A[1] & elRoad->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -145,7 +145,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if (_113601A[1] != elRoad->mods())
+            if ((_113601A[1] & elRoad->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
@@ -228,7 +228,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if (_113601A[1] != elTrack->mods())
+                        if ((_113601A[1] & elTrack->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -293,7 +293,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if (_113601A[1] != elTrack->mods())
+            if ((_113601A[1] & elTrack->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }

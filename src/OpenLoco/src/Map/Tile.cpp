@@ -144,15 +144,26 @@ namespace OpenLoco::World
                 result = tile.as<StationElement>();
                 if (result != nullptr)
                 {
-                    break;
+                    return result;
                 }
             }
             auto* elRoad = tile.as<RoadElement>();
             if (elRoad == nullptr)
+            {
+                // We can have any amount of road elements between the station
+                // this is different to a track where the station is always the next
+                // element.
+                trackFound = false;
                 continue;
-            trackFound = false;
+            }
             if (elRoad->baseZ() != baseZ)
+            {
+                // We can have any amount of road elements between the station
+                // but if the base height is different then the station doesn't
+                // exist here! (Should never happen)
+                trackFound = false;
                 continue;
+            }
             if (elRoad->unkDirection() != direction)
                 continue;
             if (elRoad->roadId() != roadId)
