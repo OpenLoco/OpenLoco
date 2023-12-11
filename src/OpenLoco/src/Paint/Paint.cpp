@@ -1191,7 +1191,7 @@ namespace OpenLoco::Paint
                 lastEntry->children = entry;
             }
             auto* lastChild = entry;
-            for (; lastChild != nullptr; lastChild = lastChild->children)
+            for (; lastChild->children != nullptr; lastChild = lastChild->children)
                 ;
             lastEntry = lastChild;
         }
@@ -1273,7 +1273,7 @@ namespace OpenLoco::Paint
                 lastEntry->children = entry;
             }
             auto* lastChild = entry;
-            for (; lastChild != nullptr; lastChild = lastChild->children)
+            for (; lastChild->children != nullptr; lastChild = lastChild->children)
                 ;
             lastEntry = lastChild;
         }
