@@ -1274,12 +1274,12 @@ namespace OpenLoco::Paint
     // 0x0045CA67
     void PaintSession::finaliseTrackRoadOrdering()
     {
-        finaliseOrdering(std::span<PaintStruct*>(&_E400D0[0], &_E400D0[0] + std::size(_E400D0)));
+        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadPaintStructs[0], &_trackRoadPaintStructs[0] + std::size(_trackRoadPaintStructs)));
     }
 
     // 0x0045CC1B
     void PaintSession::finaliseTrackRoadAdditionsOrdering()
     {
-        finaliseOrdering(std::span<PaintStruct*>(&_E400E4[0], &_E400E4[0] + std::size(_E400E4)));
+        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
     }
 }
