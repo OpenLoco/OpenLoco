@@ -211,6 +211,8 @@ namespace OpenLoco::Paint
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
         void resetLastPS() { _lastPS = nullptr; }
+        void setBoundingBoxOffset(const World::Pos3& bbox) { _boundingBoxOffset = bbox; }
+        World::Pos3 getBoundingBoxOffset() { return _boundingBoxOffset; }
 
         /*
          * @param amount    @<eax>
@@ -337,6 +339,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00E3F09A> _vpPositionY;
         inline static Interop::loco_global<int16_t, 0x00E3F09C> _unkVpPositionY;
         inline static Interop::loco_global<bool, 0x00E3F09E> _didPassSurface;
+        inline static Interop::loco_global<World::Pos3, 0x00E3F0A0> _boundingBoxOffset;
         inline static Interop::loco_global<int16_t, 0x00E3F0A6> _foregroundCullingHeight;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
         inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;

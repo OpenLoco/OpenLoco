@@ -244,9 +244,7 @@ namespace OpenLoco::Paint
         regs.si = boundBoxSize.y;
         regs.ah = boundBoxSize.z;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        setBoundingBoxOffset(boundBoxOffset);
 
         call(_4FD150[currentRotation], regs);
     }
@@ -263,9 +261,8 @@ namespace OpenLoco::Paint
         regs.si = boundBoxSize.y;
         regs.ah = boundBoxSize.z;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        setBoundingBoxOffset(boundBoxOffset);
+
         // Similar to addToPlotListAsParent but shrinks the bound box based on the rt
         call(_4FD200[currentRotation], regs);
     }
