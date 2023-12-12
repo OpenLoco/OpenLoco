@@ -481,7 +481,7 @@ namespace OpenLoco::World::TileManager
             case SurfaceSlope::CornerUp::east:
                 return SurfaceSlope::CornerDown::west;
         }
-        return SurfaceSlope::CornerUp::all;
+        return SurfaceSlope::flat;
     }
 
     // TODO: rename this function
