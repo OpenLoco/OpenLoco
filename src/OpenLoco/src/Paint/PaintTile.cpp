@@ -103,18 +103,6 @@ namespace OpenLoco::Paint
         call(0x0046748F);
     }
 
-    // 0x0045CA67
-    static void sub_45CA67([[maybe_unused]] PaintSession& session)
-    {
-        call(0x0045CA67);
-    }
-
-    // 0x0045CC1B
-    static void sub_45CC1B([[maybe_unused]] PaintSession& session)
-    {
-        call(0x0045CC1B);
-    }
-
     // 0x0042AC9C
     static bool sub_42AC9C([[maybe_unused]] PaintSession& session)
     {
@@ -211,8 +199,8 @@ namespace OpenLoco::Paint
                 sub_46748F(session);
             }
 
-            sub_45CA67(session);
-            sub_45CC1B(session);
+            session.finaliseTrackRoadOrdering();
+            session.finaliseTrackRoadAdditionsOrdering();
             session.setF003F6(0);
             if (session.get525CE4(0) != 0xFFFF)
             {

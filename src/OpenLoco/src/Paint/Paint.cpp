@@ -144,6 +144,7 @@ namespace OpenLoco::Paint
         _quadrantBackIndex = std::min(*_quadrantBackIndex, paintQuadrantIndex);
         _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
     }
+
     // 0x004FD120
     PaintStringStruct* PaintSession::addToStringPlotList(const uint32_t amount, const StringId stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
@@ -284,11 +285,11 @@ namespace OpenLoco::Paint
         return ps;
     }
 
-    void PaintSession::addToPlotList4FD180(ImageId imageId, uint32_t ecx, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    void PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId.toUInt32();
-        regs.ecx = ecx;
+        regs.ecx = priority;
         regs.dx = offset.z;
         regs.di = boundBoxSize.x;
         regs.si = boundBoxSize.y;
@@ -1168,5 +1169,117 @@ namespace OpenLoco::Paint
             interaction.pos.y = town.y;
         }
         return interaction;
+    }
+
+    static PaintStruct* getLastChild(PaintStruct& ps)
+    {
+        auto* lastChild = &ps;
+        for (; lastChild->children != nullptr; lastChild = lastChild->children)
+            ;
+        return lastChild;
+    }
+
+    static PaintStruct* appendTogetherStructs(std::span<PaintStruct*> paintStructs)
+    {
+        PaintStruct* routeEntry = nullptr;
+        // Append all of the paint structs together onto the route entry as children in order of array
+        PaintStruct* lastEntry = nullptr;
+        for (auto* entry : paintStructs)
+        {
+            if (entry == nullptr)
+            {
+                continue;
+            }
+            if (lastEntry == nullptr)
+            {
+                routeEntry = entry;
+            }
+            else
+            {
+                lastEntry->children = entry;
+            }
+            lastEntry = getLastChild(*entry);
+        }
+
+        // Reset table now that we have appended into one
+        std::fill(std::begin(paintStructs), std::end(paintStructs), nullptr);
+        return routeEntry;
+    }
+
+    // 0x0045CABF, 0x0045CAF4, 0x0045CB29, 0x0045CB5A, 0x0045CC73, 0x0045CCA8, 0x0045CCDD, 0x0045CD0E
+    static PaintStructBoundBox getMinMaxXYBounding(PaintStruct& routeEntry, uint8_t rotation)
+    {
+        auto minMaxBounds = routeEntry.bounds;
+        switch (rotation)
+        {
+            case 0:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+            case 1:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+            case 2:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+            case 3:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+        }
+        return minMaxBounds;
+    }
+
+    void PaintSession::finaliseOrdering(std::span<PaintStruct*> paintStructs)
+    {
+        auto* routeEntry = appendTogetherStructs(paintStructs);
+
+        if (routeEntry == nullptr)
+        {
+            return;
+        }
+
+        auto minMaxBounds = getMinMaxXYBounding(*routeEntry, getRotation());
+
+        routeEntry->bounds.x = minMaxBounds.x;
+        routeEntry->bounds.y = minMaxBounds.y;
+        routeEntry->bounds.xEnd = minMaxBounds.xEnd;
+        routeEntry->bounds.yEnd = minMaxBounds.yEnd;
+
+        addPSToQuadrant(*routeEntry);
+    }
+
+    // 0x0045CA67
+    void PaintSession::finaliseTrackRoadOrdering()
+    {
+        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadPaintStructs[0], &_trackRoadPaintStructs[0] + std::size(_trackRoadPaintStructs)));
+    }
+
+    // 0x0045CC1B
+    void PaintSession::finaliseTrackRoadAdditionsOrdering()
+    {
+        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
     }
 }
