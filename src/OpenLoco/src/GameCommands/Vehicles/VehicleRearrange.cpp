@@ -35,6 +35,9 @@ namespace OpenLoco::GameCommands
         auto* sourceVehicle = EntityManager::get<Vehicles::VehicleBase>(args.source);
         auto* destVehicle = EntityManager::get<Vehicles::VehicleBase>(args.dest);
 
+        auto* sourceHead = EntityManager::get<Vehicles::VehicleHead>(sourceVehicle->getHead());
+        auto* destHead = EntityManager::get<Vehicles::VehicleHead>(destVehicle->getHead());
+
         if (!(flags & Flags::apply))
         {
             if (!sub_431E6A(sourceVehicle->owner))
@@ -46,8 +49,6 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            auto* sourceHead = EntityManager::get<Vehicles::VehicleHead>(sourceVehicle->getHead());
-            auto* destHead = EntityManager::get<Vehicles::VehicleHead>(destVehicle->getHead());
             if (!sourceHead->canBeModified())
             {
                 return FAILURE;
@@ -86,10 +87,10 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            Vehicles::Vehicle sourceTrain(sourceBogie->head);
-            Vehicles::Vehicle destTrain(destVehicle->getHead());
+            Vehicles::Vehicle sourceTrain(*sourceHead);
+            Vehicles::Vehicle destTrain(*destHead);
 
-            if (destVehicle->getHead() != sourceVehicle->getHead())
+            if (sourceHead != destHead)
             {
                 [&train = sourceTrain, &targetBogie = *sourceBogie]() {
                     for (auto& car : train.cars)
@@ -149,21 +150,24 @@ namespace OpenLoco::GameCommands
 
             sub_4AF4D6(*sourceBogie, *destVehicle);
 
-            destTrain.head->sub_4AF7A4();
-            destTrain.head->sub_4B7CC3();
-            if (sourceTrain.head != destTrain.head)
+            // Vehicle has been invalidate so get it again
+            sourceTrain = Vehicles::Vehicle(*sourceHead);
+
+            destHead->sub_4AF7A4();
+            destHead->sub_4B7CC3();
+            if (sourceHead != destHead)
             {
-                sourceTrain.head->sub_4AF7A4();
-                sourceTrain.head->sub_4B7CC3();
+                sourceHead->sub_4AF7A4();
+                sourceHead->sub_4B7CC3();
             }
 
-            if (sourcePlacement.has_value())
+            if (sourcePlacement.has_value() && !sourceTrain.cars.empty())
             {
-                VehicleManager::placeDownVehicle(sourceTrain.head, sourcePlacement->tileX, sourcePlacement->tileY, sourcePlacement->tileBaseZ, sourcePlacement->trackAndDirection, sourcePlacement->subPosition);
+                VehicleManager::placeDownVehicle(sourceHead, sourcePlacement->tileX, sourcePlacement->tileY, sourcePlacement->tileBaseZ, sourcePlacement->trackAndDirection, sourcePlacement->subPosition);
             }
             if (destPlacement.has_value())
             {
-                VehicleManager::placeDownVehicle(destTrain.head, destPlacement->tileX, destPlacement->tileY, destPlacement->tileBaseZ, destPlacement->trackAndDirection, destPlacement->subPosition);
+                VehicleManager::placeDownVehicle(destHead, destPlacement->tileX, destPlacement->tileY, destPlacement->tileBaseZ, destPlacement->trackAndDirection, destPlacement->subPosition);
             }
             return 0;
         }
