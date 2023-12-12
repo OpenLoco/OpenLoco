@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
     static NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
         registers regs;
-        regs.ax = pos.x;
+        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
         regs.cx = pos.y;
         regs.dx = pos.z;
         regs.bp = tad;
@@ -49,7 +49,7 @@ namespace OpenLoco::GameCommands
         regs.cx = pos.y;
         regs.dx = pos.z;
         regs.ebx = enumValue(id);
-        return call(0x0048FF36, regs) & X86_FLAG_CARRY;
+        return call(0x0048FEF4, regs) & X86_FLAG_CARRY;
     }
 
     // 0x0048FFF7
@@ -57,7 +57,7 @@ namespace OpenLoco::GameCommands
     {
         // This one is for ai preview allocated track
         registers regs;
-        regs.ax = pos.x;
+        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
         regs.cx = pos.y;
         regs.dx = pos.z;
         regs.bp = tad;
