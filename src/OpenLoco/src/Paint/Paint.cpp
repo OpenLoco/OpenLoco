@@ -1207,7 +1207,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045CABF, 0x0045CAF4, 0x0045CB29, 0x0045CB5A, 0x0045CC73, 0x0045CCA8, 0x0045CCDD, 0x0045CD0E
-    PaintStructBoundBox getMinMaxXYBounding(PaintStruct& routeEntry, uint8_t rotation)
+    static PaintStructBoundBox getMinMaxXYBounding(PaintStruct& routeEntry, uint8_t rotation)
     {
         auto minMaxBounds = routeEntry.bounds;
         switch (rotation)
