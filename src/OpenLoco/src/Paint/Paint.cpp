@@ -56,8 +56,8 @@ namespace OpenLoco::Paint
         _F003F4 = 0;
         _F003F6 = 0;
         std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
-        std::fill(std::begin(_E400D0), std::end(_E400D0), nullptr);
-        std::fill(std::begin(_E400E4), std::end(_E400E4), nullptr);
+        std::fill(std::begin(_trackRoadPaintStructs), std::end(_trackRoadPaintStructs), nullptr);
+        std::fill(std::begin(_trackRoadAdditionsPaintStructs), std::end(_trackRoadAdditionsPaintStructs), nullptr);
         _112C300 = 0;
         _112C306 = 0;
     }
@@ -244,9 +244,7 @@ namespace OpenLoco::Paint
         regs.si = boundBoxSize.y;
         regs.ah = boundBoxSize.z;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        setBoundingBoxOffset(boundBoxOffset);
 
         call(_4FD150[currentRotation], regs);
     }
@@ -263,9 +261,8 @@ namespace OpenLoco::Paint
         regs.si = boundBoxSize.y;
         regs.ah = boundBoxSize.z;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        setBoundingBoxOffset(boundBoxOffset);
+
         // Similar to addToPlotListAsParent but shrinks the bound box based on the rt
         call(_4FD200[currentRotation], regs);
     }
