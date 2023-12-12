@@ -346,12 +346,12 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
         inline static Interop::loco_global<PaintStruct*, 0x00E400C8> _savedPSCur;  // Unused.
         inline static Interop::loco_global<PaintStruct*, 0x00E400CC> _savedPSCur2; // Unused.
-        inline static Interop::loco_global<PaintEntry* [5], 0x00E400D0> _E400D0;
+        inline static Interop::loco_global<PaintEntry* [5], 0x00E400D0> _trackRoadPaintStructs;
         inline static Interop::loco_global<int32_t, 0x00E400D4> _E400D4;
         inline static Interop::loco_global<int32_t, 0x00E400D8> _E400D8;
         inline static Interop::loco_global<int32_t, 0x00E400DC> _E400DC;
         inline static Interop::loco_global<int32_t, 0x00E400E0> _E400E0;
-        inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _E400E4;
+        inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _trackRoadAdditionsPaintStructs;
         inline static Interop::loco_global<int32_t, 0x00E400E8> _E400E8;
         inline static Interop::loco_global<int32_t, 0x00E400EC> _E400EC;
         inline static Interop::loco_global<int16_t, 0x00E400F0> _E400F0;

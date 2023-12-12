@@ -56,8 +56,8 @@ namespace OpenLoco::Paint
         _F003F4 = 0;
         _F003F6 = 0;
         std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
-        std::fill(std::begin(_E400D0), std::end(_E400D0), nullptr);
-        std::fill(std::begin(_E400E4), std::end(_E400E4), nullptr);
+        std::fill(std::begin(_trackRoadPaintStructs), std::end(_trackRoadPaintStructs), nullptr);
+        std::fill(std::begin(_trackRoadAdditionsPaintStructs), std::end(_trackRoadAdditionsPaintStructs), nullptr);
         _112C300 = 0;
         _112C306 = 0;
     }
