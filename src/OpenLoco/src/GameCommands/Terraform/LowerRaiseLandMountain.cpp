@@ -69,23 +69,19 @@ namespace OpenLoco::GameCommands
             });
     }
 
-    // 0x004633F6
-    void sub_4633F6(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
+    static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, std::set<Pos3, LessThanPos3>& removedBuildings)
     {
         if (!validCoords(pos))
         {
             return;
         }
 
-        // Logging::info("sub_4633F6 with x={}, y={}", pos.x, pos.y);
-
         auto tile = TileManager::get(pos);
         const auto* surface = tile.surface();
-        SmallZ cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
+        SmallZ cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface, referenceCornerFlag);
         int8_t baseZDiff = cornerBaseZ - targetBaseZ;
         uint8_t slopeFlags = 0;
 
-        // 0x00463450
         if (baseZDiff > 0)
         {
             if (baseZDiff <= _F00155)
@@ -93,7 +89,7 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            slopeFlags = lowerSurfaceCornerFlags(2, surface->slope());
+            slopeFlags = lowerSurfaceCornerFlags(targetCorner, surface->slope());
             targetBaseZ = surface->baseZ();
 
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
@@ -109,7 +105,7 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            slopeFlags = raiseSurfaceCornerFlags(2, surface->slope());
+            slopeFlags = raiseSurfaceCornerFlags(targetCorner, surface->slope());
             targetBaseZ = surface->baseZ();
 
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
@@ -128,188 +124,29 @@ namespace OpenLoco::GameCommands
         {
             mtnToolCost += result;
         }
+    }
+
+    // 0x004633F6
+    void sub_4633F6(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
+    {
+        adjustSurfaceSlope(pos, targetBaseZ, 2, SurfaceSlope::CornerUp::south, removedBuildings);
     }
 
     // 0x004634B9
     void sub_4634B9(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
     {
-        if (!validCoords(pos))
-        {
-            return;
-        }
-
-        // Logging::info("sub_4634B9 with x={}, y={}", pos.x, pos.y);
-
-        auto tile = TileManager::get(pos);
-        const auto* surface = tile.surface();
-        SmallZ cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
-        int8_t baseZDiff = cornerBaseZ - targetBaseZ;
-        uint8_t slopeFlags = 0;
-
-        // 0x00463513
-        if (baseZDiff > 0)
-        {
-            if (baseZDiff <= _F00155)
-            {
-                return;
-            }
-
-            slopeFlags = lowerSurfaceCornerFlags(3, surface->slope());
-            targetBaseZ = surface->baseZ();
-
-            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
-            {
-                targetBaseZ -= kSmallZStep;
-                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
-            }
-        }
-        else if (baseZDiff < 0)
-        {
-            if (-baseZDiff <= _F00155)
-            {
-                return;
-            }
-
-            slopeFlags = raiseSurfaceCornerFlags(3, surface->slope());
-            targetBaseZ = surface->baseZ();
-
-            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
-            {
-                targetBaseZ += kSmallZStep;
-                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
-            }
-        }
-        else // if (baseZDiff == 0)
-        {
-            return;
-        }
-
-        auto result = TileManager::adjustSurfaceHeight(pos, targetBaseZ, slopeFlags, removedBuildings, mtnToolGCFlags);
-        if (result != FAILURE)
-        {
-            mtnToolCost += result;
-        }
+        adjustSurfaceSlope(pos, targetBaseZ, 3, SurfaceSlope::CornerUp::west, removedBuildings);
     }
 
     // 0x0046357C
     void sub_46357C(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
     {
-        if (!validCoords(pos))
-        {
-            return;
-        }
-
-        // Logging::info("sub_46357C with x={}, y={}", pos.x, pos.y);
-
-        auto tile = TileManager::get(pos);
-        const auto* surface = tile.surface();
-        SmallZ cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
-        int8_t baseZDiff = cornerBaseZ - targetBaseZ;
-        uint8_t slopeFlags = 0;
-
-        // 0x004635D6
-        if (baseZDiff == 0)
-        {
-            return;
-        }
-        else if (baseZDiff > 0)
-        {
-            if (baseZDiff <= _F00155)
-            {
-                return;
-            }
-
-            slopeFlags = lowerSurfaceCornerFlags(0, surface->slope());
-            targetBaseZ = surface->baseZ();
-
-            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
-            {
-                targetBaseZ -= kSmallZStep;
-                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
-            }
-        }
-        else if (baseZDiff < 0)
-        {
-            if (-baseZDiff <= _F00155)
-            {
-                return;
-            }
-
-            slopeFlags = raiseSurfaceCornerFlags(0, surface->slope());
-            targetBaseZ = surface->baseZ();
-
-            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
-            {
-                targetBaseZ += kSmallZStep;
-                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
-            }
-        }
-
-        auto result = TileManager::adjustSurfaceHeight(pos, targetBaseZ, slopeFlags, removedBuildings, mtnToolGCFlags);
-        if (result != FAILURE)
-        {
-            mtnToolCost += result;
-        }
+        adjustSurfaceSlope(pos, targetBaseZ, 0, SurfaceSlope::CornerUp::north, removedBuildings);
     }
 
     // 0x0046363F
     void sub_46363F(Pos2 pos, int8_t targetBaseZ, std::set<Pos3, LessThanPos3>& removedBuildings)
     {
-        if (!validCoords(pos))
-        {
-            return;
-        }
-
-        // Logging::info("sub_46363F with x={}, y={}", pos.x, pos.y);
-
-        auto tile = TileManager::get(pos);
-        const auto* surface = tile.surface();
-        SmallZ cornerBaseZ = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
-        int8_t baseZDiff = cornerBaseZ - targetBaseZ;
-        uint8_t slopeFlags = 0;
-
-        // 0x00463699
-        if (baseZDiff > 0)
-        {
-            if (baseZDiff <= _F00155)
-            {
-                return;
-            }
-
-            slopeFlags = lowerSurfaceCornerFlags(1, surface->slope());
-            targetBaseZ = surface->baseZ();
-
-            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
-            {
-                targetBaseZ -= kSmallZStep;
-                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
-            }
-        }
-        else if (baseZDiff < 0)
-        {
-            if (-baseZDiff <= _F00155)
-            {
-                return;
-            }
-
-            slopeFlags = raiseSurfaceCornerFlags(1, surface->slope());
-            targetBaseZ = surface->baseZ();
-
-            if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
-            {
-                targetBaseZ += kSmallZStep;
-                slopeFlags &= ~SurfaceSlope::requiresHeightAdjustment;
-            }
-        }
-        else // if (baseZDiff == 0)
-        {
-            return;
-        }
-
-        auto result = TileManager::adjustSurfaceHeight(pos, targetBaseZ, slopeFlags, removedBuildings, mtnToolGCFlags);
-        if (result != FAILURE)
-        {
-            mtnToolCost += result;
-        }
+        adjustSurfaceSlope(pos, targetBaseZ, 1, SurfaceSlope::CornerUp::east, removedBuildings);
     }
 }
