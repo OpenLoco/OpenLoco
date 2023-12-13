@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
                 objStringId = track->name;
-                objImage = Gfx::recolour(track->image, companyColour);
+                objImage = Gfx::recolour(track->image + TrackObj::ImageIds::kPreviewImage0, companyColour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(ebx);
-                fg_image = Gfx::recolour(obj->image, companyColour);
+                fg_image = Gfx::recolour(obj->image + TrackObj::ImageIds::kPreviewImage0, companyColour);
             }
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();

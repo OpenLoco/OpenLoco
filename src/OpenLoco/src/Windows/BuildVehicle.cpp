@@ -1759,9 +1759,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else
             {
                 auto trackObj = ObjectManager::get<TrackObject>(type);
-                img = trackObj->image;
+                img = trackObj->image + TrackObj::ImageIds::kPreviewImage0;
                 if (window->currentSecondaryTab == tab)
                 {
+                    // TODO: Use array from Construction/Common.cpp
                     img += (window->frameNo / 4) & 0xF;
                 }
                 img = Gfx::recolour(img, companyColour);
