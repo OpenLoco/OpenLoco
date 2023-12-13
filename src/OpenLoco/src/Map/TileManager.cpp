@@ -492,7 +492,7 @@ namespace OpenLoco::World::TileManager
         {
             baseZ += kSmallZStep;
             uint8_t cornerDownMask = getCornerDownMask(cornerUp);
-            if (surface.isSlopeDoubleHeight() && surface.slope() == cornerDownMask)
+            if (surface.isSlopeDoubleHeight() && surface.slopeCorners() == cornerDownMask)
             {
                 baseZ += kSmallZStep;
             }
