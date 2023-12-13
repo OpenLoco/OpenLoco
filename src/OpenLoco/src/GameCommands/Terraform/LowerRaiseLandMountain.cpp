@@ -1,5 +1,6 @@
 #include "LowerRaiseLandMountain.h"
 #include "GameCommands/GameCommands.h"
+#include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Types.hpp"
@@ -92,11 +93,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD41C> _4FD41C;
-            slopeFlags = _4FD41C[surface->slope()];
-
+            slopeFlags = lowerSurfaceCornerFlags(2, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ -= kSmallZStep;
@@ -110,11 +109,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD37C> _4FD37C;
-            slopeFlags = _4FD37C[surface->slope()];
-
+            slopeFlags = raiseSurfaceCornerFlags(2, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ += kSmallZStep;
@@ -157,11 +154,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD43C> _4FD43C;
-            slopeFlags = _4FD43C[surface->slope()];
-
+            slopeFlags = lowerSurfaceCornerFlags(3, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ -= kSmallZStep;
@@ -175,11 +170,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD39C> _4FD39C;
-            slopeFlags = _4FD39C[surface->slope()];
-
+            slopeFlags = raiseSurfaceCornerFlags(3, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ += kSmallZStep;
@@ -226,11 +219,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD3DC> _4FD3DC;
-            slopeFlags = _4FD3DC[surface->slope()];
-
+            slopeFlags = lowerSurfaceCornerFlags(0, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ -= kSmallZStep;
@@ -244,11 +235,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD33C> _4FD33C;
-            slopeFlags = _4FD33C[surface->slope()];
-
+            slopeFlags = raiseSurfaceCornerFlags(0, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ += kSmallZStep;
@@ -287,11 +276,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD3FC> _4FD3FC;
-            slopeFlags = _4FD3FC[surface->slope()];
-
+            slopeFlags = lowerSurfaceCornerFlags(1, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ -= kSmallZStep;
@@ -305,11 +292,9 @@ namespace OpenLoco::GameCommands
                 return;
             }
 
-            // TODO: only user; integrate
-            static loco_global<uint8_t[32], 0x004FD35C> _4FD35C;
-            slopeFlags = _4FD35C[surface->slope()];
-
+            slopeFlags = raiseSurfaceCornerFlags(1, surface->slope());
             targetBaseZ = surface->baseZ();
+
             if (slopeFlags & SurfaceSlope::requiresHeightAdjustment)
             {
                 targetBaseZ += kSmallZStep;
