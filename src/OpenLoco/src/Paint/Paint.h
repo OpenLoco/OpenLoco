@@ -145,8 +145,9 @@ namespace OpenLoco::Paint
 
     struct TunnelEntry
     {
-        uint8_t height;
+        World::MicroZ height;
         uint8_t type;
+        constexpr bool operator==(const TunnelEntry&) const = default;
     };
     assert_struct_size(TunnelEntry, 2);
 #pragma pack(pop)
@@ -216,6 +217,8 @@ namespace OpenLoco::Paint
         World::Pos3 getBoundingBoxOffset() const { return _boundingBoxOffset; }
         void finaliseTrackRoadOrdering();
         void finaliseTrackRoadAdditionsOrdering();
+        std::span<TunnelEntry> getTunnels(uint8_t edge);
+        void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
 
         /*
          * @param amount    @<eax>

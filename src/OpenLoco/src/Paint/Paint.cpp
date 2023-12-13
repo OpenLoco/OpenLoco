@@ -400,6 +400,27 @@ namespace OpenLoco::Paint
         _tunnels3[0].height = 0xFF;
     }
 
+    void PaintSession::insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge)
+    {
+        TunnelEntry entry(z / World::kMicroZStep, tunnelType);
+        auto tunnelCount = _tunnelCounts[edge];
+        auto tunnels = getTunnels(edge);
+        bool insert = true;
+        if (tunnelCount > 0)
+        {
+            if (tunnels[tunnelCount - 1] == entry)
+            {
+                insert = false;
+            }
+        }
+        if (insert)
+        {
+            tunnels[tunnelCount] = entry;
+            tunnels[tunnelCount + 1] = { 0xFF, 0xFFU };
+            tunnelCount++;
+        }
+    }
+
     struct GenerationParameters
     {
         World::Pos2 mapLoc;
@@ -1322,5 +1343,21 @@ namespace OpenLoco::Paint
     void PaintSession::finaliseTrackRoadAdditionsOrdering()
     {
         finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
+    }
+
+    std::span<TunnelEntry> PaintSession::getTunnels(uint8_t edge)
+    {
+        switch (edge)
+        {
+            case 0:
+                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels0.size());
+            case 1:
+                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels1.size());
+            case 2:
+                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels2.size());
+            case 3:
+                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels3.size());
+        }
+        return std::span<TunnelEntry>();
     }
 }
