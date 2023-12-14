@@ -13,6 +13,28 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
+    static ImageId getWallImage(ImageIndex imageIndex, bool isGhost, const World::WallElement& elWall, const WallObject* wallObject)
+    {
+        if (isGhost)
+        {
+            return Gfx::applyGhostToImage(imageIndex);
+        }
+
+        ImageId imageId{ imageIndex };
+
+        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
+        {
+            imageId = imageId.withPrimary(elWall.getPrimaryColour());
+        }
+
+        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
+        {
+            imageId = imageId.withSecondary(elWall.getSecondaryColour());
+        }
+
+        return imageId;
+    }
+
     // 0x004C3D7C
     void paintWall(PaintSession& session, World::WallElement& elWall)
     {
@@ -50,18 +72,7 @@ namespace OpenLoco::Paint
                 imageIndex = frameNo + wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 0, 0, baseHeight },
@@ -79,18 +90,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 0, 0, baseHeight },
@@ -114,18 +114,8 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 12;
                     imageIndex = wallObject->sprite + imageOffset;
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 1, 31, baseHeight },
@@ -146,18 +136,7 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
                     imageIndex = frameNo + wallObject->sprite + imageOffset;
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 1, 31, baseHeight },
@@ -180,18 +159,7 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
                     imageIndex = wallObject->sprite + imageOffset;
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 31, 0, baseHeight },
@@ -212,18 +180,7 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
                     imageIndex = frameNo + wallObject->sprite + imageOffset;
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 31, 0, baseHeight },
@@ -244,18 +201,7 @@ namespace OpenLoco::Paint
                 imageIndex = frameNo + wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 2, 1, baseHeight },
@@ -272,18 +218,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    ImageId imageId{ imageIndex };
-                    if (isGhost)
-                    {
-                        imageId = Gfx::applyGhostToImage(imageIndex);
-                    }
-                    else
-                    {
-                        if ((wallObject->flags & WallObjectFlags::hasPrimaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withIndex(imageIndex).withPrimary(elWall.getPrimaryColour());
-                        if ((wallObject->flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
-                            imageId = imageId.withSecondary(elWall.getSecondaryColour());
-                    }
+                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 2, 1, baseHeight },
