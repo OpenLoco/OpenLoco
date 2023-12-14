@@ -13,15 +13,36 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
+    static constexpr World::Pos3 kOffsets[4] = {
+        { 0, 0, 0 },
+        { 1, 31, 0 },
+        { 31, 0, 0 },
+        { 2, 1, 0 },
+    };
+
+    static constexpr World::Pos3 kBBoxOffsets[4] = {
+        { 1, 1, 0 },
+        { 2, 30, 0 },
+        { 30, 2, 0 },
+        { 1, 1, 0 },
+    };
+
+    static constexpr World::Pos3 kBBoxLengths[4] = {
+        { 1, 28, 0 },
+        { 29, 1, 0 },
+        { 1, 29, 0 },
+        { 28, 1, 0 },
+    };
+
+    static constexpr uint8_t kImageOffsets[4][3] = {
+        { 3, 5, 1 },
+        { 2, 4, 0 },
+        { 5, 3, 1 },
+        { 4, 2, 0 },
+    };
+
     static uint32_t getWallImageIndexOffset(const World::WallElement& elWall, int32_t rotation)
     {
-        static constexpr uint8_t kImageOffsets[4][3] = {
-            { 3, 5, 1 },
-            { 2, 4, 0 },
-            { 5, 3, 1 },
-            { 4, 2, 0 },
-        };
-
         // TODO: Add the appropriate getters to WallElement
         uint8_t type = elWall.rawData()[0];
 
@@ -73,140 +94,39 @@ namespace OpenLoco::Paint
         const coord_t baseHeightEnd = baseHeight + 1;
         const int32_t rotation = (session.getRotation() + elWall.rotation()) & 0x3;
 
-        uint32_t imageOffset = 0;
-        uint32_t imageIndex = 0;
+        const auto offset = kOffsets[rotation] + World::Pos3{ 0, 0, baseHeight };
+        const auto bboxOffset = kBBoxOffsets[rotation] + World::Pos3{ 0, 0, baseHeightEnd };
+        const auto bboxLength = kBBoxLengths[rotation] + World::Pos3{ 0, 0, height };
 
-        switch (rotation)
+        const auto imageOffset = getWallImageIndexOffset(elWall, rotation);
+        const auto imageIndex = wallObject->sprite + imageOffset;
+
+        if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
         {
-            case 0:
-                imageOffset = getWallImageIndexOffset(elWall, rotation);
-                imageIndex = wallObject->sprite + imageOffset;
-                if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
-                {
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 0, 0, baseHeight },
-                        World::Pos3{ 1, 1, baseHeightEnd },
-                        World::Pos3{ 1, 28, height });
+            const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
+            session.addToPlotListAsParent(
+                imageId,
+                offset,
+                bboxOffset,
+                bboxLength);
 
-                    if (!isGhost)
-                    {
-                        session.addToPlotListAsChild(
-                            imageId.withRemap(ExtColour::unk74).withIndexOffset(6),
-                            World::Pos3{ 0, 0, baseHeight },
-                            World::Pos3{ 1, 1, baseHeightEnd },
-                            World::Pos3{ 1, 28, height });
-                    }
-                }
-                else
-                {
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 0, 0, baseHeight },
-                        World::Pos3{ 1, 1, baseHeightEnd },
-                        World::Pos3{ 1, 28, height });
-                }
-                break;
-            case 1:
-                imageOffset = getWallImageIndexOffset(elWall, rotation);
-                if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
-                {
-                    imageIndex = wallObject->sprite + imageOffset;
-
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 1, 31, baseHeight },
-                        World::Pos3{ 2, 30, baseHeightEnd },
-                        World::Pos3{ 29, 1, height });
-
-                    if (!isGhost)
-                    {
-                        session.addToPlotListAsChild(
-                            imageId.withRemap(ExtColour::unk74).withIndexOffset(6),
-                            World::Pos3{ 1, 31, baseHeight },
-                            World::Pos3{ 2, 30, baseHeightEnd },
-                            World::Pos3{ 29, 1, height });
-                    }
-                }
-                else
-                {
-                    imageIndex = wallObject->sprite + imageOffset;
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 1, 31, baseHeight },
-                        World::Pos3{ 2, 30, baseHeightEnd },
-                        World::Pos3{ 29, 1, height });
-                }
-                break;
-            case 2:
-                imageOffset = getWallImageIndexOffset(elWall, rotation);
-                if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
-                {
-                    imageIndex = wallObject->sprite + imageOffset;
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 31, 0, baseHeight },
-                        World::Pos3{ 30, 2, baseHeightEnd },
-                        World::Pos3{ 1, 29, height });
-
-                    if (!isGhost)
-                    {
-                        session.addToPlotListAsChild(
-                            imageId.withRemap(ExtColour::unk74).withIndexOffset(6),
-                            World::Pos3{ 31, 0, baseHeight },
-                            World::Pos3{ 30, 2, baseHeightEnd },
-                            World::Pos3{ 1, 29, height });
-                    }
-                }
-                else
-                {
-                    imageIndex = wallObject->sprite + imageOffset;
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 31, 0, baseHeight },
-                        World::Pos3{ 30, 2, baseHeightEnd },
-                        World::Pos3{ 1, 29, height });
-                }
-                break;
-            case 3:
-                imageOffset = getWallImageIndexOffset(elWall, rotation);
-                imageIndex = wallObject->sprite + imageOffset;
-                if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
-                {
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 2, 1, baseHeight },
-                        World::Pos3{ 1, 1, baseHeightEnd },
-                        World::Pos3{ 28, 1, height });
-                    if (!isGhost)
-                    {
-                        session.addToPlotListAsChild(
-                            imageId.withRemap(ExtColour::unk74).withIndexOffset(6),
-                            World::Pos3{ 2, 1, baseHeight },
-                            World::Pos3{ 1, 1, baseHeightEnd },
-                            World::Pos3{ 28, 1, height });
-                    }
-                }
-                else
-                {
-                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
-                    session.addToPlotListAsParent(
-                        imageId,
-                        World::Pos3{ 2, 1, baseHeight },
-                        World::Pos3{ 1, 1, baseHeightEnd },
-                        World::Pos3{ 28, 1, height });
-                }
-                break;
-            default:
-                assert(false);
-                break;
+            if (!isGhost)
+            {
+                session.addToPlotListAsChild(
+                    imageId.withRemap(ExtColour::unk74).withIndexOffset(6),
+                    offset,
+                    bboxOffset,
+                    bboxLength);
+            }
+        }
+        else
+        {
+            const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
+            session.addToPlotListAsParent(
+                imageId,
+                offset,
+                bboxOffset,
+                bboxLength);
         }
     }
 }
