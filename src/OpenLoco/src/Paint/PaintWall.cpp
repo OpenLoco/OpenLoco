@@ -44,18 +44,14 @@ namespace OpenLoco::Paint
     static uint32_t getWallImageIndexOffset(const World::WallElement& elWall, int32_t rotation)
     {
         // TODO: Add the appropriate getters to WallElement
-        uint8_t type = elWall.rawData()[0];
+        const auto type = elWall.rawData()[0];
 
-        // TODO: Make this branch-less.
-        uint32_t imageOffset = kImageOffsets[rotation][0];
-        if ((type & 0x80u) == 0)
-        {
-            imageOffset = kImageOffsets[rotation][1];
-            if ((type & 0x40) == 0)
-                imageOffset = kImageOffsets[rotation][2];
-        }
+        // If bit 8 is non-zero index is 0.
+        // If bit 8 is zero, bit 7 is non-zero index is 1.
+        // If bit 8 and 7 are zero index is 2.
+        const auto index = ((type & 0x80U) != 0) ? 0 : ((type & 0x40U) != 0) ? 1 : 2;
 
-        return imageOffset;
+        return kImageOffsets[rotation][index];
     }
 
     static ImageId getWallImageId(ImageIndex imageIndex, bool isGhost, const World::WallElement& elWall, const WallObject* wallObject)
