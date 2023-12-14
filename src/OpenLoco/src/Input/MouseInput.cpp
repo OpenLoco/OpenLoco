@@ -2305,29 +2305,13 @@ namespace OpenLoco::Input
     {
         int wheel = 0;
 
-        while (true)
+        for (; _cursorWheel > 0; _cursorWheel--)
         {
-            _cursorWheel -= 1;
-
-            if (_cursorWheel < 0)
-            {
-                _cursorWheel = 0;
-                break;
-            }
-
             wheel -= 17;
         }
 
-        while (true)
+        for (; _cursorWheel < 0; _cursorWheel++)
         {
-            _cursorWheel += 1;
-
-            if (_cursorWheel > 0)
-            {
-                _cursorWheel = 0;
-                break;
-            }
-
             wheel += 17;
         }
 
