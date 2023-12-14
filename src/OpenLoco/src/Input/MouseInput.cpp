@@ -2307,11 +2307,11 @@ namespace OpenLoco::Input
 
         while (true)
         {
-            _cursorWheel -= 120;
+            _cursorWheel -= 1;
 
             if (_cursorWheel < 0)
             {
-                _cursorWheel += 120;
+                _cursorWheel = 0;
                 break;
             }
 
@@ -2320,11 +2320,11 @@ namespace OpenLoco::Input
 
         while (true)
         {
-            _cursorWheel += 120;
+            _cursorWheel += 1;
 
             if (_cursorWheel > 0)
             {
-                _cursorWheel -= 120;
+                _cursorWheel = 0;
                 break;
             }
 

@@ -522,7 +522,7 @@ namespace OpenLoco::Ui
                     break;
                 }
                 case SDL_MOUSEWHEEL:
-                    Input::mouseWheel(e.wheel.y * 120);
+                    Input::mouseWheel(e.wheel.y);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
