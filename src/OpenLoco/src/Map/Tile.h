@@ -3,6 +3,7 @@
 #include "TileElement.h"
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>

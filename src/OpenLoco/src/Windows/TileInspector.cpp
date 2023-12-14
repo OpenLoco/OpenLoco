@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (self.var_842 != -1)
         {
             auto tile = TileManager::get(_currentPosition)[self.var_842];
-            std::array<uint8_t, 8>& data = tile->rawData();
+            const auto data = tile->rawData();
 
             char buffer[32] = {};
             buffer[0] = ControlCodes::windowColour2;
