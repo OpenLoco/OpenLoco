@@ -128,6 +128,8 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
+    static loco_global<int32_t, 0x00525330> _cursorWheel;
+
     static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
         { Ui::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
@@ -162,6 +164,11 @@ namespace OpenLoco::Input
         _cursorY = y;
         addr<0x0114084C, int32_t>() = relX;
         addr<0x01140840, int32_t>() = relY;
+    }
+
+    void mouseWheel(int wheel)
+    {
+        _cursorWheel += wheel;
     }
 
     bool isHovering(Ui::WindowType type)
@@ -2291,5 +2298,71 @@ namespace OpenLoco::Input
             _5233B2 = 0;
             return MouseButton::released;
         }
+    }
+
+    // 0x004C6202
+    void processMouseWheel()
+    {
+        int wheel = 0;
+
+        while (true)
+        {
+            _cursorWheel -= 120;
+
+            if (_cursorWheel < 0)
+            {
+                _cursorWheel += 120;
+                break;
+            }
+
+            wheel -= 17;
+        }
+
+        while (true)
+        {
+            _cursorWheel += 120;
+
+            if (_cursorWheel > 0)
+            {
+                _cursorWheel -= 120;
+                break;
+            }
+
+            wheel += 17;
+        }
+
+        if (Tutorial::state() != Tutorial::State::none)
+            return;
+
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
+        {
+            if (OpenLoco::isTitleMode())
+                return;
+
+            auto main = WindowManager::getMainWindow();
+            if (main != nullptr && wheel != 0)
+            {
+                if (wheel > 0)
+                {
+                    main->viewportRotateRight();
+                }
+                else if (wheel < 0)
+                {
+                    main->viewportRotateLeft();
+                }
+                TownManager::updateLabels();
+                StationManager::updateLabels();
+                Windows::MapWindow::centerOnViewPoint();
+            }
+
+            return;
+        }
+
+        if (wheel == 0)
+        {
+            return;
+        }
+
+        WindowManager::wheelInput(wheel);
     }
 }

@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::WindowManager
     void sub_4B93A5(WindowNumber_t number);
     void closeConstructionWindows();
     void closeTopmost();
-    void allWheelInput();
+    void wheelInput(int wheel);
     bool isInFront(Ui::Window* w);
     bool isInFrontAlt(Ui::Window* w);
     Ui::Window* findWindowShowing(const viewport_pos& position);

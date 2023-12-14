@@ -125,6 +125,10 @@ namespace OpenLoco::Input
     void handleMouse(int16_t x, int16_t y, MouseButton button);
     MouseButton getLastKnownButtonState();
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
+    // Inputs the mouse wheel delta.
+    void mouseWheel(int wheel);
+    // Processes the mouse wheel delta.
+    void processMouseWheel();
     void sub_407218();
     void sub_407231();
     Ui::Point getNextDragOffset();
