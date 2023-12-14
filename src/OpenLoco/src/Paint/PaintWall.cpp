@@ -13,6 +13,30 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
+    static uint32_t getWallImageIndexOffset(World::WallElement& elWall, int32_t rotation)
+    {
+        static constexpr uint8_t kImageOffsets[4][3] = {
+            { 3, 5, 1 },
+            { 2, 4, 0 },
+            { 5, 3, 1 },
+            { 4, 2, 0 },
+        };
+
+        // TODO: Add the appropriate getters to WallElement
+        uint8_t type = elWall.rawData()[0];
+
+        // TODO: Make this branch-less.
+        uint32_t imageOffset = kImageOffsets[rotation][0];
+        if ((type & 0x80u) == 0)
+        {
+            imageOffset = kImageOffsets[rotation][1];
+            if ((type & 0x40) == 0)
+                imageOffset = kImageOffsets[rotation][2];
+        }
+
+        return imageOffset;
+    }
+
     static ImageId getWallImage(ImageIndex imageIndex, bool isGhost, const World::WallElement& elWall, const WallObject* wallObject)
     {
         if (isGhost)
@@ -50,7 +74,6 @@ namespace OpenLoco::Paint
             frameNo = 2 * (ScenarioManager::getScenarioTicks() & 7U);
         }
 
-        uint8_t type = elWall.rawData()[0];
         int16_t height = 4 * wallObject->height - 2;
         uint32_t imageOffset = 0;
         uint32_t imageIndex = 0;
@@ -62,13 +85,7 @@ namespace OpenLoco::Paint
         switch (rotation)
         {
             case 0:
-                imageOffset = 3;
-                if ((type & 0x80u) == 0)
-                {
-                    imageOffset = 5;
-                    if ((type & 0x40) == 0)
-                        imageOffset = 1;
-                }
+                imageOffset = getWallImageIndexOffset(elWall, rotation);
                 imageIndex = frameNo + wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
@@ -102,13 +119,7 @@ namespace OpenLoco::Paint
                 }
                 break;
             case 1:
-                imageOffset = 2;
-                if ((type & 0x80u) == 0)
-                {
-                    imageOffset = 4;
-                    if ((type & 0x40) == 0)
-                        imageOffset = 0;
-                }
+                imageOffset = getWallImageIndexOffset(elWall, rotation);
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
@@ -147,13 +158,7 @@ namespace OpenLoco::Paint
                 }
                 break;
             case 2:
-                imageOffset = 5;
-                if ((type & 0x80u) == 0)
-                {
-                    imageOffset = 3;
-                    if ((type & 0x40) == 0)
-                        imageOffset = 1;
-                }
+                imageOffset = getWallImageIndexOffset(elWall, rotation);
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
@@ -191,13 +196,7 @@ namespace OpenLoco::Paint
                 }
                 break;
             case 3:
-                imageOffset = 4;
-                if ((type & 0x80u) == 0)
-                {
-                    imageOffset = 2;
-                    if ((type & 0x40) == 0)
-                        imageOffset = 0;
-                }
+                imageOffset = getWallImageIndexOffset(elWall, rotation);
                 imageIndex = frameNo + wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
