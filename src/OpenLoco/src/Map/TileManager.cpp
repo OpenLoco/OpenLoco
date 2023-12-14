@@ -515,7 +515,7 @@ namespace OpenLoco::World::TileManager
 
         try
         {
-            // Allocate a temporary buffer and tighly pack all the tile elements in the map
+            // Allocate a temporary buffer and tightly pack all the tile elements in the map
             std::vector<TileElement> tempBuffer;
             tempBuffer.resize(maxElements);
 
