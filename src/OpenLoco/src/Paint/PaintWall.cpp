@@ -113,8 +113,6 @@ namespace OpenLoco::Paint
                 imageOffset = getWallImageIndexOffset(elWall, rotation);
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
-                    if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
-                        imageOffset += 12;
                     imageIndex = wallObject->sprite + imageOffset;
 
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
@@ -135,8 +133,6 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
-                        imageOffset += 6;
                     imageIndex = wallObject->sprite + imageOffset;
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
@@ -150,8 +146,6 @@ namespace OpenLoco::Paint
                 imageOffset = getWallImageIndexOffset(elWall, rotation);
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
-                    if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
-                        imageOffset += 6;
                     imageIndex = wallObject->sprite + imageOffset;
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
@@ -171,8 +165,6 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
-                        imageOffset += 6;
                     imageIndex = wallObject->sprite + imageOffset;
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
