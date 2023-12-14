@@ -36,8 +36,4 @@ namespace OpenLoco::GameCommands
     };
 
     void registerMountainHooks();
-    void sub_4633F6(World::Pos2 pos, int8_t targetBaseZ, std::set<World::Pos3, World::LessThanPos3>& removedBuildings);
-    void sub_4634B9(World::Pos2 pos, int8_t targetBaseZ, std::set<World::Pos3, World::LessThanPos3>& removedBuildings);
-    void sub_46357C(World::Pos2 pos, int8_t targetBaseZ, std::set<World::Pos3, World::LessThanPos3>& removedBuildings);
-    void sub_46363F(World::Pos2 pos, int8_t targetBaseZ, std::set<World::Pos3, World::LessThanPos3>& removedBuildings);
 }
