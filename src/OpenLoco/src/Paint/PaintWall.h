@@ -9,5 +9,5 @@ namespace OpenLoco::Paint
 {
     struct PaintSession;
 
-    void paintWall(PaintSession& session, World::WallElement& elWall);
+    void paintWall(PaintSession& session, const World::WallElement& elWall);
 }

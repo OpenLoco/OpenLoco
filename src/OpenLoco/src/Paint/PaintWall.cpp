@@ -13,7 +13,7 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    static uint32_t getWallImageIndexOffset(World::WallElement& elWall, int32_t rotation)
+    static uint32_t getWallImageIndexOffset(const World::WallElement& elWall, int32_t rotation)
     {
         static constexpr uint8_t kImageOffsets[4][3] = {
             { 3, 5, 1 },
@@ -60,7 +60,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004C3D7C
-    void paintWall(PaintSession& session, World::WallElement& elWall)
+    void paintWall(PaintSession& session, const World::WallElement& elWall)
     {
         const auto* wallObject = ObjectManager::get<WallObject>(elWall.wallObjectId());
         assert(wallObject != nullptr);
