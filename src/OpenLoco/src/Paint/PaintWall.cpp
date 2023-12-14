@@ -37,7 +37,7 @@ namespace OpenLoco::Paint
         return imageOffset;
     }
 
-    static ImageId getWallImage(ImageIndex imageIndex, bool isGhost, const World::WallElement& elWall, const WallObject* wallObject)
+    static ImageId getWallImageId(ImageIndex imageIndex, bool isGhost, const World::WallElement& elWall, const WallObject* wallObject)
     {
         if (isGhost)
         {
@@ -74,13 +74,13 @@ namespace OpenLoco::Paint
             frameNo = 2 * (ScenarioManager::getScenarioTicks() & 7U);
         }
 
-        int16_t height = 4 * wallObject->height - 2;
+        const coord_t height = 4 * wallObject->height - 2;
+        const coord_t baseHeight = elWall.baseHeight();
+        const coord_t baseHeightEnd = baseHeight + 1;
+        const int32_t rotation = (session.getRotation() + elWall.rotation()) & 0x3;
+
         uint32_t imageOffset = 0;
         uint32_t imageIndex = 0;
-        coord_t baseHeight = elWall.baseHeight();
-        coord_t baseHeightEnd = baseHeight + 1;
-
-        const auto rotation = (session.getRotation() + elWall.rotation()) & 0x3;
 
         switch (rotation)
         {
@@ -89,7 +89,7 @@ namespace OpenLoco::Paint
                 imageIndex = frameNo + wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 0, 0, baseHeight },
@@ -107,15 +107,12 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 0, 0, baseHeight },
                         World::Pos3{ 1, 1, baseHeightEnd },
                         World::Pos3{ 1, 28, height });
-
-                    // if (!v9)
-                    //*(_DWORD*)(v8 + 4) = tertiaryColour;
                 }
                 break;
             case 1:
@@ -126,7 +123,7 @@ namespace OpenLoco::Paint
                         imageOffset += 12;
                     imageIndex = wallObject->sprite + imageOffset;
 
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 1, 31, baseHeight },
@@ -147,14 +144,12 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
                     imageIndex = frameNo + wallObject->sprite + imageOffset;
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 1, 31, baseHeight },
                         World::Pos3{ 2, 30, baseHeightEnd },
                         World::Pos3{ 29, 1, height });
-                    // if (!v9)
-                    //*(_DWORD*)(v13 + 4) = tertiaryColour;
                 }
                 break;
             case 2:
@@ -164,7 +159,7 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
                     imageIndex = wallObject->sprite + imageOffset;
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 31, 0, baseHeight },
@@ -185,14 +180,12 @@ namespace OpenLoco::Paint
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
                     imageIndex = frameNo + wallObject->sprite + imageOffset;
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 31, 0, baseHeight },
                         World::Pos3{ 30, 2, baseHeightEnd },
                         World::Pos3{ 1, 29, height });
-                    // if (!v9)
-                    //*(_DWORD*)(v18 + 4) = tertiaryColour;
                 }
                 break;
             case 3:
@@ -200,7 +193,7 @@ namespace OpenLoco::Paint
                 imageIndex = frameNo + wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 2, 1, baseHeight },
@@ -217,14 +210,12 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    const auto imageId = getWallImage(imageIndex, isGhost, elWall, wallObject);
+                    const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
                         World::Pos3{ 2, 1, baseHeight },
                         World::Pos3{ 1, 1, baseHeightEnd },
                         World::Pos3{ 28, 1, height });
-                    // if (!v9)
-                    //*(_DWORD*)(v23 + 4) = tertiaryColour;
                 }
                 break;
             default:
