@@ -80,6 +80,7 @@ namespace OpenLoco::Ui
 
     static SDL_Window* window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
+    static CursorId _currentCursor = CursorId::pointer;
     static bool _exitRequested = false;
 
     static void setWindowIcon();
@@ -280,8 +281,14 @@ namespace OpenLoco::Ui
                 id = CursorId::pointer;
             }
 
+            _currentCursor = id;
             SDL_SetCursor(_cursors[id]);
         }
+    }
+
+    CursorId getCursor()
+    {
+        return _currentCursor;
     }
 
     // 0x00407FCD
