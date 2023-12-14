@@ -49,7 +49,8 @@ namespace OpenLoco::Paint
         // If bit 8 is non-zero index is 0.
         // If bit 8 is zero, bit 7 is non-zero index is 1.
         // If bit 8 and 7 are zero index is 2.
-        const auto index = ((type & 0x80U) != 0) ? 0 : ((type & 0x40U) != 0) ? 1 : 2;
+        const auto index = ((type & 0x80U) != 0) ? 0 : ((type & 0x40U) != 0) ? 1
+                                                                             : 2;
 
         return kImageOffsets[rotation][index];
     }
