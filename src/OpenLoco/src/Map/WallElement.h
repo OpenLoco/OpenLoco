@@ -36,6 +36,10 @@ namespace OpenLoco::World
         {
             _6 = (_6 & 0xE0) | (enumValue(colour) & 0x1F);
         }
+        Colour getPrimaryColour() const
+        {
+            return Colour(_6 & 0x1F);
+        }
         void setSecondaryColour(Colour colour)
         {
             _6 &= 0x1F;
@@ -43,9 +47,17 @@ namespace OpenLoco::World
             _flags &= ~0x60; // Reuse flags 5 and 6 for storing bits of the primary colour
             _flags |= (enumValue(colour) & 0x18) << 2;
         }
+        Colour getSecondaryColour() const
+        {
+            return Colour(((_6 >> 5) & 0x7) | ((_flags >> 2) & 0x18));
+        }
         void setTertiaryColour(Colour colour)
         {
             _5 = enumValue(colour);
+        }
+        Colour getTertiaryColour() const
+        {
+            return Colour(_5);
         }
     };
 #pragma pack(pop)
