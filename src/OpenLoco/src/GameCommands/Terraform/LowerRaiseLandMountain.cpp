@@ -1,8 +1,12 @@
 #include "LowerRaiseLandMountain.h"
+#include "Audio/Audio.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Terraform/LowerLand.h"
+#include "GameCommands/Terraform/RaiseLand.h"
 #include "Map/SurfaceData.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "S5/S5.h"
 #include "Types.hpp"
 #include <OpenLoco/Diagnostics/Logging.h>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -13,9 +17,12 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
+    static loco_global<uint32_t, 0x00F00146> mtnToolXParams;
+    static loco_global<uint32_t, 0x00F0014A> mtnToolYParams;
     static loco_global<uint32_t, 0x00F0014E> mtnToolCost;
     static loco_global<uint8_t, 0x00F00154> mtnToolGCFlags;
     static loco_global<uint8_t, 0x00F00155> _F00155;
+    static loco_global<uint8_t, 0x00F00156> _F00156;
 
     static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, std::set<Pos3, LessThanPos3>& removedBuildings)
     {
@@ -148,5 +155,71 @@ namespace OpenLoco::GameCommands
                 regs = backup;
                 return 0;
             });
+    }
+
+    // 0x00462DCE
+    static uint32_t lowerRaiseLandMountain(const LowerRaiseLandMountainArgs& args, const uint8_t flags)
+    {
+        mtnToolXParams = (args.pointB.x << 16) | args.pointA.x;
+        mtnToolYParams = (args.pointB.y << 16) | args.pointA.y;
+        mtnToolGCFlags = flags;
+
+        if (flags & Flags::apply)
+        {
+            S5::getOptions().madeAnyChanges = 1;
+        }
+
+        mtnToolCost = 0;
+
+        // We keep track of removed buildings for each tile visited
+        // this prevents accidentally double counting their removal
+        // cost if they span across multiple tiles.
+        std::set<World::Pos3, LessThanPos3> removedBuildings{};
+
+        // Play sound if this is a company action
+        if ((flags & Flags::apply) && getCommandNestLevel() == 1 && getUpdatingCompanyId() != CompanyId::neutral)
+        {
+            const auto height = TileManager::getHeight(args.centre).landHeight;
+            Audio::playSound(Audio::SoundId::construct, World::Pos3(args.centre.x, args.centre.y, height));
+        }
+
+        // First, raise/lower the mountain's centre tile
+        {
+            // Prepare parameters for raise/lower land tool
+            uint32_t result = FAILURE;
+            if (args.adjustment == 1)
+            {
+                RaiseLandArgs raiseArgs;
+                raiseArgs.centre = args.centre;
+                raiseArgs.pointA = args.pointA;
+                raiseArgs.pointB = args.pointB;
+                raiseArgs.corner = 4;
+
+                result = raiseLand(raiseArgs, removedBuildings, flags);
+            }
+            else
+            {
+                LowerLandArgs lowerArgs;
+                lowerArgs.centre = args.centre;
+                lowerArgs.pointA = args.pointA;
+                lowerArgs.pointB = args.pointB;
+                lowerArgs.corner = 4;
+
+                result = lowerLand(lowerArgs, removedBuildings, flags);
+            }
+
+            if (result != FAILURE)
+            {
+                mtnToolCost = *mtnToolCost + result;
+            }
+        }
+
+        return mtnToolCost;
+    }
+
+    void lowerRaiseLandMountain(registers& regs)
+    {
+        const LowerRaiseLandMountainArgs args(regs);
+        regs.ebx = lowerRaiseLandMountain(args, regs.bl);
     }
 }
