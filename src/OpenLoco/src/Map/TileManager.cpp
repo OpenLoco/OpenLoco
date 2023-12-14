@@ -510,6 +510,7 @@ namespace OpenLoco::World::TileManager
     // 0x0046148F
     void reorganise()
     {
+        const auto curCursor = Ui::getCursor();
         Ui::setCursor(Ui::CursorId::busy);
 
         try
@@ -540,16 +541,15 @@ namespace OpenLoco::World::TileManager
             std::memset(_elements + numElements, 0, remainingElements * sizeof(TileElement));
 
             updateTilePointers();
-
-            // Note: original implementation did not revert the cursor
-            Ui::setCursor(Ui::CursorId::pointer);
         }
         catch (const std::bad_alloc&)
         {
             Ui::showMessageBox("Bad Alloc", "Bad memory allocation, exiting");
             exitWithError(4370, StringIds::null);
-            return;
         }
+
+        // Note: original implementation did not revert the cursor
+        Ui::setCursor(curCursor);
     }
 
     // 0x00461393
