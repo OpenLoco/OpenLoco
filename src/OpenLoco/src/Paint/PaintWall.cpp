@@ -68,12 +68,6 @@ namespace OpenLoco::Paint
         const auto isGhost = elWall.isGhost();
         session.setItemType(isGhost ? InteractionItem::noInteraction : InteractionItem::wall);
 
-        uint32_t frameNo = 0;
-        if (wallObject->var_09 & 0x10)
-        {
-            frameNo = 2 * (ScenarioManager::getScenarioTicks() & 7U);
-        }
-
         const coord_t height = 4 * wallObject->height - 2;
         const coord_t baseHeight = elWall.baseHeight();
         const coord_t baseHeightEnd = baseHeight + 1;
@@ -86,7 +80,7 @@ namespace OpenLoco::Paint
         {
             case 0:
                 imageOffset = getWallImageIndexOffset(elWall, rotation);
-                imageIndex = frameNo + wallObject->sprite + imageOffset;
+                imageIndex = wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
@@ -143,7 +137,7 @@ namespace OpenLoco::Paint
                 {
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
-                    imageIndex = frameNo + wallObject->sprite + imageOffset;
+                    imageIndex = wallObject->sprite + imageOffset;
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
@@ -179,7 +173,7 @@ namespace OpenLoco::Paint
                 {
                     if ((wallObject->flags & WallObjectFlags::unk3) != WallObjectFlags::none)
                         imageOffset += 6;
-                    imageIndex = frameNo + wallObject->sprite + imageOffset;
+                    imageIndex = wallObject->sprite + imageOffset;
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
                     session.addToPlotListAsParent(
                         imageId,
@@ -190,7 +184,7 @@ namespace OpenLoco::Paint
                 break;
             case 3:
                 imageOffset = getWallImageIndexOffset(elWall, rotation);
-                imageIndex = frameNo + wallObject->sprite + imageOffset;
+                imageIndex = wallObject->sprite + imageOffset;
                 if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
                 {
                     const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
