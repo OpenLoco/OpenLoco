@@ -214,6 +214,61 @@ namespace OpenLoco::GameCommands
             }
         }
 
+        // 0x00462E7E
+        auto tile = TileManager::get(args.pointA.x, args.pointA.y);
+        auto* surface = tile.surface();
+        if (surface->slope() != 0)
+        {
+            // Prepare parameters for raise/lower land tool
+            uint32_t result = FAILURE;
+            if (args.adjustment == -1)
+            {
+                RaiseLandArgs raiseArgs;
+                raiseArgs.centre = args.centre;
+                raiseArgs.pointA = args.pointA;
+                raiseArgs.pointB = args.pointB;
+                raiseArgs.corner = 4;
+
+                result = raiseLand(raiseArgs, removedBuildings, flags);
+            }
+            else
+            {
+                LowerLandArgs lowerArgs;
+                lowerArgs.centre = args.centre;
+                lowerArgs.pointA = args.pointA;
+                lowerArgs.pointB = args.pointB;
+                lowerArgs.corner = 4;
+
+                result = lowerLand(lowerArgs, removedBuildings, flags);
+            }
+
+            // TODO: from game command result
+            if (result != FAILURE)
+            {
+                mtnToolCost = *mtnToolCost + result;
+            }
+
+            // Verify that the slope is now gone. Abort if not.
+            auto tile = TileManager::get(args.pointA.x, args.pointA.y);
+            auto* surface = tile.surface();
+            if (surface->slope() != 0)
+            {
+                // 0x004633CB
+                GameCommands::setExpenditureType(ExpenditureType::Construction);
+
+                auto tileHeight = World::TileManager::getHeight(args.centre);
+                GameCommands::setPosition(World::Pos3(args.centre.x, args.centre.y, tileHeight.landHeight));
+
+                return mtnToolCost;
+            }
+        }
+
+        // 0x004633CB
+        GameCommands::setExpenditureType(ExpenditureType::Construction);
+
+        auto tileHeight = World::TileManager::getHeight(args.centre);
+        GameCommands::setPosition(World::Pos3(args.centre.x, args.centre.y, tileHeight.landHeight));
+
         return mtnToolCost;
     }
 
