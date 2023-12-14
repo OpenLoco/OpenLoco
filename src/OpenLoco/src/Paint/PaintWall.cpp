@@ -108,8 +108,9 @@ namespace OpenLoco::Paint
 
             if (!isGhost)
             {
+                const auto blendColour = enumValue(ExtColour::unk74) + enumValue(imageId.getPrimary());
                 session.addToPlotListAsChild(
-                    imageId.withRemap(ExtColour::unk74).withIndexOffset(6),
+                    imageId.withTranslucency(static_cast<ExtColour>(blendColour)).withIndexOffset(6),
                     offset,
                     bboxOffset,
                     bboxLength);
