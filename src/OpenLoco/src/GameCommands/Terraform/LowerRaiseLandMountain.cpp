@@ -215,9 +215,9 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00462E7E
-        auto tile = TileManager::get(args.pointA.x, args.pointA.y);
-        auto* surface = tile.surface();
-        if (surface->slope() != 0)
+        auto preTile = TileManager::get(args.pointA.x, args.pointA.y);
+        auto* preSurface = preTile.surface();
+        if (preSurface->slope() != 0)
         {
             // Prepare parameters for raise/lower land tool
             uint32_t result = FAILURE;
