@@ -288,7 +288,7 @@ namespace OpenLoco::GameCommands
 
                 // 0x00462FAB
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
-                sub_46357C(args.pointA, height, removedBuildings);
+                sub_46357C(Pos2(xBasePos, yBasePos), height, removedBuildings);
             }
 
             yBasePos += kTileSize;
@@ -296,7 +296,7 @@ namespace OpenLoco::GameCommands
             // 0x00462FCE
             for (auto i = radius; i > 0; i--)
             {
-                auto xPos = mtnToolXParams & 0xFFFF;
+                auto xPos = args.pointA.x;
                 auto yPos = std::clamp<coord_t>(yBasePos, args.pointA.y, args.pointB.y);
 
                 auto tile = TileManager::get(xPos, yPos);
@@ -322,6 +322,43 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x00463089
+            {
+                auto tile = TileManager::get(args.pointA.x, args.pointB.y);
+                auto* surface = tile.surface();
+
+                // 0x004630C1
+                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
+                sub_46363F(Pos2(xBasePos, yBasePos), height, removedBuildings);
+                xBasePos += kTileSize;
+            }
+
+            // 0x004630E1
+            for (auto i = radius; i > 0; i--)
+            {
+                auto yPos = args.pointB.y;
+                auto xPos = std::clamp<coord_t>(xBasePos, args.pointA.x, args.pointB.x);
+
+                auto tile = TileManager::get(xPos, yPos);
+                auto surface = tile.surface();
+
+                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
+                sub_4633F6(Pos2(xPos, yPos), height, removedBuildings);
+
+                *_F00155 -= 4;
+
+                if (xPos < args.pointA.x)
+                {
+                    *_F00155 += 4;
+                    if (xPos <= args.pointB.x)
+                    {
+                        *_F00155 += 4;
+                    }
+                }
+
+                height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
+                sub_46363F(Pos2(xPos, yPos), height, removedBuildings);
+                xBasePos += kTileSize;
+            }
         }
 
         // 0x004633CB
