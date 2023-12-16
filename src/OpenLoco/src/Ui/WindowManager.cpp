@@ -48,7 +48,6 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<Gfx::RenderTarget, 0x0050B884> _screenRT;
     static loco_global<uint8_t, 0x005233B6> _currentModalType;
     static loco_global<uint32_t, 0x00523508> _523508;
-    static loco_global<int32_t, 0x00525330> _cursorWheel;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
     static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
     static loco_global<Window[kMaxWindows], 0x011370AC> _windows;
@@ -569,8 +568,6 @@ namespace OpenLoco::Ui::WindowManager
                 }
             }
         }
-
-        allWheelInput();
     }
 
     // 0x00439BA5
@@ -1575,69 +1572,8 @@ namespace OpenLoco::Ui::WindowManager
         return false;
     }
 
-    // 0x004C6202
-    void allWheelInput()
+    void wheelInput(int wheel)
     {
-        int wheel = 0;
-
-        while (true)
-        {
-            _cursorWheel -= 120;
-
-            if (_cursorWheel < 0)
-            {
-                _cursorWheel += 120;
-                break;
-            }
-
-            wheel -= 17;
-        }
-
-        while (true)
-        {
-            _cursorWheel += 120;
-
-            if (_cursorWheel > 0)
-            {
-                _cursorWheel -= 120;
-                break;
-            }
-
-            wheel += 17;
-        }
-
-        if (Tutorial::state() != Tutorial::State::none)
-            return;
-
-        if (Input::hasFlag(Input::Flags::rightMousePressed))
-        {
-            if (OpenLoco::isTitleMode())
-                return;
-
-            auto main = WindowManager::getMainWindow();
-            if (main != nullptr && wheel != 0)
-            {
-                if (wheel > 0)
-                {
-                    main->viewportRotateRight();
-                }
-                else if (wheel < 0)
-                {
-                    main->viewportRotateLeft();
-                }
-                TownManager::updateLabels();
-                StationManager::updateLabels();
-                Windows::MapWindow::centerOnViewPoint();
-            }
-
-            return;
-        }
-
-        if (wheel == 0)
-        {
-            return;
-        }
-
         const Ui::Point cursorPosition = Input::getMouseLocation();
         auto window = findAt(cursorPosition);
 

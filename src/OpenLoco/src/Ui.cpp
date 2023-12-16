@@ -522,7 +522,7 @@ namespace OpenLoco::Ui
                     break;
                 }
                 case SDL_MOUSEWHEEL:
-                    addr<0x00525330, int32_t>() += e.wheel.y * 128;
+                    Input::mouseWheel(e.wheel.y);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
@@ -910,6 +910,8 @@ namespace OpenLoco::Ui
                 Input::processMouseOver(x, y);
                 processMouseTool(x, y);
             }
+
+            Input::processMouseWheel();
         }
 
         WindowManager::callEvent9OnAllWindows();

@@ -4,6 +4,7 @@
 - Fix: [#2209] Town size limits are not being taken account in the map generator.
 - Fix: [#2217] Road stations loading at incorrect rate under certain situations.
 - Fix: [#2221] Cursor icon is reset when the game auto saves.
+- Fix: [#2225] Improve scroll wheel behaviour for zooming under some circumstances.
 
 23.11 (2023-11-26)
 ------------------------------------------------------------------------
