@@ -365,7 +365,7 @@ namespace OpenLoco::GameCommands
                 auto tile = TileManager::get(args.pointB.x, args.pointB.y);
                 auto* surface = tile.surface();
 
-                // 0x004630C1
+                // 0x004631D1
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
                 sub_4633F6(Pos2(xBasePos, yBasePos), height, removedBuildings);
                 yBasePos -= kTileSize;
@@ -397,6 +397,45 @@ namespace OpenLoco::GameCommands
                 height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
                 sub_4633F6(Pos2(xPos, yPos), height, removedBuildings);
                 yBasePos -= kTileSize;
+            }
+
+            // 0x004632AF
+            {
+                auto tile = TileManager::get(args.pointB.x, args.pointA.y);
+                auto* surface = tile.surface();
+
+                // 0x004632E7
+                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
+                sub_4634B9(Pos2(xBasePos, yBasePos), height, removedBuildings);
+                yBasePos -= kTileSize;
+            }
+
+            // 0x0046330A
+            for (auto i = radius; i > 0; i--)
+            {
+                auto yPos = args.pointA.y;
+                auto xPos = std::clamp<coord_t>(xBasePos, args.pointA.x, args.pointB.x);
+
+                auto tile = TileManager::get(xPos, yPos);
+                auto surface = tile.surface();
+
+                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
+                sub_46357C(Pos2(xPos, yPos), height, removedBuildings);
+
+                *_F00155 -= 4;
+
+                if (xPos < args.pointB.x)
+                {
+                    *_F00155 += 4;
+                    if (xPos <= args.pointA.x)
+                    {
+                        *_F00155 += 4;
+                    }
+                }
+
+                height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
+                sub_4634B9(Pos2(xPos, yPos), height, removedBuildings);
+                xBasePos -= kTileSize;
             }
         }
 
