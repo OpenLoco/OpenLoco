@@ -307,10 +307,10 @@ namespace OpenLoco::GameCommands
 
                 *_F00155 -= 4;
 
-                if (yPos < args.pointA.y)
+                if (yPos >= args.pointA.y)
                 {
                     *_F00155 += 4;
-                    if (yPos <= args.pointB.y)
+                    if (yPos > args.pointB.y)
                     {
                         *_F00155 += 4;
                     }
@@ -346,10 +346,10 @@ namespace OpenLoco::GameCommands
 
                 *_F00155 -= 4;
 
-                if (xPos < args.pointA.x)
+                if (xPos >= args.pointA.x)
                 {
                     *_F00155 += 4;
-                    if (xPos <= args.pointB.x)
+                    if (xPos > args.pointB.x)
                     {
                         *_F00155 += 4;
                     }
@@ -362,7 +362,7 @@ namespace OpenLoco::GameCommands
 
             // 0x00463199
             {
-                auto tile = TileManager::get(args.pointB.x, args.pointB.y);
+                auto tile = TileManager::get(args.pointB);
                 auto* surface = tile.surface();
 
                 // 0x004631D1
@@ -385,10 +385,10 @@ namespace OpenLoco::GameCommands
 
                 *_F00155 -= 4;
 
-                if (yPos < args.pointB.y)
+                if (yPos <= args.pointB.y)
                 {
                     *_F00155 += 4;
-                    if (yPos <= args.pointA.y)
+                    if (yPos < args.pointA.y)
                     {
                         *_F00155 += 4;
                     }
@@ -407,7 +407,7 @@ namespace OpenLoco::GameCommands
                 // 0x004632E7
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
                 sub_4634B9(Pos2(xBasePos, yBasePos), height, removedBuildings);
-                yBasePos -= kTileSize;
+                xBasePos -= kTileSize;
             }
 
             // 0x0046330A
@@ -424,10 +424,10 @@ namespace OpenLoco::GameCommands
 
                 *_F00155 -= 4;
 
-                if (xPos < args.pointB.x)
+                if (xPos <= args.pointB.x)
                 {
                     *_F00155 += 4;
-                    if (xPos <= args.pointA.x)
+                    if (xPos < args.pointA.x)
                     {
                         *_F00155 += 4;
                     }
