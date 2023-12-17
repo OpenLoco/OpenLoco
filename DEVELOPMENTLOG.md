@@ -1,5 +1,83 @@
 # OpenLoco version 23.11+ (???)
 
+## Enable extra optimizations for Windows release builds (#2204)
+
+While working on our sister project OpenRCT2, @ZehMatt noticed some of the optimizations he
+applied there could also be applied to OpenLoco. As it turns out, particular compiler intrinsics
+were not enabled, which meant that direct memory writes were disabled and memcpy calls were used
+instead. In addition, the linker wasn't eliminating unreferenced data and code, nor were identical
+functions merged. Enabling the right intrinsics for the MSVC compiler shrinks the OpenLoco binary
+by as much as 300 KiB, and has decreased the amount of functions from 10,195 down to 6,899.
+As @ZehMatt puts it, free code and size optimizations, basically. Yay!
+
+# Fix crash when clipping strings (#2207)
+
+A few months ago, we changed how strings were processed in game. This unexpectedly led to crashes
+in some places in the game. What happened?
+
+While games nowadays have happily adopted Unicode for most of their text strings (e.g. through UTF-8),
+OpenLoco, like Locomotion, currently uses a dialect of the [ISO 8859-1](https://en.wikipedia.org/wiki/ISO/IEC_8859-1)
+code page to present text  to the player. We say it's a dialect, because some code points defined
+in this standard are used for other purposes, such as the icons for stations you see in labels,
+or as *formatting codes*, e.g. text colours. Dealing with these can be a bit delicate,
+and until we've reimplemented every function that deals with strings, we've got to keep it as-is.
+
+Turns out there's a mysterious formatting code at the start of company names, 0x90 in hexadecimal.
+Our code was tripping over this particular byte, leading to the crash. Hopefully, we can get
+rid of the hack that solved it soon.
+
+# Fix landscape generator not taking town size limits into account (#2209)
+
+In July, we merged our implementation of the createTown game command. What we didn't notice in
+the review process, is that the town size limit wasn't being passed properly, leading
+to an unexpected abundance of metropoles on maps that were expecting small towns only!
+Fortunately, the issue was identified and resolved quickly after it was reported --
+though it took a while to discover, it seems!
+
+## Implement track/road ordering functions, and PaintSession refactor (#2216, #2218)
+
+We're expanding our efforts again, this time into what we call the *paint* part of the game.
+As many of you know, the game uses prerendered *sprites* for showing landscapes, vehicles etc.
+on the game canvas. The functions that map game data onto these sprites, are what we call
+*paint* functions.
+
+This month, @duncanspumpkin implemented the paint functions that reorder the track and road sprites
+to draw them properly. The nice thing is that our implementation of these functions can be
+written to be much more compact than the originals. We hope that this will not only leave
+them to be more readable, but to lead to faster performance eventually as well.
+
+Later in the same week, @ZehMatt then took the opportunity to refactor the `PaintSession`
+to bundle variables and improve readability. Loads more to do, but we're chipping away at these!
+
+## Fix behavioural divergence regressions from v23.10 (#2217)
+
+We use *replay* tests to try to ensure we don't break any vanilla game logic while we
+reimplement the game's functions one-by-one. Unfortunately, we missed a few regressions
+caused by recent C++ implementations of some of the vehicle logic. Thankfully,
+@duncanspumpkin discovered and identified the issues, and they are fixed now.
+
+## Fix cursor resetting when the game auto saves (#2223)
+
+During testing, @ZehMatt noticed that the game triggering an auto save would reset the cursor
+to a regular pointer, rather than the cursor for whatever tool might have been active.
+Nothing game-breaking, but a good thing to have fixed!
+
+## Fix route-through order assignments (#2200)
+
+Assigning vehicles an order to stop at a particular station is simple: you just click their label
+once. Clicking it twice will order the vehicle to *route through* the station instead.
+Or does it? It turned out our implementation of assigning such route-through orders worked
+differently from vanilla. @duncanspumpkin worked out that, while vanilla's worked on the
+*previous* order, ours would work on the *highlighted* order instead. Given that assigning
+an order automatically moves the selected order forward by one, we would always be off by one,
+breaking this double-clicking behaviour! Glad to have this one fixed as well.
+
+## Mouse wheel input refactor (#2225)
+
+Rapidly zooming in and out of the map led to some jittery scrolling behaviour, @ZehMatt found.
+This led him to identify and fix an underlying bug, and clean up the code a little in the
+process. Nice work!
+
 # OpenLoco version 23.11 (2023-11-26)
 
 ## Object Selection (#2128, #2149, #2185)
