@@ -1,4 +1,4 @@
-23.11+ (???)
+23.12 (2023-12-17)
 ------------------------------------------------------------------------
 - Fix: [#2200] Route through orders not working as expected.
 - Fix: [#2203] Crash when clipping strings for display.
