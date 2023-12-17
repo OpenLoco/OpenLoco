@@ -1,3 +1,5 @@
+# OpenLoco version 23.12+ (???)
+
 # OpenLoco version 23.12 (2023-12-17)
 
 ## Enable extra optimizations for Windows release builds (#2204)
