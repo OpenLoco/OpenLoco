@@ -21,7 +21,7 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00F0014A> mtnToolYParams;
     static loco_global<uint32_t, 0x00F0014E> mtnToolCost;
     static loco_global<uint8_t, 0x00F00154> mtnToolGCFlags;
-    static loco_global<uint8_t, 0x00F00155> _F00155;
+    static loco_global<uint8_t, 0x00F00155> mtnToolHeightDiff;
     static loco_global<int8_t, 0x00F00156> mtnToolOuterLoopIndex;
 
     static void adjustSurfaceSlope(Pos2 pos, int8_t targetBaseZ, uint8_t targetCorner, uint8_t referenceCornerFlag, std::set<Pos3, LessThanPos3>& removedBuildings)
@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
 
         if (baseZDiff > 0)
         {
-            if (baseZDiff <= _F00155)
+            if (baseZDiff <= mtnToolHeightDiff)
             {
                 return;
             }
@@ -55,7 +55,7 @@ namespace OpenLoco::GameCommands
         }
         else if (baseZDiff < 0)
         {
-            if (-baseZDiff <= _F00155)
+            if (-baseZDiff <= mtnToolHeightDiff)
             {
                 return;
             }
@@ -280,7 +280,7 @@ namespace OpenLoco::GameCommands
                 break;
             }
 
-            *_F00155 = mtnToolOuterLoopIndex * 2;
+            *mtnToolHeightDiff = mtnToolOuterLoopIndex * 2;
 
             {
                 auto tile = TileManager::get(args.pointA);
@@ -304,14 +304,14 @@ namespace OpenLoco::GameCommands
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
                 sub_46363F(Pos2(xPos, yPos), height, removedBuildings);
 
-                *_F00155 -= 4;
+                *mtnToolHeightDiff -= kSmallZStep;
 
                 if (yPos >= args.pointA.y)
                 {
-                    *_F00155 += 4;
+                    *mtnToolHeightDiff += kSmallZStep;
                     if (yPos > args.pointB.y)
                     {
-                        *_F00155 += 4;
+                        *mtnToolHeightDiff += kSmallZStep;
                     }
                 }
 
@@ -343,14 +343,14 @@ namespace OpenLoco::GameCommands
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
                 sub_4633F6(Pos2(xPos, yPos), height, removedBuildings);
 
-                *_F00155 -= 4;
+                *mtnToolHeightDiff -= kSmallZStep;
 
                 if (xPos >= args.pointA.x)
                 {
-                    *_F00155 += 4;
+                    *mtnToolHeightDiff += kSmallZStep;
                     if (xPos > args.pointB.x)
                     {
-                        *_F00155 += 4;
+                        *mtnToolHeightDiff += kSmallZStep;
                     }
                 }
 
@@ -382,14 +382,14 @@ namespace OpenLoco::GameCommands
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
                 sub_4634B9(Pos2(xPos, yPos), height, removedBuildings);
 
-                *_F00155 -= 4;
+                *mtnToolHeightDiff -= kSmallZStep;
 
                 if (yPos <= args.pointB.y)
                 {
-                    *_F00155 += 4;
+                    *mtnToolHeightDiff += kSmallZStep;
                     if (yPos < args.pointA.y)
                     {
-                        *_F00155 += 4;
+                        *mtnToolHeightDiff += kSmallZStep;
                     }
                 }
 
@@ -421,14 +421,14 @@ namespace OpenLoco::GameCommands
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
                 sub_46357C(Pos2(xPos, yPos), height, removedBuildings);
 
-                *_F00155 -= 4;
+                *mtnToolHeightDiff -= kSmallZStep;
 
                 if (xPos <= args.pointB.x)
                 {
-                    *_F00155 += 4;
+                    *mtnToolHeightDiff += kSmallZStep;
                     if (xPos < args.pointA.x)
                     {
-                        *_F00155 += 4;
+                        *mtnToolHeightDiff += kSmallZStep;
                     }
                 }
 
