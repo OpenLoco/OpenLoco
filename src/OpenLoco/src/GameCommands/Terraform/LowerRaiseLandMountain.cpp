@@ -289,9 +289,8 @@ namespace OpenLoco::GameCommands
                 // 0x00462FAB
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
                 sub_46357C(Pos2(xBasePos, yBasePos), height, removedBuildings);
+                yBasePos += kTileSize;
             }
-
-            yBasePos += kTileSize;
 
             // 0x00462FCE
             for (auto i = radius; i > 0; i--)
