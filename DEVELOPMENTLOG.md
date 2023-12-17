@@ -41,7 +41,7 @@ As many of you know, the game uses prerendered *sprites* for showing landscapes,
 on the game canvas. The functions that map game data onto these sprites, are what we call
 *paint* functions.
 
-This month, @duncanspumpkin implement the paint functions that reorder the track and road sprites
+This month, @duncanspumpkin implemented the paint functions that reorder the track and road sprites
 to draw them properly. The nice thing is that our implementation of these functions can be
 written to be much more compact than the originals. We hope that this will not only leave
 them to be more readable, but to lead to faster performance eventually as well.
