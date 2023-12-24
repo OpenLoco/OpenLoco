@@ -224,10 +224,8 @@ namespace OpenLoco::GameCommands
             // 0x00462FCE
             for (auto i = radius; i > 0; i--)
             {
-                coord_t xPos = args.pointA.x;
-                coord_t yPos = std::clamp(basePos.y, args.pointA.y, args.pointB.y);
-
-                auto tile = TileManager::get(Pos2(xPos, yPos));
+                auto pos = Pos2{ args.pointA.x, std::clamp(basePos.y, args.pointA.y, args.pointB.y) };
+                auto tile = TileManager::get(pos);
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
@@ -263,10 +261,8 @@ namespace OpenLoco::GameCommands
             // 0x004630E1
             for (auto i = radius; i > 0; i--)
             {
-                coord_t yPos = args.pointB.y;
-                coord_t xPos = std::clamp(basePos.x, args.pointA.x, args.pointB.x);
-
-                auto tile = TileManager::get(Pos2(xPos, yPos));
+                auto pos = Pos2{ std::clamp(basePos.x, args.pointA.x, args.pointB.x), args.pointB.y };
+                auto tile = TileManager::get(pos);
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
@@ -302,10 +298,8 @@ namespace OpenLoco::GameCommands
             // 0x004631F4
             for (auto i = radius; i > 0; i--)
             {
-                coord_t xPos = args.pointB.x;
-                coord_t yPos = std::clamp(basePos.y, args.pointA.y, args.pointB.y);
-
-                auto tile = TileManager::get(Pos2(xPos, yPos));
+                auto pos = Pos2{ args.pointB.x, std::clamp(basePos.y, args.pointA.y, args.pointB.y) };
+                auto tile = TileManager::get(pos);
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
@@ -341,10 +335,8 @@ namespace OpenLoco::GameCommands
             // 0x0046330A
             for (auto i = radius; i > 0; i--)
             {
-                coord_t yPos = args.pointA.y;
-                coord_t xPos = std::clamp(basePos.x, args.pointA.x, args.pointB.x);
-
-                auto tile = TileManager::get(Pos2(xPos, yPos));
+                auto pos = Pos2{ std::clamp(basePos.x, args.pointA.x, args.pointB.x), args.pointA.y };
+                auto tile = TileManager::get(pos);
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
