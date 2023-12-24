@@ -133,6 +133,98 @@ namespace OpenLoco::GameCommands
         return result;
     }
 
+    static void smoothenSurfaceNorth(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    {
+        auto tile = TileManager::get(refPos);
+        auto surface = tile.surface();
+
+        auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
+        adjustSurfaceSlopeEast(targetPos, height, removedBuildings);
+
+        *mtnToolHeightDiff -= kSmallZStep;
+
+        if (targetPos.y >= args.pointA.y)
+        {
+            *mtnToolHeightDiff += kSmallZStep;
+            if (targetPos.y > args.pointB.y)
+            {
+                *mtnToolHeightDiff += kSmallZStep;
+            }
+        }
+
+        height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
+        adjustSurfaceSlopeNorth(targetPos, height, removedBuildings);
+    }
+
+    static void smoothenSurfaceEast(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    {
+        auto tile = TileManager::get(refPos);
+        auto surface = tile.surface();
+
+        auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
+        adjustSurfaceSlopeSouth(targetPos, height, removedBuildings);
+
+        *mtnToolHeightDiff -= kSmallZStep;
+
+        if (targetPos.x >= args.pointA.x)
+        {
+            *mtnToolHeightDiff += kSmallZStep;
+            if (targetPos.x > args.pointB.x)
+            {
+                *mtnToolHeightDiff += kSmallZStep;
+            }
+        }
+
+        height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
+        adjustSurfaceSlopeEast(targetPos, height, removedBuildings);
+    }
+
+    static void smoothenSurfaceSouth(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    {
+        auto tile = TileManager::get(refPos);
+        auto surface = tile.surface();
+
+        auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
+        adjustSurfaceSlopeWest(targetPos, height, removedBuildings);
+
+        *mtnToolHeightDiff -= kSmallZStep;
+
+        if (targetPos.y <= args.pointB.y)
+        {
+            *mtnToolHeightDiff += kSmallZStep;
+            if (targetPos.y < args.pointA.y)
+            {
+                *mtnToolHeightDiff += kSmallZStep;
+            }
+        }
+
+        height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
+        adjustSurfaceSlopeSouth(targetPos, height, removedBuildings);
+    }
+
+    static void smoothenSurfaceWest(const Pos2& refPos, const Pos2& targetPos, const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings)
+    {
+        auto tile = TileManager::get(refPos);
+        auto surface = tile.surface();
+
+        auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
+        adjustSurfaceSlopeNorth(targetPos, height, removedBuildings);
+
+        *mtnToolHeightDiff -= kSmallZStep;
+
+        if (targetPos.x <= args.pointB.x)
+        {
+            *mtnToolHeightDiff += kSmallZStep;
+            if (targetPos.x < args.pointA.x)
+            {
+                *mtnToolHeightDiff += kSmallZStep;
+            }
+        }
+
+        height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
+        adjustSurfaceSlopeWest(targetPos, height, removedBuildings);
+    }
+
     // 0x00462DCE
     static uint32_t lowerRaiseLandMountain(const LowerRaiseLandMountainArgs& args, const uint8_t flags)
     {
@@ -225,25 +317,7 @@ namespace OpenLoco::GameCommands
             for (auto i = radius; i > 0; i--)
             {
                 auto pos = Pos2{ args.pointA.x, std::clamp(basePos.y, args.pointA.y, args.pointB.y) };
-                auto tile = TileManager::get(pos);
-                auto surface = tile.surface();
-
-                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
-                adjustSurfaceSlopeEast(basePos, height, removedBuildings);
-
-                *mtnToolHeightDiff -= kSmallZStep;
-
-                if (basePos.y >= args.pointA.y)
-                {
-                    *mtnToolHeightDiff += kSmallZStep;
-                    if (basePos.y > args.pointB.y)
-                    {
-                        *mtnToolHeightDiff += kSmallZStep;
-                    }
-                }
-
-                height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
-                adjustSurfaceSlopeNorth(basePos, height, removedBuildings);
+                smoothenSurfaceNorth(pos, basePos, args, removedBuildings);
                 basePos.y += kTileSize;
             }
 
@@ -262,25 +336,7 @@ namespace OpenLoco::GameCommands
             for (auto i = radius; i > 0; i--)
             {
                 auto pos = Pos2{ std::clamp(basePos.x, args.pointA.x, args.pointB.x), args.pointB.y };
-                auto tile = TileManager::get(pos);
-                auto surface = tile.surface();
-
-                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
-                adjustSurfaceSlopeSouth(basePos, height, removedBuildings);
-
-                *mtnToolHeightDiff -= kSmallZStep;
-
-                if (basePos.x >= args.pointA.x)
-                {
-                    *mtnToolHeightDiff += kSmallZStep;
-                    if (basePos.x > args.pointB.x)
-                    {
-                        *mtnToolHeightDiff += kSmallZStep;
-                    }
-                }
-
-                height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
-                adjustSurfaceSlopeEast(basePos, height, removedBuildings);
+                smoothenSurfaceEast(pos, basePos, args, removedBuildings);
                 basePos.x += kTileSize;
             }
 
@@ -299,25 +355,7 @@ namespace OpenLoco::GameCommands
             for (auto i = radius; i > 0; i--)
             {
                 auto pos = Pos2{ args.pointB.x, std::clamp(basePos.y, args.pointA.y, args.pointB.y) };
-                auto tile = TileManager::get(pos);
-                auto surface = tile.surface();
-
-                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
-                adjustSurfaceSlopeWest(basePos, height, removedBuildings);
-
-                *mtnToolHeightDiff -= kSmallZStep;
-
-                if (basePos.y <= args.pointB.y)
-                {
-                    *mtnToolHeightDiff += kSmallZStep;
-                    if (basePos.y < args.pointA.y)
-                    {
-                        *mtnToolHeightDiff += kSmallZStep;
-                    }
-                }
-
-                height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
-                adjustSurfaceSlopeSouth(basePos, height, removedBuildings);
+                smoothenSurfaceSouth(pos, basePos, args, removedBuildings);
                 basePos.y -= kTileSize;
             }
 
@@ -336,25 +374,7 @@ namespace OpenLoco::GameCommands
             for (auto i = radius; i > 0; i--)
             {
                 auto pos = Pos2{ std::clamp(basePos.x, args.pointA.x, args.pointB.x), args.pointA.y };
-                auto tile = TileManager::get(pos);
-                auto surface = tile.surface();
-
-                auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
-                adjustSurfaceSlopeNorth(basePos, height, removedBuildings);
-
-                *mtnToolHeightDiff -= kSmallZStep;
-
-                if (basePos.x <= args.pointB.x)
-                {
-                    *mtnToolHeightDiff += kSmallZStep;
-                    if (basePos.x < args.pointA.x)
-                    {
-                        *mtnToolHeightDiff += kSmallZStep;
-                    }
-                }
-
-                height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
-                adjustSurfaceSlopeWest(basePos, height, removedBuildings);
+                smoothenSurfaceWest(pos, basePos, args, removedBuildings);
                 basePos.x -= kTileSize;
             }
         }
