@@ -1126,12 +1126,12 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 33, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up),
-            makeWidget({ 39 + 16, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
-            makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
+            makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
+            makeWidget({ 50, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
+            makeWidget({ 96, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
+            makeWidget({ 57, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up),
+            makeWidget({ 83, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
+            makeWidget({ 112, 94 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             widgetEnd(),
         };
 
