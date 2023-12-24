@@ -306,10 +306,10 @@ namespace OpenLoco::GameCommands
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
-                if (yPos >= args.pointA.y)
+                if (yBasePos >= args.pointA.y)
                 {
                     *mtnToolHeightDiff += kSmallZStep;
-                    if (yPos > args.pointB.y)
+                    if (yBasePos > args.pointB.y)
                     {
                         *mtnToolHeightDiff += kSmallZStep;
                     }
@@ -345,10 +345,10 @@ namespace OpenLoco::GameCommands
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
-                if (xPos >= args.pointA.x)
+                if (xBasePos >= args.pointA.x)
                 {
                     *mtnToolHeightDiff += kSmallZStep;
-                    if (xPos > args.pointB.x)
+                    if (xBasePos > args.pointB.x)
                     {
                         *mtnToolHeightDiff += kSmallZStep;
                     }
@@ -384,10 +384,10 @@ namespace OpenLoco::GameCommands
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
-                if (yPos <= args.pointB.y)
+                if (yBasePos <= args.pointB.y)
                 {
                     *mtnToolHeightDiff += kSmallZStep;
-                    if (yPos < args.pointA.y)
+                    if (yBasePos < args.pointA.y)
                     {
                         *mtnToolHeightDiff += kSmallZStep;
                     }
@@ -423,10 +423,10 @@ namespace OpenLoco::GameCommands
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
-                if (xPos <= args.pointB.x)
+                if (xBasePos <= args.pointB.x)
                 {
                     *mtnToolHeightDiff += kSmallZStep;
-                    if (xPos < args.pointA.x)
+                    if (xBasePos < args.pointA.x)
                     {
                         *mtnToolHeightDiff += kSmallZStep;
                     }
