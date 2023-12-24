@@ -1128,7 +1128,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
-            makeWidget({ 39 + 16, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_paint_landscape_tool),
+            makeWidget({ 39 + 16, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
             widgetEnd(),
         };
 
@@ -1577,14 +1577,18 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
             self.widgets[widx::land_material].type = WidgetType::none;
+            self.widgets[widx::paint_mode].type = WidgetType::none;
 
             // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
             if (_adjustToolSize != 0)
             {
-                self.widgets[widx::land_material].type = WidgetType::wt_6;
-
                 auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
+                auto pixelColour = static_cast<Colour>(Gfx::getG1Element(landObj->mapPixelImage)->offset[0]);
 
+                self.widgets[widx::paint_mode].type = WidgetType::buttonWithImage;
+                self.widgets[widx::paint_mode].image = Gfx::recolour2(ImageIds::paintbrush, Colour::white, pixelColour);
+
+                self.widgets[widx::land_material].type = WidgetType::wt_6;
                 self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
 
@@ -1595,11 +1599,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
-            auto skin = ObjectManager::get<InterfaceSkinObject>();
-            auto imgId = skin->img;
-            self.widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
-
             self.draw(rt);
 
             Common::drawTabs(&self, rt);
