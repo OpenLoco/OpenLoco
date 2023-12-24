@@ -1248,11 +1248,18 @@ namespace OpenLoco::Ui::Windows::Terraform
                     self.invalidate();
                     break;
                 }
+            }
+        }
 
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        {
+            switch (widgetIndex)
+            {
                 case widx::paint_mode:
                 {
                     isPaintMode = !isPaintMode;
                     tabReset(&self);
+                    break;
                 }
             }
         }
@@ -1642,7 +1649,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents()
         {
             events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
+            events.onMouseUp = onMouseUp;
             events.onResize = onResize;
             events.onMouseDown = onMouseDown;
             events.onDropdown = onDropdown;
