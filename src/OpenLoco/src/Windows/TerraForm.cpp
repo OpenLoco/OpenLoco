@@ -1576,9 +1576,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            self.widgets[widx::land_material].type = WidgetType::none;
-            self.widgets[widx::paint_mode].type = WidgetType::none;
-
             // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
             if (_adjustToolSize != 0)
             {
@@ -1588,8 +1585,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self.widgets[widx::paint_mode].type = WidgetType::buttonWithImage;
                 self.widgets[widx::paint_mode].image = Gfx::recolour2(ImageIds::paintbrush, Colour::white, pixelColour);
 
-                self.widgets[widx::land_material].type = WidgetType::wt_6;
-                self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
+                if (isPaintMode)
+                {
+                    self.widgets[widx::land_material].type = WidgetType::wt_6;
+                    self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
+                }
+                else
+                {
+                    self.widgets[widx::land_material].type = WidgetType::none;
+                }
+            }
+            else
+            {
+                self.widgets[widx::paint_mode].type = WidgetType::none;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
