@@ -1114,12 +1114,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             tool_area = 9,
             decrease_area,
             increase_area,
-            land_material,
-            paint_mode
+            mountain_mode,
+            paint_mode,
+            land_material
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << paint_mode);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << mountain_mode) | (1 << paint_mode);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
+        static bool isMountainMode = false;
         static bool isPaintMode = false;
 
         Widget widgets[] = {
@@ -1127,8 +1129,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
+            makeWidget({ 33, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up),
             makeWidget({ 39 + 16, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
+            makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             widgetEnd(),
         };
 
@@ -1143,12 +1146,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBF7
         static void tabReset(Window* self)
         {
-            Input::toolSet(
-                self,
-                isPaintMode
-                    ? static_cast<uint16_t>(widx::paint_mode)
-                    : static_cast<uint16_t>(Common::widx::panel),
-                CursorId::landTool);
+            if (isPaintMode)
+                Input::toolSet(self, widx::paint_mode, CursorId::landTool);
+            else if (isMountainMode)
+                Input::toolSet(self, widx::mountain_mode, CursorId::landTool);
+            else
+                Input::toolSet(self, Common::widx::panel, CursorId::landTool);
 
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
@@ -1232,8 +1235,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::decrease_area:
                 {
                     _adjustToolSize--;
-                    if (_adjustToolSize < 0)
-                        _adjustToolSize = 0;
+                    if (_adjustToolSize < 1)
+                        _adjustToolSize = 1;
                     _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1255,8 +1258,17 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             switch (widgetIndex)
             {
+                case widx::mountain_mode:
+                {
+                    isMountainMode = !isMountainMode;
+                    isPaintMode = false;
+                    tabReset(&self);
+                    break;
+                }
+
                 case widx::paint_mode:
                 {
+                    isMountainMode = false;
                     isPaintMode = !isPaintMode;
                     tabReset(&self);
                     break;
@@ -1286,7 +1298,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_lower_land_here);
 
-            if (_adjustToolSize == 0)
+            if (isMountainMode)
             {
                 GameCommands::LowerRaiseLandMountainArgs args{};
                 args.centre = centre;
@@ -1318,7 +1330,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_raise_land_here);
 
-            if (_adjustToolSize == 0)
+            if (isMountainMode)
             {
                 GameCommands::LowerRaiseLandMountainArgs args{};
                 args.centre = centre;
@@ -1446,6 +1458,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     onPaintToolUpdate(self, widgetIndex, x, y);
                     break;
 
+                case widx::mountain_mode:
                 case Common::widx::panel:
                     onAdjustLandToolUpdate(widgetIndex, x, y);
                     break;
@@ -1479,12 +1492,16 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::paint_mode:
                     paintLand();
                     break;
+
+                case widx::mountain_mode:
                 case Common::widx::panel:
+                {
                     if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                         return;
 
                     ToolManager::setToolCursor(CursorId::upDownArrow);
                     break;
+                }
             }
         }
 
@@ -1502,6 +1519,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
                     break;
                 }
+
+                case widx::mountain_mode:
                 case Common::widx::panel:
                 {
                     auto window = WindowManager::findAt(x, y);
@@ -1555,13 +1574,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             switch (widgetIndex)
             {
+                case widx::mountain_mode:
                 case widx::paint_mode:
                 case Common::widx::panel:
+                {
                     TileManager::mapInvalidateSelectionRect();
-
                     Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                     ToolManager::setToolCursor(CursorId::landTool);
                     break;
+                }
             }
         }
 
@@ -1572,14 +1593,15 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
-            if (isPaintMode)
-            {
-                self.activatedWidgets |= (1 << widx::paint_mode);
-            }
+            if (isMountainMode)
+                self.activatedWidgets |= (1 << widx::mountain_mode);
             else
-            {
+                self.activatedWidgets &= ~(1 << widx::mountain_mode);
+
+            if (isPaintMode)
+                self.activatedWidgets |= (1 << widx::paint_mode);
+            else
                 self.activatedWidgets &= ~(1 << widx::paint_mode);
-            }
 
             self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
