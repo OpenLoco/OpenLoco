@@ -105,58 +105,6 @@ namespace OpenLoco::GameCommands
         adjustSurfaceSlope(pos, targetBaseZ, 1, SurfaceSlope::CornerUp::east, removedBuildings);
     }
 
-    // TODO: remove after implementing the actual game command
-    void registerMountainHooks()
-    {
-        registerHook(
-            0x004633F6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                // TODO: hacky workaround
-                std::set<World::Pos3, LessThanPos3> removedBuildings{};
-
-                registers backup = regs;
-                sub_4633F6({ regs.ax, regs.cx }, regs.dl, removedBuildings);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004634B9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                // TODO: hacky workaround
-                std::set<World::Pos3, LessThanPos3> removedBuildings{};
-
-                registers backup = regs;
-                sub_4634B9({ regs.ax, regs.cx }, regs.dl, removedBuildings);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0046357C,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                // TODO: hacky workaround
-                std::set<World::Pos3, LessThanPos3> removedBuildings{};
-
-                registers backup = regs;
-                sub_46357C({ regs.ax, regs.cx }, regs.dl, removedBuildings);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x0046363F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                // TODO: hacky workaround
-                std::set<World::Pos3, LessThanPos3> removedBuildings{};
-
-                registers backup = regs;
-                sub_46363F({ regs.ax, regs.cx }, regs.dl, removedBuildings);
-                regs = backup;
-                return 0;
-            });
-    }
-
     // 0x00462DCE
     static uint32_t lowerRaiseLandMountain(const LowerRaiseLandMountainArgs& args, const uint8_t flags)
     {

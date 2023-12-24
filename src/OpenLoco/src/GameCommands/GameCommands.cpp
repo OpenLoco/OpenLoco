@@ -212,8 +212,6 @@ namespace OpenLoco::GameCommands
             regs.ebx = backup.ebx;
             return 0;
         });
-
-        registerMountainHooks();
     }
 
     static uint32_t loc_4314EA();

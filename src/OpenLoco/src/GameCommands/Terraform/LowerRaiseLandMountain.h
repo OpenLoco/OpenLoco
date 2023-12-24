@@ -35,6 +35,5 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    void registerMountainHooks();
     void lowerRaiseLandMountain(registers& regs);
 }
