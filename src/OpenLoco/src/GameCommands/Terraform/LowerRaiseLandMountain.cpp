@@ -264,9 +264,9 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00462F25
-        uint16_t radius = ((args.pointB.x - args.pointA.x) >> 5) - 1;
-        uint16_t xBasePos = args.pointA.x; // ax
-        uint16_t yBasePos = args.pointA.y; // cx
+        coord_t xBasePos = args.pointA.x; // ax
+        coord_t yBasePos = args.pointA.y; // cx
+        int16_t radius = ((args.pointB.x - args.pointA.x) >> 5) - 1;
         mtnToolOuterLoopIndex = -4;
         while (true)
         {
@@ -295,10 +295,10 @@ namespace OpenLoco::GameCommands
             // 0x00462FCE
             for (auto i = radius; i > 0; i--)
             {
-                auto xPos = args.pointA.x;
-                auto yPos = std::clamp<coord_t>(yBasePos, args.pointA.y, args.pointB.y);
+                coord_t xPos = args.pointA.x;
+                coord_t yPos = std::clamp(yBasePos, args.pointA.y, args.pointB.y);
 
-                auto tile = TileManager::get(xPos, yPos);
+                auto tile = TileManager::get(Pos2(xPos, yPos));
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
@@ -334,10 +334,10 @@ namespace OpenLoco::GameCommands
             // 0x004630E1
             for (auto i = radius; i > 0; i--)
             {
-                auto yPos = args.pointB.y;
-                auto xPos = std::clamp<coord_t>(xBasePos, args.pointA.x, args.pointB.x);
+                coord_t yPos = args.pointB.y;
+                coord_t xPos = std::clamp(xBasePos, args.pointA.x, args.pointB.x);
 
-                auto tile = TileManager::get(xPos, yPos);
+                auto tile = TileManager::get(Pos2(xPos, yPos));
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
@@ -373,10 +373,10 @@ namespace OpenLoco::GameCommands
             // 0x004631F4
             for (auto i = radius; i > 0; i--)
             {
-                auto xPos = args.pointB.x;
-                auto yPos = std::clamp<coord_t>(yBasePos, args.pointA.y, args.pointB.y);
+                coord_t xPos = args.pointB.x;
+                coord_t yPos = std::clamp(yBasePos, args.pointA.y, args.pointB.y);
 
-                auto tile = TileManager::get(xPos, yPos);
+                auto tile = TileManager::get(Pos2(xPos, yPos));
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
@@ -400,7 +400,7 @@ namespace OpenLoco::GameCommands
 
             // 0x004632AF
             {
-                auto tile = TileManager::get(args.pointB.x, args.pointA.y);
+                auto tile = TileManager::get(Pos2(args.pointB.x, args.pointA.y));
                 auto* surface = tile.surface();
 
                 // 0x004632E7
@@ -412,10 +412,10 @@ namespace OpenLoco::GameCommands
             // 0x0046330A
             for (auto i = radius; i > 0; i--)
             {
-                auto yPos = args.pointA.y;
-                auto xPos = std::clamp<coord_t>(xBasePos, args.pointA.x, args.pointB.x);
+                coord_t yPos = args.pointA.y;
+                coord_t xPos = std::clamp(xBasePos, args.pointA.x, args.pointB.x);
 
-                auto tile = TileManager::get(xPos, yPos);
+                auto tile = TileManager::get(Pos2(xPos, yPos));
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
