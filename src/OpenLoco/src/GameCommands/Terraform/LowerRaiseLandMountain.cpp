@@ -302,7 +302,7 @@ namespace OpenLoco::GameCommands
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
-                sub_46363F(Pos2(xPos, yPos), height, removedBuildings);
+                sub_46363F(Pos2(xBasePos, yBasePos), height, removedBuildings);
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
@@ -316,7 +316,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
-                sub_46357C(Pos2(xPos, yPos), height, removedBuildings);
+                sub_46357C(Pos2(xBasePos, yBasePos), height, removedBuildings);
                 yBasePos += kTileSize;
             }
 
@@ -341,7 +341,7 @@ namespace OpenLoco::GameCommands
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::west);
-                sub_4633F6(Pos2(xPos, yPos), height, removedBuildings);
+                sub_4633F6(Pos2(xBasePos, yBasePos), height, removedBuildings);
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
@@ -355,7 +355,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
-                sub_46363F(Pos2(xPos, yPos), height, removedBuildings);
+                sub_46363F(Pos2(xBasePos, yBasePos), height, removedBuildings);
                 xBasePos += kTileSize;
             }
 
@@ -380,7 +380,7 @@ namespace OpenLoco::GameCommands
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::north);
-                sub_4634B9(Pos2(xPos, yPos), height, removedBuildings);
+                sub_4634B9(Pos2(xBasePos, yBasePos), height, removedBuildings);
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
@@ -394,7 +394,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
-                sub_4633F6(Pos2(xPos, yPos), height, removedBuildings);
+                sub_4633F6(Pos2(xBasePos, yBasePos), height, removedBuildings);
                 yBasePos -= kTileSize;
             }
 
@@ -419,7 +419,7 @@ namespace OpenLoco::GameCommands
                 auto surface = tile.surface();
 
                 auto height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::east);
-                sub_46357C(Pos2(xPos, yPos), height, removedBuildings);
+                sub_46357C(Pos2(xBasePos, yBasePos), height, removedBuildings);
 
                 *mtnToolHeightDiff -= kSmallZStep;
 
@@ -433,7 +433,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 height = TileManager::getSurfaceCornerHeight(*surface, SurfaceSlope::CornerUp::south);
-                sub_4634B9(Pos2(xPos, yPos), height, removedBuildings);
+                sub_4634B9(Pos2(xBasePos, yBasePos), height, removedBuildings);
                 xBasePos -= kTileSize;
             }
         }
