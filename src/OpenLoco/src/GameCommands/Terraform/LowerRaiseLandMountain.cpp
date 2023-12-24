@@ -105,6 +105,34 @@ namespace OpenLoco::GameCommands
         adjustSurfaceSlope(pos, targetBaseZ, 1, SurfaceSlope::CornerUp::east, removedBuildings);
     }
 
+    static uint32_t adjustMountainCentre(const LowerRaiseLandMountainArgs& args, std::set<Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
+    {
+        // Prepare parameters for raise/lower land tool
+        uint32_t result = FAILURE;
+        if (args.adjustment == 1)
+        {
+            RaiseLandArgs raiseArgs;
+            raiseArgs.centre = args.centre;
+            raiseArgs.pointA = args.pointA;
+            raiseArgs.pointB = args.pointB;
+            raiseArgs.corner = 4;
+
+            result = raiseLand(raiseArgs, removedBuildings, flags);
+        }
+        else
+        {
+            LowerLandArgs lowerArgs;
+            lowerArgs.centre = args.centre;
+            lowerArgs.pointA = args.pointA;
+            lowerArgs.pointB = args.pointB;
+            lowerArgs.corner = 4;
+
+            result = lowerLand(lowerArgs, removedBuildings, flags);
+        }
+
+        return result;
+    }
+
     // 0x00462DCE
     static uint32_t lowerRaiseLandMountain(const LowerRaiseLandMountainArgs& args, const uint8_t flags)
     {
@@ -133,29 +161,7 @@ namespace OpenLoco::GameCommands
 
         // First, raise/lower the mountain's centre tile
         {
-            // Prepare parameters for raise/lower land tool
-            uint32_t result = FAILURE;
-            if (args.adjustment == 1)
-            {
-                RaiseLandArgs raiseArgs;
-                raiseArgs.centre = args.centre;
-                raiseArgs.pointA = args.pointA;
-                raiseArgs.pointB = args.pointB;
-                raiseArgs.corner = 4;
-
-                result = raiseLand(raiseArgs, removedBuildings, flags);
-            }
-            else
-            {
-                LowerLandArgs lowerArgs;
-                lowerArgs.centre = args.centre;
-                lowerArgs.pointA = args.pointA;
-                lowerArgs.pointB = args.pointB;
-                lowerArgs.corner = 4;
-
-                result = lowerLand(lowerArgs, removedBuildings, flags);
-            }
-
+            auto result = adjustMountainCentre(args, removedBuildings, flags);
             if (result != FAILURE)
             {
                 mtnToolCost = *mtnToolCost + result;
@@ -167,30 +173,7 @@ namespace OpenLoco::GameCommands
         auto* preSurface = preTile.surface();
         if (preSurface->slope() != 0)
         {
-            // Prepare parameters for raise/lower land tool
-            uint32_t result = FAILURE;
-            if (args.adjustment == -1)
-            {
-                RaiseLandArgs raiseArgs;
-                raiseArgs.centre = args.centre;
-                raiseArgs.pointA = args.pointA;
-                raiseArgs.pointB = args.pointB;
-                raiseArgs.corner = 4;
-
-                result = raiseLand(raiseArgs, removedBuildings, flags);
-            }
-            else
-            {
-                LowerLandArgs lowerArgs;
-                lowerArgs.centre = args.centre;
-                lowerArgs.pointA = args.pointA;
-                lowerArgs.pointB = args.pointB;
-                lowerArgs.corner = 4;
-
-                result = lowerLand(lowerArgs, removedBuildings, flags);
-            }
-
-            // TODO: from game command result
+            auto result = adjustMountainCentre(args, removedBuildings, flags);
             if (result != FAILURE)
             {
                 mtnToolCost = *mtnToolCost + result;
