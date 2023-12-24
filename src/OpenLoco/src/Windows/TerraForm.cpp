@@ -1605,28 +1605,18 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
-            if (_adjustToolSize != 0)
+            auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
+            auto pixelColour = static_cast<Colour>(Gfx::getG1Element(landObj->mapPixelImage)->offset[0]);
+            self.widgets[widx::paint_mode].image = Gfx::recolour2(ImageIds::paintbrush, Colour::white, pixelColour);
+
+            if (isPaintMode)
             {
-                auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
-                auto pixelColour = static_cast<Colour>(Gfx::getG1Element(landObj->mapPixelImage)->offset[0]);
-
-                self.widgets[widx::paint_mode].type = WidgetType::buttonWithImage;
-                self.widgets[widx::paint_mode].image = Gfx::recolour2(ImageIds::paintbrush, Colour::white, pixelColour);
-
-                if (isPaintMode)
-                {
-                    self.widgets[widx::land_material].type = WidgetType::wt_6;
-                    self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
-                }
-                else
-                {
-                    self.widgets[widx::land_material].type = WidgetType::none;
-                }
+                self.widgets[widx::land_material].type = WidgetType::wt_6;
+                self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
             else
             {
-                self.widgets[widx::paint_mode].type = WidgetType::none;
+                self.widgets[widx::land_material].type = WidgetType::none;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
