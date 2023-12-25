@@ -1245,8 +1245,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::increase_area:
                 {
                     _adjustToolSize++;
-                    if (_adjustToolSize > 10)
-                        _adjustToolSize = 10;
+                    if (_adjustToolSize > 64)
+                        _adjustToolSize = 64;
                     _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1630,35 +1630,49 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto& toolArea = self.widgets[widx::tool_area];
 
-            // For mountain mode, we first draw the background grid
-            if (isMountainMode)
+            // Draw land tool size as a grid
+            if (_adjustToolSize < 10)
             {
-                auto areaImage = ImageId(ImageIds::tool_area);
-                Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
-
-                if ((_adjustToolSize & 1) == 0)
+                // For mountain mode, we first draw the background grid
+                if (isMountainMode)
                 {
-                    // For even sizes, we need to draw the image twice
-                    // TODO: replace with proper grid images
-                    placeForImage -= { 4, 0 };
-                    drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                    auto areaImage = ImageId(ImageIds::tool_area);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
 
-                    placeForImage += { 8, 0 };
-                    drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                    if ((_adjustToolSize & 1) == 0)
+                    {
+                        // For even sizes, we need to draw the image twice
+                        // TODO: replace with proper grid images
+                        placeForImage -= { 4, 0 };
+                        drawingCtx.drawImage(*rt, placeForImage, areaImage);
+
+                        placeForImage += { 8, 0 };
+                        drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                    }
+                    else
+                    {
+                        // For odd sizes, we just need the one
+                        drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                    }
                 }
-                else
+
+                // Draw tool size
+                if (!isMountainMode || _adjustToolSize > 1)
                 {
-                    // For odd sizes, we just need the one
+                    auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
                     drawingCtx.drawImage(*rt, placeForImage, areaImage);
                 }
             }
-
-            // Draw tool size
-            if (!isMountainMode || _adjustToolSize > 1)
+            // Or draw as a number, if we can't fit a sprite
+            else
             {
-                auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
-                Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
-                drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
+
+                auto args = FormatArguments();
+                args.push<uint16_t>(_adjustToolSize);
+                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
             }
 
             auto xPos = toolArea.midX() + self.x;
