@@ -1126,7 +1126,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
-            makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
+            makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 50, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
             makeWidget({ 96, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 57, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up),
@@ -1603,8 +1603,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             else
                 self.activatedWidgets &= ~(1 << widx::paint_mode);
 
-            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
-
             auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
             auto pixelColour = static_cast<Colour>(Gfx::getG1Element(landObj->mapPixelImage)->offset[0]);
             self.widgets[widx::paint_mode].image = Gfx::recolour2(ImageIds::paintbrush, Colour::white, pixelColour);
@@ -1630,10 +1628,41 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             Common::drawTabs(&self, rt);
 
-            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
-            xPos /= 2;
-            xPos += self.x;
-            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 28;
+            auto& toolArea = self.widgets[widx::tool_area];
+
+            // For mountain mode, we first draw the background grid
+            if (isMountainMode)
+            {
+                auto areaImage = ImageId(ImageIds::tool_area);
+                Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
+
+                if ((_adjustToolSize & 1) == 0)
+                {
+                    // For even sizes, we need to draw the image twice
+                    // TODO: replace with proper grid images
+                    placeForImage -= { 4, 0 };
+                    drawingCtx.drawImage(*rt, placeForImage, areaImage);
+
+                    placeForImage += { 8, 0 };
+                    drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                }
+                else
+                {
+                    // For odd sizes, we just need the one
+                    drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                }
+            }
+
+            // Draw tool size
+            if (!isMountainMode || _adjustToolSize > 1)
+            {
+                auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
+                Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
+                drawingCtx.drawImage(*rt, placeForImage, areaImage);
+            }
+
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 28;
 
             if (_raiseLandCost != 0x80000000)
             {
