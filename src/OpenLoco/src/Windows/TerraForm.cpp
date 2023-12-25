@@ -967,8 +967,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::increase_area:
                 {
                     _adjustToolSize++;
-                    if (_adjustToolSize > 10)
-                        _adjustToolSize = 10;
+                    if (_adjustToolSize > 64)
+                        _adjustToolSize = 64;
                     _clearAreaToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1061,7 +1061,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
-            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            if (_adjustToolSize <= 10)
+                self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            else
+                self.widgets[widx::tool_area].image = Widget::kContentNull;
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
@@ -1074,16 +1077,28 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
+            auto& toolArea = self.widgets[widx::tool_area];
+
+            // Draw as a number if we can't fit a sprite
+            if (_adjustToolSize > 10)
+            {
+
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
+
+                auto args = FormatArguments();
+                args.push<uint16_t>(_adjustToolSize);
+                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+            }
+
             if (_raiseLandCost == 0x80000000)
                 return;
 
             if (_raiseLandCost == 0)
                 return;
 
-            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
-            xPos /= 2;
-            xPos += self.x;
-            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 5;
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 5;
 
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
