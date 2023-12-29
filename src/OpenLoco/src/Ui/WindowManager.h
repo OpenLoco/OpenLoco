@@ -313,7 +313,6 @@ namespace OpenLoco::Ui::Windows
     namespace PromptOkCancel
     {
         bool open(StringId captionId, StringId descriptionId, FormatArguments& descriptionArgs, StringId okButtonStringId);
-        void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace PromptSaveWindow
