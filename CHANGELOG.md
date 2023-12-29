@@ -1,5 +1,7 @@
 23.12+ (???)
 ------------------------------------------------------------------------
+- Change: [#1180] Separate track/road see-through toggles.
+- Change: [#2231] Separate trees/buildings/scenery see-through toggles.
 
 23.12 (2023-12-17)
 ------------------------------------------------------------------------
