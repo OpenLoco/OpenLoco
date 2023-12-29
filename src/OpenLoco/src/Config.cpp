@@ -213,80 +213,68 @@ namespace OpenLoco::Config
 
         const auto& config = _configYaml;
 
+        // Display settings
         auto& displayNode = config["display"];
         if (displayNode && displayNode.IsMap())
         {
             auto& displayConfig = _newConfig.display;
             displayConfig.mode = displayNode["mode"].as<ScreenMode>(ScreenMode::window);
             displayConfig.index = displayNode["index"].as<int32_t>(0);
-            displayConfig.windowResolution = displayNode["window_resolution"].as<Resolution>();
-            displayConfig.fullscreenResolution = displayNode["fullscreen_resolution"].as<Resolution>();
+            displayConfig.windowResolution = displayNode["window_resolution"].as<Resolution>(Resolution{ 800, 600 });
+            displayConfig.fullscreenResolution = displayNode["fullscreen_resolution"].as<Resolution>(Resolution{ 1920, 1080 });
         }
 
+        // Audio settings
         auto& audioNode = config["audio"];
         if (audioNode && audioNode.IsMap())
         {
             auto& audioConfig = _newConfig.audio;
             audioConfig.device = audioNode["device"].as<std::string>("");
-            if (audioNode["play_title_music"])
-                audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>();
-            if (audioNode["play_news_sounds"])
-                audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>();
+            audioConfig.playTitleMusic = audioNode["play_title_music"].as<bool>(true);
+            audioConfig.playNewsSounds = audioNode["play_news_sounds"].as<bool>(true);
         }
 
+        // Network settings
         auto& networkNode = config["network"];
         if (networkNode && networkNode.IsMap())
         {
             auto& networkConfig = _newConfig.network;
-            networkConfig.enabled = networkNode["enabled"] && networkNode["enabled"].as<bool>();
+            networkConfig.enabled = networkNode["enabled"] && networkNode["enabled"].as<bool>(false);
         }
 
-        if (config["allow_multiple_instances"])
-            _newConfig.allowMultipleInstances = config["allow_multiple_instances"].as<bool>();
-        if (config["loco_install_path"])
-            _newConfig.locoInstallPath = config["loco_install_path"].as<std::string>();
-        if (config["last_save_path"])
-            _newConfig.lastSavePath = config["last_save_path"].as<std::string>();
-        if (config["language"])
-            _newConfig.language = config["language"].as<std::string>();
-        if (config["breakdowns_disabled"])
-            _newConfig.breakdownsDisabled = config["breakdowns_disabled"].as<bool>();
-        if (config["trainsReverseAtSignals"])
-            _newConfig.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>();
-        if (config["cheats_menu_enabled"])
-            _newConfig.cheatsMenuEnabled = config["cheats_menu_enabled"].as<bool>();
-        if (config["companyAIDisabled"])
-            _newConfig.companyAIDisabled = config["companyAIDisabled"].as<bool>();
-        if (config["townGrowthDisabled"])
-            _newConfig.townGrowthDisabled = config["townGrowthDisabled"].as<bool>();
-        if (config["scale_factor"])
-            _newConfig.scaleFactor = config["scale_factor"].as<float>();
-        if (config["zoom_to_cursor"])
-            _newConfig.zoomToCursor = config["zoom_to_cursor"].as<bool>();
-        if (config["autosave_frequency"])
-            _newConfig.autosaveFrequency = config["autosave_frequency"].as<int32_t>();
-        if (config["autosave_amount"])
-            _newConfig.autosaveAmount = config["autosave_amount"].as<int32_t>();
-        if (config["showFPS"])
-            _newConfig.showFPS = config["showFPS"].as<bool>();
-        if (config["uncapFPS"])
-            _newConfig.uncapFPS = config["uncapFPS"].as<bool>();
-        if (config["displayLockedVehicles"])
-            _newConfig.displayLockedVehicles = config["displayLockedVehicles"].as<bool>();
-        if (config["buildLockedVehicles"])
-            _newConfig.buildLockedVehicles = config["buildLockedVehicles"].as<bool>();
-        if (config["invertRightMouseViewPan"])
-            _newConfig.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>();
-        if (config["cashPopupRendering"])
-            _newConfig.cashPopupRendering = config["cashPopupRendering"].as<bool>();
-        if (config["disableVehicleLoadPenaltyCheat"])
-            _newConfig.disableVehicleLoadPenaltyCheat = config["disableVehicleLoadPenaltyCheat"].as<bool>();
+        // General
+        _newConfig.locoInstallPath = config["loco_install_path"].as<std::string>();
+        _newConfig.lastSavePath = config["last_save_path"].as<std::string>();
+        _newConfig.language = config["language"].as<std::string>();
 
-        if (config["edgeScrolling"])
-            _newConfig.edgeScrolling = config["edgeScrolling"].as<bool>();
-        if (config["edgeScrollingSpeed"])
-            _newConfig.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>();
+        // Rendering
+        _newConfig.scaleFactor = config["scale_factor"].as<float>(1.0f);
+        _newConfig.showFPS = config["showFPS"].as<bool>(false);
+        _newConfig.uncapFPS = config["uncapFPS"].as<bool>(false);
 
+        // General UI
+        _newConfig.allowMultipleInstances = config["allow_multiple_instances"].as<bool>(false);
+        _newConfig.cashPopupRendering = config["cashPopupRendering"].as<bool>(true);
+        _newConfig.edgeScrolling = config["edgeScrolling"].as<bool>(true);
+        _newConfig.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>(12);
+        _newConfig.zoomToCursor = config["zoom_to_cursor"].as<bool>(true);
+
+        // Autosaves
+        _newConfig.autosaveAmount = config["autosave_amount"].as<int32_t>(12);
+        _newConfig.autosaveFrequency = config["autosave_frequency"].as<int32_t>(1);
+
+        // Cheats
+        _newConfig.breakdownsDisabled = config["breakdowns_disabled"].as<bool>(false);
+        _newConfig.buildLockedVehicles = config["buildLockedVehicles"].as<bool>(false);
+        _newConfig.cheatsMenuEnabled = config["cheats_menu_enabled"].as<bool>(false);
+        _newConfig.companyAIDisabled = config["companyAIDisabled"].as<bool>(false);
+        _newConfig.disableVehicleLoadPenaltyCheat = config["disableVehicleLoadPenaltyCheat"].as<bool>(false);
+        _newConfig.displayLockedVehicles = config["displayLockedVehicles"].as<bool>(false);
+        _newConfig.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
+        _newConfig.townGrowthDisabled = config["townGrowthDisabled"].as<bool>(false);
+        _newConfig.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
+
+        // Shortcuts
         auto& scNode = config["shortcuts"];
         // Protect from empty shortcuts
         readShortcutConfig(scNode ? scNode : YAML::Node{});
