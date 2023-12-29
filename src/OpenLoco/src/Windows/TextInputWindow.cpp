@@ -88,6 +88,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
     static void onUpdate(Ui::Window& window);
+    static void initEvents();
 
     /**
      * 0x004CE523
@@ -110,10 +111,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         // Close any previous text input window
         cancel();
 
-        _events.draw = draw;
-        _events.prepareDraw = prepareDraw;
-        _events.onMouseUp = onMouseUp;
-        _events.onUpdate = onUpdate;
+        initEvents();
 
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
@@ -303,27 +301,21 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE910
-    void handleInput(uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        auto w = WindowManager::find(WindowType::textInput);
-        if (w == nullptr)
-        {
-            return;
-        }
-
         if (charCode == SDLK_RETURN)
         {
-            w->callOnMouseUp(Widx::ok);
-            return;
+            w.callOnMouseUp(Widx::ok);
+            return true;
         }
         else if (charCode == SDLK_ESCAPE)
         {
-            w->callOnMouseUp(Widx::close);
-            return;
+            w.callOnMouseUp(Widx::close);
+            return true;
         }
         else if (!inputSession.handleInput(charCode, keyCode))
         {
-            return;
+            return false;
         }
 
         WindowManager::invalidate(WindowType::textInput, 0);
@@ -334,5 +326,16 @@ namespace OpenLoco::Ui::Windows::TextInput
         {
             inputSession.calculateTextOffset(containerWidth);
         }
+
+        return true;
+    }
+
+    static void initEvents()
+    {
+        _events.draw = draw;
+        _events.prepareDraw = prepareDraw;
+        _events.onMouseUp = onMouseUp;
+        _events.onUpdate = onUpdate;
+        _events.keyUp = keyUp;
     }
 }
