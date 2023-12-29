@@ -325,61 +325,6 @@ namespace OpenLoco::Input
             if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
                 continue;
 
-            /*
-            auto ti = WindowManager::find(WindowType::textInput);
-            if (ti != nullptr)
-            {
-                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                    continue;
-
-                Ui::Windows::TextInput::handleInput(nextKey->charCode, nextKey->keyCode);
-                continue;
-            }
-
-            if (*_modalWindowType == WindowType::fileBrowserPrompt)
-            {
-                ti = WindowManager::find(WindowType::fileBrowserPrompt);
-                if (ti != nullptr)
-                {
-                    if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                        continue;
-
-                    Ui::Windows::PromptBrowse::handleInput(nextKey->charCode, nextKey->keyCode);
-                    continue;
-                }
-            }
-
-            if (*_modalWindowType == WindowType::confirmationPrompt)
-            {
-                ti = WindowManager::find(WindowType::confirmationPrompt);
-                if (ti != nullptr)
-                {
-                    Ui::Windows::PromptOkCancel::handleInput(nextKey->charCode, nextKey->keyCode);
-                    continue;
-                }
-            }
-
-            ti = WindowManager::find(WindowType::objectSelection);
-            if (ti != nullptr)
-            {
-                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                    continue;
-
-                Ui::Windows::ObjectSelectionWindow::handleInput(nextKey->charCode, nextKey->keyCode);
-                continue;
-            }
-
-            ti = WindowManager::find(WindowType::buildVehicle);
-            if (ti != nullptr)
-            {
-                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                    continue;
-
-                Ui::Windows::BuildVehicle::handleInput(nextKey->charCode, nextKey->keyCode);
-                continue;
-            }
-            */
-
             if (Tutorial::state() == Tutorial::State::playing)
             {
                 Tutorial::stop();
