@@ -224,6 +224,7 @@ namespace OpenLoco::Paint
         void finaliseTrackRoadAdditionsOrdering();
         std::span<TunnelEntry> getTunnels(uint8_t edge);
         void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
+        void insertTunnels(coord_t z, uint8_t tunnelType, uint8_t edges);
         void insertBridge(coord_t z, uint8_t bridgeType, uint8_t bridgeSubType, ImageId imageBase, uint8_t edges, uint8_t quarters);
 
         /*

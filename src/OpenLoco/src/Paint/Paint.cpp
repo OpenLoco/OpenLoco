@@ -16,6 +16,7 @@
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -435,6 +436,15 @@ namespace OpenLoco::Paint
             tunnels[tunnelCount] = entry;
             tunnels[tunnelCount + 1] = { 0xFF, 0xFFU };
             tunnelCount++;
+        }
+    }
+
+    void PaintSession::insertTunnels(coord_t z, uint8_t tunnelType, uint8_t edges)
+    {
+        for (auto edge = Numerics::bitScanForward(edges); edge != -1; edge = Numerics::bitScanForward(edges))
+        {
+            edges &= ~(1U << edge);
+            insertTunnel(z, tunnelType, edge);
         }
     }
 

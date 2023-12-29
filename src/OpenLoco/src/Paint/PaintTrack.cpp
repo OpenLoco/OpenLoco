@@ -91,16 +91,8 @@ namespace OpenLoco::Paint
             kStraightBoundingBoxOffsets[rotation] + heightOffset,
             kStraightBoundingBoxSizes[rotation]);
 
-        if (rotation & 1)
-        {
-            session.insertTunnel(height, _trackTunnel, 1);
-            session.insertTunnel(height, _trackTunnel, 3);
-        }
-        else
-        {
-            session.insertTunnel(height, _trackTunnel, 0);
-            session.insertTunnel(height, _trackTunnel, 2);
-        }
+        session.insertTunnels(height, _trackTunnel, rotation & 1 ? 0b1010 : 0b0101);
+
         session.set525CF8(session.get525CF8() | (rotation & 1 ? 0x130 : 0xD0));
         session.setF003F6(session.getF003F6() | (rotation & 1 ? 0x130 : 0xD0));
     }
