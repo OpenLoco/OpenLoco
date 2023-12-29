@@ -188,6 +188,7 @@ namespace OpenLoco::Config
         bool allowMultipleInstances = false;
         bool disableVehicleLoadPenaltyCheat = false;
         bool edgeScrolling = true;
+        int32_t edgeScrollingSpeed = 12;
         LocoConfig old;
 
         constexpr bool hasFlags(Flags flagsToTest) const

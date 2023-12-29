@@ -284,6 +284,8 @@ namespace OpenLoco::Config
 
         if (config["edgeScrolling"])
             _newConfig.edgeScrolling = config["edgeScrolling"].as<bool>();
+        if (config["edgeScrollingSpeed"])
+            _newConfig.edgeScrollingSpeed = config["edgeScrollingSpeed"].as<int32_t>();
 
         auto& scNode = config["shortcuts"];
         // Protect from empty shortcuts
@@ -360,6 +362,7 @@ namespace OpenLoco::Config
         node["cashPopupRendering"] = _newConfig.cashPopupRendering;
         node["disableVehicleLoadPenaltyCheat"] = _newConfig.disableVehicleLoadPenaltyCheat;
         node["edgeScrolling"] = _newConfig.edgeScrolling;
+        node["edgeScrollingSpeed"] = _newConfig.edgeScrollingSpeed;
 
         // Shortcuts
         const auto& shortcuts = _newConfig.shortcuts;
