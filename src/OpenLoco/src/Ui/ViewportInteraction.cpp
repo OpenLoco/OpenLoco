@@ -901,11 +901,11 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
                 {
-                    if (vp->hasFlags(ViewportFlags::hide_buildings))
+                    if (vp->hasFlags(ViewportFlags::seeThroughBuildings))
                     {
                         interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry;
                     }
-                    if (vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings))
+                    if (vp->hasFlags(ViewportFlags::seeThroughScenery))
                     {
                         interactionsToExclude |= InteractionItemFlags::tree | InteractionItemFlags::wall;
                     }

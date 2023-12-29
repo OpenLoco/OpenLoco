@@ -1928,6 +1928,11 @@ namespace OpenLoco::StringIds
     constexpr StringId menuSeeThroughScenery = 2315;
     constexpr StringId menuSeeThroughTracks = 2316;
     constexpr StringId menuSeeThroughTrees = 2317;
+    constexpr StringId shortcutSeeThroughBuildings = 2318;
+    constexpr StringId shortcutSeeThroughRoads = 2319;
+    constexpr StringId shortcutSeeThroughScenery = 2320;
+    constexpr StringId shortcutSeeThroughTracks = 2321;
+    constexpr StringId shortcutSeeThroughTrees = 2322;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

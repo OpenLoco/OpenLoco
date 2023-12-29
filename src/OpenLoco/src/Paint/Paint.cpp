@@ -827,35 +827,35 @@ namespace OpenLoco::Paint
 
     static bool shouldTryCullPaintStruct(const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
     {
-        if ((viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughTracks) != Ui::ViewportFlags::none)
         {
             if (isTypeCullableTrack(ps.type))
             {
                 return true;
             }
         }
-        if ((viewFlags & Ui::ViewportFlags::hide_roads) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughRoads) != Ui::ViewportFlags::none)
         {
             if (isTypeCullableRoad(ps.type))
             {
                 return true;
             }
         }
-        if ((viewFlags & Ui::ViewportFlags::hide_trees) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughTrees) != Ui::ViewportFlags::none)
         {
             if (isTypeCullableTree(ps.type))
             {
                 return true;
             }
         }
-        if ((viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughScenery) != Ui::ViewportFlags::none)
         {
             if (isTypeCullableScenery(ps.type))
             {
                 return true;
             }
         }
-        if ((viewFlags & Ui::ViewportFlags::hide_buildings) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughBuildings) != Ui::ViewportFlags::none)
         {
             if (isTypeCullableBuilding(ps.type))
             {

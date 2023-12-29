@@ -155,19 +155,19 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if ((current_viewport_flags & ViewportFlags::underground_view) != ViewportFlags::none)
             Dropdown::setItemSelected(0);
 
-        if ((current_viewport_flags & ViewportFlags::hide_trees) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughTrees) != ViewportFlags::none)
             Dropdown::setItemSelected(1);
 
-        if ((current_viewport_flags & ViewportFlags::hide_foreground_tracks_roads) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughTracks) != ViewportFlags::none)
             Dropdown::setItemSelected(2);
 
-        if ((current_viewport_flags & ViewportFlags::hide_roads) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughRoads) != ViewportFlags::none)
             Dropdown::setItemSelected(3);
 
-        if ((current_viewport_flags & ViewportFlags::hide_buildings) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughBuildings) != ViewportFlags::none)
             Dropdown::setItemSelected(4);
 
-        if ((current_viewport_flags & ViewportFlags::hide_foreground_scenery_buildings) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughScenery) != ViewportFlags::none)
             Dropdown::setItemSelected(5);
 
         if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
@@ -326,15 +326,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 0)
             viewport->flags ^= ViewportFlags::underground_view;
         else if (itemIndex == 1)
-            viewport->flags ^= ViewportFlags::hide_trees;
+            viewport->flags ^= ViewportFlags::seeThroughTrees;
         else if (itemIndex == 2)
-            viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
+            viewport->flags ^= ViewportFlags::seeThroughTracks;
         else if (itemIndex == 3)
-            viewport->flags ^= ViewportFlags::hide_roads;
+            viewport->flags ^= ViewportFlags::seeThroughRoads;
         else if (itemIndex == 4)
-            viewport->flags ^= ViewportFlags::hide_buildings;
+            viewport->flags ^= ViewportFlags::seeThroughBuildings;
         else if (itemIndex == 5)
-            viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
+            viewport->flags ^= ViewportFlags::seeThroughScenery;
         else if (itemIndex == 7)
             viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
         else if (itemIndex == 8)

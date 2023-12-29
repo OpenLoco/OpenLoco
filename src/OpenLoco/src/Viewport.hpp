@@ -44,19 +44,19 @@ namespace OpenLoco::Ui
     {
         none = 0U,
         underground_view = 1U << 0,
-        hide_foreground_tracks_roads = 1U << 1,
+        seeThroughTracks = 1U << 1,
         height_marks_on_tracks_roads = 1U << 2,
         height_marks_on_land = 1U << 3,
         one_way_direction_arrows = 1U << 4,
         gridlines_on_landscape = 1U << 5,
-        hide_foreground_scenery_buildings = 1U << 6,
+        seeThroughScenery = 1U << 6,
         flag_7 = 1U << 7,
         flag_8 = 1U << 8,
         town_names_displayed = 1U << 9,
         station_names_displayed = 1U << 10,
-        hide_roads = 1U << 11,
-        hide_buildings = 1U << 12,
-        hide_trees = 1U << 13,
+        seeThroughRoads = 1U << 11,
+        seeThroughBuildings = 1U << 12,
+        seeThroughTrees = 1U << 13,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ViewportFlags);
 
