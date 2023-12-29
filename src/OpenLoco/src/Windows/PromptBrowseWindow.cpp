@@ -633,34 +633,32 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x0044685C
-    void handleInput(uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        auto w = WindowManager::find(WindowType::fileBrowserPrompt);
-        if (w == nullptr)
-            return;
-
         if (keyCode == SDLK_RETURN)
         {
-            w->callOnMouseUp(widx::ok_button);
-            return;
+            w.callOnMouseUp(widx::ok_button);
+            return true;
         }
         else if (keyCode == SDLK_ESCAPE)
         {
-            w->callOnMouseUp(widx::close_button);
-            return;
+            w.callOnMouseUp(widx::close_button);
+            return true;
         }
         else if (!inputSession.handleInput(charCode, keyCode))
         {
-            return;
+            return false;
         }
 
         // 0x00446A6E
-        auto containerWidth = w->widgets[widx::text_filename].width() - 2;
+        auto containerWidth = w.widgets[widx::text_filename].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
         {
             inputSession.calculateTextOffset(containerWidth);
         }
-        w->invalidate();
+        w.invalidate();
+
+        return true;
     }
 
     static fs::path getDirectory(const fs::path& path)
@@ -938,5 +936,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         _events.prepareDraw = prepareDraw;
         _events.draw = draw;
         _events.drawScroll = drawScroll;
+        _events.keyUp = keyUp;
     }
 }

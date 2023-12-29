@@ -308,7 +308,6 @@ namespace OpenLoco::Ui::Windows
             save = 2
         };
         bool open(browse_type type, char* path, const char* filter, StringId titleId);
-        void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace PromptOkCancel
