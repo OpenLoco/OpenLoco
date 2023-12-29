@@ -1345,6 +1345,7 @@ namespace OpenLoco::Paint
         finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
     }
 
+    // Note: Size includes for 1 extra at end that should never be anything other than 0xFF, 0xFF or 0, 0
     std::span<TunnelEntry> PaintSession::getTunnels(uint8_t edge)
     {
         switch (edge)
@@ -1352,11 +1353,11 @@ namespace OpenLoco::Paint
             case 0:
                 return std::span<TunnelEntry>(&_tunnels0[0], _tunnels0.size());
             case 1:
-                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels1.size());
+                return std::span<TunnelEntry>(&_tunnels1[0], _tunnels1.size());
             case 2:
-                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels2.size());
+                return std::span<TunnelEntry>(&_tunnels2[0], _tunnels2.size());
             case 3:
-                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels3.size());
+                return std::span<TunnelEntry>(&_tunnels3[0], _tunnels3.size());
         }
         return std::span<TunnelEntry>();
     }
