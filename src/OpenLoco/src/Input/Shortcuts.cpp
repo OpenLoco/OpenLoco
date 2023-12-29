@@ -525,9 +525,9 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::toggleUndergroundView,           StringIds::shortcut_toggle_underground_view,            toggleUndergroundView,          "toggleUndergroundView",            "1");
         ShortcutManager::add(Shortcut::toggleSeeThroughTracks,          StringIds::shortcutSeeThroughTracks,                    toggleSeeThroughTracks,         "toggleSeeThroughTracks",           "2");
         ShortcutManager::add(Shortcut::toggleSeeThroughRoads,           StringIds::shortcutSeeThroughRoads,                     toggleSeeThroughRoads,          "toggleSeeThroughRoads",            "3");
-        ShortcutManager::add(Shortcut::toggleSeeThroughBuildings,       StringIds::shortcutSeeThroughBuildings,                 toggleSeeThroughBuildings,      "toggleSeeThroughBuildings",        "4");
-        ShortcutManager::add(Shortcut::toggleSeeThroughScenery,         StringIds::shortcutSeeThroughScenery,                   toggleSeeThroughScenery,        "toggleSeeThroughScenery",          "5");
-        ShortcutManager::add(Shortcut::toggleSeeThroughTrees,           StringIds::shortcutSeeThroughTrees,                     toggleSeeThroughTrees,          "toggleSeeThroughTrees",            "6");
+        ShortcutManager::add(Shortcut::toggleSeeThroughTrees,           StringIds::shortcutSeeThroughTrees,                     toggleSeeThroughTrees,          "toggleSeeThroughTrees",            "4");
+        ShortcutManager::add(Shortcut::toggleSeeThroughBuildings,       StringIds::shortcutSeeThroughBuildings,                 toggleSeeThroughBuildings,      "toggleSeeThroughBuildings",        "5");
+        ShortcutManager::add(Shortcut::toggleSeeThroughScenery,         StringIds::shortcutSeeThroughScenery,                   toggleSeeThroughScenery,        "toggleSeeThroughScenery",          "6");
         ShortcutManager::add(Shortcut::toggleHeightMarksOnLand,         StringIds::shortcut_toggle_height_marks_on_land,        toggleHeightMarksOnLand,        "toggleHeightMarksOnLand",          "7");
         ShortcutManager::add(Shortcut::toggleHeightMarksOnTracks,       StringIds::shortcut_toggle_height_marks_on_tracks,      toggleHeightMarksOnTracks,      "toggleHeightMarksOnTracks",        "8");
         ShortcutManager::add(Shortcut::toggleDirArrowsonTracks,         StringIds::shortcut_toggle_dir_arrows_on_tracks,        toggleDirArrowsOnTracks,        "toggleDirArrowsOnTracks",          "9");

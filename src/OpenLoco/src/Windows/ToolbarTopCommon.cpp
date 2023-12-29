@@ -136,9 +136,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void viewMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_underground_view);
-        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughTrees);
-        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughTracks);
-        Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughRoads);
+        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughTracks);
+        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughRoads);
+        Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughTrees);
         Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughBuildings);
         Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughScenery);
         Dropdown::add(6, 0);
@@ -155,13 +155,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if ((current_viewport_flags & ViewportFlags::underground_view) != ViewportFlags::none)
             Dropdown::setItemSelected(0);
 
-        if ((current_viewport_flags & ViewportFlags::seeThroughTrees) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughTracks) != ViewportFlags::none)
             Dropdown::setItemSelected(1);
 
-        if ((current_viewport_flags & ViewportFlags::seeThroughTracks) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughRoads) != ViewportFlags::none)
             Dropdown::setItemSelected(2);
 
-        if ((current_viewport_flags & ViewportFlags::seeThroughRoads) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughTrees) != ViewportFlags::none)
             Dropdown::setItemSelected(3);
 
         if ((current_viewport_flags & ViewportFlags::seeThroughBuildings) != ViewportFlags::none)
@@ -326,11 +326,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 0)
             viewport->flags ^= ViewportFlags::underground_view;
         else if (itemIndex == 1)
-            viewport->flags ^= ViewportFlags::seeThroughTrees;
-        else if (itemIndex == 2)
             viewport->flags ^= ViewportFlags::seeThroughTracks;
-        else if (itemIndex == 3)
+        else if (itemIndex == 2)
             viewport->flags ^= ViewportFlags::seeThroughRoads;
+        else if (itemIndex == 3)
+            viewport->flags ^= ViewportFlags::seeThroughTrees;
         else if (itemIndex == 4)
             viewport->flags ^= ViewportFlags::seeThroughBuildings;
         else if (itemIndex == 5)
