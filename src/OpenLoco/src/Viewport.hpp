@@ -54,6 +54,9 @@ namespace OpenLoco::Ui
         flag_8 = 1U << 8,
         town_names_displayed = 1U << 9,
         station_names_displayed = 1U << 10,
+        hide_roads = 1U << 11,
+        hide_buildings = 1U << 12,
+        hide_trees = 1U << 13,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(ViewportFlags);
 

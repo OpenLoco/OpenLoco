@@ -211,7 +211,7 @@ namespace OpenLoco::Ui
         if (diffX == 0 && diffY == 0)
             return;
 
-        if (vp->hasFlags(ViewportFlags::hide_foreground_tracks_roads) || vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings) || w->hasFlags(WindowFlags::flag_8))
+        if (vp->hasFlags(ViewportFlags::hide_foreground_tracks_roads | ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_roads | ViewportFlags::hide_buildings | ViewportFlags::hide_trees) || w->hasFlags(WindowFlags::flag_8))
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::render(rect);

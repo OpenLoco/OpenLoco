@@ -134,15 +134,25 @@ namespace OpenLoco::Input::Shortcuts
         window->invalidate();
     }
 
-    // 0x004BF194
-    static void toggleHideForegroundTracks()
+    static void toggleHideBuildings()
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
+        viewport->flags ^= ViewportFlags::hide_buildings;
+        window->invalidate();
+    }
+
+    static void toggleHideRoads()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::hide_roads;
         window->invalidate();
     }
 
@@ -155,6 +165,18 @@ namespace OpenLoco::Input::Shortcuts
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
         viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
+        window->invalidate();
+    }
+
+    // 0x004BF194
+    static void toggleHideForegroundTracks()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
         window->invalidate();
     }
 

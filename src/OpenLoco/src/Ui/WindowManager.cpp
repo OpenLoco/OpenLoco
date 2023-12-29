@@ -1985,15 +1985,33 @@ namespace OpenLoco::Ui::WindowManager
                     flagsChanged = true;
                 }
 
-                if (viewport->hasFlags(ViewportFlags::hide_foreground_tracks_roads))
+                if (viewport->hasFlags(ViewportFlags::hide_trees))
                 {
-                    viewport->flags &= ~(ViewportFlags::hide_foreground_tracks_roads);
+                    viewport->flags &= ~(ViewportFlags::hide_trees);
+                    flagsChanged = true;
+                }
+
+                if (viewport->hasFlags(ViewportFlags::hide_buildings))
+                {
+                    viewport->flags &= ~(ViewportFlags::hide_buildings);
+                    flagsChanged = true;
+                }
+
+                if (viewport->hasFlags(ViewportFlags::hide_roads))
+                {
+                    viewport->flags &= ~(ViewportFlags::hide_roads);
                     flagsChanged = true;
                 }
 
                 if (viewport->hasFlags(ViewportFlags::hide_foreground_scenery_buildings))
                 {
                     viewport->flags &= ~(ViewportFlags::hide_foreground_scenery_buildings);
+                    flagsChanged = true;
+                }
+
+                if (viewport->hasFlags(ViewportFlags::hide_foreground_tracks_roads))
+                {
+                    viewport->flags &= ~(ViewportFlags::hide_foreground_tracks_roads);
                     flagsChanged = true;
                 }
 

@@ -148,6 +148,8 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_build_pop3_string = 143;
     constexpr StringId raise_or_lower_land_first = 144;
     constexpr StringId menu_underground_view = 145;
+
+    // String below is unused
     constexpr StringId menu_hide_foreground_tracks_roads = 146;
 
     constexpr StringId level_crossing_in_the_way = 150;
@@ -364,6 +366,7 @@ namespace OpenLoco::StringIds
     constexpr StringId format_openloco_landscape = 369;
     constexpr StringId error_game_save_failed = 370;
 
+    // String below is unused
     constexpr StringId menu_hide_foreground_scenery_buildings = 372;
     constexpr StringId can_only_be_built_on_water = 372;
 
@@ -1920,6 +1923,11 @@ namespace OpenLoco::StringIds
     constexpr StringId filterCargoless = 2310;
     constexpr StringId disableVehicleLoadingPenalty = 2311;
     constexpr StringId disableVehicleLoadingPenaltyTip = 2312;
+    constexpr StringId menuSeeThroughBuildings = 2313;
+    constexpr StringId menuSeeThroughRoads = 2314;
+    constexpr StringId menuSeeThroughScenery = 2315;
+    constexpr StringId menuSeeThroughTracks = 2316;
+    constexpr StringId menuSeeThroughTrees = 2317;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -901,9 +901,13 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
                 {
+                    if (vp->hasFlags(ViewportFlags::hide_buildings))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry;
+                    }
                     if (vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings))
                     {
-                        interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry | InteractionItemFlags::tree | InteractionItemFlags::wall;
+                        interactionsToExclude |= InteractionItemFlags::tree | InteractionItemFlags::wall;
                     }
                 }
             }
