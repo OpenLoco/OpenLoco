@@ -1169,6 +1169,14 @@ namespace OpenLoco::Ui
         eventHandlers->drawScroll(*this, *rt, scrollIndex);
     }
 
+    bool Window::callKeyUp(uint32_t charCode, uint32_t keyCode)
+    {
+        if (eventHandlers->keyUp == nullptr)
+            return false;
+
+        return eventHandlers->keyUp(*this, charCode, keyCode);
+    }
+
     // 0x004CA4DF
     void Window::draw(Gfx::RenderTarget* rt)
     {

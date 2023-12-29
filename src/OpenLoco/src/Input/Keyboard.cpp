@@ -312,6 +312,20 @@ namespace OpenLoco::Input
                 continue;
             }
 
+            auto ti = WindowManager::find(WindowType::editKeyboardShortcut);
+            if (ti != nullptr)
+            {
+                editShortcut(nextKey);
+                continue;
+            }
+
+            if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+                continue;
+
+            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
+                continue;
+
+            /*
             auto ti = WindowManager::find(WindowType::textInput);
             if (ti != nullptr)
             {
@@ -364,13 +378,7 @@ namespace OpenLoco::Input
                 Ui::Windows::BuildVehicle::handleInput(nextKey->charCode, nextKey->keyCode);
                 continue;
             }
-
-            ti = WindowManager::find(WindowType::editKeyboardShortcut);
-            if (ti != nullptr)
-            {
-                editShortcut(nextKey);
-                continue;
-            }
+            */
 
             if (Tutorial::state() == Tutorial::State::playing)
             {

@@ -1298,6 +1298,16 @@ namespace OpenLoco::Ui::WindowManager
         }
     }
 
+    bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode)
+    {
+        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        {
+            if (w->callKeyUp(charCode, keyCode))
+                return true;
+        }
+        return false;
+    }
+
     // 0x004CD296
     void relocateWindows()
     {

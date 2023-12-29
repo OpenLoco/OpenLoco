@@ -75,6 +75,7 @@ namespace OpenLoco::Ui::WindowManager
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
     void callViewportRotateEventOnAllWindows();
+    bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode);
     void relocateWindows();
     void sub_4CEE0B(Window* self);
     void sub_4B93A5(WindowNumber_t number);
