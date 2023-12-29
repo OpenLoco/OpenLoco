@@ -203,17 +203,17 @@ namespace OpenLoco::Paint
             session.finaliseTrackRoadOrdering();
             session.finaliseTrackRoadAdditionsOrdering();
             session.setF003F6(0);
-            if (session.get525CE4(0) != 0xFFFF)
+            if (session.getBridgeHeight() != -1)
             {
                 if (sub_42AC9C(session))
                 {
                     session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
-                if (session.getGeneralSupportHeight().height >= session.get525CE4(0))
+                if (session.getGeneralSupportHeight().height >= session.getBridgeHeight())
                 {
-                    session.setGeneralSupportHeight(session.get525CE4(0), 0x20);
+                    session.setGeneralSupportHeight(session.getBridgeHeight(), 0x20);
                 }
-                session.set525CE4(0, 0xFFFF);
+                session.setBridgeHeight(-1);
                 session.setBridgeEdgesQuarters(0);
             }
 

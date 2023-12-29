@@ -183,7 +183,7 @@ namespace OpenLoco::Paint
         uint32_t get112C300() { return _112C300; }
         uint16_t getF003F4() { return _F003F4; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
-        uint16_t get525CE4(const uint8_t i) { return _525CE4[i]; }
+        int16_t getBridgeHeight() { return _bridgeHeight; }
         uint16_t get525CF8() { return _525CF8; }
         uint16_t getF003F6() { return _F003F6; }
         uint8_t getBridgeEdgesQuarters() { return _bridgeEdgesQuarters; }
@@ -211,7 +211,8 @@ namespace OpenLoco::Paint
         void set525CF8(const uint16_t segments) { _525CF8 = segments; }
         void setBridgeEdgesQuarters(const uint8_t newValue) { _bridgeEdgesQuarters = newValue; }
         void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
-        void set525CE4(const uint8_t i, const uint16_t newValue) { _525CE4[i] = newValue; }
+        void setBridgeHeight(const int16_t newValue) { _bridgeHeight = newValue; }
+        void setBridgeSubType(const uint8_t type) { _bridgeSubType = type; }
         void setBridgeObjectId(const uint8_t objectId) { _bridgeObjectId = objectId; }
         void setBridgeImageBase(const ImageId imageBase) { _bridgeImageBase = imageBase; }
         void resetTileColumn(const Ui::Point& pos);
@@ -223,6 +224,7 @@ namespace OpenLoco::Paint
         void finaliseTrackRoadAdditionsOrdering();
         std::span<TunnelEntry> getTunnels(uint8_t edge);
         void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
+        void insertBridge(coord_t z, uint8_t bridgeType, uint8_t bridgeSubType, ImageId imageBase, uint8_t edges, uint8_t quarters);
 
         /*
          * @param amount    @<eax>
@@ -404,7 +406,8 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C0BB> _tunnels1; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
-        inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
+        inline static Interop::loco_global<int16_t, 0x00525CE4> _bridgeHeight;
+        inline static Interop::loco_global<uint16_t, 0x00525CE6> _bridgeSubType;
         inline static Interop::loco_global<uint8_t, 0x00525CF0> _bridgeEdgesQuarters;
         inline static Interop::loco_global<uint8_t, 0x00525CF1> _bridgeObjectId;
         inline static Interop::loco_global<ImageId, 0x00525CF2> _bridgeImageBase;

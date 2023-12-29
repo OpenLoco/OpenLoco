@@ -45,20 +45,29 @@ namespace OpenLoco::Paint
         std::array<uint32_t, 3>{ 18, 20, 22 },
         std::array<uint32_t, 3>{ 19, 21, 23 },
     };
+    constexpr std::array<uint8_t, 4> kStraightBridgeEdges = {
+        0b0101,
+        0b1010,
+        0b0101,
+        0b1010,
+    };
 
     // 0x004125DD & 0x0041270E
     void paintTrackStraight(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation)
     {
+        const auto height = elTrack.baseHeight();
         const auto heightOffset = World::Pos3{ 0,
                                                0,
-                                               elTrack.baseHeight() };
+                                               height };
         if (elTrack.hasBridge())
         {
-            session.set525CE4(0, elTrack.baseHeight());
-            session.set525CE4(1, 0);
-            session.setBridgeObjectId(elTrack.bridge());
-            session.setBridgeImageBase(ImageId::fromUInt32(_trackImageId2));
-            session.setBridgeEdgesQuarters(session.getBridgeEdgesQuarters() | (rotation & 1 ? 0xAF : 0x5F));
+            session.insertBridge(
+                height,
+                elTrack.bridge(),
+                0, // straight
+                ImageId::fromUInt32(_trackImageId2),
+                kStraightBridgeEdges[rotation],
+                0xF);
         }
 
         const auto baseImage = ImageId::fromUInt32(_trackBaseImageId);
@@ -84,13 +93,13 @@ namespace OpenLoco::Paint
 
         if (rotation & 1)
         {
-            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 1);
-            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 3);
+            session.insertTunnel(height, _trackTunnel, 1);
+            session.insertTunnel(height, _trackTunnel, 3);
         }
         else
         {
-            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 0);
-            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 2);
+            session.insertTunnel(height, _trackTunnel, 0);
+            session.insertTunnel(height, _trackTunnel, 2);
         }
         session.set525CF8(session.get525CF8() | (rotation & 1 ? 0x130 : 0xD0));
         session.setF003F6(session.getF003F6() | (rotation & 1 ? 0x130 : 0xD0));
