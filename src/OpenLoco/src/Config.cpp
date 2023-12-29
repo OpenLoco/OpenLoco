@@ -282,6 +282,9 @@ namespace OpenLoco::Config
         if (config["disableVehicleLoadPenaltyCheat"])
             _newConfig.disableVehicleLoadPenaltyCheat = config["disableVehicleLoadPenaltyCheat"].as<bool>();
 
+        if (config["edgeScrolling"])
+            _newConfig.edgeScrolling = config["edgeScrolling"].as<bool>();
+
         auto& scNode = config["shortcuts"];
         // Protect from empty shortcuts
         readShortcutConfig(scNode ? scNode : YAML::Node{});
@@ -356,6 +359,7 @@ namespace OpenLoco::Config
         node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
         node["cashPopupRendering"] = _newConfig.cashPopupRendering;
         node["disableVehicleLoadPenaltyCheat"] = _newConfig.disableVehicleLoadPenaltyCheat;
+        node["edgeScrolling"] = _newConfig.edgeScrolling;
 
         // Shortcuts
         const auto& shortcuts = _newConfig.shortcuts;

@@ -187,6 +187,7 @@ namespace OpenLoco::Config
         bool cashPopupRendering = true;
         bool allowMultipleInstances = false;
         bool disableVehicleLoadPenaltyCheat = false;
+        bool edgeScrolling = true;
         LocoConfig old;
 
         constexpr bool hasFlags(Flags flagsToTest) const

@@ -415,7 +415,7 @@ namespace OpenLoco::Input
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (Config::get().old.edgeScrolling == 0)
+        if (!Config::get().edgeScrolling)
             return;
 
         if (Input::state() != State::normal && Input::state() != State::dropdownActive)
