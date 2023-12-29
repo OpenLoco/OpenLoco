@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447125
-    bool keyUp(Window& w, [[maybe_unused]] uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, [[maybe_unused]] uint32_t charCode, uint32_t keyCode)
     {
         if (keyCode == SDLK_ESCAPE)
         {
