@@ -185,6 +185,8 @@ namespace OpenLoco::Paint
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         uint16_t get525CE4(const uint8_t i) { return _525CE4[i]; }
         uint16_t get525CF8() { return _525CF8; }
+        uint16_t getF003F6() { return _F003F6; }
+        uint8_t getBridgeEdgesQuarters() { return _bridgeEdgesQuarters; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
@@ -207,9 +209,11 @@ namespace OpenLoco::Paint
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
         void setMaxHeight(const World::Pos2& loc);
         void set525CF8(const uint16_t segments) { _525CF8 = segments; }
-        void set525CF0(const uint8_t newValue) { _525CF0 = newValue; }
+        void setBridgeEdgesQuarters(const uint8_t newValue) { _bridgeEdgesQuarters = newValue; }
         void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
         void set525CE4(const uint8_t i, const uint16_t newValue) { _525CE4[i] = newValue; }
+        void setBridgeObjectId(const uint8_t objectId) { _bridgeObjectId = objectId; }
+        void setBridgeImageBase(const ImageId imageBase) { _bridgeImageBase = imageBase; }
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
         void resetLastPS() { _lastPS = nullptr; }
@@ -285,6 +289,20 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         PaintStruct* addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
+
+        /*
+         * @param rotation @<ebp>
+         * @param imageId  @<ebx>
+         * @param priority @<ecx>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
+         */
+        void addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -387,7 +405,9 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
-        inline static Interop::loco_global<uint8_t, 0x00525CF0> _525CF0;
+        inline static Interop::loco_global<uint8_t, 0x00525CF0> _bridgeEdgesQuarters;
+        inline static Interop::loco_global<uint8_t, 0x00525CF1> _bridgeObjectId;
+        inline static Interop::loco_global<ImageId, 0x00525CF2> _bridgeImageBase;
         inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;

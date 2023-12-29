@@ -214,7 +214,7 @@ namespace OpenLoco::Paint
                     session.setGeneralSupportHeight(session.get525CE4(0), 0x20);
                 }
                 session.set525CE4(0, 0xFFFF);
-                session.set525CF0(0);
+                session.setBridgeEdgesQuarters(0);
             }
 
             if (session.get525CF8() != 0)

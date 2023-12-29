@@ -27,6 +27,75 @@ namespace OpenLoco::Paint
     static loco_global<uint8_t, 0x00113605E> _trackTunnel;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
+    constexpr std::array<World::Pos3, 4> kStraightBoundingBoxOffsets = {
+        World::Pos3{ 2, 5, 0 },
+        World::Pos3{ 5, 2, 0 },
+        World::Pos3{ 2, 5, 0 },
+        World::Pos3{ 5, 2, 0 },
+    };
+    constexpr std::array<World::Pos3, 4> kStraightBoundingBoxSizes = {
+        World::Pos3{ 28, 22, 1 },
+        World::Pos3{ 22, 28, 1 },
+        World::Pos3{ 28, 22, 1 },
+        World::Pos3{ 22, 28, 1 },
+    };
+    constexpr std::array<std::array<uint32_t, 3>, 4> kStraightIndexOffsets = {
+        std::array<uint32_t, 3>{ 18, 20, 22 },
+        std::array<uint32_t, 3>{ 19, 21, 23 },
+        std::array<uint32_t, 3>{ 18, 20, 22 },
+        std::array<uint32_t, 3>{ 19, 21, 23 },
+    };
+
+    // 0x004125DD & 0x0041270E
+    void paintTrackStraight(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation)
+    {
+        const auto heightOffset = World::Pos3{ 0,
+                                               0,
+                                               elTrack.baseHeight() };
+        if (elTrack.hasBridge())
+        {
+            session.set525CE4(0, elTrack.baseHeight());
+            session.set525CE4(1, 0);
+            session.setBridgeObjectId(elTrack.bridge());
+            session.setBridgeImageBase(ImageId::fromUInt32(_trackImageId2));
+            session.setBridgeEdgesQuarters(session.getBridgeEdgesQuarters() | (rotation & 1 ? 0xAF : 0x5F));
+        }
+
+        const auto baseImage = ImageId::fromUInt32(_trackBaseImageId);
+
+        session.addToPlotListTrackRoad(
+            baseImage.withIndexOffset(kStraightIndexOffsets[rotation][0]),
+            0,
+            heightOffset,
+            kStraightBoundingBoxOffsets[rotation] + heightOffset,
+            kStraightBoundingBoxSizes[rotation]);
+        session.addToPlotListTrackRoad(
+            baseImage.withIndexOffset(kStraightIndexOffsets[rotation][1]),
+            1,
+            heightOffset,
+            kStraightBoundingBoxOffsets[rotation] + heightOffset,
+            kStraightBoundingBoxSizes[rotation]);
+        session.addToPlotListTrackRoad(
+            baseImage.withIndexOffset(kStraightIndexOffsets[rotation][2]),
+            3,
+            heightOffset,
+            kStraightBoundingBoxOffsets[rotation] + heightOffset,
+            kStraightBoundingBoxSizes[rotation]);
+
+        if (rotation & 1)
+        {
+            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 1);
+            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 3);
+        }
+        else
+        {
+            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 0);
+            session.insertTunnel(elTrack.baseHeight(), _trackTunnel, 2);
+        }
+        session.set525CF8(session.get525CF8() | (rotation & 1 ? 0x130 : 0xD0));
+        session.setF003F6(session.getF003F6() | (rotation & 1 ? 0x130 : 0xD0));
+    }
+
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
@@ -78,13 +147,20 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
-            const auto trackPaintFunc = _trackPaintModes[trackObj->var_06][elTrack.trackId()][rotation];
-            registers regs;
-            regs.esi = X86Pointer(&elTrack);
-            regs.ebp = elTrack.sequenceIndex();
-            regs.ecx = rotation;
-            regs.dx = height;
-            call(trackPaintFunc, regs);
+            if (elTrack.trackId() == 0)
+            {
+                paintTrackStraight(session, elTrack, rotation);
+            }
+            else
+            {
+                const auto trackPaintFunc = _trackPaintModes[trackObj->var_06][elTrack.trackId()][rotation];
+                registers regs;
+                regs.esi = X86Pointer(&elTrack);
+                regs.ebp = elTrack.sequenceIndex();
+                regs.ecx = rotation;
+                regs.dx = height;
+                call(trackPaintFunc, regs);
+            }
         }
 
         if (session.getRenderTarget()->zoomLevel > 0)

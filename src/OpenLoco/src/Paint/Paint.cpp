@@ -50,8 +50,8 @@ namespace OpenLoco::Paint
         setVpPosition(pos);
         _didPassSurface = false;
         _525CE4[0] = 0xFFFF;
-        _525CF0 = 0;
-        _525CF0 = 0;
+        _bridgeEdgesQuarters = 0;
+        _bridgeEdgesQuarters = 0;
         _525CF8 = 0;
         _F003F4 = 0;
         _F003F6 = 0;
@@ -92,6 +92,7 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD140> _4FD140;
     loco_global<int32_t[4], 0x4FD150> _4FD150;
     loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
+    loco_global<int32_t[4], 0x4FD170> _4FD170;
     loco_global<int32_t[4], 0x4FD180> _4FD180;
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
@@ -283,6 +284,23 @@ namespace OpenLoco::Paint
         (*_lastPS)->children = ps;
         _lastPS = ps;
         return ps;
+    }
+
+    void PaintSession::addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId.toUInt32();
+        regs.ecx = priority;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD170[currentRotation], regs);
     }
 
     void PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
