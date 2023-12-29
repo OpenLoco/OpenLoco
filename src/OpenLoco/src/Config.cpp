@@ -329,28 +329,37 @@ namespace OpenLoco::Config
         networkNode["enabled"] = networkConfig.enabled;
         node["network"] = networkNode;
 
-        node["allow_multiple_instances"] = _newConfig.allowMultipleInstances;
+        // General
         node["loco_install_path"] = _newConfig.locoInstallPath;
         node["last_save_path"] = _newConfig.lastSavePath;
         node["language"] = _newConfig.language;
-        node["breakdowns_disabled"] = _newConfig.breakdownsDisabled;
-        node["trainsReverseAtSignals"] = _newConfig.trainsReverseAtSignals;
-        node["cheats_menu_enabled"] = _newConfig.cheatsMenuEnabled;
-        node["companyAIDisabled"] = _newConfig.companyAIDisabled;
-        node["townGrowthDisabled"] = _newConfig.townGrowthDisabled;
+
+        // Rendering
         node["scale_factor"] = _newConfig.scaleFactor;
-        node["zoom_to_cursor"] = _newConfig.zoomToCursor;
-        node["autosave_frequency"] = _newConfig.autosaveFrequency;
-        node["autosave_amount"] = _newConfig.autosaveAmount;
         node["showFPS"] = _newConfig.showFPS;
         node["uncapFPS"] = _newConfig.uncapFPS;
-        node["displayLockedVehicles"] = _newConfig.displayLockedVehicles;
-        node["buildLockedVehicles"] = _newConfig.buildLockedVehicles;
-        node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
+
+        // General UI
+        node["allow_multiple_instances"] = _newConfig.allowMultipleInstances;
         node["cashPopupRendering"] = _newConfig.cashPopupRendering;
-        node["disableVehicleLoadPenaltyCheat"] = _newConfig.disableVehicleLoadPenaltyCheat;
         node["edgeScrolling"] = _newConfig.edgeScrolling;
         node["edgeScrollingSpeed"] = _newConfig.edgeScrollingSpeed;
+        node["zoom_to_cursor"] = _newConfig.zoomToCursor;
+
+        // Autosaves
+        node["autosave_amount"] = _newConfig.autosaveAmount;
+        node["autosave_frequency"] = _newConfig.autosaveFrequency;
+
+        // Cheats
+        node["breakdowns_disabled"] = _newConfig.breakdownsDisabled;
+        node["buildLockedVehicles"] = _newConfig.buildLockedVehicles;
+        node["cheats_menu_enabled"] = _newConfig.cheatsMenuEnabled;
+        node["companyAIDisabled"] = _newConfig.companyAIDisabled;
+        node["disableVehicleLoadPenaltyCheat"] = _newConfig.disableVehicleLoadPenaltyCheat;
+        node["displayLockedVehicles"] = _newConfig.displayLockedVehicles;
+        node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
+        node["townGrowthDisabled"] = _newConfig.townGrowthDisabled;
+        node["trainsReverseAtSignals"] = _newConfig.trainsReverseAtSignals;
 
         // Shortcuts
         const auto& shortcuts = _newConfig.shortcuts;
