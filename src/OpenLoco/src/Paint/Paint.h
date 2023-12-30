@@ -150,6 +150,33 @@ namespace OpenLoco::Paint
         constexpr bool operator==(const TunnelEntry&) const = default;
     };
     assert_struct_size(TunnelEntry, 2);
+
+    struct BridgeEntry
+    {
+        int16_t height;        // 0x00525CE4
+        uint16_t subType;      // 0x00525CE6
+        uint32_t padImage1;    // 0x00525CE8 used only in bridge paint here just to keep struct size
+        uint32_t padImage2;    // 0x00525CEC used only in bridge paint here just to keep struct size
+        uint8_t edgesQuarters; // 0x00525CF0
+        uint8_t objectId;      // 0x00525CF1
+        ImageId imageBase;     // 0x00525CF2
+
+        constexpr BridgeEntry() = default;
+        constexpr BridgeEntry(coord_t _height, uint8_t _subType, uint8_t edges, uint8_t quarters, uint8_t _objectId, ImageId _imageBase)
+            : height(_height)
+            , subType(_subType)
+            , padImage1(0)
+            , padImage2(0)
+            , edgesQuarters((edges << 4U) | quarters)
+            , objectId(_objectId)
+            , imageBase(_imageBase){};
+
+        bool isEmpty() const { return height == -1; }
+    };
+    assert_struct_size(BridgeEntry, 16);
+
+    constexpr auto kNullBridgeEntry = BridgeEntry(-1, 0, 0, 0, 0, ImageId(0));
+
 #pragma pack(pop)
     struct GenerationParameters;
 
@@ -183,10 +210,9 @@ namespace OpenLoco::Paint
         uint32_t get112C300() { return _112C300; }
         uint16_t getF003F4() { return _F003F4; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
-        int16_t getBridgeHeight() { return _bridgeHeight; }
+        const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         uint16_t get525CF8() { return _525CF8; }
         uint16_t getF003F6() { return _F003F6; }
-        uint8_t getBridgeEdgesQuarters() { return _bridgeEdgesQuarters; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
@@ -209,12 +235,8 @@ namespace OpenLoco::Paint
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
         void setMaxHeight(const World::Pos2& loc);
         void set525CF8(const uint16_t segments) { _525CF8 = segments; }
-        void setBridgeEdgesQuarters(const uint8_t newValue) { _bridgeEdgesQuarters = newValue; }
         void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
-        void setBridgeHeight(const int16_t newValue) { _bridgeHeight = newValue; }
-        void setBridgeSubType(const uint8_t type) { _bridgeSubType = type; }
-        void setBridgeObjectId(const uint8_t objectId) { _bridgeObjectId = objectId; }
-        void setBridgeImageBase(const ImageId imageBase) { _bridgeImageBase = imageBase; }
+        void setBridgeEntry(const BridgeEntry newValue) { _bridgeEntry = newValue; }
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
         void resetLastPS() { _lastPS = nullptr; }
@@ -225,7 +247,6 @@ namespace OpenLoco::Paint
         std::span<TunnelEntry> getTunnels(uint8_t edge);
         void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
         void insertTunnels(coord_t z, uint8_t tunnelType, uint8_t edges);
-        void insertBridge(coord_t z, uint8_t bridgeType, uint8_t bridgeSubType, ImageId imageBase, uint8_t edges, uint8_t quarters);
 
         /*
          * @param amount    @<eax>
@@ -407,11 +428,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C0BB> _tunnels1; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
-        inline static Interop::loco_global<int16_t, 0x00525CE4> _bridgeHeight;
-        inline static Interop::loco_global<uint16_t, 0x00525CE6> _bridgeSubType;
-        inline static Interop::loco_global<uint8_t, 0x00525CF0> _bridgeEdgesQuarters;
-        inline static Interop::loco_global<uint8_t, 0x00525CF1> _bridgeObjectId;
-        inline static Interop::loco_global<ImageId, 0x00525CF2> _bridgeImageBase;
+        inline static Interop::loco_global<BridgeEntry, 0x00525CE4> _bridgeEntry;
         inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;

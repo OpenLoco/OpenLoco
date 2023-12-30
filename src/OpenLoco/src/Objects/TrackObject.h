@@ -92,4 +92,17 @@ namespace OpenLoco
 #pragma pack(pop)
 
     static_assert(sizeof(TrackObject) == 0x36);
+
+    namespace TrackObj::ImageIds
+    {
+        namespace Style0
+        {
+            constexpr uint32_t straightBallastNE = 18;
+            constexpr uint32_t straightBallastSW = 19;
+            constexpr uint32_t straightSleeperNE = 20;
+            constexpr uint32_t straightSleeperSW = 21;
+            constexpr uint32_t straightRailNE = 22;
+            constexpr uint32_t straightRailSW = 23;
+        }
+    }
 }

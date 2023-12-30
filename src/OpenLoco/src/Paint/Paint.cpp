@@ -50,8 +50,7 @@ namespace OpenLoco::Paint
     {
         setVpPosition(pos);
         _didPassSurface = false;
-        _bridgeHeight = -1;
-        _bridgeEdgesQuarters = 0;
+        setBridgeEntry(kNullBridgeEntry);
         _525CF8 = 0;
         _F003F4 = 0;
         _F003F6 = 0;
@@ -446,15 +445,6 @@ namespace OpenLoco::Paint
             edges &= ~(1U << edge);
             insertTunnel(z, tunnelType, edge);
         }
-    }
-
-    void PaintSession::insertBridge(coord_t z, uint8_t bridgeType, uint8_t bridgeSubType, ImageId imageBase, uint8_t edges, uint8_t quarters)
-    {
-        _bridgeHeight = z;
-        _bridgeObjectId = bridgeType;
-        _bridgeSubType = bridgeSubType;
-        _bridgeImageBase = imageBase;
-        _bridgeEdgesQuarters = _bridgeEdgesQuarters | (edges << 4U) | quarters;
     }
 
     struct GenerationParameters

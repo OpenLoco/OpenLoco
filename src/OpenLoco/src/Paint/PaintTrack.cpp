@@ -39,11 +39,11 @@ namespace OpenLoco::Paint
         World::Pos3{ 28, 22, 1 },
         World::Pos3{ 22, 28, 1 },
     };
-    constexpr std::array<std::array<uint32_t, 3>, 4> kStraightIndexOffsets = {
-        std::array<uint32_t, 3>{ 18, 20, 22 },
-        std::array<uint32_t, 3>{ 19, 21, 23 },
-        std::array<uint32_t, 3>{ 18, 20, 22 },
-        std::array<uint32_t, 3>{ 19, 21, 23 },
+    constexpr std::array<std::array<uint32_t, 3>, 4> kStraightImageIndexOffsets = {
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::straightBallastNE, TrackObj::ImageIds::Style0::straightSleeperNE, TrackObj::ImageIds::Style0::straightRailNE },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::straightBallastSW, TrackObj::ImageIds::Style0::straightSleeperSW, TrackObj::ImageIds::Style0::straightRailSW },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::straightBallastNE, TrackObj::ImageIds::Style0::straightSleeperNE, TrackObj::ImageIds::Style0::straightRailNE },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::straightBallastSW, TrackObj::ImageIds::Style0::straightSleeperSW, TrackObj::ImageIds::Style0::straightRailSW },
     };
     constexpr std::array<uint8_t, 4> kStraightBridgeEdges = {
         0b0101,
@@ -51,9 +51,22 @@ namespace OpenLoco::Paint
         0b0101,
         0b1010,
     };
+    constexpr uint8_t kStraightBridgeQuarters = 0xF;
+    constexpr std::array<uint8_t, 4> kStraightTunnelsEdges = {
+        0b0101,
+        0b1010,
+        0b0101,
+        0b1010,
+    };
+    constexpr std::array<uint16_t, 4> kStraightSegments = {
+        0x0D0,
+        0x130,
+        0x0D0,
+        0x130,
+    };
 
     // 0x004125DD & 0x0041270E
-    void paintTrackStraight(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation)
+    static void paintTrackStraight(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation)
     {
         const auto height = elTrack.baseHeight();
         const auto heightOffset = World::Pos3{ 0,
@@ -61,40 +74,42 @@ namespace OpenLoco::Paint
                                                height };
         if (elTrack.hasBridge())
         {
-            session.insertBridge(
+            auto newBridgeEntry = BridgeEntry(
                 height,
-                elTrack.bridge(),
                 0, // straight
-                ImageId::fromUInt32(_trackImageId2),
                 kStraightBridgeEdges[rotation],
-                0xF);
+                kStraightBridgeQuarters,
+                elTrack.bridge(),
+                ImageId::fromUInt32(_trackImageId2));
+            //newBridgeEntry.edgesQuarters |= session.getBridgeEntry().edgesQuarters;
+            session.setBridgeEntry(newBridgeEntry);
         }
 
         const auto baseImage = ImageId::fromUInt32(_trackBaseImageId);
 
         session.addToPlotListTrackRoad(
-            baseImage.withIndexOffset(kStraightIndexOffsets[rotation][0]),
+            baseImage.withIndexOffset(kStraightImageIndexOffsets[rotation][0]),
             0,
             heightOffset,
             kStraightBoundingBoxOffsets[rotation] + heightOffset,
             kStraightBoundingBoxSizes[rotation]);
         session.addToPlotListTrackRoad(
-            baseImage.withIndexOffset(kStraightIndexOffsets[rotation][1]),
+            baseImage.withIndexOffset(kStraightImageIndexOffsets[rotation][1]),
             1,
             heightOffset,
             kStraightBoundingBoxOffsets[rotation] + heightOffset,
             kStraightBoundingBoxSizes[rotation]);
         session.addToPlotListTrackRoad(
-            baseImage.withIndexOffset(kStraightIndexOffsets[rotation][2]),
+            baseImage.withIndexOffset(kStraightImageIndexOffsets[rotation][2]),
             3,
             heightOffset,
             kStraightBoundingBoxOffsets[rotation] + heightOffset,
             kStraightBoundingBoxSizes[rotation]);
 
-        session.insertTunnels(height, _trackTunnel, rotation & 1 ? 0b1010 : 0b0101);
+        session.insertTunnels(height, _trackTunnel, kStraightTunnelsEdges[rotation]);
 
-        session.set525CF8(session.get525CF8() | (rotation & 1 ? 0x130 : 0xD0));
-        session.setF003F6(session.getF003F6() | (rotation & 1 ? 0x130 : 0xD0));
+        session.set525CF8(session.get525CF8() | kStraightSegments[rotation]);
+        session.setF003F6(session.getF003F6() | kStraightSegments[rotation]);
     }
 
     // 0x0049B6BF
