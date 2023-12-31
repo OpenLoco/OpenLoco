@@ -4,9 +4,11 @@
 #include "GameCommands/General/TogglePause.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
+#include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
@@ -406,7 +408,39 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3DC
     static void sendMessage()
     {
-        call(0x004BF3DC);
+        if (isEditorMode())
+            return;
+
+        if (!isNetworked())
+            return;
+
+        if (isTitleMode())
+        {
+            auto* caller = WindowManager::find(WindowType::titleMenu);
+            if (caller == nullptr)
+                return;
+
+            WindowManager::close(WindowType::multiplayer);
+
+            FormatArguments args{};
+            args.push(StringIds::the_other_player);
+
+            const int callingWidget = 4;
+            Ui::Windows::TextInput::openTextInput(caller, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, const_cast<void*>(&args));
+        }
+        else
+        {
+            auto* caller = WindowManager::find(WindowType::timeToolbar);
+            if (caller == nullptr)
+                return;
+
+            const auto* opponent = CompanyManager::getOpponent();
+            FormatArguments args{};
+            args.push(opponent->name);
+
+            const int callingWidget = 2;
+            Ui::Windows::TextInput::openTextInput(caller, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, const_cast<void*>(&args));
+        }
     }
 
     static void constructionPreviousTab()
