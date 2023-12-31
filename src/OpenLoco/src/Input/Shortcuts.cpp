@@ -28,19 +28,19 @@ namespace OpenLoco::Input::Shortcuts
         WindowManager::closeTopmost();
     }
 
-    // 004BF0B6
+    // 0x004BF0B6
     static void closeAllFloatingWindows()
     {
         WindowManager::closeAllFloatingWindows();
     }
 
-    // 0x4BF0BC
+    // 0x004BF0BC
     static void cancelConstructionMode()
     {
         call(0x004BF0BC);
     }
 
-    // 0x4BF0E6
+    // 0x004BF0E6
     static void pauseUnpauseGame()
     {
         if (isEditorMode())
