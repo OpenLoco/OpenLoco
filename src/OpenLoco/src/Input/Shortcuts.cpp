@@ -37,7 +37,16 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF0BC
     static void cancelConstructionMode()
     {
-        call(0x004BF0BC);
+        if (auto* w = WindowManager::find(WindowType::error))
+        {
+            WindowManager::close(w);
+            return;
+        }
+
+        if (!Ui::Windows::Vehicle::cancelVehicleTools())
+        {
+            Input::toolCancel();
+        }
     }
 
     // 0x004BF0E6
