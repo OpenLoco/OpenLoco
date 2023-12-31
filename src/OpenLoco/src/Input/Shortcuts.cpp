@@ -374,7 +374,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3AB
     static void makeScreenshot()
     {
-        call(0x004BF3AB);
+        Input::triggerScreenshotCountdown(2, Input::ScreenshotType::regular);
     }
 
     // 0x004BF3B3
