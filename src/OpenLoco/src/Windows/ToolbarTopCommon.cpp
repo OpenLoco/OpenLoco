@@ -142,8 +142,8 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughBuildings);
         Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughScenery);
         Dropdown::add(6, 0);
-        Dropdown::add(7, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_tracks_roads);
-        Dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_land);
+        Dropdown::add(7, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_land);
+        Dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_tracks_roads);
         Dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::menu_one_way_direction_arrows);
         Dropdown::add(10, 0);
         Dropdown::add(11, StringIds::dropdown_without_checkmark, StringIds::menu_town_names_displayed);
@@ -170,10 +170,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if ((current_viewport_flags & ViewportFlags::seeThroughScenery) != ViewportFlags::none)
             Dropdown::setItemSelected(5);
 
-        if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none)
             Dropdown::setItemSelected(7);
 
-        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
             Dropdown::setItemSelected(8);
 
         if ((current_viewport_flags & ViewportFlags::one_way_direction_arrows) != ViewportFlags::none)
@@ -336,9 +336,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         else if (itemIndex == 5)
             viewport->flags ^= ViewportFlags::seeThroughScenery;
         else if (itemIndex == 7)
-            viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
-        else if (itemIndex == 8)
             viewport->flags ^= ViewportFlags::height_marks_on_land;
+        else if (itemIndex == 8)
+            viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
         else if (itemIndex == 9)
             viewport->flags ^= ViewportFlags::one_way_direction_arrows;
         else if (itemIndex == 11)
