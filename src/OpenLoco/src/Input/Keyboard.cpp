@@ -415,7 +415,7 @@ namespace OpenLoco::Input
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (Config::get().old.edgeScrolling == 0)
+        if (!Config::get().edgeScrolling)
             return;
 
         if (Input::state() != State::normal && Input::state() != State::dropdownActive)
@@ -428,16 +428,16 @@ namespace OpenLoco::Input
         auto cursor = getMouseLocation();
 
         if (cursor.x == 0)
-            delta.x -= 12;
+            delta.x -= Config::get().edgeScrollingSpeed;
 
         if (cursor.x == Ui::width() - 1)
-            delta.x += 12;
+            delta.x += Config::get().edgeScrollingSpeed;
 
         if (cursor.y == 0)
-            delta.y -= 12;
+            delta.y -= Config::get().edgeScrollingSpeed;
 
         if (cursor.y == Ui::height() - 1)
-            delta.y += 12;
+            delta.y += Config::get().edgeScrollingSpeed;
 
         if (delta.x == 0 && delta.y == 0)
             return;
@@ -474,16 +474,16 @@ namespace OpenLoco::Input
         Ui::Point delta = { 0, 0 };
 
         if (_keyboardState[SDL_SCANCODE_LEFT] & 0x80)
-            delta.x -= 8;
+            delta.x -= Config::get().edgeScrollingSpeed;
 
         if (_keyboardState[SDL_SCANCODE_UP] & 0x80)
-            delta.y -= 8;
+            delta.y -= Config::get().edgeScrollingSpeed;
 
         if (_keyboardState[SDL_SCANCODE_DOWN] & 0x80)
-            delta.y += 8;
+            delta.y += Config::get().edgeScrollingSpeed;
 
         if (_keyboardState[SDL_SCANCODE_RIGHT] & 0x80)
-            delta.x += 8;
+            delta.x += Config::get().edgeScrollingSpeed;
 
         if (delta.x == 0 && delta.y == 0)
             return;

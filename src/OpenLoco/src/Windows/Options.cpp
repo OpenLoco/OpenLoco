@@ -1817,7 +1817,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             w.activatedWidgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor | 1 << Widx::invertRightMouseViewPan);
-            if (Config::get().old.edgeScrolling)
+            if (Config::get().edgeScrolling)
             {
                 w.activatedWidgets |= (1 << Widx::edge_scrolling);
             }
@@ -1879,7 +1879,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C117A
         static void edgeScrollingMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get().old;
+            auto& cfg = OpenLoco::Config::get();
             cfg.edgeScrolling = !cfg.edgeScrolling;
             Config::write();
 
