@@ -1,5 +1,6 @@
 23.12+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2231] Height mark shortcuts for land and tracks are swapped in some cases.
 - Change: [#1180] Separate track/road see-through toggles.
 - Change: [#2231] Separate trees/buildings/scenery see-through toggles.
 
