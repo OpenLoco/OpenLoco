@@ -338,6 +338,8 @@ namespace OpenLoco::Paint
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
+
+        // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
     }
 
@@ -757,13 +759,10 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool isTypeForegroundCullableScenery(const Ui::ViewportInteraction::InteractionItem type)
+    static bool isTypeCullableBuilding(const Ui::ViewportInteraction::InteractionItem type)
     {
         switch (type)
         {
-            case Ui::ViewportInteraction::InteractionItem::industryTree:
-            case Ui::ViewportInteraction::InteractionItem::tree:
-            case Ui::ViewportInteraction::InteractionItem::wall:
             case Ui::ViewportInteraction::InteractionItem::building:
             case Ui::ViewportInteraction::InteractionItem::industry:
             case Ui::ViewportInteraction::InteractionItem::headquarterBuilding:
@@ -773,7 +772,31 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool isTypeForegroundCullableTrack(const Ui::ViewportInteraction::InteractionItem type)
+    static bool isTypeCullableRoad(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        switch (type)
+        {
+            case Ui::ViewportInteraction::InteractionItem::roadStation:
+            case Ui::ViewportInteraction::InteractionItem::road:
+            case Ui::ViewportInteraction::InteractionItem::roadExtra:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    static bool isTypeCullableScenery(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        switch (type)
+        {
+            case Ui::ViewportInteraction::InteractionItem::wall:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    static bool isTypeCullableTrack(const Ui::ViewportInteraction::InteractionItem type)
     {
         switch (type)
         {
@@ -781,11 +804,8 @@ namespace OpenLoco::Paint
             case Ui::ViewportInteraction::InteractionItem::trackExtra:
             case Ui::ViewportInteraction::InteractionItem::signal:
             case Ui::ViewportInteraction::InteractionItem::trackStation:
-            case Ui::ViewportInteraction::InteractionItem::roadStation:
             case Ui::ViewportInteraction::InteractionItem::airport:
             case Ui::ViewportInteraction::InteractionItem::dock:
-            case Ui::ViewportInteraction::InteractionItem::road:
-            case Ui::ViewportInteraction::InteractionItem::roadExtra:
             case Ui::ViewportInteraction::InteractionItem::bridge:
                 return true;
             default:
@@ -793,32 +813,53 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const Ui::ViewportFlags viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
+    static bool isTypeCullableTree(const Ui::ViewportInteraction::InteractionItem type)
     {
-        if ((viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings) != Ui::ViewportFlags::none)
+        switch (type)
         {
-            if (isTypeForegroundCullableScenery(ps.type))
-            {
-                const auto pos = Math::Vector::rotate(World::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
-                const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
-                if (height > foregroundCullingHeight)
-                {
+            case Ui::ViewportInteraction::InteractionItem::industryTree:
+            case Ui::ViewportInteraction::InteractionItem::tree:
+                return true;
+            default:
+                return false;
+        }
+    }
 
-                    return true;
-                }
+    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
+    {
+        if ((viewFlags & Ui::ViewportFlags::seeThroughTracks) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableTrack(ps.type))
+            {
+                return true;
             }
         }
-        else if ((viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughRoads) != Ui::ViewportFlags::none)
         {
-            if (isTypeForegroundCullableTrack(ps.type))
+            if (isTypeCullableRoad(ps.type))
             {
-                const auto pos = Math::Vector::rotate(World::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
-                const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
-                if (height > foregroundCullingHeight)
-                {
-
-                    return true;
-                }
+                return true;
+            }
+        }
+        if ((viewFlags & Ui::ViewportFlags::seeThroughTrees) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableTree(ps.type))
+            {
+                return true;
+            }
+        }
+        if ((viewFlags & Ui::ViewportFlags::seeThroughScenery) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableScenery(ps.type))
+            {
+                return true;
+            }
+        }
+        if ((viewFlags & Ui::ViewportFlags::seeThroughBuildings) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableBuilding(ps.type))
+            {
+                return true;
             }
         }
         return false;
@@ -909,7 +950,7 @@ namespace OpenLoco::Paint
 
         for (const auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
-            const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+            const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
             if (shouldCull)
             {
@@ -925,7 +966,7 @@ namespace OpenLoco::Paint
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
                 // assert(childPs->attachedPS == nullptr); Children can have attachments but we are skipping them to be investigated!
-                const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags, getRotation(), _foregroundCullingHeight);
+                const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags);
 
                 if (shouldCullChild)
                 {
@@ -941,7 +982,7 @@ namespace OpenLoco::Paint
             // Draw any attachments to the struct
             for (const auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
             {
-                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags);
                 if (shouldCullAttach)
                 {
                     if (cullPaintStructImage(attachPs->imageId, _viewFlags))

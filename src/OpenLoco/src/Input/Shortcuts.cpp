@@ -134,27 +134,60 @@ namespace OpenLoco::Input::Shortcuts
         window->invalidate();
     }
 
-    // 0x004BF194
-    static void toggleHideForegroundTracks()
+    static void toggleSeeThroughBuildings()
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
+        viewport->flags ^= ViewportFlags::seeThroughBuildings;
+        window->invalidate();
+    }
+
+    static void toggleSeeThroughRoads()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::seeThroughRoads;
         window->invalidate();
     }
 
     // 0x004BF19E
-    static void toggleHideForegroundScenery()
+    static void toggleSeeThroughScenery()
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
+        viewport->flags ^= ViewportFlags::seeThroughScenery;
+        window->invalidate();
+    }
+
+    // 0x004BF194
+    static void toggleSeeThroughTracks()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::seeThroughTracks;
+        window->invalidate();
+    }
+
+    static void toggleSeeThroughTrees()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::seeThroughTrees;
         window->invalidate();
     }
 
@@ -490,11 +523,14 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::rotateView,                      StringIds::shortcut_rotate_view,                        rotateView,                     "rotateView",                       "Return");
         ShortcutManager::add(Shortcut::rotateConstructionObject,        StringIds::shortcut_rotate_construction_object,         rotateConstructionObject,       "rotateConstructionObject",         "Z");
         ShortcutManager::add(Shortcut::toggleUndergroundView,           StringIds::shortcut_toggle_underground_view,            toggleUndergroundView,          "toggleUndergroundView",            "1");
-        ShortcutManager::add(Shortcut::toggleHideForegroundTracks,      StringIds::shortcut_toggle_hide_foreground_tracks,      toggleHideForegroundTracks,     "toggleHideForegroundTracks",       "2");
-        ShortcutManager::add(Shortcut::toggleHideForegroundScenery,     StringIds::shortcut_toggle_hide_foreground_scenery,     toggleHideForegroundScenery,    "toggleHideForegroundScenery",      "3");
-        ShortcutManager::add(Shortcut::toggleHeightMarksonLand,         StringIds::shortcut_toggle_height_marks_on_land,        toggleHeightMarksOnLand,        "toggleHeightMarksOnLand",          "4");
-        ShortcutManager::add(Shortcut::toggleHeightMarksonTracks,       StringIds::shortcut_toggle_height_marks_on_tracks,      toggleHeightMarksOnTracks,      "toggleHeightMarksOnTracks",        "5");
-        ShortcutManager::add(Shortcut::toggleDirArrowsonTracks,         StringIds::shortcut_toggle_dir_arrows_on_tracks,        toggleDirArrowsOnTracks,        "toggleDirArrowsOnTracks",          "6");
+        ShortcutManager::add(Shortcut::toggleSeeThroughTracks,          StringIds::shortcutSeeThroughTracks,                    toggleSeeThroughTracks,         "toggleSeeThroughTracks",           "2");
+        ShortcutManager::add(Shortcut::toggleSeeThroughRoads,           StringIds::shortcutSeeThroughRoads,                     toggleSeeThroughRoads,          "toggleSeeThroughRoads",            "3");
+        ShortcutManager::add(Shortcut::toggleSeeThroughTrees,           StringIds::shortcutSeeThroughTrees,                     toggleSeeThroughTrees,          "toggleSeeThroughTrees",            "4");
+        ShortcutManager::add(Shortcut::toggleSeeThroughBuildings,       StringIds::shortcutSeeThroughBuildings,                 toggleSeeThroughBuildings,      "toggleSeeThroughBuildings",        "5");
+        ShortcutManager::add(Shortcut::toggleSeeThroughScenery,         StringIds::shortcutSeeThroughScenery,                   toggleSeeThroughScenery,        "toggleSeeThroughScenery",          "6");
+        ShortcutManager::add(Shortcut::toggleHeightMarksOnLand,         StringIds::shortcut_toggle_height_marks_on_land,        toggleHeightMarksOnLand,        "toggleHeightMarksOnLand",          "7");
+        ShortcutManager::add(Shortcut::toggleHeightMarksOnTracks,       StringIds::shortcut_toggle_height_marks_on_tracks,      toggleHeightMarksOnTracks,      "toggleHeightMarksOnTracks",        "8");
+        ShortcutManager::add(Shortcut::toggleDirArrowsonTracks,         StringIds::shortcut_toggle_dir_arrows_on_tracks,        toggleDirArrowsOnTracks,        "toggleDirArrowsOnTracks",          "9");
         ShortcutManager::add(Shortcut::adjustLand,                      StringIds::shortcut_adjust_land,                        adjustLand,                     "adjustLand",                       "L");
         ShortcutManager::add(Shortcut::adjustWater,                     StringIds::shortcut_adjust_water,                       adjustWater,                    "adjustWater",                      "W");
         ShortcutManager::add(Shortcut::plantTrees,                      StringIds::shortcut_plant_trees,                        plantTrees,                     "plantTrees",                       "P");

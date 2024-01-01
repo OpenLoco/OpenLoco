@@ -241,8 +241,9 @@ namespace OpenLoco::Ui
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
         Paint::SessionOptions options{};
-        if (hasFlags(ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_foreground_tracks_roads))
+        if (hasFlags(ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughTracks))
         {
+            // TODO: unused
             options.foregroundCullHeight = viewHeight / 2 + viewY;
         }
         PaletteIndex_t fillColour = PaletteIndex::index_D8;

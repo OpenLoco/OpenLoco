@@ -136,42 +136,54 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     void viewMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_underground_view);
-        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_tracks_roads);
-        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_scenery_buildings);
-        Dropdown::add(3, 0);
-        Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_land);
-        Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_tracks_roads);
-        Dropdown::add(6, StringIds::dropdown_without_checkmark, StringIds::menu_one_way_direction_arrows);
-        Dropdown::add(7, 0);
-        Dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::menu_town_names_displayed);
-        Dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::menu_station_names_displayed);
-        Dropdown::showBelow(window, widgetIndex, 10, 0);
+        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughTracks);
+        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughRoads);
+        Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughTrees);
+        Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughBuildings);
+        Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::menuSeeThroughScenery);
+        Dropdown::add(6, 0);
+        Dropdown::add(7, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_land);
+        Dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_tracks_roads);
+        Dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::menu_one_way_direction_arrows);
+        Dropdown::add(10, 0);
+        Dropdown::add(11, StringIds::dropdown_without_checkmark, StringIds::menu_town_names_displayed);
+        Dropdown::add(12, StringIds::dropdown_without_checkmark, StringIds::menu_station_names_displayed);
+        Dropdown::showBelow(window, widgetIndex, 13, 0);
 
         ViewportFlags current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
         if ((current_viewport_flags & ViewportFlags::underground_view) != ViewportFlags::none)
             Dropdown::setItemSelected(0);
 
-        if ((current_viewport_flags & ViewportFlags::hide_foreground_tracks_roads) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughTracks) != ViewportFlags::none)
             Dropdown::setItemSelected(1);
 
-        if ((current_viewport_flags & ViewportFlags::hide_foreground_scenery_buildings) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughRoads) != ViewportFlags::none)
             Dropdown::setItemSelected(2);
 
-        if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughTrees) != ViewportFlags::none)
+            Dropdown::setItemSelected(3);
+
+        if ((current_viewport_flags & ViewportFlags::seeThroughBuildings) != ViewportFlags::none)
             Dropdown::setItemSelected(4);
 
-        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::seeThroughScenery) != ViewportFlags::none)
             Dropdown::setItemSelected(5);
 
-        if ((current_viewport_flags & ViewportFlags::one_way_direction_arrows) != ViewportFlags::none)
-            Dropdown::setItemSelected(6);
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_land) != ViewportFlags::none)
+            Dropdown::setItemSelected(7);
 
-        if ((current_viewport_flags & ViewportFlags::town_names_displayed) == ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads) != ViewportFlags::none)
             Dropdown::setItemSelected(8);
 
-        if ((current_viewport_flags & ViewportFlags::station_names_displayed) == ViewportFlags::none)
+        if ((current_viewport_flags & ViewportFlags::one_way_direction_arrows) != ViewportFlags::none)
             Dropdown::setItemSelected(9);
+
+        if ((current_viewport_flags & ViewportFlags::town_names_displayed) == ViewportFlags::none)
+            Dropdown::setItemSelected(11);
+
+        if ((current_viewport_flags & ViewportFlags::station_names_displayed) == ViewportFlags::none)
+            Dropdown::setItemSelected(12);
 
         Dropdown::setHighlightedItem(0);
     }
@@ -314,18 +326,24 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 0)
             viewport->flags ^= ViewportFlags::underground_view;
         else if (itemIndex == 1)
-            viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
+            viewport->flags ^= ViewportFlags::seeThroughTracks;
         else if (itemIndex == 2)
-            viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
+            viewport->flags ^= ViewportFlags::seeThroughRoads;
+        else if (itemIndex == 3)
+            viewport->flags ^= ViewportFlags::seeThroughTrees;
         else if (itemIndex == 4)
-            viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
+            viewport->flags ^= ViewportFlags::seeThroughBuildings;
         else if (itemIndex == 5)
+            viewport->flags ^= ViewportFlags::seeThroughScenery;
+        else if (itemIndex == 7)
             viewport->flags ^= ViewportFlags::height_marks_on_land;
-        else if (itemIndex == 6)
-            viewport->flags ^= ViewportFlags::one_way_direction_arrows;
         else if (itemIndex == 8)
-            viewport->flags ^= ViewportFlags::town_names_displayed;
+            viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
         else if (itemIndex == 9)
+            viewport->flags ^= ViewportFlags::one_way_direction_arrows;
+        else if (itemIndex == 11)
+            viewport->flags ^= ViewportFlags::town_names_displayed;
+        else if (itemIndex == 12)
             viewport->flags ^= ViewportFlags::station_names_displayed;
 
         window->invalidate();
