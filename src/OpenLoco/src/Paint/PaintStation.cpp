@@ -221,7 +221,7 @@ namespace OpenLoco::Paint
             session.addToPlotListTrackRoadAddition(imageBase.withIndexOffset(platformImages.canopy.imageId), 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
             session.attachToPrevious(imageTranslucentBase.withIndexOffset(platformImages.canopyTranslucent.imageId), { 0, 0 });
         }
-        session.set525CF8(session.get525CF8() | 0x1FF);
+        session.set525CF8(session.get525CF8() | SegmentFlags::all);
     }
 
     // 0x00411AC6

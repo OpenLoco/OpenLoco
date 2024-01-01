@@ -211,8 +211,8 @@ namespace OpenLoco::Paint
         uint16_t getF003F4() { return _F003F4; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
-        uint16_t get525CF8() { return _525CF8; }
-        uint16_t getF003F6() { return _F003F6; }
+        SegmentFlags get525CF8() { return _525CF8; }
+        SegmentFlags getF003F6() { return _F003F6; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
@@ -234,8 +234,8 @@ namespace OpenLoco::Paint
         void setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope);
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
         void setMaxHeight(const World::Pos2& loc);
-        void set525CF8(const uint16_t segments) { _525CF8 = segments; }
-        void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
+        void set525CF8(const SegmentFlags segments) { _525CF8 = segments; }
+        void setF003F6(const SegmentFlags newValue) { _F003F6 = newValue; }
         void setBridgeEntry(const BridgeEntry newValue) { _bridgeEntry = newValue; }
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
@@ -429,11 +429,11 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
         inline static Interop::loco_global<BridgeEntry, 0x00525CE4> _bridgeEntry;
-        inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
+        inline static Interop::loco_global<SegmentFlags, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;
         inline static Interop::loco_global<uint16_t, 0x00F003F4> _F003F4;
-        inline static Interop::loco_global<uint16_t, 0x00F003F6> _F003F6;
+        inline static Interop::loco_global<SegmentFlags, 0x00F003F6> _F003F6;
         inline static Interop::loco_global<uint32_t[9], 0x00F003F8> _unkSegments;
         inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegments;
         inline static Interop::loco_global<SupportHeight, 0x00F0047C> _support;
