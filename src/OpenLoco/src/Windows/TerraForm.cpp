@@ -1273,6 +1273,18 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             switch (widgetIndex)
             {
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
+                case Common::widx::tab_adjust_land:
+                case Common::widx::tab_adjust_water:
+                case Common::widx::tab_build_walls:
+                case Common::widx::tab_clear_area:
+                case Common::widx::tab_plant_trees:
+                    Common::switchTab(&self, widgetIndex);
+                    break;
+
                 case widx::mountain_mode:
                 {
                     isMountainMode = !isMountainMode;
