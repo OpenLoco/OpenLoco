@@ -169,26 +169,32 @@ namespace OpenLoco::Config
         std::string locoInstallPath;
         std::string lastSavePath;
         std::string language = "en-GB";
-        bool cheatsMenuEnabled = false;
-        bool breakdownsDisabled = false;
-        bool trainsReverseAtSignals = true;
-        bool companyAIDisabled = false;
-        bool townGrowthDisabled = false;
+
         float scaleFactor = 1.0f;
-        bool zoomToCursor = true;
-        int32_t autosaveFrequency = 1;
-        int32_t autosaveAmount = 12;
         bool showFPS = false;
         bool uncapFPS = false;
-        std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
-        bool displayLockedVehicles = false;
-        bool buildLockedVehicles = false;
-        bool invertRightMouseViewPan = false;
-        bool cashPopupRendering = true;
+
         bool allowMultipleInstances = false;
-        bool disableVehicleLoadPenaltyCheat = false;
+        bool cashPopupRendering = true;
         bool edgeScrolling = true;
         int32_t edgeScrollingSpeed = 12;
+        bool zoomToCursor = true;
+
+        int32_t autosaveAmount = 12;
+        int32_t autosaveFrequency = 1;
+
+        bool breakdownsDisabled = false;
+        bool buildLockedVehicles = false;
+        bool cheatsMenuEnabled = false;
+        bool companyAIDisabled = false;
+        bool disableVehicleLoadPenaltyCheat = false;
+        bool displayLockedVehicles = false;
+        bool invertRightMouseViewPan = false;
+        bool townGrowthDisabled = false;
+        bool trainsReverseAtSignals = true;
+
+        std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
+
         LocoConfig old;
 
         constexpr bool hasFlags(Flags flagsToTest) const
