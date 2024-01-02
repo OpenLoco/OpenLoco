@@ -273,11 +273,9 @@ namespace OpenLoco::Ui
             return;
         }
 
-        // TODO: this is odd most likely this is another flag like Widget::kImageIdColourSet
-        if (imageId.hasSecondary())
+        if (!isColourSet && imageId.hasSecondary())
         {
-            // 0x4CAE5F
-            assert(false);
+            imageId = imageId.withSecondary(colour.c());
         }
 
         if (!isColourSet && imageId.hasPrimary())
