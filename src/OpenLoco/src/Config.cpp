@@ -239,13 +239,13 @@ namespace OpenLoco::Config
         if (networkNode && networkNode.IsMap())
         {
             auto& networkConfig = _newConfig.network;
-            networkConfig.enabled = networkNode["enabled"] && networkNode["enabled"].as<bool>(false);
+            networkConfig.enabled = networkNode["enabled"].as<bool>(false);
         }
 
         // General
-        _newConfig.locoInstallPath = config["loco_install_path"].as<std::string>();
-        _newConfig.lastSavePath = config["last_save_path"].as<std::string>();
-        _newConfig.language = config["language"].as<std::string>();
+        _newConfig.locoInstallPath = config["loco_install_path"].as<std::string>("");
+        _newConfig.lastSavePath = config["last_save_path"].as<std::string>("");
+        _newConfig.language = config["language"].as<std::string>("en-GB");
 
         // Rendering
         _newConfig.scaleFactor = config["scale_factor"].as<float>(1.0f);
