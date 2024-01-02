@@ -1290,6 +1290,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     isMountainMode = !isMountainMode;
                     isPaintMode = false;
                     tabReset(&self);
+                    self.invalidate();
                     break;
                 }
 
@@ -1298,6 +1299,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     isMountainMode = false;
                     isPaintMode = !isPaintMode;
                     tabReset(&self);
+                    self.invalidate();
                     break;
                 }
             }
