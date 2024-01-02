@@ -59,10 +59,10 @@ namespace OpenLoco::Paint
         0b1010,
     };
     constexpr std::array<SegmentFlags, 4> kStraightSegments = {
-        SegmentFlags::_68 | SegmentFlags::_70 | SegmentFlags::_74, 
-        SegmentFlags::_68 | SegmentFlags::_6C | SegmentFlags::_78,
-        SegmentFlags::_68 | SegmentFlags::_70 | SegmentFlags::_74,
-        SegmentFlags::_68 | SegmentFlags::_6C | SegmentFlags::_78,
+        SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1,
+        SegmentFlags::x1y0 | SegmentFlags::x1y1 | SegmentFlags::x1y2,
+        SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1,
+        SegmentFlags::x1y0 | SegmentFlags::x1y1 | SegmentFlags::x1y2,
     };
 
     // 0x004125DD & 0x0041270E
@@ -81,7 +81,7 @@ namespace OpenLoco::Paint
                 kStraightBridgeQuarters,
                 elTrack.bridge(),
                 ImageId::fromUInt32(_trackImageId2));
-            //newBridgeEntry.edgesQuarters |= session.getBridgeEntry().edgesQuarters;
+            // newBridgeEntry.edgesQuarters |= session.getBridgeEntry().edgesQuarters;
             session.setBridgeEntry(newBridgeEntry);
         }
 

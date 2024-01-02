@@ -34,17 +34,17 @@ namespace OpenLoco::Paint
     enum class SegmentFlags : uint16_t
     {
         none = 0U,
-        _58 = 1U << 0, // TBC: 0
-        _5C = 1U << 1, // TBC: 6
-        _60 = 1U << 2, // TBC: 2
-        _64 = 1U << 3, // TBC: 8
-        _68 = 1U << 4, // TBC: 3
-        _6C = 1U << 5, // TBC: 7
-        _70 = 1U << 6, // TBC: 1
-        _74 = 1U << 7, // TBC: 5
-        _78 = 1U << 8, // TBC: 4
+        x0y0 = 1U << 0, // 0: (x:0, y:0)
+        x2y0 = 1U << 1, // 2: (x:2, y:0)
+        x0y2 = 1U << 2, // 6: (x:0, y:2)
+        x2y2 = 1U << 3, // 8: (x:2, y:2)
+        x1y1 = 1U << 4, // 4: (x:1, y:1)
+        x1y0 = 1U << 5, // 1: (x:1, y:0)
+        x0y1 = 1U << 6, // 3: (x:0, y:1)
+        x2y1 = 1U << 7, // 5: (x:2, y:1)
+        x1y2 = 1U << 8, // 7: (x:1, y:2)
 
-        all = _58 | _5C | _60 | _64 | _68 | _6C | _70 | _74 | _78,
+        all = x0y0 | x2y0 | x0y2 | x2y2 | x1y1 | x1y0 | x0y1 | x2y1 | x1y2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SegmentFlags);
 
