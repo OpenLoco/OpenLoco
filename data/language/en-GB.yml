@@ -2302,7 +2302,7 @@ strings:
   2247: "Allow building locked vehicles"
   2248: "{SMALLFONT}{COLOUR BLACK}When enabled, will allow building obsolete and proposed vehicles"
   2249: "Build Vehicles Window"
-  2250: "{SMALLFONT}{COLOUR BLACK}While dragging, paint landscape instead of changing elevation"
+  2250: "{SMALLFONT}{COLOUR BLACK}Enable to change terrain type instead of elevation"
   2251: "Invert right mouse dragging"
   2252: "{SMALLFONT}{COLOUR BLACK}When enabled, panning the main game view will have inverted movement"
   2253: "Show cash popups"
@@ -2375,3 +2375,4 @@ strings:
   2320: "See-through scenery toggle"
   2321: "See-through tracks toggle"
   2322: "See-through trees toggle"
+  2323: "{SMALLFONT}{COLOUR BLACK}Enable to smoothen the outer edges of land raised. Useful for creating mountains."

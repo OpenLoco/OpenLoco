@@ -1,8 +1,12 @@
 23.12+ (???)
 ------------------------------------------------------------------------
+- Feature: [#1238]: Mountain tool is now a toggle, making it possible to specify the mountain table size.
+- Feature: [#2228]: Max terraform tool sizes have been increased from 10x10 to 64x64.
 - Fix: [#2231] Height mark shortcuts for land and tracks are swapped in some cases.
 - Change: [#1180] Separate track/road see-through toggles.
 - Change: [#2231] Separate trees/buildings/scenery see-through toggles.
+- Change: [#2228]: The landscape 'paint mode' button now uses a different paintbrush image.
+- Change: [#2228]: The landscape texture selection is now hidden until the 'paint' mode is activated.
 
 23.12 (2023-12-17)
 ------------------------------------------------------------------------

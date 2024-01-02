@@ -1933,6 +1933,7 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcutSeeThroughScenery = 2320;
     constexpr StringId shortcutSeeThroughTracks = 2321;
     constexpr StringId shortcutSeeThroughTrees = 2322;
+    constexpr StringId mountainModeTooltip = 2323;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

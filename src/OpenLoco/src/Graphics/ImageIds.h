@@ -999,7 +999,9 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t rubbish_bin = 2363;
     constexpr uint32_t centre_viewport = 2364;
     constexpr uint32_t rotate_object = 2365;
-
+    constexpr uint32_t photo_camera = 2366;
+    constexpr uint32_t paintbrush = 2367;
+    constexpr uint32_t stopwatch = 2368;
     constexpr uint32_t red_flag = 2369;
     constexpr uint32_t green_flag = 2370;
     constexpr uint32_t yellow_flag = 2371;
