@@ -578,8 +578,10 @@ namespace OpenLoco::Ui
         {
             colour = colour.FD();
         }
+
+        int width = this->right - this->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeft(*rt, window->x + left + 1, window->y + top, colour, text, _commonFormatArgs);
+        drawingCtx.drawStringLeftClipped(*rt, window->x + left + 1, window->y + top, width, colour, text, _commonFormatArgs);
     }
 
     // 0x4CB29C
