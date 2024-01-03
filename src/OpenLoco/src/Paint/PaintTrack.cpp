@@ -27,6 +27,13 @@ namespace OpenLoco::Paint
     static loco_global<uint8_t, 0x00113605E> _trackTunnel;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
+    struct TrackPaintCommon
+    {
+        ImageId trackBaseImageId;         // 0x01135F26 with colours and image index set to base of trackObject image table
+        ImageId bridgeColoursBaseImageId; // 0x01135F36 with only the colours set (image index not set!)
+        uint8_t tunnelType;               // 0x0113605E
+    };
+
     constexpr std::array<World::Pos3, 4> kStraightBoundingBoxOffsets = {
         World::Pos3{ 2, 5, 0 },
         World::Pos3{ 5, 2, 0 },
@@ -66,7 +73,7 @@ namespace OpenLoco::Paint
     };
 
     // 0x004125DD & 0x0041270E
-    static void paintTrackStraight(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation)
+    static void paintTrackStraight(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
     {
         const auto height = elTrack.baseHeight();
         const auto heightOffset = World::Pos3{ 0,
@@ -80,11 +87,11 @@ namespace OpenLoco::Paint
                 kStraightBridgeEdges[rotation],
                 kStraightBridgeQuarters,
                 elTrack.bridge(),
-                ImageId::fromUInt32(_trackImageId2));
+                trackSession.bridgeColoursBaseImageId);
             session.setBridgeEntry(newBridgeEntry);
         }
 
-        const auto baseImage = ImageId::fromUInt32(_trackBaseImageId);
+        const auto baseImage = trackSession.trackBaseImageId;
 
         session.addToPlotListTrackRoad(
             baseImage.withIndexOffset(kStraightImageIndexOffsets[rotation][0]),
@@ -105,7 +112,7 @@ namespace OpenLoco::Paint
             kStraightBoundingBoxOffsets[rotation] + heightOffset,
             kStraightBoundingBoxSizes[rotation]);
 
-        session.insertTunnels(height, _trackTunnel, kStraightTunnelsEdges[rotation]);
+        session.insertTunnels(height, trackSession.tunnelType, kStraightTunnelsEdges[rotation]);
 
         session.set525CF8(session.get525CF8() | kStraightSegments[rotation]);
         session.setF003F6(session.getF003F6() | kStraightSegments[rotation]);
@@ -159,12 +166,13 @@ namespace OpenLoco::Paint
         }
 
         _trackBaseImageId |= _trackImageId1;
+        TrackPaintCommon trackSession{ ImageId::fromUInt32(_trackBaseImageId), ImageId::fromUInt32(_trackImageId2), _trackTunnel };
 
         if (!(*_byte_522095 & (1 << 0)))
         {
             if (elTrack.trackId() == 0)
             {
-                paintTrackStraight(session, elTrack, rotation);
+                paintTrackStraight(session, elTrack, trackSession, rotation);
             }
             else
             {
