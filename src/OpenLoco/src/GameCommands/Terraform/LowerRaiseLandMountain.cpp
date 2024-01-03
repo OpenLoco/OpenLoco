@@ -260,8 +260,13 @@ namespace OpenLoco::GameCommands
             }
         }
 
+        if (!validCoords(args.pointA) || !validCoords(args.pointB))
+        {
+            return FAILURE;
+        }
+
         // 0x00462E7E
-        auto preTile = TileManager::get(args.pointA.x, args.pointA.y);
+        auto preTile = TileManager::get(args.pointA);
         auto* preSurface = preTile.surface();
         if (preSurface->slope() != 0)
         {
@@ -272,7 +277,7 @@ namespace OpenLoco::GameCommands
             }
 
             // Verify that the slope is now gone. Abort if not.
-            auto tile = TileManager::get(args.pointA.x, args.pointA.y);
+            auto tile = TileManager::get(args.pointA);
             auto* surface = tile.surface();
             if (surface->slope() != 0)
             {
