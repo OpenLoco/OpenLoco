@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C377B, 0x4C3923
     static void onUpdate(Window& window)
     {
-        if (_lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
+        if (window.number != _buildTargetVehicle || _lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
         {
             sub_4B92A5(&window);
         }
