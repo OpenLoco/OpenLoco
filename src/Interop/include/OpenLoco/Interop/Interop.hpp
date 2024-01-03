@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <vector>
 
-#if defined(__i386__)
+#if defined(__i386__) || defined(_M_IX86)
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 #else
 #define assert_struct_size(x, y)

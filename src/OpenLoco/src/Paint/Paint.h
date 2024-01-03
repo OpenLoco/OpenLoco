@@ -173,7 +173,7 @@ namespace OpenLoco::Paint
 
         bool isEmpty() const { return height == -1; }
     };
-    assert_struct_size(BridgeEntry, 16);
+    assert_struct_size(BridgeEntry, 18);
 
     constexpr auto kNullBridgeEntry = BridgeEntry(-1, 0, 0, 0, 0, ImageId(0));
 
