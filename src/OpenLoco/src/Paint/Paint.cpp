@@ -383,7 +383,6 @@ namespace OpenLoco::Paint
         registerTrackHooks();
     }
 
-
     void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
     {
         for (int32_t s = 0; s < 9; s++)
@@ -418,7 +417,7 @@ namespace OpenLoco::Paint
 
     void PaintSession::insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge)
     {
-        TunnelEntry entry(z / World::kMicroZStep, tunnelType);
+        TunnelEntry entry{ static_cast<World::MicroZ>(z / World::kMicroZStep), tunnelType };
         auto tunnelCount = _tunnelCounts[edge];
         auto tunnels = getTunnels(edge);
         bool insert = true;
