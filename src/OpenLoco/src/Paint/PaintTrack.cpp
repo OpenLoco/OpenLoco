@@ -81,7 +81,6 @@ namespace OpenLoco::Paint
                 kStraightBridgeQuarters,
                 elTrack.bridge(),
                 ImageId::fromUInt32(_trackImageId2));
-            // newBridgeEntry.edgesQuarters |= session.getBridgeEntry().edgesQuarters;
             session.setBridgeEntry(newBridgeEntry);
         }
 

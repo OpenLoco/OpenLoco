@@ -219,11 +219,8 @@ namespace OpenLoco::Paint
 
             if (session.get525CF8() != SegmentFlags::none)
             {
-                for (auto bit = Numerics::bitScanForward(enumValue(session.get525CF8())); bit != -1; bit = Numerics::bitScanForward(enumValue(session.get525CF8())))
-                {
-                    session.set525CF8(session.get525CF8() & static_cast<SegmentFlags>(~(1 << bit)));
-                    session.setSegmentSupportHeight(static_cast<SegmentFlags>(1 << bit), 0xFFFF, 0);
-                }
+                session.setSegmentSupportHeight(session.get525CF8(), 0xFFFF, 0);
+                session.set525CF8(~session.get525CF8());
             }
         }
     }

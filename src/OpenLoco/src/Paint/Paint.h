@@ -48,6 +48,9 @@ namespace OpenLoco::Paint
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SegmentFlags);
 
+    // Handy array for converting a bit index to the flag
+    constexpr std::array<SegmentFlags, 9> kSegmentOffsets = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
+
     // Used by both AttachedPaintStruct and PaintStruct
     enum class PaintStructFlags : uint8_t
     {

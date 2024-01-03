@@ -383,13 +383,12 @@ namespace OpenLoco::Paint
         registerTrackHooks();
     }
 
-    const SegmentFlags segmentOffsets[9] = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
 
     void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
     {
         for (int32_t s = 0; s < 9; s++)
         {
-            if ((segments & segmentOffsets[s]) != SegmentFlags::none)
+            if ((segments & kSegmentOffsets[s]) != SegmentFlags::none)
             {
                 _supportSegments[s].height = height;
                 if (height != 0xFFFF)
