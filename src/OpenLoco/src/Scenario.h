@@ -123,6 +123,7 @@ namespace OpenLoco::Scenario
 
     void reset();
     void sub_4748D4();
+    void sub_4969E0(uint8_t al);
     void eraseLandscape();
     void generateLandscape();
     void initialiseDate(uint16_t year);
