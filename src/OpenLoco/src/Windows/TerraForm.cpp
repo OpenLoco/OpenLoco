@@ -1436,16 +1436,16 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
                 if (res)
                 {
-                    if (_adjustLandToolSize != 1)
+                    if (_adjustLandToolSize == 1 && !(isMountainMode || isPaintMode))
                     {
-                        auto count = TileManager::setMapSelectionTiles(res->first, 4);
+                        auto count = TileManager::setMapSelectionSingleTile(res->first, true);
 
                         if (!count)
                             return;
                     }
                     else
                     {
-                        auto count = TileManager::setMapSelectionSingleTile(res->first, true);
+                        auto count = TileManager::setMapSelectionTiles(res->first, 4);
 
                         if (!count)
                             return;
