@@ -393,34 +393,38 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x0042E731
-    static void generateMiscBuildingType0(const BuildingObject* buildingObj)
+    static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
     {
         registers regs;
         regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
         call(0x0042E731, regs);
     }
 
     // 0x0042E893
-    static void generateMiscBuildingType1(const BuildingObject* buildingObj)
+    static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
         registers regs;
         regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
         call(0x0042E893, regs);
     }
 
     // 0x0042EA29
-    static void generateMiscBuildingType2(const BuildingObject* buildingObj)
+    static void generateMiscBuildingType2(const BuildingObject* buildingObj, const size_t id)
     {
         registers regs;
         regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
         call(0x0042EA29, regs);
     }
 
     // 0x0042EB94
-    static void generateMiscBuildingType3(const BuildingObject* buildingObj)
+    static void generateMiscBuildingType3(const BuildingObject* buildingObj, const size_t id)
     {
         registers regs;
         regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
         call(0x0042EB94, regs);
     }
 
@@ -447,14 +451,14 @@ namespace OpenLoco::World::MapGenerator
                 continue;
             }
 
-            static std::array<std::function<void(const BuildingObject*)>, 4> generatorFunctions = {
+            static std::array<std::function<void(const BuildingObject*, const size_t)>, 4> generatorFunctions = {
                 generateMiscBuildingType0,
                 generateMiscBuildingType1,
                 generateMiscBuildingType2,
                 generateMiscBuildingType3,
             };
 
-            generatorFunctions[buildingObj->generatorFunction](buildingObj);
+            generatorFunctions[buildingObj->generatorFunction](buildingObj, id);
         }
     }
 
