@@ -47,16 +47,17 @@ namespace OpenLoco
         uint16_t clearCostFactor;           // 0x9A
         uint8_t scaffoldingSegmentType;     // 0x9C
         Colour scaffoldingColour;           // 0x9D
-        uint8_t pad_9E[0xA0 - 0x9E];
-        uint8_t producedQuantity[2];     // 0xA0
-        uint8_t producedCargoType[2];    // 0xA2
-        uint8_t var_A4[2];               // 0xA4 Some type of Cargo
-        uint8_t var_A6[2];               // 0xA6
-        uint8_t var_A8[2];               // 0xA8
-        int16_t demolishRatingReduction; // 0XAA
-        uint8_t var_AC;                  // 0xAC
-        uint8_t var_AD;                  // 0XAD
-        const uint8_t* var_AE[4];        // 0XAE ->0XB2->0XB6->0XBA->0XBE (4 byte pointers)
+        uint8_t generatorFunction;          // 0x9E
+        uint8_t var_9F;                     // 0x9F
+        uint8_t producedQuantity[2];        // 0xA0
+        uint8_t producedCargoType[2];       // 0xA2
+        uint8_t var_A4[2];                  // 0xA4 Some type of Cargo
+        uint8_t var_A6[2];                  // 0xA6
+        uint8_t var_A8[2];                  // 0xA8
+        int16_t demolishRatingReduction;    // 0XAA
+        uint8_t var_AC;                     // 0xAC
+        uint8_t var_AD;                     // 0XAD
+        const uint8_t* var_AE[4];           // 0XAE ->0XB2->0XB6->0XBA->0XBE (4 byte pointers)
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const;
