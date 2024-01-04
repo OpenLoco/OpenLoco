@@ -179,7 +179,21 @@ namespace OpenLoco::Scenario
     // 0x0043C8FD
     static void sub_43C8FD()
     {
-        call(0x0043C8FD);
+        auto& gameState = getGameState();
+        gameState.currentSnowLine = 0xFF;
+        sub_4969E0(1);
+    }
+
+    // 0x004969E0
+    void sub_4969E0(uint8_t al)
+    {
+        auto& gameState = getGameState();
+        gameState.var_B94C = al;
+        gameState.var_B950 = 1;
+        gameState.var_B952 = 0;
+        gameState.var_B954 = 0;
+        gameState.var_B956 = 0;
+        gameState.currentRainLevel = 0;
     }
 
     // 0x0043C88C
