@@ -75,6 +75,7 @@ namespace OpenLoco::Ui::WindowManager
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
     void callViewportRotateEventOnAllWindows();
+    bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode);
     void relocateWindows();
     void sub_4CEE0B(Window* self);
     void sub_4B93A5(WindowNumber_t number);
@@ -131,7 +132,6 @@ namespace OpenLoco::Ui::Windows
         Window* open(uint32_t vehicle, uint32_t flags);
         void sub_4B92A5(Ui::Window* window);
         void drawVehicleOverview(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
-        void handleInput(uint32_t charCode, uint32_t keyCode);
         void registerHooks();
     }
 
@@ -276,7 +276,6 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         bool tryCloseWindow();
-        void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace Options
@@ -307,13 +306,11 @@ namespace OpenLoco::Ui::Windows
             save = 2
         };
         bool open(browse_type type, char* path, const char* filter, StringId titleId);
-        void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace PromptOkCancel
     {
         bool open(StringId captionId, StringId descriptionId, FormatArguments& descriptionArgs, StringId okButtonStringId);
-        void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace PromptSaveWindow
@@ -364,7 +361,6 @@ namespace OpenLoco::Ui::Windows
         void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
-        void handleInput(uint32_t charCode, uint32_t keyCode);
         void sub_4CE6FF();
     }
 

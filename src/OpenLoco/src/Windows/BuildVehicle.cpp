@@ -1796,14 +1796,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return regs.cx;
     }
 
-    void handleInput(uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        auto* w = WindowManager::find(WindowType::buildVehicle);
-        if (w == nullptr)
-            return;
-
         if (!inputSession.handleInput(charCode, keyCode))
-            return;
+            return false;
 
         int containerWidth = _widgets[widx::searchBox].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
@@ -1811,10 +1807,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         inputSession.cursorFrame = 0;
 
-        sub_4B92A5(w);
+        sub_4B92A5(&w);
 
-        w->initScrollWidgets();
-        w->invalidate();
+        w.initScrollWidgets();
+        w.invalidate();
+        return true;
     }
 
     static void initEvents()
@@ -1832,5 +1829,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         _events.prepareDraw = prepareDraw;
         _events.draw = draw;
         _events.drawScroll = drawScroll;
+        _events.keyUp = keyUp;
     }
 }

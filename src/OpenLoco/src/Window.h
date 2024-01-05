@@ -130,6 +130,7 @@ namespace OpenLoco::Ui
         void (*prepareDraw)(Window&) = nullptr;
         void (*draw)(Window&, Gfx::RenderTarget*) = nullptr;
         void (*drawScroll)(Window&, Gfx::RenderTarget&, const uint32_t scrollIndex) = nullptr;
+        bool (*keyUp)(Window&, uint32_t charCode, uint32_t keyCode) = nullptr;
     };
 
     struct SavedViewSimple
@@ -408,6 +409,7 @@ namespace OpenLoco::Ui
         void callPrepareDraw();                                                                        // 26
         void callDraw(Gfx::RenderTarget* rt);                                                          // 27
         void callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex);                              // 28
+        bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                           // 29
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

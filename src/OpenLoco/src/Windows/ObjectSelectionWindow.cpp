@@ -1436,14 +1436,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    void handleInput(uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        auto* w = WindowManager::find(WindowType::objectSelection);
-        if (w == nullptr)
-            return;
-
         if (!inputSession.handleInput(charCode, keyCode))
-            return;
+            return false;
 
         int containerWidth = widgets[widx::textInput].width() - 2;
         if (inputSession.needsReoffsetting(containerWidth))
@@ -1451,10 +1447,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         inputSession.cursorFrame = 0;
 
-        applyFilterToObjectList(FilterFlags(w->var_858));
+        applyFilterToObjectList(FilterFlags(w.var_858));
 
-        w->initScrollWidgets();
-        w->invalidate();
+        w.initScrollWidgets();
+        w.invalidate();
+        return true;
     }
 
     static void initEvents()
@@ -1471,5 +1468,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         _events.prepareDraw = prepareDraw;
         _events.draw = draw;
         _events.drawScroll = drawScroll;
+        _events.keyUp = keyUp;
     }
 }

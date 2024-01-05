@@ -92,14 +92,14 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447125
-    void handleInput([[maybe_unused]] uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, [[maybe_unused]] uint32_t charCode, uint32_t keyCode)
     {
-        auto window = WindowManager::find(WindowType::confirmationPrompt);
-        if (window == nullptr)
-            return;
-
         if (keyCode == SDLK_ESCAPE)
-            window->callOnMouseUp(widx::closeButton);
+        {
+            w.callOnMouseUp(widx::closeButton);
+            return true;
+        }
+        return false;
     }
 
     // 0x00447093
@@ -146,5 +146,6 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         _events.draw = draw;
         _events.onMouseUp = onMouseUp;
         _events.prepareDraw = prepareDraw;
+        _events.keyUp = keyUp;
     }
 }
