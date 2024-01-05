@@ -34,8 +34,8 @@ namespace OpenLoco::Ui::TextInput
         {
             if (cursorPosition == 0)
             {
-                // Cursor is at beginning
-                return false;
+                // Cursor is at beginning. No change required, but consume input
+                return true;
             }
 
             buffer.erase(cursorPosition - 1, 1);
@@ -45,7 +45,8 @@ namespace OpenLoco::Ui::TextInput
         {
             if (cursorPosition == buffer.length())
             {
-                return false;
+                // Cursor is at end. No change required, but consume input
+                return true;
             }
 
             buffer.erase(cursorPosition, 1);
@@ -62,8 +63,8 @@ namespace OpenLoco::Ui::TextInput
         {
             if (cursorPosition == 0)
             {
-                // Cursor is at beginning
-                return false;
+                // Cursor is at beginning. No change required, but consume input
+                return true;
             }
 
             cursorPosition -= 1;
@@ -72,8 +73,8 @@ namespace OpenLoco::Ui::TextInput
         {
             if (cursorPosition == buffer.length())
             {
-                // Cursor is at end
-                return false;
+                // Cursor is at end. No change required, but consume input
+                return true;
             }
 
             cursorPosition += 1;
