@@ -292,10 +292,10 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x00462F25
-        const int16_t minRadius = ((args.pointB.x - args.pointA.x) >> 5) - 1;
-        const int16_t maxRadius = minRadius + 64;
+        const tile_coord_t minRadius = ((args.pointB.x - args.pointA.x) / kTileSize) - 1;
+        const tile_coord_t maxRadius = minRadius + 64;
 
-        int16_t radius = minRadius;
+        tile_coord_t radius = minRadius;
         auto basePos = args.pointA;
         mtnToolOuterLoopIndex = -4;
 
