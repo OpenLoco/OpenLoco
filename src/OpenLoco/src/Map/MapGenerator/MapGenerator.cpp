@@ -11,6 +11,7 @@
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
 #include "ModernTerrainGenerator.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -391,10 +392,74 @@ namespace OpenLoco::World::MapGenerator
         call(0x004597FD, regs);
     }
 
+    // 0x0042E731
+    static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042E731, regs);
+    }
+
+    // 0x0042E893
+    static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042E893, regs);
+    }
+
+    // 0x0042EA29
+    static void generateMiscBuildingType2(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042EA29, regs);
+    }
+
+    // 0x0042EB94
+    static void generateMiscBuildingType3(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042EB94, regs);
+    }
+
     // 0x0042E6F2
     static void generateMiscBuildings()
     {
-        call(0x0042E6F2);
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+
+        for (auto id = 0U; id < ObjectManager::getMaxObjects(ObjectType::building); id++)
+        {
+            auto* buildingObj = ObjectManager::get<BuildingObject>(id);
+            if (buildingObj == nullptr)
+            {
+                continue;
+            }
+
+            if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+            {
+                continue;
+            }
+
+            if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+            {
+                continue;
+            }
+
+            static std::array<std::function<void(const BuildingObject*, const size_t)>, 4> generatorFunctions = {
+                generateMiscBuildingType0,
+                generateMiscBuildingType1,
+                generateMiscBuildingType2,
+                generateMiscBuildingType3,
+            };
+
+            generatorFunctions[buildingObj->generatorFunction](buildingObj, id);
+        }
     }
 
     static void updateProgress(uint8_t value)
