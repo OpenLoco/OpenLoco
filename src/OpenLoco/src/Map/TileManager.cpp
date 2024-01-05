@@ -485,13 +485,13 @@ namespace OpenLoco::World::TileManager
     }
 
     // TODO: rename this function
-    SmallZ getSurfaceCornerHeight(const SurfaceElement& surface, const uint8_t cornerUp)
+    SmallZ getSurfaceCornerHeight(const SurfaceElement& surface, const uint8_t cornerMask)
     {
         auto baseZ = surface.baseZ();
-        if (surface.slope() & cornerUp)
+        if (surface.slope() & cornerMask)
         {
             baseZ += kSmallZStep;
-            uint8_t cornerDownMask = getCornerDownMask(cornerUp);
+            uint8_t cornerDownMask = getCornerDownMask(cornerMask);
             if (surface.isSlopeDoubleHeight() && surface.slopeCorners() == cornerDownMask)
             {
                 baseZ += kSmallZStep;
