@@ -383,13 +383,13 @@ namespace OpenLoco::Input
         if (cursor.x == 0)
             delta.x -= Config::get().edgeScrollingSpeed;
 
-        if (cursor.x == Ui::width() - 1)
+        if (cursor.x >= Ui::width() - 1)
             delta.x += Config::get().edgeScrollingSpeed;
 
         if (cursor.y == 0)
             delta.y -= Config::get().edgeScrollingSpeed;
 
-        if (cursor.y == Ui::height() - 1)
+        if (cursor.y >= Ui::height() - 1)
             delta.y += Config::get().edgeScrollingSpeed;
 
         if (delta.x == 0 && delta.y == 0)
