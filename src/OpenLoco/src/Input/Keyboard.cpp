@@ -378,7 +378,7 @@ namespace OpenLoco::Input
             return;
 
         Ui::Point delta = { 0, 0 };
-        auto cursor = getMouseLocation();
+        auto cursor = getCursorPosScaled();
 
         if (cursor.x == 0)
             delta.x -= Config::get().edgeScrollingSpeed;
