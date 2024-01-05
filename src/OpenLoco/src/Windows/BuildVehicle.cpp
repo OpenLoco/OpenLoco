@@ -975,7 +975,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C377B, 0x4C3923
     static void onUpdate(Window& window)
     {
-        if (window.number != _buildTargetVehicle || _lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
+        // Is the linked vehicle still available?
+        const bool linkedVehicleAvailable = window.number && WindowManager::find(WindowType::vehicle, window.number);
+
+        // Do we need to refresh the component list?
+        if (!linkedVehicleAvailable || _lastRefreshYear != getCurrentYear() || _lastDisplayLockedVehiclesState != Config::get().displayLockedVehicles)
         {
             sub_4B92A5(&window);
         }
