@@ -421,13 +421,8 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            WindowManager::close(WindowType::multiplayer);
-
-            FormatArguments args{};
-            args.push(StringIds::the_other_player);
-
-            const int callingWidget = 4;
-            Ui::Windows::TextInput::openTextInput(caller, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, const_cast<void*>(&args));
+            const WidgetIndex_t callingWidget = 4;
+            Windows::TitleMenu::beginSendChatMessage(caller, callingWidget);
         }
         else
         {
@@ -435,12 +430,8 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            const auto* opponent = CompanyManager::getOpponent();
-            FormatArguments args{};
-            args.push(opponent->name);
-
-            const int callingWidget = 2;
-            Ui::Windows::TextInput::openTextInput(caller, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, const_cast<void*>(&args));
+            const WidgetIndex_t callingWidget = 2;
+            Windows::TimePanel::beginSendChatMessage(caller, callingWidget);
         }
     }
 
