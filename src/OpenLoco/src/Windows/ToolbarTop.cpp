@@ -23,6 +23,7 @@
 #include "SceneManager.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
+#include "Ui/Screenshot.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"

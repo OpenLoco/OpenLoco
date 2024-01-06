@@ -1,6 +1,7 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
 #include "S5/S5.h"
@@ -21,6 +22,42 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Input
 {
+    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
+
+    static ScreenshotType _screenshotType = ScreenshotType::regular;
+
+    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type)
+    {
+        _screenshotCountdown = numTicks;
+        _screenshotType = type;
+    }
+
+    void handleScreenshotCountdown()
+    {
+        if (_screenshotCountdown != 0)
+        {
+            _screenshotCountdown--;
+            if (_screenshotCountdown == 0)
+            {
+                try
+                {
+                    std::string fileName;
+                    if (_screenshotType == ScreenshotType::giant)
+                        fileName = saveGiantScreenshot();
+                    else
+                        fileName = saveScreenshot();
+
+                    FormatArguments::common(fileName.c_str());
+                    Windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
+                }
+                catch (const std::exception&)
+                {
+                    Windows::showError(StringIds::screenshot_failed);
+                }
+            }
+        }
+    }
+
     static void pngWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
     {
         auto ostream = static_cast<std::ostream*>(png_get_io_ptr(png_ptr));

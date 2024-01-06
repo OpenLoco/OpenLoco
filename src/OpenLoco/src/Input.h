@@ -30,13 +30,6 @@ namespace OpenLoco::Input
         scrollRight,       // 9
     };
 
-    // TODO: move this
-    enum class ScreenshotType : uint8_t
-    {
-        regular = 0,
-        giant = 1,
-    };
-
     enum class Flags : uint32_t
     {
         none = 0U,
@@ -118,8 +111,6 @@ namespace OpenLoco::Input
     bool hasMapSelectionFlag(MapSelectionFlags flags);
     void setMapSelectionFlags(MapSelectionFlags flags);
     void resetMapSelectionFlag(MapSelectionFlags flags);
-
-    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
 
     void handleKeyboard();
     void handleMouse(int16_t x, int16_t y, MouseButton button);

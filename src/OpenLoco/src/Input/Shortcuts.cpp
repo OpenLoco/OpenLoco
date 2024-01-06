@@ -8,6 +8,7 @@
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
+#include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
