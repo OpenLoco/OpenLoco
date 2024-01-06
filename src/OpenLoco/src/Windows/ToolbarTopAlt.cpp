@@ -176,11 +176,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 break;
 
             case 5:
-                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::regular);
+                triggerScreenshotCountdown(10, ScreenshotType::regular);
                 break;
 
             case 6:
-                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::giant);
+                triggerScreenshotCountdown(10, ScreenshotType::giant);
                 break;
 
             case 8:

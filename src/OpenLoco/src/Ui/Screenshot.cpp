@@ -20,7 +20,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::Input
+namespace OpenLoco::Ui
 {
     static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
 

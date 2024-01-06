@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace OpenLoco::Input
+namespace OpenLoco::Ui
 {
     enum class ScreenshotType : uint8_t
     {
