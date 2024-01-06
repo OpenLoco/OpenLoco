@@ -232,8 +232,9 @@ namespace OpenLoco::GameCommands
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
         auto* stationObj = ObjectManager::get<TrainStationObject>(args.type);
 
-        const auto compatibleTrack = trackObj->stationTrackPieces & stationObj->trackPieces & World::TrackData::getTrackCompatibleFlags(args.trackId);
-        if (compatibleTrack != 0)
+        const auto trackIdCompatFlags = World::TrackData::getTrackCompatibleFlags(args.trackId);
+        const auto compatibleTrack = trackObj->stationTrackPieces & stationObj->trackPieces & trackIdCompatFlags;
+        if (compatibleTrack != trackIdCompatFlags)
         {
             setErrorText(StringIds::track_road_unsuitable_for_station);
             return FAILURE;
