@@ -118,6 +118,101 @@ namespace OpenLoco::Paint
         session.setF003F6(session.getF003F6() | kStraightSegments[rotation]);
     }
 
+    constexpr auto kDiagonal0BoundingBoxOffsets = World::Pos3{ 2, 2, 0 };
+    constexpr auto kDiagonal0BoundingBoxSizes = World::Pos3{ 28, 28, 1 };
+    constexpr std::array<std::array<uint32_t, 3>, 4> kDiagonal0ImageIndexOffsets = {
+        std::array<uint32_t, 3>{ 328, 336, 344 },
+        std::array<uint32_t, 3>{ 332, 340, 348 },
+        std::array<uint32_t, 3>{ 331, 339, 347 },
+        std::array<uint32_t, 3>{ 335, 343, 351 },
+    };
+    constexpr uint8_t kDiagonal0BridgeEdges = 0b1111;
+    constexpr uint8_t kDiagonal0BridgeQuarters = 0xF;
+
+    constexpr std::array<SegmentFlags, 4> kDiagonal0Segments = {
+        SegmentFlags::x0y2 | SegmentFlags::x1y1 | SegmentFlags::x0y1 | SegmentFlags::x1y2,
+        SegmentFlags::x2y2 | SegmentFlags::x1y1 | SegmentFlags::x2y1 | SegmentFlags::x1y2,
+        SegmentFlags::x2y0 | SegmentFlags::x1y1 | SegmentFlags::x1y0 | SegmentFlags::x2y1,
+        SegmentFlags::x0y0 | SegmentFlags::x1y1 | SegmentFlags::x1y0 | SegmentFlags::x0y1,
+    };
+
+    // 0x0041BDBD
+    static void paintTrackDiagonal0(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    {
+        const auto height = elTrack.baseHeight();
+        const auto heightOffset = World::Pos3{ 0,
+                                               0,
+                                               height };
+        if (elTrack.hasBridge())
+        {
+            auto newBridgeEntry = BridgeEntry(
+                height,
+                0, // straight
+                kDiagonal0BridgeEdges,
+                kDiagonal0BridgeQuarters,
+                elTrack.bridge(),
+                trackSession.bridgeColoursBaseImageId);
+            session.setBridgeEntry(newBridgeEntry);
+        }
+
+        const auto baseImage = trackSession.trackBaseImageId;
+
+        session.addToPlotListTrackRoad(
+            baseImage.withIndexOffset(kDiagonal0ImageIndexOffsets[rotation][0]),
+            0,
+            heightOffset,
+            kDiagonal0BoundingBoxOffsets + heightOffset,
+            kDiagonal0BoundingBoxSizes);
+        session.addToPlotListTrackRoad(
+            baseImage.withIndexOffset(kDiagonal0ImageIndexOffsets[rotation][1]),
+            1,
+            heightOffset,
+            kDiagonal0BoundingBoxOffsets + heightOffset,
+            kDiagonal0BoundingBoxSizes);
+        session.addToPlotListTrackRoad(
+            baseImage.withIndexOffset(kDiagonal0ImageIndexOffsets[rotation][2]),
+            3,
+            heightOffset,
+            kDiagonal0BoundingBoxOffsets + heightOffset,
+            kDiagonal0BoundingBoxSizes);
+
+        session.set525CF8(session.get525CF8() | kDiagonal0Segments[rotation]);
+        session.setF003F6(session.getF003F6() | kDiagonal0Segments[rotation]);
+    }
+    //// 0x0041BE97
+    // void paintTrackDiagonal1(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    //{
+    // }
+
+    //// 0x0041BF6F
+    // static void paintTrackDiagonal2(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    //{
+    //     paintTrackDiagonal1(session, elTrack, trackSession, kDiagonal2To0Rotation[rotation]);
+    //}
+
+    constexpr std::array<uint8_t, 4> kDiagonal3To0Rotation = {
+        2, 3, 0, 1
+    };
+
+    // 0x0041C047
+    void paintTrackDiagonal3(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    {
+        paintTrackDiagonal0(session, elTrack, trackSession, kDiagonal3To0Rotation[rotation]);
+    }
+
+    // 0x0041BDA1, 0x0041BDA8, 0x0041BDAF, 0x0041BDB6
+    static void paintTrackDiagonal(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    {
+        if (elTrack.sequenceIndex() == 0)
+        {
+            paintTrackDiagonal0(session, elTrack, trackSession, rotation);
+        }
+        else if (elTrack.sequenceIndex() == 3)
+        {
+            paintTrackDiagonal3(session, elTrack, trackSession, rotation);
+        }
+    }
+
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
@@ -173,6 +268,10 @@ namespace OpenLoco::Paint
             if (elTrack.trackId() == 0)
             {
                 paintTrackStraight(session, elTrack, trackSession, rotation);
+            }
+            else if (elTrack.trackId() == 1)
+            {
+                paintTrackDiagonal(session, elTrack, trackSession, rotation);
             }
             else
             {
