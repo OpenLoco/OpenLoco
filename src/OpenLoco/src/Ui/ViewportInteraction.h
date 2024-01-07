@@ -16,6 +16,7 @@ namespace OpenLoco::Paint
 namespace OpenLoco::Ui
 {
     struct Viewport;
+    struct Window;
 }
 
 namespace OpenLoco::Ui::ViewportInteraction
@@ -92,6 +93,8 @@ namespace OpenLoco::Ui::ViewportInteraction
 
     InteractionArg getItemLeft(int16_t tempX, int16_t tempY);
     InteractionArg rightOver(int16_t x, int16_t y);
+
+    void handleRightReleased(Window* window, int16_t xPos, int16_t yPos);
 
     std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, InteractionItemFlags flags);
     std::optional<World::Pos2> getSurfaceOrWaterLocFromUi(const Point& screenCoords);
