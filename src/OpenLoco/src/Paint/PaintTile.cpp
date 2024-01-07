@@ -19,6 +19,7 @@
 #include "PaintTrack.h"
 #include "PaintTree.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "World/Station.h"
 
 using namespace OpenLoco::Interop;

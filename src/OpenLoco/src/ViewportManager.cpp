@@ -4,7 +4,7 @@
 #include "Logging.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/Station.h"

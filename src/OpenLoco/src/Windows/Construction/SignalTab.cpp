@@ -14,6 +14,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainSignalObject.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;

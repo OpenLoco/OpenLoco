@@ -30,6 +30,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/TreeObject.h"
 #include "Objects/WallObject.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"

@@ -30,6 +30,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"

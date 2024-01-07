@@ -12,6 +12,7 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>

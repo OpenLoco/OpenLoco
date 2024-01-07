@@ -1,5 +1,6 @@
 #include "SoftwareDrawingContext.h"
 #include "DrawSprite.h"
+#include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Localisation/Formatting.h"
 #include "Ui.h"

@@ -6,6 +6,7 @@
 #include "Paint.h"
 #include "PaintEffectEntity.h"
 #include "PaintVehicle.h"
+#include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 

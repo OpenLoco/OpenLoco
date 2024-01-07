@@ -7,6 +7,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Paint.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 #include "World/StationManager.h"

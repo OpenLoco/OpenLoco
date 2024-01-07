@@ -10,6 +10,7 @@
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "Viewport.hpp"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>

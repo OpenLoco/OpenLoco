@@ -31,6 +31,7 @@
 #include "TrackElement.h"
 #include "TreeElement.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
 #include "World/CompanyManager.h"

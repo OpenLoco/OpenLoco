@@ -33,6 +33,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"

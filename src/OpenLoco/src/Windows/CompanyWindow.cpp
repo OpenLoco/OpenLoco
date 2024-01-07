@@ -28,6 +28,7 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"

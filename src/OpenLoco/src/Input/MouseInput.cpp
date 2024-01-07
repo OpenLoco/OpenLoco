@@ -23,6 +23,7 @@
 #include "Tutorial.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"

@@ -12,7 +12,7 @@
 #include "PaintEntity.h"
 #include "PaintTile.h"
 #include "PaintTrack.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"

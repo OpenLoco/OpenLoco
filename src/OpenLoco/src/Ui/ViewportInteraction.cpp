@@ -1,3 +1,4 @@
+#include "ViewportInteraction.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Input.h"

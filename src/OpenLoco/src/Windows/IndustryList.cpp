@@ -21,6 +21,7 @@
 #include "Random.h"
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/IndustryManager.h"
