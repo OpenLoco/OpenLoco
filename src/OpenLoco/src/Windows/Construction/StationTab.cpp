@@ -21,6 +21,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"

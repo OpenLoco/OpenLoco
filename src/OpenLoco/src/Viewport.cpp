@@ -10,6 +10,7 @@
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"
 #include "SceneManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"

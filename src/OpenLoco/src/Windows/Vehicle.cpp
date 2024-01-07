@@ -49,6 +49,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"

@@ -1,6 +1,7 @@
 #include "Tree.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/CreateTree.h"
+#include "Graphics/Colour.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
@@ -8,7 +9,7 @@
 #include "Scenario.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 
 namespace OpenLoco::World

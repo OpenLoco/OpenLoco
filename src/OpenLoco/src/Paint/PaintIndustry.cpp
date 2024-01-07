@@ -6,6 +6,7 @@
 #include "Paint.h"
 #include "ScenarioManager.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "World/Industry.h"
 
 namespace OpenLoco::Paint

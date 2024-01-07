@@ -7,6 +7,7 @@
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Viewport.hpp"
 #include "World/CompanyManager.h"
