@@ -421,8 +421,7 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            const WidgetIndex_t callingWidget = 4;
-            Windows::TitleMenu::beginSendChatMessage(caller, callingWidget);
+            Windows::TitleMenu::beginSendChatMessage(caller);
         }
         else
         {
@@ -430,8 +429,7 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            const WidgetIndex_t callingWidget = 2;
-            Windows::TimePanel::beginSendChatMessage(caller, callingWidget);
+            Windows::TimePanel::beginSendChatMessage(caller);
         }
     }
 

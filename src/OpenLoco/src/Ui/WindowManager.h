@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void invalidateFrame();
-        void beginSendChatMessage(Window* self, WidgetIndex_t callingWidget);
+        void beginSendChatMessage(Window* self);
     }
 
     namespace TitleExit
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void editorInit();
-        void beginSendChatMessage(Window* self, WidgetIndex_t callingWidget);
+        void beginSendChatMessage(Window* self);
     }
 
     namespace TitleOptions
