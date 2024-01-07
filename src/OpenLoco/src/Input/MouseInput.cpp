@@ -424,14 +424,6 @@ namespace OpenLoco::Input
             widget = &window->widgets[widgetIndex];
         }
 
-        registers regs;
-        regs.ebp = (int32_t)state();
-        regs.esi = X86Pointer(window);
-        regs.edx = widgetIndex;
-        regs.edi = X86Pointer(widget);
-        regs.cx = (uint16_t)button;
-        regs.ax = x;
-        regs.bx = y;
         switch (state())
         {
             case State::reset:
