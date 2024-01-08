@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 
 namespace OpenLoco::Ui
 {
@@ -13,7 +12,4 @@ namespace OpenLoco::Ui
 
     void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
     void handleScreenshotCountdown();
-
-    std::string saveScreenshot();
-    std::string saveGiantScreenshot();
 }

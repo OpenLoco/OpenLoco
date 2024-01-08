@@ -32,6 +32,9 @@ namespace OpenLoco::Ui
         _screenshotType = type;
     }
 
+    static std::string saveScreenshot();
+    static std::string saveGiantScreenshot();
+
     void handleScreenshotCountdown()
     {
         if (_screenshotCountdown != 0)
@@ -165,7 +168,7 @@ namespace OpenLoco::Ui
         return fileName;
     }
 
-    std::string saveScreenshot()
+    static std::string saveScreenshot()
     {
         auto& rt = Gfx::getScreenRT();
         return prepareSaveScreenshot(rt);
@@ -195,7 +198,7 @@ namespace OpenLoco::Ui
         return viewport;
     }
 
-    std::string saveGiantScreenshot()
+    static std::string saveGiantScreenshot()
     {
         const auto& main = WindowManager::getMainWindow();
         const auto zoomLevel = main->viewports[0]->zoom;
