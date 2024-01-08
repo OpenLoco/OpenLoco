@@ -262,7 +262,7 @@ namespace OpenLoco::Paint
         paintTrackDiagonal0(session, elTrack, trackSession, kDiagonal3To0Rotation[rotation]);
     }
 
-    using paintTrackFunction = void(PaintSession&, const World::TrackElement&, const TrackPaintCommon&, uint8_t);
+    using paintTrackFunction = void (*)(PaintSession&, const World::TrackElement&, const TrackPaintCommon&, uint8_t);
 
     std::array<paintTrackFunction, 4> kPaintTrackDiagonalSequenceFunctions = {
         paintTrackDiagonal0,

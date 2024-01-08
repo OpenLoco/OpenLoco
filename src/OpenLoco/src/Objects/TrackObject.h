@@ -95,6 +95,7 @@ namespace OpenLoco
 
     namespace TrackObj::ImageIds
     {
+        // Assumes rotational symmetry
         namespace Style0
         {
             constexpr uint32_t straightBallastNE = 18;
@@ -103,6 +104,31 @@ namespace OpenLoco
             constexpr uint32_t straightSleeperSW = 21;
             constexpr uint32_t straightRailNE = 22;
             constexpr uint32_t straightRailSW = 23;
+
+            constexpr uint32_t diagonal0BallastE = 328;
+            constexpr uint32_t diagonal2BallastE = 329;
+            constexpr uint32_t diagonal1BallastE = 330;
+            constexpr uint32_t diagonal3BallastE = 331;
+            constexpr uint32_t diagonal0BallastS = 332;
+            constexpr uint32_t diagonal2BallastS = 333;
+            constexpr uint32_t diagonal1BallastS = 334;
+            constexpr uint32_t diagonal3BallastS = 335;
+            constexpr uint32_t diagonal0SleeperE = 336;
+            constexpr uint32_t diagonal2SleeperE = 337;
+            constexpr uint32_t diagonal1SleeperE = 338;
+            constexpr uint32_t diagonal3SleeperE = 339;
+            constexpr uint32_t diagonal0SleeperS = 340;
+            constexpr uint32_t diagonal2SleeperS = 341;
+            constexpr uint32_t diagonal1SleeperS = 342;
+            constexpr uint32_t diagonal3SleeperS = 343;
+            constexpr uint32_t diagonal0RailE = 344;
+            constexpr uint32_t diagonal2RailE = 345;
+            constexpr uint32_t diagonal1RailE = 346;
+            constexpr uint32_t diagonal3RailE = 347;
+            constexpr uint32_t diagonal0RailS = 348;
+            constexpr uint32_t diagonal2RailS = 349;
+            constexpr uint32_t diagonal1RailS = 350;
+            constexpr uint32_t diagonal3RailS = 351;
         }
     }
 }
