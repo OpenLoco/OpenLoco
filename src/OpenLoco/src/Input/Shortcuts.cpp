@@ -4,9 +4,11 @@
 #include "GameCommands/General/TogglePause.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
+#include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
@@ -28,19 +30,29 @@ namespace OpenLoco::Input::Shortcuts
         WindowManager::closeTopmost();
     }
 
-    // 004BF0B6
+    // 0x004BF0B6
     static void closeAllFloatingWindows()
     {
         WindowManager::closeAllFloatingWindows();
     }
 
-    // 0x4BF0BC
+    // 0x004BF0BC
     static void cancelConstructionMode()
     {
-        call(0x004BF0BC);
+        auto* w = WindowManager::find(WindowType::error);
+        if (w != nullptr)
+        {
+            WindowManager::close(w);
+            return;
+        }
+
+        if (!Ui::Windows::Vehicle::cancelVehicleTools())
+        {
+            Input::toolCancel();
+        }
     }
 
-    // 0x4BF0E6
+    // 0x004BF0E6
     static void pauseUnpauseGame()
     {
         if (isEditorMode())
@@ -407,7 +419,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3AB
     static void makeScreenshot()
     {
-        call(0x004BF3AB);
+        Input::triggerScreenshotCountdown(2, Input::ScreenshotType::regular);
     }
 
     // 0x004BF3B3
@@ -430,7 +442,28 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3DC
     static void sendMessage()
     {
-        call(0x004BF3DC);
+        if (isEditorMode())
+            return;
+
+        if (!isNetworked())
+            return;
+
+        if (isTitleMode())
+        {
+            auto* caller = WindowManager::find(WindowType::titleMenu);
+            if (caller == nullptr)
+                return;
+
+            Windows::TitleMenu::beginSendChatMessage(caller);
+        }
+        else
+        {
+            auto* caller = WindowManager::find(WindowType::timeToolbar);
+            if (caller == nullptr)
+                return;
+
+            Windows::TimePanel::beginSendChatMessage(caller);
+        }
     }
 
     static void constructionPreviousTab()

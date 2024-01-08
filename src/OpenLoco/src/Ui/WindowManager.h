@@ -373,6 +373,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void invalidateFrame();
+        void beginSendChatMessage(Window* self);
     }
 
     namespace TitleExit
@@ -389,6 +390,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void editorInit();
+        void beginSendChatMessage(Window* self);
     }
 
     namespace TitleOptions
@@ -462,6 +464,7 @@ namespace OpenLoco::Ui::Windows
             int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::RenderTarget* const pDrawpixelinfo);
         }
         bool rotate();
+        bool cancelVehicleTools();
     }
 
     namespace VehicleList

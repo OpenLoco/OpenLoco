@@ -10,6 +10,7 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Map/Tile.h"
@@ -139,7 +140,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void sub_4391DA();
     static void sub_4391E2();
     static void sub_43910A();
-    static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget);
     static void showMultiplayer(Window* window);
     static void multiplayerConnect(std::string_view host);
     static void sub_46E328();
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_43910A();
                 break;
             case Widx::chat_btn:
-                sub_439163(&window, widgetIndex);
+                beginSendChatMessage(&window);
                 break;
             case Widx::multiplayer_toggle_btn:
                 showMultiplayer(&window);
@@ -446,14 +446,15 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             0x80);
     }
 
-    static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget)
+    void beginSendChatMessage(Window* self)
     {
         WindowManager::close(WindowType::multiplayer);
 
-        addr<0x112C826 + 8, StringId>() = StringIds::the_other_player;
+        FormatArguments args{};
+        args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, const_cast<void*>(&args));
     }
 
     static void sub_43918F(const char* string)

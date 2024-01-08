@@ -248,10 +248,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
     }
 
-    static void beginSendChatMessage(Window* self)
+    void beginSendChatMessage(Window* self)
     {
-        _commonFormatArgs[4] = StringIds::empty;
-        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, &*_commonFormatArgs);
+        const auto* opponent = CompanyManager::getOpponent();
+        FormatArguments args{};
+        args.push(opponent->name);
+
+        // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
+        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, const_cast<void*>(&args));
     }
 
     // 0x0043A72F

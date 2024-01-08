@@ -4565,6 +4565,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
         return false;
     }
 
+    // 0x004B944A
+    bool cancelVehicleTools()
+    {
+        if (Input::isToolActive(WindowType::vehicle))
+        {
+            auto* w = WindowManager::find(WindowType::vehicle, ToolManager::getToolWindowNumber());
+            if (w->currentTab == (Common::widx::tabMain - Common::widx::tabMain))
+            {
+                w->callOnMouseUp(Common::widx::tabDetails);
+                return true;
+            }
+            else if (w->currentTab == (Common::widx::tabRoute - Common::widx::tabMain))
+            {
+                w->callOnMouseUp(Common::widx::tabMain);
+                return true;
+            }
+        }
+        return false;
+    }
+
     void registerHooks()
     {
         Main::initEvents();
