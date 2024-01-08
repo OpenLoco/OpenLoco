@@ -121,10 +121,10 @@ namespace OpenLoco::Paint
     constexpr auto kDiagonal0BoundingBoxOffsets = World::Pos3{ 2, 2, 0 };
     constexpr auto kDiagonal0BoundingBoxSizes = World::Pos3{ 28, 28, 1 };
     constexpr std::array<std::array<uint32_t, 3>, 4> kDiagonal0ImageIndexOffsets = {
-        std::array<uint32_t, 3>{ 328, 336, 344 },
-        std::array<uint32_t, 3>{ 332, 340, 348 },
-        std::array<uint32_t, 3>{ 331, 339, 347 },
-        std::array<uint32_t, 3>{ 335, 343, 351 },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal0BallastE, TrackObj::ImageIds::Style0::diagonal0SleeperE, TrackObj::ImageIds::Style0::diagonal0RailE },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal0BallastS, TrackObj::ImageIds::Style0::diagonal0SleeperS, TrackObj::ImageIds::Style0::diagonal0RailS },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal3BallastE, TrackObj::ImageIds::Style0::diagonal3SleeperE, TrackObj::ImageIds::Style0::diagonal3RailE },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal3BallastS, TrackObj::ImageIds::Style0::diagonal3SleeperS, TrackObj::ImageIds::Style0::diagonal3RailS },
     };
     constexpr uint8_t kDiagonal0BridgeEdges = 0b1111;
     constexpr uint8_t kDiagonal0BridgeQuarters = 0b1111;
@@ -188,10 +188,10 @@ namespace OpenLoco::Paint
     };
     constexpr auto kDiagonal1BoundingBoxSizes = World::Pos3{ 14, 14, 1 };
     constexpr std::array<std::array<uint32_t, 3>, 4> kDiagonal1ImageIndexOffsets = {
-        std::array<uint32_t, 3>{ 330, 338, 346 },
-        std::array<uint32_t, 3>{ 334, 342, 350 },
-        std::array<uint32_t, 3>{ 329, 337, 345 },
-        std::array<uint32_t, 3>{ 333, 341, 349 },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal1BallastE, TrackObj::ImageIds::Style0::diagonal1SleeperE, TrackObj::ImageIds::Style0::diagonal1RailE },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal1BallastS, TrackObj::ImageIds::Style0::diagonal1SleeperS, TrackObj::ImageIds::Style0::diagonal1RailS },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal2BallastE, TrackObj::ImageIds::Style0::diagonal2SleeperE, TrackObj::ImageIds::Style0::diagonal2RailE },
+        std::array<uint32_t, 3>{ TrackObj::ImageIds::Style0::diagonal2BallastS, TrackObj::ImageIds::Style0::diagonal2SleeperS, TrackObj::ImageIds::Style0::diagonal2RailS },
     };
     constexpr std::array<uint8_t, 4> kDiagonal1BridgeEdges = { 0b1001, 0b0011, 0b0110, 0b1100 };
     constexpr std::array<uint8_t, 4> kDiagonal1BridgeQuarters = { 0b1000, 0b0001, 0b0010, 0b0100 };
@@ -204,7 +204,7 @@ namespace OpenLoco::Paint
     };
 
     // 0x0041BE97, 0x0041C1FB, 0x0041BF6F, 0x0041C2D3
-    void paintTrackDiagonal1(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    static void paintTrackDiagonal1(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
     {
         const auto height = elTrack.baseHeight();
         const auto heightOffset = World::Pos3{ 0,
@@ -257,7 +257,7 @@ namespace OpenLoco::Paint
         paintTrackDiagonal1(session, elTrack, trackSession, kDiagonal2To1Rotation[rotation]);
     }
 
-    void paintTrackDiagonal3(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
+    static void paintTrackDiagonal3(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)
     {
         paintTrackDiagonal0(session, elTrack, trackSession, kDiagonal3To0Rotation[rotation]);
     }
