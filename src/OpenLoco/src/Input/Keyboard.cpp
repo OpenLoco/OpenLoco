@@ -41,7 +41,6 @@ namespace OpenLoco::Input
     static void loc_4BED04();
     static void loc_4BED79();
 
-    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
     static loco_global<KeyModifier, 0x00508F18> _keyModifier;
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
@@ -52,8 +51,6 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
-
-    static ScreenshotType _screenshotType = ScreenshotType::regular;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -459,38 +456,10 @@ namespace OpenLoco::Input
         Input::setFlag(Flags::viewportScrolling);
     }
 
-    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type)
-    {
-        _screenshotCountdown = numTicks;
-        _screenshotType = type;
-    }
-
     // 0x004BE92A
     void handleKeyboard()
     {
-        if (_screenshotCountdown != 0)
-        {
-            _screenshotCountdown--;
-            if (_screenshotCountdown == 0)
-            {
-                try
-                {
-                    std::string fileName;
-                    if (_screenshotType == ScreenshotType::giant)
-                        fileName = saveGiantScreenshot();
-                    else
-                        fileName = saveScreenshot();
-
-                    *((const char**)(&_commonFormatArgs[0])) = fileName.c_str();
-                    Windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
-                }
-                catch (const std::exception&)
-                {
-                    Windows::showError(StringIds::screenshot_failed);
-                }
-            }
-        }
-
+        handleScreenshotCountdown();
         edgeScroll();
 
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);

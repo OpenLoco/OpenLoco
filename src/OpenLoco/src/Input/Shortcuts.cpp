@@ -8,6 +8,7 @@
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
+#include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
@@ -419,7 +420,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3AB
     static void makeScreenshot()
     {
-        Input::triggerScreenshotCountdown(2, Input::ScreenshotType::regular);
+        Ui::triggerScreenshotCountdown(2, Ui::ScreenshotType::regular);
     }
 
     // 0x004BF3B3

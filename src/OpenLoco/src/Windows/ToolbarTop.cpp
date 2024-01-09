@@ -23,6 +23,7 @@
 #include "SceneManager.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
+#include "Ui/Screenshot.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -252,11 +253,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case LoadSaveDropdownId::screenshot:
-                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::regular);
+                triggerScreenshotCountdown(10, ScreenshotType::regular);
                 break;
 
             case LoadSaveDropdownId::giantScreenshot:
-                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::giant);
+                triggerScreenshotCountdown(10, ScreenshotType::giant);
                 break;
 
             case LoadSaveDropdownId::server:
