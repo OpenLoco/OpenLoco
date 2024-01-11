@@ -42,6 +42,12 @@ namespace OpenLoco::Ui::Windows::Options
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
 
+    // TODO: This shouldn't be required but its due to how the lifetime
+    // of the string needs to exist beyond a prepare draw function and
+    // into a draw function. Rework when custom formatter can store full
+    // strings or widgets can store dynamically allocated strings.
+    static std::string _chosenLanguage;
+
     static std::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
     {
         return std::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
@@ -1354,7 +1360,8 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args = {};
 
             auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
-            args.push(language.nativeName.c_str());
+            _chosenLanguage = language.nativeName;
+            args.push(_chosenLanguage.c_str());
 
             StringId current_height_units = StringIds::height_units;
             if (!OpenLoco::Config::get().hasFlags(Config::Flags::showHeightAsUnits))
