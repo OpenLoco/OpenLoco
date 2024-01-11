@@ -36,5 +36,5 @@ namespace OpenLoco::Localisation
 
     void enumerateLanguages();
     std::vector<LanguageDescriptor>& getLanguageDescriptors();
-    const LanguageDescriptor& getDescriptorForLanguage(std::string targetLocale);
+    const LanguageDescriptor& getDescriptorForLanguage(std::string_view targetLocale);
 }
