@@ -484,8 +484,7 @@ namespace OpenLoco::World::TileManager
         return SurfaceSlope::flat;
     }
 
-    // TODO: rename this function
-    SmallZ getSurfaceCornerHeight(const SurfaceElement& surface, const uint8_t cornerMask)
+    SmallZ getSurfaceCornerDownHeight(const SurfaceElement& surface, const uint8_t cornerMask)
     {
         auto baseZ = surface.baseZ();
         if (surface.slope() & cornerMask)
