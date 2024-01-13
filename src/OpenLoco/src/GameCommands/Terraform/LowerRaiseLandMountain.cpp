@@ -247,6 +247,11 @@ namespace OpenLoco::GameCommands
             Audio::playSound(Audio::SoundId::construct, World::Pos3(args.centre.x, args.centre.y, height));
         }
 
+        if (!validCoords(args.pointA) || !validCoords(args.pointB))
+        {
+            return FAILURE;
+        }
+
         // First, raise/lower the mountain's centre tile
         {
             auto result = adjustMountainCentre(args, removedBuildings, flags);
@@ -254,11 +259,6 @@ namespace OpenLoco::GameCommands
             {
                 _mtnToolCost = *_mtnToolCost + result;
             }
-        }
-
-        if (!validCoords(args.pointA) || !validCoords(args.pointB))
-        {
-            return FAILURE;
         }
 
         // 0x00462E7E
