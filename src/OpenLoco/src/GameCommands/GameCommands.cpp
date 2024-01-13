@@ -34,6 +34,7 @@
 #include "Terraform/CreateTree.h"
 #include "Terraform/CreateWall.h"
 #include "Terraform/LowerLand.h"
+#include "Terraform/LowerRaiseLandMountain.h"
 #include "Terraform/LowerWater.h"
 #include "Terraform/RaiseLand.h"
 #include "Terraform/RaiseWater.h"
@@ -130,7 +131,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::changeLandMaterial,           changeLandMaterial,        0x00468EDD, true  },
         { GameCommand::raiseLand,                    raiseLand,                 0x00463702, true  },
         { GameCommand::lowerLand,                    lowerLand,                 0x004638C6, true  },
-        { GameCommand::lowerRaiseLandMountain,       nullptr,                   0x00462DCE, true  },
+        { GameCommand::lowerRaiseLandMountain,       lowerRaiseLandMountain,    0x00462DCE, true  },
         { GameCommand::raiseWater,                   raiseWater,                0x004C4F19, true  },
         { GameCommand::lowerWater,                   lowerWater,                0x004C5126, true  },
         { GameCommand::changeCompanyName,            changeCompanyName,         0x00434914, false },

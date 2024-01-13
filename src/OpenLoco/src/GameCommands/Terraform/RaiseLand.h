@@ -1,6 +1,8 @@
 #pragma once
 
 #include "GameCommands/GameCommands.h"
+#include "Map/Tile.h"
+#include <set>
 
 namespace OpenLoco::GameCommands
 {
@@ -33,5 +35,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    uint32_t raiseLand(const RaiseLandArgs& args, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t flags);
     void raiseLand(registers& regs);
 }

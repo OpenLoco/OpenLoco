@@ -6,22 +6,22 @@
 
 namespace OpenLoco::GameCommands
 {
-    struct LowerLandArgs
+    struct LowerRaiseLandMountainArgs
     {
-        static constexpr auto command = GameCommand::lowerLand;
-        LowerLandArgs() = default;
-        explicit LowerLandArgs(const registers& regs)
+        static constexpr auto command = GameCommand::lowerRaiseLandMountain;
+        LowerRaiseLandMountainArgs() = default;
+        explicit LowerRaiseLandMountainArgs(const registers& regs)
             : centre(regs.ax, regs.cx)
             , pointA(regs.dx, regs.bp)
             , pointB(regs.edx >> 16, regs.ebp >> 16)
-            , corner(regs.di)
+            , adjustment(regs.di)
         {
         }
 
         World::Pos2 centre;
         World::Pos2 pointA;
         World::Pos2 pointB;
-        uint16_t corner;
+        int16_t adjustment;
 
         explicit operator registers() const
         {
@@ -30,11 +30,10 @@ namespace OpenLoco::GameCommands
             regs.cx = centre.y;
             regs.edx = (pointB.x << 16) | pointA.x;
             regs.ebp = (pointB.y << 16) | pointA.y;
-            regs.di = corner;
+            regs.di = adjustment;
             return regs;
         }
     };
 
-    uint32_t lowerLand(const LowerLandArgs& args, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t flags);
-    void lowerLand(registers& regs);
+    void lowerRaiseLandMountain(registers& regs);
 }

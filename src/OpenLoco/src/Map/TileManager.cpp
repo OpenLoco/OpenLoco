@@ -465,16 +465,51 @@ namespace OpenLoco::World::TileManager
         return height;
     }
 
+    static uint8_t getCornerDownMask(const uint8_t cornerUp)
+    {
+        switch (cornerUp)
+        {
+            case SurfaceSlope::CornerUp::north:
+                return SurfaceSlope::CornerDown::south;
+
+            case SurfaceSlope::CornerUp::south:
+                return SurfaceSlope::CornerDown::north;
+
+            case SurfaceSlope::CornerUp::west:
+                return SurfaceSlope::CornerDown::east;
+
+            case SurfaceSlope::CornerUp::east:
+                return SurfaceSlope::CornerDown::west;
+        }
+        return SurfaceSlope::flat;
+    }
+
+    SmallZ getSurfaceCornerDownHeight(const SurfaceElement& surface, const uint8_t cornerMask)
+    {
+        auto baseZ = surface.baseZ();
+        if (surface.slope() & cornerMask)
+        {
+            baseZ += kSmallZStep;
+            uint8_t cornerDownMask = getCornerDownMask(cornerMask);
+            if (surface.isSlopeDoubleHeight() && surface.slopeCorners() == cornerDownMask)
+            {
+                baseZ += kSmallZStep;
+            }
+        }
+
+        return baseZ;
+    }
+
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface)
     {
         auto baseZ = surface.baseZ();
         if (surface.slope())
         {
             baseZ += kSmallZStep;
-        }
-        if (surface.isSlopeDoubleHeight())
-        {
-            baseZ += kSmallZStep;
+            if (surface.isSlopeDoubleHeight())
+            {
+                baseZ += kSmallZStep;
+            }
         }
 
         return baseZ;
