@@ -1,5 +1,60 @@
 # OpenLoco version 23.12+ (???)
 
+## Mountain tool game command implementation (#2167)
+
+Our work on reimplementing the game commands continues. This month, we've finally tackled
+the mountain tool game command! Like most of the remaining game command functions, this was
+a complex beast to reimplement. However, it was definitely worth doing, as we'll elaborate on
+in the next section.
+
+We have now reimplemented 55 out of 84 game commands in C++. The remaining commands are
+huge functions to undertake, so the implementation pace has slowed down a bit. However,
+reimplementing them is a necessity for stable multiplayer, so it's a worthy cause!
+
+## Terraform tool improvements (#2228, #2243)
+
+In Locomotion, the terraform tools were limited to 10x10 tiles. As of this month, OpenLoco
+reimplements all terraform tools in C++, making it possible to increase the tool sizes without
+unintentional side-effects. We didn't just increase them a little: the new limit is 64x64 tiles!
+
+We didn't stop there. Now that the mountain tool has been reimplemented, we've made it possible
+to use it with a variable table size! Previously, the mountain tool would be activated by
+minimizing the land tool all the way, giving you a mountain with a 1x1 table. We have now
+changed this such that you can activate mountain slopes for all tool sizes! Enjoy!
+
+Lastly, we've changed the way the land style 'paint' tool works. The land style selector is
+now hidden until the paint tool is activated. In addition, the tool no longer confusingly
+inherits corner selection from the general land tool. We hope this leads to more intuitive
+use of the land style paint tool.
+
+## Make viewport see-through flags more granular (#2231)
+
+The way hiding viewport elements works in Locomotion has often been suggested for improvement.
+Our codebase is now in such a state where we could finally rework this. The see-through flags
+are now no longer group several kinds of tile elements together, enabling players to control them
+with finer granularity. For example, you can now decide to only hide train tracks, or indeed
+only hide roads. Similarly, there are now separate flags for buildings, trees, and scenery objects.
+
+This means the viewport menu replaces two old items with five new items. Previously, the
+viewport shortcuts matched these positions. For consistency, the viewport shortcuts have
+therefore been reassigned. Existing shortcut configurations will not be updated, however.
+We recommend you review or reset the shortcut settings to make optimal use of the new flags.
+
+Aside from the refined granularity, the see-through flags now apply to the entire viewport,
+rather than only the bottom half. We hope this will make the flags more convenient to use as well.
+
+## Refactor config reading and writing (#2229, #2230)
+
+
+## Turn window-specific handleInput functions into keyUp events (#2232)
+
+
+## Refactor and split up the Input namespace (#2246, #2247)
+
+Refactor screenshot logic out of Input namespace
+Move more ViewportInteraction code to its own unit
+
+
 # OpenLoco version 23.12 (2023-12-17)
 
 ## Enable extra optimizations for Windows release builds (#2204)
