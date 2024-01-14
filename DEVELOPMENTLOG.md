@@ -1,5 +1,75 @@
 # OpenLoco version 23.12+ (???)
 
+## Mountain tool game command implementation (#2167)
+
+Our work on reimplementing the game commands continues. This month, we've finally tackled
+the mountain tool game command! Like most of the remaining game command functions, this was
+a complex beast to reimplement. However, it was definitely worth doing, as we'll elaborate on
+in the next section.
+
+We have now reimplemented 55 out of 84 game commands in C++. The remaining commands are
+huge functions to undertake, so the implementation pace has slowed down a bit. However,
+reimplementing them is a necessity for stable multiplayer, so it's a worthy cause!
+
+## Terraform tool improvements (#2228, #2243)
+
+In Locomotion, the terraform tools were limited to 10x10 tiles. As of this month, OpenLoco
+reimplements all terraform tools in C++, making it possible to increase the tool sizes without
+unintentional side-effects. We didn't just increase them a little: the new limit is 64x64 tiles!
+
+We didn't stop there. Now that the mountain tool has been reimplemented, we've made it possible
+to use it with a variable table size! Previously, the mountain tool would be activated by
+minimizing the land tool all the way, giving you a mountain with a 1x1 table. We have now
+changed this such that you can activate mountain slopes for all tool sizes! Enjoy!
+
+Lastly, we've changed the way the land style 'paint' tool works. The land style selector is
+now hidden until the paint tool is activated. In addition, the tool no longer confusingly
+inherits corner selection from the general land tool. We hope this leads to more intuitive
+use of the land style paint tool.
+
+## Make viewport see-through flags more granular (#2231)
+
+The way hiding viewport elements works in Locomotion has often been suggested for improvement.
+Our codebase is now in such a state where we could finally rework this. The see-through flags
+are now more granular and no longer group several kinds of tile elements together.
+For example, you can now decide to only hide train tracks, or indeed only hide roads.
+Similarly, there are now separate flags for buildings, trees, and scenery objects.
+
+This means the viewport menu replaces two old items with five new items. Previously, the
+viewport shortcuts matched these positions. For consistency, the viewport shortcuts have
+therefore been reassigned. Existing shortcut configurations will not be updated, however.
+We recommend you review or reset the shortcut settings to make optimal use of the new flags.
+
+Aside from the refined granularity, the see-through flags now apply to the entire viewport,
+rather than only the bottom half. We hope this will make the flags more convenient to use as well.
+
+## Refactor config reading and writing (#2229, #2230)
+
+To keep track of user preferences for the extra options introduced by OpenLoco, we introduced
+YAML-formatted user config files back in 2018. While the underlying library we used has been
+updated a few times since, our config handling code has remained more or less the same since,
+save for adding more and more options on top.
+
+This month, we have reworked the config reading and writing code. This has made the code more
+flexible with respect to invalid or missing configurations. Perhaps more importantly, the code
+defers logic to such an extent that it is easier to maintain and extend in the future.
+
+## Turn window-specific handleInput functions into keyUp events (#2232)
+
+The recent few months saw an influx of new search/text fields to major game windows, such as
+the Build Vehicle and Object Selection windows. The way we handled key presses to be passed
+to the windows wasn't the prettiest, however. This month, we completely refactored this,
+turning the respective `handleInput` events into proper `keyUp` window events. This makes
+things much more maintainable, and indeed easier to add such events in the future.
+
+## Refactor and split up the Input namespace (#2246, #2247)
+
+The changes to key input handling discussed in the previous section cleaned up the Input
+namespace quite a bit. However, it also revealed plenty more work to be done, separating core
+input logic from gameplay functions. We started by moving screenshot trigger logic out of the
+Input namespace, and moved a bunch of viewport interaction code to its own code unit as well.
+More to be done in the future, but this kind of cleanup is very rewarding to do. Stay tuned!
+
 # OpenLoco version 23.12 (2023-12-17)
 
 ## Enable extra optimizations for Windows release builds (#2204)
