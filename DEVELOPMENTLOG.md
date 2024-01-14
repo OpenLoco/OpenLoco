@@ -45,15 +45,30 @@ rather than only the bottom half. We hope this will make the flags more convenie
 
 ## Refactor config reading and writing (#2229, #2230)
 
+To keep track of user preferences for the extra options introduced by OpenLoco, we introduced
+YAML-formatted user config files back in 2018. While the underlying library we used has been
+updated a few times since, our config handling code has remained more or less the same since,
+save for adding more and more options on top.
+
+This month, we have reworked the config reading and writing code. This has made the code more
+flexible with respect to invalid or missing configurations. Perhaps more importantly, the code
+defers logic to such an extent that it is easier to maintain and extend in the future.
 
 ## Turn window-specific handleInput functions into keyUp events (#2232)
 
+The recent few months saw an influx of new search/text fields to major game windows, such as
+the Build Vehicle and Object Selection windows. The way we handled key presses to be passed
+to the windows wasn't the prettiest, however. This month, we completely refactored this,
+turning the respective `handleInput` events into proper `keyUp` window events. This makes
+things much more maintainable, and indeed easier to add such events in the future.
 
 ## Refactor and split up the Input namespace (#2246, #2247)
 
-Refactor screenshot logic out of Input namespace
-Move more ViewportInteraction code to its own unit
-
+The changes to key input handling discussed in the previous section cleaned up the Input
+namespace quite a bit. However, it also revealed plenty more work to be done, separating core
+input logic from gameplay functions. We started by moving screenshot trigger logic out of the
+Input namespace,and moved a bunch of viewport interaction code to its own code unit as well.
+More to be done in the future, but this kind of cleanup is very rewarding to do. Stay tuned!
 
 # OpenLoco version 23.12 (2023-12-17)
 
