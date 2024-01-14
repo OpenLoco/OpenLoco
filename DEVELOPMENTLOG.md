@@ -31,10 +31,9 @@ use of the land style paint tool.
 
 The way hiding viewport elements works in Locomotion has often been suggested for improvement.
 Our codebase is now in such a state where we could finally rework this. The see-through flags
-are now more granular and no longer group several kinds of tile elements together. This
-enables players to control them with finer granularity. For example, you can now decide to only
-hide train tracks, or indeed only hide roads. Similarly, there are now separate flags for
-buildings, trees, and scenery objects.
+are now more granular and no longer group several kinds of tile elements together.
+For example, you can now decide to only hide train tracks, or indeed only hide roads.
+Similarly, there are now separate flags for buildings, trees, and scenery objects.
 
 This means the viewport menu replaces two old items with five new items. Previously, the
 viewport shortcuts matched these positions. For consistency, the viewport shortcuts have
