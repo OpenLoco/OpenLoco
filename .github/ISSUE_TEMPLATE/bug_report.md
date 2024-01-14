@@ -8,8 +8,8 @@ assignees: ''
 ---
 
 **Version information:**
- - Platform: [e.g. Windows 10]
- - Version: [e.g. 23.12]
+ - Platform: [e.g. Windows 11]
+ - Version: [e.g. 24.01]
  - Build/commit: [e.g. f08479f]
 
 **Describe the bug**

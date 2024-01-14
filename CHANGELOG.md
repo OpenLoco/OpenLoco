@@ -1,4 +1,4 @@
-23.12+ (???)
+24.01 (2024-01-14)
 ------------------------------------------------------------------------
 - Feature: [#1238]: Mountain tool is now a toggle, making it possible to specify the mountain table size.
 - Feature: [#2228]: Max terraform tool sizes have been increased from 10x10 to 64x64.
