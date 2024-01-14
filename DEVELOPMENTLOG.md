@@ -31,9 +31,10 @@ use of the land style paint tool.
 
 The way hiding viewport elements works in Locomotion has often been suggested for improvement.
 Our codebase is now in such a state where we could finally rework this. The see-through flags
-are now no longer group several kinds of tile elements together, enabling players to control them
-with finer granularity. For example, you can now decide to only hide train tracks, or indeed
-only hide roads. Similarly, there are now separate flags for buildings, trees, and scenery objects.
+are now more granular and no longer group several kinds of tile elements together. This
+enables players to control them with finer granularity. For example, you can now decide to only
+hide train tracks, or indeed only hide roads. Similarly, there are now separate flags for
+buildings, trees, and scenery objects.
 
 This means the viewport menu replaces two old items with five new items. Previously, the
 viewport shortcuts matched these positions. For consistency, the viewport shortcuts have
@@ -67,7 +68,7 @@ things much more maintainable, and indeed easier to add such events in the futur
 The changes to key input handling discussed in the previous section cleaned up the Input
 namespace quite a bit. However, it also revealed plenty more work to be done, separating core
 input logic from gameplay functions. We started by moving screenshot trigger logic out of the
-Input namespace,and moved a bunch of viewport interaction code to its own code unit as well.
+Input namespace, and moved a bunch of viewport interaction code to its own code unit as well.
 More to be done in the future, but this kind of cleanup is very rewarding to do. Stay tuned!
 
 # OpenLoco version 23.12 (2023-12-17)
