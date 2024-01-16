@@ -1,5 +1,10 @@
 # OpenLoco version 24.01+ (???)
 
+In 24.01 we accidentally introduced a bug involving Safe Structured Exception Handling that
+caused some crashes when loading save games on Windows machines. This one was tricky to spot
+in testing since it only occured on Windows, and only in release builds, which are not often
+used when testing in development. This is fixed in 24.01.1.
+
 # OpenLoco version 24.01 (2024-01-14)
 
 ## Mountain tool game command implementation (#2167)
