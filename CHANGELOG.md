@@ -1,6 +1,6 @@
 24.01.1 (???)
 ------------------------------------------------------------------------
-- Fix: [#2253]: Fixes game crashing when loading some save games.
+- Fix: [#2253]: Game crashes when loading some save games on Windows.
 
 24.01 (2024-01-14)
 ------------------------------------------------------------------------
