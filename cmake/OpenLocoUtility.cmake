@@ -28,7 +28,7 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
     set(COMMON_LINK_OPTIONS_MSVC
         $<$<CONFIG:Release>:/DEBUG>             # Generate debug symbols even in release
         $<$<CONFIG:Debug>:/INCREMENTAL>         # Incremental linking required for hot reload
-        $<$<CONFIG:Debug>:/SAFESEH:NO>          # No safeseh linking required for hot reload
+        /SAFESEH:NO                             # No safeseh linking required for hot reload and also crashes loading when enabled
         $<$<CONFIG:Release>:/OPT:ICF>           # COMDAT folding
         $<$<CONFIG:Release>:/OPT:REF>           # Eliminate unreferenced code/data
         $<$<CONFIG:RelWithDebInfo>:/OPT:ICF>    # COMDAT folding
