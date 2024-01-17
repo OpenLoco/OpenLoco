@@ -416,7 +416,7 @@ namespace OpenLoco
     // 0x00491FE0
     // WARNING: this may be called with station (ebp) = -1
     // THIS FUNCTION ONLY TO BE CALLED ON GHOST TRACK STATIONS
-    PotentialCargo calcAcceptedCargoTrackStationGhost(const Station* ghostStation, const Pos2& location, const uint32_t filter)
+    PotentialCargo calcAcceptedCargoTrainStationGhost(const Station* ghostStation, const Pos2& location, const uint32_t filter)
     {
         CargoSearchState cargoSearchState;
         cargoSearchState.byte_112C7F2(1);

@@ -248,7 +248,7 @@ namespace OpenLoco::ObjectManager
                 return visitor(reinterpret_cast<TunnelObject*>(&obj));
             case ObjectType::bridge:
                 return visitor(reinterpret_cast<BridgeObject*>(&obj));
-            case ObjectType::trackStation:
+            case ObjectType::trainStation:
                 return visitor(reinterpret_cast<TrainStationObject*>(&obj));
             case ObjectType::trackExtra:
                 return visitor(reinterpret_cast<TrackExtraObject*>(&obj));

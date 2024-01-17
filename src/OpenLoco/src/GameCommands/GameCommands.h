@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
         createSignal = 13,
         removeSignal = 14,
         createTrainStation = 15,
-        removeTrackStation = 16,
+        removeTrainStation = 16,
         createTrackMod = 17,
         removeTrackMod = 18,
         changeCompanyColourScheme = 19,
@@ -277,12 +277,12 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    struct TrackStationRemovalArgs
+    struct TrainStationRemovalArgs
     {
-        static constexpr auto command = GameCommand::removeTrackStation;
+        static constexpr auto command = GameCommand::removeTrainStation;
 
-        TrackStationRemovalArgs() = default;
-        explicit TrackStationRemovalArgs(const registers& regs)
+        TrainStationRemovalArgs() = default;
+        explicit TrainStationRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)

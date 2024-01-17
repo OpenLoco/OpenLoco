@@ -823,7 +823,7 @@ namespace OpenLoco::ObjectManager
                     switch (elStation->stationType())
                     {
                         case StationType::trainStation:
-                            loadedObjectFlags[enumValue(ObjectType::trackStation)][elStation->objectId()] |= (1U << 0);
+                            loadedObjectFlags[enumValue(ObjectType::trainStation)][elStation->objectId()] |= (1U << 0);
                             break;
                         case StationType::roadStation:
                             loadedObjectFlags[enumValue(ObjectType::roadStation)][elStation->objectId()] |= (1U << 0);

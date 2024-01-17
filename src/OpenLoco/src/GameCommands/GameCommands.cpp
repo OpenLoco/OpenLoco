@@ -121,7 +121,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createSignal,                 createSignal,              0x00488BDB, true  },
         { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
         { GameCommand::createTrainStation,           createTrainStation,        0x0048BB20, true  },
-        { GameCommand::removeTrackStation,           nullptr,                   0x0048C402, true  },
+        { GameCommand::removeTrainStation,           nullptr,                   0x0048C402, true  },
         { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
         { GameCommand::removeTrackMod,               removeTrackMod,            0x004A668A, true  },
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },

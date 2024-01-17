@@ -700,7 +700,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 callDrawPreviewImage<BridgeObject>(*clipped, kObjectPreviewOffset, objectPtr);
                 break;
 
-            case ObjectType::trackStation:
+            case ObjectType::trainStation:
                 callDrawPreviewImage<TrainStationObject>(*clipped, kObjectPreviewOffset, objectPtr);
                 break;
 
@@ -796,7 +796,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 callDrawDescription<LevelCrossingObject>(*clipped, 0, 0, width, objectPtr);
                 break;
 
-            case ObjectType::trackStation:
+            case ObjectType::trainStation:
                 callDrawDescription<TrainStationObject>(*clipped, 0, 0, width, objectPtr);
                 break;
 

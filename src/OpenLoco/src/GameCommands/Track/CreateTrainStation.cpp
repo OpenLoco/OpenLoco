@@ -220,7 +220,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BB20
-    static currency32_t createTrainStation(const TrackStationPlacementArgs& args, const uint8_t flags)
+    static currency32_t createTrainStation(const TrainStationPlacementArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
@@ -566,6 +566,6 @@ namespace OpenLoco::GameCommands
 
     void createTrainStation(registers& regs)
     {
-        regs.ebx = createTrainStation(TrackStationPlacementArgs(regs), regs.bl);
+        regs.ebx = createTrainStation(TrainStationPlacementArgs(regs), regs.bl);
     }
 }

@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         track = 4,
         trackExtra = 5,
         signal = 6,
-        trackStation = 7,
+        trainStation = 7,
         roadStation = 8,
         airport = 9,
         dock = 10,

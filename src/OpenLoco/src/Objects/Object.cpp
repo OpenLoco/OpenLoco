@@ -178,12 +178,12 @@ namespace OpenLoco
         { "BRDGSUSP", ObjectType::bridge }, // "Suspension Bridge"
         { "BRDGWOOD", ObjectType::bridge }, // "Wooden Bridge"
 
-        // Type 15 (trackStation)
-        { "TRSTAT1 ", ObjectType::trackStation }, // "City Station"
-        { "TRSTAT4 ", ObjectType::trackStation }, // "City Station"
-        { "TRSTAT5 ", ObjectType::trackStation }, // "Station"
-        { "TRSTAT2 ", ObjectType::trackStation }, // "Station"
-        { "TRSTAT3 ", ObjectType::trackStation }, // "Station"
+        // Type 15 (trainStation)
+        { "TRSTAT1 ", ObjectType::trainStation }, // "City Station"
+        { "TRSTAT4 ", ObjectType::trainStation }, // "City Station"
+        { "TRSTAT5 ", ObjectType::trainStation }, // "Station"
+        { "TRSTAT2 ", ObjectType::trainStation }, // "Station"
+        { "TRSTAT3 ", ObjectType::trainStation }, // "Station"
 
         // Type 16 (trackExtra)
         { "TREX3RL ", ObjectType::trackExtra }, // "Electric 3rd Rail"

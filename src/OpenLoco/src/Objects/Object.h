@@ -24,7 +24,7 @@ namespace OpenLoco
         streetLight,
         tunnel,
         bridge,
-        trackStation,
+        trainStation,
         trackExtra,
         track,
         roadStation,

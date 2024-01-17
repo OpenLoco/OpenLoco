@@ -2571,7 +2571,7 @@ namespace OpenLoco::Vehicles
                 auto direction = bogie->trackAndDirection.track.cardinalDirection();
                 auto trackId = bogie->trackAndDirection.track.id();
                 auto loadingModifier = Config::get().disableVehicleLoadPenaltyCheat ? kMinVehiclePastStationPenalty : kRailVehiclePastStationPenalty;
-                auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
+                auto* elStation = tile.trainStation(trackId, direction, bogie->tileBaseZ);
                 if (elStation != nullptr)
                 {
                     if (elStation->isAiAllocated() || elStation->isGhost())
@@ -3426,7 +3426,7 @@ namespace OpenLoco::Vehicles
         auto trackId = bogie->trackAndDirection.track.id();
 
         auto tile = TileManager::get(World::Pos2{ bogie->tileX, bogie->tileY });
-        auto* elStation = tile.trackStation(trackId, direction, bogie->tileBaseZ);
+        auto* elStation = tile.trainStation(trackId, direction, bogie->tileBaseZ);
         if (elStation == nullptr)
         {
             return StationId::null;

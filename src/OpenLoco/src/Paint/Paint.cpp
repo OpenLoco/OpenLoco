@@ -803,7 +803,7 @@ namespace OpenLoco::Paint
             case Ui::ViewportInteraction::InteractionItem::track:
             case Ui::ViewportInteraction::InteractionItem::trackExtra:
             case Ui::ViewportInteraction::InteractionItem::signal:
-            case Ui::ViewportInteraction::InteractionItem::trackStation:
+            case Ui::ViewportInteraction::InteractionItem::trainStation:
             case Ui::ViewportInteraction::InteractionItem::airport:
             case Ui::ViewportInteraction::InteractionItem::dock:
             case Ui::ViewportInteraction::InteractionItem::bridge:

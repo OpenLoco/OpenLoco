@@ -2,12 +2,12 @@
 
 namespace OpenLoco::GameCommands
 {
-    struct TrackStationPlacementArgs
+    struct TrainStationPlacementArgs
     {
         static constexpr auto command = GameCommand::createTrainStation;
 
-        TrackStationPlacementArgs() = default;
-        explicit TrackStationPlacementArgs(const registers& regs)
+        TrainStationPlacementArgs() = default;
+        explicit TrainStationPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0xF)

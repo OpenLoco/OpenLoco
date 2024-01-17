@@ -102,7 +102,7 @@ namespace OpenLoco::World
         return nullptr;
     }
 
-    StationElement* Tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
+    StationElement* Tile::trainStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
     {
         StationElement* result = nullptr;
         bool trackFound = false;

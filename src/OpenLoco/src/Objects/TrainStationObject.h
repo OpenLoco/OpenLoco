@@ -30,7 +30,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TrainStationObject
     {
-        static constexpr auto kObjectType = ObjectType::trackStation;
+        static constexpr auto kObjectType = ObjectType::trainStation;
 
         using CargoOffset = std::array<World::Pos3, 2>;
 
