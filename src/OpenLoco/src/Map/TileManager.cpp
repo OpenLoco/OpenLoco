@@ -1469,21 +1469,29 @@ namespace OpenLoco::World::TileManager
         registerHook(
             0x004BE048,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                regs.dx = countSurroundingTrees({ regs.ax, regs.cx });
+                registers backup = regs;
+                const auto count = countSurroundingTrees({ regs.ax, regs.cx });
+                regs = backup;
+                regs.dx = count;
                 return 0;
             });
 
         registerHook(
             0x004C5596,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                regs.dx = countSurroundingWaterTiles({ regs.ax, regs.cx });
+                registers backup = regs;
+                const auto count = countSurroundingWaterTiles({ regs.ax, regs.cx });
+                regs = backup;
+                regs.dx = count;
                 return 0;
             });
 
         registerHook(
             0x0046902E,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 removeSurfaceIndustry({ regs.ax, regs.cx });
+                regs = backup;
                 return 0;
             });
     }

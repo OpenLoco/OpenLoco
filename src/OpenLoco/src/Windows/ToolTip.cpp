@@ -51,13 +51,17 @@ namespace OpenLoco::Ui::Windows::ToolTip
         registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Windows::ToolTip::open((Ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Windows::ToolTip::update((Ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                regs = backup;
                 return 0;
             });
     }
