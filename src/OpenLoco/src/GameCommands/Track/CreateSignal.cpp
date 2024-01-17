@@ -91,7 +91,7 @@ namespace OpenLoco::GameCommands
                 const auto otherConnectFlags = World::TrackData::getTrackPiece(otherElTrack->trackId())[otherElTrack->sequenceIndex()].connectFlags[otherElTrack->unkDirection()];
                 if (otherConnectFlags & connectFlags)
                 {
-                    setErrorText(StringIds::signals_cannot_be_built_on_a_junction_2);
+                    setErrorText(StringIds::signals_cannot_be_built_on_a_junction);
                     return false;
                 }
             }

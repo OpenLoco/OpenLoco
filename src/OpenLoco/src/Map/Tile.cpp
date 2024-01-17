@@ -102,7 +102,7 @@ namespace OpenLoco::World
         return nullptr;
     }
 
-    StationElement* Tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
+    StationElement* Tile::trainStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
     {
         StationElement* result = nullptr;
         bool trackFound = false;
@@ -176,7 +176,11 @@ namespace OpenLoco::World
     }
 
     StationType StationElement::stationType() const { return StationType(_5 >> 5); }
-
+    void StationElement::setStationType(StationType type)
+    {
+        _5 &= ~0xE0;
+        _5 |= (enumValue(type) & 0x7) << 5;
+    }
     /**
      *
      * @param x @<ax>

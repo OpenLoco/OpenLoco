@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
                 return StringIds::object_tunnels;
             case ObjectType::bridge:
                 return StringIds::object_bridges;
-            case ObjectType::trackStation:
+            case ObjectType::trainStation:
                 return StringIds::object_track_stations;
             case ObjectType::trackExtra:
                 return StringIds::object_track_extras;

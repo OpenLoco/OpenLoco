@@ -45,6 +45,7 @@
 #include "Town/RenameTown.h"
 #include "Track/CreateSignal.h"
 #include "Track/CreateTrackMod.h"
+#include "Track/CreateTrainStation.h"
 #include "Track/RemoveTrackMod.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/CloneVehicle.h"
@@ -119,8 +120,8 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleChangeRunningMode,     vehicleChangeRunningMode,  0x004B694B, true  },
         { GameCommand::createSignal,                 createSignal,              0x00488BDB, true  },
         { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
-        { GameCommand::createTrainStation,           nullptr,                   0x0048BB20, true  },
-        { GameCommand::removeTrackStation,           nullptr,                   0x0048C402, true  },
+        { GameCommand::createTrainStation,           createTrainStation,        0x0048BB20, true  },
+        { GameCommand::removeTrainStation,           nullptr,                   0x0048C402, true  },
         { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
         { GameCommand::removeTrackMod,               removeTrackMod,            0x004A668A, true  },
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
@@ -210,6 +211,15 @@ namespace OpenLoco::GameCommands
             createTree(backup);
 
             regs.ebx = backup.ebx;
+            return 0;
+        });
+
+        // Used by a gc_unk_51 of going via doCommand
+        registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createTrainStation(backup);
+
+            regs = backup;
             return 0;
         });
     }

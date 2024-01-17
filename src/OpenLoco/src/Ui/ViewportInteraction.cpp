@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (station->isAiAllocated())
             return false;
 
-        interaction.type = InteractionItem::trackStation;
+        interaction.type = InteractionItem::trainStation;
         interaction.object = station;
         return getStationArguments(interaction);
     }
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::stationLabel:
                 success = getStationArguments(static_cast<StationId>(interaction.value));
                 break;
-            case InteractionItem::trackStation:
+            case InteractionItem::trainStation:
             case InteractionItem::roadStation:
             case InteractionItem::airport:
             case InteractionItem::dock:
@@ -514,7 +514,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CDD8C
-    static bool rightOverTrackStation(InteractionArg& interaction)
+    static bool rightOverTrainStation(InteractionArg& interaction)
     {
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
@@ -936,8 +936,8 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::signal:
                 hasInteraction = rightOverSignal(interaction);
                 break;
-            case InteractionItem::trackStation:
-                hasInteraction = rightOverTrackStation(interaction);
+            case InteractionItem::trainStation:
+                hasInteraction = rightOverTrainStation(interaction);
                 break;
             case InteractionItem::roadStation:
                 hasInteraction = rightOverRoadStation(interaction);
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004A5B66
-    static void rightReleasedTrackStation(World::StationElement* station, const World::Pos2 pos)
+    static void rightReleasedTrainStation(World::StationElement* station, const World::Pos2 pos)
     {
         auto* track = station->prev()->as<World::TrackElement>();
         if (track == nullptr)
@@ -1045,7 +1045,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
-        GameCommands::TrackStationRemovalArgs args;
+        GameCommands::TrainStationRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, track->baseHeight());
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
@@ -1264,12 +1264,12 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
                 break;
             }
-            case InteractionItem::trackStation:
+            case InteractionItem::trainStation:
             {
                 auto* station = tileElement->as<StationElement>();
                 if (station != nullptr)
                 {
-                    rightReleasedTrackStation(station, interaction.pos);
+                    rightReleasedTrainStation(station, interaction.pos);
                 }
                 break;
             }

@@ -47,14 +47,19 @@ namespace OpenLoco::World::TileManager
     void setRemoveElementPointerChecker(TileElement& element);
     // See above. Used to indicate if pointer to removeElement is now bad
     bool wasRemoveOnLastElement();
+
+    // Note: Any TileElement pointers invalid after this call
     TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    // Note: Any TileElement pointers invalid after this call
     template<typename TileT>
     TileT* insertElement(const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
     {
         return insertElement(TileT::kElementType, pos, baseZ, occupiedQuads)->template as<TileT>();
     }
 
+    // Note: `after` pointer will be invalid after this call
     TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads);
+    // Note: `after` pointer will be invalid after this call
     template<typename TileT>
     TileT* insertElementAfterNoReorg(TileElement* after, const Pos2& pos, const uint8_t baseZ, const uint8_t occupiedQuads)
     {

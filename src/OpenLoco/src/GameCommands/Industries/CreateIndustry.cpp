@@ -304,7 +304,7 @@ namespace OpenLoco::GameCommands
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
                                 }
-                                else if (elStation != nullptr && elStation->unk5SLR5() == 2)
+                                else if (elStation != nullptr && elStation->stationType() == StationType::airport)
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;

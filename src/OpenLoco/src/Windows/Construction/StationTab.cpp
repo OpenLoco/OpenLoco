@@ -2,6 +2,7 @@
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Track/CreateTrainStation.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -205,7 +206,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
             else
             {
-                GameCommands::TrackStationRemovalArgs args;
+                GameCommands::TrainStationRemovalArgs args;
                 args.pos = _stationGhostPos;
                 args.rotation = _stationGhostRotation;
                 args.trackId = _stationGhostTrackId;
@@ -232,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
-    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
+    static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
 
     static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
     static loco_global<World::Pos2, 0x001135F80> _1135F90;
@@ -441,15 +442,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             filter &= ~(1U << roadStationObj->cargoType);
         }
 
-        auto res = calcAcceptedCargoTrackStationGhost(station, pos, filter);
+        auto res = calcAcceptedCargoTrainStationGhost(station, pos, filter);
         _constructingStationAcceptedCargoTypes = res.accepted;
         _constructingStationProducedCargoTypes = res.produced;
     }
 
     // 0x004A4B2E
-    static void onToolUpdateTrackStation(const Ui::Point& mousePos)
+    static void onToolUpdateTrainStation(const Ui::Point& mousePos)
     {
-        const auto args = getTrackStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        const auto args = getTrainStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
         {
             onToolUpdateFail();
@@ -501,7 +502,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         sub_491BF5(pos, CatchmentFlags::flag_0);
         Windows::Station::sub_491BC6();
 
-        auto res = calcAcceptedCargoTrackStationGhost(station, pos, 0xFFFFFFFFU);
+        auto res = calcAcceptedCargoTrainStationGhost(station, pos, 0xFFFFFFFFU);
         _constructingStationAcceptedCargoTypes = res.accepted;
         _constructingStationProducedCargoTypes = res.produced;
     }
@@ -527,7 +528,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            onToolUpdateTrackStation({ x, y });
+            onToolUpdateTrainStation({ x, y });
         }
     }
 
@@ -777,7 +778,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
     {
         const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
         const auto& interaction = res.first;
@@ -792,7 +793,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        GameCommands::TrackStationPlacementArgs placementArgs;
+        GameCommands::TrainStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->unkDirection();
         placementArgs.trackId = elTrack->trackId();
@@ -803,11 +804,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x004A5390
-    static void onToolDownTrackStation(const int16_t x, const int16_t y)
+    static void onToolDownTrainStation(const int16_t x, const int16_t y)
     {
         removeConstructionGhosts();
 
-        const auto args = getTrackStationPlacementArgsFromCursor(x, y);
+        const auto args = getTrainStationPlacementArgsFromCursor(x, y);
         if (!args)
         {
             return;
@@ -852,7 +853,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            onToolDownTrackStation(x, y);
+            onToolDownTrainStation(x, y);
         }
     }
 

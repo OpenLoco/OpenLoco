@@ -370,7 +370,7 @@ namespace OpenLoco::Paint
     // 0x0048B34D
     static void paintTrainStation(PaintSession& session, const World::StationElement& elStation)
     {
-        session.setItemType(Ui::ViewportInteraction::InteractionItem::trackStation);
+        session.setItemType(Ui::ViewportInteraction::InteractionItem::trainStation);
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
         session.setF003F6(0xFFFFU);

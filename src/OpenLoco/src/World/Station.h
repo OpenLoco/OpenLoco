@@ -101,7 +101,7 @@ namespace OpenLoco
         TownId town{};                                // 0x2C
         StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E
         uint16_t stationTileSize{};                   // 0x1CE
-        World::Pos3 stationTiles[80];                 // 0x1D0 Note: z coordinate might need flooring
+        World::Pos3 stationTiles[80];                 // 0x1D0 Note: z coordinate also contains rotation so always floor
         uint8_t var_3B0{};
         uint8_t var_3B1{};
         uint16_t var_3B2{};
@@ -140,7 +140,7 @@ namespace OpenLoco
         uint32_t accepted;
         uint32_t produced;
     };
-    PotentialCargo calcAcceptedCargoTrackStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
+    PotentialCargo calcAcceptedCargoTrainStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
     PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const uint8_t type, const World::Pos2& location, const uint8_t rotation, const uint32_t filter);
     PotentialCargo calcAcceptedCargoDockGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
     void sub_491C6F(const uint8_t type, const World::Pos2& pos, const uint8_t rotation, const CatchmentFlags flag);
