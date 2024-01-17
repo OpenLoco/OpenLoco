@@ -1,3 +1,5 @@
+# OpenLoco version 24.01+ (???)
+
 # OpenLoco version 24.01.1 (2024-01-17)
 
 In 24.01 we accidentally introduced a bug involving Safe Structured Exception Handling that
