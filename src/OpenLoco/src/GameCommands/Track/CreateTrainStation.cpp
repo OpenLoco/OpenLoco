@@ -351,7 +351,8 @@ namespace OpenLoco::GameCommands
             if (elTrack == nullptr)
             {
                 // 0x0048BEC7
-                // Why are we doing anything??? ai placement??
+                // The following code is only used for aiPlacement when querying to get a rough idea of costs and
+                // if there is clearance. It will never get here in a execute.
 
                 // Common with below code. Extract out
                 // Calculate station costs
@@ -366,17 +367,16 @@ namespace OpenLoco::GameCommands
                 // Subtly different to below (baseZ and qt stuff)
                 const auto baseZ = trackLoc.z / World::kSmallZStep + 8;
                 const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
-                // Vanilla would access whatever was the last element on the tile here
-                // which further reinforces the ??? why are we doing anything
-                World::QuarterTile qt(0xF /* lastEl->occupiedQuarter() */, 0);
-                if (!(flags & Flags::aiAllocated))
-                {
-                    // Again this does not make sense clearFuncAiReservation would need to access the lastEl
-                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, 0x0048BAC2 /*clearFuncAiReservation*/))
-                    {
-                        return FAILURE;
-                    }
-                }
+
+                // Vanilla did the following code wrong so we have taken a best guess as to what it should do.
+                // Vanilla had the following issues:
+                // - Kept a pointer to 1 past the end of the tile
+                // - Used that pointer to get the quarter tile (which most of the time would mean
+                //   the first tileElement in the next tile in the x direction)
+                // - Used that pointer to compare tiles on this tile (which would do nothing)
+                // - Performed a clearance on the wrong clearZ due to adding 8 twice.
+                const auto qt = World::QuarterTile(World::TrackData::getTrackPiece(args.trackId)[index].subTileClearance.getBaseQuarterOccupied(), 0);
+
                 if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithNotSurface))
                 {
                     return FAILURE;

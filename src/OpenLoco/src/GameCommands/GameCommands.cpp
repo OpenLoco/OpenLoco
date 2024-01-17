@@ -219,7 +219,7 @@ namespace OpenLoco::GameCommands
             registers backup = regs;
             createTrainStation(backup);
 
-            regs.ebx = backup.ebx;
+            regs = backup;
             return 0;
         });
     }
