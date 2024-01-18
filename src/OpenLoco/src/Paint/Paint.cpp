@@ -92,6 +92,7 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD140> _4FD140;
     loco_global<int32_t[4], 0x4FD150> _4FD150;
     loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
+    loco_global<int32_t[4], 0x4FD170> _4FD170;
     loco_global<int32_t[4], 0x4FD180> _4FD180;
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
@@ -285,6 +286,23 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    // 0x004FD170
+    PaintStruct* PaintSession::addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        _lastPS = nullptr;
+
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps != nullptr)
+        {
+            _lastPS = ps;
+            auto* lastTRS = _trackRoadPaintStructs[priority];
+            _trackRoadPaintStructs[priority] = ps;
+            ps->children = lastTRS;
+        }
+
+        return ps;
+    }
+
     void PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         registers regs;
@@ -359,6 +377,79 @@ namespace OpenLoco::Paint
 
                 PaintSession session;
                 session.generate();
+
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x0045BF9F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto imageId = ImageId::fromUInt32(regs.ebx);
+                const auto priority = regs.ecx;
+                const auto offset = World::Pos3(0, 0, regs.dx);
+                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+                const auto boundingBoxOffset = World::Pos3(addr<0xE3F0A0, int16_t>(), addr<0xE3F0A2, int16_t>(), addr<0xE3F0A4, uint16_t>());
+
+                PaintSession session;
+                session.setRotation(0);
+                session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+
+                regs = backup;
+                return 0;
+            });
+        registerHook(
+            0x0045C0F2,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto imageId = ImageId::fromUInt32(regs.ebx);
+                const auto priority = regs.ecx;
+                const auto offset = World::Pos3(0, 0, regs.dx);
+                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+                const auto boundingBoxOffset = World::Pos3(addr<0xE3F0A0, int16_t>(), addr<0xE3F0A2, int16_t>(), addr<0xE3F0A4, uint16_t>());
+
+                PaintSession session;
+                session.setRotation(1);
+                session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+
+                regs = backup;
+                return 0;
+            });
+        registerHook(
+            0x0045C24C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto imageId = ImageId::fromUInt32(regs.ebx);
+                const auto priority = regs.ecx;
+                const auto offset = World::Pos3(0, 0, regs.dx);
+                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+                const auto boundingBoxOffset = World::Pos3(addr<0xE3F0A0, int16_t>(), addr<0xE3F0A2, int16_t>(), addr<0xE3F0A4, uint16_t>());
+
+                PaintSession session;
+                session.setRotation(2);
+                session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+
+                regs = backup;
+                return 0;
+            });
+        registerHook(
+            0x0045C3A7,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                const auto imageId = ImageId::fromUInt32(regs.ebx);
+                const auto priority = regs.ecx;
+                const auto offset = World::Pos3(0, 0, regs.dx);
+                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+                const auto boundingBoxOffset = World::Pos3(addr<0xE3F0A0, int16_t>(), addr<0xE3F0A2, int16_t>(), addr<0xE3F0A4, uint16_t>());
+
+                PaintSession session;
+                session.setRotation(3);
+                session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
 
                 regs = backup;
                 return 0;
