@@ -1,6 +1,7 @@
 #include "Town.h"
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoad.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
