@@ -569,8 +569,11 @@ namespace OpenLoco::StationManager
         registerHook(
             0x048F988,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                regs.bx = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                const auto newName = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                regs = backup;
+                regs.bx = newName;
                 return 0;
             });
     }

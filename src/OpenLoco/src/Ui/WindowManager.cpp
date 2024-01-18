@@ -96,9 +96,10 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x0043CB9F,
-            [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Windows::TitleMenu::editorInit();
-
+                regs = backup;
                 return 0;
             });
 
@@ -302,6 +303,7 @@ namespace OpenLoco::Ui::WindowManager
         registerHook(
             0x004C9B56,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Window* w;
                 if (regs.cx & FindFlag::byType)
                 {
@@ -311,7 +313,7 @@ namespace OpenLoco::Ui::WindowManager
                 {
                     w = find((WindowType)regs.cx, regs.dx);
                 }
-
+                regs = backup;
                 regs.esi = X86Pointer(w);
                 if (w == nullptr)
                 {
@@ -394,8 +396,10 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x004CD3D0,
-            [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 dispatchUpdateAll();
+                regs = backup;
                 return 0;
             });
 
@@ -412,8 +416,9 @@ namespace OpenLoco::Ui::WindowManager
         registerHook(
             0x004CE438,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto w = getMainWindow();
-
+                regs = backup;
                 regs.esi = X86Pointer(w);
                 if (w == nullptr)
                 {
