@@ -4,6 +4,7 @@
 #include "Date.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "Industry.h"
 #include "IndustryManager.h"

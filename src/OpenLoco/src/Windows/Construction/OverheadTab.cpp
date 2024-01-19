@@ -2,6 +2,7 @@
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Track/CreateTrackMod.h"
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "Graphics/ImageIds.h"

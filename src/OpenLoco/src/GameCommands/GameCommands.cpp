@@ -29,6 +29,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Road/CreateRoad.h"
+#include "Road/CreateRoadMod.h"
 #include "Road/RemoveRoad.h"
 #include "SceneManager.h"
 #include "Terraform/ChangeLandMaterial.h"
