@@ -39,7 +39,7 @@ namespace OpenLoco::Audio
         applause1 = 13,
         error = 14,
         multiplayerConnected = 15,
-        unk_16 = 16, // multiplayerDisconnected?
+        multiplayerDisconnected = 16,
         demolishTree = 17,
         demolishBuilding = 18,
         vehiclePlace = 19,
