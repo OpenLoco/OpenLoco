@@ -13,6 +13,7 @@
 #include "Company/RenameCompanyOwner.h"
 #include "Company/UpdateOwnerStatus.h"
 #include "Docks/CreatePort.h"
+#include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
 #include "General/RenameStation.h"
 #include "General/SetGameSpeed.h"
