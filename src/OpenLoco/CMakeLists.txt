@@ -422,6 +422,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateTrack.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateTrackMod.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateTrainStation.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/RemoveSignal.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/RemoveTrack.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/RemoveTrackMod.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/CloneVehicle.h"

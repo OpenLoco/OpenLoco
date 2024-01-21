@@ -7,6 +7,7 @@
 #include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Terraform/RemoveTree.h"
 #include "GameCommands/Terraform/RemoveWall.h"
+#include "GameCommands/Track/RemoveSignal.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"

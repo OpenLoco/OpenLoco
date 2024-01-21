@@ -54,6 +54,7 @@
 #include "Track/CreateTrack.h"
 #include "Track/CreateTrackMod.h"
 #include "Track/CreateTrainStation.h"
+#include "Track/RemoveSignal.h"
 #include "Track/RemoveTrack.h"
 #include "Track/RemoveTrackMod.h"
 #include "Ui/WindowManager.h"
