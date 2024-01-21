@@ -3,6 +3,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
+#include "GameCommands/Docks/CreatePort.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadStation.h"
 #include "GameCommands/Road/RemoveRoadStation.h"

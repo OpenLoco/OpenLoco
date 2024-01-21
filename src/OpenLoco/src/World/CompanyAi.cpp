@@ -5,6 +5,7 @@
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
+#include "GameCommands/Docks/CreatePort.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
 #include "GameCommands/Track/CreateTrackMod.h"

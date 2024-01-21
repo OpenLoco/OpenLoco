@@ -393,6 +393,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/RenameCompanyName.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/RenameCompanyOwner.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/UpdateOwnerStatus.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Docks/CreatePort.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/General/LoadSaveQuit.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/General/RenameStation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/General/SetGameSpeed.h"
