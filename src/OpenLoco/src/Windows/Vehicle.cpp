@@ -17,6 +17,7 @@
 #include "GameCommands/Vehicles/VehiclePickupWater.h"
 #include "GameCommands/Vehicles/VehiclePlace.h"
 #include "GameCommands/Vehicles/VehiclePlaceAir.h"
+#include "GameCommands/Vehicles/VehiclePlaceWater.h"
 #include "GameCommands/Vehicles/VehicleRearrange.h"
 #include "GameCommands/Vehicles/VehicleRefit.h"
 #include "GameCommands/Vehicles/VehicleReverse.h"

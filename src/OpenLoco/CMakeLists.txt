@@ -446,6 +446,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePickupWater.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlace.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlaceAir.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlaceWater.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleRearrange.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleRefit.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleReverse.h"
