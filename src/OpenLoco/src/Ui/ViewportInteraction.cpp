@@ -1,6 +1,7 @@
 #include "ViewportInteraction.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"

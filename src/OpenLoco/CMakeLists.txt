@@ -381,6 +381,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Environment.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Game.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Airports/CreateAirport.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Airports/RemoveAirport.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Buildings/CreateBuilding.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Buildings/RemoveBuilding.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheats/Cheat.h"
