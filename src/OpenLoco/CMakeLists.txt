@@ -398,6 +398,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RemoveIndustry.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoad.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadMod.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/CreateRoadStation.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoad.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Road/RemoveRoadMod.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Industries/RenameIndustry.h"

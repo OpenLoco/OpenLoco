@@ -30,6 +30,7 @@
 #include "Objects/TrackObject.h"
 #include "Road/CreateRoad.h"
 #include "Road/CreateRoadMod.h"
+#include "Road/CreateRoadStation.h"
 #include "Road/RemoveRoad.h"
 #include "Road/RemoveRoadMod.h"
 #include "SceneManager.h"
