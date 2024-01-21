@@ -33,6 +33,7 @@
 #include "Road/CreateRoadStation.h"
 #include "Road/RemoveRoad.h"
 #include "Road/RemoveRoadMod.h"
+#include "Road/RemoveRoadStation.h"
 #include "SceneManager.h"
 #include "Terraform/ChangeLandMaterial.h"
 #include "Terraform/ClearLand.h"

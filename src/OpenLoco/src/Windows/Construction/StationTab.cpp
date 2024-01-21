@@ -3,6 +3,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadStation.h"
+#include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
