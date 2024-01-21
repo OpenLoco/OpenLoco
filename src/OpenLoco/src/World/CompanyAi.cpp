@@ -2,6 +2,7 @@
 #include "Company.h"
 #include "CompanyManager.h"
 #include "Date.h"
+#include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
