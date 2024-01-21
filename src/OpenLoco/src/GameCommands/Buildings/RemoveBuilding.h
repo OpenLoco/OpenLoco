@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/GameCommands.h"
 
 namespace OpenLoco::GameCommands

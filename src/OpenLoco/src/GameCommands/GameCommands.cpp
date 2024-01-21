@@ -1,5 +1,6 @@
 #include "GameCommands.h"
 #include "Audio/Audio.h"
+#include "Buildings/CreateBuilding.h"
 #include "Buildings/RemoveBuilding.h"
 #include "Cheats/Cheat.h"
 #include "Company/BuildCompanyHeadquarters.h"
