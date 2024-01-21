@@ -51,6 +51,7 @@
 #include "Town/RemoveTown.h"
 #include "Town/RenameTown.h"
 #include "Track/CreateSignal.h"
+#include "Track/CreateTrack.h"
 #include "Track/CreateTrackMod.h"
 #include "Track/CreateTrainStation.h"
 #include "Track/RemoveTrackMod.h"

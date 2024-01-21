@@ -4,6 +4,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoad.h"
 #include "GameCommands/Road/RemoveRoad.h"
+#include "GameCommands/Track/CreateTrack.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
