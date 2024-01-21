@@ -57,6 +57,7 @@
 #include "Track/RemoveSignal.h"
 #include "Track/RemoveTrack.h"
 #include "Track/RemoveTrackMod.h"
+#include "Track/RemoveTrainStation.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/CloneVehicle.h"
 #include "Vehicles/CreateVehicle.h"

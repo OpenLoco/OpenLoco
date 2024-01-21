@@ -5,6 +5,7 @@
 #include "GameCommands/Road/CreateRoadStation.h"
 #include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Track/CreateTrainStation.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
