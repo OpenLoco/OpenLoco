@@ -76,6 +76,7 @@
 #include "Vehicles/VehiclePickupAir.h"
 #include "Vehicles/VehiclePickupWater.h"
 #include "Vehicles/VehiclePlace.h"
+#include "Vehicles/VehiclePlaceAir.h"
 #include "Vehicles/VehicleRearrange.h"
 #include "Vehicles/VehicleRefit.h"
 #include "Vehicles/VehicleReverse.h"
