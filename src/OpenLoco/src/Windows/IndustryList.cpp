@@ -13,6 +13,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -1038,7 +1039,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045848A
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
+            World::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -1051,9 +1052,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
             placementArgs->buildImmediately = true;
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(4);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            World::TileManager::mapInvalidateSelectionRect();
+            World::setMapSelectionCorner(MapSelectionType::full);
+            World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::mapInvalidateSelectionRect();
 
             if (_industryGhostPlaced)
             {

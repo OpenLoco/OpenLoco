@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameCommands/GameCommands.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include <set>
 
@@ -14,7 +15,7 @@ namespace OpenLoco::GameCommands
             : centre(regs.ax, regs.cx)
             , pointA(regs.dx, regs.bp)
             , pointB(regs.edx >> 16, regs.ebp >> 16)
-            , corner(regs.di)
+            , corner(static_cast<World::MapSelectionType>(regs.di))
         {
         }
 

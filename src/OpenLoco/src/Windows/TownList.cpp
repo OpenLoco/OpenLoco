@@ -11,6 +11,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
@@ -716,16 +717,16 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A710
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
+            World::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
             auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (mapPos)
             {
                 Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-                World::TileManager::setMapSelectionCorner(4);
-                World::TileManager::setMapSelectionArea(*mapPos, *mapPos);
-                World::TileManager::mapInvalidateSelectionRect();
+                World::setMapSelectionCorner(MapSelectionType::full);
+                World::setMapSelectionArea(*mapPos, *mapPos);
+                World::mapInvalidateSelectionRect();
             }
         }
 
@@ -1084,7 +1085,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049ABF0
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
+            World::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -1097,11 +1098,11 @@ namespace OpenLoco::Ui::Windows::TownList
             placementArgs->buildImmediately = true;
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(4);
+            World::setMapSelectionCorner(MapSelectionType::full);
             auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
             auto posB = World::Pos2(placementArgs->pos) + (building->hasFlags(BuildingObjectFlags::largeTile) ? World::Pos2(32, 32) : World::Pos2(0, 0));
-            World::TileManager::setMapSelectionArea(placementArgs->pos, posB);
-            World::TileManager::mapInvalidateSelectionRect();
+            World::setMapSelectionArea(placementArgs->pos, posB);
+            World::mapInvalidateSelectionRect();
 
             if (_buildingGhostPlaced)
             {

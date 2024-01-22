@@ -16,6 +16,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
@@ -1005,7 +1006,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432CA1
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
+            World::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getHeadquarterPlacementArgsFromCursor(x, y);
             if (!placementArgs)
@@ -1018,12 +1019,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             placementArgs->buildImmediately = true;
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(4);
+            World::setMapSelectionCorner(MapSelectionType::full);
 
             // TODO: This selection may be incorrect if getHeadquarterBuildingType returns 0
             auto posB = World::Pos2(placementArgs->pos) + World::Pos2(32, 32);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, posB);
-            World::TileManager::mapInvalidateSelectionRect();
+            World::setMapSelectionArea(placementArgs->pos, posB);
+            World::mapInvalidateSelectionRect();
 
             if (_headquarterGhostPlaced)
             {

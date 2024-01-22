@@ -73,7 +73,6 @@ namespace OpenLoco::World::TileManager
     bool checkFreeElementsAndReorganise();
     CompanyId getTileOwner(const World::TileElement& el);
     void mapInvalidateTileFull(World::Pos2 pos);
-    void mapInvalidateMapSelectionTiles();
     void resetSurfaceClearance();
     int16_t mountainHeight(const World::Pos2& loc);
     uint16_t countSurroundingWaterTiles(const Pos2& pos);

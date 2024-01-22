@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/Track/Track.h"
@@ -646,7 +647,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void activateSelectedRoadWidgets(Window* window)
     {
-        TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
         Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_03);
 
         auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -822,7 +823,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void activateSelectedTrackWidgets(Window* window)
     {
-        TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
         Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_03);
 
         auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -2322,7 +2323,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
     static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
-        World::TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
@@ -2360,7 +2361,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (!pieceId)
         {
             removeConstructionGhosts();
-            World::TileManager::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionTiles();
             return;
         }
         _byte_1136065 = pieceId->id;
@@ -2383,7 +2384,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionArrowPos->z = constructHeight;
         }
         constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
-        World::TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
     }
 
     // 0x0049DC8C

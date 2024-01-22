@@ -11,6 +11,7 @@
 #include "Input.h"
 #include "Intro.h"
 #include "Logging.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "MultiPlayer.h"
@@ -175,7 +176,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004610F2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                World::TileManager::mapInvalidateSelectionRect();
+                World::mapInvalidateSelectionRect();
                 regs = backup;
 
                 return 0;

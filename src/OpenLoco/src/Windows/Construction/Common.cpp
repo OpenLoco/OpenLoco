@@ -5,6 +5,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/TileElement.h"
 #include "Map/Track/TrackData.h"
@@ -700,7 +701,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             removeConstructionGhosts();
-            TileManager::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionTiles();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
             _trackCost = 0x80000000;
             _signalCost = 0x80000000;
@@ -983,7 +984,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
-            TileManager::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionTiles();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
             hideDirectionArrows();

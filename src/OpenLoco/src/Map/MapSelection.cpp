@@ -1,4 +1,11 @@
 #include "MapSelection.h"
+#include "Input.h"
+#include "Map/TileManager.h"
+#include "Ui/ViewportInteraction.h"
+#include <OpenLoco/Interop/Interop.hpp>
+#include <utility>
+
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {
@@ -8,13 +15,13 @@ namespace OpenLoco::World
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
-    static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
+    static loco_global<MapSelectionType, 0x00F2448E> _word_F2448E;
 
     constexpr uint16_t kMapSelectedTilesSize = 300;
     static loco_global<Pos2[kMapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
     // TODO: Return std::optional
-    uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType)
+    uint16_t setMapSelectionTiles(const Pos2& loc, const MapSelectionType selectionType)
     {
         uint16_t xPos = loc.x;
         uint16_t yPos = loc.y;
@@ -79,11 +86,11 @@ namespace OpenLoco::World
         return count;
     }
 
-    uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant)
+    uint16_t setMapSelectionSingleTile(const Pos2& loc, bool setQuadrant)
     {
         uint16_t xPos = loc.x & 0xFFE0;
         uint16_t yPos = loc.y & 0xFFE0;
-        uint16_t cursorQuadrant = Ui::ViewportInteraction::getQuadrantOrCentreFromPos(loc);
+        MapSelectionType cursorQuadrant = getQuadrantOrCentreFromPos(loc);
 
         auto count = 0;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
@@ -97,9 +104,9 @@ namespace OpenLoco::World
             _word_F2448E = cursorQuadrant;
             count++;
         }
-        else if (!setQuadrant && _word_F2448E != 4)
+        else if (!setQuadrant && _word_F2448E != MapSelectionType::full)
         {
-            _word_F2448E = 4;
+            _word_F2448E = MapSelectionType::full;
             count++;
         }
 
@@ -141,7 +148,7 @@ namespace OpenLoco::World
             {
                 for (coord_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
                 {
-                    mapInvalidateTileFull({ x, y });
+                    TileManager::mapInvalidateTileFull({ x, y });
                 }
             }
         }
@@ -158,7 +165,7 @@ namespace OpenLoco::World
             auto& position = _mapSelectedTiles[index];
             if (position.x == -1)
                 break;
-            mapInvalidateTileFull(position);
+            TileManager::mapInvalidateTileFull(position);
         }
     }
 
@@ -183,5 +190,59 @@ namespace OpenLoco::World
     MapSelectionType getMapSelectionCorner()
     {
         return _word_F2448E;
+    }
+
+    // 0x0045FD8E
+    // NOTE: Original call getSurfaceLocFromUi within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    MapSelectionType getQuadrantOrCentreFromPos(const Pos2& loc)
+    {
+        // Determine to which quadrants the cursor is closest 4 == all quadrants
+        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
+        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
+        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
+        {
+            // Is centre so all quadrants
+            return MapSelectionType::full;
+        }
+
+        return getQuadrantFromPos(loc);
+    }
+
+    // 0x0045FE05
+    // NOTE: Original call getSurfaceLocFromUi within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    MapSelectionType getQuadrantFromPos(const Pos2& loc)
+    {
+        const auto xNibble = loc.x & 0x1F;
+        const auto yNibble = loc.y & 0x1F;
+        if (xNibble > 16)
+        {
+            return (yNibble >= 16) ? MapSelectionType::corner0 : MapSelectionType::corner1;
+        }
+        else
+        {
+            return (yNibble >= 16) ? MapSelectionType::corner3 : MapSelectionType::corner2;
+        }
+    }
+
+    // 0x0045FE4C
+    // NOTE: Original call getSurfaceLocFromUi within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    MapSelectionType getSideFromPos(const Pos2& loc)
+    {
+        const auto xNibble = loc.x & 0x1F;
+        const auto yNibble = loc.y & 0x1F;
+        if (xNibble < yNibble)
+        {
+            return (xNibble + yNibble < 32) ? MapSelectionType::corner0 : MapSelectionType::corner1;
+        }
+        else
+        {
+            return (xNibble + yNibble < 32) ? MapSelectionType::corner3 : MapSelectionType::corner2;
+        }
     }
 }

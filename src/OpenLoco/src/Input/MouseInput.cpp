@@ -6,6 +6,7 @@
 #include "Logging.h"
 #include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
+#include "Map/MapSelection.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
@@ -329,8 +330,8 @@ namespace OpenLoco::Input
         {
             Input::resetFlag(Input::Flags::toolActive);
 
-            World::TileManager::mapInvalidateSelectionRect();
-            World::TileManager::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateSelectionRect();
+            World::mapInvalidateMapSelectionTiles();
 
             resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 

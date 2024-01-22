@@ -8,6 +8,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -252,7 +253,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A4F3B
     static void onToolUpdateAirport(const Ui::Point& mousePos)
     {
-        World::TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
         const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
@@ -315,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A5158
     static void onToolUpdateDock(const Ui::Point& mousePos)
     {
-        World::TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
         const auto args = getDockPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
