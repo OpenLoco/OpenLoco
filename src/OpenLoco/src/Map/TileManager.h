@@ -72,15 +72,8 @@ namespace OpenLoco::World::TileManager
     void reorganise();
     bool checkFreeElementsAndReorganise();
     CompanyId getTileOwner(const World::TileElement& el);
-    uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType);
-    uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant = false);
-    void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(World::Pos2 pos);
     void mapInvalidateMapSelectionTiles();
-    void setMapSelectionArea(const Pos2& locA, const Pos2& locB);
-    std::pair<Pos2, Pos2> getMapSelectionArea();
-    void setMapSelectionCorner(const uint8_t corner);
-    uint8_t getMapSelectionCorner();
     void resetSurfaceClearance();
     int16_t mountainHeight(const World::Pos2& loc);
     uint16_t countSurroundingWaterTiles(const Pos2& pos);

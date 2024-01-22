@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameCommands/GameCommands.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include <set>
 
@@ -21,7 +22,7 @@ namespace OpenLoco::GameCommands
         World::Pos2 centre;
         World::Pos2 pointA;
         World::Pos2 pointB;
-        uint16_t corner;
+        World::MapSelectionType corner;
 
         explicit operator registers() const
         {
@@ -30,7 +31,7 @@ namespace OpenLoco::GameCommands
             regs.cx = centre.y;
             regs.edx = (pointB.x << 16) | pointA.x;
             regs.ebp = (pointB.y << 16) | pointA.y;
-            regs.di = corner;
+            regs.di = enumValue(corner);
             return regs;
         }
     };

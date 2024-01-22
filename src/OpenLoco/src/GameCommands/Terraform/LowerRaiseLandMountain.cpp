@@ -113,7 +113,7 @@ namespace OpenLoco::GameCommands
             raiseArgs.centre = args.centre;
             raiseArgs.pointA = args.pointA;
             raiseArgs.pointB = args.pointB;
-            raiseArgs.corner = 4;
+            raiseArgs.corner = MapSelectionType::full;
 
             result = raiseLand(raiseArgs, removedBuildings, flags);
         }
@@ -123,7 +123,7 @@ namespace OpenLoco::GameCommands
             lowerArgs.centre = args.centre;
             lowerArgs.pointA = args.pointA;
             lowerArgs.pointB = args.pointB;
-            lowerArgs.corner = 4;
+            lowerArgs.corner = MapSelectionType::full;
 
             result = lowerLand(lowerArgs, removedBuildings, flags);
         }
