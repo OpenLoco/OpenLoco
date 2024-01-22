@@ -1040,7 +1040,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             // Always show buildings, not scaffolding, for ghost placements.
             placementArgs->buildImmediately = true;
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
             World::setMapSelectionCorner(MapSelectionType::full);
             World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
             World::mapInvalidateSelectionRect();

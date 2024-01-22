@@ -495,7 +495,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
 
         World::mapInvalidateSelectionRect();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
         if (res)
         {
@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::panel || !Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+        if (widgetIndex != widx::panel || !World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             return;
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });

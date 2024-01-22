@@ -1007,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getHeadquarterPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // Always show buildings, not scaffolding, for ghost placements.
             placementArgs->buildImmediately = true;
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
             World::setMapSelectionCorner(MapSelectionType::full);
 
             // TODO: This selection may be incorrect if getHeadquarterBuildingType returns 0

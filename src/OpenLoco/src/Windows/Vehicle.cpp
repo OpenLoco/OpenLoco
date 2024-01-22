@@ -30,6 +30,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
@@ -2841,7 +2842,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void toolCancel(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIdx)
         {
             self.invalidate();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_04);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::unk_04);
             Gfx::invalidateScreen();
         }
 

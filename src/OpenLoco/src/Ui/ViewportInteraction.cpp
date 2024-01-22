@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         auto station = StationManager::get(id);
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::hoveringOverStation);
+        World::setMapSelectionFlags(World::MapSelectionFlags::hoveringOverStation);
         ViewportManager::invalidate(station);
         Windows::MapToolTip::setOwner(station->owner);
         auto args = FormatArguments::mapToolTip(StringIds::stringid_stringid_wcolour3_stringid);

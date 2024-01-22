@@ -178,10 +178,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
+            if (World::hasMapSelectionFlag(World::MapSelectionFlags::catchmentArea))
             {
                 Windows::Station::sub_491BC6();
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::catchmentArea);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::catchmentArea);
             }
             if (_stationGhostType & (1 << 15))
             {
@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolUpdateAirport(const Ui::Point& mousePos)
     {
         World::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
         {
@@ -262,8 +262,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolUpdateDock(const Ui::Point& mousePos)
     {
         World::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getDockPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
         {
@@ -325,8 +325,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;

@@ -44,19 +44,6 @@ namespace OpenLoco::Input
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
-    enum class MapSelectionFlags : uint8_t
-    {
-        none = 0U,
-        enable = 1U << 0,
-        enableConstruct = 1U << 1,
-        enableConstructionArrow = 1U << 2,
-        unk_03 = 1U << 3,
-        unk_04 = 1U << 4, // Vehicle orders?
-        catchmentArea = 1U << 5,
-        hoveringOverStation = 1U << 6,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(MapSelectionFlags);
-
     enum class KeyModifier : uint8_t
     {
         none = 0U,
@@ -106,11 +93,6 @@ namespace OpenLoco::Input
     bool hasKeyModifier(KeyModifier modifier);
 
     StationId getHoveredStationId();
-
-    MapSelectionFlags getMapSelectionFlags();
-    bool hasMapSelectionFlag(MapSelectionFlags flags);
-    void setMapSelectionFlags(MapSelectionFlags flags);
-    void resetMapSelectionFlag(MapSelectionFlags flags);
 
     void handleKeyboard();
     void handleMouse(int16_t x, int16_t y, MouseButton button);

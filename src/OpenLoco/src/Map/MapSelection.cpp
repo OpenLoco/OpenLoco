@@ -11,6 +11,7 @@ namespace OpenLoco::World
 {
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
 
+    static loco_global<MapSelectionFlags, 0x00F24484> _mapSelectionFlags;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
@@ -27,9 +28,9 @@ namespace OpenLoco::World
         uint16_t yPos = loc.y;
         uint8_t count = 0;
 
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
             count++;
         }
 
@@ -93,9 +94,9 @@ namespace OpenLoco::World
         MapSelectionType cursorQuadrant = getQuadrantOrCentreFromPos(loc);
 
         auto count = 0;
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
             count++;
         }
 
@@ -142,7 +143,7 @@ namespace OpenLoco::World
     // 0x004610F2
     void mapInvalidateSelectionRect()
     {
-        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+        if (World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
         {
             for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
             {
@@ -157,7 +158,7 @@ namespace OpenLoco::World
     // 0x0046112C
     void mapInvalidateMapSelectionTiles()
     {
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
             return;
 
         for (uint16_t index = 0; index < kMapSelectedTilesSize; ++index)
@@ -244,5 +245,30 @@ namespace OpenLoco::World
         {
             return (xNibble + yNibble < 32) ? MapSelectionType::corner3 : MapSelectionType::corner2;
         }
+    }
+
+    MapSelectionFlags getMapSelectionFlags()
+    {
+        return _mapSelectionFlags;
+    }
+
+    bool hasMapSelectionFlag(MapSelectionFlags flags)
+    {
+        return (_mapSelectionFlags & flags) != MapSelectionFlags::none;
+    }
+
+    void setMapSelectionFlags(MapSelectionFlags flags)
+    {
+        _mapSelectionFlags = _mapSelectionFlags | flags;
+    }
+
+    void resetMapSelectionFlag(MapSelectionFlags flags)
+    {
+        _mapSelectionFlags = _mapSelectionFlags & ~flags;
+    }
+
+    void resetMapSelectionFlags()
+    {
+        _mapSelectionFlags = MapSelectionFlags::none;
     }
 }

@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             }
             World::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getTreePlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -506,7 +506,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             auto cornerValue = enumValue(MapSelectionType::quarter0) + (placementArgs->quadrant ^ (1 << 1));
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
             World::setMapSelectionCorner(static_cast<MapSelectionType>(cornerValue));
             World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
             World::mapInvalidateSelectionRect();
@@ -984,7 +984,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
             uint32_t cost = 0x80000000;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void clearLand(uint8_t flags)
         {
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+            if (World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             {
                 auto [pointA, pointB] = World::getMapSelectionArea();
                 Pos2 centre = (pointA + pointB) / 2;
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (widgetIndex == Common::widx::panel)
             {
                 World::mapInvalidateSelectionRect();
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             }
         }
 
@@ -1401,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onPaintToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             World::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
             uint32_t cost = 0x80000000;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
@@ -1436,7 +1436,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
                 auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
                 if (res)
                 {
@@ -1462,7 +1462,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                     return;
             }
 
@@ -1529,7 +1529,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::mountain_mode:
                 case Common::widx::panel:
                 {
-                    if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                    if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                         return;
 
                     ToolManager::setToolCursor(CursorId::upDownArrow);
@@ -1612,7 +1612,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case Common::widx::panel:
                 {
                     World::mapInvalidateSelectionRect();
-                    Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                    World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
                     ToolManager::setToolCursor(CursorId::landTool);
                     break;
                 }
@@ -1848,7 +1848,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
                 auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
                 auto& interaction = res.first;
@@ -1865,7 +1865,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                     return;
             }
 
@@ -1884,7 +1884,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex != Common::widx::panel)
                 return;
-            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+            if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                 return;
 
             ToolManager::setToolCursor(CursorId::upDownArrow);
@@ -1975,7 +1975,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 World::mapInvalidateSelectionRect();
 
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
                 ToolManager::setToolCursor(CursorId::waterTool);
             }
         }
@@ -2325,7 +2325,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             }
             World::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getWallPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -2334,7 +2334,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
 
             auto cornerValue = enumValue(MapSelectionType::edge0) + placementArgs->rotation;
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
             World::setMapSelectionCorner(static_cast<MapSelectionType>(cornerValue));
             World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
             World::mapInvalidateSelectionRect();
