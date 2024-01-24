@@ -13,6 +13,7 @@
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -141,7 +142,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         auto station = StationManager::get(id);
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::hoveringOverStation);
+        World::setMapSelectionFlags(World::MapSelectionFlags::hoveringOverStation);
         ViewportManager::invalidate(station);
         Windows::MapToolTip::setOwner(station->owner);
         auto args = FormatArguments::mapToolTip(StringIds::stringid_stringid_wcolour3_stringid);
@@ -1452,7 +1453,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         // Determine to which edge the cursor is closest
-        [[maybe_unused]] uint32_t closestEdge = getSideFromPos(mapPos); // ecx
+        [[maybe_unused]] uint32_t closestEdge = World::getSideFromPos(mapPos); // ecx
 
         return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
     }
@@ -1481,59 +1482,5 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         return { std::make_pair(mapPos, viewport) };
-    }
-
-    // 0x0045FE05
-    // NOTE: Original call getSurfaceLocFromUi within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getQuadrantFromPos(const World::Pos2& loc)
-    {
-        const auto xNibble = loc.x & 0x1F;
-        const auto yNibble = loc.y & 0x1F;
-        if (xNibble > 16)
-        {
-            return (yNibble >= 16) ? 0 : 1;
-        }
-        else
-        {
-            return (yNibble >= 16) ? 3 : 2;
-        }
-    }
-
-    // 0x0045FE4C
-    // NOTE: Original call getSurfaceLocFromUi within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getSideFromPos(const World::Pos2& loc)
-    {
-        const auto xNibble = loc.x & 0x1F;
-        const auto yNibble = loc.y & 0x1F;
-        if (xNibble < yNibble)
-        {
-            return (xNibble + yNibble < 32) ? 0 : 1;
-        }
-        else
-        {
-            return (xNibble + yNibble < 32) ? 3 : 2;
-        }
-    }
-
-    // 0x0045FD8E
-    // NOTE: Original call getSurfaceLocFromUi within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getQuadrantOrCentreFromPos(const World::Pos2& loc)
-    {
-        // Determine to which quadrants the cursor is closest 4 == all quadrants
-        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
-        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
-        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
-        {
-            // Is centre so all quadrants
-            return 4;
-        }
-
-        return getQuadrantFromPos(loc);
     }
 }

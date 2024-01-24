@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Logging.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Ui/ViewportInteraction.h"
@@ -339,7 +340,7 @@ namespace OpenLoco::Ui::ViewportManager
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                World::TileManager::mapInvalidateMapSelectionTiles();
+                World::mapInvalidateMapSelectionTiles();
                 regs = backup;
                 return 0;
             });

@@ -13,6 +13,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -1038,8 +1039,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045848A
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -1050,10 +1051,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
             // Always show buildings, not scaffolding, for ghost placements.
             placementArgs->buildImmediately = true;
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(4);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            World::TileManager::mapInvalidateSelectionRect();
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
+            World::setMapSelectionCorner(MapSelectionType::full);
+            World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::mapInvalidateSelectionRect();
 
             if (_industryGhostPlaced)
             {

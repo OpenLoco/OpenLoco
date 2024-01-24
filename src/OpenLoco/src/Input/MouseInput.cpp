@@ -5,6 +5,7 @@
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Map/BuildingElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -105,8 +106,6 @@ namespace OpenLoco::Input
 
     static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
 
-    static loco_global<MapSelectionFlags, 0x00F24484> _mapSelectionFlags;
-
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
@@ -150,7 +149,7 @@ namespace OpenLoco::Input
         _5233AE = 0;
         _5233B2 = 0;
 
-        _mapSelectionFlags = MapSelectionFlags::none;
+        World::resetMapSelectionFlags();
     }
 
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
@@ -329,8 +328,8 @@ namespace OpenLoco::Input
         {
             Input::resetFlag(Input::Flags::toolActive);
 
-            World::TileManager::mapInvalidateSelectionRect();
-            World::TileManager::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateSelectionRect();
+            World::mapInvalidateMapSelectionTiles();
 
             resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 
@@ -358,26 +357,6 @@ namespace OpenLoco::Input
     StationId getHoveredStationId()
     {
         return _hoveredStationId;
-    }
-
-    MapSelectionFlags getMapSelectionFlags()
-    {
-        return _mapSelectionFlags;
-    }
-
-    bool hasMapSelectionFlag(MapSelectionFlags flags)
-    {
-        return (_mapSelectionFlags & flags) != MapSelectionFlags::none;
-    }
-
-    void setMapSelectionFlags(MapSelectionFlags flags)
-    {
-        _mapSelectionFlags = _mapSelectionFlags | flags;
-    }
-
-    void resetMapSelectionFlag(MapSelectionFlags flags)
-    {
-        _mapSelectionFlags = _mapSelectionFlags & ~flags;
     }
 
 #pragma mark - Mouse input

@@ -8,6 +8,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -493,18 +494,18 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (widgetIndex != widx::panel)
             return;
 
-        TileManager::mapInvalidateSelectionRect();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+        World::mapInvalidateSelectionRect();
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
         if (res)
         {
-            TileManager::setMapSelectionSingleTile(res->first);
+            World::setMapSelectionSingleTile(res->first);
         }
     }
 
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::panel || !Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+        if (widgetIndex != widx::panel || !World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             return;
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });

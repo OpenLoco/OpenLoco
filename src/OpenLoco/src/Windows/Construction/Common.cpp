@@ -5,6 +5,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/TileElement.h"
 #include "Map/Track/TrackData.h"
@@ -556,7 +557,7 @@ namespace OpenLoco::Ui::Windows::Construction
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
         {
             World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
         Construction::removeTrackGhosts();
@@ -700,8 +701,8 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             removeConstructionGhosts();
-            TileManager::mapInvalidateMapSelectionTiles();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
+            World::mapInvalidateMapSelectionTiles();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             _trackCost = 0x80000000;
             _signalCost = 0x80000000;
             _stationCost = 0x80000000;
@@ -983,9 +984,9 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
-            TileManager::mapInvalidateMapSelectionTiles();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+            World::mapInvalidateMapSelectionTiles();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             hideDirectionArrows();
             hideGridlines();
         }

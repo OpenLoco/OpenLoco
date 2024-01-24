@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
@@ -301,7 +302,7 @@ namespace OpenLoco::Vehicles::OrderManager
     // 0x00470824
     void generateNumDisplayFrames(Vehicles::VehicleHead* head)
     {
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_04);
+        World::setMapSelectionFlags(World::MapSelectionFlags::unk_04);
         Gfx::invalidateScreen();
         _displayFrames.clear();
         auto orders = Vehicles::OrderRingView(head->orderTableOffset);

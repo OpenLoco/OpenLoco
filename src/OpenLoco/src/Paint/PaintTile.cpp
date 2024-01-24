@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -59,7 +60,7 @@ namespace OpenLoco::Paint
     {
         static loco_global<World::Pos3, 0x00F24942> _constructionArrowLocation;
         static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow))
         {
             return;
         }

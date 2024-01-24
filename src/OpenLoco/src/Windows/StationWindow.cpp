@@ -10,6 +10,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
@@ -759,11 +760,11 @@ namespace OpenLoco::Ui::Windows::Station
 
         if (oldStationId != StationId::null)
         {
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
+            if (World::hasMapSelectionFlag(World::MapSelectionFlags::catchmentArea))
             {
                 WindowManager::invalidate(WindowType::station, enumValue(oldStationId));
                 sub_491BC6();
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::catchmentArea);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::catchmentArea);
             }
         }
 
@@ -775,7 +776,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto* station = StationManager::get(_lastSelectedStation);
 
             setCatchmentDisplay(station, CatchmentFlags::flag_0);
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+            World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
 
             WindowManager::invalidate(WindowType::station, enumValue(newStationId));
 

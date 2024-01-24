@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"
@@ -155,7 +156,7 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            bool isHovered = (Input::hasMapSelectionFlag(Input::MapSelectionFlags::hoveringOverStation))
+            bool isHovered = (World::hasMapSelectionFlag(World::MapSelectionFlags::hoveringOverStation))
                 && (station.id() == Input::getHoveredStationId());
 
             drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
@@ -198,7 +199,7 @@ namespace OpenLoco::Ui
     // 0x00470A62
     static void drawRoutingNumbers(Gfx::RenderTarget& rt)
     {
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::unk_04))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::unk_04))
         {
             return;
         }
