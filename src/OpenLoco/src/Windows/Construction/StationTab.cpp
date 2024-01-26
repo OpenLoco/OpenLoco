@@ -23,6 +23,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -127,8 +128,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
             case widx::image:
             {
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::placeStation);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::placeStation);
                 break;
             }
         }

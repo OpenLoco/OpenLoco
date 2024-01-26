@@ -22,6 +22,7 @@
 #include "Random.h"
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
@@ -882,7 +883,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
-            if (!Input::isToolActive(self.type, self.number))
+            if (!ToolManager::isToolActive(self.type, self.number))
                 WindowManager::close(&self);
         }
 
@@ -1102,8 +1103,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045845F
         static void onClose(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self.type, self.number))
+                ToolManager::toolCancel();
         }
 
         // 0x00458B51
@@ -1184,7 +1185,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->minHeight = NewIndustries::kWindowSize.height;
             self->maxWidth = NewIndustries::kWindowSize.width;
             self->maxHeight = NewIndustries::kWindowSize.height;
-            Input::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
+            ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
@@ -1278,8 +1279,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457F27
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_industry_list;
             self->frameNo = 0;

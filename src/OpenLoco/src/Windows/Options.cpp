@@ -20,6 +20,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -2547,7 +2548,7 @@ namespace OpenLoco::Ui::Windows::Options
     // 0x004BFC11
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi)
     {
-        Input::toolCancel(w->type, w->number);
+        ToolManager::toolCancel(w->type, w->number);
 
         TextInput::sub_4CE6C9(w->type, w->number);
         w->currentTab = wi - Common::Widx::tab_display;

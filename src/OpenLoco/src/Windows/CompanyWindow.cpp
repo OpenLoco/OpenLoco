@@ -29,6 +29,7 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -614,9 +615,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -902,7 +903,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::build_hq:
-                    Input::toolSet(&self, widgetIndex, CursorId::placeHQ);
+                    ToolManager::toolSet(&self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
                     break;
             }
@@ -1058,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto commandResult = GameCommands::doCommand(*placementArgs, flags);
             if (commandResult != GameCommands::FAILURE)
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
             }
         }
 
@@ -1071,8 +1072,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void onClose(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self.type, self.number))
+                ToolManager::toolCancel();
         }
 
         // 0x0432D85
@@ -2159,9 +2160,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -2562,9 +2563,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -2685,8 +2686,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043230B
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 

@@ -21,6 +21,7 @@
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
@@ -156,7 +157,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                     }
                 }
                 WindowManager::closeAllFloatingWindows();
-                Input::toolCancel();
+                ToolManager::toolCancel();
 
                 // Save Landscape
                 if (OpenLoco::Game::saveLandscapeOpen())

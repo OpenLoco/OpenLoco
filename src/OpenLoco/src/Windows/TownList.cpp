@@ -778,8 +778,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A7C7
         static void onClose(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self.type, self.number))
+                ToolManager::toolCancel();
         }
 
         // 0x0049A3BE
@@ -791,7 +791,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->maxWidth = kWindowSize.height;
             self->width = kWindowSize.width;
             self->height = kWindowSize.height;
-            Input::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
+            ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
         }
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self.number, self.currentTab + Common::widx::tab_town_list);
-            if (!Input::isToolActive(self.type, self.number))
+            if (!ToolManager::isToolActive(self.type, self.number))
                 WindowManager::close(&self);
         }
 
@@ -1344,8 +1344,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049ABC5
         static void onClose(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self.type, self.number))
+                ToolManager::toolCancel();
         }
 
         // 0x0049AEA1
@@ -1426,7 +1426,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (self->currentTab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
                 tab = Common::widx::tab_build_misc_buildings;
 
-            Input::toolSet(self, tab, CursorId::placeBuilding);
+            ToolManager::toolSet(self, tab, CursorId::placeBuilding);
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
 
@@ -1629,8 +1629,8 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A2E2
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_town_list;
             self->frameNo = 0;

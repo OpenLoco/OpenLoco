@@ -79,15 +79,6 @@ namespace OpenLoco::Input
 
     void updateCursorPosition();
 
-    Ui::Window* toolGetActiveWindow();
-    bool isToolActive(Ui::WindowType);
-
-    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
-    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
-    void toolCancel();
-    void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
-
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
     bool hasKeyModifier(KeyModifier modifier);

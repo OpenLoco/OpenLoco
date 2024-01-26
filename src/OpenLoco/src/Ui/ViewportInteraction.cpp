@@ -34,6 +34,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
@@ -1007,7 +1008,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         // If in construction mode with both directions selection (actually does not single direction but this is what is implied)
-        if (!Input::isToolActive(WindowType::construction, 0, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
+        if (!ToolManager::isToolActive(WindowType::construction, 0, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
         {
             if (signal->getLeft().hasSignal() && signal->getRight().hasSignal())
             {

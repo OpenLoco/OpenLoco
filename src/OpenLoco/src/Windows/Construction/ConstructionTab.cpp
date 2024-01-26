@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
-                Input::toolSet(&self, widx::construct, CursorId::crosshair);
+                ToolManager::toolSet(&self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
 
                 _constructionHover = 1;
@@ -1829,13 +1829,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover == 1)
         {
-            if (!Input::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
+            if (!ToolManager::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
                 WindowManager::close(&self);
         }
         if (_constructionHover == 0)
         {
-            if (Input::isToolActive(WindowType::construction, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(WindowType::construction, self.number))
+                ToolManager::toolCancel();
         }
         updateConstruction();
     }
@@ -2443,7 +2443,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             _makeJunction = 0;
         }
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
