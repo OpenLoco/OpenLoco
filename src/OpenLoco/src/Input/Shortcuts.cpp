@@ -10,6 +10,7 @@
 #include "SceneManager.h"
 #include "Ui/Screenshot.h"
 #include "Ui/TextInput.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
@@ -49,7 +50,7 @@ namespace OpenLoco::Input::Shortcuts
 
         if (!Ui::Windows::Vehicle::cancelVehicleTools())
         {
-            Input::toolCancel();
+            ToolManager::toolCancel();
         }
     }
 

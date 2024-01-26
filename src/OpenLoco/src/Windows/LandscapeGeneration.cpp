@@ -13,6 +13,7 @@
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/IndustryManager.h"
@@ -292,8 +293,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         auto window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         }
@@ -1301,8 +1302,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC98
         static void switchTab(Window* window, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window->currentTab = widgetIndex - widx::tab_options;
             window->frameNo = 0;

@@ -18,6 +18,7 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -301,9 +302,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::messages);
             }
         }
@@ -625,8 +626,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A716
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_messages;
             self->frameNo = 0;

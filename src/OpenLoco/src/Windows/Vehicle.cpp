@@ -429,9 +429,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto* self = WindowManager::find(WindowType::vehicle, enumValue(head));
             if (self != nullptr)
             {
-                if (Input::isToolActive(self->type, self->number))
+                if (ToolManager::isToolActive(self->type, self->number))
                 {
-                    Input::toolCancel();
+                    ToolManager::toolCancel();
                 }
                 self = WindowManager::bringToFront(WindowType::vehicle, enumValue(head));
             }
@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B288F
         static void onChangeDirection(Window* const self)
         {
-            if (Input::isToolActive(self->type, self->number, widx::pickup))
+            if (ToolManager::isToolActive(self->type, self->number, widx::pickup))
             {
                 getGameState().pickupDirection = getGameState().pickupDirection ^ 1;
                 return;
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (self.isDisabled(widx::pickup))
             {
-                Input::toolCancel(WindowType::vehicle, self.number);
+                ToolManager::toolCancel(WindowType::vehicle, self.number);
                 return;
             }
 
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (head->owner != CompanyManager::getControllingId())
                 return;
 
-            if (!Input::isToolActive(WindowType::vehicle, self.number))
+            if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
                 Common::onPickup(&self, widx::pickup);
             }
@@ -846,7 +846,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (head->tileX == -1)
             {
                 self.disabledWidgets |= (1 << widx::stopStart) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
-                if (Input::isToolActive(WindowType::vehicle, self.number))
+                if (ToolManager::isToolActive(WindowType::vehicle, self.number))
                 {
                     self.disabledWidgets &= ~(1 << widx::changeDirection); //???
                 }
@@ -1032,7 +1032,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self.drawViewports(rt);
                 Widget::drawViewportCentreButton(rt, &self, widx::centreViewport);
             }
-            else if (Input::isToolActive(self.type, self.number))
+            else if (ToolManager::isToolActive(self.type, self.number))
             {
                 FormatArguments args = {};
                 args.push(StringIds::getVehicleType(veh->vehicleType));
@@ -1215,7 +1215,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (self.isDisabled(widx::pickup))
             {
-                Input::toolCancel(WindowType::vehicle, self.number);
+                ToolManager::toolCancel(WindowType::vehicle, self.number);
                 return;
             }
 
@@ -1233,7 +1233,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (vehicle->owner != CompanyManager::getControllingId())
                 return;
 
-            if (!Input::isToolActive(WindowType::vehicle, self.number))
+            if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
                 Common::onPickup(&self, widx::pickup);
             }
@@ -2434,9 +2434,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B509B
         static void close(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
             }
         }
 
@@ -2796,9 +2796,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (head->owner != CompanyManager::getControllingId())
                 return;
 
-            if (!Input::isToolActive(WindowType::vehicle, self.number))
+            if (!ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
-                if (Input::toolSet(&self, widx::tool, CursorId::crosshair))
+                if (ToolManager::toolSet(&self, widx::tool, CursorId::crosshair))
                 {
                     self.invalidate();
                     Vehicles::OrderManager::generateNumDisplayFrames(head);
@@ -2966,7 +2966,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 item = -1;
             }
 
-            auto toolWindow = Input::toolGetActiveWindow();
+            auto toolWindow = ToolManager::toolGetActiveWindow();
             // If another vehicle window is open and has focus (tool)
             if (toolWindow != nullptr && toolWindow->type == self.type && toolWindow->number != self.number)
             {
@@ -3067,7 +3067,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return fallback;
             }
 
-            if (Input::isToolActive(self.type, self.number))
+            if (ToolManager::isToolActive(self.type, self.number))
             {
                 return CursorId::inwardArrows;
             }
@@ -3104,7 +3104,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head->name);
             args.push(head->ordinalNumber);
 
-            self.widgets[widx::routeList].tooltip = Input::isToolActive(self.type, self.number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
+            self.widgets[widx::routeList].tooltip = ToolManager::isToolActive(self.type, self.number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -3190,7 +3190,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            if (Input::isToolActive(WindowType::vehicle, self.number))
+            if (ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
                 // Location at bottom left edge of window
                 Ui::Point loc{ static_cast<int16_t>(self.x + 3), static_cast<int16_t>(self.y + self.height - 13) };
@@ -3287,7 +3287,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
             if (order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
-                if (Input::isToolActive(self.type, self.number))
+                if (ToolManager::isToolActive(self.type, self.number))
                 {
                     auto imageId = kNumberCircle[_113646A - 1];
                     drawingCtx.drawImage(&rt, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
@@ -4098,7 +4098,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
 
-            Input::toolCancel();
+            ToolManager::toolCancel();
             self.callOnMouseUp(Common::widx::tabMain);
         }
 
@@ -4287,7 +4287,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B2566
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            Input::toolCancel(self->type, self->number);
+            ToolManager::toolCancel(self->type, self->number);
             TextInput::sub_4CE6C9(self->type, self->number);
 
             self->currentTab = widgetIndex - Common::widx::tabMain;
@@ -4367,7 +4367,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (!head->isPlaced())
             {
                 CursorId cursor = kTypeToToolCursor[static_cast<uint8_t>(head->vehicleType)][getGameState().pickupDirection != 0 ? 1 : 0];
-                if (Input::toolSet(self, pickupWidx, cursor))
+                if (ToolManager::toolSet(self, pickupWidx, cursor))
                 {
                     _1136264 = -1;
                 }
@@ -4554,7 +4554,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     // 0x004B949C
     bool rotate()
     {
-        if (Input::isToolActive(WindowType::vehicle))
+        if (ToolManager::isToolActive(WindowType::vehicle))
         {
             if (ToolManager::getToolWidgetIndex() == Main::widx::pickup || ToolManager::getToolWidgetIndex() == Details::widx::pickup)
             {
@@ -4569,7 +4569,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     // 0x004B944A
     bool cancelVehicleTools()
     {
-        if (Input::isToolActive(WindowType::vehicle))
+        if (ToolManager::isToolActive(WindowType::vehicle))
         {
             auto* w = WindowManager::find(WindowType::vehicle, ToolManager::getToolWindowNumber());
             if (w->currentTab == (Common::widx::tabMain - Common::widx::tabMain))

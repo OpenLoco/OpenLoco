@@ -15,6 +15,7 @@
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 #include "World/CompanyManager.h"
@@ -136,7 +137,7 @@ namespace OpenLoco::Game
         args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
 
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         if (isEditorMode())
         {
@@ -271,7 +272,7 @@ namespace OpenLoco::Game
     // 0x0043C427
     void confirmSaveGame()
     {
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         if (isEditorMode())
         {

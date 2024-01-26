@@ -709,8 +709,8 @@ namespace OpenLoco::Ui::Windows::Construction
             _modCost = 0x80000000;
             _byte_1136076 = 0;
 
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_construction;
             self->frameNo = 0;
@@ -998,7 +998,7 @@ namespace OpenLoco::Ui::Windows::Construction
             self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::construction, self->number, self->currentTab + Common::widx::tab_construction);
 
-            if (Input::isToolActive(WindowType::construction, self->number))
+            if (ToolManager::isToolActive(WindowType::construction, self->number))
                 return;
 
             if ((_ghostVisibilityFlags & flag) == GhostVisibilityFlags::none)
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 auto window = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (window != nullptr)
-                    Input::toolCancel();
+                    ToolManager::toolCancel();
             }
         }
 

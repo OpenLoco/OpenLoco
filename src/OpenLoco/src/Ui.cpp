@@ -802,7 +802,7 @@ namespace OpenLoco::Ui
         }
         else
         {
-            Input::toolCancel();
+            ToolManager::toolCancel();
         }
     }
 

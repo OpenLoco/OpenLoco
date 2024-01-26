@@ -14,6 +14,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -805,8 +806,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C24F7
     static void switchTab(Window* self, VehicleType type)
     {
-        if (Input::isToolActive(self->type, self->number))
-            Input::toolCancel();
+        if (ToolManager::isToolActive(self->type, self->number))
+            ToolManager::toolCancel();
 
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;

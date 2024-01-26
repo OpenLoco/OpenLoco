@@ -12,6 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -295,8 +296,8 @@ namespace OpenLoco::Ui::Windows::StationList
         Window* window = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             // Still active?
             window = WindowManager::bringToFront(WindowType::stationList, enumValue(companyId));
@@ -630,8 +631,8 @@ namespace OpenLoco::Ui::Windows::StationList
             case tab_airports:
             case tab_ship_ports:
             {
-                if (Input::isToolActive(window.type, window.number))
-                    Input::toolCancel();
+                if (ToolManager::isToolActive(window.type, window.number))
+                    ToolManager::toolCancel();
 
                 window.currentTab = widgetIndex - widx::tab_all_stations;
                 window.frameNo = 0;

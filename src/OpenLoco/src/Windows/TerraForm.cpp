@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBC7D
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::plantTree);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             _lastTreeCost = 0x80000000;
@@ -903,7 +903,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             PlantTrees::refreshTreeList(window);
 
-            Input::toolSet(window, Common::widx::panel, CursorId::landTool);
+            ToolManager::toolSet(window, Common::widx::panel, CursorId::landTool);
 
             Input::setFlag(Input::Flags::flag6);
         }
@@ -941,7 +941,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBC7
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::bulldozerTool);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::bulldozerTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
@@ -1166,11 +1166,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void tabReset(Window* self)
         {
             if (isPaintMode)
-                Input::toolSet(self, widx::paint_mode, CursorId::landTool);
+                ToolManager::toolSet(self, widx::paint_mode, CursorId::landTool);
             else if (isMountainMode)
-                Input::toolSet(self, widx::mountain_mode, CursorId::landTool);
+                ToolManager::toolSet(self, widx::mountain_mode, CursorId::landTool);
             else
-                Input::toolSet(self, Common::widx::panel, CursorId::landTool);
+                ToolManager::toolSet(self, Common::widx::panel, CursorId::landTool);
 
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
@@ -1782,7 +1782,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBC46
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::waterTool);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::waterTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
@@ -2155,7 +2155,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBCBF
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::placeFence);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             self->var_83C = 0;
@@ -2669,8 +2669,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBB2B
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_clear_area;
             self->frameNo = 0;

@@ -102,8 +102,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             case widx::image:
             {
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::crosshair);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::crosshair);
                 break;
             }
         }

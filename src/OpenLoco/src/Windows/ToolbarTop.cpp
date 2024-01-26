@@ -24,6 +24,7 @@
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
 #include "Ui/Screenshot.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -174,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043B1C4
     static void prepareSaveGame()
     {
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         if (isNetworked())
         {

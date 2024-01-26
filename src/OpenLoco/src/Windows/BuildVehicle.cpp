@@ -24,6 +24,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/TextInput.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
@@ -718,7 +719,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                 if (Input::hasFlag(Input::Flags::toolActive))
                 {
-                    Input::toolCancel(window.type, window.number);
+                    ToolManager::toolCancel(window.type, window.number);
                 }
 
                 auto newTab = widgetIndex - widx::tab_build_new_trains;

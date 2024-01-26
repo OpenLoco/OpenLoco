@@ -31,6 +31,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/TreeObject.h"
 #include "Objects/WallObject.h"
+#include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
@@ -100,7 +101,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void activateMapSelectionTool(Window* const self)
     {
-        Input::toolSet(self, widx::panel, CursorId::crosshair);
+        ToolManager::toolSet(self, widx::panel, CursorId::crosshair);
         Input::setFlag(Input::Flags::flag6);
     }
 
@@ -136,7 +137,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void prepareDraw(Window& self)
     {
-        if (Input::isToolActive(WindowType::tileInspector))
+        if (ToolManager::isToolActive(WindowType::tileInspector))
             self.activatedWidgets |= (1 << widx::select);
         else
             self.activatedWidgets &= ~(1 << widx::select);
@@ -524,7 +525,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void onClose([[maybe_unused]] Window& self)
     {
-        Input::toolCancel();
+        ToolManager::toolCancel();
     }
 
     static void initEvents()

@@ -1,13 +1,20 @@
 #pragma once
 
-#include "./Types.hpp"
-#include "./Window.h"
+#include "Types.hpp"
+#include "Window.h"
 #include <cstdint>
-
-using namespace OpenLoco::Ui;
 
 namespace OpenLoco::ToolManager
 {
+    Ui::Window* toolGetActiveWindow();
+    bool isToolActive(Ui::WindowType);
+
+    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
+    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
+    bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
+    void toolCancel();
+    void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
+
     //  0x00523390
     Ui::WindowNumber_t getToolWindowNumber();
     void setToolWindowNumber(Ui::WindowNumber_t toolWindowNumber);

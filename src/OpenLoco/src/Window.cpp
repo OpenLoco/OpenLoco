@@ -1199,7 +1199,7 @@ namespace OpenLoco::Ui
         }
 
         uint64_t tool_widget = 0;
-        if (Input::isToolActive(this->type, this->number))
+        if (ToolManager::isToolActive(this->type, this->number))
         {
             tool_widget = 1ULL << ToolManager::getToolWidgetIndex();
         }

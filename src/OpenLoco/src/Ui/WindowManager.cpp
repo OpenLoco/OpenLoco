@@ -19,6 +19,7 @@
 #include "ScrollView.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/ToolManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -408,7 +409,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004CE3D6,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 regs = backup;
 
                 return 0;
@@ -1431,7 +1432,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
-        Input::toolCancel();
+        ToolManager::toolCancel();
         addr<0x00522096, uint8_t>() = 0;
     }
 

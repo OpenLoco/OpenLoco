@@ -15,6 +15,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -336,8 +337,8 @@ namespace OpenLoco::Ui::Windows::Town
         auto window = WindowManager::bringToFront(WindowType::town, townId);
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::town, townId);
         }
@@ -693,8 +694,8 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004991BC
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 

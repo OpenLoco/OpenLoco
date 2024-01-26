@@ -14,6 +14,7 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainSignalObject.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 
@@ -86,16 +87,16 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case widx::both_directions:
             {
                 _isSignalBothDirections = 1;
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
             case widx::single_direction:
             {
                 _isSignalBothDirections = 0;
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
