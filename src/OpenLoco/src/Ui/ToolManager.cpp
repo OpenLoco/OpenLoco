@@ -58,8 +58,7 @@ namespace OpenLoco::ToolManager
     {
         if (Input::hasFlag(Input::Flags::toolActive))
         {
-            if (w->type == _toolWindowType && w->number == _toolWindowNumber &&
-                widgetIndex == _toolWidgetIndex)
+            if (w->type == _toolWindowType && w->number == _toolWindowNumber && widgetIndex == _toolWidgetIndex)
             {
                 toolCancel();
                 return false;
