@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             Common::refreshTownList(window);
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = TownList::kMinDimensions.width;
             window->minHeight = TownList::kMinDimensions.height;

@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004CEE0B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4CEE0B((Ui::Window*)regs.esi);
+                sub_4CEE0B(*(Ui::Window*)regs.esi);
                 regs = backup;
 
                 return 0;
@@ -1357,16 +1357,16 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CEE0B
-    void sub_4CEE0B(Window* self)
+    void sub_4CEE0B(const Window& self)
     {
-        int left = self->x;
-        int right = self->x + self->width;
-        int top = self->y;
-        int bottom = self->y + self->height;
+        int left = self.x;
+        int right = self.x + self.width;
+        int top = self.y;
+        int bottom = self.y + self.height;
 
         for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if (w == self)
+            if (w == &self)
                 continue;
 
             if (w->hasFlags(WindowFlags::stickToBack))
