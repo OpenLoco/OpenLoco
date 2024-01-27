@@ -496,13 +496,13 @@ namespace OpenLoco::Ui::WindowManager
         return &_windows[index];
     }
 
-    size_t indexOf(Window* pWindow)
+    size_t indexOf(const Window& pWindow)
     {
         int i = 0;
 
         for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if (w == pWindow)
+            if (w == &pWindow)
                 return i;
 
             i++;
@@ -1824,7 +1824,7 @@ namespace OpenLoco::Ui::WindowManager
             // skip current window and non-intersecting windows
             if (viewport == window->viewports[0] || viewport == window->viewports[1] || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
             {
-                size_t nextWindowIndex = WindowManager::indexOf(window) + 1;
+                size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
                 auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
                 viewportRedrawAfterShift(nextWindow, viewport, x, y);
                 return;
@@ -2140,7 +2140,7 @@ namespace OpenLoco::Ui::WindowManager
         // Draw the window in this region
         Ui::WindowManager::drawSingle(rt, w, left, top, right, bottom);
 
-        for (uint32_t index = indexOf(w) + 1; index < count(); index++)
+        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
             auto v = get(index);
 
@@ -2171,7 +2171,7 @@ namespace OpenLoco::Ui::WindowManager
     static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
-        for (uint32_t index = indexOf(w) + 1; index < count(); index++)
+        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
             auto topwindow = get(index);
 

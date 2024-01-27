@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::WindowManager
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
     Window* get(size_t index);
-    size_t indexOf(Window* pWindow);
+    size_t indexOf(const Window& pWindow);
     size_t count();
 
     void updateViewports();
