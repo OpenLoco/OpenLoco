@@ -987,8 +987,8 @@ namespace OpenLoco::Ui::Windows::Construction
             World::mapInvalidateMapSelectionTiles();
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
-            hideDirectionArrows();
-            hideGridlines();
+            Windows::Main::hideDirectionArrows();
+            Windows::Main::hideGridlines();
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
@@ -1095,8 +1095,8 @@ namespace OpenLoco::Ui::Windows::Construction
             window->setColour(WindowColour::secondary, skin->colour_0D);
 
             WindowManager::sub_4CEE0B(window);
-            Ui::Windows::showDirectionArrows();
-            Ui::Windows::showGridlines();
+            Windows::Main::showDirectionArrows();
+            Windows::Main::showGridlines();
 
             Common::initEvents();
         }

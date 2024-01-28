@@ -110,11 +110,6 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Ui::Windows
 {
-    void showGridlines();
-    void hideGridlines();
-    void showDirectionArrows();
-    void hideDirectionArrows();
-
     namespace About
     {
         void open();
@@ -222,6 +217,10 @@ namespace OpenLoco::Ui::Windows
     namespace Main
     {
         void open();
+        void showGridlines();
+        void hideGridlines();
+        void showDirectionArrows();
+        void hideDirectionArrows();
     }
 
     namespace MapToolTip

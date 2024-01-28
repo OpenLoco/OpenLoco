@@ -244,7 +244,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onClose([[maybe_unused]] Window& self)
         {
             removeTreeGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBC7D
@@ -880,7 +880,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // End of 0x004BB586
 
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
             _treeRotation = 2;
 
             Common::initEvents();
@@ -935,7 +935,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC671
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBBC7
@@ -1159,7 +1159,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9D1
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBBF7
@@ -1776,7 +1776,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCDAE
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBC46
@@ -2149,7 +2149,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onClose([[maybe_unused]] Window& self)
         {
             removeWallGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBCBF

@@ -1097,7 +1097,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeIndustryGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x0045845F
@@ -1188,7 +1188,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
             _industryGhostPlaced = false;
             _dword_E0C39C = 0x80000000;
 

@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Graphics/Gfx.h"
 #include "Map/Tile.h"
 #include "Ui/WindowManager.h"
@@ -9,6 +10,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Main
 {
+    static loco_global<int8_t, 0x00F2533F> _gridlinesState;
+    static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
+
     namespace widx
     {
         enum
@@ -63,4 +67,80 @@ namespace OpenLoco::Ui::Windows::Main
     {
         _events.draw = draw;
     }
+
+    // 0x00468FD3
+    void showGridlines()
+    {
+        if (!_gridlinesState)
+        {
+            auto window = WindowManager::getMainWindow();
+            if (window != nullptr)
+            {
+                if (!window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))
+                {
+                    window->invalidate();
+                }
+                window->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
+            }
+        }
+        _gridlinesState++;
+    }
+
+    // 0x00468FFE
+    void hideGridlines()
+    {
+        _gridlinesState--;
+        if (!_gridlinesState)
+        {
+            if (!Config::get().hasFlags(Config::Flags::gridlinesOnLandscape))
+            {
+                auto window = WindowManager::getMainWindow();
+                if (window != nullptr)
+                {
+                    if (window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))
+                    {
+                        window->invalidate();
+                    }
+                    window->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
+                }
+            }
+        }
+    }
+
+    // 0x004793C4
+    void showDirectionArrows()
+    {
+        if (!_directionArrowsState)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                if (!mainWindow->viewports[0]->hasFlags(ViewportFlags::one_way_direction_arrows))
+                {
+                    mainWindow->viewports[0]->flags |= ViewportFlags::one_way_direction_arrows;
+                    mainWindow->invalidate();
+                }
+            }
+        }
+        _directionArrowsState++;
+    }
+
+    // 0x004793EF
+    void hideDirectionArrows()
+    {
+        _directionArrowsState--;
+        if (!_directionArrowsState)
+        {
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                if (mainWindow->viewports[0]->hasFlags(ViewportFlags::one_way_direction_arrows))
+                {
+                    mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
+                    mainWindow->invalidate();
+                }
+            }
+        }
+    }
+
 }
