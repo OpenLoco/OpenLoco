@@ -51,7 +51,7 @@ namespace OpenLoco::Ui
                         fileName = saveScreenshot();
 
                     FormatArguments::common(fileName.c_str());
-                    Windows::Error::open(StringIds::screenshot_saved_as);
+                    Windows::Error::open(StringIds::screenshot_saved_as, StringIds::null, false);
                 }
                 catch (const std::exception&)
                 {

@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace Error
     {
-        void open(StringId title, StringId message = StringIds::null);
+        void open(StringId title, StringId message = StringIds::null, bool playSound = true);
         void openWithCompetitor(StringId title, StringId message, CompanyId competitorId);
         void registerHooks();
     }

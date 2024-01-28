@@ -18,7 +18,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Error
 {
-    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<char[512], 0x009C64B3> _errorText;
     static loco_global<uint16_t, 0x009C66B3> _linebreakCount;
     static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
@@ -86,7 +85,7 @@ namespace OpenLoco::Ui::Windows::Error
         return ptr;
     }
 
-    static void createErrorWindow(StringId title, StringId message)
+    static void createErrorWindow(StringId title, StringId message, bool playSound)
     {
         WindowManager::close(WindowType::error);
 
@@ -164,7 +163,7 @@ namespace OpenLoco::Ui::Windows::Error
             error->widgets[Error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
-            if (!(_suppressErrorSound & (1 << 0)))
+            if (playSound)
             {
                 int32_t pan = (error->width / 2) + error->x;
                 Audio::playSound(Audio::SoundId::error, pan);
@@ -173,11 +172,11 @@ namespace OpenLoco::Ui::Windows::Error
     }
 
     // 0x00431A8A
-    void open(StringId title, StringId message)
+    void open(StringId title, StringId message, bool playSound)
     {
         _errorCompetitorId = CompanyId::null;
 
-        createErrorWindow(title, message);
+        createErrorWindow(title, message, playSound);
     }
 
     // 0x00431908
@@ -185,7 +184,7 @@ namespace OpenLoco::Ui::Windows::Error
     {
         _errorCompetitorId = competitorId;
 
-        createErrorWindow(title, message);
+        createErrorWindow(title, message, true);
     }
 
     void registerHooks()
@@ -194,7 +193,7 @@ namespace OpenLoco::Ui::Windows::Error
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Ui::Windows::Error::open(regs.bx, regs.dx);
+                Ui::Windows::Error::open(regs.bx, regs.dx, true);
                 regs = backup;
                 return 0;
             });
