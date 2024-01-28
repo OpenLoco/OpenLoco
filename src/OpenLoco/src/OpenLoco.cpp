@@ -799,7 +799,7 @@ namespace OpenLoco
             {
                 StringId title = _loadErrorMessage;
                 StringId message = StringIds::null;
-                Ui::Windows::showError(title, message);
+                Ui::Windows::Error::open(title, message);
             }
             else
             {

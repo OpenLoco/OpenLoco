@@ -110,8 +110,6 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Ui::Windows
 {
-    void showError(StringId title, StringId message = StringIds::null, bool sound = true);
-
     void showGridlines();
     void hideGridlines();
     void showDirectionArrows();
@@ -189,7 +187,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace Error
     {
-        void open(StringId title, StringId message);
+        void open(StringId title, StringId message = StringIds::null);
         void openWithCompetitor(StringId title, StringId message, CompanyId competitorId);
         void registerHooks();
     }

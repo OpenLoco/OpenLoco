@@ -2240,22 +2240,8 @@ namespace OpenLoco::Ui::WindowManager
 
 namespace OpenLoco::Ui::Windows
 {
-    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<int8_t, 0x00F2533F> _gridlinesState;
     static loco_global<uint8_t, 0x0112C2E1> _directionArrowsState;
-
-    // 0x00431A8A
-    void showError(StringId title, StringId message, bool sound)
-    {
-        if (!sound)
-        {
-            _suppressErrorSound = true;
-        }
-
-        Windows::Error::open(title, message);
-
-        _suppressErrorSound = false;
-    }
 
     // 0x00468FD3
     void showGridlines()
