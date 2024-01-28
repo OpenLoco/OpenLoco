@@ -219,8 +219,10 @@ namespace OpenLoco::Ui::Windows
         void open();
         void showGridlines();
         void hideGridlines();
+        void resetGridlines();
         void showDirectionArrows();
         void hideDirectionArrows();
+        void resetDirectionArrows();
     }
 
     namespace MapToolTip

@@ -106,6 +106,11 @@ namespace OpenLoco::Ui::Windows::Main
         _showingGridlines = false;
     }
 
+    void resetGridlines()
+    {
+        _showingGridlines = false;
+    }
+
     // 0x004793C4
     void showDirectionArrows()
     {
@@ -141,6 +146,11 @@ namespace OpenLoco::Ui::Windows::Main
 
         mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
         mainWindow->invalidate();
+        _showingDirectionArrows = false;
+    }
+
+    void resetDirectionArrows()
+    {
         _showingDirectionArrows = false;
     }
 }

@@ -411,10 +411,11 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x0043CB9F
     void editorInit()
     {
-        Main::open();
+        Windows::Main::open();
 
-        addr<0x00F2533F, int8_t>() = 0; // grid lines
-        addr<0x0112C2e1, int8_t>() = 0;
+        Windows::Main::resetGridlines();
+        Windows::Main::resetDirectionArrows();
+
         addr<0x009c870E, int8_t>() = 0;
         addr<0x009c870F, int8_t>() = 2;
         addr<0x009c8710, int8_t>() = 1;
