@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* findAt(int16_t x, int16_t y);
     Window* findAt(Ui::Point point);
     Window* findAtAlt(int16_t x, int16_t y);
-    Window* bringToFront(Window* window);
+    Window* bringToFront(Window& window);
     Window* bringToFront(WindowType type, uint16_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, WindowNumber_t number);

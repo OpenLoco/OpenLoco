@@ -807,11 +807,11 @@ namespace OpenLoco::Ui::WindowManager
 
     // 0x004CC750
     // TODO: hook
-    Window* bringToFront(Window* w)
+    Window* bringToFront(Window& w)
     {
-        if (w->hasFlags(WindowFlags::stickToBack | WindowFlags::stickToFront))
+        if (w.hasFlags(WindowFlags::stickToBack | WindowFlags::stickToFront))
         {
-            return w;
+            return &w;
         }
 
         Window* frontMostWnd = nullptr;
@@ -823,30 +823,32 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
         }
-        if (frontMostWnd != nullptr && frontMostWnd != &_windows[0] && frontMostWnd != w)
+
+        Window* window = &w;
+        if (frontMostWnd != nullptr && frontMostWnd != &_windows[0] && frontMostWnd != window)
         {
-            std::swap(*frontMostWnd, *w);
-            w = frontMostWnd;
-            w->invalidate();
+            std::swap(*frontMostWnd, w);
+            window = frontMostWnd;
+            window->invalidate();
         }
 
-        const auto right = w->x + w->width;
+        const auto right = window->x + window->width;
         // If window is almost offscreen to the left
         if (right < 20)
         {
-            const auto shiftRight = 20 - w->x;
-            w->x = 20;
-            for (auto* vp : w->viewports)
+            const auto shiftRight = 20 - window->x;
+            window->x = 20;
+            for (auto* vp : window->viewports)
             {
                 if (vp != nullptr)
                 {
                     vp->x += shiftRight;
                 }
             }
-            w->invalidate();
+            window->invalidate();
         }
 
-        return w;
+        return window;
     }
 
     // 0x004CD3A9
@@ -859,7 +861,7 @@ namespace OpenLoco::Ui::WindowManager
         window->flags |= WindowFlags::whiteBorderMask;
         window->invalidate();
 
-        return bringToFront(window);
+        return bringToFront(*window);
     }
 
     /**
