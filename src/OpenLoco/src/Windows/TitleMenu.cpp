@@ -416,9 +416,9 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         Windows::Main::resetGridlines();
         Windows::Main::resetDirectionArrows();
 
-        addr<0x009c870E, int8_t>() = 0;
-        addr<0x009c870F, int8_t>() = 2;
-        addr<0x009c8710, int8_t>() = 1;
+        Windows::Terraform::setAdjustLandToolSize(1);
+        Windows::Terraform::setAdjustWaterToolSize(1);
+        Windows::Terraform::setClearAreaToolSize(2);
 
         ToolbarTop::Editor::open();
         ToolbarBottom::Editor::open();

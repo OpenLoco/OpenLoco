@@ -98,6 +98,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
+
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
@@ -123,6 +124,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
+
     namespace PlantTrees
     {
         static constexpr Ui::Size kWindowSize = { 634, 162 };
@@ -2794,6 +2796,21 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         return false;
+    }
+
+    void setAdjustLandToolSize(uint8_t size)
+    {
+        _adjustLandToolSize = size;
+    }
+
+    void setAdjustWaterToolSize(uint8_t size)
+    {
+        _adjustWaterToolSize = size;
+    }
+
+    void setClearAreaToolSize(uint8_t size)
+    {
+        _clearAreaToolSize = size;
     }
 
     void setLastPlacedTree(World::TreeElement* elTree)
