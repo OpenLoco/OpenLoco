@@ -1567,11 +1567,11 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C628E
-    static bool windowWheelInput(Window* window, int wheel)
+    static bool windowWheelInput(Window& window, int wheel)
     {
         int widgetIndex = -1;
         int scrollIndex = -1;
-        for (Widget* widget = window->widgets; widget->type != WidgetType::end; widget++)
+        for (Widget* widget = window.widgets; widget->type != WidgetType::end; widget++)
         {
             widgetIndex++;
 
@@ -1580,9 +1580,9 @@ namespace OpenLoco::Ui::WindowManager
 
             scrollIndex++;
             constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
-            if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
+            if (window.scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
             {
-                windowScrollWheelInput(*window, widgetIndex, wheel);
+                windowScrollWheelInput(window, widgetIndex, wheel);
                 return true;
             }
         }
@@ -1636,7 +1636,7 @@ namespace OpenLoco::Ui::WindowManager
                         return;
                     }
 
-                    if (windowWheelInput(window, wheel))
+                    if (windowWheelInput(*window, wheel))
                     {
                         return;
                     }
@@ -1646,7 +1646,7 @@ namespace OpenLoco::Ui::WindowManager
 
         for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            if (windowWheelInput(w, wheel))
+            if (windowWheelInput(*w, wheel))
             {
                 return;
             }
