@@ -18,6 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Error
 {
+    static loco_global<bool, 0x00508F09> _suppressErrorSound;
     static loco_global<char[512], 0x009C64B3> _errorText;
     static loco_global<uint16_t, 0x009C66B3> _linebreakCount;
     static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
@@ -85,7 +86,7 @@ namespace OpenLoco::Ui::Windows::Error
         return ptr;
     }
 
-    static void createErrorWindow(StringId title, StringId message, bool playSound)
+    static void createErrorWindow(StringId title, StringId message)
     {
         WindowManager::close(WindowType::error);
 
@@ -163,7 +164,7 @@ namespace OpenLoco::Ui::Windows::Error
             error->widgets[Error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
-            if (playSound)
+            if (!_suppressErrorSound)
             {
                 int32_t pan = (error->width / 2) + error->x;
                 Audio::playSound(Audio::SoundId::error, pan);
@@ -175,16 +176,20 @@ namespace OpenLoco::Ui::Windows::Error
     void open(StringId title, StringId message, bool playSound)
     {
         _errorCompetitorId = CompanyId::null;
+        _suppressErrorSound |= !playSound;
 
-        createErrorWindow(title, message, playSound);
+        createErrorWindow(title, message);
+
+        _suppressErrorSound = false;
     }
 
     // 0x00431908
     void openWithCompetitor(StringId title, StringId message, CompanyId competitorId)
     {
         _errorCompetitorId = competitorId;
+        _suppressErrorSound = false;
 
-        createErrorWindow(title, message, true);
+        createErrorWindow(title, message);
     }
 
     void registerHooks()
@@ -193,7 +198,7 @@ namespace OpenLoco::Ui::Windows::Error
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Ui::Windows::Error::open(regs.bx, regs.dx, true);
+                Ui::Windows::Error::open(regs.bx, regs.dx);
                 regs = backup;
                 return 0;
             });
