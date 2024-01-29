@@ -1455,13 +1455,13 @@ namespace OpenLoco::Ui::WindowManager
         }
     }
 
-    static void windowScrollWheelInput(Ui::Window* window, WidgetIndex_t widgetIndex, int wheel)
+    static void windowScrollWheelInput(Ui::Window& window, WidgetIndex_t widgetIndex, int wheel)
     {
-        int scrollIndex = window->getScrollDataIndex(widgetIndex);
-        ScrollArea* scroll = &window->scrollAreas[scrollIndex];
-        Ui::Widget* widget = &window->widgets[widgetIndex];
+        int scrollIndex = window.getScrollDataIndex(widgetIndex);
+        ScrollArea* scroll = &window.scrollAreas[scrollIndex];
+        Ui::Widget* widget = &window.widgets[widgetIndex];
 
-        if (window->scrollAreas[scrollIndex].hasFlags(ScrollFlags::vscrollbarVisible))
+        if (window.scrollAreas[scrollIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
             int size = widget->bottom - widget->top - 1;
             if (scroll->hasFlags(ScrollFlags::hscrollbarVisible))
@@ -1469,7 +1469,7 @@ namespace OpenLoco::Ui::WindowManager
             size = std::max(0, scroll->contentHeight - size);
             scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
-        else if (window->scrollAreas[scrollIndex].hasFlags(ScrollFlags::hscrollbarVisible))
+        else if (window.scrollAreas[scrollIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
             int size = widget->right - widget->left - 1;
             if (scroll->hasFlags(ScrollFlags::vscrollbarVisible))
@@ -1478,8 +1478,8 @@ namespace OpenLoco::Ui::WindowManager
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
         }
 
-        Ui::ScrollView::updateThumbs(window, widgetIndex);
-        invalidateWidget(window->type, window->number, widgetIndex);
+        Ui::ScrollView::updateThumbs(&window, widgetIndex);
+        invalidateWidget(window.type, window.number, widgetIndex);
     }
 
     static bool isStepperGroup(Window& w, WidgetIndex_t index, WidgetType buttonType)
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Ui::WindowManager
             constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
             if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
             {
-                windowScrollWheelInput(window, widgetIndex, wheel);
+                windowScrollWheelInput(*window, widgetIndex, wheel);
                 return true;
             }
         }
@@ -1626,7 +1626,7 @@ namespace OpenLoco::Ui::WindowManager
                         constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
                         if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
                         {
-                            windowScrollWheelInput(window, widgetIndex, wheel);
+                            windowScrollWheelInput(*window, widgetIndex, wheel);
                             return;
                         }
                     }
