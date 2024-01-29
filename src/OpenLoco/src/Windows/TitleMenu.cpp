@@ -413,9 +413,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         Windows::Main::open();
 
-        Windows::Main::resetGridlines();
-        Windows::Main::resetDirectionArrows();
-
         Windows::Terraform::setAdjustLandToolSize(1);
         Windows::Terraform::setAdjustWaterToolSize(1);
         Windows::Terraform::setClearAreaToolSize(2);
