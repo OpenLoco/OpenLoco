@@ -109,7 +109,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::terraform);
         if (window != nullptr)
         {
-            if (Ui::Windows::Terraform::rotate(window))
+            if (Ui::Windows::Terraform::rotate(*window))
                 return;
         }
 

@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows
         void openAdjustWater();
         void openPlantTrees();
         void openBuildWalls();
-        bool rotate(Window*);
+        bool rotate(Window&);
         void setAdjustLandToolSize(uint8_t size);
         void setAdjustWaterToolSize(uint8_t size);
         void setClearAreaToolSize(uint8_t size);
