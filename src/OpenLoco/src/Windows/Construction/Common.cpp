@@ -404,10 +404,10 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A13C1
-    void setToRoadExtra(Window* main, RoadElement* road, const uint8_t bh, const Pos2 pos)
+    void setToRoadExtra(const Window& main, RoadElement* road, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
-        regs.esi = X86Pointer(main);
+        regs.esi = X86Pointer(&main);
         regs.edx = X86Pointer(road);
         regs.bh = bh;
         regs.ax = pos.x;

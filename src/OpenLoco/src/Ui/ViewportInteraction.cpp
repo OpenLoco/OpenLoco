@@ -1258,7 +1258,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* road = tileElement->as<RoadElement>();
                 if (road != nullptr)
                 {
-                    Ui::Windows::Construction::setToRoadExtra(window, road, interaction.modId, interaction.pos);
+                    Ui::Windows::Construction::setToRoadExtra(*window, road, interaction.modId, interaction.pos);
                 }
                 break;
             }
