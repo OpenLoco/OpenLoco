@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void invalidateFrame();
-        void beginSendChatMessage(Window* self);
+        void beginSendChatMessage(Window& self);
     }
 
     namespace TitleExit

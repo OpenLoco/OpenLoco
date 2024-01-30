@@ -464,7 +464,7 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            Windows::TimePanel::beginSendChatMessage(caller);
+            Windows::TimePanel::beginSendChatMessage(*caller);
         }
     }
 
