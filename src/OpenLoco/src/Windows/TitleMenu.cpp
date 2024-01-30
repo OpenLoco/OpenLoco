@@ -338,7 +338,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_43910A();
                 break;
             case Widx::chat_btn:
-                beginSendChatMessage(&window);
+                beginSendChatMessage(window);
                 break;
             case Widx::multiplayer_toggle_btn:
                 showMultiplayer(&window);
@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             0x80);
     }
 
-    void beginSendChatMessage(Window* self)
+    void beginSendChatMessage(Window& self)
     {
         WindowManager::close(WindowType::multiplayer);
 
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, const_cast<void*>(&args));
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, const_cast<void*>(&args));
     }
 
     static void sub_43918F(const char* string)

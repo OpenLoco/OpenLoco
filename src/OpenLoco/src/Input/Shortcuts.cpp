@@ -456,7 +456,7 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            Windows::TitleMenu::beginSendChatMessage(caller);
+            Windows::TitleMenu::beginSendChatMessage(*caller);
         }
         else
         {
