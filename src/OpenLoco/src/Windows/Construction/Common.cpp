@@ -392,10 +392,10 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A1303
-    void setToTrackExtra(Window* main, TrackElement* track, const uint8_t bh, const Pos2 pos)
+    void setToTrackExtra(const Window& main, TrackElement* track, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
-        regs.esi = X86Pointer(main);
+        regs.esi = X86Pointer(&main);
         regs.edx = X86Pointer(track);
         regs.bh = bh;
         regs.ax = pos.x;

@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows
         Window* openWithFlags(uint32_t flags);
         Window* openAtTrack(const Window& main, World::TrackElement* track, const World::Pos2 pos);
         Window* openAtRoad(const Window& main, World::RoadElement* track, const World::Pos2 pos);
-        void setToTrackExtra(Window* main, World::TrackElement* track, const uint8_t bh, const World::Pos2 pos);
+        void setToTrackExtra(const Window& main, World::TrackElement* track, const uint8_t bh, const World::Pos2 pos);
         void setToRoadExtra(Window* main, World::RoadElement* track, const uint8_t bh, const World::Pos2 pos);
         void sub_4A6FAC();
         bool isStationTabOpen();

@@ -1249,7 +1249,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* track = tileElement->as<TrackElement>();
                 if (track != nullptr)
                 {
-                    Ui::Windows::Construction::setToTrackExtra(window, track, interaction.modId, interaction.pos);
+                    Ui::Windows::Construction::setToTrackExtra(*window, track, interaction.modId, interaction.pos);
                 }
                 break;
             }
