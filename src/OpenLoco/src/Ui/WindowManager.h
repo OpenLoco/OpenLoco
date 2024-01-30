@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows
         bool isStationTabOpen();
         bool isOverheadTabOpen();
         bool isSignalTabOpen();
-        bool rotate(Window* self);
+        bool rotate(Window& self);
         void removeConstructionGhosts();
         void registerHooks();
         uint16_t getLastSelectedMods();
