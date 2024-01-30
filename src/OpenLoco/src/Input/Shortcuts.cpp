@@ -124,7 +124,7 @@ namespace OpenLoco::Input::Shortcuts
         window = WindowManager::find(WindowType::townList);
         if (window != nullptr)
         {
-            if (Ui::Windows::TownList::rotate(window))
+            if (Ui::Windows::TownList::rotate(*window))
                 return;
         }
 

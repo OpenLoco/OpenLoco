@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows
         Window* open();
         void removeTown(TownId);
         void reset();
-        bool rotate(Window* self);
+        bool rotate(Window& self);
     }
 
     namespace Tutorial
