@@ -208,9 +208,9 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A0EAD
-    Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
+    Window* openAtTrack(const Window& main, TrackElement* track, const Pos2 pos)
     {
-        auto* viewport = main->viewports[0];
+        auto* viewport = main.viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(track);
         auto* copyElement = (*_backupTileElement).as<TrackElement>();
         if (copyElement == nullptr)

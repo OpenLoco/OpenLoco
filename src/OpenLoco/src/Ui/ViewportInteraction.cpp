@@ -1216,7 +1216,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 {
                     if (track->owner() == CompanyManager::getControllingId())
                     {
-                        Ui::Windows::Construction::openAtTrack(window, track, interaction.pos);
+                        Ui::Windows::Construction::openAtTrack(*window, track, interaction.pos);
                     }
                     else
                     {

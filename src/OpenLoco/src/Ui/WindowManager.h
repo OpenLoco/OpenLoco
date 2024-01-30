@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows
     namespace Construction
     {
         Window* openWithFlags(uint32_t flags);
-        Window* openAtTrack(Window* main, World::TrackElement* track, const World::Pos2 pos);
+        Window* openAtTrack(const Window& main, World::TrackElement* track, const World::Pos2 pos);
         Window* openAtRoad(Window* main, World::RoadElement* track, const World::Pos2 pos);
         void setToTrackExtra(Window* main, World::TrackElement* track, const uint8_t bh, const World::Pos2 pos);
         void setToRoadExtra(Window* main, World::RoadElement* track, const uint8_t bh, const World::Pos2 pos);
