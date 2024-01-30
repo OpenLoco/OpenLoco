@@ -1235,7 +1235,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
                     if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::unk_03))
                     {
-                        Ui::Windows::Construction::openAtRoad(window, road, interaction.pos);
+                        Ui::Windows::Construction::openAtRoad(*window, road, interaction.pos);
                     }
                     else
                     {

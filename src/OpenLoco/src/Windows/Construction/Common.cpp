@@ -303,9 +303,9 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A147F
-    Window* openAtRoad(Window* main, RoadElement* road, const Pos2 pos)
+    Window* openAtRoad(const Window& main, RoadElement* road, const Pos2 pos)
     {
-        auto* viewport = main->viewports[0];
+        auto* viewport = main.viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(road);
         auto* copyElement = (*_backupTileElement).as<RoadElement>();
         if (copyElement == nullptr)
