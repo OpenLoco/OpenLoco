@@ -178,6 +178,7 @@ namespace OpenLoco::Paint
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
         Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
         uint8_t getRotation() { return currentRotation; }
+        void setRotation(uint8_t rotation) { currentRotation = rotation; }
         int16_t getMaxHeight() { return _maxHeight; }
         uint32_t get112C300() { return _112C300; }
         uint16_t getF003F4() { return _F003F4; }
@@ -266,7 +267,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
+        PaintStruct* addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
@@ -282,6 +283,20 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
         PaintStruct* addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
+
+        /*
+         * @param rotation @<ebp>
+         * @param imageId  @<ebx>
+         * @param priority @<ecx>
+         * @param offsetZ @<dx>
+         * @param boundBoxLengthX @<di>
+         * @param boundBoxLengthY @<si>
+         * @param boundBoxLengthZ @<ah>
+         * @param boundBoxOffsetX @<0xE3F0A0>
+         * @param boundBoxOffsetY @<0xE3F0A2>
+         * @param boundBoxOffsetZ @<0xE3F0A4>
+         */
+        PaintStruct* addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
