@@ -11,11 +11,11 @@
 #include "Map/TileManager.h"
 #include "PaintEntity.h"
 #include "PaintTile.h"
-#include "PaintTrack.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -49,12 +49,10 @@ namespace OpenLoco::Paint
     {
         setVpPosition(pos);
         _didPassSurface = false;
-        _525CE4[0] = 0xFFFF;
-        _525CF0 = 0;
-        _525CF0 = 0;
-        _525CF8 = 0;
+        setBridgeEntry(kNullBridgeEntry);
+        _525CF8 = SegmentFlags::none;
         _F003F4 = 0;
-        _F003F6 = 0;
+        _F003F6 = SegmentFlags::none;
         std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
         std::fill(std::begin(_trackRoadPaintStructs), std::end(_trackRoadPaintStructs), nullptr);
         std::fill(std::begin(_trackRoadAdditionsPaintStructs), std::end(_trackRoadAdditionsPaintStructs), nullptr);
@@ -521,16 +519,13 @@ namespace OpenLoco::Paint
                 regs.ebp = X86Pointer(ps);
                 return res;
             });
-        registerTrackHooks();
     }
-
-    const SegmentFlags segmentOffsets[9] = { SegmentFlags::_58, SegmentFlags::_5C, SegmentFlags::_60, SegmentFlags::_64, SegmentFlags::_68, SegmentFlags::_6C, SegmentFlags::_70, SegmentFlags::_74, SegmentFlags::_78 };
 
     void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
     {
         for (int32_t s = 0; s < 9; s++)
         {
-            if ((segments & segmentOffsets[s]) != SegmentFlags::none)
+            if ((segments & kSegmentOffsets[s]) != SegmentFlags::none)
             {
                 _supportSegments[s].height = height;
                 if (height != 0xFFFF)
@@ -556,6 +551,38 @@ namespace OpenLoco::Paint
         _tunnels1[0].height = 0xFF;
         _tunnels2[0].height = 0xFF;
         _tunnels3[0].height = 0xFF;
+    }
+
+    void PaintSession::insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge)
+    {
+        TunnelEntry entry{ static_cast<World::MicroZ>(z / World::kMicroZStep), tunnelType };
+        auto tunnelCount = _tunnelCounts[edge];
+        auto tunnels = getTunnels(edge);
+        bool insert = true;
+        if (tunnelCount > 0)
+        {
+            if (tunnels[tunnelCount - 1] == entry)
+            {
+                insert = false;
+            }
+        }
+        if (insert)
+        {
+            tunnels[tunnelCount] = entry;
+            tunnels[tunnelCount + 1] = { 0xFF, 0xFFU };
+            tunnelCount++;
+        }
+    }
+
+    void PaintSession::insertTunnels(const std::array<int16_t, 4>& tunnelHeights, coord_t height, uint8_t tunnelType)
+    {
+        for (auto edge = 0U; edge < tunnelHeights.size(); edge++)
+        {
+            if (tunnelHeights[edge] != -1)
+            {
+                insertTunnel(tunnelHeights[edge] + height, tunnelType, edge);
+            }
+        }
     }
 
     struct GenerationParameters
@@ -1480,5 +1507,22 @@ namespace OpenLoco::Paint
     void PaintSession::finaliseTrackRoadAdditionsOrdering()
     {
         finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
+    }
+
+    // Note: Size includes for 1 extra at end that should never be anything other than 0xFF, 0xFF or 0, 0
+    std::span<TunnelEntry> PaintSession::getTunnels(uint8_t edge)
+    {
+        switch (edge)
+        {
+            case 0:
+                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels0.size());
+            case 1:
+                return std::span<TunnelEntry>(&_tunnels1[0], _tunnels1.size());
+            case 2:
+                return std::span<TunnelEntry>(&_tunnels2[0], _tunnels2.size());
+            case 3:
+                return std::span<TunnelEntry>(&_tunnels3[0], _tunnels3.size());
+        }
+        return std::span<TunnelEntry>();
     }
 }

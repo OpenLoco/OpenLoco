@@ -221,7 +221,7 @@ namespace OpenLoco::Paint
             session.addToPlotListTrackRoadAddition(imageBase.withIndexOffset(platformImages.canopy.imageId), 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
             session.attachToPrevious(imageTranslucentBase.withIndexOffset(platformImages.canopyTranslucent.imageId), { 0, 0 });
         }
-        session.set525CF8(session.get525CF8() | 0x1FF);
+        session.set525CF8(session.get525CF8() | SegmentFlags::all);
     }
 
     // 0x00411AC6
@@ -373,7 +373,7 @@ namespace OpenLoco::Paint
         session.setItemType(Ui::ViewportInteraction::InteractionItem::trainStation);
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
-        session.setF003F6(0xFFFFU);
+        session.setF003F6(SegmentFlags::all);
 
         const auto* elTrack = elStation.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)
