@@ -173,10 +173,17 @@ namespace OpenLoco::Ui::Windows::Error
     }
 
     // 0x00431A8A
-    void open(StringId title, StringId message, bool playSound)
+    void open(StringId title, StringId message)
     {
         _errorCompetitorId = CompanyId::null;
-        _suppressErrorSound |= !playSound;
+
+        createErrorWindow(title, message);
+    }
+
+    void openQuiet(StringId title, StringId message)
+    {
+        _errorCompetitorId = CompanyId::null;
+        _suppressErrorSound = true;
 
         createErrorWindow(title, message);
 
@@ -187,7 +194,6 @@ namespace OpenLoco::Ui::Windows::Error
     void openWithCompetitor(StringId title, StringId message, CompanyId competitorId)
     {
         _errorCompetitorId = competitorId;
-        _suppressErrorSound = false;
 
         createErrorWindow(title, message);
     }
