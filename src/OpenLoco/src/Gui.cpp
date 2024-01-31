@@ -20,11 +20,9 @@ namespace OpenLoco::Gui
     {
         Windows::Main::open();
 
-        addr<0x00F2533F, int8_t>() = 0; // grid lines
-        addr<0x0112C2e1, int8_t>() = 0;
-        addr<0x009c870E, int8_t>() = 1;
-        addr<0x009c870F, int8_t>() = 2;
-        addr<0x009c8710, int8_t>() = 1;
+        Windows::Terraform::setAdjustLandToolSize(1);
+        Windows::Terraform::setAdjustWaterToolSize(1);
+        Windows::Terraform::setClearAreaToolSize(2);
 
         if (OpenLoco::isTitleMode())
         {

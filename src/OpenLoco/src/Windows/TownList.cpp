@@ -711,7 +711,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A7C1
         static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x0049A710
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->height = kWindowSize.height;
             ToolManager::toolSet(self, Common::widx::tab_build_town, CursorId::placeTown);
             Input::setFlag(Input::Flags::flag6);
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
         }
 
         static void initEvents()
@@ -1014,7 +1014,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeBuildingGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x0049B32A
@@ -1428,7 +1428,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             ToolManager::toolSet(self, tab, CursorId::placeBuilding);
             Input::setFlag(Input::Flags::flag6);
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
 
             static loco_global<uint8_t, 0x01135C60> _byte_1135C60;
             _byte_1135C60 = 0;

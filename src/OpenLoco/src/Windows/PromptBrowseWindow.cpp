@@ -828,7 +828,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             if (filenameContainsInvalidChars())
             {
-                showError(StringIds::error_invalid_filename);
+                Error::open(StringIds::error_invalid_filename);
                 return;
             }
 

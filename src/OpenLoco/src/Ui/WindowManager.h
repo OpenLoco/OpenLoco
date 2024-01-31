@@ -110,13 +110,6 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Ui::Windows
 {
-    void showError(StringId title, StringId message = StringIds::null, bool sound = true);
-
-    void showGridlines();
-    void hideGridlines();
-    void showDirectionArrows();
-    void hideDirectionArrows();
-
     namespace About
     {
         void open();
@@ -189,7 +182,8 @@ namespace OpenLoco::Ui::Windows
 
     namespace Error
     {
-        void open(StringId title, StringId message);
+        void open(StringId title, StringId message = StringIds::null);
+        void openQuiet(StringId title, StringId message = StringIds::null);
         void openWithCompetitor(StringId title, StringId message, CompanyId competitorId);
         void registerHooks();
     }
@@ -224,6 +218,10 @@ namespace OpenLoco::Ui::Windows
     namespace Main
     {
         void open();
+        void showGridlines();
+        void hideGridlines();
+        void showDirectionArrows();
+        void hideDirectionArrows();
     }
 
     namespace MapToolTip
@@ -351,6 +349,9 @@ namespace OpenLoco::Ui::Windows
         void openPlantTrees();
         void openBuildWalls();
         bool rotate(Window*);
+        void setAdjustLandToolSize(uint8_t size);
+        void setAdjustWaterToolSize(uint8_t size);
+        void setClearAreaToolSize(uint8_t size);
         void setLastPlacedTree(World::TreeElement* elTree);
     }
 

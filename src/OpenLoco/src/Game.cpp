@@ -231,7 +231,7 @@ namespace OpenLoco::Game
 
                 Title::start();
 
-                Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game, StringIds::null);
+                Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
 
                 throw GameException::Interrupt;
             }
@@ -347,7 +347,7 @@ namespace OpenLoco::Game
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)
-            Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
+            Ui::Windows::Error::open(StringIds::landscape_save_failed);
 
         return saveResult;
     }

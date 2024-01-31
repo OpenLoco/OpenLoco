@@ -429,7 +429,7 @@ namespace OpenLoco::GameCommands
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::showError(_gGameCommandErrorTitle, _gGameCommandErrorText);
+            Windows::Error::open(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return GameCommands::FAILURE;
         }
 

@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Graphics/Gfx.h"
 #include "Map/Tile.h"
 #include "Ui/WindowManager.h"
@@ -62,5 +63,49 @@ namespace OpenLoco::Ui::Windows::Main
     static void initEvents()
     {
         _events.draw = draw;
+    }
+
+    // 0x00468FD3
+    void showGridlines()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr || window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))
+            return;
+
+        window->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
+        window->invalidate();
+    }
+
+    // 0x00468FFE
+    void hideGridlines()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr || !window->viewports[0]->hasFlags(ViewportFlags::gridlines_on_landscape))
+            return;
+
+        window->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
+        window->invalidate();
+    }
+
+    // 0x004793C4
+    void showDirectionArrows()
+    {
+        auto mainWindow = WindowManager::getMainWindow();
+        if (mainWindow == nullptr || mainWindow->viewports[0]->hasFlags(ViewportFlags::one_way_direction_arrows))
+            return;
+
+        mainWindow->viewports[0]->flags |= ViewportFlags::one_way_direction_arrows;
+        mainWindow->invalidate();
+    }
+
+    // 0x004793EF
+    void hideDirectionArrows()
+    {
+        auto mainWindow = WindowManager::getMainWindow();
+        if (mainWindow == nullptr || !mainWindow->viewports[0]->hasFlags(ViewportFlags::one_way_direction_arrows))
+            return;
+
+        mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
+        mainWindow->invalidate();
     }
 }

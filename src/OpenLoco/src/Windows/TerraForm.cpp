@@ -98,6 +98,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
+
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
@@ -123,6 +124,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
+
     namespace PlantTrees
     {
         static constexpr Ui::Size kWindowSize = { 634, 162 };
@@ -244,7 +246,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onClose([[maybe_unused]] Window& self)
         {
             removeTreeGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBC7D
@@ -880,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // End of 0x004BB586
 
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
             _treeRotation = 2;
 
             Common::initEvents();
@@ -935,7 +937,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC671
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBBC7
@@ -1159,7 +1161,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9D1
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBBF7
@@ -1776,7 +1778,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCDAE
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBC46
@@ -2149,7 +2151,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onClose([[maybe_unused]] Window& self)
         {
             removeWallGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBCBF
@@ -2794,6 +2796,21 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         return false;
+    }
+
+    void setAdjustLandToolSize(uint8_t size)
+    {
+        _adjustLandToolSize = size;
+    }
+
+    void setAdjustWaterToolSize(uint8_t size)
+    {
+        _adjustWaterToolSize = size;
+    }
+
+    void setClearAreaToolSize(uint8_t size)
+    {
+        _clearAreaToolSize = size;
     }
 
     void setLastPlacedTree(World::TreeElement* elTree)

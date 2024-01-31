@@ -34,7 +34,7 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
-    static loco_global<uint8_t, 0x00508F09> _byte_508F09;
+    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<uint8_t, 0x00522090> _byte_522090;
     static loco_global<uint8_t, 0x00522091> _byte_522091;
     static loco_global<uint8_t, 0x00522092> _byte_522092;
@@ -1932,46 +1932,38 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
 
-            _byte_508F09 = _byte_508F09 | (1 << 0);
-
+            // Attempt to place track piece -- in silent
+            _suppressErrorSound = true;
             onMouseUp(*window, widx::construct);
+            _suppressErrorSound = false;
 
-            _byte_508F09 = _byte_508F09 & ~(1 << 0);
-
-            if (_dword_1135F42 == 0x80000000)
-            {
-                if (GameCommands::getErrorText() != StringIds::error_can_only_build_above_ground)
-                {
-                    maxRetries--;
-                    if (maxRetries != 0)
-                    {
-                        height -= 16;
-                        if (height >= 0)
-                        {
-                            if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                height += 32;
-                                continue;
-                            }
-                        }
-                    }
-                }
-            }
-            else
+            if (_dword_1135F42 != 0x80000000)
             {
                 _byte_113607E = 1;
                 WindowManager::close(WindowType::error, 0);
                 return;
             }
 
+            if (GameCommands::getErrorText() != StringIds::error_can_only_build_above_ground)
+            {
+                maxRetries--;
+                if (maxRetries != 0)
+                {
+                    height -= 16;
+                    if (height >= 0)
+                    {
+                        if (!Input::hasKeyModifier(Input::KeyModifier::shift))
+                        {
+                            height += 32;
+                        }
+                        continue;
+                    }
+                }
+            }
+
+            // Failed to place track piece -- rotate and make error sound
             onMouseUp(*window, widx::rotate_90);
-
             Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
-
             return;
         }
     }

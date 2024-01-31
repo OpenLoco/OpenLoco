@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeHeadquarterGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         static void onClose(Window& self)

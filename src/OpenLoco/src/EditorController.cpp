@@ -22,7 +22,6 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::Ui::Windows;
 
 namespace OpenLoco::EditorController
 {
@@ -132,7 +131,7 @@ namespace OpenLoco::EditorController
                 WindowManager::closeAllFloatingWindows();
                 S5::sub_4BAEC4();
                 S5::getOptions().editorStep = Step::landscapeEditor;
-                LandscapeGeneration::open();
+                Windows::LandscapeGeneration::open();
                 break;
 
             case Step::saveScenario:
@@ -179,7 +178,7 @@ namespace OpenLoco::EditorController
 
             case Step::objectSelection:
             {
-                if (!ObjectSelectionWindow::tryCloseWindow())
+                if (!Windows::ObjectSelectionWindow::tryCloseWindow())
                 {
                     // Try close has failed so do not allow changing step!
                     return;
@@ -194,7 +193,7 @@ namespace OpenLoco::EditorController
                 Scenario::initialiseSnowLine();
                 S5::sub_4BAEC4();
                 S5::getOptions().editorStep = Step::landscapeEditor;
-                LandscapeGeneration::open();
+                Windows::LandscapeGeneration::open();
                 if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
                 {
                     if ((addr<0x00525E28, uint32_t>() & 1) == 0)
@@ -228,7 +227,7 @@ namespace OpenLoco::EditorController
                 WindowManager::closeAllFloatingWindows();
                 Scenario::initialiseDate(S5::getOptions().scenarioStartYear);
                 Scenario::initialiseSnowLine();
-                ScenarioOptions::open();
+                Windows::ScenarioOptions::open();
                 S5::getOptions().editorStep = Step::scenarioOptions;
                 break;
             }
@@ -259,7 +258,7 @@ namespace OpenLoco::EditorController
 
                 if (!success)
                 {
-                    showError(StringIds::scenario_save_failed);
+                    Windows::Error::open(StringIds::scenario_save_failed);
                     S5::getOptions().editorStep = Step::scenarioOptions;
                     break;
                 }
