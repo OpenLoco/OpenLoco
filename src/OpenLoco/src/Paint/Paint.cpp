@@ -238,15 +238,7 @@ namespace OpenLoco::Paint
     PaintStruct* PaintSession::addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         // This is identical to addToPlotListAsParent but the offset.x and offset.y are 0
-        _lastPS = nullptr;
-
-        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
-        if (ps != nullptr)
-        {
-            _lastPS = ps;
-            addPSToQuadrant(*ps);
-        }
-        return ps;
+        return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
     }
 
     // 0x004FD200
