@@ -15,7 +15,6 @@
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
