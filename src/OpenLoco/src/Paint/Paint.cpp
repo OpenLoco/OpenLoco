@@ -11,6 +11,7 @@
 #include "Map/TileManager.h"
 #include "PaintEntity.h"
 #include "PaintTile.h"
+#include "PaintTrack.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
@@ -518,6 +519,7 @@ namespace OpenLoco::Paint
                 regs.ebp = X86Pointer(ps);
                 return res;
             });
+        registerTrackHooks();
     }
 
     void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
