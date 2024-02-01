@@ -31,6 +31,7 @@ namespace OpenLoco
         std::string bind;
         std::optional<uint16_t> port{};
         std::string logLevels;
+        std::string all;
     };
 
     std::optional<CommandLineOptions> parseCommandLine(std::vector<std::string>&& argv);

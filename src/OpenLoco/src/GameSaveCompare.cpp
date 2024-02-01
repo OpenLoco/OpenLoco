@@ -17,121 +17,133 @@ namespace OpenLoco::GameSaveCompare
 {
     std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType);
     std::string getEffectSubType(const EffectType effectSubType);
-    void logVehicleTypeAndSubTYpe(int offset, const OpenLoco::Entity& entity);
+    void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity);
     void logEffectType(int offset, const OpenLoco::Entity& entity);
-    void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset);
-    void compareGameStates(GameState& gameState1, S5::GameState& gameState2);
-    void compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2);
+    long logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal);
+    bool compareGameStates(GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences);
+    bool logDivergenceRoutings(OpenLoco::GameState& gameState1, OpenLoco::S5::GameState& gameState2, bool displayAllDivergences);
+    bool compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2, bool displayAllDivergences);
 
-    namespace unsafe
+    template<typename T>
+    std::span<const std::byte> getBytesSpan(const T& item)
     {
-        template<typename T>
-        constexpr auto begin(const T& item)
-        {
-            return reinterpret_cast<const char*>(&item);
-        }
-        template<typename T>
-        constexpr auto end(const T& item)
-        {
-            return reinterpret_cast<const char*>(&item) + sizeof(T);
-        }
-        template<typename T>
-        auto bitWiseEqual(const T& lhs, const T& rhs)
-        {
-            return std::equal(begin(lhs), end(lhs), // will become constexpr with C++20
-                              begin(rhs),
-                              end(rhs));
-        }
-        template<typename T1, typename T2>
-        auto bitWiseEqual(const T1& lhs, const T2& rhs)
-        {
-            return std::equal(begin(lhs), end(lhs), // will become constexpr with C++20
-                              begin(rhs),
-                              end(rhs));
-        }
-
-        template<typename T1, typename T2>
-        void bitWiseLogDivergence(const std::string type, const T1& lhs, const T2& rhs, bool printAHeader)
-        {
-            size_t size = sizeof(T1) / sizeof(char);
-            char* array_lhs = (char*)(&lhs);
-            char* array_rhs = (char*)(&rhs);
-
-            bool printHeader = true;
-
-            if (!printAHeader)
-                printHeader = false;
-
-            for (size_t offset = 0; offset < size; offset++)
-            {
-                if (array_lhs[offset] != array_rhs[offset])
-                {
-                    if (printHeader)
-                    {
-                        Logging::info("DIVERGENCE");
-                        Logging::info("TYPE: {}", type);
-                        printHeader = false;
-                    }
-
-                    Logging::info("    OFFSET: {}", offset);
-                    Logging::info("    LHS: {:#x}", array_lhs[offset]);
-                    Logging::info("    RHS: {:#x}", array_rhs[offset]);
-                }
-            }
-        }
-
-        template<typename T1, typename T2>
-        bool bitWiseCompare(const T1& lhs, const T2& rhs)
-        {
-            int size = sizeof(T1) / sizeof(char);
-            char* array_lhs = (char*)(&lhs);
-            char* array_rhs = (char*)(&rhs);
-
-            for (int offset = 0; offset < size; offset++)
-            {
-                if (array_lhs[offset] != array_rhs[offset])
-                    return false;
-            }
-            return true;
-        }
+        return std::span<const std::byte, sizeof(T)>{ reinterpret_cast<const std::byte*>(std::addressof(item)), sizeof(T) };
     }
 
-    template<typename T1, typename T2>
-    void logDivergence(const std::string type, const T1& lhs, const T2& rhs)
+    void bitWiseLogOffsetDivergence(char* array_lhs, int offset, char* array_rhs, bool& printHeader, const std::string& type);
+    template<typename T>
+    constexpr auto begin(const T& item)
     {
-        for (unsigned int offset = 0; offset < sizeof(lhs); offset++)
-            unsafe::bitWiseLogDivergence(type + " [" + std::to_string(offset) + "]", lhs[offset], rhs[offset], true);
-    }
-
-    template<typename T1, typename T2>
-    void logDivergence(const std::string type, const T1& lhs, const T2& rhs, int arraySize)
-    {
-        for (int offset = 0; offset < arraySize; offset++)
-            unsafe::bitWiseLogDivergence(type + " [" + std::to_string(offset) + "]", lhs[offset], rhs[offset], true);
+        return reinterpret_cast<const char*>(&item);
     }
 
     template<typename T>
-    void logDivergentGameStateField(const std::string type, int offset, const T& lhs, const T& rhs)
+    constexpr auto end(const T& item)
     {
-        if (!unsafe::bitWiseEqual(lhs, rhs))
+        return reinterpret_cast<const char*>(&item) + sizeof(T);
+    }
+
+    template<typename T>
+    auto bitWiseEqual(const T& lhs, const T& rhs)
+    {
+        return std::equal(begin(lhs), end(lhs), begin(rhs), end(rhs));
+    }
+
+    template<typename T1, typename T2>
+    auto bitWiseEqual(const T1& lhs, const T2& rhs)
+    {
+        return std::equal(begin(lhs), end(lhs), begin(rhs), end(rhs));
+    }
+
+    template<typename T1, typename T2>
+    long bitWiseLogDivergence(const std::string type, const T1& lhs, const T2& rhs, bool displayAllDivergences, long divergentBytesTotal)
+    {
+        static_assert(sizeof(T1) == sizeof(T2));
+
+        std::span<const std::byte> bytesSpanLhs = getBytesSpan(lhs);
+        std::span<const std::byte> bytesSpanRhs = getBytesSpan(rhs);
+
+        size_t size = bytesSpanLhs.size();
+
+        for (size_t offset = 0; offset < size; offset++)
+        {
+            if (bytesSpanLhs[offset] != bytesSpanRhs[offset])
+            {
+                if (divergentBytesTotal == 0)
+                {
+                    Logging::info("DIVERGENCE");
+                    Logging::info("TYPE: {}", type);
+                }
+                if (displayAllDivergences || divergentBytesTotal == 0)
+                {
+                    Logging::info("    OFFSET: {}", offset);
+                    Logging::info("    LHS: {:#x}", bytesSpanRhs[offset]);
+                    Logging::info("    RHS: {:#x}", bytesSpanRhs[offset]);
+                }
+                divergentBytesTotal++;
+            }
+        }
+        return divergentBytesTotal;
+    }
+
+    template<typename T1, typename T2>
+    bool logDivergence(const std::string type, const T1& lhs, const T2& rhs, bool displayAllDivergences)
+    {
+        long divergentBytesTotal = 0;
+        for (unsigned int offset = 0; offset < sizeof(lhs); offset++)
+        {
+            divergentBytesTotal = bitWiseLogDivergence(type + " [" + std::to_string(offset) + "]", lhs[offset], rhs[offset], displayAllDivergences, divergentBytesTotal);
+        }
+        if (!displayAllDivergences && divergentBytesTotal > 0)
+        {
+            Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
+        }
+        return divergentBytesTotal > 0;
+    }
+
+    template<typename T1, typename T2>
+    long logDivergence(const std::string type, const T1& lhs, const T2& rhs, int arraySize, bool displayAllDivergences)
+    {
+        long divergentBytesTotal = 0;
+        for (int offset = 0; offset < arraySize; offset++)
+        {
+            divergentBytesTotal = bitWiseLogDivergence(type + " [" + std::to_string(offset) + "]", lhs[offset], rhs[offset], displayAllDivergences, divergentBytesTotal);
+        }
+        if (!displayAllDivergences && divergentBytesTotal > 0)
+        {
+            Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
+        }
+        return divergentBytesTotal;
+    }
+
+    template<typename T>
+    bool logDivergentGameStateField(const std::string type, int offset, const T& lhs, const T& rhs)
+    {
+        bool loggedDivergence = false;
+        if (!bitWiseEqual(lhs, rhs))
         {
             Logging::info("DIVERGENCE");
             Logging::info("TYPE: {}", type);
             Logging::info("    OFFSET: {}", offset);
             Logging::info("    LHS: {:#x}", lhs);
             Logging::info("    RHS: {:#x}", rhs);
+            loggedDivergence = true;
         }
+        return loggedDivergence;
     }
 
     template<typename T>
-    void logDivergentGameStateFieldNoHeader(int offset, const T& lhs, const T& rhs)
+    bool logDivergentGameStateFieldNoHeader(int offset, const T& lhs, const T& rhs)
     {
-        if (!unsafe::bitWiseEqual(lhs, rhs))
+        bool loggedDivergence = false;
+        if (!bitWiseEqual(lhs, rhs))
         {
             Logging::info("    OFFSET: {}", offset);
             Logging::info("    LHS: {:#x}", lhs);
             Logging::info("    RHS: {:#x}", rhs);
+            loggedDivergence = true;
         }
+        return loggedDivergence;
     }
 
     std::string getVehicleSubType(const Vehicles::VehicleEntityType vehicleSubType)
@@ -206,7 +218,7 @@ namespace OpenLoco::GameSaveCompare
         return effectSubTypeName;
     }
 
-    void logVehicleTypeAndSubTYpe(int offset, const OpenLoco::Entity& entity)
+    void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity)
     {
         auto vehicleTypeName = "TYPE: ENTITY [" + std::to_string(offset) + "] VEHICLE";
         char* entityBase = (char*)(&entity);
@@ -224,58 +236,126 @@ namespace OpenLoco::GameSaveCompare
         Logging::info("{} {}", effectTypeName, effectSubTYpeName);
     }
 
-    void logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset)
+    long logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
     {
-        if (!unsafe::bitWiseEqual(lhs, rhs))
+        if (!bitWiseEqual(lhs, rhs))
         {
+            if (divergentBytesTotal == 0)
+            {
+                Logging::info("DIVERGENCE");
+            }
             char* entity = (char*)(&rhs);
             OpenLoco::Entity* rhsEntity = reinterpret_cast<OpenLoco::Entity*>(entity);
 
-            // Logging::info("DIVERGENCE");
             if (lhs.baseType == EntityBaseType::vehicle)
             {
-                logVehicleTypeAndSubTYpe(offset, lhs);
+                if (displayAllDivergences || divergentBytesTotal == 0)
+                {
+                    logVehicleTypeAndSubType(offset, lhs);
+                }
+                divergentBytesTotal += sizeof(lhs.baseType);
             }
             if (lhs.baseType != rhsEntity->baseType)
             {
                 if (rhsEntity->baseType == EntityBaseType::vehicle)
                 {
-                    logVehicleTypeAndSubTYpe(offset, *rhsEntity);
+                    if (displayAllDivergences || divergentBytesTotal)
+                    {
+                        logVehicleTypeAndSubType(offset, *rhsEntity);
+                    }
+                    divergentBytesTotal += sizeof(rhsEntity);
                 }
             }
             if (lhs.baseType == EntityBaseType::effect)
             {
-                logEffectType(offset, lhs);
+                if (displayAllDivergences || divergentBytesTotal == 0)
+                {
+                    logEffectType(offset, lhs);
+                }
+                else
+                {
+                    divergentBytesTotal += sizeof(lhs.baseType);
+                }
             }
             if (lhs.baseType != rhsEntity->baseType)
             {
                 if (rhsEntity->baseType == EntityBaseType::effect)
                 {
-                    logEffectType(offset, *rhsEntity);
+                    if (displayAllDivergences || divergentBytesTotal == 0)
+                    {
+                        logEffectType(offset, *rhsEntity);
+                    }
+                    else
+                    {
+                        divergentBytesTotal += sizeof(rhsEntity);
+                    }
                 }
             }
             if (lhs.baseType == EntityBaseType::null)
-                Logging::info("TYPE: ENTITY [{}] NULL", offset);
+            {
+                if (displayAllDivergences || divergentBytesTotal == 0)
+                {
+                    Logging::info("TYPE: ENTITY [{}] NULL", offset);
+                }
+                else
+                {
+                    divergentBytesTotal += sizeof(lhs.baseType);
+                }
+            }
+            else
+            {
+                divergentBytesTotal += sizeof(lhs.baseType);
+            }
             if (lhs.baseType != rhsEntity->baseType)
             {
                 if (rhsEntity->baseType == EntityBaseType::null)
-                    Logging::info("TYPE: ENTITY [{}] NULL", offset);
+                {
+
+                    if (displayAllDivergences || divergentBytesTotal == 0)
+                    {
+                        Logging::info("TYPE: ENTITY [{}] NULL", offset);
+                    }
+                    else
+                    {
+                        divergentBytesTotal += sizeof(lhs.baseType);
+                    }
+                }
+                else
+                {
+                    divergentBytesTotal += sizeof(rhsEntity);
+                }
             }
-            unsafe::bitWiseLogDivergence("", lhs, rhs, false);
+            divergentBytesTotal = bitWiseLogDivergence("", lhs, rhs, displayAllDivergences, divergentBytesTotal);
         }
+        return divergentBytesTotal;
     }
 
     template<typename T1, typename T2>
-    void logDivergentEntity(const T1& lhs, const T2& rhs, int arraySize)
+    long logDivergentEntity(const T1& lhs, const T2& rhs, int arraySize, bool displayAllDivergences)
     {
+        long divergentBytesTotal = 0;
         for (int offset = 0; offset < arraySize; offset++)
-            logDivergentEntityOffset(lhs[offset], rhs[offset], offset);
+        {
+            divergentBytesTotal = logDivergentEntityOffset(lhs[offset], rhs[offset], offset, displayAllDivergences, divergentBytesTotal);
+        }
+        if (!displayAllDivergences && divergentBytesTotal > 0)
+        {
+            Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
+        }
+        return divergentBytesTotal;
     }
 
-    void compareGameStates(GameState& gameState1, S5::GameState& gameState2)
+    bool compareGameStates(GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences)
     {
-        logDivergentGameStateField("rng_0", 0, gameState1.rng.srand_0(), gameState2.rng[0]);
-        logDivergentGameStateField("rng_1", 0, gameState1.rng.srand_1(), gameState2.rng[1]);
+        if (displayAllDivergences)
+            Logging::info("display all divergences!");
+
+        bool foundDivergence = false;
+
+        foundDivergence = logDivergentGameStateField("rng_0", 0, gameState1.rng.srand_0(), gameState2.rng[0])
+            || foundDivergence;
+        foundDivergence = logDivergentGameStateField("rng_1", 0, gameState1.rng.srand_1(), gameState2.rng[1])
+            || foundDivergence;
 
         if (gameState1.flags != gameState2.flags)
         {
@@ -288,52 +368,80 @@ namespace OpenLoco::GameSaveCompare
             Logging::info("    LHS: {:#x}", flags2);
         }
 
-        logDivergentGameStateField("currentDay", 0, gameState1.currentDay, gameState2.currentDay);
-        logDivergentGameStateField("dayCounter", 0, gameState1.dayCounter, gameState2.dayCounter);
-        logDivergentGameStateField("currentYear", 0, gameState1.currentYear, gameState2.currentYear);
-        logDivergentGameStateField("currentMonth", 0, gameState1.currentMonth, gameState2.currentMonth);
-        logDivergentGameStateField("currentMonthOfMonth", 0, gameState1.currentDayOfMonth, gameState2.currentDayOfMonth);
+        foundDivergence = logDivergentGameStateField("currentDay", 0, gameState1.currentDay, gameState2.currentDay)
+            || foundDivergence;
+        foundDivergence = logDivergentGameStateField("dayCounter", 0, gameState1.dayCounter, gameState2.dayCounter)
+            || foundDivergence;
+        foundDivergence = logDivergentGameStateField("currentYear", 0, gameState1.currentYear, gameState2.currentYear)
+            || foundDivergence;
+        foundDivergence = logDivergentGameStateField("currentMonth", 0, gameState1.currentMonth, gameState2.currentMonth)
+            || foundDivergence;
+        foundDivergence = logDivergentGameStateField("currentMonthOfMonth", 0, gameState1.currentDayOfMonth, gameState2.currentDayOfMonth)
+            || foundDivergence;
 
-        logDivergence("companies", gameState1.companies, gameState2.companies, Limits::kMaxCompanies);
-        logDivergence("towns", gameState1.towns, gameState2.towns, Limits::kMaxTowns);
-        logDivergence("industries", gameState1.industries, gameState2.industries, Limits::kMaxIndustries);
-        logDivergence("stations", gameState1.stations, gameState2.stations, Limits::kMaxStations);
-        logDivergentEntity(gameState1.entities, gameState2.entities, Limits::kMaxEntities);
+        foundDivergence = logDivergence("companies", gameState1.companies, gameState2.companies, Limits::kMaxCompanies, displayAllDivergences)
+            || foundDivergence;
+        foundDivergence = logDivergence("towns", gameState1.towns, gameState2.towns, Limits::kMaxTowns, displayAllDivergences)
+            || foundDivergence;
+        foundDivergence = logDivergence("industries", gameState1.industries, gameState2.industries, Limits::kMaxIndustries, displayAllDivergences)
+            || foundDivergence;
+        foundDivergence = logDivergence("stations", gameState1.stations, gameState2.stations, Limits::kMaxStations, displayAllDivergences)
+            || foundDivergence;
+        foundDivergence = logDivergentEntity(gameState1.entities, gameState2.entities, Limits::kMaxEntities, displayAllDivergences)
+            || foundDivergence;
 
-        logDivergence("animations", gameState1.animations, gameState2.animations, Limits::kMaxAnimations);
-        logDivergence("waves", gameState1.waves, gameState2.waves, Limits::kMaxWaves);
-        logDivergence("userStrings ", gameState1.userStrings, gameState2.userStrings, Limits::kMaxUserStrings);
+        foundDivergence = logDivergence("animations", gameState1.animations, gameState2.animations, Limits::kMaxAnimations, displayAllDivergences)
+            || foundDivergence;
+        foundDivergence = logDivergence("waves", gameState1.waves, gameState2.waves, Limits::kMaxWaves, displayAllDivergences)
+            || foundDivergence;
+        foundDivergence = logDivergence("userStrings ", gameState1.userStrings, gameState2.userStrings, Limits::kMaxUserStrings, displayAllDivergences)
+            || foundDivergence;
 
+        foundDivergence = logDivergenceRoutings(gameState1, gameState2, displayAllDivergences)
+            || foundDivergence;
+
+        foundDivergence = logDivergence("orders", gameState1.orders, gameState2.orders, displayAllDivergences)
+            || foundDivergence;
+
+        return not foundDivergence;
+    }
+
+    bool logDivergenceRoutings(OpenLoco::GameState& gameState1, OpenLoco::S5::GameState& gameState2, bool displayAllDivergences)
+    {
+        long divergentBytesTotal = 0;
         for (unsigned int route = 0; route < Limits::kMaxVehicles; route++)
         {
-            bool printHeader = true;
-
             for (unsigned int routePerVehicle = 0; routePerVehicle < Limits::kMaxRoutingsPerVehicle; routePerVehicle++)
             {
-                if (!unsafe::bitWiseEqual(gameState1.routings[route][routePerVehicle], gameState2.routings[route][routePerVehicle]))
+                if (!bitWiseEqual(gameState1.routings[route][routePerVehicle], gameState2.routings[route][routePerVehicle]))
                 {
-                    if (printHeader)
+                    if (divergentBytesTotal == 0)
                     {
                         Logging::info("DIVERGENCE");
                         Logging::info("TYPE: routings [{}][{}]", route, routePerVehicle);
-                        printHeader = false;
                     }
+                    divergentBytesTotal += sizeof(gameState1.routings[route][routePerVehicle]);
                 }
 
-                logDivergentGameStateFieldNoHeader(
-                    route * Limits::kMaxOrdersPerVehicle + routePerVehicle,
-                    gameState1.routings[route][routePerVehicle],
-                    gameState2.routings[route][routePerVehicle]);
+                if (displayAllDivergences || divergentBytesTotal == 0)
+                {
+                    logDivergentGameStateFieldNoHeader(
+                        route * Limits::kMaxOrdersPerVehicle + routePerVehicle,
+                        gameState1.routings[route][routePerVehicle],
+                        gameState2.routings[route][routePerVehicle]);
+                }
             }
         }
-
-        logDivergence("orders", gameState1.orders, gameState2.orders);
+        if (!displayAllDivergences && divergentBytesTotal > 0)
+        {
+            Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
+        }
+        return divergentBytesTotal > 0;
     }
 
-    void compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2)
+    bool compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2, bool displayAllDivergences)
     {
-        Logging::info("Size of TileElements1={}", tileElements1.size());
-        Logging::info("Size of TileElements1={}", tileElements2.size());
+        long divergentBytesTotal = 0;
         std::vector<S5::TileElement> smaller = tileElements1;
         std::vector<S5::TileElement> larger = tileElements2;
         if (tileElements1.size() > tileElements2.size())
@@ -345,6 +453,8 @@ namespace OpenLoco::GameSaveCompare
         if (tileElements1.size() != tileElements2.size())
         {
             Logging::info("The TileElements sizes are different. Will compare up to the smallest TileElements size.");
+            Logging::info("Size of TileElements1 = {}", tileElements1.size());
+            Logging::info("Size of TileElements2 = {}", tileElements2.size());
         }
         int elementCount = 0;
         for (auto iterator1 = smaller.begin(), iterator2 = larger.begin(); iterator1 != smaller.end();
@@ -355,31 +465,44 @@ namespace OpenLoco::GameSaveCompare
                 auto tile1 = tileElements1.at(elementCount);
                 auto tile2 = tileElements2.at(elementCount);
 
-                if (!unsafe::bitWiseEqual(tile1, tile2))
+                if (!bitWiseEqual(tile1, tile2))
                 {
-                    Logging::info("DIVERGENCE");
-                    Logging::info("TILE ELEMENT[{}]", elementCount);
-                    unsafe::bitWiseLogDivergence("Elements[{}]" + std::to_string(elementCount), tile1, tile2, false);
+                    if (divergentBytesTotal == 0)
+                    {
+                        Logging::info("DIVERGENCE");
+                        Logging::info("TILE ELEMENT[{}]", elementCount);
+                    }
+                    divergentBytesTotal = bitWiseLogDivergence("Elements[" + std::to_string(elementCount) + "]", tile1, tile2, displayAllDivergences, divergentBytesTotal);
                 }
                 elementCount++;
             }
         }
+        if (!displayAllDivergences && divergentBytesTotal > 0)
+        {
+            Logging::info(" {} other diverging bytes omitted", divergentBytesTotal);
+        }
+        return not(divergentBytesTotal > 0);
     }
 
-    void compareGameStates(const fs::path& path)
+    bool compareGameStates(const fs::path& path)
     {
         Logging::info("Comparing reference file {} to current GameState frame", path);
-        compareGameStates(getGameState(), S5::importSave(path).get()->gameState);
+        return compareGameStates(getGameState(), S5::importSave(path).get()->gameState, false);
     }
 
-    void compareGameStates(const fs::path& path1, const fs::path& path2)
+    bool compareGameStates(const fs::path& path1, const fs::path& path2, bool displayAllDivergences)
     {
         Logging::info("Comparing game state files:");
         Logging::info("   file1: {}", path1);
         Logging::info("   file2: {}", path2);
 
         S5::setGameState(S5::importSave(path1));
-        compareGameStates(getGameState(), S5::importSave(path2).get()->gameState);
-        compareElements(S5::importSave(path1).get()->tileElements, S5::importSave(path2).get()->tileElements);
+
+        bool match = false;
+        match = compareGameStates(getGameState(), S5::importSave(path2).get()->gameState, displayAllDivergences)
+            || match;
+        match = compareElements(S5::importSave(path1).get()->tileElements, S5::importSave(path2).get()->tileElements, displayAllDivergences)
+            || match;
+        return match;
     }
 }
