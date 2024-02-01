@@ -543,6 +543,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 _constructionRotation = _constructionRotation & 3;
 
                 activateSelectedConstructionWidgets();
+                Paint::PaintSession::printTP();
                 break;
             }
         }

@@ -7,6 +7,7 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <span>
+#include <variant>
 
 namespace OpenLoco::World
 {
@@ -207,6 +208,58 @@ namespace OpenLoco::Paint
 
     static constexpr auto kMaxPaintQuadrants = 1024;
 
+    struct TestPaint
+    {
+        struct Track3
+        {
+            std::array<std::array<uint32_t, 3>, 4> imageIds;
+            std::array<uint8_t, 3> priority;
+            std::array<World::Pos3, 4> offsets;
+            std::array<World::Pos3, 4> boundingBoxOffsets;
+            std::array<World::Pos3, 4> boundingBoxSizes;
+            std::array<uint8_t, 4> bridgeEdges;
+            std::array<uint8_t, 4> bridgeQuarters;
+            std::array<uint8_t, 4> tunnelEdges;
+            std::array<SegmentFlags, 4> segments;
+            std::array<uint32_t, 4> callOffset;
+            std::array<std::array<int8_t, 4>, 4> tunnelHeight;
+            std::array<uint8_t, 4> bridgeType;
+        };
+
+        struct Track1
+        {
+            std::array<uint32_t, 4> imageIds;
+            std::array<World::Pos3, 4> offsets;
+            std::array<World::Pos3, 4> boundingBoxOffsets;
+            std::array<World::Pos3, 4> boundingBoxSizes;
+            std::array<uint8_t, 4> bridgeEdges;
+            std::array<uint8_t, 4> bridgeQuarters;
+            std::array<uint8_t, 4> tunnelEdges;
+            std::array<SegmentFlags, 4> segments;
+            std::array<uint32_t, 4> callOffset;
+            std::array<std::array<int8_t, 4>, 4> tunnelHeight;
+            std::array<uint8_t, 4> bridgeType;
+        };
+
+        using Track = std::variant<std::monostate, Track1, Track3>;
+        struct CurrentTile
+        {
+            int16_t height;
+            uint32_t baseImageId;
+            uint8_t rotation;
+            uint8_t trackId;
+            uint8_t index;
+            uint8_t callCount;
+            uint32_t callOffset;
+            bool isTrack;
+            Track track;
+            std::array<uint8_t, 4> tunnelsCount;
+        };
+
+        std::array<std::vector<Track>, 44> tracks;
+        CurrentTile currentTile;
+    };
+
     struct PaintSession
     {
     public:
@@ -377,6 +430,10 @@ namespace OpenLoco::Paint
          * @param offsetY @<cx>
          */
         AttachedPaintStruct* attachToPrevious(ImageId imageId, const Ui::Point& offset);
+
+        static TestPaint tp;
+
+        static void printTP();
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);

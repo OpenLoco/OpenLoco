@@ -9,6 +9,7 @@
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "PaintEntity.h"
 #include "PaintTile.h"
 #include "PaintTrack.h"
@@ -17,6 +18,8 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <iostream>
+#include <map>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -189,6 +192,640 @@ namespace OpenLoco::Paint
         return true;
     }
 
+    static const std::array<std::string, 44> _trackIdNames = {
+        "Straight",
+        "Diagonal",
+        "LeftCurveVerySmall",
+        "RightCurveVerySmall",
+        "LeftCurveSmall",
+        "RightCurveSmall",
+        "LeftCurve",
+        "RightCurve",
+        "LeftCurveLarge",
+        "RightCurveLarge",
+        "DiagonalLeftCurveLarge",
+        "DiagonalRightCurveLarge",
+        "SBendLeft",
+        "SBendRight",
+        "StraightSlopeUp",
+        "StraightSlopeDown",
+        "StraightSteepSlopeUp",
+        "StraightSteepSlopeDown",
+        "LeftCurveSmallSlopeUp",
+        "RightCurveSmallSlopeUp",
+        "LeftCurveSmallSlopeDown",
+        "RightCurveSmallSlopeDown",
+        "LeftCurveSmallSteepSlopeUp",
+        "RightCurveSmallSteepSlopeUp",
+        "LeftCurveSmallSteepSlopeDown",
+        "RightCurveSmallSteepSlopeDown",
+        "unkStraight1",
+        "unkStraight2",
+        "unkLeftCurveVerySmall1",
+        "unkLeftCurveVerySmall2",
+        "unkRightCurveVerySmall1",
+        "unkRightCurveVerySmall2",
+        "unkSBendRight",
+        "unkSBendLeft",
+        "unkStraightSteepSlopeUp1",
+        "unkStraightSteepSlopeUp2",
+        "unkStraightSteepSlopeDown1",
+        "unkStraightSteepSlopeDown2",
+        "sBendToDualTrack",
+        "sBendToSingleTrack",
+        "unkSBendToDualTrack",
+        "unkSBendToSingleTrack",
+        "turnaround",
+        "unkTurnaround",
+    };
+
+    std::array<std::string, 9> kSegmentFlagNames = {
+        "x0y0", //= 1U << 0, // 0: (x:0, y:0)
+        "x2y0", //= 1U << 1, // 2: (x:2, y:0)
+        "x0y2", //= 1U << 2, // 6: (x:0, y:2)
+        "x2y2", //= 1U << 3, // 8: (x:2, y:2)
+        "x1y1", //= 1U << 4, // 4: (x:1, y:1)
+        "x1y0", //= 1U << 5, // 1: (x:1, y:0)
+        "x0y1", //= 1U << 6, // 3: (x:0, y:1)
+        "x2y1", //= 1U << 7, // 5: (x:2, y:1)
+        "x1y2", //= 1U << 8, // 7: (x:1, y:2)
+    };
+
+    std::string getSegmentFlagsString(uint16_t flags)
+    {
+        std::string result;
+        for (auto i = 0U; i < 9; ++i)
+        {
+            if (flags & (1 << i))
+            {
+                if (!result.empty())
+                {
+                    result += " | ";
+                }
+                result += fmt::format("SegmentFlags::{}", kSegmentFlagNames[i]);
+            }
+        }
+        return result;
+    }
+
+    constexpr uint8_t rotl4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val << rotation) | (val >> (4 - rotation))) & 0xF;
+    }
+
+    constexpr uint8_t rotr4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
+    }
+
+    constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap1 = {
+        std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+        std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+        std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+        std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+    };
+    constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap2 = {
+        std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+        std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+        std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+        std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+    };
+
+    constexpr SegmentFlags rotlSegmentFlags(SegmentFlags val, uint8_t rotation)
+    {
+        SegmentFlags ret = SegmentFlags::none;
+        const auto _val = enumValue(val);
+        for (auto i = 0U; i < 4; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << kSegMap1[rotation][i]);
+            }
+        }
+        for (auto i = 5U; i < 9; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << (kSegMap2[rotation][i - 5] + 5));
+            }
+        }
+
+        return ret | (val & SegmentFlags::x1y1);
+    }
+
+    struct OffsetFunc
+    {
+        uint8_t trackId;
+        uint8_t sequence;
+        uint8_t rotation;
+    };
+
+    std::map<uint32_t, std::string> _usedImages;
+    std::map<uint32_t, OffsetFunc> _outputedOffsets;
+
+    const std::array<std::string, 4> kPriorityStrs = { "", "Ballast", "Sleeper", "Rail" };
+    const std::array<std::string, 4> kRotationNames = { "NE", "SE", "SW", "NW" };
+
+    std::string getDefaultTrackImageName(uint8_t trackId, uint8_t index, int8_t priority, uint8_t rotation)
+    {
+        return fmt::format("k{}{}{}{}", _trackIdNames[trackId], index, kPriorityStrs[priority], kRotationNames[rotation]);
+    }
+
+    std::tuple<std::string, std::string, std::string, std::string, std::string, std::string> printCommon(uint8_t trackId, uint8_t index, const std::array<World::Pos3, 4>& boundingBoxOffsets, const std::array<World::Pos3, 4>& boundingBoxSizes, const std::array<uint8_t, 4>& bridgeEdges, const std::array<uint8_t, 4>& bridgeQuarters, const std::array<uint8_t, 4>& tunnelEdges, const std::array<SegmentFlags, 4>& segments)
+    {
+        std::string bbOffsetsName = fmt::format("k{}{}BoundingBoxOffsets", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<World::Pos3, 4> " << bbOffsetsName << " = {\n";
+        for (auto& bbO : boundingBoxOffsets)
+        {
+            std::cout << fmt::format("    World::Pos3{{ {}, {}, {} }},\n", bbO.x, bbO.y, bbO.z);
+        }
+        std::cout << "};\n\n";
+        std::string bbSizesName = fmt::format("k{}{}BoundingBoxSizes", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<World::Pos3, 4> " << bbSizesName << " = {\n";
+        for (auto& bbS : boundingBoxSizes)
+        {
+            std::cout << fmt::format("    World::Pos3{{ {}, {}, {} }},\n", bbS.x, bbS.y, bbS.z);
+        }
+        std::cout << "};\n\n";
+
+        std::string bridgeEdgesName = fmt::format("k{}{}BridgeEdges", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<uint8_t, 4> " << bridgeEdgesName << " = {\n";
+        // const auto bridgeEdge0 = bridgeEdges[0];
+        auto j = 0U;
+        for (auto& be : bridgeEdges)
+        {
+            // assert(rotl4bit(bridgeEdge0, j) == bridgeEdges[j]);
+            j++;
+            std::cout << fmt::format("    {:#06b},\n", be);
+        }
+        std::cout << "};\n\n";
+        std::string bridgeQuartersName = fmt::format("k{}{}BridgeQuarters", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<uint8_t, 4> " << bridgeQuartersName << " = {\n";
+        // const auto bridgeQuarter0 = bridgeQuarters[0];
+        j = 0U;
+        for (auto& bq : bridgeQuarters)
+        {
+            // assert(rotl4bit(bridgeQuarter0, j) == bridgeQuarters[j]);
+            j++;
+            std::cout << fmt::format("    {:#06b},\n", bq);
+        }
+        std::cout << "};\n\n";
+        std::string tunnelEdgesName = fmt::format("k{}{}TunnelEdges", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<uint8_t, 4> " << tunnelEdgesName << " = {\n";
+        // const auto tunnelEdge0 = tunnelEdges[0];
+        j = 0U;
+        for (auto& bq : tunnelEdges)
+        {
+            // assert(rotl4bit(tunnelEdge0, j) == tunnelEdges[j]);
+            j++;
+            std::cout << fmt::format("    {:#06b},\n", bq);
+        }
+        std::cout << "};\n\n";
+        std::string segmentsName = fmt::format("k{}{}Segments", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<SegmentFlags, 4> " << segmentsName << " = {\n";
+        // const auto segments0 = segments[0];
+        j = 0U;
+        for (auto& seg : segments)
+        {
+            // assert(rotlSegmentFlags(static_cast<SegmentFlags>(segments0), j) == static_cast<SegmentFlags>(segments[j]));
+            j++;
+            std::cout << fmt::format("    {},\n", getSegmentFlagsString(enumValue(seg)));
+        }
+        std::cout << "};\n\n";
+        return std::make_tuple(bbOffsetsName, bbSizesName, bridgeEdgesName, bridgeQuartersName, tunnelEdgesName, segmentsName);
+    }
+
+    std::array<std::string, 3> rotationTablesNames = { "kRotationTable2301", "kRotationTable3012", "kRotationTable1230" };
+
+    std::pair<std::string, bool> printCommonPreamble(const std::array<uint32_t, 4>& callOffsets, uint8_t trackId, uint8_t index)
+    {
+        uint32_t seenCount = 0;
+        uint8_t r = 0;
+        for (auto& co : callOffsets)
+        {
+            if (_outputedOffsets.count(co) != 0)
+            {
+                seenCount++;
+            }
+            else
+            {
+                _outputedOffsets.insert(std::make_pair(co, OffsetFunc{ trackId, index, r }));
+            }
+            r++;
+        }
+        std::string ppName = fmt::format("k{}{}", _trackIdNames[trackId], index);
+
+        if (seenCount == 2)
+        {
+            std::cout << "// Already seen " << seenCount << "\n";
+        }
+        else if (seenCount == 4)
+        {
+            uint8_t mirrorTrackId = 0;
+            uint8_t mirrorIndex = 0;
+            std::array<uint8_t, 4> rotationTable = {};
+            for (auto i = 0; i < 4; ++i)
+            {
+                auto& f = _outputedOffsets[callOffsets[i]];
+                if (i != 0)
+                {
+                    assert(mirrorIndex == f.sequence);
+                    assert(mirrorTrackId == f.trackId);
+                }
+                rotationTable[i] = f.rotation;
+                mirrorIndex = f.sequence;
+                mirrorTrackId = f.trackId;
+            }
+
+            std::string mirrorPP = fmt::format("k{}{}", _trackIdNames[mirrorTrackId], mirrorIndex);
+            std::string rotationTableName = "";
+            if (rotationTable[0] == 2 && rotationTable[1] == 3 && rotationTable[2] == 0 && rotationTable[3] == 1)
+            {
+                rotationTableName = rotationTablesNames[0];
+            }
+            else if (rotationTable[0] == 3 && rotationTable[1] == 0 && rotationTable[2] == 1 && rotationTable[3] == 2)
+            {
+                rotationTableName = rotationTablesNames[1];
+            }
+            else if (rotationTable[0] == 1 && rotationTable[1] == 2 && rotationTable[2] == 3 && rotationTable[3] == 0)
+            {
+                rotationTableName = rotationTablesNames[2];
+            }
+            else
+            {
+                assert(false);
+            }
+            // assert(rotationTable[0] == 2);
+            // assert(rotationTable[1] == 3);
+            // assert(rotationTable[2] == 0);
+            // assert(rotationTable[3] == 1);
+
+            std::cout << fmt::format("constexpr TrackPaintPiece {} = rotateTrackPP({}, {});\n\n", ppName, mirrorPP, rotationTableName);
+            return std::make_pair(ppName, false);
+        }
+        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", callOffsets[0], callOffsets[1], callOffsets[2], callOffsets[3]);
+        std::cout << fmt::format("constexpr TrackPaintPiece {} = {{\n", ppName);
+        return std::make_pair(ppName, true);
+    }
+
+    void printCommonAlt(const std::array<World::Pos3, 4>& boundingBoxOffsets, const std::array<World::Pos3, 4>& boundingBoxSizes, const std::array<uint8_t, 4>& bridgeEdges, const std::array<uint8_t, 4>& bridgeQuarters, const std::array<uint8_t, 4>& bridgeType, const std::array<int8_t, 4>& tunnelHeights, const std::array<SegmentFlags, 4>& segments)
+    {
+        std::cout << "    /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{\n";
+        for (auto& bbO : boundingBoxOffsets)
+        {
+            std::cout << fmt::format("        World::Pos3{{ {}, {}, {} }},\n", bbO.x, bbO.y, bbO.z);
+        }
+        std::cout << "    },\n";
+
+        std::cout << "    /* BoundingBoxSizes */ std::array<World::Pos3, 4>{\n";
+        for (auto& bbS : boundingBoxSizes)
+        {
+            std::cout << fmt::format("        World::Pos3{{ {}, {}, {} }},\n", bbS.x, bbS.y, bbS.z);
+        }
+        std::cout << "    },\n";
+
+        // std::cout << "    /* BridgeEdges */ std::array<uint8_t, 4>{\n";
+        // std::cout << fmt::format("        {:#06b}, {:#06b}, {:#06b}, {:#06b},\n", bridgeEdges[0], bridgeEdges[1], bridgeEdges[2], bridgeEdges[3]);
+        // std::cout << "    },\n";
+        std::cout << fmt::format("    /* BridgeEdges */ {:#06b},\n", bridgeEdges[0]);
+
+        assert(bridgeEdges[1] == rotl4bit(bridgeEdges[0], 1));
+        assert(bridgeEdges[2] == rotl4bit(bridgeEdges[0], 2));
+        assert(bridgeEdges[3] == rotl4bit(bridgeEdges[0], 3));
+
+        // std::cout << "    /* BridgeQuarters */ std::array<uint8_t, 4>{\n";
+        // std::cout << fmt::format("        {:#06b}, {:#06b}, {:#06b}, {:#06b},\n", bridgeQuarters[0], bridgeQuarters[1], bridgeQuarters[2], bridgeQuarters[3]);
+        // std::cout << "    },\n";
+        std::cout << fmt::format("    /* BridgeQuarters */ {:#06b},\n", bridgeQuarters[0]);
+
+        assert(bridgeQuarters[1] == rotl4bit(bridgeQuarters[0], 1));
+        assert(bridgeQuarters[2] == rotl4bit(bridgeQuarters[0], 2));
+        assert(bridgeQuarters[3] == rotl4bit(bridgeQuarters[0], 3));
+
+        if ((bridgeType[0] == 0) && (bridgeType[1] == 0) && (bridgeType[2] == 0) && (bridgeType[3] == 0))
+        {
+            std::cout << fmt::format("    /* BridgeType */ kFlatBridge,\n");
+        }
+        else
+        {
+            std::cout << "    /* BridgeType */ std::array<uint8_t, 4>{\n";
+            std::cout << "        ";
+            for (auto bt : bridgeType)
+            {
+                std::cout << fmt::format("{}, ", bt);
+            }
+            std::cout << "\n";
+            std::cout << "    },\n";
+        }
+
+        if ((tunnelHeights[0] == -1) && (tunnelHeights[1] == -1) && (tunnelHeights[2] == -1) && (tunnelHeights[3] == -1))
+        {
+            std::cout << fmt::format("    /* TunnelHeights */ kNoTunnels,\n");
+        }
+        else
+        {
+            std::cout << "    /* TunnelHeights */ std::array<int16_t, 4>{\n";
+            std::cout << "        ";
+            for (auto th : tunnelHeights)
+            {
+                if (th == -1)
+                {
+                    std::cout << "kNoTunnel, ";
+                }
+                else
+                {
+                    std::cout << fmt::format("{}, ", th);
+                }
+            }
+            std::cout << "\n";
+            std::cout << "    },\n";
+        }
+
+        // std::cout << "    /* Segments */ std::array<SegmentFlags, 4>{\n";
+        // for (auto& s : segments)
+        //{
+        //     std::cout << fmt::format("        {},\n", getSegmentFlagsString(s));
+        // }
+        // std::cout << "    },\n";
+
+        std::cout << fmt::format("    /* Segments */ {},\n", getSegmentFlagsString(enumValue(segments[0])));
+
+        if (segments[1] != rotlSegmentFlags(segments[0], 1))
+        {
+            // assert(false);
+        }
+        assert(segments[2] == rotlSegmentFlags(segments[0], 2));
+        if (segments[3] != rotlSegmentFlags(segments[0], 3))
+        {
+            // assert(false);
+        }
+    }
+
+    std::string printTrack3Alt(TestPaint::Track3& t, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreamble(t.callOffset, trackId, index);
+        if (!printArray)
+        {
+            return ppName;
+        }
+        std::cout << "    std::array<std::array<uint32_t, 3>, 4>{\n";
+        uint8_t r = 0;
+        for (auto& imageId : t.imageIds)
+        {
+            auto track1 = getDefaultTrackImageName(trackId, index, 1, r);
+            auto track2 = getDefaultTrackImageName(trackId, index, 2, r);
+            auto track3 = getDefaultTrackImageName(trackId, index, 3, r);
+            if (_usedImages.count(imageId[0]))
+            {
+                track1 = _usedImages[imageId[0]];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId[0], track1));
+            }
+            if (_usedImages.count(imageId[1]))
+            {
+                track2 = _usedImages[imageId[1]];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId[1], track2));
+            }
+            if (_usedImages.count(imageId[2]))
+            {
+                track3 = _usedImages[imageId[2]];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId[2], track3));
+            }
+            std::cout << fmt::format("        std::array<uint32_t, 3>{{TrackObj::ImageIds::Style0::{}, TrackObj::ImageIds::Style0::{}, TrackObj::ImageIds::Style0::{}}},\n", track1, track2, track3);
+            r++;
+        }
+        std::cout << "    },\n";
+
+        printCommonAlt(t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.bridgeType, t.tunnelHeight[0], t.segments);
+
+        std::cout << "};\n\n";
+        return ppName;
+    }
+
+    void printTrack3(TestPaint::Track3& t, uint8_t trackId, uint8_t index)
+    {
+        auto [bbOffsetsName, bbSizesName, bridgeEdgesName, bridgeQuartersName, tunnelEdgesName, segmentsName] = printCommon(trackId, index, t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.tunnelEdges, t.segments);
+
+        std::string imagesName = fmt::format("k{}{}ImageIndexOffsets", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<std::array<uint32_t, 3>, 4> " << imagesName << " = {\n";
+        for (auto& imageId : t.imageIds)
+        {
+            std::cout << fmt::format("    std::array<uint32_t, 3>{{TrackObj::ImageIds::Style0::_{}, TrackObj::ImageIds::Style0::_{}, TrackObj::ImageIds::Style0::_{}}},\n", imageId[0], imageId[1], imageId[2]);
+        }
+        std::cout << "};\n\n";
+
+        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", t.callOffset[0], t.callOffset[1], t.callOffset[2], t.callOffset[3]);
+        std::cout << fmt::format("static void paintTrack{}{}(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)\n{{\n", _trackIdNames[trackId], index);
+        std::cout << "    const auto height = elTrack.baseHeight();\n";
+        std::cout << "    const auto heightOffset = World::Pos3{ 0, 0, height };\n\n";
+        std::cout << "    if (elTrack.hasBridge())\n    {\n";
+        std::cout << "        auto newBridgeEntry = BridgeEntry(\n            height,\n";
+        std::cout << fmt::format("            {}[rotation],\n", t.bridgeType[0]);
+        std::cout << fmt::format("            {},\n", bridgeEdgesName);
+        std::cout << fmt::format("            {},\n", bridgeQuartersName);
+        std::cout << "            elTrack.bridge(),\n            trackSession.bridgeColoursBaseImageId);\n";
+        std::cout << "        session.setBridgeEntry(newBridgeEntry);\n    }\n\n";
+
+        std::cout << "    const auto baseImage = trackSession.trackBaseImageId;\n";
+        std::cout << "    session.addToPlotListTrackRoad(\n";
+        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation][0]),\n", imagesName);
+        std::cout << fmt::format("        {},\n", t.priority[0]);
+        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
+        std::cout << "    session.addToPlotListTrackRoad(\n";
+        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation][1]),\n", imagesName);
+        std::cout << fmt::format("        {},\n", t.priority[1]);
+        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
+        std::cout << "    session.addToPlotListTrackRoad(\n";
+        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation][2]),\n", imagesName);
+        std::cout << fmt::format("        {},\n", t.priority[2]);
+        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
+
+        std::cout << "    session.insertTunnels(\n";
+        if (t.tunnelHeight[0][0] != 0)
+        {
+            std::cout << "        height + " << t.tunnelHeight[0][0] << ",\n";
+        }
+        else
+        {
+            std::cout << "        height,\n";
+        }
+        std::cout << "        trackSession.tunnelType,\n        " << tunnelEdgesName << "[rotation]);\n";
+
+        std::cout << fmt::format("    session.set525CF8(session.get525CF8() | {}[rotation]);\n", segmentsName);
+        std::cout << fmt::format("    session.setF003F6(session.getF003F6() | {}[rotation]);\n", segmentsName);
+
+        std::cout << "}\n\n";
+    }
+
+    std::string printTrack1Alt(TestPaint::Track1& t, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreamble(t.callOffset, trackId, index);
+        if (!printArray)
+        {
+            return ppName;
+        }
+        std::cout << "    std::array<uint32_t, 4>{\n";
+        uint8_t r = 0;
+        for (auto& imageId : t.imageIds)
+        {
+            auto track1 = getDefaultTrackImageName(trackId, index, 0, r);
+            if (_usedImages.count(imageId))
+            {
+                track1 = _usedImages[imageId];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId, track1));
+            }
+            std::cout << fmt::format("        TrackObj::ImageIds::Style0::{},\n", track1);
+            r++;
+        }
+        std::cout << "    },\n";
+
+        printCommonAlt(t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.bridgeType, t.tunnelHeight[0], t.segments);
+
+        std::cout << "};\n\n";
+        return ppName;
+    }
+
+    void printTrack1(TestPaint::Track1& t, uint8_t trackId, uint8_t index)
+    {
+        auto [bbOffsetsName, bbSizesName, bridgeEdgesName, bridgeQuartersName, tunnelEdgesName, segmentsName] = printCommon(trackId, index, t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.tunnelEdges, t.segments);
+
+        std::string imagesName = fmt::format("k{}{}ImageIndexOffsets", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<uint32_t, 4> " << imagesName << " = {\n";
+        for (auto& imageId : t.imageIds)
+        {
+            std::cout << fmt::format("    TrackObj::ImageIds::Style0::_{},\n", imageId);
+        }
+        std::cout << "};\n\n";
+
+        std::string tunnelHeightName = fmt::format("k{}{}TunnelHeights", _trackIdNames[trackId], index);
+        std::cout << "constexpr std::array<uint32_t, 4> " << tunnelHeightName << " = {\n";
+        for (auto& tunnelHeights : t.tunnelHeight)
+        {
+            std::cout << fmt::format("    {{ {}, {}, {}, {}, }},", tunnelHeights[0], tunnelHeights[1], tunnelHeights[2], tunnelHeights[3]);
+        }
+        std::cout << "};\n\n";
+
+        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", t.callOffset[0], t.callOffset[1], t.callOffset[2], t.callOffset[3]);
+
+        std::cout << fmt::format("static void paintTrack{}{}(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)\n{{\n", _trackIdNames[trackId], index);
+        std::cout << "    const auto height = elTrack.baseHeight();\n";
+        std::cout << "    const auto heightOffset = World::Pos3{ 0, 0, height };\n\n";
+        std::cout << "    if (elTrack.hasBridge())\n    {\n";
+        std::cout << "        auto newBridgeEntry = BridgeEntry(\n            height,\n";
+        std::cout << fmt::format("            {}[rotation],\n", t.bridgeType[0]);
+        std::cout << fmt::format("            {},\n", bridgeEdgesName);
+        std::cout << fmt::format("            {},\n", bridgeQuartersName);
+        std::cout << "            elTrack.bridge(),\n            trackSession.bridgeColoursBaseImageId);\n";
+        std::cout << "        session.setBridgeEntry(newBridgeEntry);\n    }\n\n";
+
+        std::cout << "    const auto baseImage = trackSession.trackBaseImageId;\n";
+        std::cout << "    session.addToPlotList4FD150(\n";
+        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation]),\n", imagesName);
+        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
+
+        std::cout << "    session.insertTunnels(\n";
+        if (t.tunnelHeight[0][0] != -1)
+        {
+            std::cout << "        height, " << tunnelHeightName << "[rotation],\n";
+        }
+        else
+        {
+            std::cout << "        height,\n";
+        }
+        std::cout << "        trackSession.tunnelType,\n        " << tunnelEdgesName << "[rotation]);\n";
+
+        std::cout << fmt::format("    session.set525CF8(session.get525CF8() | {}[rotation]);\n", segmentsName);
+        std::cout << fmt::format("    session.setF003F6(session.getF003F6() | {}[rotation]);\n", segmentsName);
+
+        std::cout << "}\n\n";
+    }
+
+    std::array<uint8_t, 26> kTrackOrder = {
+        enumValue(World::Track::TrackId::straight),
+        enumValue(World::Track::TrackId::diagonal),
+        enumValue(World::Track::TrackId::rightCurveVerySmall),
+        enumValue(World::Track::TrackId::leftCurveVerySmall),
+        enumValue(World::Track::TrackId::rightCurveSmall),
+        enumValue(World::Track::TrackId::leftCurveSmall),
+        enumValue(World::Track::TrackId::rightCurve),
+        enumValue(World::Track::TrackId::leftCurve),
+        enumValue(World::Track::TrackId::rightCurveLarge),
+        enumValue(World::Track::TrackId::leftCurveLarge),
+        enumValue(World::Track::TrackId::diagonalRightCurveLarge),
+        enumValue(World::Track::TrackId::diagonalLeftCurveLarge),
+        enumValue(World::Track::TrackId::sBendLeft),
+        enumValue(World::Track::TrackId::sBendRight),
+        enumValue(World::Track::TrackId::straightSlopeUp),
+        enumValue(World::Track::TrackId::straightSlopeDown),
+        enumValue(World::Track::TrackId::straightSteepSlopeUp),
+        enumValue(World::Track::TrackId::straightSteepSlopeDown),
+        enumValue(World::Track::TrackId::rightCurveSmallSlopeUp),
+        enumValue(World::Track::TrackId::rightCurveSmallSlopeDown),
+        enumValue(World::Track::TrackId::leftCurveSmallSlopeUp),
+        enumValue(World::Track::TrackId::leftCurveSmallSlopeDown),
+        enumValue(World::Track::TrackId::rightCurveSmallSteepSlopeUp),
+        enumValue(World::Track::TrackId::rightCurveSmallSteepSlopeDown),
+        enumValue(World::Track::TrackId::leftCurveSmallSteepSlopeUp),
+        enumValue(World::Track::TrackId::leftCurveSmallSteepSlopeDown),
+    };
+
+    void PaintSession::printTP()
+    {
+
+        std::vector<std::string> tppNames;
+        for (auto trackId : kTrackOrder)
+        {
+            std::vector<std::string> ppNames;
+            auto& track = tp.tracks[trackId];
+            for (auto index = 0U; index < track.size(); ++index)
+            {
+                auto& ti = track[index];
+                if (std::holds_alternative<TestPaint::Track3>(ti))
+                {
+                    auto& t3Ct = std::get<TestPaint::Track3>(ti);
+                    ppNames.push_back(printTrack3Alt(t3Ct, trackId, index));
+                }
+                else if (std::holds_alternative<TestPaint::Track1>(ti))
+                {
+                    auto& t3Ct = std::get<TestPaint::Track1>(ti);
+                    ppNames.push_back(printTrack1Alt(t3Ct, trackId, index));
+                }
+            }
+            if (!track.empty())
+            {
+                std::string tppName = fmt::format("k{}TPP", _trackIdNames[trackId]);
+                tppNames.push_back(tppName);
+                std::cout << fmt::format("constexpr std::array<TrackPaintPiece, {}> {} = {{\n", track.size(), tppName);
+                for (auto& ppName : ppNames)
+                {
+                    std::cout << fmt::format("    {},\n", ppName);
+                }
+                std::cout << "};\n\n";
+            }
+        }
+        std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPiece>, {}> kTrackPaintParts = {{\n", tppNames.size());
+        for (auto& tppName : tppNames)
+        {
+            std::cout << fmt::format("    {},\n", tppName);
+        }
+        assert(tppNames.size() == 26);
+        std::cout << "};\n\n";
+        for (const auto image : _usedImages)
+        {
+            std::cout << fmt::format("constexpr uint32_t {} = {};\n", image.second, image.first);
+        }
+    }
     static constexpr World::Pos3 rotateBoundBoxSize(const World::Pos3& bbSize, const uint8_t rotation)
     {
         auto output = bbSize;
@@ -230,10 +867,34 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    void AddToTP(TestPaint& tp, ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTile;
+        if (!ct.isTrack)
+        {
+            return;
+        }
+        auto& targetTrack = ct.track;
+        if (targetTrack.index() == 0)
+        {
+            targetTrack = TestPaint::Track1{};
+        }
+        auto& t1 = std::get<TestPaint::Track1>(targetTrack);
+        t1.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t1.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t1.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t1.offsets[ct.rotation].x == 0);
+        assert(t1.offsets[ct.rotation].y == 0);
+        assert(t1.offsets[ct.rotation].z == 0);
+        t1.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        ct.callCount++;
+    }
+
     // 0x004FD150
     PaintStruct* PaintSession::addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         // This is identical to addToPlotListAsParent but the offset.x and offset.y are 0
+        AddToTP(tp, imageId, offset, boundBoxOffset, boundBoxSize);
         return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
     }
 
@@ -272,10 +933,37 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    void AddToTP(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTile;
+        if (!ct.isTrack)
+        {
+            return;
+        }
+        auto& targetTrack = ct.track;
+        if (targetTrack.index() == 0)
+        {
+            targetTrack = TestPaint::Track3{};
+        }
+        auto& t3 = std::get<TestPaint::Track3>(targetTrack);
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.priority[ct.callCount] = priority;
+        t3.imageIds[ct.rotation][ct.callCount] = imageId.getIndex() - ct.baseImageId;
+        ct.callCount++;
+    }
+
+    TestPaint PaintSession::tp;
+
     // 0x004FD170
     PaintStruct* PaintSession::addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
+        AddToTP(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
 
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
         if (ps != nullptr)

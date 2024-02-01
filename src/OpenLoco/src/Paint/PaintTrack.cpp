@@ -13,6 +13,7 @@
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <iostream>
 
 using namespace OpenLoco::Interop;
 
@@ -26,6 +27,148 @@ namespace OpenLoco::Paint
     static loco_global<uint32_t** [2], 0x004FFB80> _trackExtraPaintModes;
     static loco_global<uint8_t, 0x00113605E> _trackTunnel;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
+    static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
+
+    void startTileTP(TestPaint& tp, uint32_t baseImageId, int16_t height, uint8_t index, uint8_t rotation, uint8_t trackId, uint32_t callOffset)
+    {
+        tp.currentTile.baseImageId = baseImageId;
+        tp.currentTile.height = height;
+        tp.currentTile.index = index;
+        tp.currentTile.rotation = rotation;
+        tp.currentTile.trackId = trackId;
+        tp.currentTile.callCount = 0;
+        tp.currentTile.callOffset = callOffset;
+        tp.currentTile.isTrack = true;
+        tp.currentTile.track = TestPaint::Track{};
+        tp.currentTile.tunnelsCount[0] = _tunnelCounts[0];
+        tp.currentTile.tunnelsCount[1] = _tunnelCounts[1];
+        tp.currentTile.tunnelsCount[2] = _tunnelCounts[2];
+        tp.currentTile.tunnelsCount[3] = _tunnelCounts[3];
+    }
+
+    void endTileTP(TestPaint& tp, PaintSession& ps)
+    {
+        auto& ct = tp.currentTile;
+        assert(tp.tracks.size() > ct.trackId);
+        auto& targetTrackVec = tp.tracks[ct.trackId];
+        if (targetTrackVec.size() < static_cast<size_t>(ct.index + 1))
+        {
+            targetTrackVec.resize(ct.index + 1);
+        }
+        if (std::holds_alternative<TestPaint::Track3>(ct.track))
+        {
+            auto& t3Ct = std::get<TestPaint::Track3>(ct.track);
+            auto& bridge = ps.getBridgeEntry();
+            t3Ct.segments[ct.rotation] = ps.get525CF8();
+            assert(ps.get525CF8() == ps.getF003F6());
+            if (!bridge.isEmpty())
+            {
+                t3Ct.bridgeQuarters[ct.rotation] = bridge.edgesQuarters & 0xF;
+                t3Ct.bridgeEdges[ct.rotation] = (bridge.edgesQuarters >> 4) & 0xF;
+                t3Ct.bridgeType[ct.rotation] = bridge.subType;
+                assert(bridge.height == ct.height);
+            }
+
+            uint8_t tunnelEdges = 0;
+            for (auto i = 0; i < 4; ++i)
+            {
+                auto tunnels = ps.getTunnels(i);
+                if (_tunnelCounts[i] != ct.tunnelsCount[i])
+                {
+                    tunnelEdges |= (1U << i);
+                    t3Ct.tunnelHeight[ct.rotation][i] = (tunnels[0].height * World::kMicroZStep) - ct.height;
+                    // assert(tunnels[0].height == ct.height / World::kMicroZStep);
+                }
+                else
+                {
+                    t3Ct.tunnelHeight[ct.rotation][i] = -1;
+                }
+            }
+            t3Ct.tunnelEdges[ct.rotation] = tunnelEdges;
+            t3Ct.callOffset[ct.rotation] = ct.callOffset;
+        }
+        else if (std::holds_alternative<TestPaint::Track1>(ct.track))
+        {
+            auto& t3Ct = std::get<TestPaint::Track1>(ct.track);
+            auto& bridge = ps.getBridgeEntry();
+            t3Ct.segments[ct.rotation] = ps.get525CF8();
+            assert(ps.get525CF8() == ps.getF003F6());
+            if (!bridge.isEmpty())
+            {
+                t3Ct.bridgeQuarters[ct.rotation] = bridge.edgesQuarters & 0xF;
+                t3Ct.bridgeEdges[ct.rotation] = (bridge.edgesQuarters >> 4) & 0xF;
+                t3Ct.bridgeType[ct.rotation] = bridge.subType;
+                assert(bridge.height == ct.height);
+            }
+            uint8_t tunnelEdges = 0;
+            for (auto i = 0; i < 4; ++i)
+            {
+                auto tunnels = ps.getTunnels(i);
+                if (_tunnelCounts[i] != ct.tunnelsCount[i])
+                {
+                    tunnelEdges |= (1U << i);
+                    t3Ct.tunnelHeight[ct.rotation][i] = (tunnels[0].height * World::kMicroZStep) - ct.height;
+                    // assert(tunnels[0].height == ct.height / World::kMicroZStep);
+                }
+                else
+                {
+                    t3Ct.tunnelHeight[ct.rotation][i] = -1;
+                }
+            }
+            t3Ct.tunnelEdges[ct.rotation] = tunnelEdges;
+
+            t3Ct.callOffset[ct.rotation] = ct.callOffset;
+        }
+
+        auto& targetTrack = targetTrackVec[ct.index];
+        if (std::holds_alternative<TestPaint::Track3>(targetTrack) && std::holds_alternative<TestPaint::Track3>(ct.track))
+        {
+            auto& t3 = std::get<TestPaint::Track3>(targetTrack);
+            auto& t3Ct = std::get<TestPaint::Track3>(ct.track);
+            t3.boundingBoxOffsets[ct.rotation] = t3Ct.boundingBoxOffsets[ct.rotation];
+            t3.boundingBoxSizes[ct.rotation] = t3Ct.boundingBoxSizes[ct.rotation];
+            t3.offsets[ct.rotation] = t3Ct.offsets[ct.rotation];
+            t3.bridgeEdges[ct.rotation] = t3Ct.bridgeEdges[ct.rotation];
+            t3.bridgeQuarters[ct.rotation] = t3Ct.bridgeQuarters[ct.rotation];
+            t3.bridgeType[ct.rotation] = t3Ct.bridgeType[ct.rotation];
+            t3.imageIds[ct.rotation] = t3Ct.imageIds[ct.rotation];
+            t3.tunnelEdges[ct.rotation] = t3Ct.tunnelEdges[ct.rotation];
+            t3.tunnelHeight[ct.rotation] = t3Ct.tunnelHeight[ct.rotation];
+            t3.segments[ct.rotation] = t3Ct.segments[ct.rotation];
+            t3.callOffset[ct.rotation] = t3Ct.callOffset[ct.rotation];
+        }
+        else if (std::holds_alternative<TestPaint::Track1>(targetTrack) && std::holds_alternative<TestPaint::Track1>(ct.track))
+        {
+            auto& t1 = std::get<TestPaint::Track1>(targetTrack);
+            auto& t1Ct = std::get<TestPaint::Track1>(ct.track);
+            t1.boundingBoxOffsets[ct.rotation] = t1Ct.boundingBoxOffsets[ct.rotation];
+            t1.boundingBoxSizes[ct.rotation] = t1Ct.boundingBoxSizes[ct.rotation];
+            t1.offsets[ct.rotation] = t1Ct.offsets[ct.rotation];
+            t1.bridgeEdges[ct.rotation] = t1Ct.bridgeEdges[ct.rotation];
+            t1.bridgeQuarters[ct.rotation] = t1Ct.bridgeQuarters[ct.rotation];
+            t1.bridgeType[ct.rotation] = t1Ct.bridgeType[ct.rotation];
+            t1.imageIds[ct.rotation] = t1Ct.imageIds[ct.rotation];
+            t1.tunnelEdges[ct.rotation] = t1Ct.tunnelEdges[ct.rotation];
+            t1.tunnelHeight[ct.rotation] = t1Ct.tunnelHeight[ct.rotation];
+            t1.segments[ct.rotation] = t1Ct.segments[ct.rotation];
+            t1.callOffset[ct.rotation] = t1Ct.callOffset[ct.rotation];
+        }
+        else if (std::holds_alternative<TestPaint::Track3>(ct.track) && targetTrack.index() == 0)
+        {
+            auto& t3Ct = std::get<TestPaint::Track3>(ct.track);
+            targetTrack = t3Ct;
+            assert(t3Ct.priority[0] == 0);
+            assert(t3Ct.priority[1] == 1);
+            assert(t3Ct.priority[2] == 3);
+        }
+        else if (std::holds_alternative<TestPaint::Track1>(ct.track) && targetTrack.index() == 0)
+        {
+            auto& t3Ct = std::get<TestPaint::Track1>(ct.track);
+            targetTrack = t3Ct;
+        }
+        ct.isTrack = false;
+    }
+
 
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
@@ -78,6 +221,21 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
+            auto callOffset = _trackPaintModes[trackObj->var_06][elTrack.trackId()][rotation];
+            if (session.tp.tracks[elTrack.trackId()].size() > 1)
+            {
+                // Dealing with a multi tile so we need to get the calloffset different
+                // Confirm we have the jmp instruction
+                assert(*reinterpret_cast<uint16_t*>(callOffset) == 0x24FF);
+                callOffset = (*reinterpret_cast<uint32_t**>(callOffset + 3))[elTrack.sequenceIndex()];
+            }
+            // Set to zero all the things that are OR'd
+            BridgeEntry entry = session.getBridgeEntry();
+            entry.edgesQuarters = 0;
+            session.setBridgeEntry(entry);
+            session.set525CF8(SegmentFlags::none);
+            session.setOccupiedAdditionSupportSegments(SegmentFlags::none);
+            startTileTP(session.tp, trackObj->image, height, elTrack.sequenceIndex(), rotation, elTrack.trackId(), callOffset);
             const auto trackPaintFunc = _trackPaintModes[trackObj->var_06][elTrack.trackId()][rotation];
             registers regs;
             regs.esi = X86Pointer(&elTrack);
@@ -85,6 +243,7 @@ namespace OpenLoco::Paint
             regs.ecx = rotation;
             regs.dx = height;
             call(trackPaintFunc, regs);
+            endTileTP(session.tp, session);
         }
 
         if (session.getRenderTarget()->zoomLevel > 0)
