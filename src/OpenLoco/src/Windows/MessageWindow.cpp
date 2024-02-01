@@ -329,7 +329,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->rowHover = -1;
             window->disabledWidgets = 0;
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = Messages::kMinWindowSize.width;
             window->minHeight = Messages::kMinWindowSize.height;

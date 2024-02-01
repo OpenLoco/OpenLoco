@@ -248,14 +248,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
     }
 
-    void beginSendChatMessage(Window* self)
+    void beginSendChatMessage(Window& self)
     {
         const auto* opponent = CompanyManager::getOpponent();
         FormatArguments args{};
         args.push(opponent->name);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, const_cast<void*>(&args));
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::map_chat_menu, const_cast<void*>(&args));
     }
 
     // 0x0043A72F
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             switch (itemIndex)
             {
                 case 0:
-                    beginSendChatMessage(self);
+                    beginSendChatMessage(*self);
                     break;
                 case 1:
                     MapWindow::open();

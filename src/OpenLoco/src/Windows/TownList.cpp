@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             Common::refreshTownList(window);
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = TownList::kMinDimensions.width;
             window->minHeight = TownList::kMinDimensions.height;
@@ -1466,15 +1466,15 @@ namespace OpenLoco::Ui::Windows::TownList
         }
     }
 
-    bool rotate(Window* self)
+    bool rotate(Window& self)
     {
-        if (self->currentTab >= Common::widx::tab_build_buildings - Common::widx::tab_town_list)
+        if (self.currentTab >= Common::widx::tab_build_buildings - Common::widx::tab_town_list)
         {
-            if (!self->isDisabled(BuildBuildings::widx::rotate_object))
+            if (!self.isDisabled(BuildBuildings::widx::rotate_object))
             {
-                if (self->widgets[BuildBuildings::widx::rotate_object].type != WidgetType::none)
+                if (self.widgets[BuildBuildings::widx::rotate_object].type != WidgetType::none)
                 {
-                    self->callOnMouseUp(BuildBuildings::widx::rotate_object);
+                    self.callOnMouseUp(BuildBuildings::widx::rotate_object);
                     return true;
                 }
             }

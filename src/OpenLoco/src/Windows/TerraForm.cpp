@@ -870,7 +870,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = PlantTrees::kWindowSize.width;
             window->minHeight = PlantTrees::kWindowSize.height;
@@ -2781,15 +2781,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         terraformWindow->callOnMouseUp(Common::widx::tab_build_walls);
     }
 
-    bool rotate(Window* self)
+    bool rotate(Window& self)
     {
-        if (self->currentTab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
+        if (self.currentTab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
         {
-            if (!self->isDisabled(PlantTrees::widx::rotate_object))
+            if (!self.isDisabled(PlantTrees::widx::rotate_object))
             {
-                if (self->widgets[PlantTrees::widx::rotate_object].type != WidgetType::none)
+                if (self.widgets[PlantTrees::widx::rotate_object].type != WidgetType::none)
                 {
-                    self->callOnMouseUp(PlantTrees::widx::rotate_object);
+                    self.callOnMouseUp(PlantTrees::widx::rotate_object);
                     return true;
                 }
             }

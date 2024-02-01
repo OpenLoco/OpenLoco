@@ -1238,7 +1238,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        window = WindowManager::bringToFront(window);
+        window = WindowManager::bringToFront(*window);
         if (widgetIndex == -1)
         {
             return;
@@ -1334,7 +1334,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        window = WindowManager::bringToFront(window);
+        window = WindowManager::bringToFront(*window);
 
         if (widgetIndex == -1)
         {

@@ -208,9 +208,9 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A0EAD
-    Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
+    Window* openAtTrack(const Window& main, TrackElement* track, const Pos2 pos)
     {
-        auto* viewport = main->viewports[0];
+        auto* viewport = main.viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(track);
         auto* copyElement = (*_backupTileElement).as<TrackElement>();
         if (copyElement == nullptr)
@@ -303,9 +303,9 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A147F
-    Window* openAtRoad(Window* main, RoadElement* road, const Pos2 pos)
+    Window* openAtRoad(const Window& main, RoadElement* road, const Pos2 pos)
     {
-        auto* viewport = main->viewports[0];
+        auto* viewport = main.viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(road);
         auto* copyElement = (*_backupTileElement).as<RoadElement>();
         if (copyElement == nullptr)
@@ -392,10 +392,10 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A1303
-    void setToTrackExtra(Window* main, TrackElement* track, const uint8_t bh, const Pos2 pos)
+    void setToTrackExtra(const Window& main, TrackElement* track, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
-        regs.esi = X86Pointer(main);
+        regs.esi = X86Pointer(&main);
         regs.edx = X86Pointer(track);
         regs.bh = bh;
         regs.ax = pos.x;
@@ -404,10 +404,10 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A13C1
-    void setToRoadExtra(Window* main, RoadElement* road, const uint8_t bh, const Pos2 pos)
+    void setToRoadExtra(const Window& main, RoadElement* road, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
-        regs.esi = X86Pointer(main);
+        regs.esi = X86Pointer(&main);
         regs.edx = X86Pointer(road);
         regs.bh = bh;
         regs.ax = pos.x;
@@ -1094,7 +1094,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0D);
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
             Windows::Main::showDirectionArrows();
             Windows::Main::showGridlines();
 
@@ -1538,23 +1538,23 @@ namespace OpenLoco::Ui::Windows::Construction
         }
     }
 
-    bool rotate(Window* self)
+    bool rotate(Window& self)
     {
-        switch (self->currentTab)
+        switch (self.currentTab)
         {
             case Common::widx::tab_construction - Common::widx::tab_construction:
                 if (_constructionHover == 1)
                 {
-                    self->callOnMouseUp(Construction::widx::rotate_90);
+                    self.callOnMouseUp(Construction::widx::rotate_90);
                     removeConstructionGhosts();
                     return true;
                 }
                 break;
 
             case Common::widx::tab_station - Common::widx::tab_construction:
-                if (self->widgets[Station::widx::rotate].type != WidgetType::none)
+                if (self.widgets[Station::widx::rotate].type != WidgetType::none)
                 {
-                    self->callOnMouseUp(Station::widx::rotate);
+                    self.callOnMouseUp(Station::widx::rotate);
                     return true;
                 }
                 break;

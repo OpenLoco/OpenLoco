@@ -2986,7 +2986,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     {
                         addNewOrder(toolWindow, *order);
                     }
-                    WindowManager::bringToFront(toolWindow);
+                    WindowManager::bringToFront(*toolWindow);
                 }
                 else
                 {
@@ -2994,7 +2994,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     auto clonedOrder = selectedOrder->clone();
                     addNewOrder(toolWindow, *clonedOrder);
-                    WindowManager::bringToFront(toolWindow);
+                    WindowManager::bringToFront(*toolWindow);
                 }
                 return;
             }

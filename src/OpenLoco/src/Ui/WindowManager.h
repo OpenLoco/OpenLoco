@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::WindowManager
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
     Window* get(size_t index);
-    size_t indexOf(Window* pWindow);
+    size_t indexOf(const Window& pWindow);
     size_t count();
 
     void updateViewports();
@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* findAt(int16_t x, int16_t y);
     Window* findAt(Ui::Point point);
     Window* findAtAlt(int16_t x, int16_t y);
-    Window* bringToFront(Window* window);
+    Window* bringToFront(Window& window);
     Window* bringToFront(WindowType type, uint16_t id = 0);
     void invalidate(WindowType type);
     void invalidate(WindowType type, WindowNumber_t number);
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::WindowManager
     void callViewportRotateEventOnAllWindows();
     bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode);
     void relocateWindows();
-    void sub_4CEE0B(Window* self);
+    void sub_4CEE0B(const Window& self);
     void sub_4B93A5(WindowNumber_t number);
     void closeConstructionWindows();
     void closeTopmost();
@@ -156,15 +156,15 @@ namespace OpenLoco::Ui::Windows
     namespace Construction
     {
         Window* openWithFlags(uint32_t flags);
-        Window* openAtTrack(Window* main, World::TrackElement* track, const World::Pos2 pos);
-        Window* openAtRoad(Window* main, World::RoadElement* track, const World::Pos2 pos);
-        void setToTrackExtra(Window* main, World::TrackElement* track, const uint8_t bh, const World::Pos2 pos);
-        void setToRoadExtra(Window* main, World::RoadElement* track, const uint8_t bh, const World::Pos2 pos);
+        Window* openAtTrack(const Window& main, World::TrackElement* track, const World::Pos2 pos);
+        Window* openAtRoad(const Window& main, World::RoadElement* track, const World::Pos2 pos);
+        void setToTrackExtra(const Window& main, World::TrackElement* track, const uint8_t bh, const World::Pos2 pos);
+        void setToRoadExtra(const Window& main, World::RoadElement* track, const uint8_t bh, const World::Pos2 pos);
         void sub_4A6FAC();
         bool isStationTabOpen();
         bool isOverheadTabOpen();
         bool isSignalTabOpen();
-        bool rotate(Window* self);
+        bool rotate(Window& self);
         void removeConstructionGhosts();
         void registerHooks();
         uint16_t getLastSelectedMods();
@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows
         void openAdjustWater();
         void openPlantTrees();
         void openBuildWalls();
-        bool rotate(Window*);
+        bool rotate(Window&);
         void setAdjustLandToolSize(uint8_t size);
         void setAdjustWaterToolSize(uint8_t size);
         void setClearAreaToolSize(uint8_t size);
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void invalidateFrame();
-        void beginSendChatMessage(Window* self);
+        void beginSendChatMessage(Window& self);
     }
 
     namespace TitleExit
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void editorInit();
-        void beginSendChatMessage(Window* self);
+        void beginSendChatMessage(Window& self);
     }
 
     namespace TitleOptions
@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows
         Window* open();
         void removeTown(TownId);
         void reset();
-        bool rotate(Window* self);
+        bool rotate(Window& self);
     }
 
     namespace Tutorial

@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004CEE0B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4CEE0B((Ui::Window*)regs.esi);
+                sub_4CEE0B(*(Ui::Window*)regs.esi);
                 regs = backup;
 
                 return 0;
@@ -496,13 +496,13 @@ namespace OpenLoco::Ui::WindowManager
         return &_windows[index];
     }
 
-    size_t indexOf(Window* pWindow)
+    size_t indexOf(const Window& pWindow)
     {
         int i = 0;
 
         for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if (w == pWindow)
+            if (w == &pWindow)
                 return i;
 
             i++;
@@ -807,11 +807,11 @@ namespace OpenLoco::Ui::WindowManager
 
     // 0x004CC750
     // TODO: hook
-    Window* bringToFront(Window* w)
+    Window* bringToFront(Window& w)
     {
-        if (w->hasFlags(WindowFlags::stickToBack | WindowFlags::stickToFront))
+        if (w.hasFlags(WindowFlags::stickToBack | WindowFlags::stickToFront))
         {
-            return w;
+            return &w;
         }
 
         Window* frontMostWnd = nullptr;
@@ -823,30 +823,32 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
         }
-        if (frontMostWnd != nullptr && frontMostWnd != &_windows[0] && frontMostWnd != w)
+
+        Window* window = &w;
+        if (frontMostWnd != nullptr && frontMostWnd != &_windows[0] && frontMostWnd != window)
         {
-            std::swap(*frontMostWnd, *w);
-            w = frontMostWnd;
-            w->invalidate();
+            std::swap(*frontMostWnd, w);
+            window = frontMostWnd;
+            window->invalidate();
         }
 
-        const auto right = w->x + w->width;
+        const auto right = window->x + window->width;
         // If window is almost offscreen to the left
         if (right < 20)
         {
-            const auto shiftRight = 20 - w->x;
-            w->x = 20;
-            for (auto* vp : w->viewports)
+            const auto shiftRight = 20 - window->x;
+            window->x = 20;
+            for (auto* vp : window->viewports)
             {
                 if (vp != nullptr)
                 {
                     vp->x += shiftRight;
                 }
             }
-            w->invalidate();
+            window->invalidate();
         }
 
-        return w;
+        return window;
     }
 
     // 0x004CD3A9
@@ -859,7 +861,7 @@ namespace OpenLoco::Ui::WindowManager
         window->flags |= WindowFlags::whiteBorderMask;
         window->invalidate();
 
-        return bringToFront(window);
+        return bringToFront(*window);
     }
 
     /**
@@ -1357,16 +1359,16 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004CEE0B
-    void sub_4CEE0B(Window* self)
+    void sub_4CEE0B(const Window& self)
     {
-        int left = self->x;
-        int right = self->x + self->width;
-        int top = self->y;
-        int bottom = self->y + self->height;
+        int left = self.x;
+        int right = self.x + self.width;
+        int top = self.y;
+        int bottom = self.y + self.height;
 
         for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if (w == self)
+            if (w == &self)
                 continue;
 
             if (w->hasFlags(WindowFlags::stickToBack))
@@ -1453,13 +1455,13 @@ namespace OpenLoco::Ui::WindowManager
         }
     }
 
-    static void windowScrollWheelInput(Ui::Window* window, WidgetIndex_t widgetIndex, int wheel)
+    static void windowScrollWheelInput(Ui::Window& window, WidgetIndex_t widgetIndex, int wheel)
     {
-        int scrollIndex = window->getScrollDataIndex(widgetIndex);
-        ScrollArea* scroll = &window->scrollAreas[scrollIndex];
-        Ui::Widget* widget = &window->widgets[widgetIndex];
+        int scrollIndex = window.getScrollDataIndex(widgetIndex);
+        ScrollArea* scroll = &window.scrollAreas[scrollIndex];
+        Ui::Widget* widget = &window.widgets[widgetIndex];
 
-        if (window->scrollAreas[scrollIndex].hasFlags(ScrollFlags::vscrollbarVisible))
+        if (window.scrollAreas[scrollIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
             int size = widget->bottom - widget->top - 1;
             if (scroll->hasFlags(ScrollFlags::hscrollbarVisible))
@@ -1467,7 +1469,7 @@ namespace OpenLoco::Ui::WindowManager
             size = std::max(0, scroll->contentHeight - size);
             scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
-        else if (window->scrollAreas[scrollIndex].hasFlags(ScrollFlags::hscrollbarVisible))
+        else if (window.scrollAreas[scrollIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
             int size = widget->right - widget->left - 1;
             if (scroll->hasFlags(ScrollFlags::vscrollbarVisible))
@@ -1476,8 +1478,8 @@ namespace OpenLoco::Ui::WindowManager
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
         }
 
-        Ui::ScrollView::updateThumbs(window, widgetIndex);
-        invalidateWidget(window->type, window->number, widgetIndex);
+        Ui::ScrollView::updateThumbs(&window, widgetIndex);
+        invalidateWidget(window.type, window.number, widgetIndex);
     }
 
     static bool isStepperGroup(Window& w, WidgetIndex_t index, WidgetType buttonType)
@@ -1565,11 +1567,11 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C628E
-    static bool windowWheelInput(Window* window, int wheel)
+    static bool windowWheelInput(Window& window, int wheel)
     {
         int widgetIndex = -1;
         int scrollIndex = -1;
-        for (Widget* widget = window->widgets; widget->type != WidgetType::end; widget++)
+        for (Widget* widget = window.widgets; widget->type != WidgetType::end; widget++)
         {
             widgetIndex++;
 
@@ -1578,7 +1580,7 @@ namespace OpenLoco::Ui::WindowManager
 
             scrollIndex++;
             constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
-            if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
+            if (window.scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
             {
                 windowScrollWheelInput(window, widgetIndex, wheel);
                 return true;
@@ -1624,7 +1626,7 @@ namespace OpenLoco::Ui::WindowManager
                         constexpr ScrollFlags scrollbarFlags = ScrollFlags::hscrollbarVisible | ScrollFlags::vscrollbarVisible;
                         if (window->scrollAreas[scrollIndex].hasFlags(scrollbarFlags))
                         {
-                            windowScrollWheelInput(window, widgetIndex, wheel);
+                            windowScrollWheelInput(*window, widgetIndex, wheel);
                             return;
                         }
                     }
@@ -1634,7 +1636,7 @@ namespace OpenLoco::Ui::WindowManager
                         return;
                     }
 
-                    if (windowWheelInput(window, wheel))
+                    if (windowWheelInput(*window, wheel))
                     {
                         return;
                     }
@@ -1644,7 +1646,7 @@ namespace OpenLoco::Ui::WindowManager
 
         for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            if (windowWheelInput(w, wheel))
+            if (windowWheelInput(*w, wheel))
             {
                 return;
             }
@@ -1824,7 +1826,7 @@ namespace OpenLoco::Ui::WindowManager
             // skip current window and non-intersecting windows
             if (viewport == window->viewports[0] || viewport == window->viewports[1] || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
             {
-                size_t nextWindowIndex = WindowManager::indexOf(window) + 1;
+                size_t nextWindowIndex = WindowManager::indexOf(*window) + 1;
                 auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
                 viewportRedrawAfterShift(nextWindow, viewport, x, y);
                 return;
@@ -2140,7 +2142,7 @@ namespace OpenLoco::Ui::WindowManager
         // Draw the window in this region
         Ui::WindowManager::drawSingle(rt, w, left, top, right, bottom);
 
-        for (uint32_t index = indexOf(w) + 1; index < count(); index++)
+        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
             auto v = get(index);
 
@@ -2171,7 +2173,7 @@ namespace OpenLoco::Ui::WindowManager
     static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
-        for (uint32_t index = indexOf(w) + 1; index < count(); index++)
+        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
             auto topwindow = get(index);
 

@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             Common::refreshIndustryList(window);
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = IndustryList::kMinDimensions.width;
             window->minHeight = IndustryList::kMinDimensions.height;

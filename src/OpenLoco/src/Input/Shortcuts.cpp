@@ -109,7 +109,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::terraform);
         if (window != nullptr)
         {
-            if (Ui::Windows::Terraform::rotate(window))
+            if (Ui::Windows::Terraform::rotate(*window))
                 return;
         }
 
@@ -117,14 +117,14 @@ namespace OpenLoco::Input::Shortcuts
         window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            if (Ui::Windows::Construction::rotate(window))
+            if (Ui::Windows::Construction::rotate(*window))
                 return;
         }
 
         window = WindowManager::find(WindowType::townList);
         if (window != nullptr)
         {
-            if (Ui::Windows::TownList::rotate(window))
+            if (Ui::Windows::TownList::rotate(*window))
                 return;
         }
 
@@ -456,7 +456,7 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            Windows::TitleMenu::beginSendChatMessage(caller);
+            Windows::TitleMenu::beginSendChatMessage(*caller);
         }
         else
         {
@@ -464,7 +464,7 @@ namespace OpenLoco::Input::Shortcuts
             if (caller == nullptr)
                 return;
 
-            Windows::TimePanel::beginSendChatMessage(caller);
+            Windows::TimePanel::beginSendChatMessage(*caller);
         }
     }
 

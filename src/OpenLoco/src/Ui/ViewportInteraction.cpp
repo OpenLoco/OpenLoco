@@ -1216,7 +1216,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 {
                     if (track->owner() == CompanyManager::getControllingId())
                     {
-                        Ui::Windows::Construction::openAtTrack(window, track, interaction.pos);
+                        Ui::Windows::Construction::openAtTrack(*window, track, interaction.pos);
                     }
                     else
                     {
@@ -1235,7 +1235,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
                     if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::unk_03))
                     {
-                        Ui::Windows::Construction::openAtRoad(window, road, interaction.pos);
+                        Ui::Windows::Construction::openAtRoad(*window, road, interaction.pos);
                     }
                     else
                     {
@@ -1249,7 +1249,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* track = tileElement->as<TrackElement>();
                 if (track != nullptr)
                 {
-                    Ui::Windows::Construction::setToTrackExtra(window, track, interaction.modId, interaction.pos);
+                    Ui::Windows::Construction::setToTrackExtra(*window, track, interaction.modId, interaction.pos);
                 }
                 break;
             }
@@ -1258,7 +1258,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* road = tileElement->as<RoadElement>();
                 if (road != nullptr)
                 {
-                    Ui::Windows::Construction::setToRoadExtra(window, road, interaction.modId, interaction.pos);
+                    Ui::Windows::Construction::setToRoadExtra(*window, road, interaction.modId, interaction.pos);
                 }
                 break;
             }
