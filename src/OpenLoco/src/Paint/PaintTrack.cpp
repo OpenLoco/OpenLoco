@@ -80,7 +80,7 @@ namespace OpenLoco::Paint
         session.insertTunnels(tpp.tunnelHeights[rotation], height, trackSession.tunnelType);
 
         session.set525CF8(session.get525CF8() | tpp.segments[rotation]);
-        session.setF003F6(session.getF003F6() | tpp.segments[rotation]);
+        session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | tpp.segments[rotation]);
     }
 
     static void paintTrackPPStandard(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation, const TrackPaintPiece& tpp)
@@ -114,7 +114,7 @@ namespace OpenLoco::Paint
         session.insertTunnels(tpp.tunnelHeights[rotation], height, trackSession.tunnelType);
 
         session.set525CF8(session.get525CF8() | tpp.segments[rotation]);
-        session.setF003F6(session.getF003F6() | tpp.segments[rotation]);
+        session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | tpp.segments[rotation]);
     }
 
     // 0x0049B6BF
