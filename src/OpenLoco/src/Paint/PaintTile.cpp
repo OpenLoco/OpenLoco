@@ -196,14 +196,14 @@ namespace OpenLoco::Paint
             {
                 sub_4792E7(session);
             }
-            if (session.getF003F4() != 0)
+            if (session.getAdditionSupportHeight() != 0)
             {
                 sub_46748F(session);
             }
 
             session.finaliseTrackRoadOrdering();
             session.finaliseTrackRoadAdditionsOrdering();
-            session.setF003F6(SegmentFlags::none);
+            session.setOccupiedAdditionSupportSegments(SegmentFlags::none);
             auto& bridgeEntry = session.getBridgeEntry();
             if (!bridgeEntry.isEmpty())
             {

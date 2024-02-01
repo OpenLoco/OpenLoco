@@ -373,7 +373,7 @@ namespace OpenLoco::Paint
         session.setItemType(Ui::ViewportInteraction::InteractionItem::trainStation);
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
-        session.setF003F6(SegmentFlags::all);
+        session.setOccupiedAdditionSupportSegments(SegmentFlags::all);
 
         const auto* elTrack = elStation.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)

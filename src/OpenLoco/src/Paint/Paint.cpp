@@ -51,9 +51,7 @@ namespace OpenLoco::Paint
         _didPassSurface = false;
         setBridgeEntry(kNullBridgeEntry);
         _525CF8 = SegmentFlags::none;
-        _F003F4 = 0;
-        _F003F6 = SegmentFlags::none;
-        std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
+        _trackRoadAdditionSupports = TrackRoadAdditionSupports{};
         std::fill(std::begin(_trackRoadPaintStructs), std::end(_trackRoadPaintStructs), nullptr);
         std::fill(std::begin(_trackRoadAdditionsPaintStructs), std::end(_trackRoadAdditionsPaintStructs), nullptr);
         _112C300 = 0;
