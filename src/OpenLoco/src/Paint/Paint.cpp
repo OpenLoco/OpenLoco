@@ -331,70 +331,6 @@ namespace OpenLoco::Paint
         return fmt::format("k{}{}{}{}", _trackIdNames[trackId], index, kPriorityStrs[priority], kRotationNames[rotation]);
     }
 
-    std::tuple<std::string, std::string, std::string, std::string, std::string, std::string> printCommon(uint8_t trackId, uint8_t index, const std::array<World::Pos3, 4>& boundingBoxOffsets, const std::array<World::Pos3, 4>& boundingBoxSizes, const std::array<uint8_t, 4>& bridgeEdges, const std::array<uint8_t, 4>& bridgeQuarters, const std::array<uint8_t, 4>& tunnelEdges, const std::array<SegmentFlags, 4>& segments)
-    {
-        std::string bbOffsetsName = fmt::format("k{}{}BoundingBoxOffsets", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<World::Pos3, 4> " << bbOffsetsName << " = {\n";
-        for (auto& bbO : boundingBoxOffsets)
-        {
-            std::cout << fmt::format("    World::Pos3{{ {}, {}, {} }},\n", bbO.x, bbO.y, bbO.z);
-        }
-        std::cout << "};\n\n";
-        std::string bbSizesName = fmt::format("k{}{}BoundingBoxSizes", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<World::Pos3, 4> " << bbSizesName << " = {\n";
-        for (auto& bbS : boundingBoxSizes)
-        {
-            std::cout << fmt::format("    World::Pos3{{ {}, {}, {} }},\n", bbS.x, bbS.y, bbS.z);
-        }
-        std::cout << "};\n\n";
-
-        std::string bridgeEdgesName = fmt::format("k{}{}BridgeEdges", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<uint8_t, 4> " << bridgeEdgesName << " = {\n";
-        // const auto bridgeEdge0 = bridgeEdges[0];
-        auto j = 0U;
-        for (auto& be : bridgeEdges)
-        {
-            // assert(rotl4bit(bridgeEdge0, j) == bridgeEdges[j]);
-            j++;
-            std::cout << fmt::format("    {:#06b},\n", be);
-        }
-        std::cout << "};\n\n";
-        std::string bridgeQuartersName = fmt::format("k{}{}BridgeQuarters", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<uint8_t, 4> " << bridgeQuartersName << " = {\n";
-        // const auto bridgeQuarter0 = bridgeQuarters[0];
-        j = 0U;
-        for (auto& bq : bridgeQuarters)
-        {
-            // assert(rotl4bit(bridgeQuarter0, j) == bridgeQuarters[j]);
-            j++;
-            std::cout << fmt::format("    {:#06b},\n", bq);
-        }
-        std::cout << "};\n\n";
-        std::string tunnelEdgesName = fmt::format("k{}{}TunnelEdges", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<uint8_t, 4> " << tunnelEdgesName << " = {\n";
-        // const auto tunnelEdge0 = tunnelEdges[0];
-        j = 0U;
-        for (auto& bq : tunnelEdges)
-        {
-            // assert(rotl4bit(tunnelEdge0, j) == tunnelEdges[j]);
-            j++;
-            std::cout << fmt::format("    {:#06b},\n", bq);
-        }
-        std::cout << "};\n\n";
-        std::string segmentsName = fmt::format("k{}{}Segments", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<SegmentFlags, 4> " << segmentsName << " = {\n";
-        // const auto segments0 = segments[0];
-        j = 0U;
-        for (auto& seg : segments)
-        {
-            // assert(rotlSegmentFlags(static_cast<SegmentFlags>(segments0), j) == static_cast<SegmentFlags>(segments[j]));
-            j++;
-            std::cout << fmt::format("    {},\n", getSegmentFlagsString(enumValue(seg)));
-        }
-        std::cout << "};\n\n";
-        return std::make_tuple(bbOffsetsName, bbSizesName, bridgeEdgesName, bridgeQuartersName, tunnelEdgesName, segmentsName);
-    }
-
     std::array<std::string, 3> rotationTablesNames = { "kRotationTable2301", "kRotationTable3012", "kRotationTable1230" };
 
     std::pair<std::string, bool> printCommonPreamble(const std::array<uint32_t, 4>& callOffsets, uint8_t trackId, uint8_t index)
@@ -610,61 +546,6 @@ namespace OpenLoco::Paint
         return ppName;
     }
 
-    void printTrack3(TestPaint::Track3& t, uint8_t trackId, uint8_t index)
-    {
-        auto [bbOffsetsName, bbSizesName, bridgeEdgesName, bridgeQuartersName, tunnelEdgesName, segmentsName] = printCommon(trackId, index, t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.tunnelEdges, t.segments);
-
-        std::string imagesName = fmt::format("k{}{}ImageIndexOffsets", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<std::array<uint32_t, 3>, 4> " << imagesName << " = {\n";
-        for (auto& imageId : t.imageIds)
-        {
-            std::cout << fmt::format("    std::array<uint32_t, 3>{{TrackObj::ImageIds::Style0::_{}, TrackObj::ImageIds::Style0::_{}, TrackObj::ImageIds::Style0::_{}}},\n", imageId[0], imageId[1], imageId[2]);
-        }
-        std::cout << "};\n\n";
-
-        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", t.callOffset[0], t.callOffset[1], t.callOffset[2], t.callOffset[3]);
-        std::cout << fmt::format("static void paintTrack{}{}(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)\n{{\n", _trackIdNames[trackId], index);
-        std::cout << "    const auto height = elTrack.baseHeight();\n";
-        std::cout << "    const auto heightOffset = World::Pos3{ 0, 0, height };\n\n";
-        std::cout << "    if (elTrack.hasBridge())\n    {\n";
-        std::cout << "        auto newBridgeEntry = BridgeEntry(\n            height,\n";
-        std::cout << fmt::format("            {}[rotation],\n", t.bridgeType[0]);
-        std::cout << fmt::format("            {},\n", bridgeEdgesName);
-        std::cout << fmt::format("            {},\n", bridgeQuartersName);
-        std::cout << "            elTrack.bridge(),\n            trackSession.bridgeColoursBaseImageId);\n";
-        std::cout << "        session.setBridgeEntry(newBridgeEntry);\n    }\n\n";
-
-        std::cout << "    const auto baseImage = trackSession.trackBaseImageId;\n";
-        std::cout << "    session.addToPlotListTrackRoad(\n";
-        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation][0]),\n", imagesName);
-        std::cout << fmt::format("        {},\n", t.priority[0]);
-        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
-        std::cout << "    session.addToPlotListTrackRoad(\n";
-        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation][1]),\n", imagesName);
-        std::cout << fmt::format("        {},\n", t.priority[1]);
-        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
-        std::cout << "    session.addToPlotListTrackRoad(\n";
-        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation][2]),\n", imagesName);
-        std::cout << fmt::format("        {},\n", t.priority[2]);
-        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
-
-        std::cout << "    session.insertTunnels(\n";
-        if (t.tunnelHeight[0][0] != 0)
-        {
-            std::cout << "        height + " << t.tunnelHeight[0][0] << ",\n";
-        }
-        else
-        {
-            std::cout << "        height,\n";
-        }
-        std::cout << "        trackSession.tunnelType,\n        " << tunnelEdgesName << "[rotation]);\n";
-
-        std::cout << fmt::format("    session.set525CF8(session.get525CF8() | {}[rotation]);\n", segmentsName);
-        std::cout << fmt::format("    session.setF003F6(session.getF003F6() | {}[rotation]);\n", segmentsName);
-
-        std::cout << "}\n\n";
-    }
-
     std::string printTrack1Alt(TestPaint::Track1& t, uint8_t trackId, uint8_t index)
     {
         auto [ppName, printArray] = printCommonPreamble(t.callOffset, trackId, index);
@@ -694,61 +575,6 @@ namespace OpenLoco::Paint
 
         std::cout << "};\n\n";
         return ppName;
-    }
-
-    void printTrack1(TestPaint::Track1& t, uint8_t trackId, uint8_t index)
-    {
-        auto [bbOffsetsName, bbSizesName, bridgeEdgesName, bridgeQuartersName, tunnelEdgesName, segmentsName] = printCommon(trackId, index, t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.tunnelEdges, t.segments);
-
-        std::string imagesName = fmt::format("k{}{}ImageIndexOffsets", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<uint32_t, 4> " << imagesName << " = {\n";
-        for (auto& imageId : t.imageIds)
-        {
-            std::cout << fmt::format("    TrackObj::ImageIds::Style0::_{},\n", imageId);
-        }
-        std::cout << "};\n\n";
-
-        std::string tunnelHeightName = fmt::format("k{}{}TunnelHeights", _trackIdNames[trackId], index);
-        std::cout << "constexpr std::array<uint32_t, 4> " << tunnelHeightName << " = {\n";
-        for (auto& tunnelHeights : t.tunnelHeight)
-        {
-            std::cout << fmt::format("    {{ {}, {}, {}, {}, }},", tunnelHeights[0], tunnelHeights[1], tunnelHeights[2], tunnelHeights[3]);
-        }
-        std::cout << "};\n\n";
-
-        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", t.callOffset[0], t.callOffset[1], t.callOffset[2], t.callOffset[3]);
-
-        std::cout << fmt::format("static void paintTrack{}{}(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation)\n{{\n", _trackIdNames[trackId], index);
-        std::cout << "    const auto height = elTrack.baseHeight();\n";
-        std::cout << "    const auto heightOffset = World::Pos3{ 0, 0, height };\n\n";
-        std::cout << "    if (elTrack.hasBridge())\n    {\n";
-        std::cout << "        auto newBridgeEntry = BridgeEntry(\n            height,\n";
-        std::cout << fmt::format("            {}[rotation],\n", t.bridgeType[0]);
-        std::cout << fmt::format("            {},\n", bridgeEdgesName);
-        std::cout << fmt::format("            {},\n", bridgeQuartersName);
-        std::cout << "            elTrack.bridge(),\n            trackSession.bridgeColoursBaseImageId);\n";
-        std::cout << "        session.setBridgeEntry(newBridgeEntry);\n    }\n\n";
-
-        std::cout << "    const auto baseImage = trackSession.trackBaseImageId;\n";
-        std::cout << "    session.addToPlotList4FD150(\n";
-        std::cout << fmt::format("        baseImage.withIndexOffset({}[rotation]),\n", imagesName);
-        std::cout << fmt::format("        heightOffset,\n        {}[rotation] + heightOffset,\n        {}[rotation]);\n", bbOffsetsName, bbSizesName);
-
-        std::cout << "    session.insertTunnels(\n";
-        if (t.tunnelHeight[0][0] != -1)
-        {
-            std::cout << "        height, " << tunnelHeightName << "[rotation],\n";
-        }
-        else
-        {
-            std::cout << "        height,\n";
-        }
-        std::cout << "        trackSession.tunnelType,\n        " << tunnelEdgesName << "[rotation]);\n";
-
-        std::cout << fmt::format("    session.set525CF8(session.get525CF8() | {}[rotation]);\n", segmentsName);
-        std::cout << fmt::format("    session.setF003F6(session.getF003F6() | {}[rotation]);\n", segmentsName);
-
-        std::cout << "}\n\n";
     }
 
     std::array<uint8_t, 26> kTrackOrder = {
