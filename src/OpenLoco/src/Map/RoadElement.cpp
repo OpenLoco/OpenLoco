@@ -1,5 +1,6 @@
 #include "RoadElement.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/RemoveRoad.h"
 #include "GameState.h"
 #include "Objects/RoadObject.h"
 #include "Tile.h"
