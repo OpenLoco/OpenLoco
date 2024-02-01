@@ -289,21 +289,21 @@ namespace OpenLoco::Paint
         return ps;
     }
 
-    void PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    // 0x004FD180
+    PaintStruct* PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        registers regs;
-        regs.ebx = imageId.toUInt32();
-        regs.ecx = priority;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
+        _lastPS = nullptr;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps != nullptr)
+        {
+            _lastPS = ps;
+            auto* lastTRS = _trackRoadAdditionsPaintStructs[priority];
+            _trackRoadAdditionsPaintStructs[priority] = ps;
+            ps->children = lastTRS;
+        }
 
-        call(_4FD180[currentRotation], regs);
+        return ps;
     }
 
     // 0x0045E779
@@ -354,6 +354,44 @@ namespace OpenLoco::Paint
         return &_session;
     }
 
+    static PaintStruct* addToPlotListTrackRoadHookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto priority = regs.ecx;
+        const auto offset = World::Pos3(0, 0, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
+    static PaintStruct* addToPlotListTrackRoadAdditionHookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto priority = regs.ecx;
+        const auto offset = World::Pos3(0, 0, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotListTrackRoadAddition(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
+    static PaintStruct* addToPlot4FD150HookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto offset = World::Pos3(0, 0, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -373,15 +411,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto priority = regs.ecx;
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(0);
-                auto* ps = session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 0);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -392,15 +422,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto priority = regs.ecx;
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(1);
-                auto* ps = session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 1);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -411,15 +433,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto priority = regs.ecx;
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(2);
-                auto* ps = session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 2);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -430,15 +444,52 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto priority = regs.ecx;
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 3);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
 
-                session.setRotation(3);
-                auto* ps = session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+        registerHook(
+            0x0045C503,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 0);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C656,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 1);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C7B0,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 2);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C90B,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 3);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -450,14 +501,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(0);
-                auto* ps = session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlot4FD150HookHelper(regs, 0);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -468,14 +512,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(1);
-                auto* ps = session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlot4FD150HookHelper(regs, 1);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -486,14 +523,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(2);
-                auto* ps = session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlot4FD150HookHelper(regs, 2);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
@@ -504,14 +534,7 @@ namespace OpenLoco::Paint
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                PaintSession session;
-                const auto imageId = ImageId::fromUInt32(regs.ebx);
-                const auto offset = World::Pos3(0, 0, regs.dx);
-                const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
-                const auto& boundingBoxOffset = session.getBoundingBoxOffset();
-
-                session.setRotation(3);
-                auto* ps = session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
+                auto* ps = addToPlot4FD150HookHelper(regs, 3);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
