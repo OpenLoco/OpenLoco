@@ -196,35 +196,32 @@ namespace OpenLoco::Paint
             {
                 sub_4792E7(session);
             }
-            if (session.getF003F4() != 0)
+            if (session.getAdditionSupportHeight() != 0)
             {
                 sub_46748F(session);
             }
 
             session.finaliseTrackRoadOrdering();
             session.finaliseTrackRoadAdditionsOrdering();
-            session.setF003F6(0);
-            if (session.get525CE4(0) != 0xFFFF)
+            session.setOccupiedAdditionSupportSegments(SegmentFlags::none);
+            auto& bridgeEntry = session.getBridgeEntry();
+            if (!bridgeEntry.isEmpty())
             {
                 if (sub_42AC9C(session))
                 {
                     session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
-                if (session.getGeneralSupportHeight().height >= session.get525CE4(0))
+                if (session.getGeneralSupportHeight().height >= bridgeEntry.height)
                 {
-                    session.setGeneralSupportHeight(session.get525CE4(0), 0x20);
+                    session.setGeneralSupportHeight(bridgeEntry.height, 0x20);
                 }
-                session.set525CE4(0, 0xFFFF);
-                session.set525CF0(0);
+                session.setBridgeEntry(kNullBridgeEntry);
             }
 
-            if (session.get525CF8() != 0)
+            if (session.get525CF8() != SegmentFlags::none)
             {
-                for (auto bit = Numerics::bitScanForward(session.get525CF8()); bit != -1; bit = Numerics::bitScanForward(session.get525CF8()))
-                {
-                    session.set525CF8(session.get525CF8() & ~(1 << bit));
-                    session.setSegmentSupportHeight(static_cast<SegmentFlags>(1 << bit), 0xFFFF, 0);
-                }
+                session.setSegmentSupportHeight(session.get525CF8(), 0xFFFF, 0);
+                session.set525CF8(SegmentFlags::none);
             }
         }
     }

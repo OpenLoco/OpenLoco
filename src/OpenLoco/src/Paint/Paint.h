@@ -34,19 +34,22 @@ namespace OpenLoco::Paint
     enum class SegmentFlags : uint16_t
     {
         none = 0U,
-        _58 = 1U << 0, // TBC: 0
-        _5C = 1U << 1, // TBC: 6
-        _60 = 1U << 2, // TBC: 2
-        _64 = 1U << 3, // TBC: 8
-        _68 = 1U << 4, // TBC: 3
-        _6C = 1U << 5, // TBC: 7
-        _70 = 1U << 6, // TBC: 1
-        _74 = 1U << 7, // TBC: 5
-        _78 = 1U << 8, // TBC: 4
+        x0y0 = 1U << 0, // 0: (x:0, y:0)
+        x2y0 = 1U << 1, // 2: (x:2, y:0)
+        x0y2 = 1U << 2, // 6: (x:0, y:2)
+        x2y2 = 1U << 3, // 8: (x:2, y:2)
+        x1y1 = 1U << 4, // 4: (x:1, y:1)
+        x1y0 = 1U << 5, // 1: (x:1, y:0)
+        x0y1 = 1U << 6, // 3: (x:0, y:1)
+        x2y1 = 1U << 7, // 5: (x:2, y:1)
+        x1y2 = 1U << 8, // 7: (x:1, y:2)
 
-        all = _58 | _5C | _60 | _64 | _68 | _6C | _70 | _74 | _78,
+        all = x0y0 | x2y0 | x0y2 | x2y2 | x1y1 | x1y0 | x0y1 | x2y1 | x1y2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(SegmentFlags);
+
+    // Handy array for converting a bit index to the flag
+    constexpr std::array<SegmentFlags, 9> kSegmentOffsets = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
 
     // Used by both AttachedPaintStruct and PaintStruct
     enum class PaintStructFlags : uint8_t
@@ -145,10 +148,49 @@ namespace OpenLoco::Paint
 
     struct TunnelEntry
     {
-        uint8_t height;
+        World::MicroZ height;
         uint8_t type;
+        constexpr bool operator==(const TunnelEntry&) const = default;
     };
     assert_struct_size(TunnelEntry, 2);
+
+    struct BridgeEntry
+    {
+        int16_t height;        // 0x00525CE4
+        uint16_t subType;      // 0x00525CE6
+        uint32_t padImage1;    // 0x00525CE8 used only in bridge paint here just to keep struct size
+        uint32_t padImage2;    // 0x00525CEC used only in bridge paint here just to keep struct size
+        uint8_t edgesQuarters; // 0x00525CF0
+        uint8_t objectId;      // 0x00525CF1
+        ImageId imageBase;     // 0x00525CF2
+
+        constexpr BridgeEntry() = default;
+        constexpr BridgeEntry(coord_t _height, uint8_t _subType, uint8_t edges, uint8_t quarters, uint8_t _objectId, ImageId _imageBase)
+            : height(_height)
+            , subType(_subType)
+            , padImage1(0)
+            , padImage2(0)
+            , edgesQuarters((edges << 4U) | quarters)
+            , objectId(_objectId)
+            , imageBase(_imageBase){};
+
+        bool isEmpty() const { return height == -1; }
+    };
+    assert_struct_size(BridgeEntry, 18);
+
+    constexpr auto kNullBridgeEntry = BridgeEntry(-1, 0, 0, 0, 0, ImageId(0));
+
+    struct TrackRoadAdditionSupports
+    {
+        int16_t height;                                                     // 0x00F003F4 support height 0 == no supports at all
+        SegmentFlags occupiedSegments;                                      // 0x00F003F6 segments that the support can't be placed
+        uint32_t segmentImages[9];                                          // 0x00F003F8 0 == no support here
+        uint8_t segmentFrequency[9];                                        // 0x00F0041C fewer bits set == higher frequency of supports
+        Ui::ViewportInteraction::InteractionItem segmentInteractionType[9]; // 0x00F00425 why isn't mod id set???
+        void* segmentInteractionItem[9];                                    // 0x00F0042E
+    };
+    assert_struct_size(TrackRoadAdditionSupports, 0x5E);
+
 #pragma pack(pop)
     struct GenerationParameters;
 
@@ -181,10 +223,11 @@ namespace OpenLoco::Paint
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
         int16_t getMaxHeight() { return _maxHeight; }
         uint32_t get112C300() { return _112C300; }
-        uint16_t getF003F4() { return _F003F4; }
+        int16_t getAdditionSupportHeight() { return (*_trackRoadAdditionSupports).height; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
-        uint16_t get525CE4(const uint8_t i) { return _525CE4[i]; }
-        uint16_t get525CF8() { return _525CF8; }
+        const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
+        SegmentFlags get525CF8() { return _525CF8; }
+        SegmentFlags getOccupiedAdditionSuportSegments() { return (*_trackRoadAdditionSupports).occupiedSegments; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
@@ -206,10 +249,9 @@ namespace OpenLoco::Paint
         void setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope);
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
         void setMaxHeight(const World::Pos2& loc);
-        void set525CF8(const uint16_t segments) { _525CF8 = segments; }
-        void set525CF0(const uint8_t newValue) { _525CF0 = newValue; }
-        void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
-        void set525CE4(const uint8_t i, const uint16_t newValue) { _525CE4[i] = newValue; }
+        void set525CF8(const SegmentFlags segments) { _525CF8 = segments; }
+        void setOccupiedAdditionSupportSegments(const SegmentFlags newValue) { (*_trackRoadAdditionSupports).occupiedSegments = newValue; }
+        void setBridgeEntry(const BridgeEntry newValue) { _bridgeEntry = newValue; }
         void resetTileColumn(const Ui::Point& pos);
         void resetTunnels();
         void resetLastPS() { _lastPS = nullptr; }
@@ -217,6 +259,9 @@ namespace OpenLoco::Paint
         World::Pos3 getBoundingBoxOffset() const { return _boundingBoxOffset; }
         void finaliseTrackRoadOrdering();
         void finaliseTrackRoadAdditionsOrdering();
+        std::span<TunnelEntry> getTunnels(uint8_t edge);
+        void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
+        void insertTunnels(const std::array<int16_t, 4>& tunnelHeights, coord_t height, uint8_t tunnelType);
 
         /*
          * @param amount    @<eax>
@@ -394,18 +439,15 @@ namespace OpenLoco::Paint
 
         // Different globals that don't really belong to PaintSession.
         inline static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C077> _tunnels0;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0BB> _tunnels1;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0FF> _tunnels2;
-        inline static Interop::loco_global<TunnelEntry[32], 0x0050C143> _tunnels3;
-        inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
-        inline static Interop::loco_global<uint8_t, 0x00525CF0> _525CF0;
-        inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C077> _tunnels0; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0BB> _tunnels1; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
+        inline static Interop::loco_global<BridgeEntry, 0x00525CE4> _bridgeEntry;
+        inline static Interop::loco_global<SegmentFlags, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;
-        inline static Interop::loco_global<uint16_t, 0x00F003F4> _F003F4;
-        inline static Interop::loco_global<uint16_t, 0x00F003F6> _F003F6;
-        inline static Interop::loco_global<uint32_t[9], 0x00F003F8> _unkSegments;
+        inline static Interop::loco_global<TrackRoadAdditionSupports, 0x00F003F4> _trackRoadAdditionSupports;
         inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegments;
         inline static Interop::loco_global<SupportHeight, 0x00F0047C> _support;
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
