@@ -641,9 +641,11 @@ namespace OpenLoco::Paint
             }
         }
         std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPiece>, {}> kTrackPaintParts = {{\n", tppNames.size());
-        for (auto& tppName : tppNames)
+        for (auto trackId = 0; trackId < 26; ++trackId)
         {
-            std::cout << fmt::format("    {},\n", tppName);
+            auto tppOffset = std::distance(std::begin(kTrackOrder), std::find(std::begin(kTrackOrder), std::end(kTrackOrder), trackId));
+
+            std::cout << fmt::format("    {},\n", tppNames[tppOffset]);
         }
         assert(tppNames.size() == 26);
         std::cout << "};\n\n";
