@@ -355,7 +355,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffsetY @<0xE3F0A2>
          * @param boundBoxOffsetZ @<0xE3F0A4>
          */
-        void addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
+        PaintStruct* addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 
         /*
          * @param rotation @<ebp>
