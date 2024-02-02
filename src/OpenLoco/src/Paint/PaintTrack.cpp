@@ -29,26 +29,79 @@ namespace OpenLoco::Paint
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
 
+    void startTileTPA(TestPaint& tp, uint32_t baseImageId, int16_t height, uint8_t index, uint8_t rotation, uint8_t trackId, uint32_t callOffset, uint8_t paintStyle)
+    {
+        tp.currentTileTrackAddition.baseImageId = baseImageId;
+        tp.currentTileTrackAddition.callCount = 0;
+        tp.currentTileTrackAddition.callOffset = callOffset;
+        tp.currentTileTrackAddition.height = height;
+        tp.currentTileTrackAddition.index = index;
+        tp.currentTileTrackAddition.isTrackAddition = true;
+        tp.currentTileTrackAddition.paintStyle = paintStyle;
+        tp.currentTileTrackAddition.rotation = rotation;
+        tp.currentTileTrackAddition.trackId = trackId;
+        tp.currentTileTrackAddition.ta = {};
+    }
+
     void startTileTP(TestPaint& tp, uint32_t baseImageId, int16_t height, uint8_t index, uint8_t rotation, uint8_t trackId, uint32_t callOffset)
     {
-        tp.currentTile.baseImageId = baseImageId;
-        tp.currentTile.height = height;
-        tp.currentTile.index = index;
-        tp.currentTile.rotation = rotation;
-        tp.currentTile.trackId = trackId;
-        tp.currentTile.callCount = 0;
-        tp.currentTile.callOffset = callOffset;
-        tp.currentTile.isTrack = true;
-        tp.currentTile.track = TestPaint::Track{};
-        tp.currentTile.tunnelsCount[0] = _tunnelCounts[0];
-        tp.currentTile.tunnelsCount[1] = _tunnelCounts[1];
-        tp.currentTile.tunnelsCount[2] = _tunnelCounts[2];
-        tp.currentTile.tunnelsCount[3] = _tunnelCounts[3];
+        tp.currentTileTrack.baseImageId = baseImageId;
+        tp.currentTileTrack.height = height;
+        tp.currentTileTrack.index = index;
+        tp.currentTileTrack.rotation = rotation;
+        tp.currentTileTrack.trackId = trackId;
+        tp.currentTileTrack.callCount = 0;
+        tp.currentTileTrack.callOffset = callOffset;
+        tp.currentTileTrack.isTrack = true;
+        tp.currentTileTrack.track = TestPaint::Track{};
+        tp.currentTileTrack.tunnelsCount[0] = _tunnelCounts[0];
+        tp.currentTileTrack.tunnelsCount[1] = _tunnelCounts[1];
+        tp.currentTileTrack.tunnelsCount[2] = _tunnelCounts[2];
+        tp.currentTileTrack.tunnelsCount[3] = _tunnelCounts[3];
+    }
+
+    void endTileTPA(TestPaint& tp, PaintSession& ps)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        assert(ct.paintStyle < 2);
+        assert(tp.trackAdditions[ct.paintStyle].size() > ct.trackId);
+        auto& targetTrackVec = tp.trackAdditions[ct.paintStyle][ct.trackId];
+        if (targetTrackVec.size() < static_cast<size_t>(ct.index + 1))
+        {
+            targetTrackVec.resize(ct.index + 1);
+        }
+        auto& supports = ps.getAdditionSupports();
+        ct.ta.supportHeight[ct.rotation] = supports.height;
+        bool supportFound = false;
+        for (auto i = 0U; i < 9; ++i)
+        {
+            if (supports.segmentImages[i] != 0)
+            {
+                assert(!supportFound);
+                supportFound = true;
+                ct.ta.supportSegment[ct.rotation] = (1 << i);
+                ct.ta.supportFrequency[ct.rotation] = supports.segmentFrequency[i];
+                ct.ta.supportImageId[ct.rotation] = ImageId::fromUInt32(supports.segmentImages[i]).getIndex() - ct.baseImageId;
+            }
+        }
+
+        auto& targetTrack = targetTrackVec[ct.index];
+        targetTrack.imageIds[ct.rotation] = ct.ta.imageIds[ct.rotation];
+        targetTrack.offsets[ct.rotation] = ct.ta.offsets[ct.rotation];
+        targetTrack.boundingBoxOffsets[ct.rotation] = ct.ta.boundingBoxOffsets[ct.rotation];
+        targetTrack.boundingBoxSizes[ct.rotation] = ct.ta.boundingBoxSizes[ct.rotation];
+        targetTrack.priority = ct.ta.priority;
+        targetTrack.callType = ct.ta.callType;
+        targetTrack.supportImageId[ct.rotation] = ct.ta.supportImageId[ct.rotation];
+        targetTrack.supportHeight[ct.rotation] = ct.ta.supportHeight[ct.rotation];
+        targetTrack.supportFrequency[ct.rotation] = ct.ta.supportFrequency[ct.rotation];
+        targetTrack.supportSegment[ct.rotation] = ct.ta.supportSegment[ct.rotation];
+        targetTrack.callOffset[ct.rotation] = ct.callOffset;
     }
 
     void endTileTP(TestPaint& tp, PaintSession& ps)
     {
-        auto& ct = tp.currentTile;
+        auto& ct = tp.currentTileTrack;
         assert(tp.tracks.size() > ct.trackId);
         auto& targetTrackVec = tp.tracks[ct.trackId];
         if (targetTrackVec.size() < static_cast<size_t>(ct.index + 1))
@@ -169,7 +222,6 @@ namespace OpenLoco::Paint
         ct.isTrack = false;
     }
 
-
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
@@ -271,6 +323,15 @@ namespace OpenLoco::Paint
 
             session.setTrackModId(mod);
 
+            auto callOffset = _trackExtraPaintModes[trackExtraObj->paintStyle][elTrack.trackId()][rotation];
+            if (session.tp.trackAdditions[trackExtraObj->paintStyle][elTrack.trackId()].size() > 1)
+            {
+                // Dealing with a multi tile so we need to get the calloffset different
+                // Confirm we have the jmp instruction
+                assert(*reinterpret_cast<uint16_t*>(callOffset) == 0x24FF);
+                callOffset = (*reinterpret_cast<uint32_t**>(callOffset + 3))[elTrack.sequenceIndex()];
+            }
+            startTileTPA(session.tp, trackExtraObj->image, height, elTrack.sequenceIndex(), rotation, elTrack.trackId(), callOffset, trackExtraObj->paintStyle);
             const auto trackExtraPaintFunc = _trackExtraPaintModes[trackExtraObj->paintStyle][elTrack.trackId()][rotation];
             registers regs;
             regs.esi = X86Pointer(&elTrack);
@@ -278,6 +339,7 @@ namespace OpenLoco::Paint
             regs.ecx = rotation;
             regs.dx = height;
             call(trackExtraPaintFunc, regs);
+            endTileTPA(session.tp, session);
         }
     }
 

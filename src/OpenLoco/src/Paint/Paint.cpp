@@ -697,7 +697,7 @@ namespace OpenLoco::Paint
 
     void AddToTP(TestPaint& tp, ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        auto& ct = tp.currentTile;
+        auto& ct = tp.currentTileTrack;
         if (!ct.isTrack)
         {
             return;
@@ -763,7 +763,7 @@ namespace OpenLoco::Paint
 
     void AddToTP(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        auto& ct = tp.currentTile;
+        auto& ct = tp.currentTileTrack;
         if (!ct.isTrack)
         {
             return;
@@ -785,6 +785,26 @@ namespace OpenLoco::Paint
         ct.callCount++;
     }
 
+    void AddToTPA(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.priority = priority;
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 0;
+        ct.callCount++;
+    }
+
     TestPaint PaintSession::tp;
 
     // 0x004FD170
@@ -792,6 +812,7 @@ namespace OpenLoco::Paint
     {
         _lastPS = nullptr;
         AddToTP(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
+        AddToTPA(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
 
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
         if (ps != nullptr)
@@ -805,11 +826,32 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    
+    void AddToTPATRA(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.priority = priority;
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 1;
+        ct.callCount++;
+    }
+
     // 0x004FD180
     PaintStruct* PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
-
+        AddToTPATRA(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
         if (ps != nullptr)
         {

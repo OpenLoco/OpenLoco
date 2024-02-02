@@ -242,7 +242,7 @@ namespace OpenLoco::Paint
         };
 
         using Track = std::variant<std::monostate, Track1, Track3>;
-        struct CurrentTile
+        struct CurrentTileTrack
         {
             int16_t height;
             uint32_t baseImageId;
@@ -257,7 +257,38 @@ namespace OpenLoco::Paint
         };
 
         std::array<std::vector<Track>, 44> tracks;
-        CurrentTile currentTile;
+        CurrentTileTrack currentTileTrack;
+
+        struct TrackAddition
+        {
+            std::array<uint32_t, 4> imageIds;
+            std::array<World::Pos3, 4> offsets;
+            std::array<World::Pos3, 4> boundingBoxOffsets;
+            std::array<World::Pos3, 4> boundingBoxSizes;
+            uint8_t priority;
+            uint8_t callType;
+            std::array<uint32_t, 4> supportImageId;
+            std::array<int16_t, 4> supportHeight;
+            std::array<uint8_t, 4> supportFrequency;
+            std::array<uint16_t, 4> supportSegment;
+            std::array<uint32_t, 4> callOffset;
+        };
+
+        struct CurrentTileTrackAddition
+        {
+            int16_t height;
+            uint32_t baseImageId;
+            uint8_t rotation;
+            uint8_t trackId;
+            uint8_t index;
+            uint8_t paintStyle;
+            uint8_t callCount;
+            uint32_t callOffset;
+            bool isTrackAddition;
+            TrackAddition ta;
+        };
+        std::array<std::array<std::vector<TrackAddition>, 44>, 2> trackAdditions;
+        CurrentTileTrackAddition currentTileTrackAddition;
     };
 
     struct PaintSession
@@ -281,6 +312,7 @@ namespace OpenLoco::Paint
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         SegmentFlags get525CF8() { return _525CF8; }
         SegmentFlags getOccupiedAdditionSuportSegments() { return (*_trackRoadAdditionSupports).occupiedSegments; }
+        TrackRoadAdditionSupports& getAdditionSupports() { return _trackRoadAdditionSupports; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
