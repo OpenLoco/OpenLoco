@@ -113,7 +113,7 @@ namespace OpenLoco::Paint
             auto& t3Ct = std::get<TestPaint::Track3>(ct.track);
             auto& bridge = ps.getBridgeEntry();
             t3Ct.segments[ct.rotation] = ps.get525CF8();
-            assert(ps.get525CF8() == ps.getF003F6());
+            assert(ps.get525CF8() == ps.getOccupiedAdditionSuportSegments());
             if (!bridge.isEmpty())
             {
                 t3Ct.bridgeQuarters[ct.rotation] = bridge.edgesQuarters & 0xF;
@@ -145,7 +145,7 @@ namespace OpenLoco::Paint
             auto& t3Ct = std::get<TestPaint::Track1>(ct.track);
             auto& bridge = ps.getBridgeEntry();
             t3Ct.segments[ct.rotation] = ps.get525CF8();
-            assert(ps.get525CF8() == ps.getF003F6());
+            assert(ps.get525CF8() == ps.getOccupiedAdditionSuportSegments());
             if (!bridge.isEmpty())
             {
                 t3Ct.bridgeQuarters[ct.rotation] = bridge.edgesQuarters & 0xF;
