@@ -799,6 +799,7 @@ namespace OpenLoco::Paint
         }
 
         printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 1, trackId, index);
+        fmt::println("    /* CallType */ {},", tai.callType);
         if (tai.hasSupports)
         {
             std::cout << "    /* Supports */ TrackAdditionSupport {\n";
@@ -818,7 +819,7 @@ namespace OpenLoco::Paint
                     _usedImagesA[1].insert(std::make_pair(imageId, track1));
                     _usedImagesA[1].insert(std::make_pair(imageId + 1, track2));
                 }
-                std::cout << fmt::format("            {{ TrackExtraObj::ImageIds::Style{}::{}, TrackExtraObj::ImageIds::Style{}::{} }}\n", 1, track1, 1, track2);
+                std::cout << fmt::format("            {{ TrackExtraObj::ImageIds::Style{}::{}, TrackExtraObj::ImageIds::Style{}::{} }},\n", 1, track1, 1, track2);
                 r++;
             }
             std::cout << "        },\n";
@@ -1012,9 +1013,29 @@ namespace OpenLoco::Paint
         call(_4FD200[currentRotation], regs);
     }
 
+    void AddToTPA4(TestPaint& tp, ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 3;
+        ct.callCount++;
+    }
+
     // 0x004FD1E0
     PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
+        AddToTPA4(tp, imageId, offset, boundBoxOffset, boundBoxSize);
         if (*_lastPS == nullptr)
         {
             return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
@@ -1217,6 +1238,18 @@ namespace OpenLoco::Paint
         return session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
     }
 
+    static PaintStruct* addToPlotListAsChildHookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto offset = World::Pos3(regs.al, regs.cl, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotListAsChild(imageId, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -1360,6 +1393,51 @@ namespace OpenLoco::Paint
                 registers backup = regs;
 
                 auto* ps = addToPlot4FD150HookHelper(regs, 3);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+
+         registerHook(
+            0x0045D367,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 0);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045D4CF,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 1);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045D643,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 2);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045D7B9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 3);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);

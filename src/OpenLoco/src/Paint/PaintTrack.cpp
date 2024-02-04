@@ -99,6 +99,10 @@ namespace OpenLoco::Paint
         targetTrack.boundingBoxOffsets[ct.rotation] = ct.ta.boundingBoxOffsets[ct.rotation];
         targetTrack.boundingBoxSizes[ct.rotation] = ct.ta.boundingBoxSizes[ct.rotation];
         targetTrack.priority = ct.ta.priority;
+        if (ct.paintStyle == 0 && ct.ta.callType == 1)
+        {
+            assert(targetTrack.priority == 4);
+        }
         targetTrack.callType = ct.ta.callType;
         targetTrack.supportImageId[ct.rotation] = ct.ta.supportImageId[ct.rotation];
         targetTrack.supportHeight[ct.rotation] = ct.ta.supportHeight[ct.rotation];
