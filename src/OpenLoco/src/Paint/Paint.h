@@ -7,6 +7,7 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <span>
+#include <variant>
 
 namespace OpenLoco::World
 {
@@ -207,6 +208,90 @@ namespace OpenLoco::Paint
 
     static constexpr auto kMaxPaintQuadrants = 1024;
 
+    struct TestPaint
+    {
+        struct Track3
+        {
+            std::array<std::array<uint32_t, 3>, 4> imageIds;
+            std::array<uint8_t, 3> priority;
+            std::array<World::Pos3, 4> offsets;
+            std::array<World::Pos3, 4> boundingBoxOffsets;
+            std::array<World::Pos3, 4> boundingBoxSizes;
+            std::array<uint8_t, 4> bridgeEdges;
+            std::array<uint8_t, 4> bridgeQuarters;
+            std::array<uint8_t, 4> tunnelEdges;
+            std::array<SegmentFlags, 4> segments;
+            std::array<uint32_t, 4> callOffset;
+            std::array<std::array<int8_t, 4>, 4> tunnelHeight;
+            std::array<uint8_t, 4> bridgeType;
+        };
+
+        struct Track1
+        {
+            std::array<uint32_t, 4> imageIds;
+            std::array<World::Pos3, 4> offsets;
+            std::array<World::Pos3, 4> boundingBoxOffsets;
+            std::array<World::Pos3, 4> boundingBoxSizes;
+            std::array<uint8_t, 4> bridgeEdges;
+            std::array<uint8_t, 4> bridgeQuarters;
+            std::array<uint8_t, 4> tunnelEdges;
+            std::array<SegmentFlags, 4> segments;
+            std::array<uint32_t, 4> callOffset;
+            std::array<std::array<int8_t, 4>, 4> tunnelHeight;
+            std::array<uint8_t, 4> bridgeType;
+        };
+
+        using Track = std::variant<std::monostate, Track1, Track3>;
+        struct CurrentTileTrack
+        {
+            int16_t height;
+            uint32_t baseImageId;
+            uint8_t rotation;
+            uint8_t trackId;
+            uint8_t index;
+            uint8_t callCount;
+            uint32_t callOffset;
+            bool isTrack;
+            Track track;
+            std::array<uint8_t, 4> tunnelsCount;
+        };
+
+        std::array<std::vector<Track>, 44> tracks;
+        CurrentTileTrack currentTileTrack;
+
+        struct TrackAddition
+        {
+            std::array<uint32_t, 4> imageIds;
+            std::array<World::Pos3, 4> offsets;
+            std::array<World::Pos3, 4> boundingBoxOffsets;
+            std::array<World::Pos3, 4> boundingBoxSizes;
+            uint8_t priority;
+            int8_t callType;
+            std::array<uint32_t, 4> supportImageId;
+            bool hasSupports;
+            std::array<int16_t, 4> supportHeight;
+            std::array<uint8_t, 4> supportFrequency;
+            std::array<uint16_t, 4> supportSegment;
+            std::array<uint32_t, 4> callOffset;
+        };
+
+        struct CurrentTileTrackAddition
+        {
+            int16_t height;
+            uint32_t baseImageId;
+            uint8_t rotation;
+            uint8_t trackId;
+            uint8_t index;
+            uint8_t paintStyle;
+            uint8_t callCount;
+            uint32_t callOffset;
+            bool isTrackAddition;
+            TrackAddition ta;
+        };
+        std::array<std::array<std::vector<TrackAddition>, 44>, 2> trackAdditions;
+        CurrentTileTrackAddition currentTileTrackAddition;
+    };
+
     struct PaintSession
     {
     public:
@@ -228,6 +313,7 @@ namespace OpenLoco::Paint
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         SegmentFlags get525CF8() { return _525CF8; }
         SegmentFlags getOccupiedAdditionSuportSegments() { return (*_trackRoadAdditionSupports).occupiedSegments; }
+        TrackRoadAdditionSupports& getAdditionSupports() { return _trackRoadAdditionSupports; }
         World::Pos2 getUnkPosition()
         {
             return World::Pos2{ _unkPositionX, _unkPositionY };
@@ -377,6 +463,10 @@ namespace OpenLoco::Paint
          * @param offsetY @<cx>
          */
         AttachedPaintStruct* attachToPrevious(ImageId imageId, const Ui::Point& offset);
+
+        static TestPaint tp;
+
+        static void printTP();
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);

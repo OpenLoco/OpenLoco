@@ -9,6 +9,7 @@
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "PaintEntity.h"
 #include "PaintTile.h"
 #include "PaintTrack.h"
@@ -17,6 +18,8 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <iostream>
+#include <map>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -189,6 +192,721 @@ namespace OpenLoco::Paint
         return true;
     }
 
+    static const std::array<std::string, 44> _trackIdNames = {
+        "Straight",
+        "Diagonal",
+        "LeftCurveVerySmall",
+        "RightCurveVerySmall",
+        "LeftCurveSmall",
+        "RightCurveSmall",
+        "LeftCurve",
+        "RightCurve",
+        "LeftCurveLarge",
+        "RightCurveLarge",
+        "DiagonalLeftCurveLarge",
+        "DiagonalRightCurveLarge",
+        "SBendLeft",
+        "SBendRight",
+        "StraightSlopeUp",
+        "StraightSlopeDown",
+        "StraightSteepSlopeUp",
+        "StraightSteepSlopeDown",
+        "LeftCurveSmallSlopeUp",
+        "RightCurveSmallSlopeUp",
+        "LeftCurveSmallSlopeDown",
+        "RightCurveSmallSlopeDown",
+        "LeftCurveSmallSteepSlopeUp",
+        "RightCurveSmallSteepSlopeUp",
+        "LeftCurveSmallSteepSlopeDown",
+        "RightCurveSmallSteepSlopeDown",
+        "unkStraight1",
+        "unkStraight2",
+        "unkLeftCurveVerySmall1",
+        "unkLeftCurveVerySmall2",
+        "unkRightCurveVerySmall1",
+        "unkRightCurveVerySmall2",
+        "unkSBendRight",
+        "unkSBendLeft",
+        "unkStraightSteepSlopeUp1",
+        "unkStraightSteepSlopeUp2",
+        "unkStraightSteepSlopeDown1",
+        "unkStraightSteepSlopeDown2",
+        "sBendToDualTrack",
+        "sBendToSingleTrack",
+        "unkSBendToDualTrack",
+        "unkSBendToSingleTrack",
+        "turnaround",
+        "unkTurnaround",
+    };
+
+    std::array<std::string, 9> kSegmentFlagNames = {
+        "x0y0", //= 1U << 0, // 0: (x:0, y:0)
+        "x2y0", //= 1U << 1, // 2: (x:2, y:0)
+        "x0y2", //= 1U << 2, // 6: (x:0, y:2)
+        "x2y2", //= 1U << 3, // 8: (x:2, y:2)
+        "x1y1", //= 1U << 4, // 4: (x:1, y:1)
+        "x1y0", //= 1U << 5, // 1: (x:1, y:0)
+        "x0y1", //= 1U << 6, // 3: (x:0, y:1)
+        "x2y1", //= 1U << 7, // 5: (x:2, y:1)
+        "x1y2", //= 1U << 8, // 7: (x:1, y:2)
+    };
+
+    std::string getSegmentFlagsString(uint16_t flags)
+    {
+        std::string result;
+        for (auto i = 0U; i < 9; ++i)
+        {
+            if (flags & (1 << i))
+            {
+                if (!result.empty())
+                {
+                    result += " | ";
+                }
+                result += fmt::format("SegmentFlags::{}", kSegmentFlagNames[i]);
+            }
+        }
+        return result;
+    }
+
+    constexpr uint8_t rotl4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val << rotation) | (val >> (4 - rotation))) & 0xF;
+    }
+
+    constexpr uint8_t rotr4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
+    }
+
+    constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap1 = {
+        std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+        std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+        std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+        std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+    };
+    constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap2 = {
+        std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+        std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+        std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+        std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+    };
+
+    constexpr SegmentFlags rotlSegmentFlags(SegmentFlags val, uint8_t rotation)
+    {
+        SegmentFlags ret = SegmentFlags::none;
+        const auto _val = enumValue(val);
+        for (auto i = 0U; i < 4; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << kSegMap1[rotation][i]);
+            }
+        }
+        for (auto i = 5U; i < 9; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << (kSegMap2[rotation][i - 5] + 5));
+            }
+        }
+
+        return ret | (val & SegmentFlags::x1y1);
+    }
+
+    struct OffsetFunc
+    {
+        uint8_t trackId;
+        uint8_t sequence;
+        uint8_t rotation;
+    };
+
+    std::map<uint32_t, std::string> _usedImages;
+    std::array<std::map<uint32_t, std::string>, 2> _usedImagesA;
+    std::map<uint32_t, OffsetFunc> _outputedOffsets;
+    std::array<std::map<uint32_t, OffsetFunc>, 2> _outputedOffsetsA;
+
+    const std::array<std::string, 4> kPriorityStrs = { "", "Ballast", "Sleeper", "Rail" };
+    const std::array<std::string, 4> kRotationNames = { "NE", "SE", "SW", "NW" };
+
+    std::string getDefaultTrackImageName(uint8_t trackId, uint8_t index, int8_t priority, uint8_t rotation)
+    {
+        return fmt::format("k{}{}{}{}", _trackIdNames[trackId], index, kPriorityStrs[priority], kRotationNames[rotation]);
+    }
+    std::string getDefaultTrackAdditionImageName(uint8_t trackId, uint8_t index, uint8_t rotation)
+    {
+        return fmt::format("k{}{}{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
+    }
+    std::string getDefaultTrackAdditionSupportImageName(uint8_t trackId, uint8_t index, uint8_t rotation)
+    {
+        return fmt::format("k{}{}Support{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
+    }
+    std::string getDefaultTrackAdditionSupportConnectorImageName(uint8_t trackId, uint8_t index, uint8_t rotation)
+    {
+        return fmt::format("k{}{}SupportConnector{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
+    }
+
+    std::array<std::string, 3> rotationTablesNames = { "kRotationTable2301", "kRotationTable3012", "kRotationTable1230" };
+
+    std::pair<std::string, bool> printCommonPreamble(const std::array<uint32_t, 4>& callOffsets, uint8_t trackId, uint8_t index)
+    {
+        uint32_t seenCount = 0;
+        uint8_t r = 0;
+        for (auto& co : callOffsets)
+        {
+            if (_outputedOffsets.count(co) != 0)
+            {
+                seenCount++;
+            }
+            else
+            {
+                _outputedOffsets.insert(std::make_pair(co, OffsetFunc{ trackId, index, r }));
+            }
+            r++;
+        }
+        std::string ppName = fmt::format("k{}{}", _trackIdNames[trackId], index);
+
+        if (seenCount == 2)
+        {
+            std::cout << "// Already seen " << seenCount << "\n";
+        }
+        else if (seenCount == 4)
+        {
+            uint8_t mirrorTrackId = 0;
+            uint8_t mirrorIndex = 0;
+            std::array<uint8_t, 4> rotationTable = {};
+            for (auto i = 0; i < 4; ++i)
+            {
+                auto& f = _outputedOffsets[callOffsets[i]];
+                if (i != 0)
+                {
+                    assert(mirrorIndex == f.sequence);
+                    assert(mirrorTrackId == f.trackId);
+                }
+                rotationTable[i] = f.rotation;
+                mirrorIndex = f.sequence;
+                mirrorTrackId = f.trackId;
+            }
+
+            std::string mirrorPP = fmt::format("k{}{}", _trackIdNames[mirrorTrackId], mirrorIndex);
+            std::string rotationTableName = "";
+            if (rotationTable[0] == 2 && rotationTable[1] == 3 && rotationTable[2] == 0 && rotationTable[3] == 1)
+            {
+                rotationTableName = rotationTablesNames[0];
+            }
+            else if (rotationTable[0] == 3 && rotationTable[1] == 0 && rotationTable[2] == 1 && rotationTable[3] == 2)
+            {
+                rotationTableName = rotationTablesNames[1];
+            }
+            else if (rotationTable[0] == 1 && rotationTable[1] == 2 && rotationTable[2] == 3 && rotationTable[3] == 0)
+            {
+                rotationTableName = rotationTablesNames[2];
+            }
+            else
+            {
+                assert(false);
+            }
+            // assert(rotationTable[0] == 2);
+            // assert(rotationTable[1] == 3);
+            // assert(rotationTable[2] == 0);
+            // assert(rotationTable[3] == 1);
+
+            std::cout << fmt::format("constexpr TrackPaintPiece {} = rotateTrackPP({}, {});\n\n", ppName, mirrorPP, rotationTableName);
+            return std::make_pair(ppName, false);
+        }
+        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", callOffsets[0], callOffsets[1], callOffsets[2], callOffsets[3]);
+        std::cout << fmt::format("constexpr TrackPaintPiece {} = {{\n", ppName);
+        return std::make_pair(ppName, true);
+    }
+
+    void printCommonAlt(const std::array<World::Pos3, 4>& boundingBoxOffsets, const std::array<World::Pos3, 4>& boundingBoxSizes, const std::array<uint8_t, 4>& bridgeEdges, const std::array<uint8_t, 4>& bridgeQuarters, const std::array<uint8_t, 4>& bridgeType, const std::array<int8_t, 4>& tunnelHeights, const std::array<SegmentFlags, 4>& segments)
+    {
+        std::cout << "    /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{\n";
+        for (auto& bbO : boundingBoxOffsets)
+        {
+            std::cout << fmt::format("        World::Pos3{{ {}, {}, {} }},\n", bbO.x, bbO.y, bbO.z);
+        }
+        std::cout << "    },\n";
+
+        std::cout << "    /* BoundingBoxSizes */ std::array<World::Pos3, 4>{\n";
+        for (auto& bbS : boundingBoxSizes)
+        {
+            std::cout << fmt::format("        World::Pos3{{ {}, {}, {} }},\n", bbS.x, bbS.y, bbS.z);
+        }
+        std::cout << "    },\n";
+
+        // std::cout << "    /* BridgeEdges */ std::array<uint8_t, 4>{\n";
+        // std::cout << fmt::format("        {:#06b}, {:#06b}, {:#06b}, {:#06b},\n", bridgeEdges[0], bridgeEdges[1], bridgeEdges[2], bridgeEdges[3]);
+        // std::cout << "    },\n";
+        std::cout << fmt::format("    /* BridgeEdges */ {:#06b},\n", bridgeEdges[0]);
+
+        assert(bridgeEdges[1] == rotl4bit(bridgeEdges[0], 1));
+        assert(bridgeEdges[2] == rotl4bit(bridgeEdges[0], 2));
+        assert(bridgeEdges[3] == rotl4bit(bridgeEdges[0], 3));
+
+        // std::cout << "    /* BridgeQuarters */ std::array<uint8_t, 4>{\n";
+        // std::cout << fmt::format("        {:#06b}, {:#06b}, {:#06b}, {:#06b},\n", bridgeQuarters[0], bridgeQuarters[1], bridgeQuarters[2], bridgeQuarters[3]);
+        // std::cout << "    },\n";
+        std::cout << fmt::format("    /* BridgeQuarters */ {:#06b},\n", bridgeQuarters[0]);
+
+        assert(bridgeQuarters[1] == rotl4bit(bridgeQuarters[0], 1));
+        assert(bridgeQuarters[2] == rotl4bit(bridgeQuarters[0], 2));
+        assert(bridgeQuarters[3] == rotl4bit(bridgeQuarters[0], 3));
+
+        if ((bridgeType[0] == 0) && (bridgeType[1] == 0) && (bridgeType[2] == 0) && (bridgeType[3] == 0))
+        {
+            std::cout << fmt::format("    /* BridgeType */ kFlatBridge,\n");
+        }
+        else
+        {
+            std::cout << "    /* BridgeType */ std::array<uint8_t, 4>{\n";
+            std::cout << "        ";
+            for (auto bt : bridgeType)
+            {
+                std::cout << fmt::format("{}, ", bt);
+            }
+            std::cout << "\n";
+            std::cout << "    },\n";
+        }
+
+        if ((tunnelHeights[0] == -1) && (tunnelHeights[1] == -1) && (tunnelHeights[2] == -1) && (tunnelHeights[3] == -1))
+        {
+            std::cout << fmt::format("    /* TunnelHeights */ kNoTunnels,\n");
+        }
+        else
+        {
+            std::cout << "    /* TunnelHeights */ std::array<int16_t, 4>{\n";
+            std::cout << "        ";
+            for (auto th : tunnelHeights)
+            {
+                if (th == -1)
+                {
+                    std::cout << "kNoTunnel, ";
+                }
+                else
+                {
+                    std::cout << fmt::format("{}, ", th);
+                }
+            }
+            std::cout << "\n";
+            std::cout << "    },\n";
+        }
+
+        // std::cout << "    /* Segments */ std::array<SegmentFlags, 4>{\n";
+        // for (auto& s : segments)
+        //{
+        //     std::cout << fmt::format("        {},\n", getSegmentFlagsString(s));
+        // }
+        // std::cout << "    },\n";
+
+        std::cout << fmt::format("    /* Segments */ {},\n", getSegmentFlagsString(enumValue(segments[0])));
+
+        if (segments[1] != rotlSegmentFlags(segments[0], 1))
+        {
+            // assert(false);
+        }
+        assert(segments[2] == rotlSegmentFlags(segments[0], 2));
+        if (segments[3] != rotlSegmentFlags(segments[0], 3))
+        {
+            // assert(false);
+        }
+    }
+
+    std::string printTrack3Alt(TestPaint::Track3& t, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreamble(t.callOffset, trackId, index);
+        if (!printArray)
+        {
+            return ppName;
+        }
+        std::cout << "    std::array<std::array<uint32_t, 3>, 4>{\n";
+        uint8_t r = 0;
+        for (auto& imageId : t.imageIds)
+        {
+            auto track1 = getDefaultTrackImageName(trackId, index, 1, r);
+            auto track2 = getDefaultTrackImageName(trackId, index, 2, r);
+            auto track3 = getDefaultTrackImageName(trackId, index, 3, r);
+            if (_usedImages.count(imageId[0]))
+            {
+                track1 = _usedImages[imageId[0]];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId[0], track1));
+            }
+            if (_usedImages.count(imageId[1]))
+            {
+                track2 = _usedImages[imageId[1]];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId[1], track2));
+            }
+            if (_usedImages.count(imageId[2]))
+            {
+                track3 = _usedImages[imageId[2]];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId[2], track3));
+            }
+            std::cout << fmt::format("        std::array<uint32_t, 3>{{TrackObj::ImageIds::Style0::{}, TrackObj::ImageIds::Style0::{}, TrackObj::ImageIds::Style0::{}}},\n", track1, track2, track3);
+            r++;
+        }
+        std::cout << "    },\n";
+
+        printCommonAlt(t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.bridgeType, t.tunnelHeight[0], t.segments);
+
+        std::cout << "};\n\n";
+        return ppName;
+    }
+
+    std::string printTrack1Alt(TestPaint::Track1& t, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreamble(t.callOffset, trackId, index);
+        if (!printArray)
+        {
+            return ppName;
+        }
+        std::cout << "    std::array<uint32_t, 4>{\n";
+        uint8_t r = 0;
+        for (auto& imageId : t.imageIds)
+        {
+            auto track1 = getDefaultTrackImageName(trackId, index, 0, r);
+            if (_usedImages.count(imageId))
+            {
+                track1 = _usedImages[imageId];
+            }
+            else
+            {
+                _usedImages.insert(std::make_pair(imageId, track1));
+            }
+            std::cout << fmt::format("        TrackObj::ImageIds::Style0::{},\n", track1);
+            r++;
+        }
+        std::cout << "    },\n";
+
+        printCommonAlt(t.boundingBoxOffsets, t.boundingBoxSizes, t.bridgeEdges, t.bridgeQuarters, t.bridgeType, t.tunnelHeight[0], t.segments);
+
+        std::cout << "};\n\n";
+        return ppName;
+    }
+
+    std::array<uint8_t, 26> kTrackOrder = {
+        enumValue(World::Track::TrackId::straight),
+        enumValue(World::Track::TrackId::diagonal),
+        enumValue(World::Track::TrackId::rightCurveVerySmall),
+        enumValue(World::Track::TrackId::leftCurveVerySmall),
+        enumValue(World::Track::TrackId::rightCurveSmall),
+        enumValue(World::Track::TrackId::leftCurveSmall),
+        enumValue(World::Track::TrackId::rightCurve),
+        enumValue(World::Track::TrackId::leftCurve),
+        enumValue(World::Track::TrackId::rightCurveLarge),
+        enumValue(World::Track::TrackId::leftCurveLarge),
+        enumValue(World::Track::TrackId::diagonalRightCurveLarge),
+        enumValue(World::Track::TrackId::diagonalLeftCurveLarge),
+        enumValue(World::Track::TrackId::sBendLeft),
+        enumValue(World::Track::TrackId::sBendRight),
+        enumValue(World::Track::TrackId::straightSlopeUp),
+        enumValue(World::Track::TrackId::straightSlopeDown),
+        enumValue(World::Track::TrackId::straightSteepSlopeUp),
+        enumValue(World::Track::TrackId::straightSteepSlopeDown),
+        enumValue(World::Track::TrackId::rightCurveSmallSlopeUp),
+        enumValue(World::Track::TrackId::rightCurveSmallSlopeDown),
+        enumValue(World::Track::TrackId::leftCurveSmallSlopeUp),
+        enumValue(World::Track::TrackId::leftCurveSmallSlopeDown),
+        enumValue(World::Track::TrackId::rightCurveSmallSteepSlopeUp),
+        enumValue(World::Track::TrackId::rightCurveSmallSteepSlopeDown),
+        enumValue(World::Track::TrackId::leftCurveSmallSteepSlopeUp),
+        enumValue(World::Track::TrackId::leftCurveSmallSteepSlopeDown),
+    };
+
+    static void printTPT(TestPaint& tp)
+    {
+        std::vector<std::string> tppNames;
+        for (auto trackId : kTrackOrder)
+        {
+            std::vector<std::string> ppNames;
+            auto& track = tp.tracks[trackId];
+            for (auto index = 0U; index < track.size(); ++index)
+            {
+                auto& ti = track[index];
+                if (std::holds_alternative<TestPaint::Track3>(ti))
+                {
+                    auto& t3Ct = std::get<TestPaint::Track3>(ti);
+                    ppNames.push_back(printTrack3Alt(t3Ct, trackId, index));
+                }
+                else if (std::holds_alternative<TestPaint::Track1>(ti))
+                {
+                    auto& t3Ct = std::get<TestPaint::Track1>(ti);
+                    ppNames.push_back(printTrack1Alt(t3Ct, trackId, index));
+                }
+            }
+            if (!track.empty())
+            {
+                std::string tppName = fmt::format("k{}TPP", _trackIdNames[trackId]);
+                tppNames.push_back(tppName);
+                std::cout << fmt::format("constexpr std::array<TrackPaintPiece, {}> {} = {{\n", track.size(), tppName);
+                for (auto& ppName : ppNames)
+                {
+                    std::cout << fmt::format("    {},\n", ppName);
+                }
+                std::cout << "};\n\n";
+            }
+        }
+        std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPiece>, {}> kTrackPaintParts = {{\n", tppNames.size());
+        for (auto trackId = 0; trackId < 26; ++trackId)
+        {
+            auto tppOffset = std::distance(std::begin(kTrackOrder), std::find(std::begin(kTrackOrder), std::end(kTrackOrder), trackId));
+
+            std::cout << fmt::format("    {},\n", tppNames[tppOffset]);
+        }
+        assert(tppNames.size() == 26);
+        std::cout << "};\n\n";
+        for (const auto image : _usedImages)
+        {
+            std::cout << fmt::format("constexpr uint32_t {} = {};\n", image.second, image.first);
+        }
+    }
+
+    std::pair<std::string, bool> printCommonPreambleA(const std::array<uint32_t, 4>& callOffsets, uint8_t trackId, uint8_t index, uint8_t paintStyle, int8_t callType)
+    {
+        uint32_t seenCount = 0;
+        uint8_t r = 0;
+        for (auto& co : callOffsets)
+        {
+            if (_outputedOffsetsA[paintStyle].count(co) != 0)
+            {
+                seenCount++;
+            }
+            else
+            {
+                _outputedOffsetsA[paintStyle].insert(std::make_pair(co, OffsetFunc{ trackId, index, r }));
+            }
+            r++;
+        }
+        std::string ppName = fmt::format("k{}Addition{}{}", _trackIdNames[trackId], paintStyle, index);
+
+        if (callType == -1)
+        {
+            fmt::println("constexpr TrackPaintAdditionPiece{} {} = kNullTrackPaintAdditionPiece{};\n", paintStyle, ppName, paintStyle);
+            return std::make_pair(ppName, false);
+        }
+        if (seenCount == 2)
+        {
+            std::cout << "// Already seen " << seenCount << "\n";
+        }
+        else if (seenCount == 4)
+        {
+            uint8_t mirrorTrackId = 0;
+            uint8_t mirrorIndex = 0;
+            std::array<uint8_t, 4> rotationTable = {};
+            for (auto i = 0; i < 4; ++i)
+            {
+                auto& f = _outputedOffsetsA[paintStyle][callOffsets[i]];
+                if (i != 0)
+                {
+                    assert(mirrorIndex == f.sequence);
+                    assert(mirrorTrackId == f.trackId);
+                }
+                rotationTable[i] = f.rotation;
+                mirrorIndex = f.sequence;
+                mirrorTrackId = f.trackId;
+            }
+
+            std::string mirrorPP = fmt::format("k{}Addition{}{}", _trackIdNames[mirrorTrackId], paintStyle, mirrorIndex);
+            std::string rotationTableName = "";
+            if (rotationTable[0] == 2 && rotationTable[1] == 3 && rotationTable[2] == 0 && rotationTable[3] == 1)
+            {
+                rotationTableName = rotationTablesNames[0];
+            }
+            else if (rotationTable[0] == 3 && rotationTable[1] == 0 && rotationTable[2] == 1 && rotationTable[3] == 2)
+            {
+                rotationTableName = rotationTablesNames[1];
+            }
+            else if (rotationTable[0] == 1 && rotationTable[1] == 2 && rotationTable[2] == 3 && rotationTable[3] == 0)
+            {
+                rotationTableName = rotationTablesNames[2];
+            }
+            else
+            {
+                assert(false);
+            }
+            // assert(rotationTable[0] == 2);
+            // assert(rotationTable[1] == 3);
+            // assert(rotationTable[2] == 0);
+            // assert(rotationTable[3] == 1);
+
+            std::cout << fmt::format("constexpr TrackPaintAdditionPiece{} {} = rotateTrackPP({}, {});\n\n", paintStyle, ppName, mirrorPP, rotationTableName);
+            return std::make_pair(ppName, false);
+        }
+        std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", callOffsets[0], callOffsets[1], callOffsets[2], callOffsets[3]);
+        std::cout << fmt::format("constexpr TrackPaintAdditionPiece{} {} = {{\n", paintStyle, ppName);
+        return std::make_pair(ppName, true);
+    }
+    void printCommonA(const std::array<uint32_t, 4>& images, const std::array<World::Pos3, 4>& boundingBoxOffsets, const std::array<World::Pos3, 4>& boundingBoxSizes, uint8_t paintStyle, uint8_t trackId, uint8_t index)
+    {
+        std::cout << "    /* ImageIds */ std::array<uint32_t, 4>{\n";
+        uint8_t r = 0;
+        for (auto& imageId : images)
+        {
+            auto track1 = getDefaultTrackAdditionImageName(trackId, index, r);
+            if (_usedImagesA[paintStyle].count(imageId))
+            {
+                track1 = _usedImagesA[paintStyle][imageId];
+            }
+            else
+            {
+                _usedImagesA[paintStyle].insert(std::make_pair(imageId, track1));
+            }
+            std::cout << fmt::format("        TrackExtraObj::ImageIds::Style{}::{},\n", paintStyle, track1);
+            r++;
+        }
+        std::cout << "    },\n";
+
+        std::cout << "    /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{\n";
+        for (auto& bbO : boundingBoxOffsets)
+        {
+            std::cout << fmt::format("        World::Pos3{{ {}, {}, {} }},\n", bbO.x, bbO.y, bbO.z);
+        }
+        std::cout << "    },\n";
+
+        std::cout << "    /* BoundingBoxSizes */ std::array<World::Pos3, 4>{\n";
+        for (auto& bbS : boundingBoxSizes)
+        {
+            std::cout << fmt::format("        World::Pos3{{ {}, {}, {} }},\n", bbS.x, bbS.y, bbS.z);
+        }
+        std::cout << "    },\n";
+    }
+    static std::string printTrackAddition0(const TestPaint::TrackAddition& tai, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreambleA(tai.callOffset, trackId, index, 0, tai.callType);
+        if (!printArray)
+        {
+            return ppName;
+        }
+
+        printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 0, trackId, index);
+
+        assert((tai.callType == 0) || (tai.callType == 3));
+        fmt::println("    /* Mergable */ {},", tai.callType == 0);
+
+        std::cout << "};\n\n";
+        return ppName;
+    }
+    static std::string printTrackAddition1(const TestPaint::TrackAddition& tai, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreambleA(tai.callOffset, trackId, index, 1, tai.callType);
+        if (!printArray)
+        {
+            return ppName;
+        }
+
+        printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 1, trackId, index);
+        assert((tai.callType == 2) || (tai.callType == 1));
+        fmt::println("    /* Mergable */ {},", tai.callType == 1);
+        if (tai.hasSupports)
+        {
+            std::cout << "    /* Supports */ TrackAdditionSupport {\n";
+            std::cout << "        /* ImageIds */ std::array<uint32_t, 4>{\n";
+            uint8_t r = 0;
+            for (auto& imageId : tai.supportImageId)
+            {
+                auto track1 = getDefaultTrackAdditionSupportImageName(trackId, index, r);
+                auto track2 = getDefaultTrackAdditionSupportConnectorImageName(trackId, index, r);
+                if (_usedImagesA[1].count(imageId))
+                {
+                    track1 = _usedImagesA[1][imageId];
+                    track2 = _usedImagesA[1][imageId + 1];
+                }
+                else
+                {
+                    _usedImagesA[1].insert(std::make_pair(imageId, track1));
+                    _usedImagesA[1].insert(std::make_pair(imageId + 1, track2));
+                }
+                std::cout << fmt::format("            {{ TrackExtraObj::ImageIds::Style{}::{}, TrackExtraObj::ImageIds::Style{}::{} }},\n", 1, track1, 1, track2);
+                r++;
+            }
+            std::cout << "        },\n";
+
+            assert((tai.supportHeight[0] == tai.supportHeight[1]) && (tai.supportHeight[0] == tai.supportHeight[2]) && (tai.supportHeight[0] == tai.supportHeight[3]));
+            fmt::println("        /* SupportHeight */ {},", tai.supportHeight[0]);
+            assert(tai.supportFrequency[0] == tai.supportFrequency[2]);
+            assert(tai.supportFrequency[1] == tai.supportFrequency[3]);
+            fmt::println("        /* Frequency */ {},", tai.supportFrequency[0]);
+            assert(rotlSegmentFlags(SegmentFlags(tai.supportSegment[0]), 1) == SegmentFlags(tai.supportSegment[1]));
+            assert(rotlSegmentFlags(SegmentFlags(tai.supportSegment[0]), 2) == SegmentFlags(tai.supportSegment[2]));
+            assert(rotlSegmentFlags(SegmentFlags(tai.supportSegment[0]), 3) == SegmentFlags(tai.supportSegment[3]));
+            fmt::println("        /* Segment */ {},", getSegmentFlagsString(tai.supportSegment[0]));
+            std::cout << "    },\n";
+        }
+        else
+        {
+            fmt::println("    /* Supports */ kNoSupports,");
+        }
+        std::cout << "};\n\n";
+        return ppName;
+    }
+
+    static void printTPA(TestPaint& tp)
+    {
+        std::array<std::vector<std::string>, 2> tppNames;
+        for (auto i = 0U; i < 2; ++i)
+        {
+            for (auto trackId : kTrackOrder)
+            {
+                std::vector<std::string> ppNames;
+                auto& trackAdd = tp.trackAdditions[i][trackId];
+                for (auto index = 0U; index < trackAdd.size(); ++index)
+                {
+                    auto& tai = trackAdd[index];
+                    if (i == 0)
+                    {
+                        ppNames.push_back(printTrackAddition0(tai, trackId, index));
+                    }
+                    else
+                    {
+                        ppNames.push_back(printTrackAddition1(tai, trackId, index));
+                    }
+                }
+                if (!trackAdd.empty())
+                {
+                    std::string tppName = fmt::format("k{}TPPA{}", _trackIdNames[trackId], i);
+                    tppNames[i].push_back(tppName);
+                    std::cout << fmt::format("constexpr std::array<TrackPaintAdditionPiece{}, {}> {} = {{\n", i, trackAdd.size(), tppName);
+                    for (auto& ppName : ppNames)
+                    {
+                        std::cout << fmt::format("    {},\n", ppName);
+                    }
+                    std::cout << "};\n\n";
+                }
+            }
+        }
+        for (auto i = 0U; i < 2; ++i)
+        {
+            std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPieceAdditionPiece{}>, {}> kTrackPaintParts{} = {{\n", i, tppNames.size(), i);
+            for (auto trackId = 0; trackId < 26; ++trackId)
+            {
+                auto tppOffset = std::distance(std::begin(kTrackOrder), std::find(std::begin(kTrackOrder), std::end(kTrackOrder), trackId));
+
+                std::cout << fmt::format("    {},\n", tppNames[i][tppOffset]);
+            }
+            assert(tppNames[i].size() == 26);
+            std::cout << "};\n\n";
+        }
+        for (auto i = 0U; i < 2; ++i)
+        {
+            for (const auto image : _usedImagesA[i])
+            {
+                std::cout << fmt::format("constexpr uint32_t {} = {};\n", image.second, image.first);
+            }
+        }
+    }
+
+    void PaintSession::printTP()
+    {
+        printTPT(tp);
+        printTPA(tp);
+    }
     static constexpr World::Pos3 rotateBoundBoxSize(const World::Pos3& bbSize, const uint8_t rotation)
     {
         auto output = bbSize;
@@ -230,10 +948,54 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    void AddToTP(TestPaint& tp, ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrack;
+        if (!ct.isTrack)
+        {
+            return;
+        }
+        auto& targetTrack = ct.track;
+        if (targetTrack.index() == 0)
+        {
+            targetTrack = TestPaint::Track1{};
+        }
+        auto& t1 = std::get<TestPaint::Track1>(targetTrack);
+        t1.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t1.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t1.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t1.offsets[ct.rotation].x == 0);
+        assert(t1.offsets[ct.rotation].y == 0);
+        assert(t1.offsets[ct.rotation].z == 0);
+        t1.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        ct.callCount++;
+    }
+
+    void AddToTPA3(TestPaint& tp, ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 2;
+        ct.callCount++;
+    }
+
     // 0x004FD150
     PaintStruct* PaintSession::addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         // This is identical to addToPlotListAsParent but the offset.x and offset.y are 0
+        AddToTP(tp, imageId, offset, boundBoxOffset, boundBoxSize);
+        AddToTPA3(tp, imageId, offset, boundBoxOffset, boundBoxSize);
         return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
     }
 
@@ -255,9 +1017,29 @@ namespace OpenLoco::Paint
         call(_4FD200[currentRotation], regs);
     }
 
+    void AddToTPA4(TestPaint& tp, ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 3;
+        ct.callCount++;
+    }
+
     // 0x004FD1E0
     PaintStruct* PaintSession::addToPlotListAsChild(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
+        AddToTPA4(tp, imageId, offset, boundBoxOffset, boundBoxSize);
         if (*_lastPS == nullptr)
         {
             return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
@@ -272,10 +1054,58 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    void AddToTP(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrack;
+        if (!ct.isTrack)
+        {
+            return;
+        }
+        auto& targetTrack = ct.track;
+        if (targetTrack.index() == 0)
+        {
+            targetTrack = TestPaint::Track3{};
+        }
+        auto& t3 = std::get<TestPaint::Track3>(targetTrack);
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.priority[ct.callCount] = priority;
+        t3.imageIds[ct.rotation][ct.callCount] = imageId.getIndex() - ct.baseImageId;
+        ct.callCount++;
+    }
+
+    void AddToTPA(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.priority = priority;
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 0;
+        ct.callCount++;
+    }
+
+    TestPaint PaintSession::tp;
+
     // 0x004FD170
     PaintStruct* PaintSession::addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
+        AddToTP(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
+        AddToTPA(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
 
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
         if (ps != nullptr)
@@ -289,11 +1119,31 @@ namespace OpenLoco::Paint
         return ps;
     }
 
+    void AddToTPATRA(TestPaint& tp, ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        auto& ct = tp.currentTileTrackAddition;
+        if (!ct.isTrackAddition)
+        {
+            return;
+        }
+        auto& t3 = ct.ta;
+        t3.boundingBoxOffsets[ct.rotation] = boundBoxOffset - World::Pos3{ 0, 0, ct.height };
+        t3.boundingBoxSizes[ct.rotation] = boundBoxSize;
+        t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
+        assert(t3.offsets[ct.rotation].x == 0);
+        assert(t3.offsets[ct.rotation].y == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
+        t3.priority = priority;
+        t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
+        t3.callType = 1;
+        ct.callCount++;
+    }
+
     // 0x004FD180
     PaintStruct* PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
         _lastPS = nullptr;
-
+        AddToTPATRA(tp, imageId, priority, offset, boundBoxOffset, boundBoxSize);
         auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
         if (ps != nullptr)
         {
@@ -390,6 +1240,18 @@ namespace OpenLoco::Paint
 
         session.setRotation(rotation);
         return session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
+    static PaintStruct* addToPlotListAsChildHookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto offset = World::Pos3(regs.al, regs.cl, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotListAsChild(imageId, offset, boundingBoxOffset, boundingBoxSize);
     }
 
     void registerHooks()
@@ -535,6 +1397,51 @@ namespace OpenLoco::Paint
                 registers backup = regs;
 
                 auto* ps = addToPlot4FD150HookHelper(regs, 3);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+
+         registerHook(
+            0x0045D367,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 0);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045D4CF,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 1);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045D643,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 2);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045D7B9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListAsChildHookHelper(regs, 3);
                 auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
                 regs = backup;
                 regs.ebp = X86Pointer(ps);
