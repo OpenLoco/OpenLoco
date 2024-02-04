@@ -340,6 +340,10 @@ namespace OpenLoco::Paint
     {
         return fmt::format("k{}{}Support{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
     }
+    std::string getDefaultTrackAdditionSupportConnectorImageName(uint8_t trackId, uint8_t index, uint8_t rotation)
+    {
+        return fmt::format("k{}{}SupportConnector{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
+    }
 
     std::array<std::string, 3> rotationTablesNames = { "kRotationTable2301", "kRotationTable3012", "kRotationTable1230" };
 
@@ -795,32 +799,45 @@ namespace OpenLoco::Paint
         }
 
         printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 1, trackId, index);
-        std::cout << "    /* ImageIdsSupport */ std::array<uint32_t, 4>{\n";
-        uint8_t r = 0;
-        for (auto& imageId : tai.supportImageId)
-        {
-            auto track1 = getDefaultTrackAdditionSupportImageName(trackId, index, r);
-            if (_usedImagesA[1].count(imageId))
-            {
-                track1 = _usedImagesA[1][imageId];
-            }
-            else
-            {
-                _usedImagesA[1].insert(std::make_pair(imageId, track1));
-            }
-            std::cout << fmt::format("        TrackExtraObj::ImageIds::Style{}::{},\n", 1, track1);
-            r++;
-        }
         if (tai.hasSupports)
         {
+            std::cout << "    /* Supports */ TrackAdditionSupport {\n";
+            std::cout << "        /* ImageIds */ std::array<uint32_t, 4>{\n";
+            uint8_t r = 0;
+            for (auto& imageId : tai.supportImageId)
+            {
+                auto track1 = getDefaultTrackAdditionSupportImageName(trackId, index, r);
+                auto track2 = getDefaultTrackAdditionSupportConnectorImageName(trackId, index, r);
+                if (_usedImagesA[1].count(imageId))
+                {
+                    track1 = _usedImagesA[1][imageId];
+                    track2 = _usedImagesA[1][imageId + 1];
+                }
+                else
+                {
+                    _usedImagesA[1].insert(std::make_pair(imageId, track1));
+                    _usedImagesA[1].insert(std::make_pair(imageId + 1, track2));
+                }
+                std::cout << fmt::format("            {{ TrackExtraObj::ImageIds::Style{}::{}, TrackExtraObj::ImageIds::Style{}::{} }}\n", 1, track1, 1, track2);
+                r++;
+            }
+            std::cout << "        },\n";
+
             assert((tai.supportHeight[0] == tai.supportHeight[1]) && (tai.supportHeight[0] == tai.supportHeight[2]) && (tai.supportHeight[0] == tai.supportHeight[3]));
-            fmt::println("    /* SupportHeight */ {},", tai.supportHeight[0]);
+            fmt::println("        /* SupportHeight */ {},", tai.supportHeight[0]);
+            assert(tai.supportFrequency[0] == tai.supportFrequency[2]);
+            assert(tai.supportFrequency[1] == tai.supportFrequency[3]);
+            fmt::println("        /* Frequency */ {},", tai.supportFrequency[0]);
+            assert(rotlSegmentFlags(SegmentFlags(tai.supportSegment[0]), 1) == SegmentFlags(tai.supportSegment[1]));
+            assert(rotlSegmentFlags(SegmentFlags(tai.supportSegment[0]), 2) == SegmentFlags(tai.supportSegment[2]));
+            assert(rotlSegmentFlags(SegmentFlags(tai.supportSegment[0]), 3) == SegmentFlags(tai.supportSegment[3]));
+            fmt::println("        /* Segment */ {},", getSegmentFlagsString(tai.supportSegment[0]));
+            std::cout << "    },\n";
         }
         else
         {
-            fmt::println("    /* SupportHeight */ kNoSupports,");
+            fmt::println("    /* Supports */ kNoSupports,");
         }
-        std::cout << "    },\n";
         std::cout << "};\n\n";
         return ppName;
     }

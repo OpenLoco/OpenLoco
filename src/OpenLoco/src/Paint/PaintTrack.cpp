@@ -105,6 +105,7 @@ namespace OpenLoco::Paint
         targetTrack.supportFrequency[ct.rotation] = ct.ta.supportFrequency[ct.rotation];
         targetTrack.supportSegment[ct.rotation] = ct.ta.supportSegment[ct.rotation];
         targetTrack.callOffset[ct.rotation] = ct.callOffset;
+        targetTrack.hasSupports = ct.ta.hasSupports;
         ct.isTrackAddition = false;
     }
 
