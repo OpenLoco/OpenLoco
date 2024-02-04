@@ -10,7 +10,7 @@ jobs:
       image: openrct2/openrct2-build:8-format
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run clang-format
         run: scripts/check-code-formatting.sh
   windows:
@@ -22,12 +22,12 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
       - name: Restore artifacts, or setup vcpkg
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11.4
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: 1be4527b3f30ab4fd01b621a3fc355b49b995ad0 
@@ -42,7 +42,7 @@ jobs:
           Copy-Item CHANGELOG.md,CONTRIBUTORS.md,DEVELOPMENTLOG.md,LICENSE artifacts
           Copy-Item build\windows-msvc\Release\* artifacts -Recurse
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: OpenLoco-${{ runner.os }}-Win32-cmake
           path: artifacts
@@ -63,7 +63,7 @@ jobs:
         distro: [jammy, mantic]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
@@ -88,7 +88,7 @@ jobs:
         build_shared_libs: [on, off]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
