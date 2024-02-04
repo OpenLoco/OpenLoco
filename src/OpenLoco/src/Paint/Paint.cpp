@@ -664,7 +664,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    std::pair<std::string, bool> printCommonPreambleA(const std::array<uint32_t, 4>& callOffsets, uint8_t trackId, uint8_t index, uint8_t paintStyle)
+    std::pair<std::string, bool> printCommonPreambleA(const std::array<uint32_t, 4>& callOffsets, uint8_t trackId, uint8_t index, uint8_t paintStyle, int8_t callType)
     {
         uint32_t seenCount = 0;
         uint8_t r = 0;
@@ -682,6 +682,11 @@ namespace OpenLoco::Paint
         }
         std::string ppName = fmt::format("k{}Addition{}{}", _trackIdNames[trackId], paintStyle, index);
 
+        if (callType == -1)
+        {
+            fmt::println("constexpr TrackPaintAdditionPiece{} {} = kNullTrackPaintAdditionPiece{};\n", paintStyle, ppName, paintStyle);
+            return std::make_pair(ppName, false);
+        }
         if (seenCount == 2)
         {
             std::cout << "// Already seen " << seenCount << "\n";
@@ -753,6 +758,7 @@ namespace OpenLoco::Paint
             r++;
         }
         std::cout << "    },\n";
+
         std::cout << "    /* BoundingBoxOffsets */ std::array<World::Pos3, 4>{\n";
         for (auto& bbO : boundingBoxOffsets)
         {
@@ -767,21 +773,22 @@ namespace OpenLoco::Paint
         }
         std::cout << "    },\n";
     }
-    static std::string printTrackAddition0(const TestPaint::TrackAddition& tai, uint8_t trackId, uint8_t index) {
-        auto [ppName, printArray] = printCommonPreambleA(tai.callOffset, trackId, index, 0);
+    static std::string printTrackAddition0(const TestPaint::TrackAddition& tai, uint8_t trackId, uint8_t index)
+    {
+        auto [ppName, printArray] = printCommonPreambleA(tai.callOffset, trackId, index, 0, tai.callType);
         if (!printArray)
         {
             return ppName;
         }
 
-        printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes,0, trackId, index);
+        printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 0, trackId, index);
 
         std::cout << "};\n\n";
         return ppName;
     }
     static std::string printTrackAddition1(const TestPaint::TrackAddition& tai, uint8_t trackId, uint8_t index)
     {
-        auto [ppName, printArray] = printCommonPreambleA(tai.callOffset, trackId, index, 1);
+        auto [ppName, printArray] = printCommonPreambleA(tai.callOffset, trackId, index, 1, tai.callType);
         if (!printArray)
         {
             return ppName;
@@ -803,6 +810,15 @@ namespace OpenLoco::Paint
             }
             std::cout << fmt::format("        TrackExtraObj::ImageIds::Style{}::{},\n", 1, track1);
             r++;
+        }
+        if (tai.hasSupports)
+        {
+            assert((tai.supportHeight[0] == tai.supportHeight[1]) && (tai.supportHeight[0] == tai.supportHeight[2]) && (tai.supportHeight[0] == tai.supportHeight[3]));
+            fmt::println("    /* SupportHeight */ {},", tai.supportHeight[0]);
+        }
+        else
+        {
+            fmt::println("    /* SupportHeight */ kNoSupports,");
         }
         std::cout << "    },\n";
         std::cout << "};\n\n";
@@ -946,7 +962,7 @@ namespace OpenLoco::Paint
         t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
         assert(t3.offsets[ct.rotation].x == 0);
         assert(t3.offsets[ct.rotation].y == 0);
-        // assert(t3.offsets[ct.rotation].z == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
         t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
         t3.callType = 2;
         ct.callCount++;
@@ -1033,7 +1049,7 @@ namespace OpenLoco::Paint
         t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
         assert(t3.offsets[ct.rotation].x == 0);
         assert(t3.offsets[ct.rotation].y == 0);
-        //assert(t3.offsets[ct.rotation].z == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
         t3.priority = priority;
         t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
         t3.callType = 0;
@@ -1074,7 +1090,7 @@ namespace OpenLoco::Paint
         t3.offsets[ct.rotation] = offset - World::Pos3{ 0, 0, ct.height };
         assert(t3.offsets[ct.rotation].x == 0);
         assert(t3.offsets[ct.rotation].y == 0);
-        //assert(t3.offsets[ct.rotation].z == 0);
+        assert(t3.offsets[ct.rotation].z == 0);
         t3.priority = priority;
         t3.imageIds[ct.rotation] = imageId.getIndex() - ct.baseImageId;
         t3.callType = 1;

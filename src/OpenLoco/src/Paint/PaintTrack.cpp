@@ -41,6 +41,7 @@ namespace OpenLoco::Paint
         tp.currentTileTrackAddition.rotation = rotation;
         tp.currentTileTrackAddition.trackId = trackId;
         tp.currentTileTrackAddition.ta = {};
+        tp.currentTileTrackAddition.ta.callType = -1;
     }
 
     void startTileTP(TestPaint& tp, uint32_t baseImageId, int16_t height, uint8_t index, uint8_t rotation, uint8_t trackId, uint32_t callOffset)
@@ -71,20 +72,27 @@ namespace OpenLoco::Paint
             targetTrackVec.resize(ct.index + 1);
         }
         auto& supports = ps.getAdditionSupports();
-        ct.ta.supportHeight[ct.rotation] = supports.height;
-        bool supportFound = false;
-        for (auto i = 0U; i < 9; ++i)
+        if (supports.height != 0)
         {
-            if (supports.segmentImages[i] != 0)
+            ct.ta.hasSupports = true;
+            ct.ta.supportHeight[ct.rotation] = supports.height - ct.height;
+            bool supportFound = false;
+            for (auto i = 0U; i < 9; ++i)
             {
-                assert(!supportFound);
-                supportFound = true;
-                ct.ta.supportSegment[ct.rotation] = (1 << i);
-                ct.ta.supportFrequency[ct.rotation] = supports.segmentFrequency[i];
-                ct.ta.supportImageId[ct.rotation] = ImageId::fromUInt32(supports.segmentImages[i]).getIndex() - ct.baseImageId;
+                if (supports.segmentImages[i] != 0)
+                {
+                    assert(!supportFound);
+                    supportFound = true;
+                    ct.ta.supportSegment[ct.rotation] = (1 << i);
+                    ct.ta.supportFrequency[ct.rotation] = supports.segmentFrequency[i];
+                    ct.ta.supportImageId[ct.rotation] = ImageId::fromUInt32(supports.segmentImages[i]).getIndex() - ct.baseImageId;
+                }
             }
         }
-
+        else
+        {
+            ct.ta.hasSupports = false;
+        }
         auto& targetTrack = targetTrackVec[ct.index];
         targetTrack.imageIds[ct.rotation] = ct.ta.imageIds[ct.rotation];
         targetTrack.offsets[ct.rotation] = ct.ta.offsets[ct.rotation];
@@ -97,6 +105,7 @@ namespace OpenLoco::Paint
         targetTrack.supportFrequency[ct.rotation] = ct.ta.supportFrequency[ct.rotation];
         targetTrack.supportSegment[ct.rotation] = ct.ta.supportSegment[ct.rotation];
         targetTrack.callOffset[ct.rotation] = ct.callOffset;
+        ct.isTrackAddition = false;
     }
 
     void endTileTP(TestPaint& tp, PaintSession& ps)

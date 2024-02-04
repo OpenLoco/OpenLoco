@@ -266,8 +266,9 @@ namespace OpenLoco::Paint
             std::array<World::Pos3, 4> boundingBoxOffsets;
             std::array<World::Pos3, 4> boundingBoxSizes;
             uint8_t priority;
-            uint8_t callType;
+            int8_t callType;
             std::array<uint32_t, 4> supportImageId;
+            bool hasSupports;
             std::array<int16_t, 4> supportHeight;
             std::array<uint8_t, 4> supportFrequency;
             std::array<uint16_t, 4> supportSegment;
