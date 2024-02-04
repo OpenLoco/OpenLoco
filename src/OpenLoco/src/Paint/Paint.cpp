@@ -787,6 +787,9 @@ namespace OpenLoco::Paint
 
         printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 0, trackId, index);
 
+        assert((tai.callType == 0) || (tai.callType == 3));
+        fmt::println("    /* Mergable */ {},", tai.callType == 0);
+
         std::cout << "};\n\n";
         return ppName;
     }
@@ -799,7 +802,8 @@ namespace OpenLoco::Paint
         }
 
         printCommonA(tai.imageIds, tai.boundingBoxOffsets, tai.boundingBoxSizes, 1, trackId, index);
-        fmt::println("    /* CallType */ {},", tai.callType);
+        assert((tai.callType == 2) || (tai.callType == 1));
+        fmt::println("    /* Mergable */ {},", tai.callType == 1);
         if (tai.hasSupports)
         {
             std::cout << "    /* Supports */ TrackAdditionSupport {\n";
