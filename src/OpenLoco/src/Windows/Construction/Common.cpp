@@ -818,22 +818,22 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         std::array<uint32_t, 16> kTrackPreviewImages = {
-            TrackObj::ImageIds::kPreviewImage0,
-            TrackObj::ImageIds::kPreviewImage1,
-            TrackObj::ImageIds::kPreviewImage2,
-            TrackObj::ImageIds::kPreviewImage3,
-            TrackObj::ImageIds::kPreviewImage4,
-            TrackObj::ImageIds::kPreviewImage5,
-            TrackObj::ImageIds::kPreviewImage6,
-            TrackObj::ImageIds::kPreviewImage7,
-            TrackObj::ImageIds::kPreviewImage8,
-            TrackObj::ImageIds::kPreviewImage9,
-            TrackObj::ImageIds::kPreviewImage10,
-            TrackObj::ImageIds::kPreviewImage11,
-            TrackObj::ImageIds::kPreviewImage12,
-            TrackObj::ImageIds::kPreviewImage13,
-            TrackObj::ImageIds::kPreviewImage14,
-            TrackObj::ImageIds::kPreviewImage15,
+            TrackObj::ImageIds::kUiPreviewImage0,
+            TrackObj::ImageIds::kUiPreviewImage1,
+            TrackObj::ImageIds::kUiPreviewImage2,
+            TrackObj::ImageIds::kUiPreviewImage3,
+            TrackObj::ImageIds::kUiPreviewImage4,
+            TrackObj::ImageIds::kUiPreviewImage5,
+            TrackObj::ImageIds::kUiPreviewImage6,
+            TrackObj::ImageIds::kUiPreviewImage7,
+            TrackObj::ImageIds::kUiPreviewImage8,
+            TrackObj::ImageIds::kUiPreviewImage9,
+            TrackObj::ImageIds::kUiPreviewImage10,
+            TrackObj::ImageIds::kUiPreviewImage11,
+            TrackObj::ImageIds::kUiPreviewImage12,
+            TrackObj::ImageIds::kUiPreviewImage13,
+            TrackObj::ImageIds::kUiPreviewImage14,
+            TrackObj::ImageIds::kUiPreviewImage15,
         };
 
         // 0x0049ED40

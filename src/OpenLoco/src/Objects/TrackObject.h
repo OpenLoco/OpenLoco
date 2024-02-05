@@ -95,24 +95,24 @@ namespace OpenLoco
 
     namespace TrackObj::ImageIds
     {
-        constexpr uint32_t kPreviewImage0 = 0;
-        constexpr uint32_t kPreviewImage1 = 1;
-        constexpr uint32_t kPreviewImage2 = 2;
-        constexpr uint32_t kPreviewImage3 = 3;
-        constexpr uint32_t kPreviewImage4 = 4;
-        constexpr uint32_t kPreviewImage5 = 5;
-        constexpr uint32_t kPreviewImage6 = 6;
-        constexpr uint32_t kPreviewImage7 = 7;
-        constexpr uint32_t kPreviewImage8 = 8;
-        constexpr uint32_t kPreviewImage9 = 9;
-        constexpr uint32_t kPreviewImage10 = 10;
-        constexpr uint32_t kPreviewImage11 = 11;
-        constexpr uint32_t kPreviewImage12 = 12;
-        constexpr uint32_t kPreviewImage13 = 13;
-        constexpr uint32_t kPreviewImage14 = 14;
-        constexpr uint32_t kPreviewImage15 = 15;
-        constexpr uint32_t kPickupFromTrack = 16;
-        constexpr uint32_t kPlaceOnTrack = 17;
+        constexpr uint32_t kUiPreviewImage0 = 0;
+        constexpr uint32_t kUiPreviewImage1 = 1;
+        constexpr uint32_t kUiPreviewImage2 = 2;
+        constexpr uint32_t kUiPreviewImage3 = 3;
+        constexpr uint32_t kUiPreviewImage4 = 4;
+        constexpr uint32_t kUiPreviewImage5 = 5;
+        constexpr uint32_t kUiPreviewImage6 = 6;
+        constexpr uint32_t kUiPreviewImage7 = 7;
+        constexpr uint32_t kUiPreviewImage8 = 8;
+        constexpr uint32_t kUiPreviewImage9 = 9;
+        constexpr uint32_t kUiPreviewImage10 = 10;
+        constexpr uint32_t kUiPreviewImage11 = 11;
+        constexpr uint32_t kUiPreviewImage12 = 12;
+        constexpr uint32_t kUiPreviewImage13 = 13;
+        constexpr uint32_t kUiPreviewImage14 = 14;
+        constexpr uint32_t kUiPreviewImage15 = 15;
+        constexpr uint32_t kUiPickupFromTrack = 16;
+        constexpr uint32_t kUiPlaceOnTrack = 17;
 
         // Assumes rotational symmetry
         // k{TrackId}{sequenceIndex}[type]{direction}

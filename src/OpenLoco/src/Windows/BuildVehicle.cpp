@@ -1759,7 +1759,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             else
             {
                 auto trackObj = ObjectManager::get<TrackObject>(type);
-                img = trackObj->image + TrackObj::ImageIds::kPreviewImage0;
+                img = trackObj->image + TrackObj::ImageIds::kUiPreviewImage0;
                 if (window->currentSecondaryTab == tab)
                 {
                     // TODO: Use array from Construction/Common.cpp
