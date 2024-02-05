@@ -65,13 +65,20 @@ namespace OpenLoco::Paint
     private:
         constexpr void rotateTunnelHeights()
         {
-            for (auto i = 1; i < 4; ++i)
-            {
-                tunnelHeights[i][0] = tunnelHeights[0][i];
-                tunnelHeights[i][1] = tunnelHeights[0][(i + 1) % 4];
-                tunnelHeights[i][2] = tunnelHeights[0][(i + 2) % 4];
-                tunnelHeights[i][3] = tunnelHeights[0][(i + 3) % 4];
-            }
+            tunnelHeights[1][0] = tunnelHeights[0][3];
+            tunnelHeights[1][1] = tunnelHeights[0][0];
+            tunnelHeights[1][2] = tunnelHeights[0][1];
+            tunnelHeights[1][3] = tunnelHeights[0][2];
+
+            tunnelHeights[2][0] = tunnelHeights[0][2];
+            tunnelHeights[2][1] = tunnelHeights[0][3];
+            tunnelHeights[2][2] = tunnelHeights[0][0];
+            tunnelHeights[2][3] = tunnelHeights[0][1];
+
+            tunnelHeights[3][0] = tunnelHeights[0][1];
+            tunnelHeights[3][1] = tunnelHeights[0][2];
+            tunnelHeights[3][2] = tunnelHeights[0][3];
+            tunnelHeights[3][3] = tunnelHeights[0][0];
         }
         constexpr void rotateBridgeEdgesQuarters()
         {
