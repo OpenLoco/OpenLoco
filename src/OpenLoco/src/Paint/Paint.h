@@ -224,6 +224,8 @@ namespace OpenLoco::Paint
         int16_t getMaxHeight() { return _maxHeight; }
         uint32_t get112C300() { return _112C300; }
         int16_t getAdditionSupportHeight() { return (*_trackRoadAdditionSupports).height; }
+        const TrackRoadAdditionSupports& getAdditionSupport() { return (*_trackRoadAdditionSupports); }
+        void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         SegmentFlags get525CF8() { return _525CF8; }
@@ -239,7 +241,9 @@ namespace OpenLoco::Paint
         Ui::ViewportFlags getViewFlags() { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
+        void* getCurrentItem() { return _currentItem; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
+        Ui::ViewportInteraction::InteractionItem getItemType() { return _itemType; }
         void setTrackModId(const uint8_t mod) { _trackModId = mod; }
         void setEntityPosition(const World::Pos2& pos);
         void setMapPosition(const World::Pos2& pos);
