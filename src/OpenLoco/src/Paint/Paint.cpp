@@ -338,11 +338,11 @@ namespace OpenLoco::Paint
     }
     std::string getDefaultTrackAdditionSupportImageName(uint8_t trackId, uint8_t index, uint8_t rotation)
     {
-        return fmt::format("k{}{}Support{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
+        return fmt::format("kSupport{}{}{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
     }
     std::string getDefaultTrackAdditionSupportConnectorImageName(uint8_t trackId, uint8_t index, uint8_t rotation)
     {
-        return fmt::format("k{}{}SupportConnector{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
+        return fmt::format("kSupportConnector{}{}{}", _trackIdNames[trackId], index, kRotationNames[rotation]);
     }
 
     std::array<std::string, 3> rotationTablesNames = { "kRotationTable2301", "kRotationTable3012", "kRotationTable1230" };
@@ -684,11 +684,11 @@ namespace OpenLoco::Paint
             }
             r++;
         }
-        std::string ppName = fmt::format("k{}Addition{}{}", _trackIdNames[trackId], paintStyle, index);
+        std::string ppName = fmt::format("k{}Addition{}", _trackIdNames[trackId], index);
 
         if (callType == -1)
         {
-            fmt::println("constexpr TrackPaintAdditionPiece{} {} = kNullTrackPaintAdditionPiece{};\n", paintStyle, ppName, paintStyle);
+            fmt::println("constexpr TrackPaintAdditionPiece {} = kNullTrackPaintAdditionPiece;\n", ppName);
             return std::make_pair(ppName, false);
         }
         if (seenCount == 2)
@@ -713,7 +713,7 @@ namespace OpenLoco::Paint
                 mirrorTrackId = f.trackId;
             }
 
-            std::string mirrorPP = fmt::format("k{}Addition{}{}", _trackIdNames[mirrorTrackId], paintStyle, mirrorIndex);
+            std::string mirrorPP = fmt::format("k{}Addition{}", _trackIdNames[mirrorTrackId], mirrorIndex);
             std::string rotationTableName = "";
             if (rotationTable[0] == 2 && rotationTable[1] == 3 && rotationTable[2] == 0 && rotationTable[3] == 1)
             {
@@ -736,11 +736,11 @@ namespace OpenLoco::Paint
             // assert(rotationTable[2] == 0);
             // assert(rotationTable[3] == 1);
 
-            std::cout << fmt::format("constexpr TrackPaintAdditionPiece{} {} = rotateTrackPP({}, {});\n\n", paintStyle, ppName, mirrorPP, rotationTableName);
+            std::cout << fmt::format("constexpr TrackPaintAdditionPiece {} = rotateTrackPP({}, {});\n\n", ppName, mirrorPP, rotationTableName);
             return std::make_pair(ppName, false);
         }
         std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", callOffsets[0], callOffsets[1], callOffsets[2], callOffsets[3]);
-        std::cout << fmt::format("constexpr TrackPaintAdditionPiece{} {} = {{\n", paintStyle, ppName);
+        std::cout << fmt::format("constexpr TrackPaintAdditionPiece {} = {{\n", ppName);
         return std::make_pair(ppName, true);
     }
     void printCommonA(const std::array<uint32_t, 4>& images, const std::array<World::Pos3, 4>& boundingBoxOffsets, const std::array<World::Pos3, 4>& boundingBoxSizes, uint8_t paintStyle, uint8_t trackId, uint8_t index)
@@ -758,7 +758,7 @@ namespace OpenLoco::Paint
             {
                 _usedImagesA[paintStyle].insert(std::make_pair(imageId, track1));
             }
-            std::cout << fmt::format("        TrackExtraObj::ImageIds::Style{}::{},\n", paintStyle, track1);
+            std::cout << fmt::format("        {},\n", track1);
             r++;
         }
         std::cout << "    },\n";
@@ -807,7 +807,7 @@ namespace OpenLoco::Paint
         if (tai.hasSupports)
         {
             std::cout << "    /* Supports */ TrackAdditionSupport {\n";
-            std::cout << "        /* ImageIds */ std::array<uint32_t, 4>{\n";
+            std::cout << "        /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{\n";
             uint8_t r = 0;
             for (auto& imageId : tai.supportImageId)
             {
@@ -823,7 +823,7 @@ namespace OpenLoco::Paint
                     _usedImagesA[1].insert(std::make_pair(imageId, track1));
                     _usedImagesA[1].insert(std::make_pair(imageId + 1, track2));
                 }
-                std::cout << fmt::format("            {{ TrackExtraObj::ImageIds::Style{}::{}, TrackExtraObj::ImageIds::Style{}::{} }},\n", 1, track1, 1, track2);
+                std::cout << fmt::format("            std::array<uint32_t, 2>{{ {}, {} }},\n", 1, track1, 1, track2);
                 r++;
             }
             std::cout << "        },\n";
@@ -852,6 +852,8 @@ namespace OpenLoco::Paint
         std::array<std::vector<std::string>, 2> tppNames;
         for (auto i = 0U; i < 2; ++i)
         {
+            fmt::println("namespace Style{}{{\n", i);
+            fmt::println("using namespace OpenLoco::TrackExtraObj::ImageIds::Style{};\n", i);
             for (auto trackId : kTrackOrder)
             {
                 std::vector<std::string> ppNames;
@@ -872,7 +874,7 @@ namespace OpenLoco::Paint
                 {
                     std::string tppName = fmt::format("k{}TPPA{}", _trackIdNames[trackId], i);
                     tppNames[i].push_back(tppName);
-                    std::cout << fmt::format("constexpr std::array<TrackPaintAdditionPiece{}, {}> {} = {{\n", i, trackAdd.size(), tppName);
+                    std::cout << fmt::format("constexpr std::array<TrackPaintAdditionPiece, {}> {} = {{\n", trackAdd.size(), tppName);
                     for (auto& ppName : ppNames)
                     {
                         std::cout << fmt::format("    {},\n", ppName);
@@ -880,10 +882,8 @@ namespace OpenLoco::Paint
                     std::cout << "};\n\n";
                 }
             }
-        }
-        for (auto i = 0U; i < 2; ++i)
-        {
-            std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPieceAdditionPiece{}>, {}> kTrackPaintParts{} = {{\n", i, tppNames.size(), i);
+
+            std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPieceAdditionPiece>, {}> kTrackPaintAdditionParts = {{\n", tppNames.size());
             for (auto trackId = 0; trackId < 26; ++trackId)
             {
                 auto tppOffset = std::distance(std::begin(kTrackOrder), std::find(std::begin(kTrackOrder), std::end(kTrackOrder), trackId));
@@ -892,13 +892,12 @@ namespace OpenLoco::Paint
             }
             assert(tppNames[i].size() == 26);
             std::cout << "};\n\n";
-        }
-        for (auto i = 0U; i < 2; ++i)
-        {
+
             for (const auto image : _usedImagesA[i])
             {
                 std::cout << fmt::format("constexpr uint32_t {} = {};\n", image.second, image.first);
             }
+            fmt::println("\n}}");
         }
     }
 
@@ -1403,7 +1402,7 @@ namespace OpenLoco::Paint
                 return res;
             });
 
-         registerHook(
+        registerHook(
             0x0045D367,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
