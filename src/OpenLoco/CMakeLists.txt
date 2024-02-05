@@ -570,6 +570,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTile.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTileDecorations.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTrack.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTrackData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintTree.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintVehicle.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Random.h"

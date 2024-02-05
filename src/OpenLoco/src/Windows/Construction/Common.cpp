@@ -817,6 +817,25 @@ namespace OpenLoco::Ui::Windows::Construction
             }
         }
 
+        std::array<uint32_t, 16> kTrackPreviewImages = {
+            TrackObj::ImageIds::kUiPreviewImage0,
+            TrackObj::ImageIds::kUiPreviewImage1,
+            TrackObj::ImageIds::kUiPreviewImage2,
+            TrackObj::ImageIds::kUiPreviewImage3,
+            TrackObj::ImageIds::kUiPreviewImage4,
+            TrackObj::ImageIds::kUiPreviewImage5,
+            TrackObj::ImageIds::kUiPreviewImage6,
+            TrackObj::ImageIds::kUiPreviewImage7,
+            TrackObj::ImageIds::kUiPreviewImage8,
+            TrackObj::ImageIds::kUiPreviewImage9,
+            TrackObj::ImageIds::kUiPreviewImage10,
+            TrackObj::ImageIds::kUiPreviewImage11,
+            TrackObj::ImageIds::kUiPreviewImage12,
+            TrackObj::ImageIds::kUiPreviewImage13,
+            TrackObj::ImageIds::kUiPreviewImage14,
+            TrackObj::ImageIds::kUiPreviewImage15,
+        };
+
         // 0x0049ED40
         static void drawTrackTabs(Window* self, Gfx::RenderTarget* rt)
         {
@@ -829,7 +848,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 auto imageId = trackObj->image;
                 if (self->currentTab == widx::tab_construction - widx::tab_construction)
-                    imageId += (self->frameNo / 4) % 15;
+                    imageId += kTrackPreviewImages[(self->frameNo / 4) % kTrackPreviewImages.size()];
 
                 Widget::drawTab(self, rt, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }

@@ -3450,7 +3450,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case TransportMode::rail:
                 {
                     auto trackObj = ObjectManager::get<TrackObject>(head.trackType);
-                    image = trackObj->image + (isPlaced ? 16 : 17);
+                    image = trackObj->image + (isPlaced ? TrackObj::ImageIds::kUiPickupFromTrack : TrackObj::ImageIds::kUiPlaceOnTrack);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
                     break;
                 }

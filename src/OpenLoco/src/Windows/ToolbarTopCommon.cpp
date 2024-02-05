@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(lastRoadOption);
-                fgImage = Gfx::recolour(obj->image, companyColour);
+                fgImage = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
             y--;
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
                 objStringId = track->name;
-                objImage = Gfx::recolour(track->image, companyColour);
+                objImage = Gfx::recolour(track->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
