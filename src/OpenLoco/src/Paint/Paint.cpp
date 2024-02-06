@@ -736,7 +736,7 @@ namespace OpenLoco::Paint
             // assert(rotationTable[2] == 0);
             // assert(rotationTable[3] == 1);
 
-            std::cout << fmt::format("constexpr TrackPaintAdditionPiece {} = rotateTrackPP({}, {});\n\n", ppName, mirrorPP, rotationTableName);
+            std::cout << fmt::format("constexpr TrackPaintAdditionPiece {} = rotateTrackPPA({}, {});\n\n", ppName, mirrorPP, rotationTableName);
             return std::make_pair(ppName, false);
         }
         std::cout << fmt::format("// 0x{:08X}, 0x{:08X}, 0x{:08X}, 0x{:08X}\n", callOffsets[0], callOffsets[1], callOffsets[2], callOffsets[3]);
@@ -823,7 +823,7 @@ namespace OpenLoco::Paint
                     _usedImagesA[1].insert(std::make_pair(imageId, track1));
                     _usedImagesA[1].insert(std::make_pair(imageId + 1, track2));
                 }
-                std::cout << fmt::format("            std::array<uint32_t, 2>{{ {}, {} }},\n", 1, track1, 1, track2);
+                std::cout << fmt::format("            std::array<uint32_t, 2>{{ {}, {} }},\n", track1, track2);
                 r++;
             }
             std::cout << "        },\n";
@@ -872,7 +872,7 @@ namespace OpenLoco::Paint
                 }
                 if (!trackAdd.empty())
                 {
-                    std::string tppName = fmt::format("k{}TPPA{}", _trackIdNames[trackId], i);
+                    std::string tppName = fmt::format("k{}TPPA", _trackIdNames[trackId]);
                     tppNames[i].push_back(tppName);
                     std::cout << fmt::format("constexpr std::array<TrackPaintAdditionPiece, {}> {} = {{\n", trackAdd.size(), tppName);
                     for (auto& ppName : ppNames)
@@ -883,7 +883,7 @@ namespace OpenLoco::Paint
                 }
             }
 
-            std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintPieceAdditionPiece>, {}> kTrackPaintAdditionParts = {{\n", tppNames.size());
+            std::cout << fmt::format("constexpr std::array<std::span<const TrackPaintAdditionPiece>, {}> kTrackPaintAdditionParts = {{\n", tppNames[i].size());
             for (auto trackId = 0; trackId < 26; ++trackId)
             {
                 auto tppOffset = std::distance(std::begin(kTrackOrder), std::find(std::begin(kTrackOrder), std::end(kTrackOrder), trackId));
