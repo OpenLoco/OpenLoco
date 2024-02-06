@@ -21,10 +21,10 @@ namespace OpenLoco::Paint
     };
 
     static constexpr World::Pos3 kBBoxOffsets[4] = {
-        { 1, 1, 0 },
-        { 2, 30, 0 },
-        { 30, 2, 0 },
-        { 1, 1, 0 },
+        { 1, 1, 1 },
+        { 2, 30, 1 },
+        { 30, 2, 1 },
+        { 1, 1, 1 },
     };
 
     static constexpr World::Pos3 kBBoxLengths[4] = {
@@ -34,25 +34,54 @@ namespace OpenLoco::Paint
         { 28, 1, 0 },
     };
 
-    static constexpr uint8_t kImageOffsets[4][3] = {
-        { 3, 5, 1 },
-        { 2, 4, 0 },
-        { 5, 3, 1 },
-        { 4, 2, 0 },
+    using namespace WallObj::ImageIds;
+
+    static constexpr std::array<std::array<std::array<uint8_t, 3>, 4>, 2> kImageOffsets = {
+        std::array<std::array<uint8_t, 3>, 4>{
+            std::array<uint8_t, 3>{ kSlopedNE, kSlopedSW, kFlatNE },
+            std::array<uint8_t, 3>{ kSlopedSE, kSlopedNW, kFlatSE },
+            std::array<uint8_t, 3>{ kSlopedSW, kSlopedNE, kFlatNE },
+            std::array<uint8_t, 3>{ kSlopedNW, kSlopedSE, kFlatSE },
+        },
+        std::array<std::array<uint8_t, 3>, 4>{
+            std::array<uint8_t, 3>{ kSlopedNE, kSlopedSW, kFlatNE },
+            std::array<uint8_t, 3>{ kGlassSlopedSE, kGlassSlopedNW, kGlassFlatSE },
+            std::array<uint8_t, 3>{ kGlassSlopedSW, kGlassSlopedNE, kGlassFlatNE },
+            std::array<uint8_t, 3>{ kSlopedNW, kSlopedSE, kFlatSE },
+        }
+    };
+    static constexpr std::array<std::array<uint8_t, 3>, 4> kImageOffsetsGlass = {
+        std::array<uint8_t, 3>{ kGlassSlopedNE, kGlassSlopedSW, kGlassFlatNE },
+        std::array<uint8_t, 3>{ kGlassSlopedSE, kGlassSlopedNW, kGlassFlatSE },
+        std::array<uint8_t, 3>{ kGlassSlopedSW, kGlassSlopedNE, kGlassFlatNE },
+        std::array<uint8_t, 3>{ kGlassSlopedNW, kGlassSlopedSE, kGlassFlatSE },
     };
 
-    static uint32_t getWallImageIndexOffset(const World::WallElement& elWall, int32_t rotation)
+    static constexpr uint8_t slopeFlagsToIndex(EdgeSlope flags)
     {
-        // TODO: Add the appropriate getters to WallElement
-        const auto type = elWall.rawData()[0];
+        // Slope flags to index are 0 = downwards, 1 == upwards, 2 == no slope
+        if ((flags & EdgeSlope::downwards) != EdgeSlope::none)
+        {
+            return 0;
+        }
+        if ((flags & EdgeSlope::upwards) != EdgeSlope::none)
+        {
+            return 1;
+        }
+        return 2;
+    }
 
-        // If bit 8 is non-zero index is 0.
-        // If bit 8 is zero, bit 7 is non-zero index is 1.
-        // If bit 8 and 7 are zero index is 2.
-        const auto index = ((type & 0x80U) != 0) ? 0 : ((type & 0x40U) != 0) ? 1
-                                                                             : 2;
+    static uint32_t getWallImageIndexOffset(const World::WallElement& elWall, int32_t rotation, bool isTwoSided)
+    {
+        const auto index = slopeFlagsToIndex(elWall.getSlopeFlags());
 
-        return kImageOffsets[rotation][index];
+        return kImageOffsets[isTwoSided][rotation][index];
+    }
+    static uint32_t getWallImageIndexOffsetGlass(const World::WallElement& elWall, int32_t rotation)
+    {
+        const auto index = slopeFlagsToIndex(elWall.getSlopeFlags());
+
+        return kImageOffsetsGlass[rotation][index];
     }
 
     static ImageId getWallImageId(ImageIndex imageIndex, bool isGhost, const World::WallElement& elWall, const WallObject* wallObject)
@@ -86,19 +115,20 @@ namespace OpenLoco::Paint
         const auto isGhost = elWall.isGhost();
         session.setItemType(isGhost ? InteractionItem::noInteraction : InteractionItem::wall);
 
-        const coord_t height = 4 * wallObject->height - 2;
-        const coord_t baseHeight = elWall.baseHeight();
-        const coord_t baseHeightEnd = baseHeight + 1;
+        const coord_t objectHeight = kSmallZStep * wallObject->height - 2;
         const int32_t rotation = (session.getRotation() + elWall.rotation()) & 0x3;
 
-        const auto offset = kOffsets[rotation] + World::Pos3{ 0, 0, baseHeight };
-        const auto bboxOffset = kBBoxOffsets[rotation] + World::Pos3{ 0, 0, baseHeightEnd };
-        const auto bboxLength = kBBoxLengths[rotation] + World::Pos3{ 0, 0, height };
+        const auto heightOffset = World::Pos3{ 0, 0, elWall.baseHeight() };
 
-        const auto imageOffset = getWallImageIndexOffset(elWall, rotation);
+        const auto offset = kOffsets[rotation] + heightOffset;
+        const auto bboxOffset = kBBoxOffsets[rotation] + heightOffset;
+        const auto bboxLength = kBBoxLengths[rotation] + World::Pos3{ 0, 0, objectHeight };
+
+        const auto isTwoSided = (wallObject->flags & WallObjectFlags::twoSided) != WallObjectFlags::none;
+        const auto imageOffset = getWallImageIndexOffset(elWall, rotation, isTwoSided);
         const auto imageIndex = wallObject->sprite + imageOffset;
 
-        if ((wallObject->flags & WallObjectFlags::unk1) != WallObjectFlags::none)
+        if ((wallObject->flags & WallObjectFlags::hasGlass) != WallObjectFlags::none)
         {
             const auto imageId = getWallImageId(imageIndex, isGhost, elWall, wallObject);
             session.addToPlotListAsParent(
@@ -109,9 +139,10 @@ namespace OpenLoco::Paint
 
             if (!isGhost)
             {
-                const auto blendColour = enumValue(ExtColour::unk74) + enumValue(imageId.getPrimary());
+                const auto blendColour = Colours::getGlass(imageId.getPrimary());
+                const auto glassImageIndex = wallObject->sprite + getWallImageIndexOffsetGlass(elWall, rotation);
                 session.addToPlotListAsChild(
-                    imageId.withTranslucency(static_cast<ExtColour>(blendColour)).withIndexOffset(6),
+                    ImageId(glassImageIndex).withTranslucency(blendColour),
                     offset,
                     bboxOffset,
                     bboxLength);

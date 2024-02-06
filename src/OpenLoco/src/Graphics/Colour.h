@@ -281,6 +281,7 @@ namespace OpenLoco
         ExtColour getTranslucent(Colour colour);
         ExtColour getTranslucent(Colour colour, uint8_t shade);
         ExtColour getShadow(Colour colour);
+        ExtColour getGlass(Colour colour);
         constexpr ExtColour toExt(Colour c) { return static_cast<ExtColour>(c); }
     }
 
