@@ -27,7 +27,6 @@ namespace OpenLoco::Paint
     static loco_global<uint32_t, 0x001135F2E> _trackExtraImageId;
     static loco_global<uint32_t, 0x001135F32> _trackImageId1;
     static loco_global<uint32_t, 0x001135F36> _trackImageId2;
-    static loco_global<uint32_t** [2], 0x004FFB80> _trackExtraPaintModes;
     static loco_global<uint8_t, 0x00113605E> _trackTunnel;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
 
@@ -60,6 +59,18 @@ namespace OpenLoco::Paint
                 heightOffset,
                 tppa.boundingBoxOffsets[rotation] + heightOffset,
                 tppa.boundingBoxSizes[rotation]);
+        }
+
+        static void paintTrackAdditionPP(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
+        {
+            if (tppa.isIsMergable)
+            {
+                paintTrackAdditionPPMergable(session, elTrack, rotation, baseImageId, tppa);
+            }
+            else
+            {
+                paintTrackAdditionPPStandard(session, elTrack, rotation, baseImageId, tppa);
+            }
         }
     }
     namespace Style1
@@ -112,6 +123,22 @@ namespace OpenLoco::Paint
             if (tppa.supports.has_value())
             {
                 paintSupport(session, tppa.supports.value(), rotation, baseImageId, height);
+            }
+        }
+
+        static void paintTrackAdditionPP(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
+        {
+            // TODO: Better way to detect kNullTrackPaintAdditionPiece
+            if (tppa.imageIds[3] != 0)
+            {
+                if (tppa.isIsMergable)
+                {
+                    paintTrackAdditionPPMergable(session, elTrack, rotation, baseImageId, tppa);
+                }
+                else
+                {
+                    paintTrackAdditionPPStandard(session, elTrack, rotation, baseImageId, tppa);
+                }
             }
         }
     }
@@ -204,6 +231,18 @@ namespace OpenLoco::Paint
         session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | tpp.segments[rotation]);
     }
 
+    static void paintTrackPP(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation, const TrackPaintPiece& tpp)
+    {
+        if (tpp.isMergable)
+        {
+            paintTrackPPMergable(session, elTrack, trackSession, rotation, tpp);
+        }
+        else
+        {
+            paintTrackPPStandard(session, elTrack, trackSession, rotation, tpp);
+        }
+    }
+
     // 0x0049B6BF
     void paintTrack(PaintSession& session, const World::TrackElement& elTrack)
     {
@@ -260,14 +299,7 @@ namespace OpenLoco::Paint
             {
                 auto& parts = kTrackPaintParts[elTrack.trackId()];
                 auto& tpp = parts[elTrack.sequenceIndex()];
-                if (tpp.isMergable)
-                {
-                    paintTrackPPMergable(session, elTrack, trackSession, rotation, tpp);
-                }
-                else
-                {
-                    paintTrackPPStandard(session, elTrack, trackSession, rotation, tpp);
-                }
+                paintTrackPP(session, elTrack, trackSession, rotation, tpp);
             }
             else
             {
@@ -298,6 +330,7 @@ namespace OpenLoco::Paint
             {
                 continue;
             }
+            const auto trackExtraBaseImage = ImageId::fromUInt32(_trackExtraImageId);
 
             session.setTrackModId(mod);
 
@@ -306,44 +339,20 @@ namespace OpenLoco::Paint
             {
                 auto& parts = Style0::kTrackPaintAdditionParts[elTrack.trackId()];
                 auto& tppa = parts[elTrack.sequenceIndex()];
-                if (tppa.isIsMergable)
-                {
-                    Style0::paintTrackAdditionPPMergable(session, elTrack, rotation, ImageId::fromUInt32(_trackExtraImageId), tppa);
-                }
-                else
-                {
-                    Style0::paintTrackAdditionPPStandard(session, elTrack, rotation, ImageId::fromUInt32(_trackExtraImageId), tppa);
-                }
+
+                Style0::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
             }
             else if (paintStyle == 1 && elTrack.trackId() < Style1::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style1::kTrackPaintAdditionParts[elTrack.trackId()].size())
             {
                 auto& parts = Style1::kTrackPaintAdditionParts[elTrack.trackId()];
                 auto& tppa = parts[elTrack.sequenceIndex()];
-                // TODO: Better way to detect kNullTrackPaintAdditionPiece
-                if (tppa.imageIds[3] != 0)
-                {
-                    if (tppa.isIsMergable)
-                    {
-                        Style1::paintTrackAdditionPPMergable(session, elTrack, rotation, ImageId::fromUInt32(_trackExtraImageId), tppa);
-                    }
-                    else
-                    {
-                        Style1::paintTrackAdditionPPStandard(session, elTrack, rotation, ImageId::fromUInt32(_trackExtraImageId), tppa);
-                    }
-                }
+
+                Style1::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
             }
             else
             {
                 assert(false);
                 Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elTrack.trackId(), elTrack.sequenceIndex());
-
-                const auto trackExtraPaintFunc = _trackExtraPaintModes[trackExtraObj->paintStyle][elTrack.trackId()][rotation];
-                registers regs;
-                regs.esi = X86Pointer(&elTrack);
-                regs.ebp = elTrack.sequenceIndex();
-                regs.ecx = rotation;
-                regs.dx = height;
-                call(trackExtraPaintFunc, regs);
             }
         }
     }
