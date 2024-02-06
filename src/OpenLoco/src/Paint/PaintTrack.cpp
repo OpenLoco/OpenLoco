@@ -69,7 +69,7 @@ namespace OpenLoco::Paint
             const auto seg = Numerics::bitScanForward(enumValue(tppaSupport.segments[rotation]));
             assert(seg != -1);
             TrackRoadAdditionSupports support{};
-            support.height = height;
+            support.height = height + tppaSupport.height;
             support.occupiedSegments = session.getOccupiedAdditionSupportSegments();
             support.segmentFrequency[seg] = tppaSupport.frequencies[rotation];
             support.segmentImages[seg] = baseImageId.withIndexOffset(tppaSupport.imageIds[rotation][0]).toUInt32();
