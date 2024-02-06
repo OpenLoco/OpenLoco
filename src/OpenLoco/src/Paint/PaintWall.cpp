@@ -5,7 +5,7 @@
 #include "Objects/WallObject.h"
 #include "Paint.h"
 #include "ScenarioManager.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include <cassert>
 
 using namespace OpenLoco::Interop;
