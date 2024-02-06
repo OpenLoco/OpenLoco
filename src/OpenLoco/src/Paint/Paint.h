@@ -51,6 +51,57 @@ namespace OpenLoco::Paint
     // Handy array for converting a bit index to the flag
     constexpr std::array<SegmentFlags, 9> kSegmentOffsets = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
 
+    constexpr uint8_t rotl4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val << rotation) | (val >> (4 - rotation))) & 0xF;
+    }
+
+    constexpr uint8_t rotr4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
+    }
+
+    namespace
+    {
+        constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap1 = {
+            std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+            std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+            std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+            std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+        };
+        constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap2 = {
+            std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+            std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+            std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+            std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+        };
+    }
+
+    constexpr SegmentFlags rotlSegmentFlags(SegmentFlags val, uint8_t rotation)
+    {
+        SegmentFlags ret = SegmentFlags::none;
+        const auto _val = enumValue(val);
+        for (auto i = 0U; i < 4; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << kSegMap1[rotation][i]);
+            }
+        }
+        for (auto i = 5U; i < 9; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << (kSegMap2[rotation][i - 5] + 5));
+            }
+        }
+
+        return ret | (val & SegmentFlags::x1y1);
+    }
+
+    static_assert(rotl4bit(0b1000, 1) == 0b0001);
+    static_assert(rotlSegmentFlags(SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1, 0) == (SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1));
+
     // Used by both AttachedPaintStruct and PaintStruct
     enum class PaintStructFlags : uint8_t
     {

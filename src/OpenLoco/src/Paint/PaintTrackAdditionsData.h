@@ -20,7 +20,7 @@ namespace OpenLoco::Paint
         constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
         constexpr std::array<uint8_t, 4> kRotationTable3012 = { 3, 0, 1, 2 };
 
-        consteval TrackPaintAdditionPiece rotateTrackPP(const TrackPaintAdditionPiece& reference, const std::array<uint8_t, 4>& rotationTable)
+        consteval TrackPaintAdditionPiece rotateTrackPPA(const TrackPaintAdditionPiece& reference, const std::array<uint8_t, 4>& rotationTable)
         {
             return TrackPaintAdditionPiece{
                 std::array<uint32_t, 4>{
@@ -67,10 +67,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 22, 1 },
                 World::Pos3{ 22, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightTPPA = {
             kStraightAddition0,
         };
 
@@ -94,7 +94,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420F17, 0x0042101F, 0x00421127, 0x0042122F
@@ -117,7 +117,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420F59, 0x00421061, 0x00421169, 0x00421271
@@ -140,7 +140,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420F9B, 0x004210A3, 0x004211AB, 0x004212B3
@@ -163,10 +163,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kDiagonalTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kDiagonalTPPA = {
             kDiagonalAddition0,
             kDiagonalAddition1,
             kDiagonalAddition2,
@@ -193,16 +193,16 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kRightCurveVerySmallTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kRightCurveVerySmallTPPA = {
             kRightCurveVerySmallAddition0,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveVerySmallAddition0 = rotateTrackPP(kRightCurveVerySmallAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveVerySmallAddition0 = rotateTrackPPA(kRightCurveVerySmallAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kLeftCurveVerySmallTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kLeftCurveVerySmallTPPA = {
             kLeftCurveVerySmallAddition0,
         };
 
@@ -226,7 +226,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0041E888, 0x0041E984, 0x0041EA80, 0x0041EB7C
@@ -249,7 +249,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0041E8C7, 0x0041E9C3, 0x0041EABF, 0x0041EBBB
@@ -272,7 +272,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0041E906, 0x0041EA02, 0x0041EAFE, 0x0041EBFA
@@ -295,25 +295,25 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallTPPA = {
             kRightCurveSmallAddition0,
             kRightCurveSmallAddition1,
             kRightCurveSmallAddition2,
             kRightCurveSmallAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition0 = rotateTrackPP(kRightCurveSmallAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition0 = rotateTrackPPA(kRightCurveSmallAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition1 = rotateTrackPP(kRightCurveSmallAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition1 = rotateTrackPPA(kRightCurveSmallAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition2 = rotateTrackPP(kRightCurveSmallAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition2 = rotateTrackPPA(kRightCurveSmallAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition3 = rotateTrackPP(kRightCurveSmallAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition3 = rotateTrackPPA(kRightCurveSmallAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallTPPA = {
             kLeftCurveSmallAddition0,
             kLeftCurveSmallAddition1,
             kLeftCurveSmallAddition2,
@@ -340,7 +340,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0041FF4C, 0x00420087, 0x004201C2, 0x004202FD
@@ -363,7 +363,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0041FF8B, 0x004200C6, 0x00420201, 0x0042033C
@@ -386,7 +386,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0041FFCA, 0x00420105, 0x00420240, 0x0042037B
@@ -409,7 +409,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 28, 1 },
                 World::Pos3{ 28, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420009, 0x00420144, 0x0042027F, 0x004203BA
@@ -432,10 +432,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveTPPA = {
             kRightCurveAddition0,
             kRightCurveAddition1,
             kRightCurveAddition2,
@@ -443,17 +443,17 @@ namespace OpenLoco::Paint
             kRightCurveAddition4,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition0 = rotateTrackPP(kRightCurveAddition4, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition0 = rotateTrackPPA(kRightCurveAddition4, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition1 = rotateTrackPP(kRightCurveAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition1 = rotateTrackPPA(kRightCurveAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition2 = rotateTrackPP(kRightCurveAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition2 = rotateTrackPPA(kRightCurveAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition3 = rotateTrackPP(kRightCurveAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition3 = rotateTrackPPA(kRightCurveAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition4 = rotateTrackPP(kRightCurveAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition4 = rotateTrackPPA(kRightCurveAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveTPPA = {
             kLeftCurveAddition0,
             kLeftCurveAddition1,
             kLeftCurveAddition2,
@@ -481,7 +481,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x004209D3, 0x00420B1D, 0x00420C67, 0x00420DB1
@@ -504,7 +504,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420A15, 0x00420B5F, 0x00420CA9, 0x00420DF3
@@ -527,7 +527,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420A57, 0x00420BA1, 0x00420CEB, 0x00420E35
@@ -550,7 +550,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420A99, 0x00420BE3, 0x00420D2D, 0x00420E77
@@ -573,10 +573,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveLargeTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveLargeTPPA = {
             kRightCurveLargeAddition0,
             kRightCurveLargeAddition1,
             kRightCurveLargeAddition2,
@@ -604,7 +604,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x004204AB, 0x004205F5, 0x0042073F, 0x00420889
@@ -627,7 +627,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x004204ED, 0x00420637, 0x00420781, 0x004208CB
@@ -650,7 +650,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0042052F, 0x00420679, 0x004207C3, 0x0042090D
@@ -673,7 +673,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00420571, 0x004206BB, 0x00420805, 0x0042094F
@@ -696,10 +696,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveLargeTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveLargeTPPA = {
             kLeftCurveLargeAddition0,
             kLeftCurveLargeAddition1,
             kLeftCurveLargeAddition2,
@@ -707,17 +707,17 @@ namespace OpenLoco::Paint
             kLeftCurveLargeAddition4,
         };
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition0 = rotateTrackPP(kLeftCurveLargeAddition4, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition0 = rotateTrackPPA(kLeftCurveLargeAddition4, kRotationTable3012);
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition1 = rotateTrackPP(kLeftCurveLargeAddition2, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition1 = rotateTrackPPA(kLeftCurveLargeAddition2, kRotationTable3012);
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition2 = rotateTrackPP(kLeftCurveLargeAddition3, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition2 = rotateTrackPPA(kLeftCurveLargeAddition3, kRotationTable3012);
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition3 = rotateTrackPP(kLeftCurveLargeAddition1, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition3 = rotateTrackPPA(kLeftCurveLargeAddition1, kRotationTable3012);
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition4 = rotateTrackPP(kLeftCurveLargeAddition0, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition4 = rotateTrackPPA(kLeftCurveLargeAddition0, kRotationTable3012);
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalRightCurveLargeTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalRightCurveLargeTPPA = {
             kDiagonalRightCurveLargeAddition0,
             kDiagonalRightCurveLargeAddition1,
             kDiagonalRightCurveLargeAddition2,
@@ -725,17 +725,17 @@ namespace OpenLoco::Paint
             kDiagonalRightCurveLargeAddition4,
         };
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition0 = rotateTrackPP(kRightCurveLargeAddition4, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition0 = rotateTrackPPA(kRightCurveLargeAddition4, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition1 = rotateTrackPP(kRightCurveLargeAddition2, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition1 = rotateTrackPPA(kRightCurveLargeAddition2, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition2 = rotateTrackPP(kRightCurveLargeAddition3, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition2 = rotateTrackPPA(kRightCurveLargeAddition3, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition3 = rotateTrackPP(kRightCurveLargeAddition1, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition3 = rotateTrackPPA(kRightCurveLargeAddition1, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition4 = rotateTrackPP(kRightCurveLargeAddition0, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition4 = rotateTrackPPA(kRightCurveLargeAddition0, kRotationTable2301);
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalLeftCurveLargeTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalLeftCurveLargeTPPA = {
             kDiagonalLeftCurveLargeAddition0,
             kDiagonalLeftCurveLargeAddition1,
             kDiagonalLeftCurveLargeAddition2,
@@ -763,7 +763,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x004216EC, 0x004217E8, 0x00421923, 0x00421A1F
@@ -786,7 +786,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0042172B, 0x00421827, 0x004218E4, 0x004219E0
@@ -809,7 +809,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 24, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x0042176A, 0x00421866, 0x004218A5, 0x004219A1
@@ -832,10 +832,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendLeftTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendLeftTPPA = {
             kSBendLeftAddition0,
             kSBendLeftAddition1,
             kSBendLeftAddition2,
@@ -862,7 +862,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00421ADC, 0x00421BD8, 0x00421D13, 0x00421E0F
@@ -885,7 +885,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00421B1B, 0x00421C17, 0x00421CD4, 0x00421DD0
@@ -908,7 +908,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
         // 0x00421B5A, 0x00421C56, 0x00421C95, 0x00421D91
@@ -931,10 +931,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendRightTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendRightTPPA = {
             kSBendRightAddition0,
             kSBendRightAddition1,
             kSBendRightAddition2,
@@ -961,7 +961,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x00421373, 0x004213FF, 0x0042148B, 0x00421517
@@ -984,19 +984,19 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeUpTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeUpTPPA = {
             kStraightSlopeUpAddition0,
             kStraightSlopeUpAddition1,
         };
 
-        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition0 = rotateTrackPP(kStraightSlopeUpAddition1, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition0 = rotateTrackPPA(kStraightSlopeUpAddition1, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition1 = rotateTrackPP(kStraightSlopeUpAddition0, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition1 = rotateTrackPPA(kStraightSlopeUpAddition0, kRotationTable2301);
 
-        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeDownTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeDownTPPA = {
             kStraightSlopeDownAddition0,
             kStraightSlopeDownAddition1,
         };
@@ -1021,16 +1021,16 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeUpTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeUpTPPA = {
             kStraightSteepSlopeUpAddition0,
         };
 
-        constexpr TrackPaintAdditionPiece kStraightSteepSlopeDownAddition0 = rotateTrackPP(kStraightSteepSlopeUpAddition0, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kStraightSteepSlopeDownAddition0 = rotateTrackPPA(kStraightSteepSlopeUpAddition0, kRotationTable2301);
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeDownTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeDownTPPA = {
             kStraightSteepSlopeDownAddition0,
         };
 
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041ECEF, 0x0041EE07, 0x0041EF1F, 0x0041F037
@@ -1077,7 +1077,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041ED35, 0x0041EE4D, 0x0041EF65, 0x0041F07D
@@ -1100,7 +1100,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041ED7B, 0x0041EE93, 0x0041EFAB, 0x0041F0C3
@@ -1123,10 +1123,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeUpTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeUpTPPA = {
             kRightCurveSmallSlopeUpAddition0,
             kRightCurveSmallSlopeUpAddition1,
             kRightCurveSmallSlopeUpAddition2,
@@ -1153,7 +1153,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041F14F, 0x0041F267, 0x0041F37F, 0x0041F497
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041F195, 0x0041F2AD, 0x0041F3C5, 0x0041F4DD
@@ -1199,7 +1199,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041F1DB, 0x0041F2F3, 0x0041F40B, 0x0041F523
@@ -1222,40 +1222,40 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeDownTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeDownTPPA = {
             kRightCurveSmallSlopeDownAddition0,
             kRightCurveSmallSlopeDownAddition1,
             kRightCurveSmallSlopeDownAddition2,
             kRightCurveSmallSlopeDownAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition0 = rotateTrackPP(kRightCurveSmallSlopeDownAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition0 = rotateTrackPPA(kRightCurveSmallSlopeDownAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition1 = rotateTrackPP(kRightCurveSmallSlopeDownAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition1 = rotateTrackPPA(kRightCurveSmallSlopeDownAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition2 = rotateTrackPP(kRightCurveSmallSlopeDownAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition2 = rotateTrackPPA(kRightCurveSmallSlopeDownAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition3 = rotateTrackPP(kRightCurveSmallSlopeDownAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition3 = rotateTrackPPA(kRightCurveSmallSlopeDownAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeUpTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeUpTPPA = {
             kLeftCurveSmallSlopeUpAddition0,
             kLeftCurveSmallSlopeUpAddition1,
             kLeftCurveSmallSlopeUpAddition2,
             kLeftCurveSmallSlopeUpAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition0 = rotateTrackPP(kRightCurveSmallSlopeUpAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition0 = rotateTrackPPA(kRightCurveSmallSlopeUpAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition1 = rotateTrackPP(kRightCurveSmallSlopeUpAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition1 = rotateTrackPPA(kRightCurveSmallSlopeUpAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition2 = rotateTrackPP(kRightCurveSmallSlopeUpAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition2 = rotateTrackPPA(kRightCurveSmallSlopeUpAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition3 = rotateTrackPP(kRightCurveSmallSlopeUpAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition3 = rotateTrackPPA(kRightCurveSmallSlopeUpAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeDownTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeDownTPPA = {
             kLeftCurveSmallSlopeDownAddition0,
             kLeftCurveSmallSlopeDownAddition1,
             kLeftCurveSmallSlopeDownAddition2,
@@ -1282,7 +1282,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041F61F, 0x0041F737, 0x0041F84F, 0x0041F96A
@@ -1305,7 +1305,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041F665, 0x0041F77D, 0x0041F895, 0x0041F9B3
@@ -1328,7 +1328,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041F6AB, 0x0041F7C3, 0x0041F8DB, 0x0041F9FC
@@ -1351,10 +1351,10 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeUpTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeUpTPPA = {
             kRightCurveSmallSteepSlopeUpAddition0,
             kRightCurveSmallSteepSlopeUpAddition1,
             kRightCurveSmallSteepSlopeUpAddition2,
@@ -1381,7 +1381,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041FA8E, 0x0041FBB2, 0x0041FCD6, 0x0041FDFA
@@ -1404,7 +1404,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041FAD7, 0x0041FBFB, 0x0041FD1F, 0x0041FE43
@@ -1427,7 +1427,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
         // 0x0041FB20, 0x0041FC44, 0x0041FD68, 0x0041FE8C
@@ -1450,40 +1450,40 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeDownTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeDownTPPA = {
             kRightCurveSmallSteepSlopeDownAddition0,
             kRightCurveSmallSteepSlopeDownAddition1,
             kRightCurveSmallSteepSlopeDownAddition2,
             kRightCurveSmallSteepSlopeDownAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition0 = rotateTrackPP(kRightCurveSmallSteepSlopeDownAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition0 = rotateTrackPPA(kRightCurveSmallSteepSlopeDownAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition1 = rotateTrackPP(kRightCurveSmallSteepSlopeDownAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition1 = rotateTrackPPA(kRightCurveSmallSteepSlopeDownAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition2 = rotateTrackPP(kRightCurveSmallSteepSlopeDownAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition2 = rotateTrackPPA(kRightCurveSmallSteepSlopeDownAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition3 = rotateTrackPP(kRightCurveSmallSteepSlopeDownAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition3 = rotateTrackPPA(kRightCurveSmallSteepSlopeDownAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeUpTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeUpTPPA = {
             kLeftCurveSmallSteepSlopeUpAddition0,
             kLeftCurveSmallSteepSlopeUpAddition1,
             kLeftCurveSmallSteepSlopeUpAddition2,
             kLeftCurveSmallSteepSlopeUpAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition0 = rotateTrackPP(kRightCurveSmallSteepSlopeUpAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition0 = rotateTrackPPA(kRightCurveSmallSteepSlopeUpAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition1 = rotateTrackPP(kRightCurveSmallSteepSlopeUpAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition1 = rotateTrackPPA(kRightCurveSmallSteepSlopeUpAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition2 = rotateTrackPP(kRightCurveSmallSteepSlopeUpAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition2 = rotateTrackPPA(kRightCurveSmallSteepSlopeUpAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition3 = rotateTrackPP(kRightCurveSmallSteepSlopeUpAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition3 = rotateTrackPPA(kRightCurveSmallSteepSlopeUpAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeDownTPPA0 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeDownTPPA = {
             kLeftCurveSmallSteepSlopeDownAddition0,
             kLeftCurveSmallSteepSlopeDownAddition1,
             kLeftCurveSmallSteepSlopeDownAddition2,
@@ -1491,32 +1491,32 @@ namespace OpenLoco::Paint
         };
 
         constexpr std::array<std::span<const TrackPaintAdditionPiece>, 26> kTrackPaintAdditionParts = {
-            kStraightTPPA0,
-            kDiagonalTPPA0,
-            kLeftCurveVerySmallTPPA0,
-            kRightCurveVerySmallTPPA0,
-            kLeftCurveSmallTPPA0,
-            kRightCurveSmallTPPA0,
-            kLeftCurveTPPA0,
-            kRightCurveTPPA0,
-            kLeftCurveLargeTPPA0,
-            kRightCurveLargeTPPA0,
-            kDiagonalLeftCurveLargeTPPA0,
-            kDiagonalRightCurveLargeTPPA0,
-            kSBendLeftTPPA0,
-            kSBendRightTPPA0,
-            kStraightSlopeUpTPPA0,
-            kStraightSlopeDownTPPA0,
-            kStraightSteepSlopeUpTPPA0,
-            kStraightSteepSlopeDownTPPA0,
-            kLeftCurveSmallSlopeUpTPPA0,
-            kRightCurveSmallSlopeUpTPPA0,
-            kLeftCurveSmallSlopeDownTPPA0,
-            kRightCurveSmallSlopeDownTPPA0,
-            kLeftCurveSmallSteepSlopeUpTPPA0,
-            kRightCurveSmallSteepSlopeUpTPPA0,
-            kLeftCurveSmallSteepSlopeDownTPPA0,
-            kRightCurveSmallSteepSlopeDownTPPA0,
+            kStraightTPPA,
+            kDiagonalTPPA,
+            kLeftCurveVerySmallTPPA,
+            kRightCurveVerySmallTPPA,
+            kLeftCurveSmallTPPA,
+            kRightCurveSmallTPPA,
+            kLeftCurveTPPA,
+            kRightCurveTPPA,
+            kLeftCurveLargeTPPA,
+            kRightCurveLargeTPPA,
+            kDiagonalLeftCurveLargeTPPA,
+            kDiagonalRightCurveLargeTPPA,
+            kSBendLeftTPPA,
+            kSBendRightTPPA,
+            kStraightSlopeUpTPPA,
+            kStraightSlopeDownTPPA,
+            kStraightSteepSlopeUpTPPA,
+            kStraightSteepSlopeDownTPPA,
+            kLeftCurveSmallSlopeUpTPPA,
+            kRightCurveSmallSlopeUpTPPA,
+            kLeftCurveSmallSlopeDownTPPA,
+            kRightCurveSmallSlopeDownTPPA,
+            kLeftCurveSmallSteepSlopeUpTPPA,
+            kRightCurveSmallSteepSlopeUpTPPA,
+            kLeftCurveSmallSteepSlopeDownTPPA,
+            kRightCurveSmallSteepSlopeDownTPPA,
         };
     }
     namespace Style1
@@ -1525,8 +1525,42 @@ namespace OpenLoco::Paint
         {
             std::array<std::array<uint32_t, 2>, 4> imageIds;
             int16_t height;
-            uint8_t frequency;     // Make array
-            SegmentFlags segments; // Make array
+            std::array<uint8_t, 4> frequencies;   // Make array
+            std::array<SegmentFlags, 4> segments; // Make array
+
+            constexpr TrackAdditionSupport(
+                const std::array<std::array<uint32_t, 2>, 4>& _imageIds,
+                const int16_t _height,
+                const std::array<uint8_t, 4>& _frequencies,
+                const std::array<SegmentFlags, 4>& _segments)
+                : imageIds(_imageIds)
+                , height(_height)
+                , frequencies(_frequencies)
+                , segments(_segments)
+            {
+            }
+
+            constexpr TrackAdditionSupport(
+                const std::array<std::array<uint32_t, 2>, 4>& _imageIds,
+                const int16_t _height,
+                const uint8_t _frequency,
+                const SegmentFlags _segment)
+                : imageIds(_imageIds)
+                , height(_height)
+                , frequencies()
+                , segments()
+            {
+                frequencies[0] = _frequency;
+                frequencies[1] = rotl4bit(frequencies[0], 2);
+                frequencies[2] = frequencies[0];
+                frequencies[3] = frequencies[1];
+
+                segments[0] = _segment;
+                for (auto i = 1U; i < 4; ++i)
+                {
+                    segments[i] = rotlSegmentFlags(segments[0], i);
+                }
+            }
         };
 
         struct TrackPaintAdditionPiece
@@ -1544,7 +1578,36 @@ namespace OpenLoco::Paint
         constexpr TrackPaintAdditionPiece kNullTrackPaintAdditionPiece = {};
         constexpr auto kNoSupports = std::nullopt;
 
-        consteval TrackPaintAdditionPiece rotateTrackPP(const TrackPaintAdditionPiece& reference, const std::array<uint8_t, 4>& rotationTable)
+        consteval std::optional<TrackAdditionSupport> rotateTrackPPASupport(const std::optional<TrackAdditionSupport>& reference, const std::array<uint8_t, 4>& rotationTable)
+        {
+            if (!reference.has_value())
+            {
+                return std::nullopt;
+            }
+            return TrackAdditionSupport{
+                std::array<std::array<uint32_t, 2>, 4>{
+                    reference->imageIds[rotationTable[0]],
+                    reference->imageIds[rotationTable[1]],
+                    reference->imageIds[rotationTable[2]],
+                    reference->imageIds[rotationTable[3]],
+                },
+                reference->height,
+                std::array<uint8_t, 4>{
+                    reference->frequencies[rotationTable[0]],
+                    reference->frequencies[rotationTable[1]],
+                    reference->frequencies[rotationTable[2]],
+                    reference->frequencies[rotationTable[3]],
+                },
+                std::array<SegmentFlags, 4>{
+                    reference->segments[rotationTable[0]],
+                    reference->segments[rotationTable[1]],
+                    reference->segments[rotationTable[2]],
+                    reference->segments[rotationTable[3]],
+                }
+            };
+        }
+
+        consteval TrackPaintAdditionPiece rotateTrackPPA(const TrackPaintAdditionPiece& reference, const std::array<uint8_t, 4>& rotationTable)
         {
             return TrackPaintAdditionPiece{
                 std::array<uint32_t, 4>{
@@ -1565,9 +1628,8 @@ namespace OpenLoco::Paint
                     reference.boundingBoxSizes[rotationTable[2]],
                     reference.boundingBoxSizes[rotationTable[3]],
                 },
-                reference.isIsMergable
-
-                // TODO rotate support
+                reference.isIsMergable,
+                rotateTrackPPASupport(reference.supports, rotationTable)
             };
         }
 
@@ -1593,13 +1655,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 22, 1 },
                 World::Pos3{ 22, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 2,
@@ -1607,7 +1669,7 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightTPPA = {
             kStraightAddition0,
         };
 
@@ -1631,7 +1693,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1659,11 +1721,11 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kDiagonalTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kDiagonalTPPA = {
             kDiagonalAddition0,
             kDiagonalAddition1,
             kDiagonalAddition2,
@@ -1690,17 +1752,17 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kRightCurveVerySmallTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kRightCurveVerySmallTPPA = {
             kRightCurveVerySmallAddition0,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveVerySmallAddition0 = rotateTrackPP(kRightCurveVerySmallAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveVerySmallAddition0 = rotateTrackPPA(kRightCurveVerySmallAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kLeftCurveVerySmallTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kLeftCurveVerySmallTPPA = {
             kLeftCurveVerySmallAddition0,
         };
 
@@ -1724,13 +1786,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -1762,13 +1824,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -1776,22 +1838,22 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallTPPA = {
             kRightCurveSmallAddition0,
             kRightCurveSmallAddition1,
             kRightCurveSmallAddition2,
             kRightCurveSmallAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition0 = rotateTrackPP(kRightCurveSmallAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition0 = rotateTrackPPA(kRightCurveSmallAddition3, kRotationTable1230);
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition3 = rotateTrackPP(kRightCurveSmallAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallAddition3 = rotateTrackPPA(kRightCurveSmallAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallTPPA = {
             kLeftCurveSmallAddition0,
             kLeftCurveSmallAddition1,
             kLeftCurveSmallAddition2,
@@ -1818,7 +1880,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1842,13 +1904,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1NE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1SE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1SW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1NW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1NE, kSupportConnectorRightCurve1NE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1SE, kSupportConnectorRightCurve1SE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1SW, kSupportConnectorRightCurve1SW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1NW, kSupportConnectorRightCurve1NW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -1876,7 +1938,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1900,13 +1962,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 28, 1 },
                 World::Pos3{ 28, 14, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3NE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3SE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3SW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3NW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3NE, kSupportConnectorRightCurve3NE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3SE, kSupportConnectorRightCurve3SE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3SW, kSupportConnectorRightCurve3SW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3NW, kSupportConnectorRightCurve3NW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -1934,11 +1996,11 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveTPPA = {
             kRightCurveAddition0,
             kRightCurveAddition1,
             kRightCurveAddition2,
@@ -1946,17 +2008,17 @@ namespace OpenLoco::Paint
             kRightCurveAddition4,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition0 = rotateTrackPP(kRightCurveAddition4, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition0 = rotateTrackPPA(kRightCurveAddition4, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition1 = rotateTrackPP(kRightCurveAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition1 = rotateTrackPPA(kRightCurveAddition3, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition2 = rotateTrackPP(kRightCurveAddition2, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition2 = rotateTrackPPA(kRightCurveAddition2, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition3 = rotateTrackPP(kRightCurveAddition1, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition3 = rotateTrackPPA(kRightCurveAddition1, kRotationTable1230);
 
-        constexpr TrackPaintAdditionPiece kLeftCurveAddition4 = rotateTrackPP(kRightCurveAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveAddition4 = rotateTrackPPA(kRightCurveAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveTPPA = {
             kLeftCurveAddition0,
             kLeftCurveAddition1,
             kLeftCurveAddition2,
@@ -1984,7 +2046,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2008,13 +2070,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -2046,11 +2108,11 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveLargeTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveLargeTPPA = {
             kRightCurveLargeAddition0,
             kRightCurveLargeAddition1,
             kRightCurveLargeAddition2,
@@ -2078,7 +2140,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2102,13 +2164,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -2140,11 +2202,11 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveLargeTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveLargeTPPA = {
             kLeftCurveLargeAddition0,
             kLeftCurveLargeAddition1,
             kLeftCurveLargeAddition2,
@@ -2152,17 +2214,17 @@ namespace OpenLoco::Paint
             kLeftCurveLargeAddition4,
         };
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition0 = rotateTrackPP(kLeftCurveLargeAddition4, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition0 = rotateTrackPPA(kLeftCurveLargeAddition4, kRotationTable3012);
 
         constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition3 = rotateTrackPP(kLeftCurveLargeAddition1, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition3 = rotateTrackPPA(kLeftCurveLargeAddition1, kRotationTable3012);
 
-        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition4 = rotateTrackPP(kLeftCurveLargeAddition0, kRotationTable3012);
+        constexpr TrackPaintAdditionPiece kDiagonalRightCurveLargeAddition4 = rotateTrackPPA(kLeftCurveLargeAddition0, kRotationTable3012);
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalRightCurveLargeTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalRightCurveLargeTPPA = {
             kDiagonalRightCurveLargeAddition0,
             kDiagonalRightCurveLargeAddition1,
             kDiagonalRightCurveLargeAddition2,
@@ -2170,17 +2232,17 @@ namespace OpenLoco::Paint
             kDiagonalRightCurveLargeAddition4,
         };
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition0 = rotateTrackPP(kRightCurveLargeAddition4, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition0 = rotateTrackPPA(kRightCurveLargeAddition4, kRotationTable2301);
 
         constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition3 = rotateTrackPP(kRightCurveLargeAddition1, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition3 = rotateTrackPPA(kRightCurveLargeAddition1, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition4 = rotateTrackPP(kRightCurveLargeAddition0, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kDiagonalLeftCurveLargeAddition4 = rotateTrackPPA(kRightCurveLargeAddition0, kRotationTable2301);
 
-        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalLeftCurveLargeTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 5> kDiagonalLeftCurveLargeTPPA = {
             kDiagonalLeftCurveLargeAddition0,
             kDiagonalLeftCurveLargeAddition1,
             kDiagonalLeftCurveLargeAddition2,
@@ -2208,7 +2270,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2232,13 +2294,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3SE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3SW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3NW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3NE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3SE, kSupportConnectorRightCurve3SE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3SW, kSupportConnectorRightCurve3SW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3NW, kSupportConnectorRightCurve3NW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3NE, kSupportConnectorRightCurve3NE },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -2266,13 +2328,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 24, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3NW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3NE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3SE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve3SW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3NW, kSupportConnectorRightCurve3NW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3NE, kSupportConnectorRightCurve3NE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3SE, kSupportConnectorRightCurve3SE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve3SW, kSupportConnectorRightCurve3SW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -2300,11 +2362,11 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendLeftTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendLeftTPPA = {
             kSBendLeftAddition0,
             kSBendLeftAddition1,
             kSBendLeftAddition2,
@@ -2331,7 +2393,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2355,13 +2417,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1NE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1SE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1SW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1NW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1NE, kSupportConnectorRightCurve1NE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1SE, kSupportConnectorRightCurve1SE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1SW, kSupportConnectorRightCurve1SW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1NW, kSupportConnectorRightCurve1NW },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -2389,13 +2451,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1SW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1NW },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1NE },
-                    std::array<uint32_t, 2>{ 1, kSupportRightCurve1SE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1SW, kSupportConnectorRightCurve1SW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1NW, kSupportConnectorRightCurve1NW },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1NE, kSupportConnectorRightCurve1NE },
+                    std::array<uint32_t, 2>{ kSupportRightCurve1SE, kSupportConnectorRightCurve1SE },
                 },
                 /* SupportHeight */ 0,
                 /* Frequency */ 0,
@@ -2423,11 +2485,11 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* IsMergable */ true,
+            /* Mergable */ true,
             /* Supports */ kNoSupports,
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendRightTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kSBendRightTPPA = {
             kSBendRightAddition0,
             kSBendRightAddition1,
             kSBendRightAddition2,
@@ -2454,13 +2516,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 4,
                 /* Frequency */ 1,
@@ -2488,13 +2550,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 12,
                 /* Frequency */ 1,
@@ -2502,16 +2564,16 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeUpTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeUpTPPA = {
             kStraightSlopeUpAddition0,
             kStraightSlopeUpAddition1,
         };
 
-        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition0 = rotateTrackPP(kStraightSlopeUpAddition1, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition0 = rotateTrackPPA(kStraightSlopeUpAddition1, kRotationTable2301);
 
-        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition1 = rotateTrackPP(kStraightSlopeUpAddition0, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kStraightSlopeDownAddition1 = rotateTrackPPA(kStraightSlopeUpAddition0, kRotationTable2301);
 
-        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeDownTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeDownTPPA = {
             kStraightSlopeDownAddition0,
             kStraightSlopeDownAddition1,
         };
@@ -2536,13 +2598,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 8,
                 /* Frequency */ 2,
@@ -2550,13 +2612,13 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeUpTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeUpTPPA = {
             kStraightSteepSlopeUpAddition0,
         };
 
-        constexpr TrackPaintAdditionPiece kStraightSteepSlopeDownAddition0 = rotateTrackPP(kStraightSteepSlopeUpAddition0, kRotationTable2301);
+        constexpr TrackPaintAdditionPiece kStraightSteepSlopeDownAddition0 = rotateTrackPPA(kStraightSteepSlopeUpAddition0, kRotationTable2301);
 
-        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeDownTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeDownTPPA = {
             kStraightSteepSlopeDownAddition0,
         };
 
@@ -2580,13 +2642,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 4,
                 /* Frequency */ 0,
@@ -2618,13 +2680,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
                 },
                 /* SupportHeight */ 12,
                 /* Frequency */ 0,
@@ -2632,7 +2694,7 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeUpTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeUpTPPA = {
             kRightCurveSmallSlopeUpAddition0,
             kRightCurveSmallSlopeUpAddition1,
             kRightCurveSmallSlopeUpAddition2,
@@ -2659,13 +2721,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 12,
                 /* Frequency */ 0,
@@ -2697,13 +2759,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
                 },
                 /* SupportHeight */ 4,
                 /* Frequency */ 0,
@@ -2711,37 +2773,37 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeDownTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeDownTPPA = {
             kRightCurveSmallSlopeDownAddition0,
             kRightCurveSmallSlopeDownAddition1,
             kRightCurveSmallSlopeDownAddition2,
             kRightCurveSmallSlopeDownAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition0 = rotateTrackPP(kRightCurveSmallSlopeDownAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition0 = rotateTrackPPA(kRightCurveSmallSlopeDownAddition3, kRotationTable1230);
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition3 = rotateTrackPP(kRightCurveSmallSlopeDownAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeUpAddition3 = rotateTrackPPA(kRightCurveSmallSlopeDownAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeUpTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeUpTPPA = {
             kLeftCurveSmallSlopeUpAddition0,
             kLeftCurveSmallSlopeUpAddition1,
             kLeftCurveSmallSlopeUpAddition2,
             kLeftCurveSmallSlopeUpAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition0 = rotateTrackPP(kRightCurveSmallSlopeUpAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition0 = rotateTrackPPA(kRightCurveSmallSlopeUpAddition3, kRotationTable1230);
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition3 = rotateTrackPP(kRightCurveSmallSlopeUpAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSlopeDownAddition3 = rotateTrackPPA(kRightCurveSmallSlopeUpAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeDownTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSlopeDownTPPA = {
             kLeftCurveSmallSlopeDownAddition0,
             kLeftCurveSmallSlopeDownAddition1,
             kLeftCurveSmallSlopeDownAddition2,
@@ -2768,13 +2830,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 8,
                 /* Frequency */ 0,
@@ -2806,13 +2868,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
                 },
                 /* SupportHeight */ 8,
                 /* Frequency */ 0,
@@ -2820,7 +2882,7 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeUpTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeUpTPPA = {
             kRightCurveSmallSteepSlopeUpAddition0,
             kRightCurveSmallSteepSlopeUpAddition1,
             kRightCurveSmallSteepSlopeUpAddition2,
@@ -2847,13 +2909,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
                 },
                 /* SupportHeight */ 8,
                 /* Frequency */ 0,
@@ -2885,13 +2947,13 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* IsMergable */ false,
+            /* Mergable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SE },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0SW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NW },
-                    std::array<uint32_t, 2>{ 1, kSupportStraight0NE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
+                    std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NW, kSupportConnectorStraight0NW },
+                    std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
                 },
                 /* SupportHeight */ 8,
                 /* Frequency */ 0,
@@ -2899,37 +2961,37 @@ namespace OpenLoco::Paint
             },
         };
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeDownTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeDownTPPA = {
             kRightCurveSmallSteepSlopeDownAddition0,
             kRightCurveSmallSteepSlopeDownAddition1,
             kRightCurveSmallSteepSlopeDownAddition2,
             kRightCurveSmallSteepSlopeDownAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition0 = rotateTrackPP(kRightCurveSmallSteepSlopeDownAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition0 = rotateTrackPPA(kRightCurveSmallSteepSlopeDownAddition3, kRotationTable1230);
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition3 = rotateTrackPP(kRightCurveSmallSteepSlopeDownAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeUpAddition3 = rotateTrackPPA(kRightCurveSmallSteepSlopeDownAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeUpTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeUpTPPA = {
             kLeftCurveSmallSteepSlopeUpAddition0,
             kLeftCurveSmallSteepSlopeUpAddition1,
             kLeftCurveSmallSteepSlopeUpAddition2,
             kLeftCurveSmallSteepSlopeUpAddition3,
         };
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition0 = rotateTrackPP(kRightCurveSmallSteepSlopeUpAddition3, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition0 = rotateTrackPPA(kRightCurveSmallSteepSlopeUpAddition3, kRotationTable1230);
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition1 = kNullTrackPaintAdditionPiece;
 
         constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition2 = kNullTrackPaintAdditionPiece;
 
-        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition3 = rotateTrackPP(kRightCurveSmallSteepSlopeUpAddition0, kRotationTable1230);
+        constexpr TrackPaintAdditionPiece kLeftCurveSmallSteepSlopeDownAddition3 = rotateTrackPPA(kRightCurveSmallSteepSlopeUpAddition0, kRotationTable1230);
 
-        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeDownTPPA1 = {
+        constexpr std::array<TrackPaintAdditionPiece, 4> kLeftCurveSmallSteepSlopeDownTPPA = {
             kLeftCurveSmallSteepSlopeDownAddition0,
             kLeftCurveSmallSteepSlopeDownAddition1,
             kLeftCurveSmallSteepSlopeDownAddition2,
@@ -2937,32 +2999,32 @@ namespace OpenLoco::Paint
         };
 
         constexpr std::array<std::span<const TrackPaintAdditionPiece>, 26> kTrackPaintAdditionParts = {
-            kStraightTPPA1,
-            kDiagonalTPPA1,
-            kLeftCurveVerySmallTPPA1,
-            kRightCurveVerySmallTPPA1,
-            kLeftCurveSmallTPPA1,
-            kRightCurveSmallTPPA1,
-            kLeftCurveTPPA1,
-            kRightCurveTPPA1,
-            kLeftCurveLargeTPPA1,
-            kRightCurveLargeTPPA1,
-            kDiagonalLeftCurveLargeTPPA1,
-            kDiagonalRightCurveLargeTPPA1,
-            kSBendLeftTPPA1,
-            kSBendRightTPPA1,
-            kStraightSlopeUpTPPA1,
-            kStraightSlopeDownTPPA1,
-            kStraightSteepSlopeUpTPPA1,
-            kStraightSteepSlopeDownTPPA1,
-            kLeftCurveSmallSlopeUpTPPA1,
-            kRightCurveSmallSlopeUpTPPA1,
-            kLeftCurveSmallSlopeDownTPPA1,
-            kRightCurveSmallSlopeDownTPPA1,
-            kLeftCurveSmallSteepSlopeUpTPPA1,
-            kRightCurveSmallSteepSlopeUpTPPA1,
-            kLeftCurveSmallSteepSlopeDownTPPA1,
-            kRightCurveSmallSteepSlopeDownTPPA1,
+            kStraightTPPA,
+            kDiagonalTPPA,
+            kLeftCurveVerySmallTPPA,
+            kRightCurveVerySmallTPPA,
+            kLeftCurveSmallTPPA,
+            kRightCurveSmallTPPA,
+            kLeftCurveTPPA,
+            kRightCurveTPPA,
+            kLeftCurveLargeTPPA,
+            kRightCurveLargeTPPA,
+            kDiagonalLeftCurveLargeTPPA,
+            kDiagonalRightCurveLargeTPPA,
+            kSBendLeftTPPA,
+            kSBendRightTPPA,
+            kStraightSlopeUpTPPA,
+            kStraightSlopeDownTPPA,
+            kStraightSteepSlopeUpTPPA,
+            kStraightSteepSlopeDownTPPA,
+            kLeftCurveSmallSlopeUpTPPA,
+            kRightCurveSmallSlopeUpTPPA,
+            kLeftCurveSmallSlopeDownTPPA,
+            kRightCurveSmallSlopeDownTPPA,
+            kLeftCurveSmallSteepSlopeUpTPPA,
+            kRightCurveSmallSteepSlopeUpTPPA,
+            kLeftCurveSmallSteepSlopeDownTPPA,
+            kRightCurveSmallSteepSlopeDownTPPA,
         };
     }
 }
