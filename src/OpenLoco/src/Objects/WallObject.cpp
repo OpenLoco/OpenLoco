@@ -37,27 +37,29 @@ namespace OpenLoco
     // 0x004C4B0B
     void WallObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto image = sprite;
+        auto image = sprite + WallObj::ImageIds::kFlatSE;
         if ((flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
         {
-            image = Gfx::recolour2(sprite, Colour::mutedDarkRed, Colour::yellow);
+            image = Gfx::recolour2(sprite + WallObj::ImageIds::kFlatSE, Colour::mutedDarkRed, Colour::yellow);
         }
         else
         {
-            image = Gfx::recolour(sprite, Colour::mutedDarkRed);
+            image = Gfx::recolour(sprite + WallObj::ImageIds::kFlatSE, Colour::mutedDarkRed);
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), image);
-        if ((flags & WallObjectFlags::unk1) != WallObjectFlags::none)
+        if ((flags & WallObjectFlags::hasGlass) != WallObjectFlags::none)
         {
-            drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), Gfx::recolourTranslucent(sprite + 6, ExtColour::unk8C));
+            drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), Gfx::recolourTranslucent(sprite + WallObj::ImageIds::kGlassFlatSE, ExtColour::unk8C));
         }
         else
         {
+            // This was for animated doors to show it open
+            // TODO: delete
             if ((flags & WallObjectFlags::unk4) != WallObjectFlags::none)
             {
-                drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), image + 1);
+                drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), image + WallObj::ImageIds::kFlatNE);
             }
         }
     }

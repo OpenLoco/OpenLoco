@@ -19,6 +19,7 @@
 #include "PaintStation.h"
 #include "PaintTrack.h"
 #include "PaintTree.h"
+#include "PaintWall.h"
 #include "Ui.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/Station.h"
@@ -130,16 +131,6 @@ namespace OpenLoco::Paint
         regs.ecx = (session.getRotation() + (elBuilding.data()[0] & 0x3)) & 0x3;
         regs.dx = elBuilding.baseHeight();
         call(0x0042C6C4, regs);
-    }
-
-    // 0x004C3D7C
-    static void paintWall([[maybe_unused]] PaintSession& session, World::WallElement& elWall)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elWall);
-        regs.ecx = (session.getRotation() + (elWall.data()[0] & 0x3)) & 0x3;
-        regs.dx = elWall.baseHeight();
-        call(0x004C3D7C, regs);
     }
 
     // 0x004759A6

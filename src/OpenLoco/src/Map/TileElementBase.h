@@ -2,8 +2,8 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
-#include <array>
 #include <cassert>
+#include <span>
 
 namespace OpenLoco::World
 {
@@ -83,10 +83,14 @@ namespace OpenLoco::World
             _flags |= state == true ? ElementFlags::last : 0;
         }
 
-        std::array<uint8_t, 8>& rawData()
+        std::span<uint8_t> rawData()
         {
-            auto array = reinterpret_cast<std::array<uint8_t, 8>*>(this);
-            return *array;
+            return std::span{ reinterpret_cast<uint8_t*>(this), kTileElementSize };
+        }
+
+        std::span<const uint8_t> rawData() const
+        {
+            return std::span{ reinterpret_cast<const uint8_t*>(this), kTileElementSize };
         }
 
         template<typename TType>

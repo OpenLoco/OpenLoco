@@ -25,52 +25,57 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::GameCommands
 {
-    // clang-format off
-    enum class EdgeSlope : uint8_t
+    struct EdgeSlopeMapEntry
     {
-        none              = 0U,
-        elevated          = 1U << 0,
-        upwards           = 1U << 6,
-        downwards         = 1U << 7,
-        upwardsElevated   = EdgeSlope::upwards | EdgeSlope::elevated,
-        downwardsElevated = EdgeSlope::downwards | EdgeSlope::elevated,
+        EdgeSlope slope;
+        bool isElevated;
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(EdgeSlope);
 
-    constexpr std::array<std::array<EdgeSlope, 4>, 32> edgeWallMapping = { {
-        // top-right                    bottom-right                  bottom-left                   top-left
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::downwards         },
-        { EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::downwards         },
-        { EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::upwards           },
-        { EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::upwards           },
-        { EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::upwards,           EdgeSlope::elevated          },
-        { EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::elevated          },
-        { EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::none              },
-        { EdgeSlope::upwards,           EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::downwards         },
-        { EdgeSlope::upwards,           EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::downwards         },
-        { EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::none,              EdgeSlope::upwards           },
-        { EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::upwards           },
-        { EdgeSlope::elevated,          EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::elevated          },
-        { EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::elevated,          EdgeSlope::elevated          },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::upwardsElevated,   EdgeSlope::downwardsElevated },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::upwards,           EdgeSlope::upwardsElevated,   EdgeSlope::downwardsElevated, EdgeSlope::downwards         },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
-        { EdgeSlope::upwardsElevated,   EdgeSlope::downwardsElevated, EdgeSlope::downwards,         EdgeSlope::upwards           },
-        { EdgeSlope::downwardsElevated, EdgeSlope::downwards,         EdgeSlope::upwards,           EdgeSlope::upwardsElevated   },
-        { EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none,              EdgeSlope::none              },
+    namespace EdgeSlopeMap
+    {
+        constexpr auto none = EdgeSlopeMapEntry{ EdgeSlope::none, false };
+        constexpr auto downwards = EdgeSlopeMapEntry{ EdgeSlope::downwards, false };
+        constexpr auto upwards = EdgeSlopeMapEntry{ EdgeSlope::upwards, false };
+        constexpr auto downwardsElevated = EdgeSlopeMapEntry{ EdgeSlope::downwards, true };
+        constexpr auto upwardsElevated = EdgeSlopeMapEntry{ EdgeSlope::upwards, true };
+        constexpr auto elevated = EdgeSlopeMapEntry{ EdgeSlope::none, true };
+    }
+
+    // clang-format off
+    constexpr std::array<std::array<EdgeSlopeMapEntry, 4>, 32> edgeWallMapping = { {
+        // top-right                       bottom-right                     bottom-left                      top-left
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::upwards,           EdgeSlopeMap::downwards,         EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::upwards,           EdgeSlopeMap::downwards         },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::upwards,           EdgeSlopeMap::elevated,          EdgeSlopeMap::downwards         },
+        { EdgeSlopeMap::downwards,         EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::upwards           },
+        { EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards,           EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards           },
+        { EdgeSlopeMap::downwards,         EdgeSlopeMap::none,              EdgeSlopeMap::upwards,           EdgeSlopeMap::elevated          },
+        { EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards,           EdgeSlopeMap::elevated,          EdgeSlopeMap::elevated          },
+        { EdgeSlopeMap::upwards,           EdgeSlopeMap::downwards,         EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::upwards,           EdgeSlopeMap::elevated,          EdgeSlopeMap::downwards,         EdgeSlopeMap::none              },
+        { EdgeSlopeMap::upwards,           EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards,           EdgeSlopeMap::downwards         },
+        { EdgeSlopeMap::upwards,           EdgeSlopeMap::elevated,          EdgeSlopeMap::elevated,          EdgeSlopeMap::downwards         },
+        { EdgeSlopeMap::elevated,          EdgeSlopeMap::downwards,         EdgeSlopeMap::none,              EdgeSlopeMap::upwards           },
+        { EdgeSlopeMap::elevated,          EdgeSlopeMap::elevated,          EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards           },
+        { EdgeSlopeMap::elevated,          EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards,           EdgeSlopeMap::elevated          },
+        { EdgeSlopeMap::elevated,          EdgeSlopeMap::elevated,          EdgeSlopeMap::elevated,          EdgeSlopeMap::elevated          },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards,           EdgeSlopeMap::upwardsElevated,   EdgeSlopeMap::downwardsElevated },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::upwards,           EdgeSlopeMap::upwardsElevated,   EdgeSlopeMap::downwardsElevated, EdgeSlopeMap::downwards         },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
+        { EdgeSlopeMap::upwardsElevated,   EdgeSlopeMap::downwardsElevated, EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards           },
+        { EdgeSlopeMap::downwardsElevated, EdgeSlopeMap::downwards,         EdgeSlopeMap::upwards,           EdgeSlopeMap::upwardsElevated   },
+        { EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none,              EdgeSlopeMap::none              },
     } };
     // clang-format on
 
@@ -156,12 +161,11 @@ namespace OpenLoco::GameCommands
         {
             targetHeight = surface->baseHeight();
             auto edge = args.rotation & 3;
-            slopeFlags = edgeWallMapping[surface->slope()][edge];
-
-            if ((slopeFlags & EdgeSlope::elevated) != EdgeSlope::none)
+            const auto& edgeMapping = edgeWallMapping[surface->slope()][edge];
+            slopeFlags = edgeMapping.slope;
+            if (edgeMapping.isElevated)
             {
                 targetHeight += 16;
-                slopeFlags &= ~EdgeSlope::elevated;
             }
         }
 
@@ -255,7 +259,7 @@ namespace OpenLoco::GameCommands
 
         wall->setClearZ(clearZ);
         wall->setRotation(args.rotation);
-        wall->setSlopeFlags(enumValue(slopeFlags));
+        wall->setSlopeFlags(slopeFlags);
         wall->setPrimaryColour(args.primaryColour);
         wall->setSecondaryColour(args.secondaryColour);
         wall->setWallObjectId(args.type);
