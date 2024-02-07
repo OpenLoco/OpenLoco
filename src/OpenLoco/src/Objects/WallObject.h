@@ -23,8 +23,8 @@ namespace OpenLoco
         hasPrimaryColour = 1U << 0,
         hasGlass = 1U << 1,
         onlyOnLevelLand = 1U << 2,
-        unk3 = 1U << 3,
-        twoSided = 1U << 4, // twoSided and hasGlass are mutually exclusive (okay they technically aren't but we wont render them correctly)
+        twoSided = 1U << 3, // twoSided and hasGlass are mutually exclusive (okay they technically aren't but we wont render them correctly)
+        unk4 = 1U << 4,     // isAnimatedDoor not used in Locomotion (doesn't work)
         unk5 = 1U << 5,
         hasSecondaryColour = 1U << 6,
         hasTertiaryColour = 1U << 7, // Note: Not usable in Locomotion as only 2 remaps work

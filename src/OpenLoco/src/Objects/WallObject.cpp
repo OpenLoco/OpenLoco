@@ -55,7 +55,9 @@ namespace OpenLoco
         }
         else
         {
-            if ((flags & WallObjectFlags::twoSided) != WallObjectFlags::none)
+            // This was for animated doors to show it open
+            // TODO: delete
+            if ((flags & WallObjectFlags::unk4) != WallObjectFlags::none)
             {
                 drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), image + WallObj::ImageIds::kFlatNE);
             }
