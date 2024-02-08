@@ -27,32 +27,27 @@ namespace OpenLoco::GameSaveCompare
     template<typename T>
     std::span<const std::byte> getBytesSpan(const T& item)
     {
-        return std::span<const std::byte, sizeof(T)>{ reinterpret_cast<const std::byte*>(std::addressof(item)), sizeof(T) };
+        return std::span<const std::byte>{ reinterpret_cast<const std::byte*>(std::addressof(item)), sizeof(T) };
     }
 
     void bitWiseLogOffsetDivergence(char* array_lhs, int offset, char* array_rhs, bool& printHeader, const std::string& type);
-    template<typename T>
-    constexpr auto begin(const T& item)
-    {
-        return reinterpret_cast<const char*>(&item);
-    }
-
-    template<typename T>
-    constexpr auto end(const T& item)
-    {
-        return reinterpret_cast<const char*>(&item) + sizeof(T);
-    }
 
     template<typename T>
     auto bitWiseEqual(const T& lhs, const T& rhs)
     {
-        return std::equal(begin(lhs), end(lhs), begin(rhs), end(rhs));
+        std::span<const std::byte> bytesSpanLhs = getBytesSpan(lhs);
+        std::span<const std::byte> bytesSpanRhs = getBytesSpan(rhs);
+
+        return std::equal(bytesSpanLhs.begin(), bytesSpanLhs.end(), bytesSpanRhs.begin(), bytesSpanRhs.end());
     }
 
     template<typename T1, typename T2>
     auto bitWiseEqual(const T1& lhs, const T2& rhs)
     {
-        return std::equal(begin(lhs), end(lhs), begin(rhs), end(rhs));
+        std::span<const std::byte> bytesSpanLhs = getBytesSpan(lhs);
+        std::span<const std::byte> bytesSpanRhs = getBytesSpan(rhs);
+
+        return std::equal(bytesSpanLhs.begin(), bytesSpanLhs.end(), bytesSpanRhs.begin(), bytesSpanRhs.end());
     }
 
     template<typename T1, typename T2>
