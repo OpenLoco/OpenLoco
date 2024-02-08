@@ -60,8 +60,11 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     // 0x004B6271
     static void onMove(Window& self, [[maybe_unused]] const int16_t x, [[maybe_unused]] const int16_t y)
     {
+        const auto height = self.height;
         self.height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDragEnd(Input::getScrollLastLocation());
+        // Reset the height so that invalidation works correctly
+        self.height = height;
         WindowManager::close(&self);
         _dragCarComponent = nullptr;
         WindowManager::invalidate(WindowType::vehicle, enumValue(*_dragVehicleHead));

@@ -1,22 +1,23 @@
 24.01.1+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2277] Window invalidation mistake when using drag and drop vehicle.
 
 24.01.1 (2024-01-17)
 ------------------------------------------------------------------------
-- Fix: [#2253]: Game crashes when loading some save games on Windows.
+- Fix: [#2253] Game crashes when loading some save games on Windows.
 
 24.01 (2024-01-14)
 ------------------------------------------------------------------------
-- Feature: [#1238]: Mountain tool is now a toggle, making it possible to specify the mountain table size.
-- Feature: [#2228]: Max terraform tool sizes have been increased from 10x10 to 64x64.
+- Feature: [#1238] Mountain tool is now a toggle, making it possible to specify the mountain table size.
+- Feature: [#2228] Max terraform tool sizes have been increased from 10x10 to 64x64.
 - Fix: [#2162] Build Vehicle window is not properly reset if opened for new or existing vehicle.
 - Fix: [#2210] Current language is not drawn correctly in options window.
 - Fix: [#2231] Height mark shortcuts for land and tracks are swapped in some cases.
 - Fix: [#2238] Scroll on map edge doesn't work for bottom and right edges.
 - Change: [#1180] Separate track/road see-through toggles.
 - Change: [#2231] Separate trees/buildings/scenery see-through toggles.
-- Change: [#2228]: The landscape 'paint mode' button now uses a different paintbrush image.
-- Change: [#2228]: The landscape texture selection is now hidden until the 'paint' mode is activated.
+- Change: [#2228] The landscape 'paint mode' button now uses a different paintbrush image.
+- Change: [#2228] The landscape texture selection is now hidden until the 'paint' mode is activated.
 
 23.12 (2023-12-17)
 ------------------------------------------------------------------------
