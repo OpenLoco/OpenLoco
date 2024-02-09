@@ -145,10 +145,20 @@ namespace OpenLoco
         name = 0;
         image = 0;
         partHeights = nullptr;
-        partAnimations = 0;
+        partAnimations = nullptr;
         std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(var_AE), std::end(var_AE), nullptr);
+    }
+
+    std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const
+    {
+        const auto* partsPointer = variationParts[variation];
+        auto* end = partsPointer;
+        while (*end != 0xFF)
+            end++;
+
+        return std::span<const std::uint8_t>(partsPointer, end);
     }
 }

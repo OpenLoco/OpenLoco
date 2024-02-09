@@ -25,10 +25,19 @@ namespace OpenLoco
         miscBuilding = 1U << 1,
         undestructible = 1U << 2,
         isHeadquarters = 1U << 3,
+        hasShadows = 1U << 4,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BuildingObjectFlags);
 
 #pragma pack(push, 1)
+    // Todo this is the same as industry obj
+    struct PartAnimation
+    {
+        uint8_t numFrames;      // 0x0 Must be a power of 2 (0 = no part animation, could still have animation sequence)
+        uint8_t animationSpeed; // 0x1 Also encodes in bit 7 if the animation is position modified
+    };
+    static_assert(sizeof(PartAnimation) == 0x2);
+
     struct BuildingObject
     {
         static constexpr auto kObjectType = ObjectType::building;
@@ -66,6 +75,8 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
+
+        std::span<const std::uint8_t> getBuildingParts(const uint8_t variation) const;
 
         constexpr bool hasFlags(BuildingObjectFlags flagsToTest) const
         {
