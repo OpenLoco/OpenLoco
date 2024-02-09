@@ -1,5 +1,3 @@
-#pragma once
-
 #include "RemoveSignal.h"
 #include "Economy/Economy.h"
 #include "Map/SignalElement.h"
@@ -12,7 +10,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    static World::TrackElement* getElTrackAt(const SignalRemovalArgs& args, const World::Pos3 pos, const uint8_t index)
+    static World::TrackElement* getElTrackAt(const SignalRemovalArgs& args, const World::Pos3 pos, const uint8_t sequenceIndex)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -30,7 +28,7 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->sequenceIndex() != index)
+            if (elTrack->sequenceIndex() != sequenceIndex)
             {
                 continue;
             }
@@ -82,7 +80,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004891E4
-    currency32_t removeSignal(const SignalRemovalArgs& args, uint8_t flags)
+    static currency32_t removeSignal(const SignalRemovalArgs& args, uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
@@ -106,7 +104,7 @@ namespace OpenLoco::GameCommands
 
         currency32_t cost = signalRemoveCost(args, trackPieces[0], trackStart);
 
-        if (cost == FAILURE)
+        if (static_cast<uint32_t>(cost) == FAILURE)
         {
             return FAILURE;
         }
