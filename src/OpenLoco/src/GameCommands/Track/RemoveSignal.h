@@ -14,7 +14,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
             , index(regs.dh & 0xF)
-            , type(regs.bp & 0xF)
+            , trackObjType(regs.bp & 0xF)
             , flags(regs.edi >> 16)
         {
         }
@@ -23,7 +23,7 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t trackId;
         uint8_t index;
-        uint8_t type;
+        uint8_t trackObjType;
         uint16_t flags;
 
         explicit operator registers() const
@@ -35,8 +35,10 @@ namespace OpenLoco::GameCommands
             regs.bh = rotation;
             regs.dl = trackId;
             regs.dh = index;
-            regs.bp = type;
+            regs.bp = trackObjType;
             return regs;
         }
     };
+
+    void removeSignal(registers& regs);
 }

@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.trackId = _signalGhostTrackId;
             args.index = _signalGhostTileIndex;
             args.flags = _signalGhostSides;
-            args.type = _signalGhostTrackObjId;
+            args.trackObjType = _signalGhostTrackObjId;
             GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::signal;
