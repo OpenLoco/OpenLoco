@@ -44,7 +44,7 @@ namespace OpenLoco
     // 0x0042DE1E
     bool BuildingObject::validate() const
     {
-        if ((numAnimations == 0) || (numAnimations > 63))
+        if ((numParts == 0) || (numParts > 63))
         {
             return false;
         }
@@ -64,12 +64,12 @@ namespace OpenLoco
 
         // LOAD BUILDING PARTS Start
         // Load Part Heights
-        variationHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
-        remainingData = remainingData.subspan(numAnimations * sizeof(uint8_t));
+        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(uint8_t));
 
         // Load Part Animations (probably)
-        variationAnimations = reinterpret_cast<const BBuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(numAnimations * sizeof(BBuildingPartAnimation));
+        partAnimations = reinterpret_cast<const BBuildingPartAnimation*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(BBuildingPartAnimation));
 
         // Load Parts
         for (auto i = 0; i < numVariations; ++i)
@@ -144,8 +144,8 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        variationHeights = nullptr;
-        variationAnimations = 0;
+        partHeights = nullptr;
+        partAnimations = 0;
         std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);

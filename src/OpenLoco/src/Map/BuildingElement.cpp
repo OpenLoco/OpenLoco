@@ -58,7 +58,7 @@ namespace OpenLoco::World
                     auto totalHeight = 3;
                     for (; *unkVariation != 0xFF; unkVariation++)
                     {
-                        totalHeight += buildingObj->variationHeights[*unkVariation];
+                        totalHeight += buildingObj->partHeights[*unkVariation];
                     }
                     Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
 

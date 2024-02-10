@@ -136,7 +136,7 @@ namespace OpenLoco::World
                         Ui::WindowManager::invalidate(Ui::WindowType::industryList);
                     }
 
-                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingVariationHeights](int32_t total, uint8_t part) {
+                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingPartHeights](int32_t total, uint8_t part) {
                         return total + partHeights[part];
                     });
 
