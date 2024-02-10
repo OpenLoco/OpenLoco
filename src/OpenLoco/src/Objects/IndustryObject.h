@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BuildingCommon.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -49,13 +50,6 @@ namespace OpenLoco
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
 
 #pragma pack(push, 1)
-    struct BuildingPartAnimation
-    {
-        uint8_t numFrames;      // 0x0 Must be a power of 2 (0 = no part animation, could still have animation sequence)
-        uint8_t animationSpeed; // 0x1 Also encodes in bit 7 if the animation is position modified
-    };
-    static_assert(sizeof(BuildingPartAnimation) == 0x2);
-
     struct IndustryObjectUnk38
     {
         uint8_t var_00;
@@ -85,13 +79,13 @@ namespace OpenLoco
         uint32_t var_12;             // 0x12 Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
-        uint8_t var_1E;
-        uint8_t var_1F;
-        const uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
+        uint8_t numBuildingParts;                            // 0x1E
+        uint8_t numBuildingVariations;                       // 0x1F
+        const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image
         const BuildingPartAnimation* buildingPartAnimations; // 0x24
         const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
         const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
-        const uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
+        const uint8_t* buildingVariationParts[32];           // 0x3C Access with getBuildingParts helper method
         uint8_t minNumBuildings;                             // 0xBC
         uint8_t maxNumBuildings;                             // 0xBD
         const uint8_t* buildings;                            // 0xBE

@@ -14,7 +14,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (var_4 == 0)
+        if (cargoTransferTime == 0)
         {
             return false;
         }

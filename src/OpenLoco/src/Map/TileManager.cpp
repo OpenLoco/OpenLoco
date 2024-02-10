@@ -1180,7 +1180,7 @@ namespace OpenLoco::World::TileManager
         landObj = ObjectManager::get<LandObject>(surface->terrain());
         if (landObj->hasFlags(LandObjectFlags::unk1) && !isEditorMode())
         {
-            surface->setTerrain(landObj->var_07);
+            surface->setTerrain(landObj->cliffEdgeHeader2);
         }
 
         if (surface->water() * kMicroToSmallZStep <= targetBaseZ)

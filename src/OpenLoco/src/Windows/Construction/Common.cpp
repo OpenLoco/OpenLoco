@@ -1418,7 +1418,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (!company->isVehicleIndexUnlocked(vehicle))
                     continue;
 
-                for (auto i = 0; i < vehicleObj->numMods; i++)
+                for (auto i = 0; i < vehicleObj->numTrackExtras; i++)
                 {
                     flags |= 1ULL << vehicleObj->requiredTrackExtras[i];
                 }

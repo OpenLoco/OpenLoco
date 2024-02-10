@@ -37,7 +37,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::tree;
 
         StringId name;                   // 0x00
-        uint8_t var_02;                  // 0x02
+        uint8_t initialHeight;           // 0x02
         uint8_t height;                  // 0x03
         uint8_t var_04;                  // 0x04
         uint8_t var_05;                  // 0x05

@@ -186,7 +186,7 @@ namespace OpenLoco::GameCommands
         auto clearHeight = 0;
         for (auto part : buildingParts)
         {
-            clearHeight += indObj->buildingPartHeight[part];
+            clearHeight += indObj->buildingPartHeights[part];
         }
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {

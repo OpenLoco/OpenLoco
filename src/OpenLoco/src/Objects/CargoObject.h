@@ -48,7 +48,7 @@ namespace OpenLoco
 
         StringId name; // 0x0
         uint16_t var_2;
-        uint16_t var_4;
+        uint16_t cargoTransferTime;
         StringId unitsAndCargoName;    // 0x6
         StringId unitNameSingular;     // 0x8
         StringId unitNamePlural;       // 0xA

@@ -357,9 +357,9 @@ namespace OpenLoco
 
                                 for (int i = 0; i < 2; i++)
                                 {
-                                    if (obj->var_A4[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->var_A4[i])))
+                                    if (obj->requiredCargoType[i] != 0xFF && (cargoSearchState.filter() & (1 << obj->requiredCargoType[i])))
                                     {
-                                        cargoSearchState.addScore(obj->var_A4[i], obj->var_A8[i]);
+                                        cargoSearchState.addScore(obj->requiredCargoType[i], obj->var_A8[i]);
                                     }
                                 }
 

@@ -110,18 +110,18 @@ namespace OpenLoco
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
             drawingCtx.drawImage(*clipped, pos, image);
-            pos.y -= buildingPartHeight[part];
+            pos.y -= buildingPartHeights[part];
         }
     }
 
     // 0x0045926F
     bool IndustryObject::validate() const
     {
-        if (var_1E == 0)
+        if (numBuildingParts == 0)
         {
             return false;
         }
-        if (var_1F == 0 || var_1F > 31)
+        if (numBuildingVariations == 0 || numBuildingVariations > 31)
         {
             return false;
         }
@@ -198,14 +198,14 @@ namespace OpenLoco
             loadString(namePlural, 7);
         }
 
-        // LOAD BUILDING PARTS Start
-        // Load Part Heights
-        buildingPartHeight = reinterpret_cast<const uint8_t*>(remainingData.data());
-        remainingData = remainingData.subspan(var_1E * sizeof(uint8_t));
+        // LOAD BUILDING VARIATION PARTS Start
+        // Load variation heights
+        buildingPartHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numBuildingParts * sizeof(uint8_t));
 
         // Load Part Animations
         buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(var_1E * sizeof(BuildingPartAnimation));
+        remainingData = remainingData.subspan(numBuildingParts * sizeof(BuildingPartAnimation));
 
         // Load Animations
         for (auto& animSeq : animationSequences)
@@ -224,9 +224,9 @@ namespace OpenLoco
         remainingData = remainingData.subspan(1);
 
         // Load Parts
-        for (auto i = 0; i < var_1F; ++i)
+        for (auto i = 0; i < numBuildingVariations; ++i)
         {
-            auto& part = buildingParts[i];
+            auto& part = buildingVariationParts[i];
             part = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
@@ -343,9 +343,9 @@ namespace OpenLoco
         var_12 = var_0E;
         if (hasFlags(IndustryObjectFlags::hasShadows))
         {
-            var_12 += var_1F * 4;
+            var_12 += numBuildingVariations * 4;
         }
-        var_16 = var_1E * 4 + var_12;
+        var_16 = numBuildingParts * 4 + var_12;
         var_1A = var_E9 * 21;
     }
 
@@ -364,11 +364,11 @@ namespace OpenLoco
         var_12 = 0;
         var_16 = 0;
         var_1A = 0;
-        buildingPartHeight = nullptr;
+        buildingPartHeights = nullptr;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(animationSequences), std::end(animationSequences), nullptr);
         var_38 = nullptr;
-        std::fill(std::begin(buildingParts), std::end(buildingParts), nullptr);
+        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
         buildings = nullptr;
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
@@ -379,7 +379,7 @@ namespace OpenLoco
 
     std::span<const std::uint8_t> IndustryObject::getBuildingParts(const uint8_t buildingType) const
     {
-        const auto* partsPointer = buildingParts[buildingType];
+        const auto* partsPointer = buildingVariationParts[buildingType];
         auto* end = partsPointer;
         while (*end != 0xFF)
             end++;

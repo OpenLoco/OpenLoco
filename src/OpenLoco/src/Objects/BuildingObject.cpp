@@ -44,7 +44,7 @@ namespace OpenLoco
     // 0x0042DE1E
     bool BuildingObject::validate() const
     {
-        if ((var_06 == 0) || (var_06 > 63))
+        if ((numParts == 0) || (numParts > 63))
         {
             return false;
         }
@@ -64,17 +64,17 @@ namespace OpenLoco
 
         // LOAD BUILDING PARTS Start
         // Load Part Heights
-        variationHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
-        remainingData = remainingData.subspan(var_06 * sizeof(uint8_t));
+        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(uint8_t));
 
         // Load Part Animations (probably)
-        var_0C = reinterpret_cast<const uint16_t*>(remainingData.data());
-        remainingData = remainingData.subspan(var_06 * sizeof(uint16_t));
+        partAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(BuildingPartAnimation));
 
         // Load Parts
         for (auto i = 0; i < numVariations; ++i)
         {
-            auto& part = variationsArr10[i];
+            auto& part = variationParts[i];
             part = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
@@ -104,10 +104,10 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // Load ??? Cargo
-        for (auto& unkObj : var_A4)
+        // Load Required Cargo
+        for (auto& cargo : requiredCargoType)
         {
-            unkObj = 0xFF; // This is a cargo
+            cargo = 0xFF;
             if (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 ObjectHeader cargoHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
@@ -119,7 +119,7 @@ namespace OpenLoco
                 auto res = ObjectManager::findObjectHandle(cargoHeader);
                 if (res.has_value())
                 {
-                    unkObj = res->id;
+                    cargo = res->id;
                 }
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
@@ -144,11 +144,11 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        variationHeights = nullptr;
-        var_0C = 0;
-        std::fill(std::begin(variationsArr10), std::end(variationsArr10), nullptr);
+        partHeights = nullptr;
+        partAnimations = 0;
+        std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
-        std::fill(std::begin(var_A4), std::end(var_A4), 0);
+        std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
         std::fill(std::begin(var_AE), std::end(var_AE), nullptr);
     }
 }

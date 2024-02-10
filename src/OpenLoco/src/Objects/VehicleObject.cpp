@@ -94,10 +94,10 @@ namespace OpenLoco
         if (numSimultaneousCargoTypes != 0)
         {
             {
-                auto cargoType = Numerics::bitScanForward(cargoTypes[0]);
+                auto cargoType = Numerics::bitScanForward(compatibleCargoCategories[0]);
                 if (cargoType != -1)
                 {
-                    auto primaryCargoTypes = cargoTypes[0] & ~(1 << cargoType);
+                    auto primaryCargoTypes = compatibleCargoCategories[0] & ~(1 << cargoType);
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
@@ -143,10 +143,10 @@ namespace OpenLoco
 
             if (numSimultaneousCargoTypes > 1)
             {
-                auto cargoType = Numerics::bitScanForward(cargoTypes[1]);
+                auto cargoType = Numerics::bitScanForward(compatibleCargoCategories[1]);
                 if (cargoType != -1)
                 {
-                    auto secondaryCargoTypes = cargoTypes[1] & ~(1 << cargoType);
+                    auto secondaryCargoTypes = compatibleCargoCategories[1] & ~(1 << cargoType);
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
@@ -211,7 +211,7 @@ namespace OpenLoco
 
         if (hasFlags(VehicleObjectFlags::unk_09))
         {
-            if (numMods != 0)
+            if (numTrackExtras != 0)
             {
                 return false;
             }
@@ -221,7 +221,7 @@ namespace OpenLoco
             }
         }
 
-        if (numMods > 4)
+        if (numTrackExtras > 4)
         {
             return false;
         }
@@ -231,7 +231,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (numCompat > 8)
+        if (numCompatibleVehicles > 8)
         {
             return false;
         }
@@ -368,7 +368,7 @@ namespace OpenLoco
         }
 
         // Load Extra
-        for (auto i = 0U, index = 0U; i < numMods; ++i)
+        for (auto i = 0U, index = 0U; i < numTrackExtras; ++i)
         {
             ObjectHeader modHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
@@ -384,10 +384,10 @@ namespace OpenLoco
         }
 
         std::fill(std::begin(cargoTypeSpriteOffsets), std::end(cargoTypeSpriteOffsets), 0);
-        std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0);
+        std::fill(std::begin(compatibleCargoCategories), std::end(compatibleCargoCategories), 0);
         numSimultaneousCargoTypes = 0;
 
-        for (auto i = 0U; i < std::size(cargoTypes); ++i)
+        for (auto i = 0U; i < std::size(compatibleCargoCategories); ++i)
         {
             const auto index = numSimultaneousCargoTypes;
             maxCargo[index] = *reinterpret_cast<const uint8_t*>(remainingData.data());
@@ -400,7 +400,7 @@ namespace OpenLoco
             {
                 const auto cargoCategory = *reinterpret_cast<const CargoCategory*>(remainingData.data());
                 remainingData = remainingData.subspan(sizeof(CargoCategory));
-                const auto unk = *reinterpret_cast<const uint8_t*>(remainingData.data());
+                const auto cargoTypeSpriteOffset = *reinterpret_cast<const uint8_t*>(remainingData.data());
                 remainingData = remainingData.subspan(sizeof(uint8_t));
 
                 for (auto cargoType = 0U; cargoType < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoType)
@@ -414,12 +414,12 @@ namespace OpenLoco
                     {
                         continue;
                     }
-                    cargoTypes[index] |= (1U << cargoType);
-                    cargoTypeSpriteOffsets[cargoType] = unk;
+                    compatibleCargoCategories[index] |= (1U << cargoType);
+                    cargoTypeSpriteOffsets[cargoType] = cargoTypeSpriteOffset;
                 }
             }
             remainingData = remainingData.subspan(sizeof(uint16_t));
-            if (cargoTypes[index] == 0)
+            if (compatibleCargoCategories[index] == 0)
             {
                 maxCargo[index] = 0;
             }
@@ -448,7 +448,7 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        for (auto i = 0U, index = 0U; i < numCompat; ++i)
+        for (auto i = 0U, index = 0U; i < numCompatibleVehicles; ++i)
         {
             ObjectHeader vehHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             auto res = ObjectManager::findObjectHandleFuzzy(vehHeader);
@@ -637,7 +637,7 @@ namespace OpenLoco
         std::fill(std::begin(requiredTrackExtras), std::end(requiredTrackExtras), 0);
 
         std::fill(std::begin(maxCargo), std::end(maxCargo), 0);
-        std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0);
+        std::fill(std::begin(compatibleCargoCategories), std::end(compatibleCargoCategories), 0);
         numSimultaneousCargoTypes = 0;
 
         std::fill(std::begin(cargoTypeSpriteOffsets), std::end(cargoTypeSpriteOffsets), 0);

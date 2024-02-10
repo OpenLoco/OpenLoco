@@ -89,8 +89,8 @@ namespace OpenLoco
             remainingData = remainingData.subspan(strRes.tableLength);
         };
 
-        loadString(var_00, 0);
-        loadString(var_02, 1);
+        loadString(name, 0);
+        loadString(lastName, 1);
 
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
@@ -118,8 +118,8 @@ namespace OpenLoco
     // 0x00434D08
     void CompetitorObject::unload()
     {
-        var_00 = 0;
-        var_02 = 0;
+        name = 0;
+        lastName = 0;
 
         std::fill(std::begin(images), std::end(images), 0);
     }

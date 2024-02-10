@@ -60,7 +60,7 @@ namespace OpenLoco
         // Load unk2?
         for (auto i = 0U; i < numAux02Ent; ++i)
         {
-            var_1C[0] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            var_1C[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);

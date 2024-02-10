@@ -574,7 +574,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
             {
-                auto usableCargoTypes = vehicleObj->cargoTypes[0] | vehicleObj->cargoTypes[1];
+                auto usableCargoTypes = vehicleObj->compatibleCargoCategories[0] | vehicleObj->compatibleCargoCategories[1];
                 if ((usableCargoTypes & (1 << _cargoSupportedFilter)) == 0)
                 {
                     continue;
@@ -587,7 +587,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 continue;
             }
 
-            const bool isCargoless = vehicleObj->cargoTypes[0] == 0 && vehicleObj->cargoTypes[1] == 0;
+            const bool isCargoless = vehicleObj->compatibleCargoCategories[0] == 0 && vehicleObj->compatibleCargoCategories[1] == 0;
             if (_cargoSupportedFilter == 0xFE && !isCargoless)
             {
                 continue;
@@ -1335,7 +1335,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             buffer = StringManager::formatString(buffer, trackName);
 
-            for (auto i = 0; i < vehicleObj->numMods; ++i)
+            for (auto i = 0; i < vehicleObj->numTrackExtras; ++i)
             {
                 strcpy(buffer, " + ");
                 buffer += 3;
@@ -1514,7 +1514,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
-                auto usableCargoTypes = vehicleObj->cargoTypes[0] | vehicleObj->cargoTypes[1];
+                auto usableCargoTypes = vehicleObj->compatibleCargoCategories[0] | vehicleObj->compatibleCargoCategories[1];
 
                 for (auto cargoTypes = Numerics::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Numerics::bitScanForward(usableCargoTypes))
                 {

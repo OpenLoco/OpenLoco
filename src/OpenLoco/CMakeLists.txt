@@ -525,6 +525,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Network/Socket.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/AirportObject.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/BridgeObject.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/BuildingCommon.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/BuildingObject.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/CargoObject.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Objects/CliffEdgeObject.h"
