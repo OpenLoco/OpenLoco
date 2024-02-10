@@ -2328,6 +2328,8 @@ namespace OpenLoco::Vehicles
 
         auto adjustedDistance = distanceTravelled * static_cast<int64_t>(modeModifier);
         auto adjustedTime = timeInTicks;
+        // TODO: In the future (when we can diverge) we can just do a 64bit divide instead of
+        // slowly bringing down the divisor and dividend by 2 until 32bit
         while (adjustedDistance > std::numeric_limits<uint32_t>::max())
         {
             adjustedDistance >>= 1;
