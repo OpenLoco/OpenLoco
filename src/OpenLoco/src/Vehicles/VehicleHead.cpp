@@ -2318,25 +2318,20 @@ namespace OpenLoco::Vehicles
                 default:
                 case TransportMode::rail:
                 case TransportMode::road:
-                    return 0b0001'0101;
+                    return 21;
                 case TransportMode::air:
-                    return 0b0010'0100;
+                    return 36;
                 case TransportMode::water:
-                    return 0b0001'1111;
+                    return 31;
             }
         }(mode);
 
-        auto adjustedDistance = distanceTravelled;
+        auto adjustedDistance = distanceTravelled * static_cast<int64_t>(modeModifier);
         auto adjustedTime = timeInTicks;
-        for (auto i = 0; modeModifier != 0; ++i)
+        while (adjustedDistance > std::numeric_limits<uint32_t>::max())
         {
             adjustedDistance >>= 1;
             adjustedTime >>= 1;
-            if (modeModifier & (1U << 0))
-            {
-                adjustedDistance |= (1U << 31);
-            }
-            modeModifier >>= 1;
         }
         if (adjustedTime == 0)
         {
