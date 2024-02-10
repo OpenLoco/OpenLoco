@@ -1026,7 +1026,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
-        args.type = track->trackObjectId();
+        args.trackObjType = track->trackObjectId();
         args.flags = unkFlags;
 
         auto* window = WindowManager::find(WindowType::construction);

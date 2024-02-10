@@ -136,7 +136,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::changeStationName,            renameStation,             0x00490756, false },
         { GameCommand::vehicleChangeRunningMode,     vehicleChangeRunningMode,  0x004B694B, true  },
         { GameCommand::createSignal,                 createSignal,              0x00488BDB, true  },
-        { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
+        { GameCommand::removeSignal,                 removeSignal,              0x004891E4, true  },
         { GameCommand::createTrainStation,           createTrainStation,        0x0048BB20, true  },
         { GameCommand::removeTrainStation,           nullptr,                   0x0048C402, true  },
         { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
