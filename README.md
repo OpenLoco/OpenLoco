@@ -75,6 +75,7 @@ The following libraries/dependencies are required:
 - [OpenAL](https://www.openal.org/)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp) (fetched during CMake generation)
+- [fmt](https://github.com/fmtlib/fmt) (fetched during CMake generation)
 - [breakpad](https://github.com/google/breakpad) (only required on Windows)
 
 ### Windows
