@@ -2366,6 +2366,7 @@ namespace OpenLoco::Vehicles
         records.speed[recordType] = averageSpeed;
         records.date[recordType] = getCurrentDay();
         records.company[recordType] = owner;
+        CompanyManager::setRecords(records);
 
         MessageManager::post(MessageType::newSpeedRecord, owner, enumValue(head), enumValue(owner), recordType);
         StationManager::sub_437F29(owner, 1);
