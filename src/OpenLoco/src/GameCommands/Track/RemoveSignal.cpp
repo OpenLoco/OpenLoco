@@ -163,7 +163,7 @@ namespace OpenLoco::GameCommands
             // No signals anymore so delete the tile!
             if (!elSignal->getLeft().hasSignal() && !elSignal->getRight().hasSignal())
             {
-                elTrack->setHasSignal(false);
+                pieceElTrack->setHasSignal(false);
                 World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(elSignal));
             }
         }
