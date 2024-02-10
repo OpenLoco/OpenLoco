@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BuildingCommon.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -49,13 +50,6 @@ namespace OpenLoco
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
 
 #pragma pack(push, 1)
-    struct BuildingPartAnimation
-    {
-        uint8_t numFrames;      // 0x0 Must be a power of 2 (0 = no part animation, could still have animation sequence)
-        uint8_t animationSpeed; // 0x1 Also encodes in bit 7 if the animation is position modified
-    };
-    static_assert(sizeof(BuildingPartAnimation) == 0x2);
-
     struct IndustryObjectUnk38
     {
         uint8_t var_00;

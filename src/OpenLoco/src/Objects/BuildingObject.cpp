@@ -68,8 +68,8 @@ namespace OpenLoco
         remainingData = remainingData.subspan(numParts * sizeof(uint8_t));
 
         // Load Part Animations (probably)
-        partAnimations = reinterpret_cast<const BBuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(numParts * sizeof(BBuildingPartAnimation));
+        partAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(BuildingPartAnimation));
 
         // Load Parts
         for (auto i = 0; i < numVariations; ++i)
