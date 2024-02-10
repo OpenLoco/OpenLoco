@@ -176,7 +176,7 @@ namespace OpenLoco::World
             bool hasAZeroFrame = false;
             for (auto& part : indObj->getBuildingParts(type))
             {
-                const auto animFrames = indObj->buildingVariationAnimations[part].numFrames;
+                const auto animFrames = indObj->buildingPartAnimations[part].numFrames;
                 if (animFrames == 0)
                 {
                     hasAZeroFrame = true;
@@ -263,7 +263,7 @@ namespace OpenLoco::World
             uint8_t animSpeed = std::numeric_limits<uint8_t>::max();
             for (auto& part : buildingParts)
             {
-                auto& partAnim = indObj->buildingVariationAnimations[part];
+                auto& partAnim = indObj->buildingPartAnimations[part];
                 if (partAnim.numFrames > 1)
                 {
                     hasAnimation = true;
@@ -314,7 +314,7 @@ namespace OpenLoco::World
 
             for (auto& part : buildingParts)
             {
-                auto& partAnim = indObj->buildingVariationAnimations[part];
+                auto& partAnim = indObj->buildingPartAnimations[part];
                 if (partAnim.numFrames == 0)
                 {
                     const auto animSpeed = partAnim.animationSpeed & ~(1 << 7);
