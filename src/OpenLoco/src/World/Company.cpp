@@ -448,7 +448,7 @@ namespace OpenLoco
 
             const auto* buildingObj = elBuilding->getObject();
             auto totalHeight = 0;
-            for (auto* unkVariation = buildingObj->variationsArr10[variation]; *unkVariation != 0xFF; unkVariation++)
+            for (auto* unkVariation = buildingObj->variationParts[variation]; *unkVariation != 0xFF; unkVariation++)
             {
                 totalHeight += buildingObj->variationHeights[*unkVariation];
             }

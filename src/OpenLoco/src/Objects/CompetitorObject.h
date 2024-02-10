@@ -21,8 +21,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::competitor;
 
-        StringId var_00;         // 0x00
-        StringId var_02;         // 0x02
+        StringId name;           // 0x00
+        StringId lastName;       // 0x02
         uint32_t var_04;         // 0x04
         uint32_t var_08;         // 0x08
         uint32_t emotions;       // 0x0C

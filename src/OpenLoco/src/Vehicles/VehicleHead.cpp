@@ -315,7 +315,7 @@ namespace OpenLoco::Vehicles
             return true;
         }
 
-        for (auto i = 0; i < newObject->numCompat; ++i)
+        for (auto i = 0; i < newObject->numCompatibleVehicles; ++i)
         {
             if (newObject->compatibleVehicles[i] == sourceVehicleTypeId)
             {
@@ -323,9 +323,9 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (sourceObject->numCompat != 0)
+        if (sourceObject->numCompatibleVehicles != 0)
         {
-            for (auto i = 0; i < sourceObject->numCompat; ++i)
+            for (auto i = 0; i < sourceObject->numCompatibleVehicles; ++i)
             {
                 if (sourceObject->compatibleVehicles[i] == newVehicleTypeId)
                 {
@@ -334,7 +334,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if ((newObject->numCompat != 0) || (sourceObject->numCompat != 0))
+        if ((newObject->numCompatibleVehicles != 0) || (sourceObject->numCompatibleVehicles != 0))
         {
             GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
@@ -2754,7 +2754,7 @@ namespace OpenLoco::Vehicles
         uint8_t loadingModifier = getLoadingModifier(bogie);
 
         auto* cargoObj = ObjectManager::get<CargoObject>(cargo.type);
-        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * cargo.qty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
+        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->cargoTransferTime * cargo.qty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
         cargo.qty = 0;
         sub_4B7CC3();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(id));
@@ -2941,7 +2941,7 @@ namespace OpenLoco::Vehicles
         auto* cargoObj = ObjectManager::get<CargoObject>(cargo.type);
         auto& stationCargo = station->cargoStats[cargo.type];
         auto qtyTransferred = std::min<uint16_t>(cargo.maxQty - cargo.qty, stationCargo.quantity);
-        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * qtyTransferred * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
+        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->cargoTransferTime * qtyTransferred * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
 
         if (stationCargo.quantity != 0)
         {

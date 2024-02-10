@@ -21,7 +21,7 @@ namespace OpenLoco::World
         uint16_t _6;
 
     public:
-        // var_4
+        // cargoTransferTime
         IndustryId industryId() const { return _industryId; }
         void setIndustryId(const IndustryId id) { _industryId = id; }
         Industry* industry() const;

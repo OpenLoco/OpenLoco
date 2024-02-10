@@ -101,7 +101,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (height < var_02)
+        if (height < initialHeight)
         {
             return false;
         }

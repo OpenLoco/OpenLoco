@@ -2053,7 +2053,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Vehicles::Vehicle train(*head);
             auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
             auto maxPrimaryCargo = vehicleObject->maxCargo[0];
-            auto primaryCargoId = Numerics::bitScanForward(vehicleObject->cargoTypes[0]);
+            auto primaryCargoId = Numerics::bitScanForward(vehicleObject->compatibleCargoCategories[0]);
 
             int32_t index = 0;
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); cargoId++)

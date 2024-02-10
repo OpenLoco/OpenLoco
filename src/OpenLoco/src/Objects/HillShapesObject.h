@@ -32,7 +32,7 @@ namespace OpenLoco
         uint8_t hillHeightMapCount;     // 0x02
         uint8_t mountainHeightMapCount; // 0x03
         uint32_t image;                 // 0x04
-        uint32_t var_08;                // 0x08
+        uint32_t imageHills;            // 0x08
         HillShapeFlags flags;           // 0x0C
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;

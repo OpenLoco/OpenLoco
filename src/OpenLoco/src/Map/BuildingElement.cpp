@@ -47,7 +47,7 @@ namespace OpenLoco::World
             }
             else
             {
-                auto* unkVariation = buildingObj->variationsArr10[variation()];
+                auto* unkVariation = buildingObj->variationParts[variation()];
                 if (unkVariation[age() + 1] != 0xFF)
                 {
                     newUnk5u = 0;

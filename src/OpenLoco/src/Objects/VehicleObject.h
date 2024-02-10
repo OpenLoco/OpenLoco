@@ -226,14 +226,14 @@ namespace OpenLoco
         VehicleType type;   // 0x03
         uint8_t var_04;
         uint8_t trackType;              // 0x05
-        uint8_t numMods;                // 0x06
+        uint8_t numTrackExtras;         // 0x06
         uint8_t costIndex;              // 0x07
         int16_t costFactor;             // 0x08
         uint8_t reliability;            // 0x0A
         uint8_t runCostIndex;           // 0x0B
         int16_t runCostFactor;          // 0x0C
         uint8_t colourType;             // 0x0E
-        uint8_t numCompat;              // 0x0F
+        uint8_t numCompatibleVehicles;  // 0x0F
         uint16_t compatibleVehicles[8]; // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4]; // 0x20
         VehicleObjectUnk var_24[4];
@@ -244,8 +244,8 @@ namespace OpenLoco
         Speed16 rackSpeed;                                    // 0xDC
         uint16_t weight;                                      // 0xDE
         VehicleObjectFlags flags;                             // 0xE0
-        uint8_t maxCargo[2];                                  // 0xE2 size is relative to the first cargoTypes
-        uint32_t cargoTypes[2];                               // 0xE4
+        uint8_t maxCargo[2];                                  // 0xE2 size is relative to the first compatibleCargoCategories
+        uint32_t compatibleCargoCategories[2];                // 0xE4
         uint8_t cargoTypeSpriteOffsets[32];                   // 0xEC
         uint8_t numSimultaneousCargoTypes;                    // 0x10C
         VehicleObjectSimpleAnimation animation[2];            // 0x10D

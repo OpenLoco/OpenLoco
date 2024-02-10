@@ -885,7 +885,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                             buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A8[i]]);
                         }
                         requiresComma = true;
-                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->var_A4[i]);
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->requiredCargoType[i]);
                         buffer = StringManager::formatString(buffer, cargo->name);
                     }
                 }

@@ -80,7 +80,7 @@ namespace OpenLoco::GameCommands
         }
 
         const auto baseZ = quadrantHeight.landHeight / World::kSmallZStep;
-        auto clearanceZ = baseZ + treeObj->var_02;
+        auto clearanceZ = baseZ + treeObj->initialHeight;
         if (args.requiresFullClearance)
         {
             clearanceZ = std::numeric_limits<uint8_t>::max();
@@ -111,7 +111,7 @@ namespace OpenLoco::GameCommands
             elTree->setSnow(false);
             elTree->setSeason(treeObj->var_3E);
             elTree->setUnk7l(7);
-            elTree->setClearZ(treeObj->var_02 / World::kSmallZStep + elTree->baseZ());
+            elTree->setClearZ(treeObj->initialHeight / World::kSmallZStep + elTree->baseZ());
             S5::getOptions().madeAnyChanges = 1;
             if (args.buildImmediately)
             {

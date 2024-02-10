@@ -85,20 +85,20 @@ namespace OpenLoco
         uint32_t var_12;             // 0x12 Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
-        uint8_t var_1E;
-        uint8_t var_1F;
-        const uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
-        const BuildingPartAnimation* buildingPartAnimations; // 0x24
-        const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
-        const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
-        const uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
-        uint8_t minNumBuildings;                             // 0xBC
-        uint8_t maxNumBuildings;                             // 0xBD
-        const uint8_t* buildings;                            // 0xBE
-        uint32_t availableColours;                           // 0xC2 bitset
-        uint32_t buildingSizeFlags;                          // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
-        uint16_t designedYear;                               // 0xCA start year
-        uint16_t obsoleteYear;                               // 0xCC end year
+        uint8_t buildingVariationCount;
+        uint8_t buildingVariationCount2;
+        const uint8_t* buildingVariationHeights;                  // 0x20 This is the height of a building image
+        const BuildingPartAnimation* buildingVariationAnimations; // 0x24
+        const uint8_t* animationSequences[4];                     // 0x28 Access with getAnimationSequence helper method
+        const IndustryObjectUnk38* var_38;                        // 0x38 Access with getUnk38 helper method
+        const uint8_t* buildingParts[32];                         // 0x3C Access with getBuildingParts helper method
+        uint8_t minNumBuildings;                                  // 0xBC
+        uint8_t maxNumBuildings;                                  // 0xBD
+        const uint8_t* buildings;                                 // 0xBE
+        uint32_t availableColours;                                // 0xC2 bitset
+        uint32_t buildingSizeFlags;                               // 0xC6 flags indicating the building types size 1:large4x4, 0:small1x1
+        uint16_t designedYear;                                    // 0xCA start year
+        uint16_t obsoleteYear;                                    // 0xCC end year
         // Total industries of this type that can be created in a scenario
         // Note: this is not directly comparable to total industries and varies based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the

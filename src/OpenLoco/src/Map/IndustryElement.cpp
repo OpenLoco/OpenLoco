@@ -136,7 +136,7 @@ namespace OpenLoco::World
                         Ui::WindowManager::invalidate(Ui::WindowType::industryList);
                     }
 
-                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingPartHeight](int32_t total, uint8_t part) {
+                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingVariationHeights](int32_t total, uint8_t part) {
                         return total + partHeights[part];
                     });
 
@@ -176,7 +176,7 @@ namespace OpenLoco::World
             bool hasAZeroFrame = false;
             for (auto& part : indObj->getBuildingParts(type))
             {
-                const auto animFrames = indObj->buildingPartAnimations[part].numFrames;
+                const auto animFrames = indObj->buildingVariationAnimations[part].numFrames;
                 if (animFrames == 0)
                 {
                     hasAZeroFrame = true;
@@ -263,7 +263,7 @@ namespace OpenLoco::World
             uint8_t animSpeed = std::numeric_limits<uint8_t>::max();
             for (auto& part : buildingParts)
             {
-                auto& partAnim = indObj->buildingPartAnimations[part];
+                auto& partAnim = indObj->buildingVariationAnimations[part];
                 if (partAnim.numFrames > 1)
                 {
                     hasAnimation = true;
@@ -314,7 +314,7 @@ namespace OpenLoco::World
 
             for (auto& part : buildingParts)
             {
-                auto& partAnim = indObj->buildingPartAnimations[part];
+                auto& partAnim = indObj->buildingVariationAnimations[part];
                 if (partAnim.numFrames == 0)
                 {
                     const auto animSpeed = partAnim.animationSpeed & ~(1 << 7);
