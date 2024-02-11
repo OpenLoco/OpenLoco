@@ -47,8 +47,8 @@ namespace OpenLoco::World
             }
             else
             {
-                auto* unkVariation = buildingObj->variationParts[variation()];
-                if (unkVariation[age() + 1] != 0xFF)
+                auto parts = buildingObj->getBuildingParts(variation());
+                if (static_cast<uint32_t>(age() + 1) != parts.size())
                 {
                     newUnk5u = 0;
                     newAge++;
@@ -56,15 +56,15 @@ namespace OpenLoco::World
                 else
                 {
                     auto totalHeight = 3;
-                    for (; *unkVariation != 0xFF; unkVariation++)
+                    for (auto part : parts)
                     {
-                        totalHeight += buildingObj->partHeights[*unkVariation];
+                        totalHeight += buildingObj->partHeights[part];
                     }
                     Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
                     setClearZ(newClearHeight);
-                    if (buildingObj->var_AD != 0)
+                    if (buildingObj->numElevatorSequences != 0)
                     {
                         AnimationManager::createAnimation(5, loc, baseZ());
                     }

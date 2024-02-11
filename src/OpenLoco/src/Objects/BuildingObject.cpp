@@ -125,11 +125,11 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // Load ???
-        for (auto i = 0; i < var_AD; ++i)
+        // Load Elevator Sequences
+        for (auto i = 0; i < numElevatorSequences; ++i)
         {
-            var_AE[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
-            const auto size = *reinterpret_cast<const uint16_t*>(var_AE[i]);
+            elevatorHeightSequences[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[i]);
             remainingData = remainingData.subspan(sizeof(uint16_t) + size);
         }
 
@@ -145,10 +145,28 @@ namespace OpenLoco
         name = 0;
         image = 0;
         partHeights = nullptr;
-        partAnimations = 0;
+        partAnimations = nullptr;
         std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
         std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
-        std::fill(std::begin(var_AE), std::end(var_AE), nullptr);
+        std::fill(std::begin(elevatorHeightSequences), std::end(elevatorHeightSequences), nullptr);
+    }
+
+    std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const
+    {
+        const auto* partsPointer = variationParts[variation];
+        auto* end = partsPointer;
+        while (*end != 0xFF)
+            end++;
+
+        return std::span<const std::uint8_t>(partsPointer, end);
+    }
+
+    std::span<const std::uint8_t> BuildingObject::getElevatorHeightSequence(const uint8_t animIdx) const
+    {
+        // elevatorHeightSequences comprises of a size (16bit) then data (8 bit). Size will always be a power of 2
+        const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[animIdx]);
+        const auto* sequencePointer = elevatorHeightSequences[animIdx] + sizeof(uint16_t);
+        return std::span<const std::uint8_t>(sequencePointer, size);
     }
 }

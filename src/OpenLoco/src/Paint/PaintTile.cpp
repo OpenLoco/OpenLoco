@@ -14,6 +14,7 @@
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
 #include "Paint.h"
+#include "PaintBuilding.h"
 #include "PaintIndustry.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
@@ -121,16 +122,6 @@ namespace OpenLoco::Paint
         regs.esi = X86Pointer(&elSurface);
         regs.dx = elSurface.baseHeight();
         call(0x004656BF, regs);
-    }
-
-    // 0x0042C6C4
-    static void paintBuilding([[maybe_unused]] PaintSession& session, World::BuildingElement& elBuilding)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elBuilding);
-        regs.ecx = (session.getRotation() + (elBuilding.data()[0] & 0x3)) & 0x3;
-        regs.dx = elBuilding.baseHeight();
-        call(0x0042C6C4, regs);
     }
 
     // 0x004759A6
