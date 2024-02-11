@@ -1,4 +1,5 @@
 #include "BuildingObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "ObjectImageTable.h"
@@ -24,14 +25,15 @@ namespace OpenLoco
     // 0x0042DB95
     void BuildingObject::drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = enumValue(colour);
-        regs.eax = buildingRotation;
-        regs.edi = X86Pointer(clipped);
-        regs.ebp = X86Pointer(this);
-        call(0x0042DB95, regs);
+        ImageId baseImage(image, colour);
+        Ui::Point pos{ x, y };
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        for (const auto part : getBuildingParts(0))
+        {
+            auto image = baseImage.withIndexOffset(part * 4 + buildingRotation);
+            drawingCtx.drawImage(*clipped, pos, image);
+            pos.y -= partHeights[part];
+        }
     }
 
     // 0x0042DE82
