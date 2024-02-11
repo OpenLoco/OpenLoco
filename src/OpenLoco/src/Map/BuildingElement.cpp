@@ -64,7 +64,7 @@ namespace OpenLoco::World
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
                     setClearZ(newClearHeight);
-                    if (buildingObj->var_AD != 0)
+                    if (buildingObj->numElevatorSequences != 0)
                     {
                         AnimationManager::createAnimation(5, loc, baseZ());
                     }

@@ -134,6 +134,26 @@ namespace OpenLoco::Paint
             scaffImage = baseScaffImage.withIndexOffset(scaffImages.getRoof(rotation));
             session.addToPlotListAsChild(scaffImage, segmentImageOffset, bbOffset, bbSize);
         }
+
+        if (totalSectionHeight == 0)
+        {
+            for (auto animIdx = 0; animIdx < buildingObj.numElevatorSequences; ++animIdx)
+            {
+                auto sequence = buildingObj.getElevatorHeightSequence(animIdx);
+                auto tickThing = ScenarioManager::getScenarioTicks() / 2;
+                auto pos = World::toTileSpace(session.getUnkPosition());
+                tickThing += pos.x * 8;
+                tickThing += pos.y * 8;
+                // Sequence is always a power of 2 so (& -1) is like modulo
+                const auto seqIdx = tickThing & (sequence.size() - 1);
+                const auto elevatorHeight = sequence[seqIdx];
+
+                const auto image = baseColour.withIndex(buildingObj.image + buildingObj.numParts * 4 + animIdx * 4 + rotation);
+
+                const auto offset = imageOffset + World::Pos3(0, 0, elevatorHeight);
+                session.addToPlotListAsChild(image, offset, bbOffset, bbSize);
+            }
+        }
     }
 
     // 0x0042C6C4
@@ -174,7 +194,7 @@ namespace OpenLoco::Paint
         {
             if (session.getRenderTarget()->zoomLevel <= 1)
             {
-                const auto shadowImageOffset = (buildingObj->numParts + buildingObj->var_AD + variation) * 4 + buildingObj->image + rotation;
+                const auto shadowImageOffset = (buildingObj->numParts + buildingObj->numElevatorSequences + variation) * 4 + buildingObj->image + rotation;
                 const ImageId shadowImage = ImageId(shadowImageOffset).withTranslucency(Colours::getShadow(Colour::orange));
                 if (isMultiTile)
                 {
