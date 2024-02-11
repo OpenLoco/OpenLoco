@@ -14,6 +14,7 @@ namespace OpenLoco
 {
     struct IndustryObject;
 
+    // TODO: Move this to a different header shared with buildings
     struct Unk4F9274
     {
         World::Pos2 pos;
