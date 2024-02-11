@@ -1,5 +1,6 @@
 #include "AnimationManager.h"
 #include "Animation.h"
+#include "BuildingElement.h"
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
@@ -67,7 +68,7 @@ namespace OpenLoco::World::AnimationManager
             case 4:
                 return updateIndustryAnimation2(anim);
             case 5:
-                return call(0x0042E4D4, regs) & X86_FLAG_CARRY;
+                return updateBuildingAnimation(anim);
             case 6:
                 return call(0x0042E646, regs) & X86_FLAG_CARRY;
             case 7:

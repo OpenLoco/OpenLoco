@@ -1,4 +1,5 @@
 #include "BuildingElement.h"
+#include "Animation.h"
 #include "AnimationManager.h"
 #include "Game.h"
 #include "GameCommands/Buildings/RemoveBuilding.h"
@@ -6,11 +7,13 @@
 #include "GameStateFlags.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/ObjectManager.h"
+#include "ScenarioManager.h"
 #include "Tile.h"
 #include "TileManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
+#include "World/Industry.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
@@ -19,6 +22,38 @@ namespace OpenLoco::World
     const BuildingObject* BuildingElement::getObject() const
     {
         return ObjectManager::get<BuildingObject>(objectId());
+    }
+
+    template<typename TFunction>
+    static void applyToMultiTile(BuildingElement& el0, const World::Pos2& loc, bool isMultiTile, TFunction&& func)
+    {
+        for (auto& offset : getBuildingTileOffsets(isMultiTile))
+        {
+            auto* elBuilding = &el0;
+            const auto pos = loc + offset.pos;
+            if (offset.index != 0)
+            {
+                auto tile = World::TileManager::get(pos);
+                for (auto& el : tile)
+                {
+                    elBuilding = el.as<BuildingElement>();
+                    if (elBuilding == nullptr)
+                    {
+                        continue;
+                    }
+                    if (elBuilding->baseZ() != el0.baseZ())
+                    {
+                        elBuilding = nullptr;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            if (elBuilding != nullptr)
+            {
+                func(*elBuilding, pos);
+            }
+        }
     }
 
     // 0x0042DF8B
@@ -36,6 +71,8 @@ namespace OpenLoco::World
         }
 
         const auto* buildingObj = getObject();
+        const auto isMultiTile = buildingObj->hasFlags(BuildingObjectFlags::largeTile);
+
         if (!isConstructed())
         {
             auto newUnk5u = unk5u();
@@ -60,36 +97,17 @@ namespace OpenLoco::World
                     {
                         totalHeight += buildingObj->partHeights[part];
                     }
-                    Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
 
                     const auto newClearHeight = baseZ() + totalHeight / 4;
-                    setClearZ(newClearHeight);
+
+                    applyToMultiTile(*this, loc, isMultiTile, [newClearHeight](World::BuildingElement& elBuilding2, const World::Pos2& pos) {
+                        Ui::ViewportManager::invalidate(pos, elBuilding2.baseHeight(), elBuilding2.clearHeight(), ZoomLevel::quarter);
+                        elBuilding2.setClearZ(newClearHeight);
+                    });
+
                     if (buildingObj->numElevatorSequences != 0)
                     {
                         AnimationManager::createAnimation(5, loc, baseZ());
-                    }
-                    if (buildingObj->hasFlags(BuildingObjectFlags::largeTile))
-                    {
-                        for (auto i = 1; i < 4; ++i)
-                        {
-                            const auto pos = loc + World::kOffsets[i];
-                            auto tile = TileManager::get(pos);
-                            for (auto& el : tile)
-                            {
-                                auto* elBuilding2 = el.as<BuildingElement>();
-                                if (elBuilding2 == nullptr)
-                                {
-                                    continue;
-                                }
-                                if (elBuilding2->baseZ() != baseZ())
-                                {
-                                    continue;
-                                }
-
-                                Ui::ViewportManager::invalidate(pos, elBuilding2->baseHeight(), elBuilding2->clearHeight(), ZoomLevel::quarter);
-                                elBuilding2->setClearZ(newClearHeight);
-                            }
-                        }
                     }
 
                     TownManager::updateTownInfo(loc, buildingObj->producedQuantity[0], 0, 0, 0);
@@ -99,34 +117,13 @@ namespace OpenLoco::World
                     isConstructed = true;
                 }
             }
-            setConstructed(isConstructed);
-            setUnk5u(newUnk5u);
-            setAge(newAge);
-            Ui::ViewportManager::invalidate(loc, baseHeight(), clearHeight(), ZoomLevel::quarter);
-            if (buildingObj->hasFlags(BuildingObjectFlags::largeTile))
-            {
-                for (auto i = 1; i < 4; ++i)
-                {
-                    const auto pos = loc + World::kOffsets[i];
-                    auto tile = TileManager::get(pos);
-                    for (auto& el : tile)
-                    {
-                        auto* elBuilding2 = el.as<BuildingElement>();
-                        if (elBuilding2 == nullptr)
-                        {
-                            continue;
-                        }
-                        if (elBuilding2->baseZ() != baseZ())
-                        {
-                            continue;
-                        }
-                        elBuilding2->setConstructed(isConstructed);
-                        elBuilding2->setUnk5u(newUnk5u);
-                        elBuilding2->setAge(newAge);
-                        Ui::ViewportManager::invalidate(pos, elBuilding2->baseHeight(), elBuilding2->clearHeight(), ZoomLevel::quarter);
-                    }
-                }
-            }
+
+            applyToMultiTile(*this, loc, isMultiTile, [isConstructed, newUnk5u, newAge](World::BuildingElement& elBuilding2, const World::Pos2& pos) {
+                elBuilding2.setConstructed(isConstructed);
+                elBuilding2.setUnk5u(newUnk5u);
+                elBuilding2.setAge(newAge);
+                Ui::ViewportManager::invalidate(pos, elBuilding2.baseHeight(), elBuilding2.clearHeight(), ZoomLevel::quarter);
+            });
         }
 
         if (has_40())
@@ -147,29 +144,10 @@ namespace OpenLoco::World
             if (!unk5u() && age() != 63)
             {
                 const auto newAge = age() + 1;
-
-                setAge(newAge);
-                if (buildingObj->hasFlags(BuildingObjectFlags::largeTile))
-                {
-                    for (auto i = 1; i < 4; ++i)
-                    {
-                        const auto pos = loc + World::kOffsets[i];
-                        auto tile = TileManager::get(pos);
-                        for (auto& el : tile)
-                        {
-                            auto* elBuilding2 = el.as<BuildingElement>();
-                            if (elBuilding2 == nullptr)
-                            {
-                                continue;
-                            }
-                            if (elBuilding2->baseZ() != baseZ())
-                            {
-                                continue;
-                            }
-                            elBuilding2->setAge(newAge);
-                        }
-                    }
-                }
+                // Why are we not invalidating??
+                applyToMultiTile(*this, loc, isMultiTile, [newAge](World::BuildingElement& elBuilding2, const World::Pos2&) {
+                    elBuilding2.setAge(newAge);
+                });
             }
         }
 
@@ -209,5 +187,53 @@ namespace OpenLoco::World
             }
         }
         return true;
+    }
+
+    // 0x0042E4D4
+    bool updateBuildingAnimation(const Animation& anim)
+    {
+        auto tile = TileManager::get(anim.pos);
+        BuildingElement* elBuilding = nullptr;
+        for (auto& el : tile)
+        {
+            elBuilding = el.as<BuildingElement>();
+            if (elBuilding == nullptr)
+            {
+                continue;
+            }
+            if (elBuilding->baseZ() != anim.baseZ)
+            {
+                continue;
+            }
+            break;
+        }
+
+        if (elBuilding == nullptr)
+        {
+            return true;
+        }
+        // Animations are controlled from index 0
+        if (elBuilding->multiTileIndex() != 0)
+        {
+            return true;
+        }
+
+        auto* buildingObj = elBuilding->getObject();
+        if (buildingObj->numElevatorSequences == 0)
+        {
+            return true;
+        }
+
+        if (ScenarioManager::getScenarioTicks() & 0b1)
+        {
+            return false;
+        }
+
+        bool isMultiTile = buildingObj->hasFlags(BuildingObjectFlags::largeTile);
+
+        applyToMultiTile(*elBuilding, anim.pos, isMultiTile, [](World::BuildingElement& elBuilding, const World::Pos2& pos) {
+            Ui::ViewportManager::invalidate(pos, elBuilding.baseHeight(), elBuilding.clearHeight(), ZoomLevel::half);
+        });
+        return false;
     }
 }

@@ -55,4 +55,7 @@ namespace OpenLoco::World
     };
 #pragma pack(pop)
     static_assert(sizeof(BuildingElement) == kTileElementSize);
+
+    struct Animation;
+    bool updateBuildingAnimation(const Animation& anim);
 }
