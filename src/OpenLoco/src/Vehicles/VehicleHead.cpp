@@ -35,6 +35,7 @@
 #include "VehicleManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
+#include "World/CompanyRecords.h"
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
@@ -2300,9 +2301,77 @@ namespace OpenLoco::Vehicles
     // 0x004BACAF
     void VehicleHead::updateLastJourneyAverageSpeed()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004BACAF, regs);
+        if (!hasBreakdownFlags(BreakdownFlags::journeyStarted))
+        {
+            return;
+        }
+        Vehicle train(*this);
+
+        breakdownFlags &= ~BreakdownFlags::journeyStarted;
+        const auto distanceTravelled = Math::Vector::distance(journeyStartPos, Pos2(train.veh2->position));
+
+        const auto timeInTicks = ScenarioManager::getScenarioTicks() - journeyStartTicks;
+
+        auto modeModifier = [](TransportMode mode) {
+            switch (mode)
+            {
+                default:
+                case TransportMode::rail:
+                case TransportMode::road:
+                    return 21;
+                case TransportMode::air:
+                    return 36;
+                case TransportMode::water:
+                    return 31;
+            }
+        }(mode);
+
+        auto adjustedDistance = distanceTravelled * static_cast<int64_t>(modeModifier);
+        auto adjustedTime = timeInTicks;
+        // TODO: In the future (when we can diverge) we can just do a 64bit divide instead of
+        // slowly bringing down the divisor and dividend by 2 until 32bit
+        while (adjustedDistance > std::numeric_limits<uint32_t>::max())
+        {
+            adjustedDistance >>= 1;
+            adjustedTime >>= 1;
+        }
+        if (adjustedTime == 0)
+        {
+            return;
+        }
+        const auto averageSpeed = std::min(train.veh2->maxSpeed, Speed16(adjustedDistance / adjustedTime));
+        lastAverageSpeed = averageSpeed;
+
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head));
+
+        const auto recordType = [](TransportMode mode) {
+            switch (mode)
+            {
+                default:
+                case TransportMode::rail:
+                case TransportMode::road:
+                    return 0;
+                case TransportMode::air:
+                    return 1;
+                case TransportMode::water:
+                    return 2;
+            }
+        }(mode);
+        auto records = CompanyManager::getRecords();
+        if (averageSpeed <= records.speed[recordType])
+        {
+            return;
+        }
+
+        records.speed[recordType] = averageSpeed;
+        records.date[recordType] = getCurrentDay();
+        records.company[recordType] = owner;
+        CompanyManager::setRecords(records);
+
+        MessageManager::post(MessageType::newSpeedRecord, owner, enumValue(head), enumValue(owner), recordType);
+        StationManager::sub_437F29(owner, 1);
+
+        Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(owner));
     }
 
     // 0x004B99E1
@@ -3108,11 +3177,10 @@ namespace OpenLoco::Vehicles
     void VehicleHead::beginNewJourney()
     {
         // Set initial position for updateLastJourneyAverageSpeed
-        var_73 = ScenarioManager::getScenarioTicks();
         Vehicle train(head);
-        var_6F = train.veh2->position.x;
-        var_71 = train.veh2->position.y;
-        breakdownFlags |= BreakdownFlags::unk_3;
+        journeyStartTicks = ScenarioManager::getScenarioTicks();
+        journeyStartPos = Pos2(train.veh2->position);
+        breakdownFlags |= BreakdownFlags::journeyStarted;
     }
 
     // 0x004707C0

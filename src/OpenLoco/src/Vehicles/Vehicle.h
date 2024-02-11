@@ -102,7 +102,7 @@ namespace OpenLoco::Vehicles
         unk_0 = 1U << 0,
         breakdownPending = 1U << 1,
         brokenDown = 1U << 2,
-        unk_3 = 1U << 3,
+        journeyStarted = 1U << 3, // The journey start meta data has been filled in
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BreakdownFlags);
 
@@ -343,12 +343,11 @@ namespace OpenLoco::Vehicles
         uint8_t airportMovementEdge; // 0x68
         uint32_t totalRefundCost;    // 0x69
         uint8_t pad_6D;
-        int8_t manualPower;        // 0x6E manual power control VehicleFlags::manualControl
-        int16_t var_6F;            // 0x6F x
-        int16_t var_71;            // 0x6F y
-        uint32_t var_73;           // 0x73 ticks since journey start
-        uint16_t lastAverageSpeed; // 0x77
-        uint8_t var_79;            // 0x79 timeout before auto starting trams/buses
+        int8_t manualPower;          // 0x6E manual power control VehicleFlags::manualControl
+        World::Pos2 journeyStartPos; // 0x6F journey start position
+        uint32_t journeyStartTicks;  // 0x73 ticks since journey start
+        Speed16 lastAverageSpeed;    // 0x77
+        uint8_t var_79;              // 0x79 timeout before auto starting trams/buses
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
