@@ -30,8 +30,8 @@ namespace OpenLoco
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto part : getBuildingParts(0))
         {
-            auto image = baseImage.withIndexOffset(part * 4 + buildingRotation);
-            drawingCtx.drawImage(*clipped, pos, image);
+            auto partImage = baseImage.withIndexOffset(part * 4 + buildingRotation);
+            drawingCtx.drawImage(*clipped, pos, partImage);
             pos.y -= partHeights[part];
         }
     }
