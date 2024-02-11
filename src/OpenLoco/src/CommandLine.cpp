@@ -409,7 +409,7 @@ namespace OpenLoco
         std::cout << "                  - info, warning, error, verbose, all" << std::endl;
         std::cout << "                  Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
         std::cout << "                  Default: \"info, warning, error\"" << std::endl;
-        std::cout << "--all      -a     For compare, print out all divergences";
+        std::cout << "--all      -a     For compare, print out all divergences" << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)
