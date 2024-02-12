@@ -148,4 +148,5 @@ namespace OpenLoco
     void sub_491BF5(const World::Pos2& pos, const CatchmentFlags flag);
 
     void recalculateStationCenter(const StationId stationId);
+    void recalculateStationModes(const StationId stationId);
 }

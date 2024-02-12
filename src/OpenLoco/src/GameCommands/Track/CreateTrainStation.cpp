@@ -162,15 +162,6 @@ namespace OpenLoco::GameCommands
         call(0x0048F321, regs);
     }
 
-    // 0x0048F529
-    static void sub_48F529(StationId stationId)
-    {
-        // Reset some station flags and cargo stuff
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0048F529, regs);
-    }
-
     // 0x0048D794
     static void sub_48D794(Station& station)
     {
@@ -546,7 +537,7 @@ namespace OpenLoco::GameCommands
             }
             auto* station = StationManager::get(_lastPlacedTrackStationId);
             station->invalidate();
-            sub_48F529(_lastPlacedTrackStationId);
+            recalculateStationModes(_lastPlacedTrackStationId);
             recalculateStationCenter(_lastPlacedTrackStationId);
             station->updateLabel();
             station->invalidate();

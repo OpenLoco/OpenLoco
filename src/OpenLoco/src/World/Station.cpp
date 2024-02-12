@@ -5,15 +5,19 @@
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/TileManager.h"
+#include "Map/TrackElement.h"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "Objects/RoadStationObject.h"
+#include "Objects/TrackObject.h"
 #include "Random.h"
 #include "StationManager.h"
 #include "TownManager.h"
@@ -882,7 +886,7 @@ namespace OpenLoco
         int32_t totalY = 0;
         int16_t maxZ = 0;
         uint16_t count = 0;
-        for (auto i = 0; i < station->stationTileSize; ++i)
+        for (auto i = 0U; i < station->stationTileSize; ++i)
         {
             auto& tile = station->stationTiles[i];
             auto* elStation = getStationElement(tile);
@@ -901,6 +905,126 @@ namespace OpenLoco
             station->x = (totalX / count) + 16;
             station->y = (totalY / count) + 16;
             station->updateLabel();
+        }
+    }
+
+    // 0x0048F529
+    void recalculateStationModes(const StationId stationId)
+    {
+        auto* station = StationManager::get(stationId);
+        uint32_t acceptedCargoTypes = 0;
+        station->flags &= ~StationFlags::allModes;
+
+        for (auto i = 0U; i < station->stationTileSize; ++i)
+        {
+            auto& pos = station->stationTiles[i];
+            const auto baseZ = pos.z / World::kSmallZStep;
+            auto tile = TileManager::get(station->stationTiles[i]);
+            StationElement* elStation = nullptr;
+            for (auto el : tile)
+            {
+                elStation = el.as<StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+
+                if (elStation->baseZ() != baseZ)
+                {
+                    continue;
+                }
+
+                if (elStation->isAiAllocated() || elStation->isGhost())
+                {
+                    continue;
+                }
+                break;
+            }
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+            switch (elStation->stationType())
+            {
+                case StationType::trainStation:
+                {
+                    auto* elTrack = elStation->prev()->as<TrackElement>();
+                    if (elTrack == nullptr)
+                    {
+                        break;
+                    }
+                    auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                    station->flags |= trackObj->hasFlags(TrackObjectFlags::unk_02)
+                        ? StationFlags::transportModeRoad
+                        : StationFlags::transportModeRail;
+                    acceptedCargoTypes = 0xFFFFFFFFU;
+                    break;
+                }
+                case StationType::roadStation:
+                {
+                    for (auto el2 : tile)
+                    {
+                        if (&el2 == reinterpret_cast<TileElement*>(&elStation))
+                        {
+                            break;
+                        }
+                        auto* elRoad = el2.as<RoadElement>();
+                        if (elRoad == nullptr)
+                        {
+                            continue;
+                        }
+                        if (elRoad->baseZ() != elStation->baseZ())
+                        {
+                            continue;
+                        }
+                        if (elRoad->isAiAllocated() || elRoad->isGhost())
+                        {
+                            continue;
+                        }
+                        auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                        station->flags |= roadObj->hasFlags(RoadObjectFlags::unk_01)
+                            ? StationFlags::transportModeRail
+                            : StationFlags::transportModeRoad;
+                    }
+                    auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
+                    if (roadStationObj->hasFlags(RoadStationFlags::passenger))
+                    {
+                        acceptedCargoTypes |= 1U << roadStationObj->cargoType;
+                    }
+                    else if (roadStationObj->hasFlags(RoadStationFlags::freight))
+                    {
+                        // Exclude passengers from this station type
+                        acceptedCargoTypes |= 0xFFFFFFFFU & ~(1U << roadStationObj->cargoType);
+                    }
+                    else
+                    {
+                        acceptedCargoTypes = 0xFFFFFFFFU;
+                    }
+                    break;
+                }
+                case StationType::airport:
+                    station->flags |= StationFlags::transportModeAir;
+                    acceptedCargoTypes = 0xFFFFFFFFU;
+                    break;
+                case StationType::docks:
+                    station->flags |= StationFlags::transportModeWater;
+                    acceptedCargoTypes = 0xFFFFFFFFU;
+                    break;
+            }
+        }
+
+        for (auto cargoType = 0U; cargoType < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoType)
+        {
+            auto* cargoObj = ObjectManager::get<CargoObject>(cargoType);
+            if (cargoObj == nullptr)
+            {
+                continue;
+            }
+            station->cargoStats[cargoType].flags &= ~StationCargoStatsFlags::flag1;
+            if (acceptedCargoTypes & (1U << cargoType))
+            {
+                station->cargoStats[cargoType].flags |= StationCargoStatsFlags::flag1;
+            }
         }
     }
 
