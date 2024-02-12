@@ -15,6 +15,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadStationObject.h"
 #include "Random.h"
+#include "StationManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
@@ -871,6 +872,36 @@ namespace OpenLoco
         CargoSearchState cargoSearchState;
 
         setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+    }
+
+    // 0x0048F716
+    void recalculateStationCenter(const StationId stationId)
+    {
+        auto* station = StationManager::get(stationId);
+        int32_t totalX = 0;
+        int32_t totalY = 0;
+        int16_t maxZ = 0;
+        uint16_t count = 0;
+        for (auto i = 0; i < station->stationTileSize; ++i)
+        {
+            auto& tile = station->stationTiles[i];
+            auto* elStation = getStationElement(tile);
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+            totalX += tile.x;
+            totalY += tile.y;
+            maxZ = std::max(World::heightFloor(tile.z), maxZ);
+            count++;
+        }
+        if (count != 0)
+        {
+            station->z = maxZ;
+            station->x = (totalX / count) + 16;
+            station->y = (totalY / count) + 16;
+            station->updateLabel();
+        }
     }
 
     // 0x00491C6F
