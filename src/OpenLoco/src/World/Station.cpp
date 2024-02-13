@@ -918,29 +918,8 @@ namespace OpenLoco
         for (auto i = 0U; i < station->stationTileSize; ++i)
         {
             auto& pos = station->stationTiles[i];
-            const auto baseZ = pos.z / World::kSmallZStep;
-            auto tile = TileManager::get(station->stationTiles[i]);
-            StationElement* elStation = nullptr;
-            for (auto el : tile)
-            {
-                elStation = el.as<StationElement>();
-                if (elStation == nullptr)
-                {
-                    continue;
-                }
-
-                if (elStation->baseZ() != baseZ)
-                {
-                    continue;
-                }
-
-                if (elStation->isAiAllocated() || elStation->isGhost())
-                {
-                    continue;
-                }
-                break;
-            }
-            if (elStation == nullptr)
+            StationElement* elStation = getStationElement(pos);
+            if (elStation == nullptr || elStation->isGhost())
             {
                 continue;
             }
@@ -962,7 +941,9 @@ namespace OpenLoco
                 }
                 case StationType::roadStation:
                 {
-                    for (auto el2 : tile)
+                    // Loop from start as road element can be variable number of elements below station
+                    auto tile = TileManager::get(pos);
+                    for (auto& el2 : tile)
                     {
                         if (&el2 == reinterpret_cast<TileElement*>(&elStation))
                         {
