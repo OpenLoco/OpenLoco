@@ -155,6 +155,8 @@ namespace OpenLoco
             _byte_112C7F2 = value;
         }
 
+        bool cargoFilterHasBeenRecalculated() const { return _byte_112C7F2 == 0; }
+
         void resetIndustryMap()
         {
             std::fill_n(_industry.get(), kMaxCargoStats, IndustryId::null);
@@ -1005,6 +1007,55 @@ namespace OpenLoco
             if (acceptedCargoTypes & (1U << cargoType))
             {
                 station->cargoStats[cargoType].flags |= StationCargoStatsFlags::flag1;
+            }
+        }
+    }
+
+    // 0x0048F321
+    void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
+    {
+        auto* station = StationManager::get(stationId);
+        station->stationTiles[station->stationTileSize] = pos;
+        station->stationTiles[station->stationTileSize].z &= ~0x3;
+        station->stationTiles[station->stationTileSize].z |= (rotation & 0x3);
+        station->stationTileSize++;
+
+        CargoSearchState cargoSearchState;
+        const auto acceptedCargos = station->calcAcceptedCargo(cargoSearchState);
+
+        if (cargoSearchState.cargoFilterHasBeenRecalculated() && (station->flags & StationFlags::flag_5) != StationFlags::none)
+        {
+            station->flags &= ~StationFlags::flag_5;
+            auto* town = TownManager::get(station->town);
+            town->numStations++;
+            Ui::WindowManager::invalidate(WindowType::town, enumValue(station->town));
+
+            for (auto& station2 : StationManager::stations())
+            {
+                if (station2.owner == station->owner)
+                {
+                    continue;
+                }
+                // THIS LOOKS WRONG WHY ISN'T IT station2.flags (vanilla mistake?)
+                if ((station->flags & StationFlags::flag_5) != StationFlags::none)
+                {
+                    continue;
+                }
+                const auto distance = Math::Vector::manhattanDistance(World::Pos2{ station->x, station->y }, World::Pos2{ station2.x, station2.y });
+                if (distance <= 256)
+                {
+                    StationManager::sub_437F29(station2.owner, 5);
+                }
+            }
+        }
+        for (auto cargoId = 0U; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
+        {
+            auto& stats = station->cargoStats[cargoId];
+            stats.flags &= ~StationCargoStatsFlags::flag0;
+            stats.industryId = cargoSearchState.getIndustry(cargoId);
+            if (acceptedCargos & (1U << cargoId))
+            {
+                stats.flags |= StationCargoStatsFlags::flag0;
             }
         }
     }

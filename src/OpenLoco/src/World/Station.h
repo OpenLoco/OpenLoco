@@ -70,7 +70,7 @@ namespace OpenLoco
         transportModeAir = (1U << 2),
         transportModeWater = (1U << 3),
         flag_4 = (1U << 4),
-        flag_5 = (1U << 5),
+        flag_5 = (1U << 5), // isNotFullyCreated ?? like ghost will never have this set
         flag_6 = (1U << 6),
         flag_7 = (1U << 7),
         flag_8 = (1U << 8),
@@ -149,4 +149,5 @@ namespace OpenLoco
 
     void recalculateStationCenter(const StationId stationId);
     void recalculateStationModes(const StationId stationId);
+    void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 }
