@@ -18,7 +18,7 @@ namespace OpenLoco
         unk7,
         unk8,
         unk9,
-        unk10,
+        endCompany,
     };
 
     enum class AiThoughtType : uint8_t

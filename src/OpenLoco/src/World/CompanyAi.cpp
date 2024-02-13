@@ -5,16 +5,21 @@
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
+#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/Docks/CreatePort.h"
 #include "GameCommands/Docks/RemovePort.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Road/CreateRoadMod.h"
+#include "GameCommands/Road/RemoveRoad.h"
 #include "GameCommands/Track/CreateTrackMod.h"
+#include "GameCommands/Track/RemoveTrack.h"
 #include "Industry.h"
 #include "IndustryManager.h"
+#include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/TrackElement.h"
 #include "Objects/CompetitorObject.h"
 #include "Objects/ObjectManager.h"
 #include "Random.h"
@@ -224,7 +229,7 @@ namespace OpenLoco
             bool hasAssets = false;
             for (auto& thought : company.aiThoughts)
             {
-                if (thought.type == AiThoughtType::null)
+                if (thought.type != AiThoughtType::null)
                 {
                     hasAssets = true;
                     break;
@@ -243,9 +248,8 @@ namespace OpenLoco
             }
             if (!hasAssets)
             {
-                company.var_4A4 = AiThinkState::unk10;
-                company.var_85C4 = 0;
-                company.var_85C6 = 0;
+                company.var_4A4 = AiThinkState::endCompany;
+                company.var_85C4 = World::Pos2{ 0, 0 };
                 return;
             }
         }
@@ -812,12 +816,102 @@ namespace OpenLoco
     {
     }
 
-    // 0x00431287
-    static void aiThinkState10(Company& company)
+    // 0x00488563
+    static void removeCompanyTracksRoadsOnTile(CompanyId id, World::TilePos2 tilePos)
     {
-        registers regs;
-        regs.esi = X86Pointer(&company);
-        call(0x00431287, regs);
+        bool reTryTile = true;
+        while (reTryTile)
+        {
+            reTryTile = false;
+
+            auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elTrack != nullptr)
+                {
+                    if (elTrack->owner() != id)
+                    {
+                        continue;
+                    }
+                    reTryTile = true;
+
+                    GameCommands::TrackRemovalArgs args{};
+                    args.pos = World::Pos3(World::toWorldSpace(tilePos), elTrack->baseHeight());
+                    args.index = elTrack->sequenceIndex();
+                    args.rotation = elTrack->unkDirection();
+                    args.trackId = elTrack->trackId();
+                    args.trackObjectId = elTrack->trackObjectId();
+                    auto aiPreviewFlag = elTrack->isAiAllocated() ? GameCommands::Flags::aiAllocated : 0;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | aiPreviewFlag);
+                    break;
+                }
+                if (elRoad != nullptr)
+                {
+                    if (elRoad->owner() != id)
+                    {
+                        continue;
+                    }
+                    reTryTile = true;
+
+                    GameCommands::RoadRemovalArgs args{};
+                    args.pos = World::Pos3(World::toWorldSpace(tilePos), elRoad->baseHeight());
+                    args.sequenceIndex = elRoad->sequenceIndex();
+                    args.unkDirection = elRoad->unkDirection();
+                    args.roadId = elRoad->roadId();
+                    args.objectId = elRoad->roadObjectId();
+                    auto aiPreviewFlag = elRoad->isAiAllocated() ? GameCommands::Flags::aiAllocated : 0;
+                    GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment | aiPreviewFlag);
+                    break;
+                }
+            }
+        }
+    }
+
+    // 0x004884E7
+    // returns false until the whole map has been iterated
+    static bool removeAllCompanyAssetsOnMapByChunk(Company& company)
+    {
+        auto remainingRange = World::TilePosRangeView(
+            World::toTileSpace(company.var_85C4),
+            World::TilePos2{ World::kMapColumns - 1, World::kMapRows - 1 });
+
+        auto count = 1500;
+        for (auto& tilePos : remainingRange)
+        {
+            removeCompanyTracksRoadsOnTile(company.id(), tilePos);
+            count--;
+            // TODO: Remove when divergence from vanilla as this is silly
+            if (tilePos.x == World::kMapColumns - 1)
+            {
+                count--;
+            }
+            if (count == 0)
+            {
+                company.var_85C4 = World::toWorldSpace(tilePos);
+                return false;
+            }
+        }
+
+        if (company.headquartersX != -1)
+        {
+            GameCommands::HeadquarterRemovalArgs args{};
+            args.pos = World::Pos3(company.headquartersX, company.headquartersY, company.headquartersZ * World::kSmallZStep);
+            GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noPayment);
+        }
+        return true;
+    }
+
+    // 0x00431287
+    static void aiThinkEndCompany(Company& company)
+    {
+
+        if (!removeAllCompanyAssetsOnMapByChunk(company))
+        {
+            return;
+        }
+        CompanyManager::aiDestroy(company.id());
     }
 
     using UnknownThinkFunction = void (*)(Company&);
@@ -833,7 +927,7 @@ namespace OpenLoco
         aiThinkState7,
         aiThinkState8,
         nullsub_4,
-        aiThinkState10,
+        aiThinkEndCompany,
     };
 
     // 0x00431295

@@ -128,8 +128,7 @@ namespace OpenLoco
         uint8_t pad_25A2[0x85C2 - 0x25A2];
         uint8_t var_85C2;
         uint8_t var_85C3;
-        uint16_t var_85C4;
-        uint16_t var_85C6;
+        World::Pos2 var_85C4;
         uint8_t pad_85C8[0x85DE - 0x85C8];
         uint32_t var_85DE;
         uint8_t pad_85E2[0x85EA - 0x85E2];
