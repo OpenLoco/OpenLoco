@@ -378,7 +378,9 @@ namespace OpenLoco::World::MapGenerator
             // NB: vanilla was calling the game command directly; we're using the runner.
             GameCommands::TownPlacementArgs args{};
             args.pos = { -1, -1 };
-            args.size = getGameState().rng.randNext(1, S5::getOptions().maxTownSize);
+            const auto maxTownSize = S5::getOptions().maxTownSize;
+
+            args.size = maxTownSize > 1 ? getGameState().rng.randNext(1, maxTownSize) : 1;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
     }
