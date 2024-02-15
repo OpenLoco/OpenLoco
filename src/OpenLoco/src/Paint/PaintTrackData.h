@@ -1,5 +1,6 @@
 #include "Objects/TrackObject.h"
 #include "Paint.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <array>
 #include <span>
 
@@ -29,11 +30,11 @@ namespace OpenLoco::Paint
         {
             for (auto i = 1; i < 4; ++i)
             {
-                bridgeEdges[i] = rotl4bit(bridgeEdges[0], i);
+                bridgeEdges[i] = Numerics::rotl4bit(bridgeEdges[0], i);
             }
             for (auto i = 1; i < 4; ++i)
             {
-                bridgeQuarters[i] = rotl4bit(bridgeQuarters[0], i);
+                bridgeQuarters[i] = Numerics::rotl4bit(bridgeQuarters[0], i);
             }
         }
         constexpr void rotateSegements()

@@ -29,3 +29,5 @@ static_assert(Numerics::setMask(0, 0b1100, true) == 0b1100);
 static_assert(Numerics::setMask(0, 0b1100, false) == 0);
 static_assert(Numerics::setMask(0b0110, 0b1100, false) == 0b0010);
 static_assert(Numerics::setMask(0b0110, 0b1100, true) == 0b1110);
+
+static_assert(Numerics::rotl4bit(0b1000, 1) == 0b0001);

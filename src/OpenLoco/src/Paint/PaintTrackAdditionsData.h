@@ -1,5 +1,6 @@
 #include "Objects/TrackExtraObject.h"
 #include "Paint.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <array>
 #include <optional>
 #include <span>
@@ -1551,7 +1552,7 @@ namespace OpenLoco::Paint
                 , segments()
             {
                 frequencies[0] = _frequency;
-                frequencies[1] = rotl4bit(frequencies[0], 2);
+                frequencies[1] = Numerics::rotl4bit(frequencies[0], 2);
                 frequencies[2] = frequencies[0];
                 frequencies[3] = frequencies[1];
 

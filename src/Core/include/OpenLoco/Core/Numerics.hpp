@@ -17,4 +17,14 @@ namespace OpenLoco::Numerics
     {
         return (value ? (x | mask) : (x & ~mask));
     }
+
+    constexpr uint8_t rotl4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val << rotation) | (val >> (4 - rotation))) & 0xF;
+    }
+
+    constexpr uint8_t rotr4bit(uint8_t val, uint8_t rotation)
+    {
+        return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
+    }
 }

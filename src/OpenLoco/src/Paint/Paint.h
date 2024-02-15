@@ -51,16 +51,6 @@ namespace OpenLoco::Paint
     // Handy array for converting a bit index to the flag
     constexpr std::array<SegmentFlags, 9> kSegmentOffsets = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
 
-    constexpr uint8_t rotl4bit(uint8_t val, uint8_t rotation)
-    {
-        return ((val << rotation) | (val >> (4 - rotation))) & 0xF;
-    }
-
-    constexpr uint8_t rotr4bit(uint8_t val, uint8_t rotation)
-    {
-        return ((val >> rotation) | (val << (4 - rotation))) & 0xF;
-    }
-
     namespace
     {
         constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap1 = {
@@ -99,7 +89,6 @@ namespace OpenLoco::Paint
         return ret | (val & SegmentFlags::x1y1);
     }
 
-    static_assert(rotl4bit(0b1000, 1) == 0b0001);
     static_assert(rotlSegmentFlags(SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1, 0) == (SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1));
 
     // Used by both AttachedPaintStruct and PaintStruct
