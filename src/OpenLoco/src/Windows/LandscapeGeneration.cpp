@@ -1041,13 +1041,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             StringIds::town_size_8,
         };
 
-        // 0x0043EBF8
+        // 0x0043EA28
         static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
                 return;
 
-            S5::getOptions().maxTownSize = itemIndex;
+            S5::getOptions().maxTownSize = itemIndex + 1;
             window.invalidate();
         }
 
