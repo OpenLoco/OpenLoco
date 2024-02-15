@@ -200,6 +200,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             case widx::parent_button:
                 upOneLevel();
                 window.var_85A = -1;
+                window.initScrollWidgets();
                 window.invalidate();
                 break;
             case widx::ok_button:
@@ -240,6 +241,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             changeDirectory(entry);
             self.var_85A = -1;
+            self.initScrollWidgets();
             self.invalidate();
             return;
         }
