@@ -1,6 +1,7 @@
 24.01.1+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2277] Window invalidation mistake when using drag and drop vehicle.
+- Fix: [#2255] Browse window fails to show all files.
 - Fix: [#2282] Crash when generating landscape with smallest town size.
 - Fix: [#2282] Town size selection does not match vanilla size selection.
 - Fix: [#2283] Bankrupt ai companies not being removed from the game.
