@@ -19,7 +19,7 @@ namespace OpenLoco::GameSaveCompare
     std::string getEffectSubType(const EffectType effectSubType);
     void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity);
     void logEffectType(int offset, const OpenLoco::Entity& entity);
-    long logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal);
+    long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal);
     bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences);
     bool isLoggedDivergenceRoutings(OpenLoco::S5::GameState& gameState1, OpenLoco::S5::GameState& gameState2, bool displayAllDivergences);
     bool compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2, bool displayAllDivergences);
