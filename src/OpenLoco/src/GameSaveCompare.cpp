@@ -20,7 +20,7 @@ namespace OpenLoco::GameSaveCompare
     void logVehicleTypeAndSubType(int offset, const OpenLoco::Entity& entity);
     void logEffectType(int offset, const OpenLoco::Entity& entity);
     long logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal);
-    bool compareGameStates(GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences);
+    bool compareGameStates(S5::GameState& gameState1, S5::GameState& gameState2, bool displayAllDivergences);
     bool isLoggedDivergenceRoutings(OpenLoco::S5::GameState& gameState1, OpenLoco::S5::GameState& gameState2, bool displayAllDivergences);
     bool compareElements(const std::vector<S5::TileElement>& tileElements1, const std::vector<S5::TileElement>& tileElements2, bool displayAllDivergences);
 
@@ -149,7 +149,7 @@ namespace OpenLoco::GameSaveCompare
             auto flags1 = static_cast<uint32_t>(lhs);
             auto flags2 = static_cast<uint32_t>(rhs);
             Logging::info("DIVERGENCE");
-            Logging::info("TYPE: {}", "flags");
+            Logging::info("TYPE: {}", type);
             Logging::info("    OFFSET: {}", 0);
             Logging::info("    LHS: {:#x}", flags1);
             Logging::info("    LHS: {:#x}", flags2);
@@ -260,100 +260,6 @@ namespace OpenLoco::GameSaveCompare
         EffectEntity* effectEntity = reinterpret_cast<EffectEntity*>(effect);
         auto effectSubTYpeName = getEffectSubType(effectEntity->getSubType());
         Logging::info("{} {}", effectTypeName, effectSubTYpeName);
-    }
-
-    long logDivergentEntityOffset(const OpenLoco::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
-    {
-        if (!bitWiseEqual(lhs, rhs))
-        {
-            if (divergentBytesTotal == 0)
-            {
-                Logging::info("DIVERGENCE");
-            }
-            char* entity = (char*)(&rhs);
-            OpenLoco::Entity* rhsEntity = reinterpret_cast<OpenLoco::Entity*>(entity);
-
-            if (lhs.baseType == EntityBaseType::vehicle)
-            {
-                if (displayAllDivergences || divergentBytesTotal == 0)
-                {
-                    logVehicleTypeAndSubType(offset, lhs);
-                }
-                divergentBytesTotal += sizeof(lhs.baseType);
-            }
-            if (lhs.baseType != rhsEntity->baseType)
-            {
-                if (rhsEntity->baseType == EntityBaseType::vehicle)
-                {
-                    if (displayAllDivergences || divergentBytesTotal)
-                    {
-                        logVehicleTypeAndSubType(offset, *rhsEntity);
-                    }
-                    divergentBytesTotal += sizeof(rhsEntity);
-                }
-            }
-            if (lhs.baseType == EntityBaseType::effect)
-            {
-                if (displayAllDivergences || divergentBytesTotal == 0)
-                {
-                    logEffectType(offset, lhs);
-                }
-                else
-                {
-                    divergentBytesTotal += sizeof(lhs.baseType);
-                }
-            }
-            if (lhs.baseType != rhsEntity->baseType)
-            {
-                if (rhsEntity->baseType == EntityBaseType::effect)
-                {
-                    if (displayAllDivergences || divergentBytesTotal == 0)
-                    {
-                        logEffectType(offset, *rhsEntity);
-                    }
-                    else
-                    {
-                        divergentBytesTotal += sizeof(rhsEntity);
-                    }
-                }
-            }
-            if (lhs.baseType == EntityBaseType::null)
-            {
-                if (displayAllDivergences || divergentBytesTotal == 0)
-                {
-                    Logging::info("TYPE: ENTITY [{}] NULL", offset);
-                }
-                else
-                {
-                    divergentBytesTotal += sizeof(lhs.baseType);
-                }
-            }
-            else
-            {
-                divergentBytesTotal += sizeof(lhs.baseType);
-            }
-            if (lhs.baseType != rhsEntity->baseType)
-            {
-                if (rhsEntity->baseType == EntityBaseType::null)
-                {
-
-                    if (displayAllDivergences || divergentBytesTotal == 0)
-                    {
-                        Logging::info("TYPE: ENTITY [{}] NULL", offset);
-                    }
-                    else
-                    {
-                        divergentBytesTotal += sizeof(lhs.baseType);
-                    }
-                }
-                else
-                {
-                    divergentBytesTotal += sizeof(rhsEntity);
-                }
-            }
-            divergentBytesTotal = bitWiseLogDivergence("", lhs, rhs, displayAllDivergences, divergentBytesTotal);
-        }
-        return divergentBytesTotal;
     }
 
     long logDivergentEntityOffset(const S5::Entity& lhs, const S5::Entity& rhs, int offset, bool displayAllDivergences, long divergentBytesTotal)
