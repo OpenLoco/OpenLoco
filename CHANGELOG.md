@@ -7,6 +7,7 @@
 - Fix: [#2283] Bankrupt ai companies not being removed from the game.
 - Fix: [#2287] Scroll wheel not working in load/save window.
 - Fix: [#2290] Construction arrow not being correctly invalidated.
+- Fix: [#2291] Signals fail to be placed when selecting one end of large curve track.
 
 24.01.1 (2024-01-17)
 ------------------------------------------------------------------------
