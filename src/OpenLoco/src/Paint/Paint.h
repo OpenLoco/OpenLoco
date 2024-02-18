@@ -51,6 +51,46 @@ namespace OpenLoco::Paint
     // Handy array for converting a bit index to the flag
     constexpr std::array<SegmentFlags, 9> kSegmentOffsets = { SegmentFlags::x0y0, SegmentFlags::x2y0, SegmentFlags::x0y2, SegmentFlags::x2y2, SegmentFlags::x1y1, SegmentFlags::x1y0, SegmentFlags::x0y1, SegmentFlags::x2y1, SegmentFlags::x1y2 };
 
+    namespace
+    {
+        constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap1 = {
+            std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+            std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+            std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+            std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+        };
+        constexpr std::array<std::array<uint8_t, 4>, 4> kSegMap2 = {
+            std::array<uint8_t, 4>{ 0, 1, 2, 3 },
+            std::array<uint8_t, 4>{ 1, 3, 0, 2 },
+            std::array<uint8_t, 4>{ 3, 2, 1, 0 },
+            std::array<uint8_t, 4>{ 2, 0, 3, 1 },
+        };
+    }
+
+    constexpr SegmentFlags rotlSegmentFlags(SegmentFlags val, uint8_t rotation)
+    {
+        SegmentFlags ret = SegmentFlags::none;
+        const auto _val = enumValue(val);
+        for (auto i = 0U; i < 4; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << kSegMap1[rotation][i]);
+            }
+        }
+        for (auto i = 5U; i < 9; ++i)
+        {
+            if (_val & (1U << i))
+            {
+                ret |= static_cast<SegmentFlags>(1U << (kSegMap2[rotation][i - 5] + 5));
+            }
+        }
+
+        return ret | (val & SegmentFlags::x1y1);
+    }
+
+    static_assert(rotlSegmentFlags(SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1, 0) == (SegmentFlags::x0y1 | SegmentFlags::x1y1 | SegmentFlags::x2y1));
+
     // Used by both AttachedPaintStruct and PaintStruct
     enum class PaintStructFlags : uint8_t
     {
@@ -224,6 +264,8 @@ namespace OpenLoco::Paint
         int16_t getMaxHeight() { return _maxHeight; }
         uint32_t get112C300() { return _112C300; }
         int16_t getAdditionSupportHeight() { return (*_trackRoadAdditionSupports).height; }
+        const TrackRoadAdditionSupports& getAdditionSupport() { return (*_trackRoadAdditionSupports); }
+        void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
         const SupportHeight& getGeneralSupportHeight() { return _support; }
         const BridgeEntry& getBridgeEntry() { return _bridgeEntry; }
         SegmentFlags get525CF8() { return _525CF8; }
@@ -239,7 +281,9 @@ namespace OpenLoco::Paint
         Ui::ViewportFlags getViewFlags() { return _viewFlags; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
+        void* getCurrentItem() { return _currentItem; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
+        Ui::ViewportInteraction::InteractionItem getItemType() { return _itemType; }
         void setTrackModId(const uint8_t mod) { _trackModId = mod; }
         void setEntityPosition(const World::Pos2& pos);
         void setMapPosition(const World::Pos2& pos);
