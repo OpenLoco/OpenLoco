@@ -926,6 +926,14 @@ namespace OpenLoco::Ui::ViewportInteraction
                     {
                         interactionsToExclude |= InteractionItemFlags::wall;
                     }
+                    if (vp->hasFlags(ViewportFlags::seeThroughTracks))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::track | InteractionItemFlags::trackExtra | InteractionItemFlags::station | InteractionItemFlags::signal;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughRoads))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::roadAndTram | InteractionItemFlags::roadAndTramExtra;
+                    }
                 }
             }
         }
