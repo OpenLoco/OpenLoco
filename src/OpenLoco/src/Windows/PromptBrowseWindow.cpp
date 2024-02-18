@@ -155,6 +155,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     Audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
                     Input::processKeyboardInput();
+                    Input::processMouseWheel();
                     WindowManager::update();
                     Ui::minimalHandleInput();
                     Gfx::renderAndUpdate();
