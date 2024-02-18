@@ -2614,6 +2614,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         session->arrangeStructs();
         session->drawStructs();
 
+        // setMapSelectionFlags OR's flags so reset them to zero to set the backup
+        World::resetMapSelectionFlags();
         World::setMapSelectionFlags(backupSelectionFlags);
         _constructionArrowPos = backupConstructionArrowPos;
         _constructionArrowDirection = backupConstructionArrowDir;
