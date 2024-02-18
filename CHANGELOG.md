@@ -8,6 +8,8 @@
 - Fix: [#2287] Scroll wheel not working in load/save window.
 - Fix: [#2290] Construction arrow not being correctly invalidated.
 - Fix: [#2291] Signals fail to be placed when selecting one end of large curve track.
+- Fix: [#2293] See-through trees flag is ignored when right-clicking a viewport.
+- Change: [#2294] Track and road elements are now ignored when they are see-through.
 
 24.01.1 (2024-01-17)
 ------------------------------------------------------------------------
