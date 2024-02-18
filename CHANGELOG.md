@@ -5,6 +5,7 @@
 - Fix: [#2282] Crash when generating landscape with smallest town size.
 - Fix: [#2282] Town size selection does not match vanilla size selection.
 - Fix: [#2283] Bankrupt ai companies not being removed from the game.
+- Fix: [#2287] Scroll wheel not working in load/save window.
 - Fix: [#2290] Construction arrow not being correctly invalidated.
 
 24.01.1 (2024-01-17)
