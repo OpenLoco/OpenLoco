@@ -11,7 +11,7 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
-            , index(regs.dh & 0x3)
+            , index(regs.dh)
             , type((regs.edi >> 16) & 0xFF)
             , trackObjType(regs.ebp & 0xFF)
             , sides((regs.edi >> 16) & 0xC000)
