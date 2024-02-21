@@ -918,9 +918,21 @@ namespace OpenLoco::Ui::ViewportInteraction
                     {
                         interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry;
                     }
+                    if (vp->hasFlags(ViewportFlags::seeThroughTrees))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::tree;
+                    }
                     if (vp->hasFlags(ViewportFlags::seeThroughScenery))
                     {
-                        interactionsToExclude |= InteractionItemFlags::tree | InteractionItemFlags::wall;
+                        interactionsToExclude |= InteractionItemFlags::wall;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughTracks))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::track | InteractionItemFlags::trackExtra | InteractionItemFlags::signal;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughRoads))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::roadAndTram | InteractionItemFlags::roadAndTramExtra;
                     }
                 }
             }
