@@ -1,12 +1,12 @@
 24.01.1+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2277] Window invalidation mistake when using drag and drop vehicle.
-- Fix: [#2255] Browse window fails to show all files.
+- Fix: [#2277] Dragging vehicle components does not visually remove the component being dragged in some cases.
+- Fix: [#2255] Load/save window fails to show all files in some cases.
 - Fix: [#2282] Crash when generating landscape with smallest town size.
 - Fix: [#2282] Town size selection does not match vanilla size selection.
-- Fix: [#2283] Bankrupt ai companies not being removed from the game.
-- Fix: [#2287] Scroll wheel not working in load/save window.
-- Fix: [#2290] Construction arrow not being correctly invalidated.
+- Fix: [#2283] Bankrupt AI companies are not being removed from the game.
+- Fix: [#2287] Scroll wheel is not working in load/save window.
+- Fix: [#2290] Construction arrows are not correctly invalidated.
 - Fix: [#2291] Signals fail to be placed when selecting one end of large curve track.
 - Fix: [#2293] See-through trees flag is ignored when right-clicking a viewport.
 - Change: [#2294] Track and road elements are now ignored when they are see-through.
