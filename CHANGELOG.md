@@ -1,6 +1,6 @@
 24.01.1+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2277] Dragging vehicle components between windows does not show the component being dragged.
+- Fix: [#2277] Dragging vehicle components does not visually remove the component being dragged in some cases.
 - Fix: [#2255] Load/save window fails to show all files in some cases.
 - Fix: [#2282] Crash when generating landscape with smallest town size.
 - Fix: [#2282] Town size selection does not match vanilla size selection.
