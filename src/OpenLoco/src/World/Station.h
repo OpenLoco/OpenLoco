@@ -118,7 +118,6 @@ namespace OpenLoco
         StationId id() const;
         void update();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
-        void sub_48F7D1();
         char* getStatusString(char* buffer);
         bool updateCargo();
         int32_t calculateCargoRating(const StationCargoStats& cargo) const;

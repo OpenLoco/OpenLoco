@@ -121,7 +121,7 @@ namespace OpenLoco::StationManager
                 {
                     sub_49E1F1(station.id());
                     station.invalidate();
-                    station.sub_48F7D1();
+                    deallocateStation(station.id());
                 }
             }
             else

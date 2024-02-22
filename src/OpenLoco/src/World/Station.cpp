@@ -578,14 +578,6 @@ namespace OpenLoco
         updateCargoDistribution();
     }
 
-    // 0x0048F7D1
-    void Station::sub_48F7D1()
-    {
-        registers regs;
-        regs.ebx = enumValue(id());
-        call(0x0048F7D1, regs);
-    }
-
     // 0x00492A98
     char* Station::getStatusString(char* buffer)
     {
