@@ -16,8 +16,11 @@ namespace OpenLoco
     enum class StationCargoStatsFlags : uint8_t
     {
         none = 0U,
-        flag0 = (1U << 0),
-        flag1 = (1U << 1),
+        // Is there a consumer of this cargo at this station.
+        acceptedForConsumer = (1U << 0),
+        // Can a producer (town building, industry) distribute cargo to
+        // this station.
+        acceptedFromProducer = (1U << 1),
         flag2 = (1U << 2),
         flag3 = (1U << 3),
     };
@@ -43,12 +46,12 @@ namespace OpenLoco
 
         bool isAccepted() const
         {
-            return (flags & StationCargoStatsFlags::flag0) != StationCargoStatsFlags::none;
+            return (flags & StationCargoStatsFlags::acceptedForConsumer) != StationCargoStatsFlags::none;
         }
 
         void isAccepted(bool value)
         {
-            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
+            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::acceptedForConsumer, value);
         }
     };
 

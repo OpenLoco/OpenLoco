@@ -244,6 +244,7 @@ namespace OpenLoco
 
         if (station != nullptr)
         {
+            // See also recalculateStationModes which has a similar loop
             for (uint16_t i = 0; i < station->stationTileSize; i++)
             {
                 auto pos = station->stationTiles[i];
@@ -917,6 +918,12 @@ namespace OpenLoco
         uint32_t acceptedCargoTypes = 0;
         station->flags &= ~StationFlags::allModes;
 
+        // This loop is similar to the start of doCalcAcceptedCargo except for the
+        // following difference:
+        // 1. It doesn't accept ghost station tiles
+        // 2. It also works out the StationFlags transport mode
+        // 3. RoadStations with both RoadStationFlags::passenger and freight unset
+        //    are handled differently. (Perhaps vanilla bug)
         for (auto i = 0U; i < station->stationTileSize; ++i)
         {
             auto& pos = station->stationTiles[i];
@@ -938,7 +945,7 @@ namespace OpenLoco
                     station->flags |= trackObj->hasFlags(TrackObjectFlags::unk_02)
                         ? StationFlags::transportModeRoad
                         : StationFlags::transportModeRail;
-                    acceptedCargoTypes = 0xFFFFFFFFU;
+                    acceptedCargoTypes = ~0U;
                     break;
                 }
                 case StationType::roadStation:
@@ -977,21 +984,21 @@ namespace OpenLoco
                     else if (roadStationObj->hasFlags(RoadStationFlags::freight))
                     {
                         // Exclude passengers from this station type
-                        acceptedCargoTypes |= 0xFFFFFFFFU & ~(1U << roadStationObj->cargoType);
+                        acceptedCargoTypes |= ~(1U << roadStationObj->cargoType);
                     }
                     else
                     {
-                        acceptedCargoTypes = 0xFFFFFFFFU;
+                        acceptedCargoTypes = ~0U;
                     }
                     break;
                 }
                 case StationType::airport:
                     station->flags |= StationFlags::transportModeAir;
-                    acceptedCargoTypes = 0xFFFFFFFFU;
+                    acceptedCargoTypes = ~0U;
                     break;
                 case StationType::docks:
                     station->flags |= StationFlags::transportModeWater;
-                    acceptedCargoTypes = 0xFFFFFFFFU;
+                    acceptedCargoTypes = ~0U;
                     break;
             }
         }
@@ -1003,10 +1010,10 @@ namespace OpenLoco
             {
                 continue;
             }
-            station->cargoStats[cargoType].flags &= ~StationCargoStatsFlags::flag1;
+            station->cargoStats[cargoType].flags &= ~StationCargoStatsFlags::acceptedFromProducer;
             if (acceptedCargoTypes & (1U << cargoType))
             {
-                station->cargoStats[cargoType].flags |= StationCargoStatsFlags::flag1;
+                station->cargoStats[cargoType].flags |= StationCargoStatsFlags::acceptedFromProducer;
             }
         }
     }
@@ -1051,12 +1058,9 @@ namespace OpenLoco
         for (auto cargoId = 0U; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
         {
             auto& stats = station->cargoStats[cargoId];
-            stats.flags &= ~StationCargoStatsFlags::flag0;
             stats.industryId = cargoSearchState.getIndustry(cargoId);
-            if (acceptedCargos & (1U << cargoId))
-            {
-                stats.flags |= StationCargoStatsFlags::flag0;
-            }
+            bool isAccepted = (acceptedCargos & (1 << cargoId)) != 0;
+            stats.isAccepted(isAccepted);
         }
     }
 
