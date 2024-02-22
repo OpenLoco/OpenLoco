@@ -93,13 +93,13 @@ namespace OpenLoco
 
     struct Station
     {
-        StringId name = StringIds::null; // 0x00
-        coord_t x{};                     // 0x02
-        coord_t y{};                     // 0x04
-        coord_t z{};                     // 0x06
-        LabelFrame labelFrame;           // 0x08
-        CompanyId owner{};               // 0x28
-        uint8_t var_29{};
+        StringId name = StringIds::null;              // 0x00
+        coord_t x{};                                  // 0x02
+        coord_t y{};                                  // 0x04
+        coord_t z{};                                  // 0x06
+        LabelFrame labelFrame;                        // 0x08
+        CompanyId owner{};                            // 0x28
+        uint8_t noTilesTimeout{};                     // 0x29 measured in days
         StationFlags flags{};                         // 0x2A
         TownId town{};                                // 0x2C
         StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E

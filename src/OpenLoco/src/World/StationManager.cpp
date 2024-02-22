@@ -112,12 +112,12 @@ namespace OpenLoco::StationManager
         {
             if (station.stationTileSize == 0)
             {
-                station.var_29++;
-                if (station.var_29 != 5 && CompanyManager::isPlayerCompany(station.owner))
+                station.noTilesTimeout++;
+                if (station.noTilesTimeout == 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
                     sub_437F29(station.owner, 8);
                 }
-                if (station.var_29 >= 10)
+                if (station.noTilesTimeout >= 10)
                 {
                     sub_49E1F1(station.id());
                     station.invalidate();
@@ -126,7 +126,7 @@ namespace OpenLoco::StationManager
             }
             else
             {
-                station.var_29 = 0;
+                station.noTilesTimeout = 0;
             }
             if (station.updateCargo())
             {
