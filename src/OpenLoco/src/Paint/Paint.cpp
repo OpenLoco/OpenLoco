@@ -337,8 +337,8 @@ namespace OpenLoco::Paint
         }
         _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
         _quadrantFrontIndex = 0;
-        _lastPaintString = 0;
-        _paintStringHead = 0;
+        _lastPaintString = nullptr;
+        _paintStringHead = nullptr;
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;

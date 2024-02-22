@@ -277,7 +277,7 @@ namespace OpenLoco
 
     static void initialise()
     {
-        std::srand(std::time(0));
+        std::srand(std::time(nullptr));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE); // getSystemTime unused dead code?
         World::TileManager::allocateMapElements();

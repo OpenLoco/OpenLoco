@@ -69,7 +69,7 @@ namespace OpenLoco::Platform
 
         // Initialize COM and get a pointer to the shell memory allocator
         LPMALLOC lpMalloc;
-        if (SUCCEEDED(CoInitializeEx(0, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
+        if (SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)) && SUCCEEDED(SHGetMalloc(&lpMalloc)))
         {
             auto titleW = Utility::toUtf16(title);
             BROWSEINFOW bi{};
@@ -255,7 +255,7 @@ namespace OpenLoco::Platform
 
         for (auto i = 0; i < argc; ++i)
         {
-            int length = WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, 0, 0, NULL, NULL);
+            int length = WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, nullptr, 0, nullptr, nullptr);
 
             if (length == 0)
             {
@@ -266,7 +266,7 @@ namespace OpenLoco::Platform
             // When resizing a std::string the null termination is handled implicitly. i.e. resize to true length not null terminated length.
             argvStrs[i].resize(length - 1);
 
-            if (WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, argvStrs[i].data(), length, NULL, NULL) == 0)
+            if (WideCharToMultiByte(CP_UTF8, 0, argw[i], -1, argvStrs[i].data(), length, nullptr, nullptr) == 0)
             {
                 std::cerr << "Failed to convert cmdline argument to utf8.";
             }

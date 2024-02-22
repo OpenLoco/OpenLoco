@@ -16,7 +16,7 @@ namespace OpenLoco
         size_t _capacity{};
 
     public:
-        ~MemoryStream();
+        ~MemoryStream() override;
 
         void reserve(size_t len);
 

@@ -361,7 +361,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         window->initScrollWidgets();
 
         uint16_t scrollHeight = 0;
-        window->callGetScrollSize(0, 0, &scrollHeight);
+        window->callGetScrollSize(0, nullptr, &scrollHeight);
 
         scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 
