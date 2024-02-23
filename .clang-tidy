@@ -1,0 +1,11 @@
+---
+Checks: >
+    -*,
+    cppcoreguidelines-macro-usage,
+    modernize-use-nullptr,
+    modernize-use-override
+CheckOptions:
+  - key: cppcoreguidelines-macro-usage.AllowedRegexp
+    value: 'OPENLOCO_ENABLE_ENUM_OPERATORS|WRITE_ADDRESS_STRICTALIAS|assert_struct_size|enum_def|UNUSED_STR'
+WarningsAsErrors: true
+FormatStyle: 'file'
