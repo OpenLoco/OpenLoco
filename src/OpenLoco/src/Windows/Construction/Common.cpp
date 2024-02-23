@@ -1098,7 +1098,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 WindowType::construction,
                 Construction::kWindowSize,
                 WindowFlags::flag_11 | WindowFlags::noAutoClose,
-                &Construction::events);
+                Construction::events);
 
             window->widgets = Construction::widgets;
             window->currentTab = 0;

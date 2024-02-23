@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 WindowType::saveGamePrompt,
                 { 260, 48 },
                 WindowFlags::notScrollView | WindowFlags::stickToFront,
-                &_events);
+                _events);
 
             if (window == nullptr)
                 return nullptr;

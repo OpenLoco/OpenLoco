@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
             Ui::Point(Ui::width() - kWindowSize.width, 0),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            &_events);
+            _events);
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::options_button);

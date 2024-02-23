@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             WindowType::tileInspector,
             kWindowSize,
             WindowFlags::none,
-            &_events);
+            _events);
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);

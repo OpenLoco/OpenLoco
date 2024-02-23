@@ -2489,7 +2489,7 @@ namespace OpenLoco::Ui::Windows::Options
             WindowType::options,
             Display::kWindowSize,
             WindowFlags::none,
-            &Display::_events);
+            Display::_events);
 
         window->widgets = Display::_widgets;
         window->number = 0;

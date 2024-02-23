@@ -1629,7 +1629,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
 
-        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, &events);
+        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, events);
         window->widgets = widgets;
         window->enabledWidgets |= enabledWidgets;
 

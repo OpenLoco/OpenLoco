@@ -79,8 +79,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_plant_trees),                            \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_walls)
 
-        static WindowEventList _events;
-
         static void initEvents();
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
@@ -858,7 +856,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 origin,
                 PlantTrees::kWindowSize,
                 WindowFlags::flag_11,
-                &PlantTrees::events);
+                PlantTrees::events);
 
             window->number = 0;
             window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;

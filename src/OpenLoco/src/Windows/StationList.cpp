@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 WindowType::stationList,
                 kWindowSize,
                 WindowFlags::flag_11,
-                &_events);
+                _events);
 
             window->number = enumValue(companyId);
             window->owner = companyId;

@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
             WindowType::progressBar,
             kWindowSize,
             WindowFlags::flag_11 | WindowFlags::stickToFront,
-            &_events);
+            _events);
 
         window->widgets = widgets;
         window->initScrollWidgets();

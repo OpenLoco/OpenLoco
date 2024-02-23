@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 origin,
                 TownList::kWindowSize,
                 WindowFlags::resizable,
-                &TownList::events);
+                TownList::events);
 
             window->number = 0;
             window->currentTab = 0;

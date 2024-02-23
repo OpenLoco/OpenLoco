@@ -900,7 +900,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowType::cheats,
             Finances::kWindowSize,
             WindowFlags::none,
-            &Finances::_events);
+            Finances::_events);
 
         window->widgets = Finances::_widgets;
         window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;

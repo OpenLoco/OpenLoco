@@ -133,7 +133,7 @@ namespace OpenLoco::S5
                 { 0, 0 },
                 size,
                 WindowFlags::stickToFront,
-                &eventList);
+                eventList);
             if (tempWindow != nullptr)
             {
                 auto tempViewport = ViewportManager::create(

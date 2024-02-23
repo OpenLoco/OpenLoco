@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
         Ui::Point origin = { x, y };
 
-        auto window = WindowManager::createWindow(WindowType::news, origin, kWindowSize, flags, &News1::events);
+        auto window = WindowManager::createWindow(WindowType::news, origin, kWindowSize, flags, News1::events);
 
         window->widgets = widgets;
         window->enabledWidgets = Common::enabledWidgets;
@@ -103,7 +103,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 Ui::Point origin = { x, y };
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
-                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, &Ticker::events);
+                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, Ticker::events);
 
                 window->widgets = Ticker::widgets;
                 window->enabledWidgets = Ticker::enabledWidgets;

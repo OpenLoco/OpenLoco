@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
             Ui::Point(kWindowSize.width, Ui::height() - 27),
             Ui::Size(Ui::width() - 280, 27),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            &_events);
+            _events);
 
         window->widgets = widgets;
         window->initScrollWidgets();

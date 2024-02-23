@@ -65,8 +65,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
 
-        static WindowEventList _events;
-
         static void initEvents();
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
@@ -535,7 +533,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 origin,
                 IndustryList::kWindowSize,
                 WindowFlags::flag_8,
-                &IndustryList::events);
+                IndustryList::events);
 
             window->number = 0;
             window->currentTab = 0;

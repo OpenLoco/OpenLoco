@@ -123,7 +123,7 @@ namespace OpenLoco::Ui
         void (*scrollMouseOver)(Ui::Window& window, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
         void (*textInput)(Window&, WidgetIndex_t, const char*) = nullptr;
         void (*viewportRotate)(Window&) = nullptr;
-        uint32_t event_22;
+        uint32_t event_22{};
         std::optional<FormatArguments> (*tooltip)(Window&, WidgetIndex_t) = nullptr;
         Ui::CursorId (*cursor)(Window&, int16_t, int16_t, int16_t, Ui::CursorId) = nullptr;
         void (*onMove)(Window&, const int16_t x, const int16_t y) = nullptr;
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui
     {
         static constexpr size_t kMaxScrollAreas = 2;
 
-        WindowEventList* eventHandlers;                    // 0x00
+        const WindowEventList* eventHandlers;              // 0x00
         Ui::Viewport* viewports[2] = { nullptr, nullptr }; // 0x04
         uint64_t enabledWidgets = 0;                       // 0x0C
         uint64_t disabledWidgets = 0;                      // 0x14

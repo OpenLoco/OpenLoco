@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
             Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            &_events);
+            _events);
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::exit_button);

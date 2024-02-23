@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                         std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) }),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::flag_12,
-            &_events);
+            _events);
 
         self->widgets = _widgets;
         self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);

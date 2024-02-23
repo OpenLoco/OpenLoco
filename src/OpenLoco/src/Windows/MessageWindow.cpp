@@ -50,8 +50,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options)
 
-        static WindowEventList _events;
-
         static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
@@ -320,7 +318,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 origin,
                 { 366, 217 },
                 WindowFlags::flag_11,
-                &Messages::events);
+                Messages::events);
 
             window->enabledWidgets = Messages::enabledWidgets;
             window->number = 0;

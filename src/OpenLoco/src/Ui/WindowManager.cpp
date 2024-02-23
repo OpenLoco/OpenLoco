@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Ui::Point(regs.ax, regs.eax >> 16), Ui::Size(regs.bx, regs.ebx >> 16), WindowFlags(regs.ecx >> 8), (WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Point(regs.ax, regs.eax >> 16), Ui::Size(regs.bx, regs.ebx >> 16), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Ui::Size(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), (WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Size(regs.bx, (((uint32_t)regs.ebx) >> 16)), WindowFlags(regs.ecx >> 8), *(const WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
@@ -911,7 +911,7 @@ namespace OpenLoco::Ui::WindowManager
         Ui::Point origin,
         Ui::Size size,
         Ui::WindowFlags flags,
-        WindowEventList* events)
+        const WindowEventList& events)
     {
         origin.x = std::clamp<decltype(origin.x)>(origin.x, 0, std::max(0, Ui::width() - size.width));
         origin.y = std::clamp<decltype(origin.y)>(origin.y, 28, std::max(28, Ui::height() - size.height));
@@ -949,7 +949,7 @@ namespace OpenLoco::Ui::WindowManager
         WindowType type,
         Ui::Size size,
         Ui::WindowFlags flags,
-        WindowEventList* events)
+        const WindowEventList& events)
     {
         Ui::Point position{};
 
@@ -1078,7 +1078,7 @@ namespace OpenLoco::Ui::WindowManager
         Ui::Point origin,
         Ui::Size size,
         WindowFlags flags,
-        WindowEventList* events)
+        const WindowEventList& events)
     {
         if (count() == kMaxWindows)
         {
@@ -1140,7 +1140,7 @@ namespace OpenLoco::Ui::WindowManager
             Audio::playSound(Audio::SoundId::openWindow, origin.x + size.width / 2);
         }
 
-        window.eventHandlers = events;
+        window.eventHandlers = &events;
 
         size_t length = _windowsEnd - (_windows + dstIndex);
         memmove(_windows + dstIndex + 1, _windows + dstIndex, length * sizeof(Ui::Window));
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::WindowManager
         return &_windows[dstIndex];
     }
 
-    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, WindowEventList* events)
+    Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events)
     {
         auto x = (Ui::width() / 2) - (size.width / 2);
         auto y = std::max(28, (Ui::height() / 2) - (size.height / 2));

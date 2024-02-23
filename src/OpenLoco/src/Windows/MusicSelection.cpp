@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             WindowType::musicSelection,
             kWindowSize,
             WindowFlags::none,
-            &_events);
+            _events);
 
         // TODO: only needs to be called once.
         initEvents();

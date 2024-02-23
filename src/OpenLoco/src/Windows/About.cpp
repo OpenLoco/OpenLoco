@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::About
             WindowType::about,
             kWindowSize,
             WindowFlags::none,
-            &_events);
+            _events);
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);

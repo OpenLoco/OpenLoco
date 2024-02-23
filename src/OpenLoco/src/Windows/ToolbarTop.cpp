@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             { 0, 0 },
             Ui::Size(Ui::width(), 28),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            &_events);
+            _events);
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();

@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             Ui::Point(0, Ui::height() - kWindowSize.height),
             Ui::Size(kWindowSize.width, kWindowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
-            &_events);
+            _events);
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performanceIndex);
         window->var_854 = 0;
