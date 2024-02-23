@@ -312,7 +312,7 @@ namespace OpenLoco
                 company->observationTownId = closestTown->first;
             }
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id));
-            Ui::WindowManager::invalidate(Ui::WindowType::companyList, enumValue(id));
+            Ui::WindowManager::invalidate(Ui::WindowType::companyList);
         }
         company->observationTimeout = 5;
     }

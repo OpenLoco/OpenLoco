@@ -30,6 +30,7 @@
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
+#include <numeric>
 
 using namespace OpenLoco::Interop;
 
@@ -1391,7 +1392,7 @@ namespace OpenLoco
                 return;
             }
 
-            const auto totalVehicles = std::count(std::begin(company->transportTypeCount), std::end(company->transportTypeCount), 0);
+            const auto totalVehicles = std::accumulate(std::begin(company->transportTypeCount), std::end(company->transportTypeCount), 0);
 
             const auto randVehicleNum = totalVehicles * static_cast<uint64_t>(gPrng1().randNext()) / (1ULL << 32);
             auto i = 0U;
