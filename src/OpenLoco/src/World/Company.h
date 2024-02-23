@@ -98,6 +98,25 @@ namespace OpenLoco
             res[0] = data[0];
             res[1] = data[1];
         }
+
+        bool isEmpty() const { return data[0] == -1; }
+        bool isEntity() const { return data[0] == -2; }
+        EntityId getEntity() const
+        {
+            if (isEntity())
+            {
+                return static_cast<EntityId>(data[1]);
+            }
+            return EntityId::null;
+        }
+        World::Pos2 getPosition() const
+        {
+            if (isEntity())
+            {
+                return {};
+            }
+            return World::Pos2{ data[0], data[1] };
+        }
     };
 
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
@@ -187,8 +206,8 @@ namespace OpenLoco
         int16_t observationX;                     // 0x8BBE;
         int16_t observationY;                     // 0x8BC0;
         uint16_t observationObject;               // 0x8BC2;
-        uint16_t var_8BC4;
-        OwnerStatus ownerStatus; // 0x8BC6
+        uint16_t observationTimeout;              // 0x8BC4
+        OwnerStatus ownerStatus;                  // 0x8BC6
         uint8_t pad_8BCA[0x8BCE - 0x8BCA];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
@@ -235,4 +254,5 @@ namespace OpenLoco
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
+    void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
 }

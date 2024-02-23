@@ -72,7 +72,7 @@ namespace OpenLoco
             unk = Math::Bound::sub(unk, 1u);
         }
         updateDailyLogic();
-        var_8BC4 = Math::Bound::sub(var_8BC4, 1u);
+        observationTimeout = Math::Bound::sub(observationTimeout, 1u);
         if (jailStatus != 0)
         {
             jailStatus = Math::Bound::sub(jailStatus, 1u);
@@ -96,10 +96,34 @@ namespace OpenLoco
     // 0x00438205
     void Company::updateDailyLogic()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ebx = enumValue(id());
-        call(0x00438205, regs);
+        if (CompanyManager::isPlayerCompany(id()))
+        {
+            if (observationTimeout != 0)
+            {
+                return;
+            }
+
+            if (ownerStatus.isEmpty())
+            {
+                return;
+            }
+            if (ownerStatus.isEntity())
+            {
+                Vehicles::Vehicle train(ownerStatus.getEntity());
+                if (train.veh2->position.x != 0x8000)
+                {
+                    companySetObservation(id(), ObservationStatus::checkingServices, train.veh2->position, train.head->id, 0xFFFFU);
+                }
+            }
+            else
+            {
+                companySetObservation(id(), ObservationStatus::surveyingLandscape, ownerStatus.getPosition(), EntityId::null, 0xFFFFU);
+            }
+        }
+        else
+        {
+            setAiObservation(id());
+        }
     }
 
     // 0x004387D0
@@ -235,6 +259,62 @@ namespace OpenLoco
     {
         auto company = CompanyManager::get(companyId);
         company->activeEmotions[enumValue(emotion)] = kEmotionDurations[enumValue(emotion)];
+    }
+
+    static bool shouldSetObservation(Company& company, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object)
+    {
+        if (company.observationTimeout == 0)
+        {
+            return true;
+        }
+        if (status == ObservationStatus::checkingServices
+            && company.observationStatus == ObservationStatus::checkingServices)
+        {
+            return false;
+        }
+        if (status != company.observationStatus)
+        {
+            return true;
+        }
+        if (pos.x != company.observationX)
+        {
+            return true;
+        }
+        if (pos.y != company.observationY)
+        {
+            return true;
+        }
+        if (object != company.observationObject)
+        {
+            return true;
+        }
+        if (entity != company.observationEntity)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    // 0x00438167
+    void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object)
+    {
+        auto* company = CompanyManager::get(id);
+        if (shouldSetObservation(*company, status, pos, entity, object))
+        {
+            company->observationX = pos.x;
+            company->observationY = pos.y;
+            company->observationEntity = entity;
+            company->observationObject = object;
+            company->observationStatus = status;
+            auto closestTown = TownManager::getClosestTownAndDensity(pos);
+            if (closestTown.has_value())
+            {
+                company->observationTownId = closestTown->first;
+            }
+            Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id));
+            Ui::WindowManager::invalidate(Ui::WindowType::companyList, enumValue(id));
+        }
+        company->observationTimeout = 5;
     }
 
     bool Company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
