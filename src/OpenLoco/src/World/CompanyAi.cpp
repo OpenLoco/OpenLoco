@@ -1415,7 +1415,7 @@ namespace OpenLoco
                 i++;
             }
             Vehicles::Vehicle train(randVehicle);
-            if (train.veh2->position.x != 0x8000)
+            if (train.veh2->position.x != Location::null)
             {
                 companySetObservation(id, ObservationStatus::checkingServices, train.veh2->position, train.head->id, 0xFFFFU);
             }
