@@ -1160,7 +1160,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void updateActiveThumb(Window* self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, nullptr, &scrollHeight);
             self->scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;

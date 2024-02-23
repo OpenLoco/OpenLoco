@@ -1616,7 +1616,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto ptr = malloc(kMapSize * 8);
 
-        if (ptr == NULL)
+        if (ptr == nullptr)
             return;
 
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
