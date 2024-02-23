@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::StationList
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(window.number));
         auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
-        uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
+        uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
         uint16_t x = window.x + window.widgets[widx::company_select].left + 1;
         uint16_t y = window.y + window.widgets[widx::company_select].top + 1;
         drawingCtx.drawImage(rt, x, y, image);

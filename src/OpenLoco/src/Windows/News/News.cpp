@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 {
                     const auto* company = CompanyManager::get(CompanyId(itemSubject));
                     const auto* competitorObj = ObjectManager::get<CompetitorObject>(company->competitorId);
-                    const auto imageIndexBase = competitorObj->images[company->ownerEmotion];
+                    const auto imageIndexBase = competitorObj->images[enumValue(company->ownerEmotion)];
 
                     const ImageId imageId(imageIndexBase + 1, company->mainColours.primary);
                     const auto x = self->x + viewWidget.midX() - 31;

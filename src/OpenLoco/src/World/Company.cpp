@@ -67,7 +67,7 @@ namespace OpenLoco
     void Company::updateDaily()
     {
         updateOwnerEmotion();
-        for (auto& unk : var_8BB0)
+        for (auto& unk : activeEmotions)
         {
             unk = Math::Bound::sub(unk, 1u);
         }
@@ -141,7 +141,7 @@ namespace OpenLoco
                     Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(secondaryPlayer->id()));
                 }
                 MessageManager::post(MessageType::congratulationsCompleted, id(), enumValue(id()), 0xFFFF);
-                StationManager::sub_437F29(id(), 1);
+                companyEmotionEvent(id(), Emotion::unk1);
                 updateOwnerEmotion();
                 Ui::Windows::CompanyWindow::openChallenge(id());
                 Scenario::getObjectiveProgress().completedChallengeInMonths = Scenario::getObjectiveProgress().monthsInChallenge;
@@ -156,7 +156,7 @@ namespace OpenLoco
                     Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(secondaryPlayer->id()));
                 }
                 MessageManager::post(MessageType::haveBeenBeaten, id(), enumValue(id()), 0xFFFF);
-                StationManager::sub_437F29(id(), 5);
+                companyEmotionEvent(id(), Emotion::unk5);
                 updateOwnerEmotion();
                 Ui::Windows::CompanyWindow::openChallenge(id());
                 Scenario::getObjectiveProgress().completedChallengeInMonths = Scenario::getObjectiveProgress().monthsInChallenge;
@@ -168,7 +168,7 @@ namespace OpenLoco
             if (CompanyManager::getControllingId() == id())
             {
                 MessageManager::post(MessageType::failedObjectives, id(), enumValue(id()), 0xFFFF);
-                StationManager::sub_437F29(id(), 4);
+                companyEmotionEvent(id(), Emotion::unk4);
                 updateOwnerEmotion();
                 Ui::Windows::CompanyWindow::openChallenge(id());
             }
@@ -213,6 +213,28 @@ namespace OpenLoco
     {
         args.push(performanceIndex);
         args.push(getCorporateRatingAsStringId(performanceToRating(performanceIndex)));
+    }
+
+    // 0x004F9462
+    constexpr uint8_t kEmotionDurations[] = {
+        0,
+        31,
+        10,
+        7,
+        31,
+        10,
+        31,
+        31,
+        11,
+    };
+
+    // 0x00437F29
+    // companyId: ah
+    // emotion: al
+    void companyEmotionEvent(CompanyId companyId, Emotion emotion)
+    {
+        auto company = CompanyManager::get(companyId);
+        company->activeEmotions[enumValue(emotion)] = kEmotionDurations[enumValue(emotion)];
     }
 
     bool Company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
@@ -323,13 +345,56 @@ namespace OpenLoco
         updateHeadquartersColourAtTile(hqPos + World::TilePos2(0, 1), headquartersZ, colour);
     }
 
+    constexpr std::array<uint8_t, 9> emotionWeightings = {
+        0,
+        4,
+        6,
+        5,
+        3,
+        8,
+        1,
+        2,
+        7,
+    };
+
     // 0x00437F47
     void Company::updateOwnerEmotion()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        regs.ebx = enumValue(id());
-        call(0x00437F47, regs);
+        Emotion newEmotion = Emotion::unk4;
+        if ((challengeFlags & CompanyFlags::bankrupt) == CompanyFlags::none)
+        {
+            newEmotion = Emotion::unk0;
+            uint8_t newEmotionWeight = 0;
+            for (auto emotion = 0U; emotion < std::size(activeEmotions); ++emotion)
+            {
+                if (activeEmotions[emotion] == 0)
+                {
+                    continue;
+                }
+                const auto emotionWeight = emotionWeightings[emotion];
+                if (newEmotionWeight <= emotionWeight)
+                {
+                    newEmotionWeight = emotionWeight;
+                    newEmotion = static_cast<Emotion>(emotion);
+                }
+            }
+        }
+
+        if (newEmotion == ownerEmotion)
+        {
+            return;
+        }
+
+        ownerEmotion = newEmotion;
+        Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id()));
+        if (id() == CompanyManager::getControllingId())
+        {
+            Ui::WindowManager::invalidate(Ui::WindowType::playerInfoToolbar);
+        }
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, enumValue(id()));
+        Ui::WindowManager::invalidate(Ui::WindowType::stationList, enumValue(id()));
+        Ui::WindowManager::invalidate(Ui::WindowType::news);
+        Ui::WindowManager::invalidate(Ui::WindowType::companyList);
     }
 
     /* 0x004A6841

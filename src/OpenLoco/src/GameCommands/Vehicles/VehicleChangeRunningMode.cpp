@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
             auto madeProfit = train.veh2->profit[0] | train.veh2->profit[1] | train.veh2->profit[2] | train.veh2->profit[3];
             if (madeProfit != 0)
             {
-                StationManager::sub_437F29(getUpdatingCompanyId(), 1);
+                companyEmotionEvent(getUpdatingCompanyId(), Emotion::unk1);
             }
         }
 

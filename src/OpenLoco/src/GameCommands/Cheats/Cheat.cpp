@@ -276,7 +276,7 @@ namespace OpenLoco::GameCommands
             Ui::WindowManager::invalidate(Ui::WindowType::news);
             Ui::WindowManager::invalidate(static_cast<Ui::WindowType>(0x2E));
             MessageManager::post(MessageType::companyCheated, CompanyId::null, static_cast<uint16_t>(*_updatingCompanyId), 0xFFFF);
-            StationManager::sub_437F29(_updatingCompanyId, 4);
+            companyEmotionEvent(_updatingCompanyId, Emotion::unk4);
         }
         return 0;
     }

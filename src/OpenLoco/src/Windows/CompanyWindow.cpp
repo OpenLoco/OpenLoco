@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner image.
             {
-                const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion] + 1, company->mainColours.primary);
+                const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)] + 1, company->mainColours.primary);
                 const uint16_t x = self.x + self.widgets[widx::face].left + 1;
                 const uint16_t y = self.y + self.widgets[widx::face].top + 1;
                 drawingCtx.drawImage(rt, x, y, image);
@@ -2757,7 +2757,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const auto competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
 
             // Draw company owner face.
-            const uint32_t image = Gfx::recolour(competitor->images[company->ownerEmotion], company->mainColours.primary);
+            const uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
             const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
             const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();

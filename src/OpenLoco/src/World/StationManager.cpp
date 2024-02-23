@@ -77,16 +77,6 @@ namespace OpenLoco::StationManager
         }
     }
 
-    // 0x00437F29
-    // arg0: ah
-    // arg1: al
-    void sub_437F29(CompanyId cid, uint8_t arg1)
-    {
-        constexpr uint8_t byte_4F9462[] = { 0, 31, 10, 7, 31, 10, 31, 31, 11 };
-        auto company = CompanyManager::get(cid);
-        company->var_8BB0[arg1] = byte_4F9462[arg1];
-    }
-
     static void sub_49E1F1(StationId id)
     {
         auto w = WindowManager::find(WindowType::construction);
@@ -115,7 +105,7 @@ namespace OpenLoco::StationManager
                 station.noTilesTimeout++;
                 if (station.noTilesTimeout == 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
-                    sub_437F29(station.owner, 8);
+                    companyEmotionEvent(station.owner, Emotion::unk8);
                 }
                 if (station.noTilesTimeout >= 10)
                 {

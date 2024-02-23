@@ -303,7 +303,7 @@ namespace OpenLoco
             {
                 company.var_4A4 = AiThinkState::unk7;
                 company.var_4A5 = 0;
-                StationManager::sub_437F29(company.id(), 8);
+                companyEmotionEvent(company.id(), Emotion::unk8);
                 return;
             }
 
@@ -862,7 +862,7 @@ namespace OpenLoco
     static void sub_4310E9(Company& company, AiThought& thought)
     {
         sub_4876CB(thought);
-        StationManager::sub_437F29(company.id(), 1);
+        companyEmotionEvent(company.id(), Emotion::unk1);
         company.var_4A4 = AiThinkState::unk0;
     }
 
@@ -878,7 +878,7 @@ namespace OpenLoco
     // 0x00431035
     static void aiThinkState4(Company& company)
     {
-        StationManager::sub_437F29(company.id(), 3);
+        companyEmotionEvent(company.id(), Emotion::unk3);
         company.var_85F6++;
 
         _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.var_2578]);
