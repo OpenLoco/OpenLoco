@@ -1323,19 +1323,19 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             Widget* widgets;
             const widx widgetIndex;
-            const WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { CompanyList::widgets,         widx::tab_company_list,   &CompanyList::getEvents(),         CompanyList::enabledWidgets },
-            { CompanyPerformance::widgets,  widx::tab_performance,    &CompanyPerformance::getEvents(),  CompanyPerformance::enabledWidgets },
-            { CargoUnits::widgets,          widx::tab_cargo_units,    &CargoUnits::getEvents(),          CargoUnits::enabledWidgets },
-            { CargoDistance::widgets,       widx::tab_cargo_distance, &CargoDistance::getEvents(),       CargoDistance::enabledWidgets },
-            { CompanyValues::widgets,       widx::tab_values,         &CompanyValues::getEvents(),       CompanyValues::enabledWidgets },
-            { CargoPaymentRates::widgets,   widx::tab_payment_rates,  &CargoPaymentRates::getEvents(),   CargoPaymentRates::enabledWidgets },
-            { CompanySpeedRecords::widgets, widx::tab_speed_records,  &CompanySpeedRecords::getEvents(), CompanySpeedRecords::enabledWidgets },
+            { CompanyList::widgets,         widx::tab_company_list,   CompanyList::getEvents(),         CompanyList::enabledWidgets },
+            { CompanyPerformance::widgets,  widx::tab_performance,    CompanyPerformance::getEvents(),  CompanyPerformance::enabledWidgets },
+            { CargoUnits::widgets,          widx::tab_cargo_units,    CargoUnits::getEvents(),          CargoUnits::enabledWidgets },
+            { CargoDistance::widgets,       widx::tab_cargo_distance, CargoDistance::getEvents(),       CargoDistance::enabledWidgets },
+            { CompanyValues::widgets,       widx::tab_values,         CompanyValues::getEvents(),       CompanyValues::enabledWidgets },
+            { CargoPaymentRates::widgets,   widx::tab_payment_rates,  CargoPaymentRates::getEvents(),   CargoPaymentRates::enabledWidgets },
+            { CompanySpeedRecords::widgets, widx::tab_speed_records,  CompanySpeedRecords::getEvents(), CompanySpeedRecords::enabledWidgets },
         };
         // clang-format on
 
@@ -1470,7 +1470,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 

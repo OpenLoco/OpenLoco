@@ -939,7 +939,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             Widget* widgets;
             WidgetIndex_t widgetIndex;
-            const WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
             Ui::Size kWindowSize;
@@ -947,10 +947,10 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Finances::_widgets,  Widx::tab_finances,  &Finances::getEvents(),  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
-            { Companies::_widgets, Widx::tab_companies, &Companies::getEvents(), &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
-            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::getEvents(),  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
-            { Towns::_widgets,     Widx::tab_towns,     &Towns::getEvents(),     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
+            { Finances::_widgets,  Widx::tab_finances,  Finances::getEvents(),  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
+            { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
+            { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
         };
         // clang-format on
 
@@ -963,7 +963,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->disabledWidgets = 0;

@@ -2616,19 +2616,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Widget* widgets;
             const widx widgetIndex;
-            const WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const Ui::Size* kWindowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Status::widgets,         widx::tab_status,          &Status::getEvents(),         &Status::enabledWidgets,         &Status::kWindowSize },
-            { Details::widgets,        widx::tab_details,         &Details::getEvents(),        &Details::enabledWidgets,        &Details::kWindowSize },
-            { ColourScheme::widgets,   widx::tab_colour_scheme,   &ColourScheme::getEvents(),   &ColourScheme::enabledWidgets,   &ColourScheme::kWindowSize },
-            { Finances::widgets,       widx::tab_finances,        &Finances::getEvents(),       &Finances::enabledWidgets,       &Finances::kWindowSize },
-            { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::getEvents(), &CargoDelivered::enabledWidgets, &CargoDelivered::kWindowSize },
-            { Challenge::widgets,      widx::tab_challenge,       &Challenge::getEvents(),      &Challenge::enabledWidgets,      &Challenge::kWindowSize }
+            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::enabledWidgets,         &Status::kWindowSize },
+            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::enabledWidgets,        &Details::kWindowSize },
+            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::enabledWidgets,   &ColourScheme::kWindowSize },
+            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::enabledWidgets,       &Finances::kWindowSize },
+            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::enabledWidgets, &CargoDelivered::kWindowSize },
+            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::enabledWidgets,      &Challenge::kWindowSize }
         };
         // clang-format on
 
@@ -2708,7 +2708,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
