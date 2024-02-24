@@ -577,17 +577,19 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
             void (*tabReset)(Window*);
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Construction::widgets, widx::tab_construction, &Construction::events, Construction::enabledWidgets, &Construction::tabReset },
-            { Station::widgets, widx::tab_station, &Station::events, Station::enabledWidgets, &Station::tabReset },
-            { Signal::widgets, widx::tab_signal, &Signal::events, Signal::enabledWidgets, &Signal::tabReset },
-            { Overhead::widgets, widx::tab_overhead, &Overhead::events, Overhead::enabledWidgets, &Overhead::tabReset },
+            { Construction::widgets, widx::tab_construction, Construction::getEvents(), Construction::enabledWidgets, &Construction::tabReset },
+            { Station::widgets,      widx::tab_station,      Station::getEvents(),      Station::enabledWidgets,      &Station::tabReset },
+            { Signal::widgets,       widx::tab_signal,       Signal::getEvents(),       Signal::enabledWidgets,       &Signal::tabReset },
+            { Overhead::widgets,     widx::tab_overhead,     Overhead::getEvents(),     Overhead::enabledWidgets,     &Overhead::tabReset },
         };
+        // clang-format on
 
         void prepareDraw(Window* self)
         {
@@ -612,7 +614,7 @@ namespace OpenLoco::Ui::Windows::Construction
             const auto& tabInfo = tabInformationByTabOffset[tabWidgetIndex - widx::tab_construction];
 
             self.enabledWidgets = tabInfo.enabledWidgets;
-            self.eventHandlers = tabInfo.events;
+            self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
             self.widgets = tabInfo.widgets;
 
@@ -719,7 +721,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
             self->enabledWidgets = tabInfo.enabledWidgets;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->holdableWidgets = 0;
@@ -1026,14 +1028,6 @@ namespace OpenLoco::Ui::Windows::Construction
             removeConstructionGhosts();
         }
 
-        void initEvents()
-        {
-            Construction::initEvents();
-            Station::initEvents();
-            Signal::initEvents();
-            Overhead::initEvents();
-        }
-
         // 0x004CD454
         void sub_4CD454()
         {
@@ -1098,7 +1092,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 WindowType::construction,
                 Construction::kWindowSize,
                 WindowFlags::flag_11 | WindowFlags::noAutoClose,
-                Construction::events);
+                Construction::getEvents());
 
             window->widgets = Construction::widgets;
             window->currentTab = 0;
@@ -1116,8 +1110,6 @@ namespace OpenLoco::Ui::Windows::Construction
             WindowManager::sub_4CEE0B(*window);
             Windows::Main::showDirectionArrows();
             Windows::Main::showGridlines();
-
-            Common::initEvents();
         }
 
         // 0x004723BD

@@ -1079,16 +1079,22 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self->callOnMouseDown(Station::widx::image);
     }
 
-    void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onClose = Common::onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+    }();
+
+    const WindowEventList& getEvents()
     {
-        events.onClose = Common::onClose;
-        events.onMouseUp = onMouseUp;
-        events.onMouseDown = onMouseDown;
-        events.onDropdown = onDropdown;
-        events.onUpdate = onUpdate;
-        events.onToolUpdate = onToolUpdate;
-        events.onToolDown = onToolDown;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
+        return _events;
     }
 }
