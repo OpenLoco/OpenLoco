@@ -574,17 +574,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.textInput = textInput;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            events.viewportRotate = viewportRotate;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .textInput = textInput,
+                .viewportRotate = viewportRotate,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -1165,21 +1165,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.textInput = textInput;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.onToolAbort = onToolAbort;
-            events.onClose = onClose;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            events.viewportRotate = viewportRotate;
-            return events;
+            return WindowEventList{
+                .onClose = onClose,
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .onToolUpdate = onToolUpdate,
+                .onToolDown = onToolDown,
+                .onToolAbort = onToolAbort,
+                .textInput = textInput,
+                .viewportRotate = viewportRotate,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -1653,16 +1653,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.textInput = textInput;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .textInput = textInput,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -2145,19 +2145,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.textInput = textInput;
-            events.onDropdown = onDropdown;
-            events.getScrollSize = getScrollSize;
-            events.tooltip = tooltip;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .getScrollSize = getScrollSize,
+                .textInput = textInput,
+                .tooltip = tooltip,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -2375,16 +2375,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.textInput = textInput;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .textInput = textInput,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -2558,14 +2558,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.textInput = textInput;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onUpdate = onUpdate,
+                .textInput = textInput,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()

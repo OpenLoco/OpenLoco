@@ -116,10 +116,10 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     static constexpr WindowEventList _events = []() {
-        WindowEventList events;
-        events.draw = draw;
-        events.onMouseUp = onMouseUp;
-        return events;
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .draw = draw,
+        };
     }();
 
     static const WindowEventList& getEvents()

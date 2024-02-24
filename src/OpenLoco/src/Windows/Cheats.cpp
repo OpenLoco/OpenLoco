@@ -449,13 +449,13 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = onUpdate;
-            events.prepareDraw = prepareDraw;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onUpdate = onUpdate,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -622,14 +622,14 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.draw = draw;
-            events.onDropdown = onDropdown;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = onUpdate;
-            events.prepareDraw = prepareDraw;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -785,12 +785,12 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.prepareDraw = prepareDraw;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onUpdate = onUpdate,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -892,12 +892,12 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.prepareDraw = prepareDraw;
-            return events;
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onUpdate = onUpdate,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()

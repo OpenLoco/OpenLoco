@@ -281,17 +281,17 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     static constexpr WindowEventList _events = []() {
-        WindowEventList events;
-        events.onClose = onClose;
-        events.onMouseUp = onMouseUp;
-        events.getScrollSize = getScrollSize;
-        events.scrollMouseDown = scrollMouseDown;
-        events.scrollMouseOver = scrollMouseOver;
-        events.tooltip = tooltip;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
-        events.drawScroll = drawScroll;
-        return events;
+        return WindowEventList{
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
     }();
 
     static const WindowEventList& getEvents()

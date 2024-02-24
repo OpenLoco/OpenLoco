@@ -277,10 +277,10 @@ namespace OpenLoco::Ui::Windows::Error
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList ev;
-            ev.draw = draw;
-            ev.onPeriodicUpdate = onPeriodicUpdate;
-            return ev;
+            return WindowEventList{
+                .onPeriodicUpdate = onPeriodicUpdate,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
