@@ -62,7 +62,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries)
 
         // Defined at the bottom of this file.
-        static void initEvents();
         static void switchTabWidgets(Window* window);
         static void switchTab(Window* window, WidgetIndex_t widgetIndex);
 
@@ -166,8 +165,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043DC30
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -277,13 +274,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onUpdate = Common::update,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return _events;
         }
     }
 
@@ -299,13 +302,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         // Start of 0x0043DAEA
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, Options::events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, Options::getEvents());
             window->widgets = Options::widgets;
             window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
@@ -369,8 +369,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 4, 142 }, { 358, 100 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043DF89
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -705,18 +703,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = update,
+                .getScrollSize = getScrollSize,
+                .scrollMouseDown = scrollMouseDown,
+                .tooltip = tooltip,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.getScrollSize = getScrollSize;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = update;
-            events.scrollMouseDown = scrollMouseDown;
-            events.tooltip = tooltip;
+            return _events;
         }
     }
 
@@ -765,8 +769,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043E53A
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -975,13 +977,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             _commonFormatArgs[7] = options.maxAltitudeForTrees;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onUpdate = Common::update,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return _events;
         }
     }
 
@@ -1005,8 +1013,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043E9A3
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -1124,14 +1130,20 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = Common::update,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return _events;
         }
     }
 
@@ -1155,8 +1167,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043EB9D
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -1246,28 +1256,25 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = Common::update,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return _events;
         }
     };
 
     namespace Common
     {
-        static void initEvents()
-        {
-            Options::initEvents();
-            Land::initEvents();
-            Forests::initEvents();
-            Towns::initEvents();
-            Industries::initEvents();
-        }
-
         static void switchTabWidgets(Window* window)
         {
             window->activatedWidgets = 0;
@@ -1330,12 +1337,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->holdableWidgets = *holdableWidgetsByTab[window->currentTab];
 
-            static WindowEventList* eventsByTab[] = {
-                &Options::events,
-                &Land::events,
-                &Forests::events,
-                &Towns::events,
-                &Industries::events,
+            static const WindowEventList* eventsByTab[] = {
+                &Options::getEvents(),
+                &Land::getEvents(),
+                &Forests::getEvents(),
+                &Towns::getEvents(),
+                &Industries::getEvents(),
             };
 
             window->eventHandlers = eventsByTab[window->currentTab];
