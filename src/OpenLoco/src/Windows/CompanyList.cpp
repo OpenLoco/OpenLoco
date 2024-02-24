@@ -550,21 +550,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = onUpdate;
-            events.event_08 = event_08;
-            events.event_09 = event_09;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.tooltip = tooltip;
-            events.cursor = cursor;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            return events;
+            return WindowEventList {
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onUpdate = onUpdate,
+                .event_08 = event_08,
+                .event_09 = event_09,
+                .getScrollSize = getScrollSize,
+                .scrollMouseDown = onScrollMouseDown,
+                .scrollMouseOver = onScrollMouseOver,
+                .tooltip = tooltip,
+                .cursor = cursor,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -714,13 +714,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
-            return events;
+            return WindowEventList {
+                .onMouseUp = Common::onMouseUp,
+                .onResize = onResize,
+                .onUpdate = Common::onUpdate,
+                .prepareDraw = Common::prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -809,13 +809,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
-            return events;
+            return WindowEventList {
+                .onMouseUp = Common::onMouseUp,
+                .onResize = onResize,
+                .onUpdate = Common::onUpdate,
+                .prepareDraw = Common::prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -904,13 +904,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
-            return events;
+            return WindowEventList {
+                .onMouseUp = Common::onMouseUp,
+                .onResize = onResize,
+                .onUpdate = Common::onUpdate,
+                .prepareDraw = Common::prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -999,13 +999,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
-            return events;
+            return WindowEventList {
+                .onMouseUp = Common::onMouseUp,
+                .onResize = onResize,
+                .onUpdate = Common::onUpdate,
+                .prepareDraw = Common::prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -1210,13 +1210,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
-            return events;
+            return WindowEventList {
+                .onMouseUp = Common::onMouseUp,
+                .onResize = onResize,
+                .onUpdate = Common::onUpdate,
+                .prepareDraw = Common::prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
@@ -1302,13 +1302,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            WindowEventList events;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
-            return events;
+            return WindowEventList {
+                .onMouseUp = Common::onMouseUp,
+                .onResize = onResize,
+                .onUpdate = Common::onUpdate,
+                .prepareDraw = Common::prepareDraw,
+                .draw = draw,
+            };
         }();
 
         static const WindowEventList& getEvents()
