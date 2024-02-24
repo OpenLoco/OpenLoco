@@ -1,4 +1,4 @@
-24.01.1+ (???)
+24.02 (2024-02-24)
 ------------------------------------------------------------------------
 - Fix: [#2277] Dragging vehicle components does not visually remove the component being dragged in some cases.
 - Fix: [#2255] Load/save window fails to show all files in some cases.
