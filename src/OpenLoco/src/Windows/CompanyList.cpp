@@ -1327,6 +1327,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             const uint64_t enabledWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
             { CompanyList::widgets,         widx::tab_company_list,   &CompanyList::getEvents(),         CompanyList::enabledWidgets },
             { CompanyPerformance::widgets,  widx::tab_performance,    &CompanyPerformance::getEvents(),  CompanyPerformance::enabledWidgets },
@@ -1336,6 +1337,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             { CargoPaymentRates::widgets,   widx::tab_payment_rates,  &CargoPaymentRates::getEvents(),   CargoPaymentRates::enabledWidgets },
             { CompanySpeedRecords::widgets, widx::tab_speed_records,  &CompanySpeedRecords::getEvents(), CompanySpeedRecords::enabledWidgets },
         };
+        // clang-format on
 
         // 0x0043667B
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
