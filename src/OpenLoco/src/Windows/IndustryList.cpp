@@ -65,7 +65,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
 
-        static void initEvents();
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void prepareDraw(Window& self);
@@ -98,8 +97,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         enum SortMode : uint16_t
         {
@@ -498,20 +495,26 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Common::refreshIndustryList(self);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onUpdate = onUpdate,
+                .event_08 = event_08,
+                .event_09 = event_09,
+                .getScrollSize = getScrollSize,
+                .scrollMouseDown = onScrollMouseDown,
+                .scrollMouseOver = onScrollMouseOver,
+                .tooltip = tooltip,
+                .cursor = cursor,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.cursor = cursor;
-            events.drawScroll = drawScroll;
-            events.event_08 = event_08;
-            events.event_09 = event_09;
-            events.getScrollSize = getScrollSize;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.prepareDraw = prepareDraw;
-            events.tooltip = tooltip;
+            return _events;
         }
     }
 
@@ -533,7 +536,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 origin,
                 IndustryList::kWindowSize,
                 WindowFlags::flag_8,
-                IndustryList::events);
+                IndustryList::getEvents());
 
             window->number = 0;
             window->currentTab = 0;
@@ -558,11 +561,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             // 0x00457878 end
 
-            // TODO: only needs to be called once.
             window->width = IndustryList::kWindowSize.width;
             window->height = IndustryList::kWindowSize.height;
-
-            Common::initEvents();
 
             window->invalidate();
 
@@ -608,7 +608,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace NewIndustries
     {
-
         static constexpr Ui::Size kWindowSize = { 578, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
@@ -625,8 +624,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0045819F
         static void prepareDraw(Window& self)
@@ -1212,23 +1209,29 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 updateActiveThumb(&self);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onClose = onClose,
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onUpdate = onUpdate,
+                .event_08 = event_08,
+                .onToolUpdate = onToolUpdate,
+                .onToolDown = onToolDown,
+                .onToolAbort = onToolAbort,
+                .getScrollSize = getScrollSize,
+                .scrollMouseDown = onScrollMouseDown,
+                .scrollMouseOver = onScrollMouseOver,
+                .tooltip = tooltip,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.event_08 = event_08;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.getScrollSize = getScrollSize;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.prepareDraw = prepareDraw;
-            events.tooltip = tooltip;
-            events.onToolAbort = onToolAbort;
-            events.onClose = onClose;
-            events.onResize = onResize;
+            return _events;
         }
     }
 
@@ -1238,13 +1241,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { IndustryList::widgets, widx::tab_industry_list, &IndustryList::events, IndustryList::enabledWidgets },
-            { NewIndustries::widgets, widx::tab_new_industry, &NewIndustries::events, NewIndustries::enabledWidgets },
+            { IndustryList::widgets, widx::tab_industry_list, IndustryList::getEvents(), IndustryList::enabledWidgets },
+            { NewIndustries::widgets, widx::tab_new_industry, NewIndustries::getEvents(), NewIndustries::enabledWidgets },
         };
 
         // 0x00457B94
@@ -1290,7 +1293,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -1358,12 +1361,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 industry.flags &= ~IndustryFlags::sorted;
             }
-        }
-
-        static void initEvents()
-        {
-            IndustryList::initEvents();
-            NewIndustries::initEvents();
         }
     }
 }
