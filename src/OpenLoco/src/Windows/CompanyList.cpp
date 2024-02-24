@@ -550,7 +550,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = onMouseUp,
                 .onResize = onResize,
                 .onUpdate = onUpdate,
@@ -714,7 +714,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = Common::onMouseUp,
                 .onResize = onResize,
                 .onUpdate = Common::onUpdate,
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = Common::onMouseUp,
                 .onResize = onResize,
                 .onUpdate = Common::onUpdate,
@@ -904,7 +904,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = Common::onMouseUp,
                 .onResize = onResize,
                 .onUpdate = Common::onUpdate,
@@ -999,7 +999,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = Common::onMouseUp,
                 .onResize = onResize,
                 .onUpdate = Common::onUpdate,
@@ -1210,7 +1210,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = Common::onMouseUp,
                 .onResize = onResize,
                 .onUpdate = Common::onUpdate,
@@ -1302,7 +1302,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         static constexpr WindowEventList _events = []() {
-            return WindowEventList {
+            return WindowEventList{
                 .onMouseUp = Common::onMouseUp,
                 .onResize = onResize,
                 .onUpdate = Common::onUpdate,
