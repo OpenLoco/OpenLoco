@@ -25,22 +25,16 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.draw = draw;
-
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::title_logo,
             { 0, 0 },
             kWindowSize,
             WindowFlags::openQuietly | WindowFlags::transparent,
-            _events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::logo;
@@ -69,5 +63,17 @@ namespace OpenLoco::Ui::Windows::TitleLogo
                 About::open();
                 break;
         }
+    }
+
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
+    {
+        return _events;
     }
 }
