@@ -97,21 +97,6 @@ namespace OpenLoco::GameCommands
             }
             return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
         }
-        else
-        {
-            if (!(flags & Flags::aiAllocated))
-            {
-                if (sub_48FEF4(nearbyStation.id, pos))
-                {
-                    if (nearbyStation.isPhysicallyAttached)
-                    {
-                        setErrorText(StringIds::station_too_spread_out);
-                        return std::make_pair(NearbyStationValidation::failure, StationId::null);
-                    }
-                    return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
-                }
-            }
-        }
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
 

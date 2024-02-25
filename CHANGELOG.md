@@ -7,6 +7,7 @@
 24.02.1 (2024-02-28)
 ------------------------------------------------------------------------
 - Fix: [#2310] Newly created stations and the tracks they are on have zero clearance.
+- Change: [#126] Station lengths are no longer limited to 8 tiles (though still max 80 tiles per station).
 
 24.02 (2024-02-24)
 ------------------------------------------------------------------------
