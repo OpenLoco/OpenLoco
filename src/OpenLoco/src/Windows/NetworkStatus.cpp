@@ -31,25 +31,21 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     static std::string _text;
     static CloseCallback _cbClose;
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     Window* open(std::string_view text, CloseCallback cbClose)
     {
         _text = text;
         _cbClose = cbClose;
 
-        initEvents();
-
         auto window = WindowManager::createWindowCentred(
             WindowType::networkStatus,
             kWindowSize,
             WindowFlags::flag_11 | WindowFlags::stickToFront,
-            _events);
+            getEvents());
 
         window->widgets = widgets;
         window->enabledWidgets = (1 << Widx::closeBtn);
@@ -115,11 +111,17 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250, nullptr);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
     {
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
-        _events.draw = draw;
-        _events.prepareDraw = prepareDraw;
+        return _events;
     }
 }
