@@ -40,20 +40,18 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
     bool open(StringId captionId, StringId descriptionId, FormatArguments& descriptionArgs, StringId okButtonStringId)
     {
-        initEvents();
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
             { 280, 92 },
             Ui::WindowFlags::flag_12 | Ui::WindowFlags::stickToFront,
-            _events);
+            getEvents());
 
         if (window == nullptr)
             return false;
@@ -141,11 +139,17 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .keyUp = keyUp,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.onMouseUp = onMouseUp;
-        _events.prepareDraw = prepareDraw;
-        _events.keyUp = keyUp;
+        return _events;
     }
 }
