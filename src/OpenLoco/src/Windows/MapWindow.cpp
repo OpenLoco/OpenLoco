@@ -113,8 +113,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         widgetEnd()
     };
 
-    static WindowEventList events;
-
     static Pos2 mapWindowPosToLocation(Point pos)
     {
         pos.x = ((pos.x + 8) - kMapColumns) / 2;
@@ -1403,19 +1401,25 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseDrag = scrollMouseDown,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
     {
-        events.onClose = onClose;
-        events.onMouseUp = onMouseUp;
-        events.onResize = onResize;
-        events.onUpdate = onUpdate;
-        events.getScrollSize = getScrollSize;
-        events.scrollMouseDown = scrollMouseDown;
-        events.scrollMouseDrag = scrollMouseDown;
-        events.tooltip = tooltip;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
-        events.drawScroll = drawScroll;
+        return _events;
     }
 
     // 0x0046D0C3
@@ -1606,6 +1610,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
+    static const WindowEventList& getEvents();
+
     // 0x0046B490
     void open()
     {
@@ -1629,11 +1635,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
 
-        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, events);
+        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->widgets = widgets;
         window->enabledWidgets |= enabledWidgets;
-
-        initEvents();
 
         window->initScrollWidgets();
         window->frameNo = 0;
