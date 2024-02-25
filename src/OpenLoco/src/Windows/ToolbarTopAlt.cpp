@@ -347,17 +347,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onResize = Common::onResize,
-            .event_03 = onMouseDown,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = Common::onUpdate,
-            .prepareDraw = prepareDraw,
-            .draw = Common::draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onResize = Common::onResize,
+        .event_03 = onMouseDown,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = Common::onUpdate,
+        .prepareDraw = prepareDraw,
+        .draw = Common::draw,
+    };
 
     static const WindowEventList& getEvents()
     {

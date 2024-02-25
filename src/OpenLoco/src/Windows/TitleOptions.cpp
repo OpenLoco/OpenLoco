@@ -80,12 +80,10 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

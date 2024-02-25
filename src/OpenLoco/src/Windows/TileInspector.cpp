@@ -524,20 +524,18 @@ namespace OpenLoco::Ui::Windows::TileInspector
         ToolManager::toolCancel();
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onClose = onClose,
-            .onMouseUp = onMouseUp,
-            .onToolUpdate = onToolUpdate,
-            .onToolDown = onToolDown,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = scrollMouseDown,
-            .scrollMouseOver = scrollMouseOver,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .drawScroll = drawScroll,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseOver = scrollMouseOver,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
 
     static const WindowEventList& getEvents()
     {

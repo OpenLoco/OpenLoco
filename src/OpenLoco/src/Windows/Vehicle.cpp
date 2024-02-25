@@ -1043,23 +1043,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .onToolAbort = onToolAbort,
-                .textInput = Common::textInput,
-                .viewportRotate = createViewport,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .textInput = Common::textInput,
+            .viewportRotate = createViewport,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1664,29 +1662,27 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .event_08 = Common::event8,
-                .event_09 = Common::event9,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .onToolAbort = onToolAbort,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = scrollMouseDown,
-                .scrollMouseOver = scrollMouseOver,
-                .textInput = Common::textInput,
-                .tooltip = tooltip,
-                .cursor = cursor,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = Common::event8,
+            .event_09 = Common::event9,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2221,24 +2217,22 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .event_08 = Common::event8,
-                .event_09 = Common::event9,
-                .getScrollSize = getScrollSize,
-                .scrollMouseOver = scrollMouseOver,
-                .textInput = Common::textInput,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = Common::event8,
+            .event_09 = Common::event9,
+            .getScrollSize = getScrollSize,
+            .scrollMouseOver = scrollMouseOver,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2420,17 +2414,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onUpdate = onUpdate,
-                .textInput = Common::textInput,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -3402,31 +3394,29 @@ namespace OpenLoco::Ui::Windows::Vehicle
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = close,
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .event_08 = Common::event8,
-                .event_09 = Common::event9,
-                .onToolDown = onToolDown,
-                .onToolAbort = toolCancel,
-                .toolCursor = toolCursor,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = scrollMouseDown,
-                .scrollMouseOver = scrollMouseOver,
-                .textInput = Common::textInput,
-                .viewportRotate = createViewport,
-                .tooltip = tooltip,
-                .cursor = cursor,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = close,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = Common::event8,
+            .event_09 = Common::event9,
+            .onToolDown = onToolDown,
+            .onToolAbort = toolCancel,
+            .toolCursor = toolCursor,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .textInput = Common::textInput,
+            .viewportRotate = createViewport,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {

@@ -498,18 +498,16 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window.invalidate();
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
-            .textInput = onTextInput,
-            .cursor = onCursor,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .textInput = onTextInput,
+        .cursor = onCursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

@@ -322,15 +322,13 @@ namespace OpenLoco::Ui::Windows::TextInput
         return true;
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .onUpdate = onUpdate,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .keyUp = keyUp,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .onUpdate = onUpdate,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .keyUp = keyUp,
+    };
 
     static const WindowEventList& getEvents()
     {

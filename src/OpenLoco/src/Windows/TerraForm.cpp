@@ -814,26 +814,24 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .event_08 = event_08,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = scrollMouseDown,
-                .scrollMouseOver = scrollMouseOver,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1109,21 +1107,19 @@ namespace OpenLoco::Ui::Windows::Terraform
             drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = Common::onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onUpdate = Common::onUpdate,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .toolDragContinue = toolDragContinue,
-                .toolDragEnd = toolDragEnd,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1737,22 +1733,20 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = Common::onUpdate,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .toolDragContinue = toolDragContinue,
-                .toolDragEnd = toolDragEnd,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2051,21 +2045,19 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = Common::onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onUpdate = Common::onUpdate,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .toolDragContinue = toolDragContinue,
-                .toolDragEnd = toolDragEnd,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2522,24 +2514,22 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = Common::onMouseUp,
-                .onResize = onResize,
-                .onUpdate = onUpdate,
-                .event_08 = event_08,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = scrollMouseDown,
-                .scrollMouseOver = scrollMouseOver,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
