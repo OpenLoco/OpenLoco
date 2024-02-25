@@ -43,8 +43,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x0043C27E
     Window* open(LoadOrQuitMode savePromptType)
@@ -56,7 +55,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 WindowType::saveGamePrompt,
                 { 260, 48 },
                 WindowFlags::notScrollView | WindowFlags::stickToFront,
-                _events);
+                getEvents());
 
             if (window == nullptr)
                 return nullptr;
@@ -73,8 +72,6 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         }
 
         _savePromptType = savePromptType;
-
-        initEvents();
 
         if (!isEditorMode())
         {
@@ -150,10 +147,16 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         WindowManager::invalidate(WindowType::timeToolbar);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
+        return _events;
     }
 }
