@@ -19,8 +19,6 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static constexpr uint16_t kWindowHeight = 32;
 
-    static WindowEventList _events;
-
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
@@ -28,8 +26,6 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::buttonWithImage, WindowColour::primary),
         widgetEnd(),
     };
-
-    static void initEvents();
 
     static std::map<EditorController::Step, StringId> _stepNames = {
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
@@ -126,19 +122,32 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
     }
 
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
+    {
+        return _events;
+    }
+
     // 0x0043CCCD
     void open()
     {
-        initEvents();
-
         Ui::Point origin = Ui::Point(0, Ui::height() - kWindowHeight);
         Ui::Size windowSize = Ui::Size(Ui::width(), kWindowHeight);
+
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,
             origin,
             windowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            _events);
+            getEvents());
+
         window->widgets = _widgets;
         window->enabledWidgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
@@ -146,12 +155,5 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedSeaGreen).translucent());
         window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedSeaGreen).translucent());
         window->setColour(WindowColour::tertiary, AdvancedColour(Colour::mutedSeaGreen).translucent());
-    }
-
-    static void initEvents()
-    {
-        _events.onMouseUp = onMouseUp;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
     }
 }
