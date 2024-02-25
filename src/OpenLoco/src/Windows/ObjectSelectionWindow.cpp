@@ -1450,23 +1450,21 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return true;
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onClose = onClose,
-            .onMouseUp = onMouseUp,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = onScrollMouseDown,
-            .scrollMouseOver = onScrollMouseOver,
-            .tooltip = tooltip,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .drawScroll = drawScroll,
-            .keyUp = keyUp,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+        .keyUp = keyUp,
+    };
 
     static const WindowEventList& getEvents()
     {

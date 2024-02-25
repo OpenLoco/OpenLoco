@@ -214,14 +214,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         drawingCtx.drawStringTicker(*clipped, { 55, 0 }, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .onResize = onResize,
-            .onUpdate = onUpdate,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onUpdate = onUpdate,
+        .draw = draw,
+    };
 
     const WindowEventList& getEvents()
     {

@@ -474,16 +474,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -827,16 +825,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -975,15 +971,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             args.push<uint32_t>(state.loanInterestRate);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1174,17 +1168,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = Common::update,
-                .textInput = textInput,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {

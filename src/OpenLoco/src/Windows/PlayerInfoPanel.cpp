@@ -363,19 +363,17 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .event_03 = onMouseDown,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
-            .tooltip = tooltip,
-            .cursor = onCursor,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .event_03 = onMouseDown,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .tooltip = tooltip,
+        .cursor = onCursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

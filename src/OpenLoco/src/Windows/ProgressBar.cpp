@@ -136,12 +136,10 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         drawingCtx.drawImage(&*clipped, xPos, 0, trainImage);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

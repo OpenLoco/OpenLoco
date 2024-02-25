@@ -264,16 +264,14 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         return args;
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .getScrollSize = getScrollSize,
-            .scrollMouseOver = onScrollMouseOver,
-            .tooltip = tooltip,
-            .draw = draw,
-            .drawScroll = drawScroll,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
 
     static const WindowEventList& getEvents()
     {

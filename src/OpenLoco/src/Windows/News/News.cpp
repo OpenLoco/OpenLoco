@@ -849,14 +849,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onUpdate = onUpdate,
-                .viewportRotate = initViewport,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .viewportRotate = initViewport,
+            .draw = draw,
+        };
 
         const WindowEventList& getEvents()
         {

@@ -697,17 +697,15 @@ namespace OpenLoco::Ui::Windows::Options
 #endif
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -896,17 +894,15 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1282,17 +1278,15 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1772,17 +1766,15 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1939,15 +1931,13 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2429,18 +2419,16 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .textInput = textInput,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {

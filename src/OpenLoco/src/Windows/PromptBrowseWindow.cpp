@@ -923,22 +923,20 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onClose = onClose,
-            .onMouseUp = onMouseUp,
-            .onResize = onResize,
-            .onUpdate = onUpdate,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = onScrollMouseDown,
-            .scrollMouseOver = onScrollMouseOver,
-            .tooltip = tooltip,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .drawScroll = drawScroll,
-            .keyUp = keyUp,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+        .keyUp = keyUp,
+    };
 
     static const WindowEventList& getEvents()
     {

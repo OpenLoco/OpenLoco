@@ -695,24 +695,22 @@ namespace OpenLoco::Ui::Windows::StationList
         return args;
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
-            .event_08 = event_08,
-            .event_09 = event_09,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = onScrollMouseDown,
-            .scrollMouseOver = onScrollMouseOver,
-            .tooltip = tooltip,
-            .cursor = cursor,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .drawScroll = drawScroll,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .event_08 = event_08,
+        .event_09 = event_09,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
 
     static const WindowEventList& getEvents()
     {

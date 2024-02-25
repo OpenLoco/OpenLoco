@@ -1401,21 +1401,19 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onClose = onClose,
-            .onMouseUp = onMouseUp,
-            .onResize = onResize,
-            .onUpdate = onUpdate,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = scrollMouseDown,
-            .scrollMouseDrag = scrollMouseDown,
-            .tooltip = tooltip,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .drawScroll = drawScroll,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseDrag = scrollMouseDown,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
 
     static const WindowEventList& getEvents()
     {

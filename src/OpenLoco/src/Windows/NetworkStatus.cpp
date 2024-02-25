@@ -111,14 +111,12 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250, nullptr);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onClose = onClose,
-            .onMouseUp = onMouseUp,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

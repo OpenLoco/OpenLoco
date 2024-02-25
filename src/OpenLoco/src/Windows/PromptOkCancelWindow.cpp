@@ -139,14 +139,12 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .keyUp = keyUp,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .keyUp = keyUp,
+    };
 
     static const WindowEventList& getEvents()
     {

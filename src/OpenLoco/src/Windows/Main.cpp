@@ -102,11 +102,9 @@ namespace OpenLoco::Ui::Windows::Main
         mainWindow->invalidate();
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {
