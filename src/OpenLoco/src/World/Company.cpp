@@ -110,7 +110,7 @@ namespace OpenLoco
             if (ownerStatus.isEntity())
             {
                 Vehicles::Vehicle train(ownerStatus.getEntity());
-                if (train.veh2->position.x != 0x8000)
+                if (train.veh2->position.x != Location::null)
                 {
                     companySetObservation(id(), ObservationStatus::checkingServices, train.veh2->position, train.head->id, 0xFFFFU);
                 }
