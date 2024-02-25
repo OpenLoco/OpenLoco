@@ -73,9 +73,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void prepareDraw(Window& self);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void initEvents();
         static void refreshTownList(Window* self);
-
     }
 
     namespace TownList
@@ -106,8 +104,6 @@ namespace OpenLoco::Ui::Windows::TownList
             makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         enum SortMode : uint16_t
         {
@@ -503,20 +499,26 @@ namespace OpenLoco::Ui::Windows::TownList
             Common::refreshTownList(self);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onMouseUp = onMouseUp,
+                .onUpdate = onUpdate,
+                .event_08 = event_08,
+                .event_09 = event_09,
+                .getScrollSize = getScrollSize,
+                .scrollMouseDown = onScrollMouseDown,
+                .scrollMouseOver = onScrollMouseOver,
+                .tooltip = tooltip,
+                .cursor = cursor,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.cursor = cursor;
-            events.drawScroll = drawScroll;
-            events.event_08 = event_08;
-            events.event_09 = event_09;
-            events.getScrollSize = getScrollSize;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.prepareDraw = prepareDraw;
-            events.tooltip = tooltip;
+            return _events;
         }
     }
 
@@ -538,7 +540,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 origin,
                 TownList::kWindowSize,
                 WindowFlags::resizable,
-                TownList::events);
+                TownList::getEvents());
 
             window->number = 0;
             window->currentTab = 0;
@@ -563,12 +565,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // 0x00499CFC end
 
-            // TODO: only needs to be called once.
             window->width = TownList::kWindowSize.width;
             window->height = TownList::kWindowSize.height;
-
-            Common::initEvents();
-
             window->invalidate();
 
             window->widgets = TownList::widgets;
@@ -629,8 +627,6 @@ namespace OpenLoco::Ui::Windows::TownList
             makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         constexpr StringId townSizeNames[9] = {
             StringIds::town_size_1,
@@ -797,19 +793,25 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Windows::Main::showGridlines();
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onClose = onClose,
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .onToolUpdate = onToolUpdate,
+                .onToolDown = onToolDown,
+                .onToolAbort = onToolAbort,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onClose = onClose;
-            events.onDropdown = onDropdown;
-            events.onResize = onResize;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = onUpdate;
-            events.prepareDraw = prepareDraw;
-            events.onToolAbort = onToolAbort;
+            return _events;
         }
     }
 
@@ -835,8 +837,6 @@ namespace OpenLoco::Ui::Windows::TownList
             makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::buttonWithColour, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_object_colour),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0049A8A6
         static void prepareDraw(Ui::Window& self)
@@ -1444,25 +1444,31 @@ namespace OpenLoco::Ui::Windows::TownList
             _buildingVariation = 0;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList _events = []() {
+            return WindowEventList{
+                .onClose = onClose,
+                .onMouseUp = onMouseUp,
+                .onResize = onResize,
+                .onMouseDown = onMouseDown,
+                .onDropdown = onDropdown,
+                .onUpdate = onUpdate,
+                .event_08 = event_08,
+                .onToolUpdate = onToolUpdate,
+                .onToolDown = onToolDown,
+                .onToolAbort = onToolAbort,
+                .getScrollSize = getScrollSize,
+                .scrollMouseDown = onScrollMouseDown,
+                .scrollMouseOver = onScrollMouseOver,
+                .tooltip = tooltip,
+                .prepareDraw = prepareDraw,
+                .draw = draw,
+                .drawScroll = drawScroll,
+            };
+        }();
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onClose = onClose;
-            events.onResize = onResize;
-            events.drawScroll = drawScroll;
-            events.event_08 = event_08;
-            events.onDropdown = onDropdown;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.onMouseDown = onMouseDown;
-            events.getScrollSize = getScrollSize;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.prepareDraw = prepareDraw;
-            events.tooltip = tooltip;
-            events.onToolAbort = onToolAbort;
+            return _events;
         }
     }
 
@@ -1489,16 +1495,18 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { TownList::widgets, widx::tab_town_list, &TownList::events, TownList::enabledWidgets },
-            { BuildTowns::widgets, widx::tab_build_town, &BuildTowns::events, BuildTowns::enabledWidgets },
-            { BuildBuildings::widgets, widx::tab_build_buildings, &BuildBuildings::events, BuildBuildings::enabledWidgets },
-            { BuildBuildings::widgets, widx::tab_build_misc_buildings, &BuildBuildings::events, BuildBuildings::enabledWidgets },
+            { TownList::widgets,       widx::tab_town_list,            TownList::getEvents(),       TownList::enabledWidgets },
+            { BuildTowns::widgets,     widx::tab_build_town,           BuildTowns::getEvents(),     BuildTowns::enabledWidgets },
+            { BuildBuildings::widgets, widx::tab_build_buildings,      BuildBuildings::getEvents(), BuildBuildings::enabledWidgets },
+            { BuildBuildings::widgets, widx::tab_build_misc_buildings, BuildBuildings::getEvents(), BuildBuildings::enabledWidgets },
         };
+        // clang-format on
 
         static void prepareDraw(Window& self)
         {
@@ -1643,7 +1651,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -1677,13 +1685,6 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 town.flags &= ~TownFlags::sorted;
             }
-        }
-
-        static void initEvents()
-        {
-            TownList::initEvents();
-            BuildTowns::initEvents();
-            BuildBuildings::initEvents();
         }
     }
 }
