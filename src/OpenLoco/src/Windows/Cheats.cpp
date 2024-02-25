@@ -448,15 +448,13 @@ namespace OpenLoco::Ui::Windows::Cheats
             _date = getCurrentDate();
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -621,16 +619,14 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -784,14 +780,12 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_vehicles);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -891,14 +885,12 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_towns);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onUpdate = onUpdate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {

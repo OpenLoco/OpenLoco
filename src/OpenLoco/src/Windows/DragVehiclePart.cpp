@@ -79,13 +79,11 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .cursor = cursor,
-            .onMove = onMove,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .cursor = cursor,
+        .onMove = onMove,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

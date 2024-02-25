@@ -162,15 +162,13 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .getScrollSize = getScrollSize,
-            .tooltip = tooltip,
-            .draw = draw,
-            .drawScroll = drawScroll,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
 
     static const WindowEventList& getEvents()
     {

@@ -85,12 +85,10 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         }
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

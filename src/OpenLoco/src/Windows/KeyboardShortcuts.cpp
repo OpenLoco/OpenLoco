@@ -254,17 +254,15 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         EditKeyboardShortcut::open(row);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = onScrollMouseDown,
-            .scrollMouseOver = onScrollMouseOver,
-            .tooltip = tooltip,
-            .draw = draw,
-            .drawScroll = drawScroll,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
 
     static const WindowEventList& getEvents()
     {

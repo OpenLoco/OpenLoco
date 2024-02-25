@@ -274,15 +274,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -703,20 +701,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = update,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = scrollMouseDown,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = update,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -977,15 +973,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             _commonFormatArgs[7] = options.maxAltitudeForTrees;
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1130,16 +1124,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1256,16 +1248,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = Common::update,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {

@@ -573,19 +573,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .textInput = textInput,
-                .viewportRotate = viewportRotate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .viewportRotate = viewportRotate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1164,23 +1162,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .onToolAbort = onToolAbort,
-                .textInput = textInput,
-                .viewportRotate = viewportRotate,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .textInput = textInput,
+            .viewportRotate = viewportRotate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1652,18 +1648,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize(kWindowSize);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .textInput = textInput,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2144,21 +2138,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize(kWindowSize);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .getScrollSize = getScrollSize,
-                .textInput = textInput,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .getScrollSize = getScrollSize,
+            .textInput = textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2374,18 +2366,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize({ kWindowSize.width, kWindowHeight });
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onMouseDown = onMouseDown,
-                .onDropdown = onDropdown,
-                .onUpdate = onUpdate,
-                .textInput = textInput,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -2557,16 +2547,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize(kWindowSize);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onUpdate = onUpdate,
-                .textInput = textInput,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
 
         static const WindowEventList& getEvents()
         {

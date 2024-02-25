@@ -495,22 +495,20 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Common::refreshIndustryList(self);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onMouseUp = onMouseUp,
-                .onUpdate = onUpdate,
-                .event_08 = event_08,
-                .event_09 = event_09,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = onScrollMouseDown,
-                .scrollMouseOver = onScrollMouseOver,
-                .tooltip = tooltip,
-                .cursor = cursor,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .event_09 = event_09,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = onScrollMouseDown,
+            .scrollMouseOver = onScrollMouseOver,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {
@@ -1209,25 +1207,23 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 updateActiveThumb(&self);
         }
 
-        static constexpr WindowEventList _events = []() {
-            return WindowEventList{
-                .onClose = onClose,
-                .onMouseUp = onMouseUp,
-                .onResize = onResize,
-                .onUpdate = onUpdate,
-                .event_08 = event_08,
-                .onToolUpdate = onToolUpdate,
-                .onToolDown = onToolDown,
-                .onToolAbort = onToolAbort,
-                .getScrollSize = getScrollSize,
-                .scrollMouseDown = onScrollMouseDown,
-                .scrollMouseOver = onScrollMouseOver,
-                .tooltip = tooltip,
-                .prepareDraw = prepareDraw,
-                .draw = draw,
-                .drawScroll = drawScroll,
-            };
-        }();
+        static constexpr WindowEventList _events = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = onScrollMouseDown,
+            .scrollMouseOver = onScrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
 
         static const WindowEventList& getEvents()
         {

@@ -115,12 +115,10 @@ namespace OpenLoco::Ui::Windows::About
         drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::licenced_to_atari_inc, nullptr);
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .draw = draw,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
 
     static const WindowEventList& getEvents()
     {

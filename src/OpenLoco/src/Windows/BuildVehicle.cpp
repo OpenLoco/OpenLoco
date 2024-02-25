@@ -1818,24 +1818,22 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return true;
     }
 
-    static constexpr WindowEventList _events = []() {
-        return WindowEventList{
-            .onMouseUp = onMouseUp,
-            .onResize = onResize,
-            .onMouseDown = onMouseDown,
-            .onDropdown = onDropdown,
-            .onUpdate = onUpdate,
-            .getScrollSize = getScrollSize,
-            .scrollMouseDown = onScrollMouseDown,
-            .scrollMouseOver = onScrollMouseOver,
-            .tooltip = tooltip,
-            .cursor = cursor,
-            .prepareDraw = prepareDraw,
-            .draw = draw,
-            .drawScroll = drawScroll,
-            .keyUp = keyUp,
-        };
-    }();
+    static constexpr WindowEventList _events = {
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+        .keyUp = keyUp,
+    };
 
     static const WindowEventList& getEvents()
     {
