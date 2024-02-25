@@ -32,24 +32,16 @@ namespace OpenLoco::Ui::Windows::TitleExit
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void prepareDraw(Ui::Window& self);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
             Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            _events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::exit_button);
@@ -106,5 +98,18 @@ namespace OpenLoco::Ui::Windows::TitleExit
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
                 break;
         }
+    }
+
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
+    {
+        return _events;
     }
 }
