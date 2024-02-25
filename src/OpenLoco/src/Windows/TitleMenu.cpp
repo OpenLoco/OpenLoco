@@ -132,8 +132,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     static void sub_439112(Window* window);
     static void sub_4391CC(int16_t itemIndex);
     static void sub_43918F(const char* string);
@@ -143,35 +141,16 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void showMultiplayer(Window* window);
     static void multiplayerConnect(std::string_view host);
     static void sub_46E328();
-
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void onUpdate(Window& window);
-    static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
-    static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void prepareDraw(Ui::Window& window);
-
-    // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.textInput = onTextInput;
-        _events.cursor = onCursor;
-        _events.onUpdate = onUpdate;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleMenu,
             Ui::Point((Ui::width() - kWW) / 2, Ui::height() - kWH - 25),
             { kWW, kWH },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            _events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn) | (1 << Widx::multiplayer_toggle_btn);
@@ -517,5 +496,23 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         }
 
         window.invalidate();
+    }
+
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = onTextInput,
+            .cursor = onCursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
+    {
+        return _events;
     }
 }
