@@ -31,8 +31,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static WindowEventList events;
-
     enum widx
     {
         text
@@ -43,8 +41,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
         makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
-
-    static void initEvents();
 
     void registerHooks()
     {
@@ -65,6 +61,8 @@ namespace OpenLoco::Ui::Windows::ToolTip
                 return 0;
             });
     }
+
+    static const WindowEventList& getEvents();
 
     static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
@@ -98,14 +96,12 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         x = width <= Ui::width() ? std::clamp(cursorX - (width / 2), 0, Ui::width() - width) : 0;
 
-        initEvents();
-
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
             Ui::Point(x, y),
             Ui::Size(width, height),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
-            events);
+            getEvents());
         tooltip->widgets = _widgets;
         _tooltipNotShownTicks = 0;
     }
@@ -235,10 +231,16 @@ namespace OpenLoco::Ui::Windows::ToolTip
         return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
     }
 
-    static void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onClose = onClose,
+            .onUpdate = update,
+            .draw = draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
     {
-        events.onClose = onClose;
-        events.onUpdate = update;
-        events.draw = draw;
+        return _events;
     }
 }
