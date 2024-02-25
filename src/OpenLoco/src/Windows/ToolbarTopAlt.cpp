@@ -65,34 +65,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void prepareDraw(Window& window);
-
-    static void initEvents()
-    {
-        _events.onResize = Common::onResize;
-        _events.event_03 = onMouseDown;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onUpdate = Common::onUpdate;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = Common::draw;
-    }
+    static const WindowEventList& getEvents();
 
     // 0x0043CC2C
     void open()
     {
-        initEvents();
-
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
             Ui::Size(Ui::width(), 28),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            _events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
@@ -362,5 +345,22 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns);
         else
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
+    }
+
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onResize = Common::onResize,
+            .event_03 = onMouseDown,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = Common::draw,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
+    {
+        return _events;
     }
 }
