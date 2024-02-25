@@ -29,8 +29,6 @@ namespace OpenLoco::Ui::Windows::TextInput
 
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
-    static WindowEventList _events;
-
     namespace Widx
     {
         enum
@@ -84,11 +82,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             });
     }
 
-    static void prepareDraw(Ui::Window& window);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Ui::Window& window);
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     /**
      * 0x004CE523
@@ -111,13 +105,11 @@ namespace OpenLoco::Ui::Windows::TextInput
         // Close any previous text input window
         cancel();
 
-        initEvents();
-
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
             WindowFlags::stickToFront | WindowFlags::flag_12,
-            _events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets |= 1ULL << Widx::close;
         window->enabledWidgets |= 1ULL << Widx::ok;
@@ -330,12 +322,18 @@ namespace OpenLoco::Ui::Windows::TextInput
         return true;
     }
 
-    static void initEvents()
+    static constexpr WindowEventList _events = []() {
+        return WindowEventList{
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .keyUp = keyUp,
+        };
+    }();
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.prepareDraw = prepareDraw;
-        _events.onMouseUp = onMouseUp;
-        _events.onUpdate = onUpdate;
-        _events.keyUp = keyUp;
+        return _events;
     }
 }
