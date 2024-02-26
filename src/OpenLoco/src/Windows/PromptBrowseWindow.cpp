@@ -923,7 +923,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
@@ -940,6 +940,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

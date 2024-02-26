@@ -1401,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
@@ -1417,7 +1417,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 
     // 0x0046D0C3

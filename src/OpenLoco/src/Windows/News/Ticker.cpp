@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         drawingCtx.drawStringTicker(*clipped, { 55, 0 }, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onResize = onResize,
         .onUpdate = onUpdate,
@@ -223,6 +223,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 
     const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

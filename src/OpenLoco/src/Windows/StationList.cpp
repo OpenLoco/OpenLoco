@@ -695,7 +695,7 @@ namespace OpenLoco::Ui::Windows::StationList
         return args;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
@@ -714,6 +714,6 @@ namespace OpenLoco::Ui::Windows::StationList
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

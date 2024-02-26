@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::update,
@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onClose = onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
@@ -571,7 +571,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -720,7 +720,7 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::update,
@@ -734,7 +734,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

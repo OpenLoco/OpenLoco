@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -485,7 +485,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -825,7 +825,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -836,7 +836,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -971,7 +971,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             args.push<uint32_t>(state.loanInterestRate);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onUpdate = Common::update,
@@ -981,7 +981,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1168,7 +1168,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -1180,7 +1180,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

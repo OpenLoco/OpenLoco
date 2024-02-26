@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         return args;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .getScrollSize = getScrollSize,
@@ -533,6 +533,6 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

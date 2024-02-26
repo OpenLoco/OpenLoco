@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         return args;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .getScrollSize = getScrollSize,
         .scrollMouseOver = onScrollMouseOver,
@@ -275,6 +275,6 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

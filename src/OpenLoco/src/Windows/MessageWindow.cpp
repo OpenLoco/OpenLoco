@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self->rowHover = -1;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self->height = kWindowSize.height;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -577,7 +577,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

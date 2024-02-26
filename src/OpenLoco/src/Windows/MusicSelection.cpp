@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         return args;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onUpdate = onUpdate,
         .getScrollSize = getScrollSize,
@@ -207,6 +207,6 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

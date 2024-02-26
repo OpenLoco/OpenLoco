@@ -148,13 +148,13 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onUpdate = update,
         .draw = draw,
     };
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

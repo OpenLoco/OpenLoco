@@ -849,7 +849,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
             .viewportRotate = initViewport,
@@ -858,7 +858,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

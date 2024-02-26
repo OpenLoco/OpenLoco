@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         WindowManager::invalidate(WindowType::timeToolbar);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .draw = draw,
@@ -155,6 +155,6 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

@@ -1450,7 +1450,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return true;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
@@ -1468,6 +1468,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }
