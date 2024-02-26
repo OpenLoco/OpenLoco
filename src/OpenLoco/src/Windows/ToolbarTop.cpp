@@ -89,12 +89,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         quitToDesktop
     };
 
-    static WindowEventList _events;
-
-    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void prepareDraw(Window& window);
-    static void draw(Window& window, Gfx::RenderTarget* rt);
+    static const WindowEventList& getEvents();
 
     // 0x00438B26
     void open()
@@ -103,20 +98,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         _lastTownOption = 0;
         _lastPortOption = 0;
 
-        _events.onResize = Common::onResize;
-        _events.event_03 = onMouseDown;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onUpdate = Common::onUpdate;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
             Ui::Size(Ui::width(), 28),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            _events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
@@ -961,5 +948,20 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Common::rightAlignTabs(&window, x, { Common::Widx::terraform_menu });
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onResize = Common::onResize,
+        .event_03 = onMouseDown,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = Common::onUpdate,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

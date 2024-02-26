@@ -36,8 +36,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static constexpr Ui::Size kMaxDimensions = { 550, 1200 };
     static constexpr Ui::Size kMinDimensions = { 220, 160 };
 
-    static WindowEventList _events;
-
     enum Widx
     {
         frame = 0,
@@ -116,7 +114,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     };
 
     static Widx getTabFromType(VehicleType type);
-    static void initEvents();
 
     constexpr bool isStationFilterActive(const Window* self, bool checkSelection = true)
     {
@@ -426,6 +423,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->disabledWidgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
     }
 
+    static const WindowEventList& getEvents();
+
     // 0x004C1AA2
     static Window* create(CompanyId companyId)
     {
@@ -433,7 +432,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             WindowType::vehicleList,
             kWindowSize,
             WindowFlags::flag_11,
-            _events);
+            getEvents());
 
         self->widgets = _widgets;
         self->enabledWidgets = _enabledWidgets;
@@ -458,8 +457,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self->callOnMouseUp(VehicleList::getTabFromType(type));
             return self;
         }
-
-        initEvents();
 
         // 0x004C1A05
         self = create(companyId);
@@ -1150,22 +1147,26 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .event_08 = event_08,
+        .event_09 = event_09,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.tooltip = tooltip;
-        _events.onUpdate = onUpdate;
-        _events.event_08 = event_08;
-        _events.event_09 = event_09;
-        _events.getScrollSize = getScrollSize;
-        _events.cursor = cursor;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.onResize = onResize;
+        return kEvents;
     }
 }

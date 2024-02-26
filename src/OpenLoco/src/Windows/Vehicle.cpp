@@ -145,8 +145,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             carList
         };
 
-        // 0x00500434
-        static WindowEventList events;
         constexpr uint64_t enabledWidgets = (1 << widx::buildNew) | (1 << widx::pickup) | (1 << widx::remove) | (1 << widx::carList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
@@ -171,8 +169,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             cargoList = 10,
         };
 
-        // 0x005004A8
-        static WindowEventList events;
         constexpr uint64_t enabledWidgets = (1 << widx::refit) | (1 << widx::cargoList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
@@ -189,7 +185,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static constexpr Ui::Size kMinWindowSize = { 400, 202 };
         static constexpr Ui::Size kMaxWindowSize = kMinWindowSize;
 
-        static WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
@@ -220,8 +215,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             orderReverse
         };
 
-        // 0x00500554
-        static WindowEventList events;
         constexpr uint64_t enabledWidgets = (1ULL << widx::routeList) | (1ULL << widx::orderForceUnload) | (1ULL << widx::orderWait) | (1ULL << widx::orderSkip) | (1ULL << widx::orderDelete) | (1ULL << widx::orderUp) | (1ULL << widx::orderDown) | (1ULL << widx::orderReverse) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
@@ -285,9 +278,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t interactiveWidgets = (1 << widx::stopStart) | (1 << widx::pickup) | (1 << widx::passSignal) | (1 << widx::changeDirection) | (1 << widx::centreViewport);
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::speedControl) | interactiveWidgets;
         constexpr uint64_t holdableWidgets = 1 << widx::speedControl;
-
-        // 0x005003C0
-        static WindowEventList events;
 
         // 0x004B5D82
         static void resetDisabledWidgets(Window* const self)
@@ -388,12 +378,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             45
         };
 
-        static void initEvents();
+        static const WindowEventList& getEvents();
 
         // 0x004B60DC
         static Window* create(const EntityId head)
         {
-            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, events);
+            auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
             self->widgets = widgets;
             self->enabledWidgets = enabledWidgets;
             self->number = enumValue(head);
@@ -448,7 +438,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets = widgets;
             self->enabledWidgets = enabledWidgets;
             self->holdableWidgets = holdableWidgets;
-            self->eventHandlers = &events;
+            self->eventHandlers = &getEvents();
             self->activatedWidgets = 0;
             resetDisabledWidgets(self);
             self->initScrollWidgets();
@@ -1053,21 +1043,25 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .textInput = Common::textInput,
+            .viewportRotate = createViewport,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.onToolAbort = onToolAbort;
-            events.textInput = Common::textInput;
-            events.viewportRotate = createViewport;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1668,27 +1662,31 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = Common::event8,
+            .event_09 = Common::event9,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.event_08 = Common::event8;
-            events.event_09 = Common::event9;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.onToolAbort = onToolAbort;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.textInput = Common::textInput;
-            events.tooltip = tooltip;
-            events.cursor = cursor;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
 
         static Ui::Window* getVehicleDetailsWindow(const Ui::Point& pos)
@@ -2219,23 +2217,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = Common::event8,
+            .event_09 = Common::event9,
+            .getScrollSize = getScrollSize,
+            .scrollMouseOver = scrollMouseOver,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.textInput = Common::textInput;
-            events.tooltip = tooltip;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseOver = scrollMouseOver;
-            events.event_08 = Common::event8;
-            events.event_09 = Common::event9;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
+            return kEvents;
         }
     }
 
@@ -2413,15 +2414,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = onUpdate;
-            events.textInput = Common::textInput;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -3389,29 +3394,33 @@ namespace OpenLoco::Ui::Windows::Vehicle
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = close,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = Common::event8,
+            .event_09 = Common::event9,
+            .onToolDown = onToolDown,
+            .onToolAbort = toolCancel,
+            .toolCursor = toolCursor,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .textInput = Common::textInput,
+            .viewportRotate = createViewport,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = close;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.event_08 = Common::event8;
-            events.event_09 = Common::event9;
-            events.onToolDown = onToolDown;
-            events.onToolAbort = toolCancel;
-            events.toolCursor = toolCursor;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.textInput = Common::textInput;
-            events.viewportRotate = createViewport;
-            events.tooltip = tooltip;
-            events.cursor = cursor;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -3422,18 +3431,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             const widx widgetIndex;
             Widget* widgets;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { widx::tabMain, Main::widgets, &Main::events, &Main::enabledWidgets, &Main::holdableWidgets },
-            { widx::tabDetails, Details::widgets, &Details::events, &Details::enabledWidgets, &Details::holdableWidgets },
-            { widx::tabCargo, Cargo::widgets, &Cargo::events, &Cargo::enabledWidgets, &Cargo::holdableWidgets },
-            { widx::tabFinances, Finances::widgets, &Finances::events, &Finances::enabledWidgets, &Finances::holdableWidgets },
-            { widx::tabRoute, Route::widgets, &Route::events, &Route::enabledWidgets, &Route::holdableWidgets }
+            { widx::tabMain,     Main::widgets,     Main::getEvents(),     &Main::enabledWidgets,     &Main::holdableWidgets },
+            { widx::tabDetails,  Details::widgets,  Details::getEvents(),  &Details::enabledWidgets,  &Details::holdableWidgets },
+            { widx::tabCargo,    Cargo::widgets,    Cargo::getEvents(),    &Cargo::enabledWidgets,    &Cargo::holdableWidgets },
+            { widx::tabFinances, Finances::widgets, Finances::getEvents(), &Finances::enabledWidgets, &Finances::holdableWidgets },
+            { widx::tabRoute,    Route::widgets,    Route::getEvents(),    &Route::enabledWidgets,    &Route::holdableWidgets }
         };
+        // clang-format on
 
         static void setActiveTabs(Window* const self)
         {
@@ -4309,7 +4320,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = *tabInfo.holdableWidgets;
 
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->disabledWidgets = 0;
@@ -4587,14 +4598,5 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
         return false;
-    }
-
-    void registerHooks()
-    {
-        Main::initEvents();
-        Cargo::initEvents();
-        Details::initEvents();
-        Finances::initEvents();
-        Route::initEvents();
     }
 }

@@ -449,7 +449,6 @@ namespace OpenLoco::Ui::Windows
 
     namespace Vehicle
     {
-        void registerHooks();
         namespace Main
         {
             Window* open(const Vehicles::VehicleBase* vehicle);

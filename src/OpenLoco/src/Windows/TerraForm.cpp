@@ -79,7 +79,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_plant_trees),                            \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_walls)
 
-        static void initEvents();
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void prepareDraw(Window& self);
@@ -151,8 +150,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 609, 118 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         enum treeCluster
         {
@@ -817,24 +814,28 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.event_08 = event_08;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -856,7 +857,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 origin,
                 PlantTrees::kWindowSize,
                 WindowFlags::flag_11,
-                PlantTrees::events);
+                PlantTrees::getEvents());
 
             window->number = 0;
             window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
@@ -882,8 +883,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             Ui::Windows::Main::showGridlines();
             _treeRotation = 2;
-
-            Common::initEvents();
 
             window->invalidate();
 
@@ -929,8 +928,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004BC671
         static void onClose([[maybe_unused]] Window& self)
@@ -1110,19 +1107,23 @@ namespace OpenLoco::Ui::Windows::Terraform
             drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = Common::onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.toolDragContinue = toolDragContinue;
-            events.toolDragEnd = toolDragEnd;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1153,8 +1154,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 112, 94 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004BC9D1
         static void onClose([[maybe_unused]] Window& self)
@@ -1734,20 +1733,24 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = Common::onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.toolDragContinue = toolDragContinue;
-            events.toolDragEnd = toolDragEnd;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1770,8 +1773,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004BCDAE
         static void onClose([[maybe_unused]] Window& self)
@@ -2044,19 +2045,23 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = Common::onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.toolDragContinue = toolDragContinue;
-            events.toolDragEnd = toolDragEnd;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -2079,8 +2084,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             makeWidget({ 2, 45 }, { 391, 48 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004BC506
         static void updateActiveThumb(Window* self)
@@ -2511,22 +2514,26 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = onUpdate;
-            events.event_08 = event_08;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -2536,18 +2543,20 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
             const uint64_t holdableWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets, ClearArea::holdableWidgets },
-            { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets, AdjustLand::holdableWidgets },
-            { AdjustWater::widgets, widx::tab_adjust_water, &AdjustWater::events, AdjustWater::enabledWidgets, AdjustWater::holdableWidgets },
-            { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets, PlantTrees::holdableWidgets },
-            { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets, BuildWalls::holdableWidgets },
+            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::enabledWidgets,   ClearArea::holdableWidgets },
+            { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::enabledWidgets,  AdjustLand::holdableWidgets },
+            { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::enabledWidgets, AdjustWater::holdableWidgets },
+            { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::enabledWidgets,  PlantTrees::holdableWidgets },
+            { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::enabledWidgets,  BuildWalls::holdableWidgets },
         };
+        // clang-format on
 
         static void onResize(Window& self, uint8_t height)
         {
@@ -2681,7 +2690,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -2732,15 +2741,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 Ui::Windows::Construction::removeConstructionGhosts();
             }
-        }
-
-        static void initEvents()
-        {
-            PlantTrees::initEvents();
-            ClearArea::initEvents();
-            AdjustLand::initEvents();
-            AdjustWater::initEvents();
-            BuildWalls::initEvents();
         }
     }
 

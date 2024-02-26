@@ -59,41 +59,20 @@ namespace OpenLoco::Ui::Windows::TimePanel
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void prepareDraw(Window& window);
-    static void draw(Ui::Window& self, Gfx::RenderTarget* rt);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void textInput(Window& w, WidgetIndex_t widgetIndex, const char* str);
-    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index);
-    static Ui::CursorId onCursor(Window& w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Window& w);
-
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
-    loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
+    static loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
+
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.event_03 = onMouseDown;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onUpdate = onUpdate;
-        _events.textInput = textInput;
-        _events.tooltip = tooltip;
-        _events.cursor = onCursor;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
             Ui::Point(Ui::width() - kWindowSize.width, Ui::height() - kWindowSize.height),
             Ui::Size(kWindowSize.width, kWindowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
-            _events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
         window->var_854 = 0;
@@ -421,5 +400,23 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .event_03 = onMouseDown,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .textInput = textInput,
+        .tooltip = tooltip,
+        .cursor = onCursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

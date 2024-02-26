@@ -25,21 +25,17 @@ namespace OpenLoco::Ui::Windows::Tutorial
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x00438CAE
     Window* open()
     {
-        initEvents();
-
         auto window = WindowManager::createWindow(
             WindowType::tutorial,
             Ui::Point(kWindowSize.width, Ui::height() - 27),
             Ui::Size(Ui::width() - 280, 27),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            _events);
+            getEvents());
 
         window->widgets = widgets;
         window->initScrollWidgets();
@@ -82,9 +78,13 @@ namespace OpenLoco::Ui::Windows::Tutorial
         drawingCtx.drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.prepareDraw = prepareDraw;
+        return kEvents;
     }
 }

@@ -93,11 +93,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     static loco_global<char[2], 0x005045F8> _strCheckmark;
-
-    static void initEvents();
 
     static void activateMapSelectionTool(Window* const self)
     {
@@ -105,19 +101,19 @@ namespace OpenLoco::Ui::Windows::TileInspector
         Input::setFlag(Input::Flags::flag6);
     }
 
+    static const WindowEventList& getEvents();
+
     Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::tileInspector);
         if (window != nullptr)
             return window;
 
-        initEvents();
-
         window = WindowManager::createWindow(
             WindowType::tileInspector,
             kWindowSize,
             WindowFlags::none,
-            _events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
@@ -528,17 +524,21 @@ namespace OpenLoco::Ui::Windows::TileInspector
         ToolManager::toolCancel();
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseOver = scrollMouseOver,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.getScrollSize = getScrollSize;
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
-        _events.onToolUpdate = onToolUpdate;
-        _events.onToolDown = onToolDown;
-        _events.prepareDraw = prepareDraw;
-        _events.scrollMouseDown = scrollMouseDown;
-        _events.scrollMouseOver = scrollMouseOver;
+        return kEvents;
     }
 }
