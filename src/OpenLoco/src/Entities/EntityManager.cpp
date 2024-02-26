@@ -97,6 +97,19 @@ namespace OpenLoco::EntityManager
         EntityTweener::get().reset();
     }
 
+    void freeUserStrings()
+    {
+        for (auto& entity : rawEntities())
+        {
+            if (entity.baseType == EntityBaseType::null)
+            {
+                continue;
+            }
+
+            StringManager::emptyUserString(entity.name);
+        }
+    }
+
     EntityId firstId(EntityListType list)
     {
         return rawListHeads()[enumValue(list)];

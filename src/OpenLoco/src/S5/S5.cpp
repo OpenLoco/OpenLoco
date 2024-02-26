@@ -15,6 +15,7 @@
 #include "Map/TileManager.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
@@ -627,7 +628,7 @@ namespace OpenLoco::S5
                     throw LoadException("Not a two player saved game", StringIds::error_file_is_not_two_player_save);
                 }
             }
-            else if (!hasLoadFlags(flags, LoadFlags::scenario))
+            else if (!hasLoadFlags(flags, LoadFlags::scenario) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 if (file->header.type != S5Type::savedGame)
                 {
@@ -686,8 +687,19 @@ namespace OpenLoco::S5
             IndustryManager::createAllMapAnimations();
             if (hasLoadFlags(flags, LoadFlags::landscape))
             {
-                Scenario::updateSeason();
-                // ScenarioTextObject stuff
+                Scenario::initialiseSnowLine();
+                auto* stexObj = ObjectManager::get<ScenarioTextObject>();
+                if (stexObj != nullptr)
+                {
+                    auto header = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::scenarioText, 0 });
+                    ObjectManager::unload(header);
+                    ObjectManager::reloadAll();
+                    ObjectManager::sub_4748FA();
+                    _activeOptions->editorStep = EditorController::Step::landscapeEditor;
+                    _activeOptions->difficulty = 3;
+                    StringManager::formatString(_activeOptions->scenarioDetails, StringIds::no_details_yet);
+                    _activeOptions->scenarioName[0] = '\0';
+                }
             }
             Audio::resetSoundObjects();
 
