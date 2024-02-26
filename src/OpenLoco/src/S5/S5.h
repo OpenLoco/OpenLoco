@@ -430,6 +430,7 @@ namespace OpenLoco::S5
         titleSequence = 1U << 0,
         twoPlayer = 1U << 1,
         scenario = 1U << 2,
+        landscape = 1U << 3,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LoadFlags);
 
