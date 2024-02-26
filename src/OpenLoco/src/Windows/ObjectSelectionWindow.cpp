@@ -180,7 +180,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static Ui::TextInput::InputSession inputSession;
 
-    static void initEvents();
     static void assignTabPositions(Window* self);
 
     enum widx
@@ -233,8 +232,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
     };
-
-    static WindowEventList _events;
 
     // 0x0047322A
     static void rotateTabs(uint8_t newStartPosition)
@@ -446,6 +443,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return { -1, ObjectManager::ObjectIndexEntry{} };
     }
 
+    static const WindowEventList& getEvents();
+
     // 0x00472A20
     Ui::Window* open()
     {
@@ -456,7 +455,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         ObjectManager::prepareSelectionList(true);
 
-        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, _events);
+        window = WindowManager::createWindowCentred(WindowType::objectSelection, { kWindowSize }, WindowFlags::none, getEvents());
         window->widgets = widgets;
         window->enabledWidgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::clearButton);
         window->initScrollWidgets();
@@ -465,9 +464,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         window->var_856 = enumValue(isEditorMode() ? FilterLevel::beginner : FilterLevel::advanced);
         window->var_858 = enumValue(FilterFlags::vanilla | FilterFlags::custom);
         window->currentSecondaryTab = 0;
-
-        initEvents();
-
         window->object = nullptr;
 
         assignTabPositions(window);
@@ -1454,20 +1450,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return true;
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+        .keyUp = keyUp,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onUpdate = onUpdate;
-        _events.getScrollSize = getScrollSize;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.keyUp = keyUp;
+        return kEvents;
     }
 }

@@ -34,14 +34,12 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     static std::string _captionString;
     static uint8_t _progressBarStyle = 0; // 0x005233C8
     static uint8_t _progressBarValue = 0; // 0x011370A8
 
     void setProgress(uint8_t value);
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x004CF6E2
     Window* open(std::string_view captionString)
@@ -50,13 +48,11 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         setScreenFlag(ScreenFlags::progressBarActive);
         _progressBarValue = 0xFF;
 
-        initEvents();
-
         auto window = WindowManager::createWindowCentred(
             WindowType::progressBar,
             kWindowSize,
             WindowFlags::flag_11 | WindowFlags::stickToFront,
-            _events);
+            getEvents());
 
         window->widgets = widgets;
         window->initScrollWidgets();
@@ -140,9 +136,13 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         drawingCtx.drawImage(&*clipped, xPos, 0, trainImage);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.prepareDraw = prepareDraw;
+        return kEvents;
     }
 }

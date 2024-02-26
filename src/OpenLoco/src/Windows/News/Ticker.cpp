@@ -19,8 +19,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         widgetEnd(),
     };
 
-    WindowEventList events;
-
     // 0x00429EA2
     static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
     {
@@ -216,11 +214,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         drawingCtx.drawStringTicker(*clipped, { 55, 0 }, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
     }
 
-    void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onUpdate = onUpdate,
+        .draw = draw,
+    };
+
+    const WindowEventList& getEvents()
     {
-        events.onMouseUp = onMouseUp;
-        events.onResize = onResize;
-        events.onUpdate = onUpdate;
-        events.draw = draw;
+        return kEvents;
     }
 }

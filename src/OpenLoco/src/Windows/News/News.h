@@ -40,8 +40,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),                                        \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::buttonWithImage, WindowColour::primary),                                                        \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::buttonWithImage, WindowColour::primary)
-
-        void initEvents();
     }
 
     namespace News1
@@ -50,10 +48,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         extern Widget widgets[7];
 
-        extern WindowEventList events;
-
-        void initEvents();
         void initViewport(Window& self);
+        const WindowEventList& getEvents();
     }
 
     namespace News2
@@ -75,8 +71,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         extern Widget widgets[2];
 
-        extern WindowEventList events;
-
-        void initEvents();
+        const WindowEventList& getEvents();
     }
 }

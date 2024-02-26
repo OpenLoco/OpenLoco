@@ -69,8 +69,6 @@ namespace OpenLoco::Ui::Windows::StationList
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     struct TabDetails
     {
         widx widgetIndex;
@@ -96,39 +94,6 @@ namespace OpenLoco::Ui::Windows::StationList
     };
 
     loco_global<uint16_t[4], 0x112C826> _commonFormatArgs;
-
-    static Ui::CursorId cursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex);
-    static void event_08(Window& window);
-    static void event_09(Window& window);
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onUpdate(Window& window);
-    static void prepareDraw(Ui::Window& window);
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
-
-    static void initEvents()
-    {
-        _events.cursor = cursor;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.event_08 = event_08;
-        _events.event_09 = event_09;
-        _events.getScrollSize = getScrollSize;
-        _events.onDropdown = onDropdown;
-        _events.onMouseDown = onMouseDown;
-        _events.onMouseUp = onMouseUp;
-        _events.onUpdate = onUpdate;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.prepareDraw = prepareDraw;
-        _events.tooltip = tooltip;
-    }
 
     // 0x004910E8
     static void refreshStationList(Window* window)
@@ -290,6 +255,8 @@ namespace OpenLoco::Ui::Windows::StationList
         }
     }
 
+    static const WindowEventList& getEvents();
+
     // 0x00490F6C
     Window* open(CompanyId companyId)
     {
@@ -310,7 +277,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 WindowType::stationList,
                 kWindowSize,
                 WindowFlags::flag_11,
-                _events);
+                getEvents());
 
             window->number = enumValue(companyId);
             window->owner = companyId;
@@ -331,9 +298,6 @@ namespace OpenLoco::Ui::Windows::StationList
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, interface->colour_0A);
         }
-
-        // TODO: only needs to be called once.
-        initEvents();
 
         window->currentTab = 0;
         window->invalidate();
@@ -729,5 +693,27 @@ namespace OpenLoco::Ui::Windows::StationList
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);
         return args;
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .event_08 = event_08,
+        .event_09 = event_09,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

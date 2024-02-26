@@ -23,26 +23,24 @@ namespace OpenLoco::Ui::Windows::Main
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x00438A6C, 0x0043CB9F
     void open()
     {
-        initEvents();
-
         const int32_t uiWidth = Ui::width();
         const int32_t uiHeight = Ui::height();
 
         _widgets[widx::viewport].bottom = uiHeight;
         _widgets[widx::viewport].right = uiWidth;
+
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
             Ui::Size(uiWidth, uiHeight),
             Ui::WindowFlags::stickToBack,
-            _events);
+            getEvents());
+
         window->widgets = _widgets;
         WindowManager::setCurrentRotation(0);
         ViewportManager::create(
@@ -58,11 +56,6 @@ namespace OpenLoco::Ui::Windows::Main
     static void draw(Ui::Window& window, Gfx::RenderTarget* const rt)
     {
         window.drawViewports(rt);
-    }
-
-    static void initEvents()
-    {
-        _events.draw = draw;
     }
 
     // 0x00468FD3
@@ -107,5 +100,14 @@ namespace OpenLoco::Ui::Windows::Main
 
         mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
         mainWindow->invalidate();
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

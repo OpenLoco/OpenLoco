@@ -34,8 +34,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             widgetEnd(),
         };
 
-        WindowEventList events;
-
         // 0x00429BB7
         static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
         {
@@ -851,13 +849,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .viewportRotate = initViewport,
+            .draw = draw,
+        };
+
+        const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = initViewport;
-            events.onUpdate = onUpdate;
-            events.viewportRotate = initViewport;
-            events.draw = draw;
+            return kEvents;
         }
     }
 

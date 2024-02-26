@@ -63,7 +63,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         widgetEnd(),
     };
 
-    static WindowEventList _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<BrowseFileType, 0x009DA284> _fileType;
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
@@ -93,7 +92,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void refreshDirectoryList();
     static void loadFileDetails(Window* self);
     static bool filenameContainsInvalidChars();
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x00445AB9
     // ecx: path
@@ -123,13 +122,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         changeDirectory(directory.make_preferred());
         inputSession = Ui::TextInput::InputSession(baseName, 200);
 
-        initEvents();
-
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
             { 500, 380 },
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
-            _events);
+            getEvents());
 
         if (window != nullptr)
         {
@@ -926,19 +923,23 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+        .keyUp = keyUp,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
-        _events.onResize = onResize;
-        _events.onUpdate = onUpdate;
-        _events.getScrollSize = getScrollSize;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.keyUp = keyUp;
+        return kEvents;
     }
 }

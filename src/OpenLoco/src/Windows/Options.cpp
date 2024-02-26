@@ -232,8 +232,6 @@ namespace OpenLoco::Ui::Windows::Options
             widgetEnd(),
         };
 
-        static WindowEventList _events;
-
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Widx::cash_popup_rendering) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
@@ -699,16 +697,19 @@ namespace OpenLoco::Ui::Windows::Options
 #endif
         }
 
-        static const WindowEventList initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
-            return _events;
+            return kEvents;
         }
     }
 
@@ -734,8 +735,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music),
             widgetEnd(),
         };
-
-        static WindowEventList _events;
 
         static void audioDeviceMouseDown(Ui::Window* window);
         static void audioDeviceDropdown(Ui::Window* window, int16_t itemIndex);
@@ -895,15 +894,19 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -949,8 +952,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void musicPlaylistDropdown(Window* w, int16_t ax);
         static void currentlyPlayingMouseDown(Window* w);
         static void currentlyPlayingDropdown(Window* w, int16_t ax);
-
-        static WindowEventList _events;
 
         static void prepareDraw(Window& w)
         {
@@ -1277,15 +1278,19 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1338,8 +1343,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void distanceSpeedDropdown(Window* w, int16_t ax);
         static void heightsLabelsMouseDown(Window* w);
         static void heightsLabelsDropdown(Window* w, int16_t ax);
-
-        static WindowEventList _events;
 
         // 0x004C0A59
         static void prepareDraw(Window& w)
@@ -1763,15 +1766,19 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1805,8 +1812,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void zoomToCursorMouseUp(Window* w);
         static void invertRightMouseViewPan(Window* w);
         static void openKeyboardShortcuts();
-
-        static WindowEventList _events;
 
         static void prepareDraw(Window& w)
         {
@@ -1926,13 +1931,17 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1988,8 +1997,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 243 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
             widgetEnd(),
         };
-
-        static WindowEventList _events;
 
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 
@@ -2412,16 +2419,20 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.textInput = textInput;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -2476,20 +2487,12 @@ namespace OpenLoco::Ui::Windows::Options
         if (window != nullptr)
             return window;
 
-        // TODO: only needs to be called once
-        Display::initEvents();
-        Sound::initEvents();
-        Music::initEvents();
-        Regional::initEvents();
-        Controls::initEvents();
-        Misc::initEvents();
-
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(
             WindowType::options,
             Display::kWindowSize,
             WindowFlags::none,
-            Display::_events);
+            Display::getEvents());
 
         window->widgets = Display::_widgets;
         window->number = 0;
@@ -2508,7 +2511,7 @@ namespace OpenLoco::Ui::Windows::Options
         Display::applyScreenModeRestrictions(window);
 
         window->holdableWidgets = 0;
-        window->eventHandlers = &Display::_events;
+        window->eventHandlers = &Display::getEvents();
         window->activatedWidgets = 0;
 
         window->callOnResize();
@@ -2531,19 +2534,21 @@ namespace OpenLoco::Ui::Windows::Options
     struct TabInformation
     {
         Widget* widgets;
-        WindowEventList* events;
+        const WindowEventList& events;
         Ui::Size kWindowSize;
         const uint64_t* enabledWidgets;
     };
 
+    // clang-format off
     static TabInformation tabInformationByTabOffset[] = {
-        { Display::_widgets, &Display::_events, Display::kWindowSize, &Display::enabledWidgets },
-        { Sound::_widgets, &Sound::_events, Sound::kWindowSize, &Sound::enabledWidgets },
-        { Music::_widgets, &Music::_events, Music::kWindowSize, &Music::enabledWidgets },
-        { Regional::_widgets, &Regional::_events, Regional::kWindowSize, &Regional::enabledWidgets },
-        { Controls::_widgets, &Controls::_events, Controls::kWindowSize, &Controls::enabledWidgets },
-        { Misc::_widgets, &Misc::_events, Misc::kWindowSize, &Misc::enabledWidgets },
+        { Display::_widgets,  Display::getEvents(),  Display::kWindowSize,  &Display::enabledWidgets },
+        { Sound::_widgets,    Sound::getEvents(),    Sound::kWindowSize,    &Sound::enabledWidgets },
+        { Music::_widgets,    Music::getEvents(),    Music::kWindowSize,    &Music::enabledWidgets },
+        { Regional::_widgets, Regional::getEvents(), Regional::kWindowSize, &Regional::enabledWidgets },
+        { Controls::_widgets, Controls::getEvents(), Controls::kWindowSize, &Controls::enabledWidgets },
+        { Misc::_widgets,     Misc::getEvents(),     Misc::kWindowSize,     &Misc::enabledWidgets },
     };
+    // clang-format on
 
     // 0x004BFC11
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi)
@@ -2562,7 +2567,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         auto& tabInfo = tabInformationByTabOffset[w->currentTab];
         w->enabledWidgets = *tabInfo.enabledWidgets;
-        w->eventHandlers = tabInfo.events;
+        w->eventHandlers = &tabInfo.events;
         w->widgets = tabInfo.widgets;
         w->invalidate();
         w->setSize(tabInfo.kWindowSize);
