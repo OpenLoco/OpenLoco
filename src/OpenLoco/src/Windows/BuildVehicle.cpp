@@ -1818,7 +1818,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return true;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onResize = onResize,
         .onMouseDown = onMouseDown,
@@ -1837,6 +1837,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

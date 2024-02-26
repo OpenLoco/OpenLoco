@@ -1079,7 +1079,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self->callOnMouseDown(Station::widx::image);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = Common::onClose,
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
@@ -1093,6 +1093,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

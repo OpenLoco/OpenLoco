@@ -495,7 +495,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Common::refreshIndustryList(self);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
             .event_08 = event_08,
@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1207,7 +1207,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 updateActiveThumb(&self);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onClose = onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
@@ -1227,7 +1227,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

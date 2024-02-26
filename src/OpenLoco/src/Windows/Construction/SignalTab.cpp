@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         self->callOnMouseDown(Signal::widx::both_directions);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = Common::onClose,
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
@@ -364,6 +364,6 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

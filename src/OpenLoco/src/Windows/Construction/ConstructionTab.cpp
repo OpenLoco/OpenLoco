@@ -2843,7 +2843,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = Common::onClose,
         .onMouseUp = onMouseUp,
         .onResize = onResize,
@@ -2859,7 +2859,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 
     void previousTrackPiece(Window* self)

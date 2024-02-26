@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         EditKeyboardShortcut::open(row);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .getScrollSize = getScrollSize,
         .scrollMouseDown = onScrollMouseDown,
@@ -266,6 +266,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

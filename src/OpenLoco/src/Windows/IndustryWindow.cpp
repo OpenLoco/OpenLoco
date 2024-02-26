@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::update,
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -370,7 +370,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::update,
@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::update,
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::update,
@@ -543,7 +543,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

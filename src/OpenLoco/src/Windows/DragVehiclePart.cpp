@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .cursor = cursor,
         .onMove = onMove,
         .draw = draw,
@@ -87,6 +87,6 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

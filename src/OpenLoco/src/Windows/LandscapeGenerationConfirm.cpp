@@ -71,14 +71,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .draw = draw,
     };
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 
     // 0x004C180C

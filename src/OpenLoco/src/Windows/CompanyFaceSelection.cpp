@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .getScrollSize = getScrollSize,
@@ -294,6 +294,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

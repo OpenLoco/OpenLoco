@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onUpdate = Common::update,
@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -716,7 +716,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -973,7 +973,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             _commonFormatArgs[7] = options.maxAltitudeForTrees;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onUpdate = Common::update,
@@ -983,7 +983,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1124,7 +1124,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -1135,7 +1135,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1248,7 +1248,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -1259,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     };
 

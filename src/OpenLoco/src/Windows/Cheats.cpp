@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             _date = getCurrentDate();
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onUpdate = onUpdate,
@@ -458,7 +458,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -780,7 +780,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_vehicles);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
             .prepareDraw = prepareDraw,
@@ -789,7 +789,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -885,7 +885,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_towns);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
             .prepareDraw = prepareDraw,
@@ -894,7 +894,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 

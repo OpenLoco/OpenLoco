@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Common::refreshCompanyList(self);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = onUpdate,
@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -711,7 +711,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -721,7 +721,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -897,7 +897,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -907,7 +907,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -990,7 +990,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1199,7 +1199,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Economy::buildDeliveredCargoPaymentsTable();
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1289,7 +1289,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = Common::onMouseUp,
             .onResize = onResize,
             .onUpdate = Common::onUpdate,
@@ -1299,7 +1299,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
