@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         ToolManager::toolCancel();
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
         .onToolUpdate = onToolUpdate,
@@ -539,6 +539,6 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

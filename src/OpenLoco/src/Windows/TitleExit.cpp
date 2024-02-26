@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .prepareDraw = prepareDraw,
         .draw = draw,
@@ -108,6 +108,6 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

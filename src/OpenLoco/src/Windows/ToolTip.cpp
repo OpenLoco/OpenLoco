@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onUpdate = update,
         .draw = draw,
@@ -239,6 +239,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

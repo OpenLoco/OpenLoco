@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             window.widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onResize = Common::onResize,
         .event_03 = onMouseDown,
         .onMouseDown = onMouseDown,
@@ -359,6 +359,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

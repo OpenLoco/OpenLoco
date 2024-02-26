@@ -950,7 +950,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Common::rightAlignTabs(&window, x, { Common::Widx::terraform_menu });
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onResize = Common::onResize,
         .event_03 = onMouseDown,
         .onMouseDown = onMouseDown,
@@ -962,6 +962,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

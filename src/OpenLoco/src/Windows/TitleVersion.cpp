@@ -41,12 +41,12 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .draw = draw,
     };
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

@@ -498,7 +498,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window.invalidate();
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .onMouseDown = onMouseDown,
         .onDropdown = onDropdown,
@@ -511,6 +511,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

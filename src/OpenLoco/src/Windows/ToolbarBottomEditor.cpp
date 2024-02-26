@@ -122,7 +122,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .prepareDraw = prepareDraw,
         .draw = draw,
@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 
     // 0x0043CCCD

@@ -78,13 +78,13 @@ namespace OpenLoco::Ui::Windows::Tutorial
         drawingCtx.drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .prepareDraw = prepareDraw,
         .draw = draw,
     };
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
     }
 
-    static constexpr WindowEventList _events = {
+    static constexpr WindowEventList kEvents = {
         .onMouseUp = onMouseUp,
         .event_03 = onMouseDown,
         .onMouseDown = onMouseDown,
@@ -417,6 +417,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static const WindowEventList& getEvents()
     {
-        return _events;
+        return kEvents;
     }
 }

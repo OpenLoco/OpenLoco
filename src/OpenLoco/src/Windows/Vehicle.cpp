@@ -1043,7 +1043,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
@@ -1061,7 +1061,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -1662,7 +1662,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
@@ -1686,7 +1686,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
 
         static Ui::Window* getVehicleDetailsWindow(const Ui::Point& pos)
@@ -2217,7 +2217,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
@@ -2236,7 +2236,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -2414,7 +2414,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self.setSize(kMinWindowSize, kMaxWindowSize);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onUpdate = onUpdate,
@@ -2426,7 +2426,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
@@ -3394,7 +3394,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
         }
 
-        static constexpr WindowEventList _events = {
+        static constexpr WindowEventList kEvents = {
             .onClose = close,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
@@ -3420,7 +3420,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static const WindowEventList& getEvents()
         {
-            return _events;
+            return kEvents;
         }
     }
 
