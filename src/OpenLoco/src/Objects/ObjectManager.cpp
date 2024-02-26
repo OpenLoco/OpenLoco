@@ -7,9 +7,11 @@
 #include "ClimateObject.h"
 #include "CompetitorObject.h"
 #include "CurrencyObject.h"
+#include "Date.h"
 #include "DockObject.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Environment.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "HillShapesObject.h"
@@ -932,8 +934,45 @@ namespace OpenLoco::ObjectManager
     // 0x004796A9
     void updateYearly1()
     {
-        // set default levelCrossing
-        call(0x004796A9);
+        auto bestCrossingObject = 0;
+        auto bestDesignYear = std::numeric_limits<int32_t>::min();
+        auto currentYear = getCurrentYear();
+        for (auto i = 0U; i < getMaxObjects(ObjectType::levelCrossing); ++i)
+        {
+            auto* levelObj = get<LevelCrossingObject>(i);
+            if (levelObj == nullptr)
+            {
+                continue;
+            }
+            if (currentYear < levelObj->designedYear)
+            {
+                continue;
+            }
+            if (bestDesignYear > levelObj->designedYear)
+            {
+                continue;
+            }
+            bestDesignYear = levelObj->designedYear;
+            bestCrossingObject = i;
+        }
+        if (bestDesignYear == std::numeric_limits<int32_t>::min())
+        {
+            for (auto i = 0U; i < getMaxObjects(ObjectType::levelCrossing); ++i)
+            {
+                auto* levelObj = get<LevelCrossingObject>(i);
+                if (levelObj == nullptr)
+                {
+                    continue;
+                }
+                if (bestDesignYear > levelObj->designedYear)
+                {
+                    continue;
+                }
+                bestDesignYear = levelObj->designedYear;
+                bestCrossingObject = i;
+            }
+        }
+        getGameState().currentLevelCrossingType = bestCrossingObject;
     }
 
     // 0x004C3A9E

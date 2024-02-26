@@ -63,7 +63,7 @@ namespace OpenLoco
         uint32_t orderTableLength;                                               // 0x0001A0 (0x00525FB8)
         uint32_t roadObjectIdIsTram;                                             // 0x0001A4 (0x00525FBC)
         uint32_t roadObjectIdIsFlag7;                                            // 0x0001A8 (0x00525FC0)
-        uint8_t var_1AC;                                                         // 0x0001AC (0x00525FC4)
+        uint8_t currentLevelCrossingType;                                        // 0x0001AC (0x00525FC4)
         uint8_t lastTrackTypeOption;                                             // 0x0001AD (0x00525FC5)
         uint8_t loanInterestRate;                                                // 0x0001AE (0x00525FC6)
         uint8_t lastIndustryOption;                                              // 0x0001AF (0x00525FC7)
