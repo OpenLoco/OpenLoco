@@ -29,7 +29,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static constexpr Ui::Size kWindowSize = { 400, 272 };
     static constexpr int16_t kRowHeight = 10;
-    static WindowEventList events;
 
     enum widx
     {
@@ -52,7 +51,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         widgetEnd(),
     };
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     static std::vector<uint32_t> _inUseCompetitors;
 
@@ -70,8 +69,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
         else
         {
-            initEvents();
-            self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, events);
+            self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
             self->widgets = widgets;
             self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
@@ -282,16 +280,20 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseOver = scrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.onClose = onClose;
-        events.onMouseUp = onMouseUp;
-        events.getScrollSize = getScrollSize;
-        events.scrollMouseDown = scrollMouseDown;
-        events.scrollMouseOver = scrollMouseOver;
-        events.tooltip = tooltip;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
-        events.drawScroll = drawScroll;
+        return kEvents;
     }
 }

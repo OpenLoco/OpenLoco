@@ -2843,19 +2843,23 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = Common::onClose,
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    const WindowEventList& getEvents()
     {
-        events.onClose = Common::onClose;
-        events.onMouseUp = onMouseUp;
-        events.onResize = onResize;
-        events.onMouseDown = onMouseDown;
-        events.onDropdown = onDropdown;
-        events.onUpdate = onUpdate;
-        events.onToolUpdate = onToolUpdate;
-        events.onToolDown = onToolDown;
-        events.cursor = cursor;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
+        return kEvents;
     }
 
     void previousTrackPiece(Window* self)

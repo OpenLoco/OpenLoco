@@ -132,7 +132,6 @@ namespace OpenLoco::Ui::Windows::Construction
         void switchTab(Window* self, WidgetIndex_t widgetIndex);
         void repositionTabs(Window* self);
         void drawTabs(Window* self, Gfx::RenderTarget* rt);
-        void initEvents();
         void onClose(Window& self);
         void onUpdate(Window* self, GhostVisibilityFlags flag);
         void sub_4CD454();
@@ -218,13 +217,11 @@ namespace OpenLoco::Ui::Windows::Construction
 
         extern Widget widgets[32];
 
-        extern WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
 
         void reset();
         void activateSelectedConstructionWidgets();
         void tabReset(Window* self);
-        void initEvents();
         void drawTrack(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
         void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t rotation, Gfx::RenderTarget& rt);
         void removeTrackGhosts();
@@ -235,6 +232,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void buildAtCurrentPos(Window* self);
         void removeAtCurrentPos(Window* self);
         void selectPosition(Window* self);
+        const WindowEventList& getEvents();
     }
 
     namespace Station
@@ -251,10 +249,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
-        extern WindowEventList events;
         void tabReset(Window* self);
-        void initEvents();
         void removeStationGhost();
+        const WindowEventList& getEvents();
     }
 
     namespace Signal
@@ -271,10 +268,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
-        extern WindowEventList events;
         void tabReset(Window* self);
-        void initEvents();
         void removeSignalGhost();
+        const WindowEventList& getEvents();
     }
 
     namespace Overhead
@@ -294,9 +290,8 @@ namespace OpenLoco::Ui::Windows::Construction
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
-        extern WindowEventList events;
         void tabReset(Window* self);
-        void initEvents();
         void removeTrackModsGhost();
+        const WindowEventList& getEvents();
     }
 }

@@ -287,7 +287,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     static Ui::TextInput::InputSession inputSession;
-    static WindowEventList _events;
 
     static void setDisabledTransportTabs(Ui::Window* window);
     static void setTrackTypeTabs(Ui::Window* window);
@@ -297,13 +296,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::RenderTarget* rt);
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::RenderTarget* rt);
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x4C1C64
     static Window* create(CompanyId company)
     {
-        initEvents();
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, _events);
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, getEvents());
         window->widgets = _widgets;
         window->number = enumValue(company);
         window->enabledWidgets = (1ULL << widx::close_button) | (1ULL << widx::tab_build_new_trains) | (1ULL << widx::tab_build_new_buses) | (1ULL << widx::tab_build_new_trucks) | (1ULL << widx::tab_build_new_trams) | (1ULL << widx::tab_build_new_aircraft) | (1ULL << widx::tab_build_new_ships) | (1ULL << widx::tab_track_type_0) | (1ULL << widx::tab_track_type_1) | (1ULL << widx::tab_track_type_2) | (1ULL << widx::tab_track_type_3) | (1ULL << widx::tab_track_type_4) | (1ULL << widx::tab_track_type_5) | (1ULL << widx::tab_track_type_6) | (1ULL << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1ULL << widx::scrollview_vehicle_selection);
@@ -383,7 +381,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window->widgets = _widgets;
             window->enabledWidgets = (1ULL << widx::close_button) | (1ULL << widx::tab_build_new_trains) | (1ULL << widx::tab_build_new_buses) | (1ULL << widx::tab_build_new_trucks) | (1ULL << widx::tab_build_new_trams) | (1ULL << widx::tab_build_new_aircraft) | (1ULL << widx::tab_build_new_ships) | (1ULL << widx::tab_track_type_0) | (1ULL << widx::tab_track_type_1) | (1ULL << widx::tab_track_type_2) | (1ULL << widx::tab_track_type_3) | (1ULL << widx::tab_track_type_4) | (1ULL << widx::tab_track_type_5) | (1ULL << widx::tab_track_type_6) | (1ULL << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1ULL << widx::scrollview_vehicle_selection);
             window->holdableWidgets = 0;
-            window->eventHandlers = &_events;
+            window->eventHandlers = &getEvents();
             window->activatedWidgets = 0;
             setDisabledTransportTabs(window);
             setTrackTypeTabs(window);
@@ -742,7 +740,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                 window.enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1 << widx::scrollview_vehicle_selection);
                 window.holdableWidgets = 0;
-                window.eventHandlers = &_events;
+                window.eventHandlers = &getEvents();
                 window.widgets = _widgets;
                 setDisabledTransportTabs(&window);
                 window.invalidate();
@@ -1820,21 +1818,25 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         return true;
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+        .keyUp = keyUp,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onResize = onResize;
-        _events.onUpdate = onUpdate;
-        _events.getScrollSize = getScrollSize;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
-        _events.cursor = cursor;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.keyUp = keyUp;
+        return kEvents;
     }
 }

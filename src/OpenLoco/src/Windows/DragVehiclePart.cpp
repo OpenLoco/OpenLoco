@@ -14,8 +14,6 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         frame
     };
 
-    static WindowEventList events;
-
     // 0x00522504
     static Widget widgets[] = {
         makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary),
@@ -26,7 +24,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId, 0x01136156> _dragVehicleHead;
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x004B3B7E
     void open(Vehicles::Car& car)
@@ -36,15 +34,16 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         _dragVehicleHead = car.front->head;
         WindowManager::invalidate(WindowType::vehicle, enumValue(car.front->head));
 
-        initEvents();
         uint16_t width = Vehicle::Common::sub_4B743B(1, 0, 0, 0, car.front, nullptr);
         auto pos = Input::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
         Ui::Size size = { width, 60 };
-        auto self = WindowManager::createWindow(WindowType::dragVehiclePart, pos, size, WindowFlags::transparent | WindowFlags::stickToFront, events);
+
+        auto self = WindowManager::createWindow(WindowType::dragVehiclePart, pos, size, WindowFlags::transparent | WindowFlags::stickToFront, getEvents());
         self->widgets = widgets;
         self->widgets[widx::frame].right = width - 1;
+
         Input::windowPositionBegin(Input::getTooltipMouseLocation().x, Input::getTooltipMouseLocation().y, self, widx::frame);
     }
 
@@ -80,10 +79,14 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .cursor = cursor,
+        .onMove = onMove,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.cursor = cursor;
-        events.onMove = onMove;
-        events.draw = draw;
+        return kEvents;
     }
 }

@@ -27,12 +27,9 @@ namespace OpenLoco::Ui::Windows::Error
 
     namespace Common
     {
-        static WindowEventList events;
-
-        static void draw(Ui::Window& self, Gfx::RenderTarget* rt);
-        static void onPeriodicUpdate(Ui::Window& self);
-        static void initEvents();
+        static const WindowEventList& getEvents();
     }
+
     namespace Error
     {
         enum widx
@@ -147,9 +144,7 @@ namespace OpenLoco::Ui::Windows::Error
                 Ui::Point(x, y),
                 windowSize,
                 WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
-                Common::events);
-
-            Common::initEvents();
+                Common::getEvents());
 
             if (_errorCompetitorId != CompanyId::null)
             {
@@ -281,10 +276,14 @@ namespace OpenLoco::Ui::Windows::Error
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onPeriodicUpdate = onPeriodicUpdate,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = Common::draw;
-            events.onPeriodicUpdate = Common::onPeriodicUpdate;
+            return kEvents;
         }
     }
 }

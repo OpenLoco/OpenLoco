@@ -33,9 +33,7 @@ namespace OpenLoco::Ui::Windows::About
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x0043B26C
     void open()
@@ -43,13 +41,11 @@ namespace OpenLoco::Ui::Windows::About
         if (WindowManager::bringToFront(WindowType::about) != nullptr)
             return;
 
-        initEvents();
-
         auto window = WindowManager::createWindowCentred(
             WindowType::about,
             kWindowSize,
             WindowFlags::none,
-            _events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);
@@ -119,9 +115,13 @@ namespace OpenLoco::Ui::Windows::About
         drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::licenced_to_atari_inc, nullptr);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.onMouseUp = onMouseUp;
+        return kEvents;
     }
 }
