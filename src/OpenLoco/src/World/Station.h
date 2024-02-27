@@ -16,8 +16,11 @@ namespace OpenLoco
     enum class StationCargoStatsFlags : uint8_t
     {
         none = 0U,
-        flag0 = (1U << 0),
-        flag1 = (1U << 1),
+        // Is there a consumer of this cargo at this station.
+        acceptedForConsumer = (1U << 0),
+        // Can a producer (town building, industry) distribute cargo to
+        // this station.
+        acceptedFromProducer = (1U << 1),
         flag2 = (1U << 2),
         flag3 = (1U << 3),
     };
@@ -43,12 +46,12 @@ namespace OpenLoco
 
         bool isAccepted() const
         {
-            return (flags & StationCargoStatsFlags::flag0) != StationCargoStatsFlags::none;
+            return (flags & StationCargoStatsFlags::acceptedForConsumer) != StationCargoStatsFlags::none;
         }
 
         void isAccepted(bool value)
         {
-            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
+            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::acceptedForConsumer, value);
         }
     };
 
@@ -70,7 +73,7 @@ namespace OpenLoco
         transportModeAir = (1U << 2),
         transportModeWater = (1U << 3),
         flag_4 = (1U << 4),
-        flag_5 = (1U << 5),
+        flag_5 = (1U << 5), // isNotFullyCreated ?? like ghost will never have this set
         flag_6 = (1U << 6),
         flag_7 = (1U << 7),
         flag_8 = (1U << 8),
@@ -90,13 +93,13 @@ namespace OpenLoco
 
     struct Station
     {
-        StringId name = StringIds::null; // 0x00
-        coord_t x{};                     // 0x02
-        coord_t y{};                     // 0x04
-        coord_t z{};                     // 0x06
-        LabelFrame labelFrame;           // 0x08
-        CompanyId owner{};               // 0x28
-        uint8_t var_29{};
+        StringId name = StringIds::null;              // 0x00
+        coord_t x{};                                  // 0x02
+        coord_t y{};                                  // 0x04
+        coord_t z{};                                  // 0x06
+        LabelFrame labelFrame;                        // 0x08
+        CompanyId owner{};                            // 0x28
+        uint8_t noTilesTimeout{};                     // 0x29 measured in days
         StationFlags flags{};                         // 0x2A
         TownId town{};                                // 0x2C
         StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E
@@ -115,7 +118,6 @@ namespace OpenLoco
         StationId id() const;
         void update();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
-        void sub_48F7D1();
         char* getStatusString(char* buffer);
         bool updateCargo();
         int32_t calculateCargoRating(const StationCargoStats& cargo) const;
@@ -146,4 +148,8 @@ namespace OpenLoco
     void sub_491C6F(const uint8_t type, const World::Pos2& pos, const uint8_t rotation, const CatchmentFlags flag);
     void sub_491D20(const World::Pos2& pos, const CatchmentFlags flag);
     void sub_491BF5(const World::Pos2& pos, const CatchmentFlags flag);
+
+    void recalculateStationCenter(const StationId stationId);
+    void recalculateStationModes(const StationId stationId);
+    void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 }

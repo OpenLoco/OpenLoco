@@ -112,21 +112,21 @@ namespace OpenLoco::StationManager
         {
             if (station.stationTileSize == 0)
             {
-                station.var_29++;
-                if (station.var_29 != 5 && CompanyManager::isPlayerCompany(station.owner))
+                station.noTilesTimeout++;
+                if (station.noTilesTimeout == 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
                     sub_437F29(station.owner, 8);
                 }
-                if (station.var_29 >= 10)
+                if (station.noTilesTimeout >= 10)
                 {
                     sub_49E1F1(station.id());
                     station.invalidate();
-                    station.sub_48F7D1();
+                    deallocateStation(station.id());
                 }
             }
             else
             {
-                station.var_29 = 0;
+                station.noTilesTimeout = 0;
             }
             if (station.updateCargo())
             {
@@ -505,7 +505,7 @@ namespace OpenLoco::StationManager
                     {
                         continue;
                     }
-                    if ((station->cargoStats[cargoType].flags & StationCargoStatsFlags::flag1) == StationCargoStatsFlags::none)
+                    if ((station->cargoStats[cargoType].flags & StationCargoStatsFlags::acceptedFromProducer) == StationCargoStatsFlags::none)
                     {
                         continue;
                     }

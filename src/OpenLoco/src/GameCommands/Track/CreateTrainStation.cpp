@@ -150,36 +150,6 @@ namespace OpenLoco::GameCommands
         return nullptr;
     }
 
-    // 0x0048F321
-    static void sub_48F321(StationId stationId, World::Pos3 newTilePos, uint8_t newTileRotation)
-    {
-        // Likely adds tile to station
-        registers regs;
-        regs.ax = newTilePos.x;
-        regs.cx = newTilePos.y;
-        regs.dx = newTilePos.z | (newTileRotation & 0x3);
-        regs.ebx = enumValue(stationId);
-        call(0x0048F321, regs);
-    }
-
-    // 0x0048F529
-    static void sub_48F529(StationId stationId)
-    {
-        // Reset some station flags and cargo stuff
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0048F529, regs);
-    }
-
-    // 0x0048F716
-    static void sub_48F716(StationId stationId)
-    {
-        // Recalculate station centre
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0048F716, regs);
-    }
-
     // 0x0048D794
     static void sub_48D794(Station& station)
     {
@@ -551,12 +521,12 @@ namespace OpenLoco::GameCommands
         {
             if (_112C7A9)
             {
-                sub_48F321(_lastPlacedTrackStationId, trackStart, args.rotation);
+                addTileToStation(_lastPlacedTrackStationId, trackStart, args.rotation);
             }
             auto* station = StationManager::get(_lastPlacedTrackStationId);
             station->invalidate();
-            sub_48F529(_lastPlacedTrackStationId);
-            sub_48F716(_lastPlacedTrackStationId);
+            recalculateStationModes(_lastPlacedTrackStationId);
+            recalculateStationCenter(_lastPlacedTrackStationId);
             station->updateLabel();
             station->invalidate();
             sub_48D794(*station);

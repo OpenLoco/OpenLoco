@@ -693,7 +693,7 @@ namespace OpenLoco
                 }
 
                 const auto& cargoStats = station->cargoStats[cargoType];
-                if ((cargoStats.flags & StationCargoStatsFlags::flag1) == StationCargoStatsFlags::none)
+                if ((cargoStats.flags & StationCargoStatsFlags::acceptedFromProducer) == StationCargoStatsFlags::none)
                 {
                     continue;
                 }
