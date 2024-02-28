@@ -46,15 +46,15 @@ namespace OpenLoco::GameCommands
     // 0x0048FEF4
     static bool exceedsStationLength(Station* station, World::Pos3 pos)
     {
-        const auto xDiff = std::abs((pos.x + 16) - station->x);
-        const auto yDiff = std::abs((pos.y + 16) - station->y);
-        const auto length = std::max(xDiff, yDiff);
+        const auto xDist = std::abs((pos.x + 16) - station->x);
+        const auto yDist = std::abs((pos.y + 16) - station->y);
+        const auto radius = std::max(xDist, yDist);
 
         // Vanilla had a maximum of 8 tiles in either direction. We've made this configurable.
-        const auto stationLengthLimit = Config::get().stationLengthLimit * World::kTileSize;
-        const bool isLimited = stationLengthLimit > 0;
+        const auto stationRadialLimit = Config::get().stationLengthLimit * World::kTileSize / 2;
+        const bool isLimited = stationRadialLimit > 0;
 
-        return isLimited && length > stationLengthLimit;
+        return isLimited && radius > stationRadialLimit;
     }
 
     // 0x0048FFF7
