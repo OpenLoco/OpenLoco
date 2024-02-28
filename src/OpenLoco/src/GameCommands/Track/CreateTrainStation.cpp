@@ -511,8 +511,8 @@ namespace OpenLoco::GameCommands
                     elTrack->setHasStationElement(true);
                 }
                 newStationElement->setObjectId(args.type);
-                newStationElement->setClearZ(newStationElement->clearZ() + stationObj->height / World::kSmallZStep);
-                elTrack->setClearZ(newStationElement->clearZ());
+                elTrack->setClearZ(elTrack->clearZ() + stationObj->height / World::kSmallZStep);
+                newStationElement->setClearZ(elTrack->clearZ());
                 newStationElement->setOwner(getUpdatingCompanyId());
                 Ui::ViewportManager::invalidate(trackLoc, newStationElement->baseHeight(), newStationElement->clearHeight());
             }
