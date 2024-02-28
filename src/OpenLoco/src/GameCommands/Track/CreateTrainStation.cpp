@@ -1,4 +1,5 @@
 #include "CreateTrainStation.h"
+#include "Config.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
@@ -42,14 +43,18 @@ namespace OpenLoco::GameCommands
         return result;
     }
 
-    static bool sub_48FEF4(StationId id, World::Pos3 pos)
+    // 0x0048FEF4
+    static bool exceedsStationLength(Station* station, World::Pos3 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.ebx = enumValue(id);
-        return call(0x0048FEF4, regs) & X86_FLAG_CARRY;
+        const auto xDiff = std::abs((pos.x + 16) - station->x);
+        const auto yDiff = std::abs((pos.y + 16) - station->y);
+        const auto length = std::max(xDiff, yDiff);
+
+        // Vanilla had a maximum of 8 tiles in either direction. We've made this configurable.
+        const auto stationLengthLimit = Config::get().stationLengthLimit * World::kTileSize;
+        const bool isLimited = stationLengthLimit > 0;
+
+        return isLimited && length > stationLengthLimit;
     }
 
     // 0x0048FFF7
@@ -96,6 +101,21 @@ namespace OpenLoco::GameCommands
                 return std::make_pair(NearbyStationValidation::failure, StationId::null);
             }
             return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
+        }
+        else
+        {
+            if (!(flags & Flags::aiAllocated))
+            {
+                if (exceedsStationLength(station, pos))
+                {
+                    if (nearbyStation.isPhysicallyAttached)
+                    {
+                        setErrorText(StringIds::station_too_spread_out);
+                        return std::make_pair(NearbyStationValidation::failure, StationId::null);
+                    }
+                    return std::make_pair(NearbyStationValidation::requiresNewStation, StationId::null);
+                }
+            }
         }
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
     }
