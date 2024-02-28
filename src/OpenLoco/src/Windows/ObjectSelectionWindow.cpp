@@ -1414,10 +1414,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             Gfx::loadPalette();
             Gfx::invalidateScreen();
         }
-        else
-        {
-            ObjectManager::freeSelectionList();
-        }
+        ObjectManager::freeSelectionList();
     }
 
     // 0x00473A04
