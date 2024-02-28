@@ -1,4 +1,4 @@
-24.02+ (???)
+24.02.1 (2024-02-28)
 ------------------------------------------------------------------------
 - Fix: [#2310] Newly created stations and the tracks they are on have zero clearance.
 
