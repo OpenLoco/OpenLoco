@@ -278,6 +278,7 @@ namespace OpenLoco::Config
         _newConfig.invertRightMouseViewPan = config["invertRightMouseViewPan"].as<bool>(false);
         _newConfig.townGrowthDisabled = config["townGrowthDisabled"].as<bool>(false);
         _newConfig.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
+        _newConfig.stationLengthLimit = config["stationLengthLimit"].as<int32_t>(8);
 
         // Preferred owner
         _newConfig.preferredOwnerName = config["preferredOwnerName"].as<std::string>("");
@@ -376,6 +377,7 @@ namespace OpenLoco::Config
         node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
         node["townGrowthDisabled"] = _newConfig.townGrowthDisabled;
         node["trainsReverseAtSignals"] = _newConfig.trainsReverseAtSignals;
+        node["stationLengthLimit"] = _newConfig.stationLengthLimit;
 
         // Preferred owner
         node["preferredOwnerName"] = _newConfig.preferredOwnerName;

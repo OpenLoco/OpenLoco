@@ -2277,6 +2277,9 @@ namespace OpenLoco::Ui::Windows::Options
                 disable_vehicle_breakdowns,
                 trainsReverseAtSignals,
                 disable_vehicle_load_penalty,
+                stationLengthLimit,
+                stationLengthLimitDownBtn,
+                stationLengthLimitUpBtn,
 
                 groupSaveOptions,
                 autosave_frequency,
@@ -2300,7 +2303,9 @@ namespace OpenLoco::Ui::Windows::Options
             (1 << Widx::autosave_amount_down_btn) |
             (1 << Widx::autosave_amount_up_btn) |
             (1 << Widx::autosave_frequency_btn) |
-            (1 << Widx::disable_vehicle_load_penalty);
+            (1 << Widx::disable_vehicle_load_penalty) |
+            (1 << Widx::stationLengthLimitDownBtn) |
+            (1 << Widx::stationLengthLimitUpBtn) |
         // clang-format on
 
         static Widget _widgets[] = {
@@ -2313,16 +2318,18 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
 
             // Vehicle behaviour
-            makeWidget({ 4, 115 }, { 412, 62 }, WidgetType::groupbox, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
+            makeWidget({ 4, 115 }, { 412, 77 }, WidgetType::groupbox, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
             makeWidget({ 10, 130 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
             makeWidget({ 10, 145 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
             makeWidget({ 10, 160 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
+            makeStepperWidgets({ 250, 175 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty, StringIds::stationLengthLimitTooltip),
 
             // Save options group
-            makeWidget({ 4, 182 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
-            makeDropdownWidgets({ 250, 197 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 250, 212 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 227 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 4, 196 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
+            makeDropdownWidgets({ 250, 211 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 250, 226 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 241 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+
             widgetEnd(),
         };
 
@@ -2416,9 +2423,23 @@ namespace OpenLoco::Ui::Windows::Options
             w.draw(rt);
             Common::drawTabs(&w, rt);
 
-            auto y = w.y + w.widgets[Widx::autosave_frequency].top;
+            // Station length limit label
+            auto y = w.y + w.widgets[Widx::stationLengthLimit].top;
+            drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::stationLengthLimitLabel);
+
+            // Station length limit value
+            auto stationLengthLimit = Config::get().stationLengthLimit;
+            auto lengthValueStringId = StringIds::numTilesValue;
+            if (stationLengthLimit == 0)
+                lengthValueStringId = StringIds::unlimitedValue;
+
+            drawDropdownContent(&w, rt, Widx::stationLengthLimit, lengthValueStringId, stationLengthLimit);
+
+            // Label for autosave frequency
+            y = w.y + w.widgets[Widx::autosave_frequency].top;
             drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
+            // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
             StringId stringId;
             switch (freq)
@@ -2435,9 +2456,11 @@ namespace OpenLoco::Ui::Windows::Options
             }
             drawDropdownContent(&w, rt, Widx::autosave_frequency, stringId, freq);
 
+            // Label for autosave amount
             y = w.y + w.widgets[Widx::autosave_amount].top;
             drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
 
+            // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
             drawDropdownContent(&w, rt, Widx::autosave_amount, StringIds::int_32, scale);
         }
@@ -2526,6 +2549,27 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
+        static void adjustStationLengthLimitBy(Window& w, int8_t amount)
+        {
+            auto& config = Config::get();
+            auto newValue = config.stationLengthLimit + amount;
+
+            // Ensure we work in factors of 8
+            if (newValue % 8 != 0)
+                newValue = newValue - (newValue % 8);
+
+            // Roll over from unlimited (0) to highest tile value (32)?
+            if (newValue < 0)
+                newValue = 32;
+
+            // Roll over from highest tile value (32) to unlimited (0)?
+            if (newValue > 32)
+                newValue = 0;
+
+            config.stationLengthLimit = newValue;
+            WindowManager::invalidateWidget(w.type, w.number, Widx::stationLengthLimit);
+        }
+
         // 0x004C12D2
         static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
@@ -2560,6 +2604,14 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::disable_vehicle_load_penalty:
                     Config::get().disableVehicleLoadPenaltyCheat = !Config::get().disableVehicleLoadPenaltyCheat;
                     WindowManager::invalidateWidget(w.type, w.number, Widx::disable_vehicle_load_penalty);
+                    break;
+
+                case Widx::stationLengthLimitDownBtn:
+                    adjustStationLengthLimitBy(w, -8);
+                    break;
+
+                case Widx::stationLengthLimitUpBtn:
+                    adjustStationLengthLimitBy(w, 8);
                     break;
 
                 case Widx::disableAICompanies:
