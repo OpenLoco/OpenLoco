@@ -882,9 +882,9 @@ namespace OpenLoco::StringIds
     constexpr StringId cargo_capacity_tooltip = 1172;
     constexpr StringId cargo_capacity = 1173;
     constexpr StringId cargo_capacity_plus = 1174;
-
+    constexpr StringId too_many_stations_in_game = 1175;
     constexpr StringId station_too_large = 1176;
-
+    constexpr StringId town_must_be_built_first = 1176;
     constexpr StringId tab_map_overall = 1178;
     constexpr StringId tab_map_vehicles = 1179;
     constexpr StringId tab_map_industries = 1180;

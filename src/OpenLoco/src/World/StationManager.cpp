@@ -1,6 +1,7 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryManager.h"
@@ -539,18 +540,55 @@ namespace OpenLoco::StationManager
     // 0x0048F8A0
     StationId allocateNewStation(const World::Pos3 pos, [[maybe_unused]] const CompanyId owner, const uint8_t mode)
     {
-        // Quite a simple function
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bl = mode;
-        // Owner is passed by _updatingCompanyId
-        auto allocated = !(call(0x0048F8A0, regs) & X86_FLAG_CARRY);
-        if (allocated)
+        if (!World::validCoords(pos))
         {
-            return static_cast<StationId>(regs.bx);
+            GameCommands::setErrorTitle(StringIds::off_edge_of_map);
+            return StationId::null;
         }
+
+        // Find first available station
+        for (auto& station : rawStations())
+        {
+            if (!station.empty())
+                continue;
+
+            auto maybeTown = TownManager::getClosestTownAndDensity(pos);
+            if (!maybeTown)
+            {
+                GameCommands::setErrorTitle(StringIds::town_must_be_built_first);
+                return StationId::null;
+            }
+
+            auto posSmallZ = pos;
+            posSmallZ.z /= World::kSmallZStep;
+
+            station.town = maybeTown->first;
+            station.owner = owner;
+            station.name = generateNewStationName(station.id(), station.town, posSmallZ, mode);
+
+            // Reset cargo stats
+            for (auto& stats : station.cargoStats)
+            {
+                stats.quantity = 0;
+                stats.origin = StationId::null;
+                stats.flags = StationCargoStatsFlags::none;
+                stats.rating = 150;
+                stats.densityPerTile = 0;
+            }
+
+            station.x = pos.x;
+            station.y = pos.y;
+            station.z = pos.z;
+            station.flags = StationFlags::flag_5;
+            station.stationTileSize = 0;
+            station.noTilesTimeout = 0;
+            station.var_3B0 = 0;
+            station.var_3B1 = 0;
+
+            return station.id();
+        }
+
+        GameCommands::setErrorTitle(StringIds::too_many_stations_in_game);
         return StationId::null;
     }
 

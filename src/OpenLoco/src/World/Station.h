@@ -37,7 +37,7 @@ namespace OpenLoco
         Speed16 vehicleSpeed{ 0 };          // 0x36 max speed of vehicle that transported the cargo
         uint8_t vehicleAge{};               // 0x38 age of the vehicle (car) that transported the cargo
         IndustryId industryId{};            // 0x39
-        uint8_t densityPerTile{};           // 0x40 amount of cargo visible per tile of station
+        uint8_t densityPerTile{};           // 0x3A amount of cargo visible per tile of station
 
         bool empty() const
         {
