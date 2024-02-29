@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.invalidate();
         }
 
-        // 0x0043EBF1
+        // 0x0043EA0D
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
@@ -1114,7 +1114,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        // 0x0043EAEB
+        // 0x0043E90D
         static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
