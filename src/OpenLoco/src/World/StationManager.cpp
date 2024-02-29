@@ -11,6 +11,7 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "MessageManager.h"
 #include "Objects/IndustryObject.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
@@ -595,10 +596,31 @@ namespace OpenLoco::StationManager
     // 0x0048F7D1
     void deallocateStation(const StationId stationId)
     {
-        // Quite a simple function
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0048F7D1, regs);
+        WindowManager::close(WindowType::station, WindowNumber_t(stationId));
+
+        auto station = get(stationId);
+        if (station == nullptr)
+            return;
+
+        if ((station->flags & StationFlags::flag_5) == StationFlags::none)
+        {
+            auto town = TownManager::get(station->town);
+            if (town != nullptr)
+            {
+                town->numStations--;
+                WindowManager::invalidate(WindowType::town, WindowNumber_t(station->town));
+            }
+        }
+
+        // TODO: these need their parameters passed -- make proper sub functions
+        call(0x004910AB); // update station list window
+        call(0x0047062B); // prune order table
+        call(0x0048F850); // remove refs to this station in cargo stats
+        call(0x004B93DC); // something with entities -- routing?
+
+        MessageManager::removeAllSubjectRefs(enumValue(stationId), MessageItemArgumentType::station);
+        StringManager::emptyUserString(station->name);
+        station->name = StringIds::null;
     }
 
     void registerHooks()
