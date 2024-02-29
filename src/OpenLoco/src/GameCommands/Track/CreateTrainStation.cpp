@@ -1,5 +1,4 @@
 #include "CreateTrainStation.h"
-#include "Config.h"
 #include "Economy/Economy.h"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
@@ -41,20 +40,6 @@ namespace OpenLoco::GameCommands
         result.id = static_cast<StationId>(regs.bx);
         result.isPhysicallyAttached = regs.eax & (1U << 31);
         return result;
-    }
-
-    // 0x0048FEF4
-    static bool exceedsStationLength(Station* station, World::Pos3 pos)
-    {
-        if (Config::get().disableStationSizeLimit)
-            return false;
-
-        const auto xDist = std::abs((pos.x + 16) - station->x);
-        const auto yDist = std::abs((pos.y + 16) - station->y);
-        const auto radius = std::max(xDist, yDist);
-
-        const auto stationRadialLimit = 8 * World::kTileSize;
-        return radius > stationRadialLimit;
     }
 
     // 0x0048FFF7
@@ -106,7 +91,7 @@ namespace OpenLoco::GameCommands
         {
             if (!(flags & Flags::aiAllocated))
             {
-                if (exceedsStationLength(station, pos))
+                if (StationManager::exceedsStationSize(*station, pos))
                 {
                     if (nearbyStation.isPhysicallyAttached)
                     {
