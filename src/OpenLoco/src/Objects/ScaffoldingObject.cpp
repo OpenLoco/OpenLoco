@@ -22,7 +22,7 @@ namespace OpenLoco
     }
 
     // 0x0042DED8
-    void ScaffoldingObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void ScaffoldingObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(ScaffoldingObject));
 

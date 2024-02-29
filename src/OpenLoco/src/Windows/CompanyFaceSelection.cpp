@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "GameCommands/Company/ChangeCompanyFace.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
@@ -28,7 +29,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static constexpr Ui::Size kWindowSize = { 400, 272 };
     static constexpr int16_t kRowHeight = 10;
-    static WindowEventList events;
 
     enum widx
     {
@@ -51,36 +51,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         widgetEnd(),
     };
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     static std::vector<uint32_t> _inUseCompetitors;
-
-    // 0x004353F4
-    static void findAllInUseCompetitors(const CompanyId id)
-    {
-        std::vector<uint8_t> takenCompetitorIds;
-        for (const auto& c : CompanyManager::companies())
-        {
-            if (c.id() != id)
-            {
-                takenCompetitorIds.push_back(c.competitorId);
-            }
-        }
-
-        _inUseCompetitors.clear();
-        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
-        {
-            auto competitorId = ObjectManager::findObjectHandle(*object.second._header);
-            if (competitorId)
-            {
-                auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), competitorId->id);
-                if (res != takenCompetitorIds.end())
-                {
-                    _inUseCompetitors.push_back(object.first);
-                }
-            }
-        }
-    }
 
     // 0x00434F52
     void open(const CompanyId id)
@@ -91,13 +64,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             _9C68F2 = id;
             self->owner = id;
-            findAllInUseCompetitors(id);
+            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
             self->invalidate();
         }
         else
         {
-            initEvents();
-            self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, &events);
+            self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
             self->widgets = widgets;
             self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
@@ -105,7 +77,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self->owner = id;
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->colour_0A);
-            findAllInUseCompetitors(id);
+            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
             self->rowCount = _numberCompetitorObjects;
             self->rowHover = -1;
             self->object = nullptr;
@@ -173,7 +145,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, _cursorX);
         GameCommands::setErrorTitle(StringIds::cant_select_face);
-        const auto result = GameCommands::do_65(*objRow.object._header, self.owner);
+
+        GameCommands::ChangeCompanyFaceArgs args{};
+        args.companyId = self.owner;
+        args.objHeader = *objRow.object._header;
+
+        const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
         if (result)
         {
             WindowManager::close(&self);
@@ -303,16 +280,20 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseOver = scrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.onClose = onClose;
-        events.onMouseUp = onMouseUp;
-        events.getScrollSize = getScrollSize;
-        events.scrollMouseDown = scrollMouseDown;
-        events.scrollMouseOver = scrollMouseOver;
-        events.tooltip = tooltip;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
-        events.drawScroll = drawScroll;
+        return kEvents;
     }
 }

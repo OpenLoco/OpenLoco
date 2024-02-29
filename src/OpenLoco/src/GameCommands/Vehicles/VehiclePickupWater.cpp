@@ -48,7 +48,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (elStation->isGhost() || elStation->isFlag5())
+                if (elStation->isGhost() || elStation->isAiAllocated())
                 {
                     continue;
                 }
@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
         {
             for (auto& component : car)
             {
-                component.front->carComponent_sub_4AF16A();
+                removeAllCargo(component);
             }
         }
         return 0;

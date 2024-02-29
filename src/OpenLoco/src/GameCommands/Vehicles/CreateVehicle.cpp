@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
-    static loco_global<World::TileElement*, 0x009C68D0> _9C68D0;
+    static loco_global<const World::TileElement*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
     static loco_global<int32_t, 0x011360FC> _11360FC;
     static loco_global<VehicleHead*, 0x01136240> _backupVeh0;
@@ -51,7 +51,6 @@ namespace OpenLoco::GameCommands
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<EntityId, 0x0113642A> _113642A;                   // used by build window and others
-    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;          // total used length of _987C5C
     static loco_global<uint8_t[Limits::kMaxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
 
     // 0x004B1D96
@@ -202,7 +201,7 @@ namespace OpenLoco::GameCommands
             if (vehObject.numSimultaneousCargoTypes > 1)
             {
                 newBogie->secondaryCargo.maxQty = vehObject.maxCargo[1];
-                newBogie->secondaryCargo.acceptedTypes = vehObject.cargoTypes[1];
+                newBogie->secondaryCargo.acceptedTypes = vehObject.compatibleCargoCategories[1];
                 auto cargoType = Numerics::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -281,7 +280,7 @@ namespace OpenLoco::GameCommands
             if (vehObject.numSimultaneousCargoTypes != 0)
             {
                 newBody->primaryCargo.maxQty = vehObject.maxCargo[0];
-                newBody->primaryCargo.acceptedTypes = vehObject.cargoTypes[0];
+                newBody->primaryCargo.acceptedTypes = vehObject.compatibleCargoCategories[0];
                 auto cargoType = Numerics::bitScanForward(newBody->primaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
@@ -395,9 +394,9 @@ namespace OpenLoco::GameCommands
 
     static void sub_470312(VehicleHead* const newHead)
     {
-        _987C5C[_orderTableLength] = 0;
-        newHead->orderTableOffset = _orderTableLength;
-        _orderTableLength++;
+        _987C5C[OrderManager::orderTableLength()] = 0;
+        newHead->orderTableOffset = OrderManager::orderTableLength();
+        OrderManager::orderTableLength()++;
         newHead->currentOrder = 0;
         newHead->sizeOfOrderTable = 1;
     }
@@ -457,10 +456,10 @@ namespace OpenLoco::GameCommands
         newHead->status = Status::unk_0;
         newHead->stationId = StationId::null;
         newHead->breakdownFlags = BreakdownFlags::none;
-        newHead->var_60 = -1;
-        newHead->var_61 = -1;
+        newHead->var_60 = 0xFFU;
+        newHead->var_61 = 0xFFU;
         newHead->totalRefundCost = 0;
-        newHead->lastAverageSpeed = 0;
+        newHead->lastAverageSpeed = 0_mph;
         newHead->var_79 = 0;
         sub_470312(newHead);
         return newHead;
@@ -486,7 +485,7 @@ namespace OpenLoco::GameCommands
         newVeh1->spriteHeightPositive = 0;
         newVeh1->var_38 = Flags38::none;
         newVeh1->var_3C = 0;
-        newVeh1->var_44 = 0_mph;
+        newVeh1->targetSpeed = 0_mph;
         newVeh1->timeAtSignal = 0;
         newVeh1->var_48 = Flags48::none;
         newVeh1->var_52 = 0;
@@ -520,7 +519,7 @@ namespace OpenLoco::GameCommands
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
         newVeh2->drivingSoundId = SoundObjectId::null;
-        newVeh2->objectId = -1;
+        newVeh2->objectId = 0xFFFFU;
         newVeh2->soundFlags = Vehicles::SoundFlags::none;
         newVeh2->curMonthRevenue = 0;
         newVeh2->profit[0] = 0;
@@ -553,7 +552,7 @@ namespace OpenLoco::GameCommands
         newTail->spriteHeightPositive = 0;
         newTail->var_38 = Flags38::none;
         newTail->drivingSoundId = SoundObjectId::null;
-        newTail->objectId = -1;
+        newTail->objectId = 0xFFFFU;
         newTail->soundFlags = Vehicles::SoundFlags::none;
         newTail->trainDanglingTimeout = 0;
         lastVeh->setNextCar(newTail->id);
@@ -585,7 +584,7 @@ namespace OpenLoco::GameCommands
             return {};
         }
 
-        if (_orderTableLength >= Limits::kMaxOrders)
+        if (OrderManager::orderTableLength() >= Limits::kMaxOrders)
         {
             setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
@@ -677,12 +676,12 @@ namespace OpenLoco::GameCommands
                 auto veh1 = _head->nextVehicleComponent();
                 if (veh1 == nullptr)
                 {
-                    throw std::runtime_error("Bad vehicle structure");
+                    throw Exception::RuntimeError("Bad vehicle structure");
                 }
                 auto veh2 = veh1->nextVehicleComponent();
                 if (veh2 == nullptr)
                 {
-                    throw std::runtime_error("Bad vehicle structure");
+                    throw Exception::RuntimeError("Bad vehicle structure");
                 }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing

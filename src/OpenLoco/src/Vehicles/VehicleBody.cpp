@@ -3,6 +3,7 @@
 #include "Effects/Effect.h"
 #include "Effects/ExhaustEffect.h"
 #include "Entities/EntityManager.h"
+#include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
@@ -32,7 +33,6 @@ namespace OpenLoco::Vehicles
     static loco_global<bool, 0x01136238> _vehicleUpdate_backBogieHasMoved;
     static loco_global<int8_t[88], 0x004F865C> _vehicle_arr_4F865C;    // cargoType related?
     static loco_global<bool[44], 0x004F8A7C> _trackIdToSparkDirection; // bools true for right false for left
-    static loco_global<bool, 0x00525FAE> _trafficHandedness;           // boolean true for right false for left
 
     // 0x00503E5C
     static constexpr Pitch kVehicleBodyIndexToPitch[] = {
@@ -248,7 +248,7 @@ namespace OpenLoco::Vehicles
             return;
 
         auto bogieDifference = front_bogie->position - back_bogie->position;
-        auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
+        auto distanceBetweenBogies = Math::Vector::distance2D(front_bogie->position, back_bogie->position);
         const auto* vehObj = getObject();
         if (vehObj->bodySprites[objectSpriteType].hasFlags(BodySpriteFlags::hasSteepSprites))
         {
@@ -972,7 +972,7 @@ namespace OpenLoco::Vehicles
 
             for (auto& el : tile)
             {
-                if (stationFound && !(el.isGhost() || el.isFlag5()))
+                if (stationFound && !(el.isGhost() || el.isAiAllocated()))
                 {
                     break;
                 }
@@ -1141,7 +1141,7 @@ namespace OpenLoco::Vehicles
         auto yaw = (spriteYaw + 16) & 0x3F;
 
         auto unkFactor = 5;
-        if (_trafficHandedness != 0)
+        if (getGameState().trafficHandedness != 0)
         {
             unkFactor = -5;
         }
@@ -1303,6 +1303,8 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC039
+    // Note: Vanilla often called this from bogies which would
+    // just return immediately
     void VehicleBody::updateCargoSprite()
     {
         if (objectSpriteType == 0xFF)

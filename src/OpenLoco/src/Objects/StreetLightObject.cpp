@@ -28,7 +28,7 @@ namespace OpenLoco
     }
 
     // 0x00477F19
-    void StreetLightObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void StreetLightObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(StreetLightObject));
 

@@ -7,7 +7,7 @@
 
 namespace OpenLoco
 {
-    using string_id = uint16_t;
+    using StringId = uint16_t;
 
     namespace Engine
     {
@@ -28,6 +28,6 @@ namespace OpenLoco
     int main(std::vector<std::string>&& argv);
     bool promptTickLoop(std::function<bool()> tickAction);
     [[noreturn]] void exitCleanly();
-    [[noreturn]] void exitWithError(OpenLoco::string_id message, uint32_t errorCode);
-    [[noreturn]] void exitWithError(string_id eax, string_id ebx);
+    [[noreturn]] void exitWithError(OpenLoco::StringId message, uint32_t errorCode);
+    [[noreturn]] void exitWithError(StringId eax, StringId ebx);
 }

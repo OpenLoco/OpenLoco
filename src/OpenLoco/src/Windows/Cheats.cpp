@@ -136,8 +136,6 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         static constexpr Ui::Size kWindowSize = { 250, 210 };
 
-        static WindowEventList _events;
-
         namespace Widx
         {
             enum
@@ -299,7 +297,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     StringIds::cheat_month);
 
                 auto args = FormatArguments::common();
-                args.push((string_id)OpenLoco::StringManager::monthToString(_date.month).second);
+                args.push((StringId)OpenLoco::StringManager::monthToString(_date.month).second);
                 drawingCtx.drawStringLeft(
                     *rt,
                     self.x + widget.left + 1,
@@ -445,22 +443,28 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
-        static void initEvents()
+        static void initDate()
         {
             _date = getCurrentDate();
-            _events.draw = draw;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
+        }
+
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
+        {
+            return kEvents;
         }
     }
 
     namespace Companies
     {
         static constexpr Ui::Size kWindowSize = { 250, 188 };
-
-        static WindowEventList _events;
 
         namespace Widx
         {
@@ -615,22 +619,24 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_finances);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.draw = draw;
-            _events.onDropdown = onDropdown;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
+            return kEvents;
         }
     }
 
     namespace Vehicles
     {
-        static constexpr Ui::Size kWindowSize = { 250, 155 };
-
-        static WindowEventList _events;
+        static constexpr Ui::Size kWindowSize = { 250, 152 };
 
         namespace Widx
         {
@@ -650,7 +656,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
             makeWidget({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
             makeWidget({ 10, 78 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_hundred),
-            makeWidget({ 4, 102 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
+            makeWidget({ 4, 102 }, { kWindowSize.width - 8, 45 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_build_vehicle_window),
             makeWidget({ 10, 116 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::display_locked_vehicles, StringIds::tooltip_display_locked_vehicles),
             makeWidget({ 25, 130 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_building_locked_vehicles, StringIds::tooltip_build_locked_vehicles),
             widgetEnd(),
@@ -758,20 +764,22 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_vehicles);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.draw = draw;
-            _events.onMouseUp = onMouseUp;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
+            return kEvents;
         }
     }
 
     namespace Towns
     {
         static constexpr Ui::Size kWindowSize = { 250, 103 };
-
-        static WindowEventList _events;
 
         namespace Widx
         {
@@ -861,16 +869,18 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_towns);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.draw = draw;
-            _events.onMouseUp = onMouseUp;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
+            return kEvents;
         }
     }
-
-    static void initEvents();
 
     Window* open()
     {
@@ -878,13 +888,13 @@ namespace OpenLoco::Ui::Windows::Cheats
         if (window != nullptr)
             return window;
 
-        initEvents();
-
         window = WindowManager::createWindow(
             WindowType::cheats,
             Finances::kWindowSize,
             WindowFlags::none,
-            &Finances::_events);
+            Finances::getEvents());
+
+        Finances::initDate();
 
         window->widgets = Finances::_widgets;
         window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;
@@ -905,7 +915,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             Widget* widgets;
             WidgetIndex_t widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
             Ui::Size kWindowSize;
@@ -913,10 +923,10 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Finances::_widgets,  Widx::tab_finances,  &Finances::_events,  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
-            { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
-            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
-            { Towns::_widgets,     Widx::tab_towns,     &Towns::_events,     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
+            { Finances::_widgets,  Widx::tab_finances,  Finances::getEvents(),  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::kWindowSize  },
+            { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
+            { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
         };
         // clang-format on
 
@@ -929,7 +939,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->disabledWidgets = 0;
@@ -943,13 +953,5 @@ namespace OpenLoco::Ui::Windows::Cheats
             self->invalidate();
             self->moveInsideScreenEdges();
         }
-    }
-
-    static void initEvents()
-    {
-        Finances::initEvents();
-        Companies::initEvents();
-        Vehicles::initEvents();
-        Towns::initEvents();
     }
 }

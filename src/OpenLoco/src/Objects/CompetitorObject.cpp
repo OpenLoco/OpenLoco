@@ -25,7 +25,7 @@ namespace OpenLoco
 
         drawingCtx.drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Drawing::RectFlags::none);
 
-        auto image = Gfx::recolour(images[0], Colour::mutedSeaGreen);
+        auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);
         drawingCtx.drawImage(&rt, x - 32, y - 32, image);
     }
 
@@ -78,19 +78,19 @@ namespace OpenLoco
     }
 
     // 0x00434CA0
-    void CompetitorObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void CompetitorObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(CompetitorObject));
 
         // Load object name string
-        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+        auto loadString = [&remainingData, &handle](StringId& dst, uint8_t num) {
             auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
             dst = strRes.str;
             remainingData = remainingData.subspan(strRes.tableLength);
         };
 
-        loadString(var_00, 0);
-        loadString(var_02, 1);
+        loadString(name, 0);
+        loadString(lastName, 1);
 
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
@@ -118,13 +118,13 @@ namespace OpenLoco
     // 0x00434D08
     void CompetitorObject::unload()
     {
-        var_00 = 0;
-        var_02 = 0;
+        name = 0;
+        lastName = 0;
 
         std::fill(std::begin(images), std::end(images), 0);
     }
 
-    static std::array<string_id, 10> aiRatingToLevelArray = {
+    static std::array<StringId, 10> aiRatingToLevelArray = {
         {
             StringIds::low,
             StringIds::low,
@@ -139,7 +139,7 @@ namespace OpenLoco
         }
     };
 
-    [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating)
+    [[nodiscard]] StringId aiRatingToLevel(const uint8_t rating)
     {
         return aiRatingToLevelArray[std::min(rating, static_cast<uint8_t>(aiRatingToLevelArray.size()))];
     }

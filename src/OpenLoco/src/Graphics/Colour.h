@@ -281,6 +281,7 @@ namespace OpenLoco
         ExtColour getTranslucent(Colour colour);
         ExtColour getTranslucent(Colour colour, uint8_t shade);
         ExtColour getShadow(Colour colour);
+        ExtColour getGlass(Colour colour);
         constexpr ExtColour toExt(Colour c) { return static_cast<ExtColour>(c); }
     }
 
@@ -340,6 +341,7 @@ namespace OpenLoco
         constexpr PaletteIndex_t index_7D = 0x7D;
         constexpr PaletteIndex_t index_85 = 0x85;
         constexpr PaletteIndex_t index_89 = 0x89;
+        constexpr PaletteIndex_t index_8B = 0x8B;
         constexpr PaletteIndex_t index_9D = 0x9D;
         constexpr PaletteIndex_t index_A1 = 0xA1;
         constexpr PaletteIndex_t index_A2 = 0xA2;

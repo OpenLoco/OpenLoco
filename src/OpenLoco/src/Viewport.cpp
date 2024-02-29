@@ -6,10 +6,12 @@
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Paint/Paint.h"
 #include "SceneManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -154,7 +156,7 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            bool isHovered = (Input::hasMapSelectionFlag(Input::MapSelectionFlags::hoveringOverStation))
+            bool isHovered = (World::hasMapSelectionFlag(World::MapSelectionFlags::hoveringOverStation))
                 && (station.id() == Input::getHoveredStationId());
 
             drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
@@ -197,7 +199,7 @@ namespace OpenLoco::Ui
     // 0x00470A62
     static void drawRoutingNumbers(Gfx::RenderTarget& rt)
     {
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::unk_04))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::unk_04))
         {
             return;
         }
@@ -216,7 +218,7 @@ namespace OpenLoco::Ui
         {
             auto orderRing = Vehicles::OrderRingView(orderFrame.orderOffset);
             auto* order = orderRing.atIndex(0);
-            if (!order->hasFlags(Vehicles::OrderFlags::HasNumber))
+            if (!order || !order->hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 continue;
             }
@@ -241,8 +243,9 @@ namespace OpenLoco::Ui
     void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
     {
         Paint::SessionOptions options{};
-        if (hasFlags(ViewportFlags::hide_foreground_scenery_buildings | ViewportFlags::hide_foreground_tracks_roads))
+        if (hasFlags(ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughTracks))
         {
+            // TODO: unused
             options.foregroundCullHeight = viewHeight / 2 + viewY;
         }
         PaletteIndex_t fillColour = PaletteIndex::index_D8;

@@ -42,7 +42,7 @@ namespace OpenLoco
     }
 
     // 0x00490E49
-    void DockObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void DockObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(DockObject));
 
@@ -60,7 +60,7 @@ namespace OpenLoco
         // Load unk2?
         for (auto i = 0U; i < numAux02Ent; ++i)
         {
-            var_1C[0] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            var_1C[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);

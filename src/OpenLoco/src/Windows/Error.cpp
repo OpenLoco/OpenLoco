@@ -18,7 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Error
 {
-    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
+    static loco_global<bool, 0x00508F09> _suppressErrorSound;
     static loco_global<char[512], 0x009C64B3> _errorText;
     static loco_global<uint16_t, 0x009C66B3> _linebreakCount;
     static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
@@ -27,12 +27,9 @@ namespace OpenLoco::Ui::Windows::Error
 
     namespace Common
     {
-        static WindowEventList events;
-
-        static void draw(Ui::Window& self, Gfx::RenderTarget* rt);
-        static void onPeriodicUpdate(Ui::Window& self);
-        static void initEvents();
+        static const WindowEventList& getEvents();
     }
+
     namespace Error
     {
         enum widx
@@ -61,7 +58,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
     }
 
-    static char* formatErrorString(string_id title, string_id message, FormatArguments args, char* buffer)
+    static char* formatErrorString(StringId title, StringId message, FormatArguments args, char* buffer)
     {
         char* ptr = (char*)buffer;
         ptr[0] = ControlCodes::Colour::black;
@@ -86,7 +83,7 @@ namespace OpenLoco::Ui::Windows::Error
         return ptr;
     }
 
-    static void createErrorWindow(string_id title, string_id message)
+    static void createErrorWindow(StringId title, StringId message)
     {
         WindowManager::close(WindowType::error);
 
@@ -147,9 +144,7 @@ namespace OpenLoco::Ui::Windows::Error
                 Ui::Point(x, y),
                 windowSize,
                 WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
-                &Common::events);
-
-            Common::initEvents();
+                Common::getEvents());
 
             if (_errorCompetitorId != CompanyId::null)
             {
@@ -164,7 +159,7 @@ namespace OpenLoco::Ui::Windows::Error
             error->widgets[Error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
-            if (!(_suppressErrorSound & (1 << 0)))
+            if (!_suppressErrorSound)
             {
                 int32_t pan = (error->width / 2) + error->x;
                 Audio::playSound(Audio::SoundId::error, pan);
@@ -173,15 +168,25 @@ namespace OpenLoco::Ui::Windows::Error
     }
 
     // 0x00431A8A
-    void open(string_id title, string_id message)
+    void open(StringId title, StringId message)
     {
         _errorCompetitorId = CompanyId::null;
 
         createErrorWindow(title, message);
     }
 
+    void openQuiet(StringId title, StringId message)
+    {
+        _errorCompetitorId = CompanyId::null;
+        _suppressErrorSound = true;
+
+        createErrorWindow(title, message);
+
+        _suppressErrorSound = false;
+    }
+
     // 0x00431908
-    void openWithCompetitor(string_id title, string_id message, CompanyId competitorId)
+    void openWithCompetitor(StringId title, StringId message, CompanyId competitorId)
     {
         _errorCompetitorId = competitorId;
 
@@ -193,14 +198,18 @@ namespace OpenLoco::Ui::Windows::Error
         registerHook(
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Windows::Error::open(regs.bx, regs.dx);
+                regs = backup;
                 return 0;
             });
 
         registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, CompanyId(regs.al));
+                regs = backup;
                 return 0;
             });
     }
@@ -267,10 +276,14 @@ namespace OpenLoco::Ui::Windows::Error
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onPeriodicUpdate = onPeriodicUpdate,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = Common::draw;
-            events.onPeriodicUpdate = Common::onPeriodicUpdate;
+            return kEvents;
         }
     }
 }

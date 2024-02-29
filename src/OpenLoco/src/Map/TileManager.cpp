@@ -31,6 +31,7 @@
 #include "TrackElement.h"
 #include "TreeElement.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "ViewportManager.h"
 #include "WallElement.h"
 #include "World/CompanyManager.h"
@@ -49,18 +50,8 @@ namespace OpenLoco::World::TileManager
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
-    static loco_global<TileElement*, 0x00F00158> _F00158;
+    static loco_global<const TileElement*, 0x00F00158> _F00158;
     static loco_global<uint32_t, 0x00F00168> _F00168;
-    static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
-    static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
-    static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
-    static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
-    static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
-    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<World::Pos2, 0x00525F6E> _startUpdateLocation;
-
-    constexpr uint16_t mapSelectedTilesSize = 300;
-    static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
     // 0x0046902E
     void removeSurfaceIndustry(const Pos2& pos)
@@ -90,7 +81,7 @@ namespace OpenLoco::World::TileManager
     void initialise()
     {
         _F00168 = 0;
-        _startUpdateLocation = World::Pos2(0, 0);
+        getGameState().tileUpdateStartLocation = World::Pos2(0, 0);
         const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
 
         SurfaceElement defaultElement{};
@@ -107,32 +98,9 @@ namespace OpenLoco::World::TileManager
         getGameState().flags |= GameStateFlags::tileManagerLoaded;
     }
 
-    stdx::span<TileElement> getElements()
+    std::span<TileElement> getElements()
     {
-        return stdx::span<TileElement>(static_cast<TileElement*>(_elements), getElementsEnd());
-    }
-
-    void setMapSelectionArea(const Pos2& locA, const Pos2& locB)
-    {
-        _mapSelectionAX = locA.x;
-        _mapSelectionAY = locA.y;
-        _mapSelectionBX = locB.x;
-        _mapSelectionBY = locB.y;
-    }
-
-    std::pair<Pos2, Pos2> getMapSelectionArea()
-    {
-        return std::make_pair(Pos2{ _mapSelectionAX, _mapSelectionAY }, Pos2{ _mapSelectionBX, _mapSelectionBY });
-    }
-
-    void setMapSelectionCorner(const uint8_t corner)
-    {
-        _word_F2448E = corner;
-    }
-
-    uint8_t getMapSelectionCorner()
-    {
-        return _word_F2448E;
+        return std::span<TileElement>(static_cast<TileElement*>(_elements), getElementsEnd());
     }
 
     TileElement* getElementsEnd()
@@ -145,7 +113,7 @@ namespace OpenLoco::World::TileManager
         return maxElements - (_elementsEnd - _elements);
     }
 
-    void setElements(stdx::span<TileElement> elements)
+    void setElements(std::span<TileElement> elements)
     {
         TileElement* dst = _elements;
         std::memset(dst, 0, maxElements * sizeof(TileElement));
@@ -214,6 +182,21 @@ namespace OpenLoco::World::TileManager
         regs.bl = baseZ;
         regs.bh = occupiedQuads;
         call(0x004616D6, regs);
+        TileElement* el = X86Pointer<TileElement>(regs.esi);
+        el->setType(type);
+        return el;
+    }
+
+    // 0x00461578
+    TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.bl = baseZ;
+        regs.bh = occupiedQuads;
+        regs.esi = X86Pointer(after);
+        call(0x00461578, regs);
         TileElement* el = X86Pointer<TileElement>(regs.esi);
         el->setType(type);
         return el;
@@ -450,16 +433,51 @@ namespace OpenLoco::World::TileManager
         return height;
     }
 
+    static uint8_t getCornerDownMask(const uint8_t cornerUp)
+    {
+        switch (cornerUp)
+        {
+            case SurfaceSlope::CornerUp::north:
+                return SurfaceSlope::CornerDown::south;
+
+            case SurfaceSlope::CornerUp::south:
+                return SurfaceSlope::CornerDown::north;
+
+            case SurfaceSlope::CornerUp::west:
+                return SurfaceSlope::CornerDown::east;
+
+            case SurfaceSlope::CornerUp::east:
+                return SurfaceSlope::CornerDown::west;
+        }
+        return SurfaceSlope::flat;
+    }
+
+    SmallZ getSurfaceCornerDownHeight(const SurfaceElement& surface, const uint8_t cornerMask)
+    {
+        auto baseZ = surface.baseZ();
+        if (surface.slope() & cornerMask)
+        {
+            baseZ += kSmallZStep;
+            uint8_t cornerDownMask = getCornerDownMask(cornerMask);
+            if (surface.isSlopeDoubleHeight() && surface.slopeCorners() == cornerDownMask)
+            {
+                baseZ += kSmallZStep;
+            }
+        }
+
+        return baseZ;
+    }
+
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface)
     {
         auto baseZ = surface.baseZ();
         if (surface.slope())
         {
             baseZ += kSmallZStep;
-        }
-        if (surface.isSlopeDoubleHeight())
-        {
-            baseZ += kSmallZStep;
+            if (surface.isSlopeDoubleHeight())
+            {
+                baseZ += kSmallZStep;
+            }
         }
 
         return baseZ;
@@ -467,7 +485,7 @@ namespace OpenLoco::World::TileManager
 
     static void clearTilePointers()
     {
-        std::fill(_tiles.begin(), _tiles.end(), kInvalidTile);
+        std::fill(_tiles.begin(), _tiles.end(), const_cast<TileElement*>(kInvalidTile));
     }
 
     // 0x00461348
@@ -496,13 +514,14 @@ namespace OpenLoco::World::TileManager
     // 0x0046148F
     void reorganise()
     {
+        const auto curCursor = Ui::getCursor();
         Ui::setCursor(Ui::CursorId::busy);
 
         try
         {
-            // Allocate a temporary buffer and tighly pack all the tile elements in the map
+            // Allocate a temporary buffer and tightly pack all the tile elements in the map
             std::vector<TileElement> tempBuffer;
-            tempBuffer.resize(maxElements * sizeof(TileElement));
+            tempBuffer.resize(maxElements);
 
             size_t numElements = 0;
             for (tile_coord_t y = 0; y < kMapRows; y++)
@@ -526,16 +545,15 @@ namespace OpenLoco::World::TileManager
             std::memset(_elements + numElements, 0, remainingElements * sizeof(TileElement));
 
             updateTilePointers();
-
-            // Note: original implementation did not revert the cursor
-            Ui::setCursor(Ui::CursorId::pointer);
         }
         catch (const std::bad_alloc&)
         {
             Ui::showMessageBox("Bad Alloc", "Bad memory allocation, exiting");
             exitWithError(4370, StringIds::null);
-            return;
         }
+
+        // Note: original implementation did not revert the cursor
+        Ui::setCursor(curCursor);
     }
 
     // 0x00461393
@@ -594,161 +612,12 @@ namespace OpenLoco::World::TileManager
         return owner;
     }
 
-    // TODO: Return std::optional
-    uint16_t setMapSelectionTiles(const World::Pos2& loc, const uint8_t selectionType)
-    {
-        uint16_t xPos = loc.x;
-        uint16_t yPos = loc.y;
-        uint8_t count = 0;
-
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
-        {
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            count++;
-        }
-
-        if (_word_F2448E != selectionType)
-        {
-            _word_F2448E = selectionType;
-            count++;
-        }
-
-        uint16_t toolSizeA = _adjustToolSize;
-
-        if (!toolSizeA)
-            toolSizeA = 1;
-
-        toolSizeA = toolSizeA << 5;
-        uint16_t toolSizeB = toolSizeA;
-        toolSizeB -= 32;
-        toolSizeA = toolSizeA >> 1;
-        toolSizeA -= 16;
-        xPos -= toolSizeA;
-        yPos -= toolSizeA;
-        xPos &= 0xFFE0;
-        yPos &= 0xFFE0;
-
-        if (xPos != _mapSelectionAX)
-        {
-            _mapSelectionAX = xPos;
-            count++;
-        }
-
-        if (yPos != _mapSelectionAY)
-        {
-            _mapSelectionAY = yPos;
-            count++;
-        }
-
-        xPos += toolSizeB;
-        yPos += toolSizeB;
-
-        if (xPos != _mapSelectionBX)
-        {
-            _mapSelectionBX = xPos;
-            count++;
-        }
-
-        if (yPos != _mapSelectionBY)
-        {
-            _mapSelectionBY = yPos;
-            count++;
-        }
-
-        mapInvalidateSelectionRect();
-
-        return count;
-    }
-
-    uint16_t setMapSelectionSingleTile(const World::Pos2& loc, bool setQuadrant)
-    {
-        uint16_t xPos = loc.x & 0xFFE0;
-        uint16_t yPos = loc.y & 0xFFE0;
-        uint16_t cursorQuadrant = Ui::ViewportInteraction::getQuadrantOrCentreFromPos(loc);
-
-        auto count = 0;
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
-        {
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            count++;
-        }
-
-        if (setQuadrant && _word_F2448E != cursorQuadrant)
-        {
-            _word_F2448E = cursorQuadrant;
-            count++;
-        }
-        else if (!setQuadrant && _word_F2448E != 4)
-        {
-            _word_F2448E = 4;
-            count++;
-        }
-
-        if (xPos != _mapSelectionAX)
-        {
-            _mapSelectionAX = xPos;
-            count++;
-        }
-
-        if (yPos != _mapSelectionAY)
-        {
-            _mapSelectionAY = yPos;
-            count++;
-        }
-
-        if (xPos != _mapSelectionBX)
-        {
-            _mapSelectionBX = xPos;
-            count++;
-        }
-
-        if (yPos != _mapSelectionBY)
-        {
-            _mapSelectionBY = yPos;
-            count++;
-        }
-
-        mapInvalidateSelectionRect();
-
-        return count;
-    }
-
-    // 0x004610F2
-    void mapInvalidateSelectionRect()
-    {
-        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
-        {
-            for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
-            {
-                for (coord_t y = _mapSelectionAY; y <= _mapSelectionBY; y += 32)
-                {
-                    mapInvalidateTileFull({ x, y });
-                }
-            }
-        }
-    }
-
     // 0x004CBE5F
     // regs.ax: pos.x
     // regs.cx: pos.y
     void mapInvalidateTileFull(World::Pos2 pos)
     {
         Ui::ViewportManager::invalidate(pos, 0, 1120, ZoomLevel::eighth);
-    }
-
-    // 0x0046112C
-    void mapInvalidateMapSelectionTiles()
-    {
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
-            return;
-
-        for (uint16_t index = 0; index < mapSelectedTilesSize; ++index)
-        {
-            auto& position = _mapSelectedTiles[index];
-            if (position.x == -1)
-                break;
-            mapInvalidateTileFull(position);
-        }
     }
 
     // 0x0046A747
@@ -948,7 +817,7 @@ namespace OpenLoco::World::TileManager
         }
 
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
-        auto pos = *_startUpdateLocation;
+        auto pos = getGameState().tileUpdateStartLocation;
         for (; pos.y < World::kMapHeight; pos.y += 16 * World::kTileSize)
         {
             for (; pos.x < World::kMapWidth; pos.x += 16 * World::kTileSize)
@@ -972,7 +841,7 @@ namespace OpenLoco::World::TileManager
 
         const auto tilePos = World::toTileSpace(pos);
         const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
-        _startUpdateLocation = World::toWorldSpace(TilePos2(shift & 0xF, shift >> 4));
+        getGameState().tileUpdateStartLocation = World::toWorldSpace(TilePos2(shift & 0xF, shift >> 4));
         if (shift == 0)
         {
             IndustryManager::updateProducedCargoStats();
@@ -993,7 +862,7 @@ namespace OpenLoco::World::TileManager
     // cx = pos.y;
     void removeTree(World::TreeElement& element, const uint8_t flags, const World::Pos2& pos)
     {
-        if ((!element.isGhost() && !element.isFlag5())
+        if ((!element.isGhost() && !element.isAiAllocated())
             && GameCommands::getUpdatingCompanyId() != CompanyId::neutral)
         {
             auto loc = World::Pos3(pos.x, pos.y, element.baseHeight());
@@ -1025,7 +894,7 @@ namespace OpenLoco::World::TileManager
     // 0x0042D8FF
     void removeBuildingElement(BuildingElement& elBuilding, const World::Pos2& pos)
     {
-        if (!elBuilding.isGhost() && !elBuilding.isFlag5())
+        if (!elBuilding.isGhost() && !elBuilding.isAiAllocated())
         {
             if (CompanyManager::getUpdatingCompanyId() != CompanyId::neutral)
             {
@@ -1311,7 +1180,7 @@ namespace OpenLoco::World::TileManager
         landObj = ObjectManager::get<LandObject>(surface->terrain());
         if (landObj->hasFlags(LandObjectFlags::unk1) && !isEditorMode())
         {
-            surface->setTerrain(landObj->var_07);
+            surface->setTerrain(landObj->cliffEdgeHeader2);
         }
 
         if (surface->water() * kMicroToSmallZStep <= targetBaseZ)
@@ -1419,21 +1288,29 @@ namespace OpenLoco::World::TileManager
         registerHook(
             0x004BE048,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                regs.dx = countSurroundingTrees({ regs.ax, regs.cx });
+                registers backup = regs;
+                const auto count = countSurroundingTrees({ regs.ax, regs.cx });
+                regs = backup;
+                regs.dx = count;
                 return 0;
             });
 
         registerHook(
             0x004C5596,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                regs.dx = countSurroundingWaterTiles({ regs.ax, regs.cx });
+                registers backup = regs;
+                const auto count = countSurroundingWaterTiles({ regs.ax, regs.cx });
+                regs = backup;
+                regs.dx = count;
                 return 0;
             });
 
         registerHook(
             0x0046902E,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 removeSurfaceIndustry({ regs.ax, regs.cx });
+                regs = backup;
                 return 0;
             });
     }

@@ -1722,7 +1722,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Oneskorenie, pokiaľ začnú konkurenčné spoločnosti:"
   1685: "{POP16}{INT16} mesiace"
-  1686: "{COLOUR WINDOW_2}Výber konkurenčných spoločností:"
+  1686: "{COLOUR WINDOW_2}Výber konkurenčných spoločností"
   1687: "{COLOUR WINDOW_2}Preferovaná inteligencia:"
   1688: "{COLOUR WINDOW_2}Preferovaná agresivita:"
   1689: "{COLOUR WINDOW_2}Preferovaná konkurencieschopnosť:"
@@ -1913,8 +1913,8 @@ strings:
   1872: Umožniť spustenie nových priemyslov počas hry
   1873: Zdieľať ďalšie tváre spoločností/vlastníkov
   1874: "{SMALLFONT}{COLOUR BLACK}Vyberte túto možnosť, ak chcete počas procesu pripojenia odoslať všetky dáta s  prispôsobenými tvárami na iný počítač"
-  1875: "{COLOUR WINDOW_2}Zakázať konkurenčným spoločnostiam používať:"
-  1876: "{COLOUR WINDOW_2}Zakázať spoločnostiam hráčov používať:"
+  1875: "{COLOUR WINDOW_2}Zakázať konkurenčným spoločnostiam používať"
+  1876: "{COLOUR WINDOW_2}Zakázať spoločnostiam hráčov používať"
   1877: "{NEWLINE}Zastaví sa na: {STRINGID}"
   1878: ", {STRINGID}"
 
@@ -2188,7 +2188,7 @@ strings:
   2132: "{COLOUR WINDOW_2}Faktor mierky okna:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
-  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Priblížiť k polohe kurzora"
   2137: "{SMALLFONT}{COLOUR BLACK}Ak je táto možnosť povolená, priblíženie sa bude orientovať okolo kurzora na rozdiel od stredu obrazovky."
   2138: "{COLOUR WINDOW_2}Prehrávať úvodnú hudbu"

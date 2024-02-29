@@ -1,5 +1,7 @@
 #include "GameCommands.h"
+#include "Airports/CreateAirport.h"
 #include "Audio/Audio.h"
+#include "Buildings/CreateBuilding.h"
 #include "Buildings/RemoveBuilding.h"
 #include "Cheats/Cheat.h"
 #include "Company/BuildCompanyHeadquarters.h"
@@ -10,6 +12,8 @@
 #include "Company/RenameCompanyName.h"
 #include "Company/RenameCompanyOwner.h"
 #include "Company/UpdateOwnerStatus.h"
+#include "Docks/CreatePort.h"
+#include "Docks/RemovePort.h"
 #include "General/LoadSaveQuit.h"
 #include "General/RenameStation.h"
 #include "General/SetGameSpeed.h"
@@ -22,17 +26,25 @@
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Map/TrackElement.h"
 #include "Network/Network.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Road/CreateRoad.h"
+#include "Road/CreateRoadMod.h"
+#include "Road/CreateRoadStation.h"
+#include "Road/RemoveRoad.h"
+#include "Road/RemoveRoadMod.h"
+#include "Road/RemoveRoadStation.h"
 #include "SceneManager.h"
 #include "Terraform/ChangeLandMaterial.h"
 #include "Terraform/ClearLand.h"
 #include "Terraform/CreateTree.h"
 #include "Terraform/CreateWall.h"
 #include "Terraform/LowerLand.h"
+#include "Terraform/LowerRaiseLandMountain.h"
 #include "Terraform/LowerWater.h"
 #include "Terraform/RaiseLand.h"
 #include "Terraform/RaiseWater.h"
@@ -41,6 +53,14 @@
 #include "Town/CreateTown.h"
 #include "Town/RemoveTown.h"
 #include "Town/RenameTown.h"
+#include "Track/CreateSignal.h"
+#include "Track/CreateTrack.h"
+#include "Track/CreateTrackMod.h"
+#include "Track/CreateTrainStation.h"
+#include "Track/RemoveSignal.h"
+#include "Track/RemoveTrack.h"
+#include "Track/RemoveTrackMod.h"
+#include "Track/RemoveTrainStation.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/CloneVehicle.h"
 #include "Vehicles/CreateVehicle.h"
@@ -57,6 +77,10 @@
 #include "Vehicles/VehiclePickup.h"
 #include "Vehicles/VehiclePickupAir.h"
 #include "Vehicles/VehiclePickupWater.h"
+#include "Vehicles/VehiclePlace.h"
+#include "Vehicles/VehiclePlaceAir.h"
+#include "Vehicles/VehiclePlaceWater.h"
+#include "Vehicles/VehicleRearrange.h"
 #include "Vehicles/VehicleRefit.h"
 #include "Vehicles/VehicleReverse.h"
 #include "Vehicles/VehicleSell.h"
@@ -77,14 +101,14 @@ namespace OpenLoco::GameCommands
 
     static uint16_t _gameCommandFlags;
 
-    static loco_global<TileElement*, 0x009C68D0> _9C68D0;
+    static loco_global<const TileElement*, 0x009C68D0> _9C68D0;
 
     static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
-    static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
-    static loco_global<string_id, 0x009C68E8> _gGameCommandErrorTitle;
+    static loco_global<StringId, 0x009C68E6> _gGameCommandErrorText;
+    static loco_global<StringId, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
-    static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
+    static loco_global<StringId[8], 0x112C826> _commonFormatArgs;
 
     using GameCommandFunc = void (*)(registers& regs);
 
@@ -98,7 +122,7 @@ namespace OpenLoco::GameCommands
 
     // clang-format off
     static constexpr GameCommandInfo kGameCommandDefinitions[84] = {
-        { GameCommand::vehicleRearrange,             nullptr,                   0x004AF1DF, true  },
+        { GameCommand::vehicleRearrange,             vehicleRearrange,          0x004AF1DF, true  },
         { GameCommand::vehiclePlace,                 nullptr,                   0x004B01B6, true  },
         { GameCommand::vehiclePickup,                vehiclePickup,             0x004B0826, true  },
         { GameCommand::vehicleReverse,               vehicleReverse,            0x004ADAA8, true  },
@@ -111,12 +135,12 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleRename,                renameVehicle,             0x004B6572, false },
         { GameCommand::changeStationName,            renameStation,             0x00490756, false },
         { GameCommand::vehicleChangeRunningMode,     vehicleChangeRunningMode,  0x004B694B, true  },
-        { GameCommand::createSignal,                 nullptr,                   0x00488BDB, true  },
-        { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
-        { GameCommand::createTrainStation,           nullptr,                   0x0048BB20, true  },
-        { GameCommand::removeTrackStation,           nullptr,                   0x0048C402, true  },
-        { GameCommand::createTrackMod,               nullptr,                   0x004A6479, true  },
-        { GameCommand::removeTrackMod,               nullptr,                   0x004A668A, true  },
+        { GameCommand::createSignal,                 createSignal,              0x00488BDB, true  },
+        { GameCommand::removeSignal,                 removeSignal,              0x004891E4, true  },
+        { GameCommand::createTrainStation,           createTrainStation,        0x0048BB20, true  },
+        { GameCommand::removeTrainStation,           nullptr,                   0x0048C402, true  },
+        { GameCommand::createTrackMod,               createTrackMod,            0x004A6479, true  },
+        { GameCommand::removeTrackMod,               removeTrackMod,            0x004A668A, true  },
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
         { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
         { GameCommand::loadSaveQuitGame,             loadSaveQuit,              0x0043BFCB, false },
@@ -125,7 +149,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::changeLandMaterial,           changeLandMaterial,        0x00468EDD, true  },
         { GameCommand::raiseLand,                    raiseLand,                 0x00463702, true  },
         { GameCommand::lowerLand,                    lowerLand,                 0x004638C6, true  },
-        { GameCommand::lowerRaiseLandMountain,       nullptr,                   0x00462DCE, true  },
+        { GameCommand::lowerRaiseLandMountain,       lowerRaiseLandMountain,    0x00462DCE, true  },
         { GameCommand::raiseWater,                   raiseWater,                0x004C4F19, true  },
         { GameCommand::lowerWater,                   lowerWater,                0x004C5126, true  },
         { GameCommand::changeCompanyName,            changeCompanyName,         0x00434914, false },
@@ -206,6 +230,15 @@ namespace OpenLoco::GameCommands
             regs.ebx = backup.ebx;
             return 0;
         });
+
+        // Used by a gc_unk_51 of going via doCommand
+        registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createTrainStation(backup);
+
+            regs = backup;
+            return 0;
+        });
     }
 
     static uint32_t loc_4314EA();
@@ -213,7 +246,7 @@ namespace OpenLoco::GameCommands
 
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
-        if ((flags & (Flags::flag_4 | Flags::ghost)) != 0)
+        if ((flags & (Flags::aiAllocated | Flags::ghost)) != 0)
             return false;
 
         auto& gameCommand = kGameCommandDefinitions[static_cast<uint32_t>(command)];
@@ -413,14 +446,14 @@ namespace OpenLoco::GameCommands
 
         if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::showError(_gGameCommandErrorTitle, _gGameCommandErrorText);
+            Windows::Error::open(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return GameCommands::FAILURE;
         }
 
         // advanced errors
-        if (_9C68D0 != (void*)-1)
+        if (_9C68D0 != World::TileManager::kInvalidTile)
         {
-            auto tile = (TileElement*)_9C68D0;
+            auto tile = *_9C68D0;
 
             switch (tile->type())
             {
@@ -493,7 +526,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const CompanyId company, World::TileElement* const tile /*= nullptr*/)
+    bool sub_431E6A(const CompanyId company, const World::TileElement* const tile /*= nullptr*/)
     {
         if (company == CompanyId::neutral)
         {
@@ -503,9 +536,9 @@ namespace OpenLoco::GameCommands
         {
             return true;
         }
-        _gGameCommandErrorText = -2;
+        _gGameCommandErrorText = 0xFFFEU;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<World::TileElement*>(-1) : tile;
+        _9C68D0 = tile == nullptr ? World::TileManager::kInvalidTile : tile;
         return false;
     }
 
@@ -519,17 +552,17 @@ namespace OpenLoco::GameCommands
         _gGameCommandPosition = pos;
     }
 
-    void setErrorText(const string_id message)
+    void setErrorText(const StringId message)
     {
         _gGameCommandErrorText = message;
     }
 
-    string_id getErrorText()
+    StringId getErrorText()
     {
         return _gGameCommandErrorText;
     }
 
-    void setErrorTitle(const string_id title)
+    void setErrorTitle(const StringId title)
     {
         _gGameCommandErrorTitle = title;
     }

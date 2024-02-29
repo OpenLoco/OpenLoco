@@ -1,10 +1,15 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 
-namespace OpenLoco::Input
+namespace OpenLoco::Ui
 {
-    std::string saveScreenshot();
-    std::string saveGiantScreenshot();
+    enum class ScreenshotType : uint8_t
+    {
+        regular = 0,
+        giant = 1,
+    };
+
+    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
+    void handleScreenshotCountdown();
 }

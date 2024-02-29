@@ -5,10 +5,12 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/TogglePause.h"
+#include "GameState.h"
 #include "GameStateFlags.h"
 #include "Gui.h"
 #include "Intro.h"
 #include "Map/TileManager.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
@@ -92,22 +94,11 @@ namespace OpenLoco::Title
     static uint16_t _waitCounter;
 
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
-    static loco_global<uint16_t, 0x00525F62> _525F62;
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _objectSelection;
 
-    static void sub_473A95(int32_t eax);
-
-    // 0x00474874
-    // ?load selected objects?
-    static void sub_474874()
+    static std::span<ObjectManager::SelectedObjectsFlags> getSelectedObjectFlags()
     {
-        call(0x00474874); // editorLoadSelectedObjects
-    }
-
-    // 0x00473B91
-    // object flags free 0
-    static void sub_473B91()
-    {
-        call(0x00473B91); // editorObjectFlagsFree0
+        return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
     }
 
     // 0x004284C8
@@ -122,7 +113,7 @@ namespace OpenLoco::Title
         Scenario::sub_46115C();
         if (Intro::state() == Intro::State::none)
         {
-            uint16_t backupWord = _525F62;
+            uint16_t backupWord = getGameState().var_014A;
             auto titlePath = Environment::getPath(Environment::PathId::title);
             clearScreenFlag(ScreenFlags::networked);
             S5::importSaveToGameState(titlePath, S5::LoadFlags::titleSequence);
@@ -139,7 +130,7 @@ namespace OpenLoco::Title
                 }
             }
 
-            _525F62 = backupWord;
+            getGameState().var_014A = backupWord;
         }
     }
 
@@ -177,9 +168,9 @@ namespace OpenLoco::Title
         setScreenFlag(ScreenFlags::title);
         setGameSpeed(GameSpeed::Normal);
         ObjectManager::unloadAll();
-        sub_473A95(1);
-        sub_474874();
-        sub_473B91();
+        ObjectManager::prepareSelectionList(false);
+        ObjectManager::loadSelectionListObjects(getSelectedObjectFlags());
+        ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();
         Scenario::reset();
@@ -262,26 +253,22 @@ namespace OpenLoco::Title
         } while (_waitCounter == 0);
     }
 
-    // 0x00473A95
-    static void sub_473A95(int32_t eax)
-    {
-        registers regs;
-        regs.eax = eax;
-        call(0x00473A95, regs);
-    }
-
     void registerHooks()
     {
         registerHook(
             0x0046AD7D,
-            [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 start();
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004442C4,
-            [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 loadTitle();
+                regs = backup;
                 return 0;
             });
     }

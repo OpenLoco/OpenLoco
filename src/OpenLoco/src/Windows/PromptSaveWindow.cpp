@@ -43,8 +43,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x0043C27E
     Window* open(LoadOrQuitMode savePromptType)
@@ -56,7 +55,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 WindowType::saveGamePrompt,
                 { 260, 48 },
                 WindowFlags::notScrollView | WindowFlags::stickToFront,
-                &_events);
+                getEvents());
 
             if (window == nullptr)
                 return nullptr;
@@ -74,11 +73,9 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
         _savePromptType = savePromptType;
 
-        initEvents();
-
         if (!isEditorMode())
         {
-            static constexpr std::array<const string_id, 3> kTypeToType = {
+            static constexpr std::array<const StringId, 3> kTypeToType = {
                 StringIds::title_load_game,
                 StringIds::title_quit_game,
                 StringIds::title_quit_game_alt,
@@ -94,7 +91,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
                 window->widgets[widx::caption].text = StringIds::title_quit_scenario_editor;
         }
 
-        static constexpr std::array<const string_id, 3> kTypeToPrompt = {
+        static constexpr std::array<const StringId, 3> kTypeToPrompt = {
             StringIds::prompt_save_before_loading,
             StringIds::prompt_save_before_quitting,
             StringIds::prompt_save_before_quitting_alt,
@@ -150,10 +147,14 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         WindowManager::invalidate(WindowType::timeToolbar);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
+        return kEvents;
     }
 }

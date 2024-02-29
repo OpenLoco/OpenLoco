@@ -23,21 +23,6 @@ if ( NOT yaml-cpp_FOUND )
     set_target_properties(yaml-cpp PROPERTIES FOLDER "ThirdParty")
 endif()
 
-find_package(span-lite QUIET)
-if ( NOT span-lite_FOUND )
-    ## span-lite
-    FetchContent_Declare(
-        span-lite
-        GIT_REPOSITORY      https://github.com/martinmoene/span-lite
-        GIT_TAG             v0.10.3
-        GIT_SHALLOW         ON
-    )
-    FetchContent_MakeAvailable(span-lite)
-
-    # Group all the ThirdParty items under a ThirdParty folder in IDEs
-    set_target_properties(span-lite PROPERTIES FOLDER "ThirdParty")
-endif()
-
 if (${OPENLOCO_BUILD_TESTS})
     find_package(GTest REQUIRED)
 endif()
@@ -59,7 +44,12 @@ endif()
 
 find_package(PNG REQUIRED)
 if (NOT APPLE AND NOT MSVC)
-    pkg_check_modules(OPENAL REQUIRED openal)
+    find_package(OpenAL CONFIG)
+    if (OpenAL_FOUND)
+        set(OPENAL_LIBRARIES OpenAL::OpenAL)
+    else()
+        pkg_check_modules(OPENAL REQUIRED openal)
+    endif()
 else()
     find_package(OpenAL CONFIG REQUIRED)
     set(OPENAL_LIBRARIES OpenAL::OpenAL)
@@ -77,7 +67,7 @@ if ( NOT fmt_FOUND )
     FetchContent_Declare(
         fmt
         GIT_REPOSITORY      https://github.com/fmtlib/fmt
-        GIT_TAG             10.0.0
+        GIT_TAG             10.1.1
         GIT_SHALLOW         ON
     )
     FetchContent_MakeAvailable(fmt)

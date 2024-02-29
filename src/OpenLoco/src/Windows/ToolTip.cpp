@@ -31,8 +31,6 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static WindowEventList events;
-
     enum widx
     {
         text
@@ -44,25 +42,29 @@ namespace OpenLoco::Ui::Windows::ToolTip
         widgetEnd(),
     };
 
-    static void initEvents();
-
     void registerHooks()
     {
         registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Windows::ToolTip::open((Ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 Ui::Windows::ToolTip::update((Ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                regs = backup;
                 return 0;
             });
     }
 
-    static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
+    static const WindowEventList& getEvents();
+
+    static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -94,14 +96,12 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         x = width <= Ui::width() ? std::clamp(cursorX - (width / 2), 0, Ui::width() - width) : 0;
 
-        initEvents();
-
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
             Ui::Point(x, y),
             Ui::Size(width, height),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
-            &events);
+            getEvents());
         tooltip->widgets = _widgets;
         _tooltipNotShownTicks = 0;
     }
@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9216
-    void update(Ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
+    void update(Ui::Window* window, int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
 
@@ -231,10 +231,14 @@ namespace OpenLoco::Ui::Windows::ToolTip
         return _tooltipWindowType == WindowType::timeToolbar && _tooltipWidgetIndex == 3;
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onUpdate = update,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.onClose = onClose;
-        events.onUpdate = update;
-        events.draw = draw;
+        return kEvents;
     }
 }

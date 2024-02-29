@@ -18,7 +18,7 @@ namespace OpenLoco
     public:
         FileStream() = default;
         FileStream(const std::filesystem::path& path, StreamMode mode);
-        ~FileStream();
+        ~FileStream() override;
 
         bool open(const std::filesystem::path& path, StreamMode mode);
 

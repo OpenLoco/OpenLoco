@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -20,7 +20,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::roadExtra;
 
-        string_id name;          // 0x00
+        StringId name;           // 0x00
         uint16_t roadPieces;     // 0x02
         uint8_t paintStyle;      // 0x04
         uint8_t costIndex;       // 0x05
@@ -31,7 +31,7 @@ namespace OpenLoco
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

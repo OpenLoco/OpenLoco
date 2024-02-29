@@ -1,4 +1,11 @@
+#include "Effects/ExplosionEffect.h"
+#include "Effects/VehicleCrashEffect.h"
 #include "Entities/EntityManager.h"
+#include "Map/RoadElement.h"
+#include "Map/TileManager.h"
+#include "Map/TrackElement.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -15,10 +22,28 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> _vehicleUpdate_var_1136130; // Speed
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
 
+    // 0x004AA407
+    template<typename T>
+    void explodeComponent(T& component)
+    {
+        assert(component.getSubType() == VehicleEntityType::bogie || component.getSubType() == VehicleEntityType::body_start || component.getSubType() == VehicleEntityType::body_continued);
+
+        const auto pos = component.position + World::Pos3{ 0, 0, 22 };
+        Audio::playSound(Audio::SoundId::crash, pos);
+
+        ExplosionCloud::create(pos);
+
+        const auto numParticles = std::min(component.spriteWidth / 4, 7);
+        for (auto i = 0; i < numParticles; ++i)
+        {
+            VehicleCrashParticle::create(pos, component.colourScheme);
+        }
+    }
+
     template<typename T>
     void applyDestructionToComponent(T& component)
     {
-        component.explodeComponent();
+        explodeComponent(component);
         component.var_5A &= ~(1u << 31);
         component.var_5A >>= 3;
         component.var_5A |= (1u << 31);
@@ -37,7 +62,7 @@ namespace OpenLoco::Vehicles
 
         const auto oldPos = position;
         _vehicleUpdate_var_1136114 = 0;
-        sub_4B15FF(_vehicleUpdate_var_113612C);
+        updateTrackMotion(_vehicleUpdate_var_113612C);
 
         const auto hasMoved = oldPos != position;
         _vehicleUpdate_backBogieHasMoved = _vehicleUpdate_frontBogieHasMoved;
@@ -153,23 +178,124 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004AA984
+    static bool isOnRackRailRail(const VehicleBogie& bogie)
+    {
+        auto* trackObj = ObjectManager::get<TrackObject>(bogie.trackType);
+        if (!trackObj->hasFlags(TrackObjectFlags::unk_00))
+        {
+            return true;
+        }
+        auto* vehObj = ObjectManager::get<VehicleObject>(bogie.objectId);
+        if (!vehObj->hasFlags(VehicleObjectFlags::rackRail))
+        {
+            return false;
+        }
+
+        const auto tile = World::TileManager::get(World::Pos2{ bogie.tileX, bogie.tileY });
+        for (auto& el : tile)
+        {
+            auto* elTrack = el.as<World::TrackElement>();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+
+            if (elTrack->baseZ() != bogie.tileBaseZ)
+            {
+                continue;
+            }
+
+            if (elTrack->unkDirection() != bogie.trackAndDirection.track.cardinalDirection())
+            {
+                continue;
+            }
+
+            if (elTrack->trackId() != bogie.trackAndDirection.track.id())
+            {
+                continue;
+            }
+
+            for (auto i = 0; i < 4; ++i)
+            {
+                if (elTrack->hasMod(i) && trackObj->mods[i] == vehObj->rackRailType)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // 0x004AA50
+    static bool isOnRackRailRoad(const VehicleBogie& bogie)
+    {
+        if (bogie.trackType == 0xFFU)
+        {
+            return true;
+        }
+        auto* roadObj = ObjectManager::get<RoadObject>(bogie.trackType);
+        if (!roadObj->hasFlags(RoadObjectFlags::unk_05))
+        {
+            return true;
+        }
+
+        auto* vehObj = ObjectManager::get<VehicleObject>(bogie.objectId);
+        if (!vehObj->hasFlags(VehicleObjectFlags::rackRail))
+        {
+            return false;
+        }
+
+        const auto tile = World::TileManager::get(World::Pos2{ bogie.tileX, bogie.tileY });
+        for (auto& el : tile)
+        {
+            auto* elRoad = el.as<World::RoadElement>();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+
+            if (elRoad->baseZ() != bogie.tileBaseZ)
+            {
+                continue;
+            }
+
+            if (elRoad->unkDirection() != bogie.trackAndDirection.road.cardinalDirection())
+            {
+                continue;
+            }
+
+            if (elRoad->roadId() != bogie.trackAndDirection.road.id())
+            {
+                continue;
+            }
+
+            for (auto i = 0; i < 2; ++i)
+            {
+                if (elRoad->hasMod(i) && roadObj->mods[i] == vehObj->rackRailType)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // 0x004AA97A
     bool VehicleBogie::isOnRackRail()
     {
-        registers regs;
-        regs.dl = 0;
-        regs.edi = X86Pointer(this);
-
-        call(0x004AA97A, regs);
-        return regs.dl != 1;
-    }
-
-    // 0x004AF16A
-    void VehicleBogie::carComponent_sub_4AF16A()
-    {
-        registers regs;
-        regs.esi = X86Pointer(this);
-
-        call(0x004AF16A, regs);
+        if (mode == TransportMode::rail)
+        {
+            return isOnRackRailRail(*this);
+        }
+        else if (mode == TransportMode::road)
+        {
+            return isOnRackRailRoad(*this);
+        }
+        else
+        {
+            assert(false);
+            return false;
+        }
     }
 }

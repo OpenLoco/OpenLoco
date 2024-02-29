@@ -19,7 +19,6 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
     static constexpr Ui::Size kWindowSize = { 280, 72 };
 
-    static WindowEventList events;
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
     static Widget _widgets[] = {
@@ -30,7 +29,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         widgetEnd(),
     };
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     namespace Widx
     {
@@ -49,10 +48,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         WindowManager::close(WindowType::editKeyboardShortcut);
         _editingShortcutIndex = shortcutIndex;
 
-        // TODO: only needs to be called once
-        initEvents();
-
-        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, &events);
+        auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::close;
@@ -89,9 +85,13 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.onMouseUp = onMouseUp;
-        events.draw = draw;
+        return kEvents;
     }
 }

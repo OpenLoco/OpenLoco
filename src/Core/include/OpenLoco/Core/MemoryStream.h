@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Span.hpp"
 #include "Stream.hpp"
 #include <cstdint>
 #include <cstdio>
+#include <span>
 #include <vector>
 
 namespace OpenLoco
@@ -16,7 +16,7 @@ namespace OpenLoco
         size_t _capacity{};
 
     public:
-        ~MemoryStream();
+        ~MemoryStream() override;
 
         void reserve(size_t len);
 
@@ -28,9 +28,9 @@ namespace OpenLoco
 
         std::byte* data();
 
-        stdx::span<std::byte> getSpan();
+        std::span<std::byte> getSpan();
 
-        stdx::span<const std::byte> getSpan() const;
+        std::span<const std::byte> getSpan() const;
 
         size_t getLength() const noexcept override;
 

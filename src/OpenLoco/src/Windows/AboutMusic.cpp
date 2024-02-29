@@ -40,9 +40,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x0043B4AF
     void open()
@@ -50,13 +48,11 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         if (WindowManager::bringToFront(WindowType::aboutMusic) != nullptr)
             return;
 
-        initEvents();
-
         auto window = WindowManager::createWindowCentred(
             WindowType::aboutMusic,
             kWindowSize,
             WindowFlags::none,
-            &_events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::close;
@@ -102,7 +98,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     // 0x0043B8BE
     static void drawScroll(Ui::Window&, Gfx::RenderTarget& rt, const uint32_t)
     {
-        static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
+        static const std::pair<StringId, StringId> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },
             { StringIds::long_dusty_road, StringIds::long_dusty_road_credit },
             { StringIds::flying_high, StringIds::flying_high_credit },
@@ -166,12 +162,16 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.getScrollSize = getScrollSize;
-        _events.tooltip = tooltip;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
+        return kEvents;
     }
 }

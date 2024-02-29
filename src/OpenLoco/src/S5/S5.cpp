@@ -33,7 +33,6 @@
 #include <OpenLoco/Utility/Exception.hpp>
 #include <fstream>
 #include <iomanip>
-#include <sstream>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
@@ -51,7 +50,7 @@ namespace OpenLoco::S5
     static loco_global<char[512], 0x0112CE04> _savePath;
     static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<string_id, 0x0050C198> _loadErrorMessage;
+    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
     // TODO: move this?
     static std::vector<ObjectHeader> _loadErrorObjectsList;
@@ -134,7 +133,7 @@ namespace OpenLoco::S5
                 { 0, 0 },
                 size,
                 WindowFlags::stickToFront,
-                &eventList);
+                eventList);
             if (tempWindow != nullptr)
             {
                 auto tempViewport = ViewportManager::create(
@@ -275,7 +274,7 @@ namespace OpenLoco::S5
             EntityManager::resetSpatialIndex();
             EntityManager::zeroUnused();
             StationManager::zeroUnused();
-            Vehicles::OrderManager::zeroOrderTable();
+            Vehicles::OrderManager::zeroUnusedOrderTable();
         }
 
         bool saveResult;
@@ -485,24 +484,6 @@ namespace OpenLoco::S5
         return file;
     }
 
-    // 0x00473BC7
-    static void objectCreateIdentifierName(char* dst, const ObjectHeader& header)
-    {
-        for (auto& c : header.name)
-        {
-            if (c != ' ')
-            {
-                *dst++ = c;
-            }
-        }
-        *dst++ = '/';
-        *dst = '\0';
-        std::stringstream ss;
-        ss << std::uppercase << std::setfill('0') << std::hex << std::setw(8) << header.flags << std::setw(8) << header.checksum;
-        const auto flagsChecksum = ss.str();
-        strcat(dst, flagsChecksum.c_str());
-    }
-
     // 0x00444D76
     static void setObjectErrorMessage(const ObjectHeader& header)
     {
@@ -526,16 +507,16 @@ namespace OpenLoco::S5
     class LoadException : public std::runtime_error
     {
     private:
-        string_id _localisedMessage;
+        StringId _localisedMessage;
 
     public:
-        LoadException(const char* message, string_id localisedMessage)
+        LoadException(const char* message, StringId localisedMessage)
             : std::runtime_error(message)
             , _localisedMessage(localisedMessage)
         {
         }
 
-        string_id getLocalisedMessage() const
+        StringId getLocalisedMessage() const
         {
             return _localisedMessage;
         }
@@ -668,7 +649,7 @@ namespace OpenLoco::S5
             }
             if ((file->gameState.flags & GameStateFlags::tileManagerLoaded) != GameStateFlags::none)
             {
-                TileManager::setElements(stdx::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
+                TileManager::setElements(std::span<World::TileElement>(reinterpret_cast<World::TileElement*>(file->tileElements.data()), file->tileElements.size()));
             }
             else
             {
@@ -687,6 +668,10 @@ namespace OpenLoco::S5
             TileManager::resetSurfaceClearance();
             IndustryManager::createAllMapAnimations();
             Audio::resetSoundObjects();
+
+            // Fix saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
+            // TODO: remove this at some point in 2024 or so
+            Vehicles::OrderManager::fixCorruptWaypointOrders();
 
             if (hasLoadFlags(flags, LoadFlags::scenario))
             {
@@ -719,7 +704,7 @@ namespace OpenLoco::S5
             sub_4BAEC4();
             addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
             Gfx::invalidateScreen();
-            call(0x004C153B);
+            Scenario::loadPreferredCurrencyAlways();
             Gfx::loadCurrency();
             addr<0x00525F62, uint16_t>() = 0;
 
@@ -825,14 +810,20 @@ namespace OpenLoco::S5
         registerHook(
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto path = fs::u8path(std::string(_savePath));
-                return exportGameStateToFile(path, static_cast<SaveFlags>(regs.eax)) ? 0 : X86_FLAG_CARRY;
+                const auto res = exportGameStateToFile(path, static_cast<SaveFlags>(regs.eax)) ? 0 : X86_FLAG_CARRY;
+                regs = backup;
+                return res;
             });
         registerHook(
             0x00441FA7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto path = fs::u8path(std::string(_savePath));
-                return importSaveToGameState(path, static_cast<LoadFlags>(regs.eax)) ? X86_FLAG_CARRY : 0;
+                const auto res = importSaveToGameState(path, static_cast<LoadFlags>(regs.eax)) ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                return res;
             });
     }
 }

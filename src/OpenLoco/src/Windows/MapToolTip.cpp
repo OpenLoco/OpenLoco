@@ -19,8 +19,6 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     static loco_global<CompanyId, 0x0050A040> _mapTooltipOwner;
     static loco_global<uint16_t, 0x00523348> _mapTooltipTimeout;
 
-    static WindowEventList events;
-
     enum widx
     {
         text
@@ -32,7 +30,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         widgetEnd(),
     };
 
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x004CEEA7
     void open()
@@ -51,7 +49,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         tooltipLocation = cursor;
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);
-        auto firstArg = argsWrap.pop<string_id>();
+        auto firstArg = argsWrap.pop<StringId>();
         if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
             WindowManager::close(WindowType::mapTooltip);
@@ -82,8 +80,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         }
         else
         {
-            initEvents();
-            window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, &events);
+            window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, getEvents());
             window->widgets = _widgets;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_06);
@@ -120,7 +117,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         auto args = FormatArguments::mapToolTip();
         StringManager::ArgsWrapper argsWrap(&args);
-        auto firstArg = argsWrap.pop<string_id>();
+        auto firstArg = argsWrap.pop<StringId>();
         if (firstArg == StringIds::null)
         {
             return;
@@ -151,9 +148,13 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onUpdate = update,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.onUpdate = update;
-        events.draw = draw;
+        return kEvents;
     }
 }

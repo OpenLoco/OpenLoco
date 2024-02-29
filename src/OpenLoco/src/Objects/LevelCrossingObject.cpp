@@ -37,7 +37,7 @@ namespace OpenLoco
     }
 
     // 0x004780E7
-    void LevelCrossingObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void LevelCrossingObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(LevelCrossingObject));
 

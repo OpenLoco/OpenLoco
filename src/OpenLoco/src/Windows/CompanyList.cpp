@@ -95,7 +95,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void drawGraph(Window* self, Gfx::RenderTarget* rt);
         static void drawGraphAndLegend(Window* self, Gfx::RenderTarget* rt);
-        static void initEvents();
     }
 
     namespace CompanyList
@@ -126,8 +125,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         enum SortMode : uint16_t
         {
@@ -498,8 +495,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 {
                     auto args = FormatArguments();
-                    args.skip(sizeof(string_id));
-                    string_id ownerStatus = CompanyManager::getOwnerStatus(company->id(), args);
+                    args.skip(sizeof(StringId));
+                    StringId ownerStatus = CompanyManager::getOwnerStatus(company->id(), args);
                     args.rewind();
                     args.push(ownerStatus);
 
@@ -552,21 +549,25 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Common::refreshCompanyList(self);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .event_09 = event_09,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = onScrollMouseDown,
+            .scrollMouseOver = onScrollMouseOver,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = onUpdate;
-            events.event_08 = event_08;
-            events.event_09 = event_09;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.tooltip = tooltip;
-            events.cursor = cursor;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -577,9 +578,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         if (window != nullptr)
         {
-            if (Input::isToolActive(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber()))
+            if (ToolManager::isToolActive(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber()))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::companyList);
             }
         }
@@ -588,7 +589,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             static constexpr Ui::Size kWindowSize = { 640, 272 };
 
-            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, WindowFlags::none, &CompanyList::events);
+            window = WindowManager::createWindow(WindowType::companyList, kWindowSize, WindowFlags::none, CompanyList::getEvents());
 
             window->frameNo = 0;
             window->savedView.clear();
@@ -614,12 +615,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         window->invalidate();
 
-        Common::initEvents();
-
         window->widgets = CompanyList::widgets;
         window->enabledWidgets = CompanyList::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &CompanyList::events;
+        window->eventHandlers = &CompanyList::getEvents();
         window->activatedWidgets = 0;
         window->initScrollWidgets();
 
@@ -643,8 +642,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             commonWidgets(635, 322, StringIds::title_company_performance),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004366D7
         static void onResize(Window& self)
@@ -714,13 +711,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = Common::prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -734,8 +735,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             commonWidgets(635, 322, StringIds::title_company_cargo_units),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004369FB
         static void onResize(Window& self)
@@ -805,13 +804,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = Common::prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -825,8 +828,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             commonWidgets(635, 322, StringIds::title_cargo_distance_graphs),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x00436D1F
         static void onResize(Window& self)
@@ -896,13 +897,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = Common::prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -916,8 +921,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             commonWidgets(685, 322, StringIds::title_company_values),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x00437043
         static void onResize(Window& self)
@@ -987,13 +990,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = kWindowSize.height;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = Common::prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1007,8 +1014,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             commonWidgets(495, 342, StringIds::title_cargo_payment_rates),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0043737D
         static void onResize(Window& self)
@@ -1194,13 +1199,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Economy::buildDeliveredCargoPaymentsTable();
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = Common::prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1214,8 +1223,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             commonWidgets(495, 169, StringIds::title_speed_records),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x00437591
         static void onResize(Window& self)
@@ -1242,7 +1249,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto args = FormatArguments();
                     args.push(recordSpeed);
 
-                    const string_id string[] = {
+                    const StringId string[] = {
                         StringIds::land_speed_record,
                         StringIds::air_speed_record,
                         StringIds::water_speed_record,
@@ -1282,13 +1289,17 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = Common::prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = Common::prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1298,19 +1309,21 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { CompanyList::widgets, widx::tab_company_list, &CompanyList::events, CompanyList::enabledWidgets },
-            { CompanyPerformance::widgets, widx::tab_performance, &CompanyPerformance::events, CompanyPerformance::enabledWidgets },
-            { CargoUnits::widgets, widx::tab_cargo_units, &CargoUnits::events, CargoUnits::enabledWidgets },
-            { CargoDistance::widgets, widx::tab_cargo_distance, &CargoDistance::events, CargoDistance::enabledWidgets },
-            { CompanyValues::widgets, widx::tab_values, &CompanyValues::events, CompanyValues::enabledWidgets },
-            { CargoPaymentRates::widgets, widx::tab_payment_rates, &CargoPaymentRates::events, CargoPaymentRates::enabledWidgets },
-            { CompanySpeedRecords::widgets, widx::tab_speed_records, &CompanySpeedRecords::events, CompanySpeedRecords::enabledWidgets },
+            { CompanyList::widgets,         widx::tab_company_list,   CompanyList::getEvents(),         CompanyList::enabledWidgets },
+            { CompanyPerformance::widgets,  widx::tab_performance,    CompanyPerformance::getEvents(),  CompanyPerformance::enabledWidgets },
+            { CargoUnits::widgets,          widx::tab_cargo_units,    CargoUnits::getEvents(),          CargoUnits::enabledWidgets },
+            { CargoDistance::widgets,       widx::tab_cargo_distance, CargoDistance::getEvents(),       CargoDistance::enabledWidgets },
+            { CompanyValues::widgets,       widx::tab_values,         CompanyValues::getEvents(),       CompanyValues::enabledWidgets },
+            { CargoPaymentRates::widgets,   widx::tab_payment_rates,  CargoPaymentRates::getEvents(),   CargoPaymentRates::enabledWidgets },
+            { CompanySpeedRecords::widgets, widx::tab_speed_records,  CompanySpeedRecords::getEvents(), CompanySpeedRecords::enabledWidgets },
         };
+        // clang-format on
 
         // 0x0043667B
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
@@ -1430,8 +1443,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004360FA
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_company_list;
             self->frameNo = 0;
@@ -1443,7 +1456,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -1709,16 +1722,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto y = self->y + 52;
 
             Common::drawGraphLegend(self, rt, x, y);
-        }
-        static void initEvents()
-        {
-            CompanyList::initEvents();
-            CompanyValues::initEvents();
-            CompanyPerformance::initEvents();
-            CargoDistance::initEvents();
-            CargoUnits::initEvents();
-            CargoPaymentRates::initEvents();
-            CompanySpeedRecords::initEvents();
         }
     }
 }

@@ -7,7 +7,7 @@
 
 namespace OpenLoco::ObjectManager
 {
-    constexpr std::array<string_id, 16> kTemporaryObjectStringIds = {
+    constexpr std::array<StringId, 16> kTemporaryObjectStringIds = {
         StringIds::temporary_object_load_str_0,
         StringIds::temporary_object_load_str_1,
         StringIds::temporary_object_load_str_2,
@@ -27,44 +27,44 @@ namespace OpenLoco::ObjectManager
     };
 
     constexpr std::array<uint8_t, 34> kNumStringsPerObjectType = {
-        1,
-        1,
-        3,
-        1,
-        1,
-        1,
-        1,
-        1,
-        4,
-        1,
-        2,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        8,
-        1,
-        2,
-        2,
+        1, // interface,
+        1, // sound,
+        3, // currency,
+        1, // steam,
+        1, // rock,
+        1, // water,
+        1, // surface,
+        1, // townNames,
+        4, // cargo,
+        1, // wall,
+        2, // train_signal,
+        1, // levelCrossing,
+        1, // streetLight,
+        1, // tunnel,
+        1, // bridge,
+        1, // train_station,
+        1, // trackExtra,
+        1, // track,
+        1, // roadStation,
+        1, // roadExtra,
+        1, // road,
+        1, // airport,
+        1, // dock,
+        1, // vehicle,
+        1, // tree,
+        1, // snow,
+        1, // climate,
+        1, // hillShapes,
+        1, // building,
+        1, // scaffolding,
+        8, // industry,
+        1, // region,
+        2, // competitor,
+        2, // scenarioText,
     };
 
     // 0x00472172
-    StringTableResult loadStringTable(stdx::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index)
+    StringTableResult loadStringTable(std::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index)
     {
         StringTableResult res;
         auto iter = data.begin();

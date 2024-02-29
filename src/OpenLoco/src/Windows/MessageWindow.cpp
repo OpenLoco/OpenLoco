@@ -18,6 +18,7 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -27,8 +28,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MessageWindow
 {
-    static loco_global<uint16_t, 0x005271CE> _messageCount;
-
     namespace Common
     {
         enum widx
@@ -51,13 +50,10 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_recent_messages),                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_message_options)
 
-        static WindowEventList _events;
-
         static void prepareDraw(Window& self);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window& self);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
-        static void initEvents();
     }
 
     namespace Messages
@@ -78,8 +74,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0042A6F5
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
@@ -136,7 +130,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A871
         static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            *scrollHeight = _messageCount * messageHeight;
+            *scrollHeight = MessageManager::getNumMessages() * messageHeight;
         }
 
         // 0x0042A8B9
@@ -144,7 +138,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             auto messageIndex = y / messageHeight;
 
-            if (messageIndex >= _messageCount)
+            if (messageIndex >= MessageManager::getNumMessages())
                 return;
 
             if (MessageManager::getActiveIndex() != MessageId::null)
@@ -179,7 +173,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;
 
-            if (messageIndex < _messageCount)
+            if (messageIndex < MessageManager::getNumMessages())
                 messageId = messageIndex;
 
             if (self.rowHover != messageId)
@@ -222,7 +216,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             drawingCtx.clearSingle(rt, colour);
 
             auto height = 0;
-            for (auto i = 0; i < _messageCount; i++)
+            for (auto i = 0; i < MessageManager::getNumMessages(); i++)
             {
                 if (height + messageHeight <= rt.y)
                 {
@@ -279,20 +273,24 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self->rowHover = -1;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::onUpdate,
+            .event_08 = event_08,
+            .event_09 = event_09,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::onUpdate;
-            events.event_08 = event_08;
-            events.event_09 = event_09;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -303,9 +301,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::messages);
             }
         }
@@ -321,7 +319,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 origin,
                 { 366, 217 },
                 WindowFlags::flag_11,
-                &Messages::events);
+                Messages::getEvents());
 
             window->enabledWidgets = Messages::enabledWidgets;
             window->number = 0;
@@ -330,7 +328,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             window->rowHover = -1;
             window->disabledWidgets = 0;
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = Messages::kMinWindowSize.width;
             window->minHeight = Messages::kMinWindowSize.height;
@@ -352,17 +350,15 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         window->widgets = Messages::widgets;
         window->enabledWidgets = Messages::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &Messages::events;
+        window->eventHandlers = &Messages::getEvents();
         window->disabledWidgets = 0;
-
-        Common::initEvents();
 
         window->callOnResize();
         window->callPrepareDraw();
         window->initScrollWidgets();
 
         uint16_t scrollHeight = 0;
-        window->callGetScrollSize(0, 0, &scrollHeight);
+        window->callGetScrollSize(0, nullptr, &scrollHeight);
 
         scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 
@@ -408,8 +404,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             makeWidget({ 4, 137 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::playNewsSoundEffects, StringIds::playNewsSoundEffectsTip),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0042AA84
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
@@ -526,7 +520,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             Common::drawTabs(&self, rt);
             auto yPos = self.widgets[widx::company_major_news].top + self.y;
 
-            const string_id newsStringIds[] = {
+            const StringId newsStringIds[] = {
                 StringIds::company_major_news,
                 StringIds::competitor_major_news,
                 StringIds::company_minor_news,
@@ -535,7 +529,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 StringIds::advice,
             };
 
-            const string_id newsDropdownStringIds[] = {
+            const StringId newsDropdownStringIds[] = {
                 StringIds::message_off,
                 StringIds::message_ticker,
                 StringIds::message_window,
@@ -572,14 +566,18 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self->height = kWindowSize.height;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = Common::onUpdate;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -589,13 +587,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { Messages::widgets, widx::tab_messages, &Messages::events, Messages::enabledWidgets },
-            { Settings::widgets, widx::tab_settings, &Settings::events, Settings::enabledWidgets },
+            { Messages::widgets, widx::tab_messages, Messages::getEvents(), Messages::enabledWidgets },
+            { Settings::widgets, widx::tab_settings, Settings::getEvents(), Settings::enabledWidgets },
         };
 
         static void prepareDraw(Window& self)
@@ -627,8 +625,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A716
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_messages;
             self->frameNo = 0;
@@ -640,7 +638,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->disabledWidgets = 0;
@@ -687,12 +685,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self.frameNo++;
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::messages, self.number, self.currentTab + Common::widx::tab_messages);
-        }
-
-        static void initEvents()
-        {
-            Messages::initEvents();
-            Settings::initEvents();
         }
     }
 }

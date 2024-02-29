@@ -10,6 +10,7 @@
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Map/Tile.h"
@@ -131,47 +132,25 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     static void sub_439112(Window* window);
     static void sub_4391CC(int16_t itemIndex);
     static void sub_43918F(const char* string);
     static void sub_4391DA();
     static void sub_4391E2();
     static void sub_43910A();
-    static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget);
     static void showMultiplayer(Window* window);
     static void multiplayerConnect(std::string_view host);
     static void sub_46E328();
-
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Ui::Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void onUpdate(Window& window);
-    static void onTextInput(Window& window, WidgetIndex_t widgetIndex, const char* input);
-    static Ui::CursorId onCursor(Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void prepareDraw(Ui::Window& window);
-
-    // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.textInput = onTextInput;
-        _events.cursor = onCursor;
-        _events.onUpdate = onUpdate;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleMenu,
             Ui::Point((Ui::width() - kWW) / 2, Ui::height() - kWH - 25),
             { kWW, kWH },
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            &_events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn) | (1 << Widx::multiplayer_toggle_btn);
@@ -296,7 +275,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             int16_t y = window.widgets[Widx::multiplayer_toggle_btn].top + 3 + window.y;
             int16_t x = window.width / 2 + window.x;
 
-            string_id string = StringIds::single_player_mode;
+            StringId string = StringIds::single_player_mode;
 
             if (OpenLoco::isNetworked())
             {
@@ -307,7 +286,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
                 strcpy((char*)buffer, playerName);
 
-                addr<0x112C826, string_id>() = StringIds::buffer_2039;
+                addr<0x112C826, StringId>() = StringIds::buffer_2039;
                 string = StringIds::two_player_mode_connected;
             }
 
@@ -338,7 +317,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 sub_43910A();
                 break;
             case Widx::chat_btn:
-                sub_439163(&window, widgetIndex);
+                beginSendChatMessage(window);
                 break;
             case Widx::multiplayer_toggle_btn:
                 showMultiplayer(&window);
@@ -411,13 +390,11 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x0043CB9F
     void editorInit()
     {
-        Main::open();
+        Windows::Main::open();
 
-        addr<0x00F2533F, int8_t>() = 0; // grid lines
-        addr<0x0112C2e1, int8_t>() = 0;
-        addr<0x009c870E, int8_t>() = 0;
-        addr<0x009c870F, int8_t>() = 2;
-        addr<0x009c8710, int8_t>() = 1;
+        Windows::Terraform::setAdjustLandToolSize(1);
+        Windows::Terraform::setAdjustWaterToolSize(1);
+        Windows::Terraform::setClearAreaToolSize(2);
 
         ToolbarTop::Editor::open();
         ToolbarBottom::Editor::open();
@@ -446,14 +423,15 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             0x80);
     }
 
-    static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget)
+    void beginSendChatMessage(Window& self)
     {
         WindowManager::close(WindowType::multiplayer);
 
-        addr<0x112C826 + 8, string_id>() = StringIds::the_other_player;
+        FormatArguments args{};
+        args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        TextInput::openTextInput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
+        TextInput::openTextInput(&self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, Widx::chat_btn, const_cast<void*>(&args));
     }
 
     static void sub_43918F(const char* string)
@@ -518,5 +496,21 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         }
 
         window.invalidate();
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .textInput = onTextInput,
+        .cursor = onCursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

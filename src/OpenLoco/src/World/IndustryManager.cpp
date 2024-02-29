@@ -225,7 +225,7 @@ namespace OpenLoco::IndustryManager
     {
         for (auto& industry : industries())
         {
-            const auto dist = Math::Vector::manhattanDistance(loc, World::Pos2{ industry.x, industry.y });
+            const auto dist = Math::Vector::manhattanDistance2D(loc, World::Pos2{ industry.x, industry.y });
             if (dist < kCloseIndustryDistanceMax)
             {
                 return true;
@@ -245,7 +245,7 @@ namespace OpenLoco::IndustryManager
                 continue;
             }
             numClusters++;
-            const auto dist = Math::Vector::manhattanDistance(loc, World::Pos2{ industry.x, industry.y });
+            const auto dist = Math::Vector::manhattanDistance2D(loc, World::Pos2{ industry.x, industry.y });
             if (dist < kIndustryWithinClusterDistance)
             {
                 return false;
@@ -380,7 +380,7 @@ namespace OpenLoco::IndustryManager
                 if (density == 0)
                 {
                     const auto* town = TownManager::get(townId);
-                    if (Math::Vector::manhattanDistance(randomPos, World::Pos2{ town->x, town->y }) > kIndustryDistToBeNearTownMax)
+                    if (Math::Vector::manhattanDistance2D(randomPos, World::Pos2{ town->x, town->y }) > kIndustryDistToBeNearTownMax)
                     {
                         continue;
                     }
@@ -395,7 +395,7 @@ namespace OpenLoco::IndustryManager
                 }
                 const auto townId = res->first;
                 const auto* town = TownManager::get(townId);
-                if (Math::Vector::manhattanDistance(randomPos, World::Pos2{ town->x, town->y }) < kIndustryDistToBeAwayTownMin)
+                if (Math::Vector::manhattanDistance2D(randomPos, World::Pos2{ town->x, town->y }) < kIndustryDistToBeAwayTownMin)
                 {
                     continue;
                 }
@@ -543,7 +543,7 @@ namespace OpenLoco::IndustryManager
             if (!industryObj->hasFlags(flags))
                 continue;
 
-            auto manhattanDistance = Math::Vector::manhattanDistance(World::Pos2{ industry.x, industry.y }, position);
+            auto manhattanDistance = Math::Vector::manhattanDistance2D(World::Pos2{ industry.x, industry.y }, position);
             if (manhattanDistance / World::kTileSize < 11)
                 return true;
         }

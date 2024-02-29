@@ -1,8 +1,10 @@
 #include "Vehicle.h"
 #include "Entities/EntityManager.h"
+#include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Objects/ObjectManager.h"
+#include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -11,8 +13,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
-    static loco_global<uint32_t, 0x00525FBC> _525FBC;     // RoadObjectId bits
-
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
@@ -116,22 +116,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B15FF
-    uint32_t VehicleBase::sub_4B15FF(uint32_t unk1)
+    uint32_t VehicleBase::updateTrackMotion(uint32_t unk1)
     {
         registers regs;
         regs.eax = unk1;
         regs.esi = X86Pointer(this);
         call(0x004B15FF, regs);
         return regs.eax;
-    }
-
-    // 0x004AA407
-    void VehicleBase::explodeComponent()
-    {
-        assert(getSubType() == VehicleEntityType::bogie || getSubType() == VehicleEntityType::body_start || getSubType() == VehicleEntityType::body_continued);
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004AA407, regs);
     }
 
     // 0x0047D959
@@ -169,7 +160,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elRoad->isFlag5())
+            if (elRoad->isAiAllocated())
             {
                 continue;
             }
@@ -186,7 +177,7 @@ namespace OpenLoco::Vehicles
 
             if (getTrackType() == 0xFF)
             {
-                if (*_525FBC & (1 << elRoad->roadObjectId()))
+                if (getGameState().roadObjectIdIsTram & (1 << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_40(true);
                     trackType = elRoad->roadObjectId();
@@ -238,7 +229,7 @@ namespace OpenLoco::Vehicles
         back = component->asVehicleBogie();
         if (back == nullptr)
         {
-            throw std::runtime_error("Bad vehicle structure");
+            throw Exception::RuntimeError("Bad vehicle structure");
         }
         component = component->nextVehicleComponent();
         if (component == nullptr)
@@ -322,5 +313,25 @@ namespace OpenLoco::Vehicles
             return (1 << 3) | (1 << 2);
         }
         return 1 << 3;
+    }
+
+    // 0x004AF16A
+    void removeAllCargo(CarComponent& carComponent)
+    {
+        carComponent.front->secondaryCargo.qty = 0;
+        carComponent.back->secondaryCargo.qty = 0;
+        carComponent.body->primaryCargo.qty = 0;
+
+        auto* head = EntityManager::get<VehicleHead>(carComponent.front->head);
+        if (head == nullptr)
+        {
+            throw Exception::RuntimeError("Invalid Vehicle head");
+        }
+        head->sub_4B7CC3();
+
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, enumValue(head->id));
+
+        // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
+        carComponent.body->updateCargoSprite();
     }
 }

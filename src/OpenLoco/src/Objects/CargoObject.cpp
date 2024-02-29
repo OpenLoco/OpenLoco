@@ -14,7 +14,7 @@ namespace OpenLoco
         {
             return false;
         }
-        if (var_4 == 0)
+        if (cargoTransferTime == 0)
         {
             return false;
         }
@@ -22,11 +22,11 @@ namespace OpenLoco
     }
 
     // 0x0042F4D0
-    void CargoObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void CargoObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(CargoObject));
 
-        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+        auto loadString = [&remainingData, &handle](StringId& dst, uint8_t num) {
             auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
             dst = strRes.str;
             remainingData = remainingData.subspan(strRes.tableLength);

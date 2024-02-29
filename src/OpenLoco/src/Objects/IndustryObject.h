@@ -1,9 +1,10 @@
 #pragma once
 
+#include "BuildingCommon.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -49,13 +50,6 @@ namespace OpenLoco
     OPENLOCO_ENABLE_ENUM_OPERATORS(IndustryObjectFlags);
 
 #pragma pack(push, 1)
-    struct BuildingPartAnimation
-    {
-        uint8_t numFrames;      // 0x0 Must be a power of 2 (0 = no part animation, could still have animation sequence)
-        uint8_t animationSpeed; // 0x1 Also encodes in bit 7 if the animation is position modified
-    };
-    static_assert(sizeof(BuildingPartAnimation) == 0x2);
-
     struct IndustryObjectUnk38
     {
         uint8_t var_00;
@@ -74,24 +68,24 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::industry;
 
-        string_id name;               // 0x0
-        string_id var_02;             // 0x2
-        string_id nameClosingDown;    // 0x4
-        string_id nameUpProduction;   // 0x6
-        string_id nameDownProduction; // 0x8
-        uint16_t nameSingular;        // 0x0A
-        uint16_t namePlural;          // 0x0C
-        uint32_t var_0E;              // 0x0E shadows image id base
-        uint32_t var_12;              // 0x12 Base image id for building 0
+        StringId name;               // 0x0
+        StringId var_02;             // 0x2
+        StringId nameClosingDown;    // 0x4
+        StringId nameUpProduction;   // 0x6
+        StringId nameDownProduction; // 0x8
+        StringId nameSingular;       // 0x0A
+        StringId namePlural;         // 0x0C
+        uint32_t var_0E;             // 0x0E shadows image id base
+        uint32_t var_12;             // 0x12 Base image id for building 0
         uint32_t var_16;
         uint32_t var_1A;
-        uint8_t var_1E;
-        uint8_t var_1F;
-        const uint8_t* buildingPartHeight;                   // 0x20 This is the height of a building image
+        uint8_t numBuildingParts;                            // 0x1E
+        uint8_t numBuildingVariations;                       // 0x1F
+        const uint8_t* buildingPartHeights;                  // 0x20 This is the height of a building image
         const BuildingPartAnimation* buildingPartAnimations; // 0x24
         const uint8_t* animationSequences[4];                // 0x28 Access with getAnimationSequence helper method
         const IndustryObjectUnk38* var_38;                   // 0x38 Access with getUnk38 helper method
-        const uint8_t* buildingParts[32];                    // 0x3C Access with getBuildingParts helper method
+        const uint8_t* buildingVariationParts[32];           // 0x3C Access with getBuildingParts helper method
         uint8_t minNumBuildings;                             // 0xBC
         uint8_t maxNumBuildings;                             // 0xBD
         const uint8_t* buildings;                            // 0xBE
@@ -100,7 +94,7 @@ namespace OpenLoco
         uint16_t designedYear;                               // 0xCA start year
         uint16_t obsoleteYear;                               // 0xCC end year
         // Total industries of this type that can be created in a scenario
-        // Note: this is not directly comparabile to total industries and vaires based
+        // Note: this is not directly comparable to total industries and varies based
         // on scenario total industries cap settings. At low industries cap this value is ~3x the
         // amount of industries in a scenario.
         uint8_t totalOfTypeInScenario;                              // 0xCE
@@ -132,11 +126,11 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
-        stdx::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
-        stdx::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
-        stdx::span<const IndustryObjectUnk38> getUnk38() const;
+        std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+        std::span<const std::uint8_t> getAnimationSequence(const uint8_t unk) const;
+        std::span<const IndustryObjectUnk38> getUnk38() const;
 
         constexpr bool hasFlags(IndustryObjectFlags flagsToTest) const
         {

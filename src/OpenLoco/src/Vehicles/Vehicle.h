@@ -102,7 +102,7 @@ namespace OpenLoco::Vehicles
         unk_0 = 1U << 0,
         breakdownPending = 1U << 1,
         brokenDown = 1U << 2,
-        unk_3 = 1U << 3,
+        journeyStarted = 1U << 3, // The journey start meta data has been filled in
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(BreakdownFlags);
 
@@ -119,13 +119,14 @@ namespace OpenLoco::Vehicles
 
     struct VehicleStatus
     {
-        string_id status1;
+        StringId status1;
         uint32_t status1Args;
-        string_id status2;
+        StringId status2;
         uint32_t status2Args;
     };
 
-    constexpr uint8_t cAirportMovementNodeNull = 0xFF;
+    constexpr uint8_t kAirportMovementNodeNull = 0xFF;
+    constexpr uint8_t kAirportMovementNoValidEdge = 0xFE;
 
 #pragma pack(push, 1)
     struct TrackAndDirection
@@ -146,7 +147,6 @@ namespace OpenLoco::Vehicles
                 _data |= state ? (1 << 2) : 0;
             }
             constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
-            constexpr bool operator!=(const _TrackAndDirection other) const { return !(_data == other._data); }
         };
         struct _RoadAndDirection
         {
@@ -165,7 +165,6 @@ namespace OpenLoco::Vehicles
             // Related to road vehicles turning around
             constexpr bool isUnk8() const { return _data & (1 << 8); }
             constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
-            constexpr bool operator!=(const _RoadAndDirection other) const { return !(_data == other._data); }
         };
 
         union
@@ -186,6 +185,14 @@ namespace OpenLoco::Vehicles
     uint8_t getSignalState(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const uint8_t trackType, uint32_t flags);
     void sub_4A2AD7(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
     uint8_t sub_4A2A58(const World::Pos3& loc, const TrackAndDirection::_TrackAndDirection trackAndDirection, const CompanyId company, const uint8_t trackType);
+    struct ApplyTrackModsResult
+    {
+        currency32_t cost;
+        bool networkTooComplex;
+        bool allPlacementsFailed;
+    };
+    ApplyTrackModsResult applyTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
+    currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
 
     void playPickupSound(Vehicles::Vehicle2* veh2);
 
@@ -265,8 +272,7 @@ namespace OpenLoco::Vehicles
         bool updateComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
-        uint32_t sub_4B15FF(uint32_t unk1);
-        void explodeComponent();
+        uint32_t updateTrackMotion(uint32_t unk1);
     };
 
     struct Vehicle2or6 : VehicleBase
@@ -323,7 +329,7 @@ namespace OpenLoco::Vehicles
         uint16_t sizeOfOrderTable; // 0x4C size of Order Table
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
-        uint8_t pad_53;
+        uint8_t var_53;                // 0x53 mods?
         StationId stationId;           // 0x54
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
@@ -337,12 +343,11 @@ namespace OpenLoco::Vehicles
         uint8_t airportMovementEdge; // 0x68
         uint32_t totalRefundCost;    // 0x69
         uint8_t pad_6D;
-        int8_t var_6E;             // manual speed/brake
-        int16_t var_6F;            // 0x6F x
-        int16_t var_71;            // 0x6F y
-        uint32_t var_73;           // 0x73 ticks since journey start
-        uint16_t lastAverageSpeed; // 0x77
-        uint8_t var_79;            // 0x79 timeout before auto starting trams/buses
+        int8_t manualPower;          // 0x6E manual power control VehicleFlags::manualControl
+        World::Pos2 journeyStartPos; // 0x6F journey start position
+        uint32_t journeyStartTicks;  // 0x73 ticks since journey start
+        Speed16 lastAverageSpeed;    // 0x77
+        uint8_t var_79;              // 0x79 timeout before auto starting trams/buses
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
@@ -470,10 +475,10 @@ namespace OpenLoco::Vehicles
         uint8_t pad_40[0x2]; // 0x40
         TransportMode mode;  // 0x42 field same in all vehicles
         uint8_t pad_43;
-        Speed16 var_44;
+        Speed16 targetSpeed;   // 0x44
         uint16_t timeAtSignal; // 0x46
         Flags48 var_48;
-        uint8_t var_49;
+        uint8_t var_49;      // 0x49 rackrail mod?
         uint32_t dayCreated; // 0x4A
         uint16_t var_4E;
         uint16_t var_50;
@@ -617,8 +622,8 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
-        uint8_t var_46; // 0x46 roll
-        uint8_t var_47;
+        uint8_t var_46;              // 0x46 roll
+        uint8_t var_47;              // 0x47 cargo sprite index (unused)
         VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint16_t var_52;
         uint8_t bodyIndex; // 0x54
@@ -638,7 +643,6 @@ namespace OpenLoco::Vehicles
         uint16_t getPlaneType();
         bool update();
         bool isOnRackRail();
-        void carComponent_sub_4AF16A();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
@@ -753,10 +757,6 @@ namespace OpenLoco::Vehicles
             {
                 return nextVehicleComponent == other.nextVehicleComponent;
             }
-            bool operator!=(CarComponentIter other) const
-            {
-                return !(*this == other);
-            }
 
             constexpr CarComponent& operator*()
             {
@@ -852,10 +852,6 @@ namespace OpenLoco::Vehicles
                 {
                     return nextVehicleComponent == other.nextVehicleComponent;
                 }
-                bool operator!=(CarIter other) const
-                {
-                    return !(*this == other);
-                }
 
                 constexpr Car& operator*()
                 {
@@ -937,4 +933,5 @@ namespace OpenLoco::Vehicles
 
     // TODO: move this?
     uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId);
+    void removeAllCargo(CarComponent& carComponent);
 }

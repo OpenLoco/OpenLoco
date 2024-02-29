@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -20,7 +21,6 @@ namespace OpenLoco::World::Track
         }
     }
 
-    static loco_global<uint32_t, 0x00525FC0> _525FC0;
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
     static loco_global<StationId, 0x01135FAE> _1135FAE;
@@ -28,14 +28,21 @@ namespace OpenLoco::World::Track
     static loco_global<uint16_t, 0x01136087> _1136087;
     static loco_global<uint8_t, 0x0113607D> _113607D;
 
-    // 0x00478895
-    void getRoadConnections(const World::Pos3& pos, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
+    // Part of 0x00478895
+    // For 0x00478895 call this followed by getRoadConnections
+    std::pair<World::Pos3, uint8_t> getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
-        const auto nextTrackPos = pos + TrackData::getUnkRoad(trackAndDirection).pos;
+        const auto& roadData = TrackData::getUnkRoad(trackAndDirection);
+
+        return std::make_pair(pos + roadData.pos, roadData.rotationEnd);
+    }
+
+    // 0x004788C8
+    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId)
+    {
         _1135FAE = StationId::null; // stationId
 
         uint8_t baseZ = nextTrackPos.z / 4;
-        uint8_t nextRotation = TrackData::getUnkRoad(trackAndDirection).rotationEnd;
         _112C2EE = nextRotation;
 
         const auto tile = World::TileManager::get(nextTrackPos);
@@ -47,7 +54,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (!(_525FC0 & (1 << elRoad->roadObjectId())))
+            if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
             {
                 if (elRoad->owner() != company)
                 {
@@ -61,7 +68,7 @@ namespace OpenLoco::World::Track
                 {
                     continue;
                 }
-                if (!(_525FC0 & (1 << roadObjectId)))
+                if (!(getGameState().roadObjectIdIsTram & (1 << elRoad->roadObjectId())))
                 {
                     continue;
                 }
@@ -72,7 +79,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elRoad->isGhost() || elRoad->isFlag5())
+            if (elRoad->isGhost() || elRoad->isAiAllocated())
             {
                 continue;
             }
@@ -91,7 +98,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if (_113601A[1] != elRoad->mods())
+                        if ((_113601A[1] & elRoad->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -104,7 +111,7 @@ namespace OpenLoco::World::Track
                                 continue;
                             }
 
-                            if (!elStation->isFlag5() && !elStation->isGhost())
+                            if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
                                 _1135FAE = elStation->stationId();
                                 _1136087 = elStation->objectId();
@@ -138,7 +145,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if (_113601A[1] != elRoad->mods())
+            if ((_113601A[1] & elRoad->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
@@ -151,7 +158,7 @@ namespace OpenLoco::World::Track
                     continue;
                 }
 
-                if (!elStation->isFlag5() && !elStation->isGhost())
+                if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
                     _1135FAE = elStation->stationId();
                     _1136087 = elStation->objectId();
@@ -202,7 +209,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elTrack->isGhost() || elTrack->isFlag5())
+            if (elTrack->isGhost() || elTrack->isAiAllocated())
             {
                 continue;
             }
@@ -221,7 +228,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if (_113601A[1] != elTrack->mods())
+                        if ((_113601A[1] & elTrack->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -234,13 +241,13 @@ namespace OpenLoco::World::Track
                                 continue;
                             }
 
-                            if (!elStation->isFlag5() && !elStation->isGhost())
+                            if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
                                 _1135FAE = elStation->stationId();
                             }
                         }
 
-                        if (elTrack->has_6_10())
+                        if (elTrack->hasLevelCrossing())
                         {
                             _113607D = 1;
                         }
@@ -253,7 +260,7 @@ namespace OpenLoco::World::Track
                                 continue;
                             }
 
-                            if (!elSignal->isFlag5() && !elSignal->isGhost())
+                            if (!elSignal->isAiAllocated() && !elSignal->isGhost())
                             {
                                 trackAndDirection2 |= (1 << 15);
                             }
@@ -286,7 +293,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if (_113601A[1] != elTrack->mods())
+            if ((_113601A[1] & elTrack->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
@@ -299,13 +306,13 @@ namespace OpenLoco::World::Track
                     continue;
                 }
 
-                if (!elStation->isFlag5() && !elStation->isGhost())
+                if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
                     _1135FAE = elStation->stationId();
                 }
             }
 
-            if (elTrack->has_6_10())
+            if (elTrack->hasLevelCrossing())
             {
                 _113607D = 1;
             }
@@ -318,7 +325,7 @@ namespace OpenLoco::World::Track
                     continue;
                 }
 
-                if (!elSignal->isFlag5() && !elSignal->isGhost())
+                if (!elSignal->isAiAllocated() && !elSignal->isGhost())
                 {
                     trackAndDirection2 |= (1 << 15);
                 }

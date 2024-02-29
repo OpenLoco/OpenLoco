@@ -9,7 +9,7 @@ namespace OpenLoco::ObjectManager
     static loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
     // 0x0047221F
-    ImageTableResult loadImageTable(stdx::span<const std::byte> data)
+    ImageTableResult loadImageTable(std::span<const std::byte> data)
     {
         auto remainingData = data;
         const auto g1Header = *reinterpret_cast<const Gfx::G1Header*>(remainingData.data());

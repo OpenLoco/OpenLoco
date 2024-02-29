@@ -2,8 +2,8 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
 #include <array>
+#include <span>
 
 namespace OpenLoco
 {
@@ -21,7 +21,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::scaffolding;
 
-        string_id name;
+        StringId name;
         uint32_t image;             // 0x02
         uint16_t segmentHeights[3]; // 0x06
         uint16_t roofHeights[3];    // 0x0C
@@ -29,7 +29,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         // 0x0042DF0B
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

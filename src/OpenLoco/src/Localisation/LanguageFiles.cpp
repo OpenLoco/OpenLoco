@@ -26,7 +26,7 @@ namespace OpenLoco::Localisation
 
     static const std::map<std::string, uint8_t, std::less<>> kBasicCommands = {
         { "INT16_1DP", ControlCodes::int16_decimals },
-        { "INT32_1DP", ControlCodes::int32_decimals },
+        { "INT32_2DP", ControlCodes::int32_decimals },
         { "INT16", ControlCodes::int16_grouped },
         { "UINT16", ControlCodes::uint16_ungrouped },
         { "SMALLFONT", ControlCodes::Font::regular },
@@ -119,7 +119,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        Logging::error("{:{}}", (int)commands[1].length(), commands[1].data());
+                        Logging::error("{}", commands[1]);
                     }
                 }
                 else if (commands[0] == "UINT16")
@@ -182,7 +182,7 @@ namespace OpenLoco::Localisation
                     }
                     else
                     {
-                        Logging::error("{:{}}", (int)commands[1].length(), commands[1].data());
+                        Logging::error("{}", commands[1]);
                     }
                 }
                 else if (commands[0] == "MOVE_X")
@@ -210,7 +210,7 @@ namespace OpenLoco::Localisation
                 }
                 else
                 {
-                    Logging::error("{:{}}", (int)commands[0].length(), commands[0].data());
+                    Logging::error("{}", commands[0]);
                 }
 
                 continue;
@@ -230,8 +230,19 @@ namespace OpenLoco::Localisation
 
     static bool stringIsBuffer(int id)
     {
-        return id == StringIds::buffer_337 || id == StringIds::buffer_338 || id == StringIds::buffer_1250 || id == StringIds::preferred_currency_buffer || id == StringIds::buffer_1719
-            || id == StringIds::buffer_2039 || id == StringIds::buffer_2040 || id == StringIds::buffer_2042 || id == StringIds::buffer_2045;
+        switch (id)
+        {
+            case StringIds::buffer_337:
+            case StringIds::buffer_338:
+            case StringIds::buffer_1250:
+            case StringIds::preferred_currency_buffer:
+            case StringIds::buffer_1719:
+            case StringIds::buffer_2039:
+            case StringIds::buffer_2040:
+                return true;
+            default:
+                return false;
+        }
     }
 
     static bool loadLanguageStringTable(fs::path languageFile)
@@ -261,7 +272,7 @@ namespace OpenLoco::Localisation
         }
         catch (const std::exception& e)
         {
-            Logging::error(e.what());
+            Logging::error("{}", e.what());
             Ui::showMessageBox("Exception", e.what());
             return false;
         }

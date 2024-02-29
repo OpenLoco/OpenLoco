@@ -34,8 +34,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         widgetEnd()
     };
 
-    static WindowEventList events;
-
     // 0x004C18A5
     static void draw(Window& window, Gfx::RenderTarget* rt)
     {
@@ -43,8 +41,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 
         window.draw(rt);
 
-        static loco_global<string_id, 0x0112C826> _commonFormatArgs;
-        string_id prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
+        static loco_global<StringId, 0x0112C826> _commonFormatArgs;
+        StringId prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
         *_commonFormatArgs = prompt;
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
@@ -73,10 +71,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         }
     }
 
-    static void init_events()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.draw = draw;
-        events.onMouseUp = onMouseUp;
+        return kEvents;
     }
 
     // 0x004C180C
@@ -85,16 +87,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         auto window = WindowManager::bringToFront(WindowType::landscapeGenerationConfirm, 0);
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, kWindowSize, WindowFlags::none, &events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGenerationConfirm, kWindowSize, WindowFlags::none, getEvents());
             window->widgets = widgets;
             window->enabledWidgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();
             window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedDarkRed).translucent());
             window->flags |= WindowFlags::transparent;
-
-            // TODO(avgeffen): only needs to be called once.
-            init_events();
         }
 
         window->var_846 = promptType;

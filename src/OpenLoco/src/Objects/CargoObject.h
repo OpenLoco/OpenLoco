@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -21,19 +21,39 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CargoObjectFlags);
 
+    // TODO: Eventually perhaps make this a seperate object type
+    enum class CargoCategory : uint16_t
+    {
+        grain = 1,
+        coal,
+        ironOre,
+        liquids,
+        paper,
+        steel,
+        timber,
+        goods,
+        foods,
+        livestock = 11,
+        passengers,
+        mail,
+
+        // Note: Mods may (and do) use other numbers not covered by this list
+        null = 0xFFFFU
+    };
+
 #pragma pack(push, 1)
     struct CargoObject
     {
         static constexpr auto kObjectType = ObjectType::cargo;
 
-        string_id name; // 0x0
+        StringId name; // 0x0
         uint16_t var_2;
-        uint16_t var_4;
-        string_id unitsAndCargoName;   // 0x6
-        string_id unitNameSingular;    // 0x8
-        string_id unitNamePlural;      // 0xA
+        uint16_t cargoTransferTime;
+        StringId unitsAndCargoName;    // 0x6
+        StringId unitNameSingular;     // 0x8
+        StringId unitNamePlural;       // 0xA
         uint32_t unitInlineSprite;     // 0xC
-        uint16_t matchFlags;           // 0x10
+        CargoCategory cargoCategory;   // 0x10
         CargoObjectFlags flags;        // 0x12
         uint8_t numPlatformVariations; // 0x13
         uint8_t var_14;
@@ -46,7 +66,7 @@ namespace OpenLoco
         uint8_t unitSize;          // 0x1E
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
 
         constexpr bool hasFlags(CargoObjectFlags flagsToTest) const

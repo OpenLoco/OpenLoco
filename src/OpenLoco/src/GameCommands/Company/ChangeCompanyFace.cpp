@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         auto* targetCompany = CompanyManager::get(targetCompanyId);
         if (!otherCompanyUsingOldCompetitor)
         {
-            auto headerToUnload = ObjectManager::getHeader({ ObjectType::competitor, targetCompany->competitorId });
+            auto& headerToUnload = ObjectManager::getHeader({ ObjectType::competitor, targetCompany->competitorId });
             ObjectManager::unload(headerToUnload);
             ObjectManager::reloadAll();
             Ui::WindowManager::close(Ui::WindowType::dropdown);
@@ -92,7 +92,7 @@ namespace OpenLoco::GameCommands
         {
             auto* competitor = ObjectManager::get<CompetitorObject>(foundCompetitor->id);
             auto oldName = targetCompany->name;
-            targetCompany->name = competitor->var_00;
+            targetCompany->name = competitor->name;
             StringManager::emptyUserString(oldName);
         }
 
@@ -102,8 +102,7 @@ namespace OpenLoco::GameCommands
 
     void changeCompanyFace(registers& regs)
     {
-        int32_t header[] = { regs.eax, regs.ecx, regs.edx, regs.edi };
-        auto* targetHeader = reinterpret_cast<ObjectHeader*>(header);
-        regs.ebx = changeCompanyFace(regs.bl, CompanyId(regs.bh), *targetHeader);
+        ChangeCompanyFaceArgs args(regs);
+        regs.ebx = changeCompanyFace(regs.bl, args.companyId, args.objHeader);
     }
 }

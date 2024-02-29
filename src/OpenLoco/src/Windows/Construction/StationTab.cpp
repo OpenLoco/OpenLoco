@@ -1,12 +1,21 @@
 #include "Audio/Audio.h"
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "GameCommands/Airports/CreateAirport.h"
+#include "GameCommands/Airports/RemoveAirport.h"
+#include "GameCommands/Docks/CreatePort.h"
+#include "GameCommands/Docks/RemovePort.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoadStation.h"
+#include "GameCommands/Road/RemoveRoadStation.h"
+#include "GameCommands/Track/CreateTrainStation.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -21,6 +30,8 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainStationObject.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
@@ -124,8 +135,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
             case widx::image:
             {
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::placeStation);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::placeStation);
                 break;
             }
         }
@@ -175,10 +186,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     {
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) != GhostVisibilityFlags::none)
         {
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
+            if (World::hasMapSelectionFlag(World::MapSelectionFlags::catchmentArea))
             {
                 Windows::Station::sub_491BC6();
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::catchmentArea);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::catchmentArea);
             }
             if (_stationGhostType & (1 << 15))
             {
@@ -204,7 +215,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
             else
             {
-                GameCommands::TrackStationRemovalArgs args;
+                GameCommands::TrainStationRemovalArgs args;
                 args.pos = _stationGhostPos;
                 args.rotation = _stationGhostRotation;
                 args.trackId = _stationGhostTrackId;
@@ -231,7 +242,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgsFromCursor(const int16_t x, const int16_t y);
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
-    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
+    static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgsFromCursor(const int16_t x, const int16_t y);
 
     static loco_global<World::Pos2, 0x001135F7C> _1135F7C;
     static loco_global<World::Pos2, 0x001135F80> _1135F90;
@@ -250,8 +261,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A4F3B
     static void onToolUpdateAirport(const Ui::Point& mousePos)
     {
-        World::TileManager::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        World::mapInvalidateMapSelectionTiles();
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getAirportPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
         {
@@ -259,8 +270,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
@@ -292,7 +303,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -313,8 +324,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     // 0x004A5158
     static void onToolUpdateDock(const Ui::Point& mousePos)
     {
-        World::TileManager::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        World::mapInvalidateMapSelectionTiles();
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
         const auto args = getDockPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
         {
@@ -322,8 +333,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
         _constructionArrowDirection = args->rotation;
         _constructionArrowPos = args->pos;
 
@@ -355,7 +366,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -414,7 +425,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -440,15 +451,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             filter &= ~(1U << roadStationObj->cargoType);
         }
 
-        auto res = calcAcceptedCargoTrackStationGhost(station, pos, filter);
+        auto res = calcAcceptedCargoTrainStationGhost(station, pos, filter);
         _constructingStationAcceptedCargoTypes = res.accepted;
         _constructingStationProducedCargoTypes = res.produced;
     }
 
     // 0x004A4B2E
-    static void onToolUpdateTrackStation(const Ui::Point& mousePos)
+    static void onToolUpdateTrainStation(const Ui::Point& mousePos)
     {
-        const auto args = getTrackStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
+        const auto args = getTrainStationPlacementArgsFromCursor(mousePos.x, mousePos.y);
         if (!args.has_value())
         {
             onToolUpdateFail();
@@ -486,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         _ghostVisibilityFlags = _ghostVisibilityFlags | GhostVisibilityFlags::station;
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+        World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
         _constructingStationId = _lastConstructedAdjoiningStationId;
 
         auto* station = _lastConstructedAdjoiningStationId != 0xFFFFFFFFU ? StationManager::get(static_cast<StationId>(*_lastConstructedAdjoiningStationId)) : nullptr;
@@ -500,7 +511,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         sub_491BF5(pos, CatchmentFlags::flag_0);
         Windows::Station::sub_491BC6();
 
-        auto res = calcAcceptedCargoTrackStationGhost(station, pos, 0xFFFFFFFFU);
+        auto res = calcAcceptedCargoTrainStationGhost(station, pos, 0xFFFFFFFFU);
         _constructingStationAcceptedCargoTypes = res.accepted;
         _constructingStationProducedCargoTypes = res.produced;
     }
@@ -526,7 +537,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            onToolUpdateTrackStation({ x, y });
+            onToolUpdateTrainStation({ x, y });
         }
     }
 
@@ -585,7 +596,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* airportObject = ObjectManager::get<AirportObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(airportObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         GameCommands::doCommand(*args, GameCommands::Flags::apply);
@@ -723,7 +734,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* dockObject = ObjectManager::get<DockObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(dockObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         GameCommands::doCommand(*args, GameCommands::Flags::apply);
@@ -767,7 +778,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadStationObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
         if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
@@ -776,7 +787,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    static std::optional<GameCommands::TrainStationPlacementArgs> getTrainStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
     {
         const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
         const auto& interaction = res.first;
@@ -791,7 +802,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             return std::nullopt;
         }
 
-        GameCommands::TrackStationPlacementArgs placementArgs;
+        GameCommands::TrainStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
         placementArgs.rotation = elTrack->unkDirection();
         placementArgs.trackId = elTrack->trackId();
@@ -802,11 +813,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x004A5390
-    static void onToolDownTrackStation(const int16_t x, const int16_t y)
+    static void onToolDownTrainStation(const int16_t x, const int16_t y)
     {
         removeConstructionGhosts();
 
-        const auto args = getTrackStationPlacementArgsFromCursor(x, y);
+        const auto args = getTrainStationPlacementArgsFromCursor(x, y);
         if (!args)
         {
             return;
@@ -814,7 +825,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         const auto* trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(trainStationObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -851,7 +862,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            onToolDownTrackStation(x, y);
+            onToolDownTrainStation(x, y);
         }
     }
 
@@ -1068,16 +1079,20 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self->callOnMouseDown(Station::widx::image);
     }
 
-    void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = Common::onClose,
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    const WindowEventList& getEvents()
     {
-        events.onClose = Common::onClose;
-        events.onMouseUp = onMouseUp;
-        events.onMouseDown = onMouseDown;
-        events.onDropdown = onDropdown;
-        events.onUpdate = onUpdate;
-        events.onToolUpdate = onToolUpdate;
-        events.onToolDown = onToolDown;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
+        return kEvents;
     }
 }

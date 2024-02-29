@@ -366,7 +366,7 @@ namespace OpenLoco::Gfx
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        // Draw all the images ontop of the one bitmap
+        // Draw all the images on top of the one bitmap
         for (size_t i = 0; i < numImages; ++i)
         {
             drawingCtx.drawImage(rt, { 0, 0 }, baseImageId.withIndexOffset(i));

@@ -30,12 +30,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         int16_t x = (Ui::width() / 2) - (kWindowSize.width / 2);
         Ui::Point origin = { x, y };
 
-        auto window = WindowManager::createWindow(WindowType::news, origin, kWindowSize, flags, &News1::events);
+        auto window = WindowManager::createWindow(WindowType::news, origin, kWindowSize, flags, News1::getEvents());
 
         window->widgets = widgets;
         window->enabledWidgets = Common::enabledWidgets;
-
-        Common::initEvents();
 
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, colour);
@@ -53,6 +51,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         bool isOld = false;
         auto news = MessageManager::get(messageIndex);
+        if (news == nullptr)
+        {
+            return;
+        }
 
         if ((news->timeActive != 0) && (getScreenAge() >= 10))
         {
@@ -99,12 +101,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 Ui::Point origin = { x, y };
                 WindowFlags flags = WindowFlags::stickToFront | WindowFlags::viewportNoScrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
-                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, &Ticker::events);
+                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::kWindowSize, flags, Ticker::getEvents());
 
                 window->widgets = Ticker::widgets;
                 window->enabledWidgets = Ticker::enabledWidgets;
-
-                Common::initEvents();
 
                 window->initScrollWidgets();
 
@@ -169,13 +169,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         MessageManager::setActiveIndex(MessageId::null);
         WindowManager::close(WindowType::news, 0);
 
-        if (_messageCount != 0)
+        if (MessageManager::getNumMessages() != 0)
         {
-            auto message = MessageManager::get(MessageId(_messageCount - 1));
+            auto message = MessageManager::get(MessageId(MessageManager::getNumMessages() - 1));
             message->setUserSelected();
             message->timeActive++;
 
-            NewsWindow::open(MessageId(_messageCount - 1));
+            NewsWindow::open(MessageId(MessageManager::getNumMessages() - 1));
         }
     }
 
@@ -183,14 +183,5 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         // Only affects the newspaper view; the ticker ignores this widget
         self->callOnMouseUp(1);
-    }
-
-    namespace Common
-    {
-        void initEvents()
-        {
-            Ticker::initEvents();
-            News1::initEvents();
-        }
     }
 }

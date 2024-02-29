@@ -24,7 +24,7 @@ namespace OpenLoco
         streetLight,
         tunnel,
         bridge,
-        trackStation,
+        trainStation,
         trackExtra,
         track,
         roadStation,
@@ -45,6 +45,7 @@ namespace OpenLoco
         scenarioText,
     };
 
+    constexpr size_t kMaxObjectTypes = 34;
 #pragma pack(push, 1)
     struct ObjectHeader
     {
@@ -104,11 +105,6 @@ namespace OpenLoco
                 return getType() == rhs.getType() && getName() == rhs.getName();
             }
         }
-
-        bool operator!=(const ObjectHeader& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
 #pragma pack(pop)
@@ -135,4 +131,6 @@ namespace OpenLoco
         ObjectType type;
         LoadedObjectId id;
     };
+
+    void objectCreateIdentifierName(char* dst, const ObjectHeader& header);
 }

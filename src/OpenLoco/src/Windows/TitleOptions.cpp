@@ -29,22 +29,16 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void onMouseUp(Window& window, WidgetIndex_t widgetIndex);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
-        _events.onMouseUp = onMouseUp;
-        _events.draw = draw;
-
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
             Ui::Point(Ui::width() - kWindowSize.width, 0),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            &_events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::options_button);
@@ -84,5 +78,15 @@ namespace OpenLoco::Ui::Windows::TitleOptions
                 Ui::Windows::Options::open();
                 break;
         }
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

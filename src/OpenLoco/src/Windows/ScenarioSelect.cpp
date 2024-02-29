@@ -57,10 +57,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     };
 
     constexpr auto kRowHeight = 24;
-
     static bool _warnOnce = false;
-    static WindowEventList _events;
-    static void initEvents();
 
     // 0x00443807
     static void initTabs(Window* self)
@@ -97,6 +94,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->invalidate();
     }
 
+    static const WindowEventList& getEvents();
+
     // 0x00443868
     Window* open()
     {
@@ -104,15 +103,13 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         if (self != nullptr)
             return self;
 
-        initEvents();
-
         self = WindowManager::createWindow(
             WindowType::scenarioSelect,
             Ui::Point({ static_cast<int16_t>(width() / 2 - kWindowSize.width / 2),
                         std::max<int16_t>(height() / 2 - kWindowSize.height / 2, 28) }),
             kWindowSize,
             WindowFlags::stickToFront | WindowFlags::flag_12,
-            &_events);
+            getEvents());
 
         self->widgets = _widgets;
         self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
@@ -164,7 +161,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Draw widgets.
         self.draw(rt);
 
-        static const string_id scenarioGroupIds[] = {
+        static const StringId scenarioGroupIds[] = {
             StringIds::scenario_group_beginner,
             StringIds::scenario_group_easy,
             StringIds::scenario_group_medium,
@@ -181,7 +178,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             const auto offset = self.currentTab == i ? 1 : 0;
             auto origin = Ui::Point(widget.midX() + self.x, widget.midY() + self.y - 3 - offset);
-            const string_id caption = scenarioGroupIds[i];
+            const StringId caption = scenarioGroupIds[i];
 
             drawingCtx.drawStringCentredWrapped(*rt, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
         }
@@ -325,7 +322,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 10;
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
-            string_id competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
+            StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
             y = drawingCtx.drawStringLeftWrapped(*rt, x, y, 170, Colour::black, competitionStringId, &args);
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
@@ -522,16 +519,20 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         return args;
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.getScrollSize = getScrollSize;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
+        return kEvents;
     }
 }

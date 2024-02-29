@@ -9,7 +9,6 @@ set(public_files
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/MemoryStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Numerics.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Prng.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Span.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Stream.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Timer.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/Core/Traits.hpp"
@@ -44,7 +43,6 @@ loco_add_library(Core STATIC
 
 target_link_libraries(Core
     PUBLIC
-        nonstd::span-lite
         fmt::fmt
 )
 

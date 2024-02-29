@@ -1,4 +1,6 @@
 #include "Object.h"
+#include <OpenLoco/Utility/String.hpp>
+#include <fmt/format.h>
 #include <string_view>
 #include <tuple>
 #include <unordered_set>
@@ -176,12 +178,12 @@ namespace OpenLoco
         { "BRDGSUSP", ObjectType::bridge }, // "Suspension Bridge"
         { "BRDGWOOD", ObjectType::bridge }, // "Wooden Bridge"
 
-        // Type 15 (trackStation)
-        { "TRSTAT1 ", ObjectType::trackStation }, // "City Station"
-        { "TRSTAT4 ", ObjectType::trackStation }, // "City Station"
-        { "TRSTAT5 ", ObjectType::trackStation }, // "Station"
-        { "TRSTAT2 ", ObjectType::trackStation }, // "Station"
-        { "TRSTAT3 ", ObjectType::trackStation }, // "Station"
+        // Type 15 (trainStation)
+        { "TRSTAT1 ", ObjectType::trainStation }, // "City Station"
+        { "TRSTAT4 ", ObjectType::trainStation }, // "City Station"
+        { "TRSTAT5 ", ObjectType::trainStation }, // "Station"
+        { "TRSTAT2 ", ObjectType::trainStation }, // "Station"
+        { "TRSTAT3 ", ObjectType::trainStation }, // "Station"
 
         // Type 16 (trackExtra)
         { "TREX3RL ", ObjectType::trackExtra }, // "Electric 3rd Rail"
@@ -649,5 +651,11 @@ namespace OpenLoco
     {
         auto search = _vanillaObjects.find(std::make_tuple(getName(), getType()));
         return search != _vanillaObjects.end();
+    }
+
+    // 0x00473BC7
+    void objectCreateIdentifierName(char* dst, const ObjectHeader& header)
+    {
+        fmt::format_to(dst, "{}/{:08X}{:08X}", Utility::trim(header.getName()), header.flags, header.checksum);
     }
 }

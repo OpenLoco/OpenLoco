@@ -1,15 +1,11 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
-#include "GameCommands/Buildings/RemoveBuilding.h"
-#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
-#include "GameCommands/GameCommands.h"
-#include "GameCommands/Terraform/RemoveTree.h"
-#include "GameCommands/Terraform/RemoveWall.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Logging.h"
 #include "Map/BuildingElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -18,11 +14,11 @@
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
 #include "Objects/ObjectManager.h"
-#include "Objects/RoadObject.h"
 #include "SceneManager.h"
 #include "Tutorial.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -63,7 +59,7 @@ namespace OpenLoco::Input
 
     static loco_global<MouseButton, 0x001136FA0> _lastKnownButtonState;
 
-    static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
+    static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
 
@@ -110,15 +106,13 @@ namespace OpenLoco::Input
 
     static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
 
-    static loco_global<MapSelectionFlags, 0x00F24484> _mapSelectionFlags;
-
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
     static loco_global<uint16_t, 0x0113D84C> _dropdownItemCount;
     static loco_global<uint16_t, 0x0113D84E> _dropdownHighlightedIndex;
-    static loco_global<string_id[40], 0x0113D850> _dropdownItemFormats;
+    static loco_global<StringId[40], 0x0113D850> _dropdownItemFormats;
 
     static loco_global<uint32_t, 0x0113DC60> _dropdownDisabledItems;
 
@@ -128,7 +122,9 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static const std::map<Ui::ScrollPart, string_id> kScrollWidgetTooltips = {
+    static loco_global<int32_t, 0x00525330> _cursorWheel;
+
+    static const std::map<Ui::ScrollPart, StringId> kScrollWidgetTooltips = {
         { Ui::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
         { Ui::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
         { Ui::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
@@ -147,13 +143,13 @@ namespace OpenLoco::Input
     {
         _pressedWindowType = Ui::WindowType::undefined;
 
-        _tooltipNotShownTicks = -1;
+        _tooltipNotShownTicks = 0xFFFFU;
         _hoverWindowType = Ui::WindowType::undefined;
 
         _5233AE = 0;
         _5233B2 = 0;
 
-        _mapSelectionFlags = MapSelectionFlags::none;
+        World::resetMapSelectionFlags();
     }
 
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY)
@@ -162,6 +158,11 @@ namespace OpenLoco::Input
         _cursorY = y;
         addr<0x0114084C, int32_t>() = relX;
         addr<0x01140840, int32_t>() = relY;
+    }
+
+    void mouseWheel(int wheel)
+    {
+        _cursorWheel += wheel;
     }
 
     bool isHovering(Ui::WindowType type)
@@ -258,124 +259,9 @@ namespace OpenLoco::Input
         }
     }
 
-    Window* toolGetActiveWindow()
-    {
-        if (!hasFlag(Flags::toolActive))
-        {
-            return nullptr;
-        }
-
-        return WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
-    }
-
-    bool isToolActive(Ui::WindowType type)
-    {
-        if (!hasFlag(Flags::toolActive))
-            return false;
-
-        return ToolManager::getToolWindowType() == type;
-    }
-
-    bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number)
-    {
-        if (!isToolActive(type))
-            return false;
-
-        return ToolManager::getToolWindowNumber() == number;
-    }
-
-    bool isToolActive(Ui::WindowType type, Ui::WindowNumber_t number, int16_t widgetIndex)
-    {
-        if (!isToolActive(type, number))
-            return false;
-        return ToolManager::getToolWidgetIndex() == widgetIndex;
-    }
-
-    // 0x004CE367
-    // tool (al)
-    // widgetIndex (dx)
-    // w (esi)
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, CursorId cursorId)
-    {
-        if (Input::hasFlag(Input::Flags::toolActive))
-        {
-            if (w->type == ToolManager::getToolWindowType() && w->number == ToolManager::getToolWindowNumber()
-                && widgetIndex == ToolManager::getToolWidgetIndex())
-            {
-                toolCancel();
-                return false;
-            }
-            else
-            {
-                toolCancel();
-            }
-        }
-
-        Input::setFlag(Input::Flags::toolActive);
-        Input::resetFlag(Input::Flags::flag6);
-        ToolManager::setToolCursor(cursorId);
-        ToolManager::setToolWindowType(w->type);
-        ToolManager::setToolWindowNumber(w->number);
-        ToolManager::setToolWidgetIndex(widgetIndex);
-        return true;
-    }
-
-    // 0x004CE3D6
-    void toolCancel()
-    {
-        if (Input::hasFlag(Input::Flags::toolActive))
-        {
-            Input::resetFlag(Input::Flags::toolActive);
-
-            World::TileManager::mapInvalidateSelectionRect();
-            World::TileManager::mapInvalidateMapSelectionTiles();
-
-            resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::enableConstructionArrow | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
-
-            if (ToolManager::getToolWidgetIndex() >= 0)
-            {
-                // Invalidate tool widget
-                Ui::WindowManager::invalidateWidget(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber(), ToolManager::getToolWidgetIndex());
-
-                // Abort tool event
-                Window* w = Ui::WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
-                if (w != nullptr)
-                    w->callToolAbort(ToolManager::getToolWidgetIndex());
-            }
-        }
-    }
-
-    void toolCancel(Ui::WindowType type, Ui::WindowNumber_t number)
-    {
-        if (!isToolActive(type, number))
-            return;
-
-        toolCancel();
-    }
-
     StationId getHoveredStationId()
     {
         return _hoveredStationId;
-    }
-
-    MapSelectionFlags getMapSelectionFlags()
-    {
-        return _mapSelectionFlags;
-    }
-
-    bool hasMapSelectionFlag(MapSelectionFlags flags)
-    {
-        return (_mapSelectionFlags & flags) != MapSelectionFlags::none;
-    }
-
-    void setMapSelectionFlags(MapSelectionFlags flags)
-    {
-        _mapSelectionFlags = _mapSelectionFlags | flags;
-    }
-
-    void resetMapSelectionFlag(MapSelectionFlags flags)
-    {
-        _mapSelectionFlags = _mapSelectionFlags & ~flags;
     }
 
 #pragma mark - Mouse input
@@ -422,14 +308,6 @@ namespace OpenLoco::Input
             widget = &window->widgets[widgetIndex];
         }
 
-        registers regs;
-        regs.ebp = (int32_t)state();
-        regs.esi = X86Pointer(window);
-        regs.edx = widgetIndex;
-        regs.edi = X86Pointer(widget);
-        regs.cx = (uint16_t)button;
-        regs.ax = x;
-        regs.bx = y;
         switch (state())
         {
             case State::reset:
@@ -604,171 +482,6 @@ namespace OpenLoco::Input
         }
     }
 
-    // 0x004A5AA1 TODO: Move to a better file
-    static void signalInteract(World::SignalElement* signal, const bool isLeftSignal, const World::Pos2 pos)
-    {
-        auto* track = signal->prev()->as<World::TrackElement>();
-        if (track == nullptr)
-        {
-            return;
-        }
-
-        uint16_t unkFlags = 1 << 15; // right
-        if (isLeftSignal)
-        {
-            unkFlags = 1 << 14; // left
-        }
-
-        // If in construction mode with both directions selection (actually does not single direction but this is what is implied)
-        if (!Input::isToolActive(WindowType::construction, 0, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
-        {
-            if (signal->getLeft().hasSignal() && signal->getRight().hasSignal())
-            {
-                unkFlags = (1 << 15) | (1 << 14); // both
-            }
-        }
-
-        GameCommands::SignalRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-        args.rotation = track->unkDirection();
-        args.trackId = track->trackId();
-        args.index = track->sequenceIndex();
-        args.type = track->trackObjectId();
-        args.flags = unkFlags;
-
-        auto* window = WindowManager::find(WindowType::construction);
-        if (window != nullptr)
-        {
-            Ui::Windows::Construction::removeConstructionGhosts();
-        }
-
-        GameCommands::setErrorTitle(StringIds::cant_remove_signal);
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-        {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
-        }
-    }
-
-    // 0x004A5B66 TODO: Move to a better file
-    static void trackStationInteract(World::StationElement* station, const World::Pos2 pos)
-    {
-        auto* track = station->prev()->as<World::TrackElement>();
-        if (track == nullptr)
-        {
-            return;
-        }
-
-        GameCommands::setErrorTitle(StringIds::cant_remove_station);
-        GameCommands::TrackStationRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-        args.rotation = track->unkDirection();
-        args.trackId = track->trackId();
-        args.index = track->sequenceIndex();
-        args.type = track->trackObjectId();
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-        {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
-        }
-    }
-
-    // 0x004A5BDF TODO: Move to a better file
-    static void roadStationInteract(World::StationElement* station, const World::Pos2 pos)
-    {
-        auto* road = station->prev()->as<RoadElement>();
-        if (road == nullptr)
-        {
-            return;
-        }
-
-        GameCommands::setErrorTitle(StringIds::cant_remove_station);
-        GameCommands::RoadStationRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, road->baseHeight());
-        args.rotation = road->unkDirection();
-        args.roadId = road->roadId();
-        args.index = road->sequenceIndex();
-        args.type = road->roadObjectId();
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-        {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
-        }
-    }
-
-    // 0x004A5C58 TODO: Move to a better file
-    static void airportInteract(World::StationElement* station, const World::Pos2 pos)
-    {
-        if (!Ui::Windows::Construction::isStationTabOpen())
-        {
-            Ui::Windows::Construction::openWithFlags(1ULL << 31);
-            return;
-        }
-        GameCommands::setErrorTitle(StringIds::cant_remove_airport);
-        GameCommands::AirportRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, station->baseHeight());
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-        {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
-        }
-    }
-
-    // 0x004A5CC5 TODO: Move to a better file
-    static void dockInteract(World::StationElement* station, const World::Pos2 pos)
-    {
-        if (!Ui::Windows::Construction::isStationTabOpen())
-        {
-            Ui::Windows::Construction::openWithFlags(1ULL << 30);
-            return;
-        }
-        GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
-        GameCommands::PortRemovalArgs args;
-        Pos2 firstTile = pos - World::kOffsets[station->multiTileIndex()];
-        args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
-        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-        {
-            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
-        }
-    }
-
-    // 0x004BB116 TODO: Move to a better file
-    static void treeInteract(World::TreeElement* tree, const World::Pos2 pos)
-    {
-        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
-        GameCommands::TreeRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, tree->baseHeight());
-        args.elementType = tree->rawData()[0];
-        args.type = tree->treeObjectId();
-        GameCommands::doCommand(args, GameCommands::Flags::apply);
-    }
-
-    // 0x0042D9BF TODO: Move to a better file
-    static void buildingInteract(World::BuildingElement* building, const World::Pos2 pos)
-    {
-        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
-        GameCommands::BuildingRemovalArgs args;
-        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
-        args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
-        GameCommands::doCommand(args, GameCommands::Flags::apply);
-    }
-
-    // 0x004C4809 TODO: Move to a better file
-    static void wallInteract(World::WallElement* wall, const World::Pos2 pos)
-    {
-        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
-        GameCommands::WallRemovalArgs args;
-        args.pos = Pos3(pos.x, pos.y, wall->baseHeight());
-        args.rotation = wall->rotation();
-        GameCommands::doCommand(args, GameCommands::Flags::apply);
-    }
-
-    // 0x0042F007 TODO: Move to a better file
-    static void headquarterInteract(World::BuildingElement* building, const World::Pos2 pos)
-    {
-        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
-        GameCommands::HeadquarterRemovalArgs args;
-        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
-        args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
-        GameCommands::doCommand(args, GameCommands::Flags::apply);
-    }
-
     // 0x004C74BB
     static void stateViewportRight(const MouseButton button, const int16_t x, const int16_t y)
     {
@@ -840,187 +553,7 @@ namespace OpenLoco::Input
                 }
 
                 Input::state(State::reset);
-                auto interaction = ViewportInteraction::rightOver(_dragLastX, _dragLastY);
-
-                auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
-
-                switch (interaction.type)
-                {
-                    case InteractionItem::noInteraction:
-                    default:
-                    {
-                        auto item2 = ViewportInteraction::getItemLeft(_dragLastX, _dragLastY);
-                        switch (item2.type)
-                        {
-                            case InteractionItem::entity:
-                            {
-                                auto* entity = reinterpret_cast<EntityBase*>(item2.object);
-                                auto* veh = entity->asBase<Vehicles::VehicleBase>();
-                                if (veh != nullptr)
-                                {
-                                    auto* head = EntityManager::get<Vehicles::VehicleHead>(veh->getHead());
-                                    if (head != nullptr)
-                                    {
-                                        Ui::Windows::VehicleList::open(head->owner, head->vehicleType);
-                                    }
-                                }
-                                break;
-                            }
-                            case InteractionItem::townLabel:
-                                Ui::Windows::TownList::open();
-                                break;
-                            case InteractionItem::stationLabel:
-                            {
-                                auto station = StationManager::get(StationId(item2.value));
-                                Ui::Windows::StationList::open(station->owner);
-                                break;
-                            }
-                            case InteractionItem::industry:
-                                Ui::Windows::IndustryList::open();
-                                break;
-                            default:
-                                break;
-                        }
-
-                        break;
-                    }
-
-                    case InteractionItem::track:
-                    {
-                        auto* track = tileElement->as<TrackElement>();
-                        if (track != nullptr)
-                        {
-                            if (track->owner() == CompanyManager::getControllingId())
-                            {
-                                Ui::Windows::Construction::openAtTrack(window, track, interaction.pos);
-                            }
-                            else
-                            {
-                                Ui::Windows::CompanyWindow::open(track->owner());
-                            }
-                        }
-                        break;
-                    }
-                    case InteractionItem::road:
-                    {
-                        auto* road = tileElement->as<RoadElement>();
-                        if (road != nullptr)
-                        {
-                            auto owner = road->owner();
-
-                            auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
-                            if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::unk_03))
-                            {
-                                Ui::Windows::Construction::openAtRoad(window, road, interaction.pos);
-                            }
-                            else
-                            {
-                                Ui::Windows::CompanyWindow::open(owner);
-                            }
-                        }
-                        break;
-                    }
-                    case InteractionItem::trackExtra:
-                    {
-                        auto* track = tileElement->as<TrackElement>();
-                        if (track != nullptr)
-                        {
-                            Ui::Windows::Construction::setToTrackExtra(window, track, interaction.modId, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::roadExtra:
-                    {
-                        auto* road = tileElement->as<RoadElement>();
-                        if (road != nullptr)
-                        {
-                            Ui::Windows::Construction::setToRoadExtra(window, road, interaction.modId, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::signal:
-                    {
-                        auto* signal = tileElement->as<SignalElement>();
-                        if (signal != nullptr)
-                        {
-                            signalInteract(signal, interaction.modId != 0, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::trackStation:
-                    {
-                        auto* station = tileElement->as<StationElement>();
-                        if (station != nullptr)
-                        {
-                            trackStationInteract(station, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::roadStation:
-                    {
-                        auto* station = tileElement->as<StationElement>();
-                        if (station != nullptr)
-                        {
-                            roadStationInteract(station, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::airport:
-                    {
-                        auto* station = tileElement->as<StationElement>();
-                        if (station != nullptr)
-                        {
-                            airportInteract(station, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::dock:
-                    {
-                        auto* station = tileElement->as<StationElement>();
-                        if (station != nullptr)
-                        {
-                            dockInteract(station, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::tree:
-                    {
-                        auto* tree = tileElement->as<TreeElement>();
-                        if (tree != nullptr)
-                        {
-                            treeInteract(tree, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::building:
-                    {
-                        auto* building = tileElement->as<BuildingElement>();
-                        if (building != nullptr)
-                        {
-                            buildingInteract(building, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::wall:
-                    {
-                        auto* wall = tileElement->as<WallElement>();
-                        if (wall != nullptr)
-                        {
-                            wallInteract(wall, interaction.pos);
-                        }
-                        break;
-                    }
-                    case InteractionItem::headquarterBuilding:
-                    {
-                        auto* building = tileElement->as<BuildingElement>();
-                        if (building != nullptr)
-                        {
-                            headquarterInteract(building, interaction.pos);
-                        }
-                        break;
-                    }
-                }
-
+                ViewportInteraction::handleRightReleased(window, _dragLastX, _dragLastY);
                 break;
             }
 
@@ -1608,7 +1141,7 @@ namespace OpenLoco::Input
             }
         }
 
-        string_id tooltipStringId = StringIds::null;
+        StringId tooltipStringId = StringIds::null;
         if (window != nullptr && widgetIndex != -1)
         {
             if (widget->type == Ui::WidgetType::scrollview)
@@ -1705,7 +1238,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        window = WindowManager::bringToFront(window);
+        window = WindowManager::bringToFront(*window);
         if (widgetIndex == -1)
         {
             return;
@@ -1801,7 +1334,7 @@ namespace OpenLoco::Input
             return;
         }
 
-        window = WindowManager::bringToFront(window);
+        window = WindowManager::bringToFront(*window);
 
         if (widgetIndex == -1)
         {
@@ -2291,5 +1824,55 @@ namespace OpenLoco::Input
             _5233B2 = 0;
             return MouseButton::released;
         }
+    }
+
+    // 0x004C6202
+    void processMouseWheel()
+    {
+        int wheel = 0;
+
+        for (; _cursorWheel > 0; _cursorWheel--)
+        {
+            wheel -= 17;
+        }
+
+        for (; _cursorWheel < 0; _cursorWheel++)
+        {
+            wheel += 17;
+        }
+
+        if (Tutorial::state() != Tutorial::State::none)
+            return;
+
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
+        {
+            if (OpenLoco::isTitleMode())
+                return;
+
+            auto main = WindowManager::getMainWindow();
+            if (main != nullptr && wheel != 0)
+            {
+                if (wheel > 0)
+                {
+                    main->viewportRotateRight();
+                }
+                else if (wheel < 0)
+                {
+                    main->viewportRotateLeft();
+                }
+                TownManager::updateLabels();
+                StationManager::updateLabels();
+                Windows::MapWindow::centerOnViewPoint();
+            }
+
+            return;
+        }
+
+        if (wheel == 0)
+        {
+            return;
+        }
+
+        WindowManager::wheelInput(wheel);
     }
 }

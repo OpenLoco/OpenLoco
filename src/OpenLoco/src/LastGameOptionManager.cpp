@@ -133,8 +133,4 @@ namespace OpenLoco::LastGameOptionManager
     {
         getGameState().lastBuildVehiclesOption = last;
     }
-
-    // Ui::Size lastMapWindowSize;   // 0x000470 (0x00526288)
-    // uint16_t lastMapWindowVar88A; // 0x000474 (0x0052628C)
-    // uint16_t lastMapWindowVar88C; // 0x000476 (0x0052628E)
 }

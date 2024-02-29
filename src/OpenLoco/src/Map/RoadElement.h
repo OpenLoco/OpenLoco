@@ -25,9 +25,11 @@ namespace OpenLoco::World
             _4 &= ~(0x30);
             _4 |= (newUnk4u & 0x3) << 4;
         }
-        uint8_t roadObjectId() const { return _5 >> 4; }   // _5u
-        uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
-        uint8_t bridge() const { return _6 >> 5; }         // _6u
+        uint8_t roadObjectId() const { return _5 >> 4; }                  // _5u
+        uint8_t sequenceIndex() const { return _5 & 0x3; }                // _5l
+        uint8_t levelCrossingObjectId() const { return (_5 >> 2) & 0x3; } // _5l 0b0000_1100 NOTE: Shared with streetlight style
+        uint8_t streetLightStyle() const { return (_5 >> 2) & 0x3; }      // _5l 0b0000_1100 NOTE: Shared with level crossing object id 0 = no street light
+        uint8_t bridge() const { return _6 >> 5; }                        // _6u
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         bool hasUnk7_10() const { return _7 & (1 << 4); } // _7u (bit 4) level crossing related
         void setUnk7_10(bool newState)                    // _7u (bit 4) level crossing related
@@ -35,8 +37,8 @@ namespace OpenLoco::World
             _7 &= ~(1 << 4);
             _7 |= newState ? (1 << 4) : 0;
         }
-        bool hasLevelCrossing() const { return _7 & (1 << 5); }
-        void setUnk7_40(bool newState) // NOTE: This is the same field as mods!
+        bool hasLevelCrossing() const { return _7 & (1 << 5); } // _7 0b0010_0000 NOTE: if false may have street light
+        void setUnk7_40(bool newState)                          // NOTE: This is the same field as mods!
         {
             _7 &= ~(1 << 6);
             _7 |= newState ? (1 << 6) : 0;

@@ -10,11 +10,13 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -66,7 +68,6 @@ namespace OpenLoco::Ui::Windows::Station
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void enableRenameByCaption(Window* self);
-        static void initEvents();
     }
 
     namespace Station
@@ -90,8 +91,6 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport);
-
-        static WindowEventList events;
 
         // 0x0048E352
         static void prepareDraw(Window& self)
@@ -253,15 +252,19 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .viewportRotate = initViewport,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
-            events.viewportRotate = initViewport;
+            return kEvents;
         }
     }
 
@@ -271,8 +274,8 @@ namespace OpenLoco::Ui::Windows::Station
         auto window = WindowManager::bringToFront(WindowType::station, enumValue(stationId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::station, enumValue(stationId));
         }
@@ -281,7 +284,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             // 0x0048F29F start
             const WindowFlags newFlags = WindowFlags::resizable | WindowFlags::flag_11;
-            window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, &Station::events);
+            window = WindowManager::createWindow(WindowType::station, Station::kWindowSize, newFlags, Station::getEvents());
             window->number = enumValue(stationId);
             auto station = StationManager::get(stationId);
             window->owner = station->owner;
@@ -296,8 +299,6 @@ namespace OpenLoco::Ui::Windows::Station
             window->setColour(WindowColour::secondary, skin->colour_0A);
             // 0x0048F29F end
         }
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
 
         window->currentTab = Common::widx::tab_station - Common::widx::tab_station;
         window->invalidate();
@@ -305,7 +306,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->widgets = Station::widgets;
         window->enabledWidgets = Station::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &Station::events;
+        window->eventHandlers = &Station::getEvents();
         window->activatedWidgets = 0;
         window->disabledWidgets = 0;
         window->initScrollWidgets();
@@ -335,8 +336,6 @@ namespace OpenLoco::Ui::Windows::Station
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
 
@@ -557,18 +556,22 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .getScrollSize = getScrollSize,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
-            events.getScrollSize = getScrollSize;
-            events.tooltip = tooltip;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -590,8 +593,6 @@ namespace OpenLoco::Ui::Windows::Station
             makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0048EC3B
         static void prepareDraw(Window& self)
@@ -719,17 +720,21 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .getScrollSize = getScrollSize,
+            .textInput = Common::textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
-            events.getScrollSize = getScrollSize;
-            events.tooltip = tooltip;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -759,11 +764,11 @@ namespace OpenLoco::Ui::Windows::Station
 
         if (oldStationId != StationId::null)
         {
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchmentArea))
+            if (World::hasMapSelectionFlag(World::MapSelectionFlags::catchmentArea))
             {
                 WindowManager::invalidate(WindowType::station, enumValue(oldStationId));
                 sub_491BC6();
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::catchmentArea);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::catchmentArea);
             }
         }
 
@@ -775,7 +780,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto* station = StationManager::get(_lastSelectedStation);
 
             setCatchmentDisplay(station, CatchmentFlags::flag_0);
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::catchmentArea);
+            World::setMapSelectionFlags(World::MapSelectionFlags::catchmentArea);
 
             WindowManager::invalidate(WindowType::station, enumValue(newStationId));
 
@@ -789,15 +794,17 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Station::widgets, widx::tab_station, &Station::events, &Station::enabledWidgets },
-            { Cargo::widgets, widx::tab_cargo, &Cargo::events, &Cargo::enabledWidgets },
-            { CargoRatings::widgets, widx::tab_cargo_ratings, &CargoRatings::events, &Common::enabledWidgets }
+            { Station::widgets,      widx::tab_station,       Station::getEvents(),      &Station::enabledWidgets },
+            { Cargo::widgets,        widx::tab_cargo,         Cargo::getEvents(),        &Cargo::enabledWidgets },
+            { CargoRatings::widgets, widx::tab_cargo_ratings, CargoRatings::getEvents(), &Common::enabledWidgets }
         };
+        // clang-format on
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
         static void prepareDraw(Window& self)
@@ -892,8 +899,8 @@ namespace OpenLoco::Ui::Windows::Station
                 }
             }
 
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -908,7 +915,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->disabledWidgets = 0;
@@ -1009,13 +1016,6 @@ namespace OpenLoco::Ui::Windows::Station
                     self->enabledWidgets &= ~(1 << Common::widx::caption);
                 }
             }
-        }
-
-        static void initEvents()
-        {
-            Station::initEvents();
-            Cargo::initEvents();
-            CargoRatings::initEvents();
         }
     }
 }

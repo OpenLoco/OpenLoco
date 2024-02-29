@@ -15,7 +15,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     static loco_global<uint32_t, 0x00525CD8> _dword_525CD8;
     static loco_global<uint32_t, 0x00525CDC> _dword_525CDC;
     static loco_global<uint16_t, 0x00525CE0> _word_525CE0;
-    static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
@@ -41,8 +40,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),                                        \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::buttonWithImage, WindowColour::primary),                                                        \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::buttonWithImage, WindowColour::primary)
-
-        void initEvents();
     }
 
     namespace News1
@@ -51,10 +48,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         extern Widget widgets[7];
 
-        extern WindowEventList events;
-
-        void initEvents();
         void initViewport(Window& self);
+        const WindowEventList& getEvents();
     }
 
     namespace News2
@@ -76,8 +71,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         extern Widget widgets[2];
 
-        extern WindowEventList events;
-
-        void initEvents();
+        const WindowEventList& getEvents();
     }
 }

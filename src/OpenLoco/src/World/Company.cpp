@@ -186,7 +186,7 @@ namespace OpenLoco
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));
     }
 
-    static std::map<CorporateRating, string_id> _ratingNames = {
+    static std::map<CorporateRating, StringId> _ratingNames = {
         { CorporateRating::platelayer, StringIds::corporate_rating_platelayer },
         { CorporateRating::engineer, StringIds::corporate_rating_engineer },
         { CorporateRating::trafficManager, StringIds::corporate_rating_traffic_manager },
@@ -199,7 +199,7 @@ namespace OpenLoco
         { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
     };
 
-    string_id getCorporateRatingAsStringId(CorporateRating rating)
+    StringId getCorporateRatingAsStringId(CorporateRating rating)
     {
         auto it = _ratingNames.find(rating);
         if (it != _ratingNames.end())
@@ -217,32 +217,30 @@ namespace OpenLoco
 
     bool Company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
     {
-        auto vehicleTypeIndex = vehicleIndex >> 5;
-
-        return (unlockedVehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
+        return unlockedVehicles[vehicleIndex];
     }
 
     // 0x00487FCC
     void Company::updateQuarterly()
     {
-        for (auto& unk : var_4A8)
+        for (auto& thought : aiThoughts)
         {
-            if (unk.var_00 == 0xFF)
+            if (thought.type == AiThoughtType::null)
                 continue;
 
-            unk.var_88 = std::min(0xFF, unk.var_88 + 1);
-            unk.var_84 = unk.var_80;
-            unk.var_80 = 0;
+            thought.var_88 = std::min(0xFF, thought.var_88 + 1);
+            thought.var_84 = thought.var_80;
+            thought.var_80 = 0;
             currency32_t totalRunCost = 0;
-            for (auto i = 0; i < unk.var_44; ++i)
+            for (auto i = 0; i < thought.var_44; ++i)
             {
-                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(unk.var_66[i]);
+                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(thought.var_66[i]);
                 if (vehHead != nullptr)
                 {
                     totalRunCost += vehHead->calculateRunningCost();
                 }
             }
-            unk.var_7C = totalRunCost;
+            thought.var_7C = totalRunCost;
         }
     }
 
@@ -450,9 +448,9 @@ namespace OpenLoco
 
             const auto* buildingObj = elBuilding->getObject();
             auto totalHeight = 0;
-            for (auto* unkVariation = buildingObj->variationsArr10[variation]; *unkVariation != 0xFF; unkVariation++)
+            for (auto part : buildingObj->getBuildingParts(elBuilding->variation()))
             {
-                totalHeight += buildingObj->varationHeights[*unkVariation];
+                totalHeight += buildingObj->partHeights[part];
             }
             elBuilding->setClearZ((totalHeight / 4) + elBuilding->baseZ());
 

@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -20,8 +20,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::interfaceSkin;
 
-        string_id name; // 0x00
-        uint32_t img;   // 0x02
+        StringId name; // 0x00
+        uint32_t img;  // 0x02
         Colour colour_06;
         Colour colour_07;
         Colour tooltipColour; // 0x08
@@ -43,7 +43,7 @@ namespace OpenLoco
 
         // 0x0043C888
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
     };
@@ -53,6 +53,8 @@ namespace OpenLoco
     namespace InterfaceSkin::ImageIds
     {
         constexpr uint32_t preview_image = 0;
+        constexpr uint32_t toolbar_pause = 1;
+        constexpr uint32_t toolbar_pause_hover = 2;
         constexpr uint32_t toolbar_loadsave = 3;
         constexpr uint32_t toolbar_loadsave_hover = 4;
         constexpr uint32_t toolbar_zoom = 5;

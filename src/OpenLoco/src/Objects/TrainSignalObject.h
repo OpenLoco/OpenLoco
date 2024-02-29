@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 #include <vector>
 
 namespace OpenLoco
@@ -37,7 +37,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::trackSignal;
 
-        string_id name;
+        StringId name;
         TrainSignalObjectFlags flags; // 0x02
         uint8_t animationSpeed;       // 0x04
         uint8_t numFrames;            // 0x05
@@ -45,7 +45,7 @@ namespace OpenLoco
         int16_t sellCostFactor;       // 0x08
         uint8_t costIndex;            // 0x0A
         uint8_t var_0B;
-        uint16_t var_0C;
+        StringId description;  // 0x0C
         uint32_t image;        // 0x0E
         uint8_t numCompatible; // 0x12
         uint8_t mods[7];       // 0x13
@@ -53,7 +53,7 @@ namespace OpenLoco
         uint16_t obsoleteYear; // 0x1C
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         constexpr bool hasFlags(TrainSignalObjectFlags flagsToTest) const

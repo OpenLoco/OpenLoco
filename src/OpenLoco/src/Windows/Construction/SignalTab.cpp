@@ -2,6 +2,8 @@
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Track/CreateSignal.h"
+#include "GameCommands/Track/RemoveSignal.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -13,6 +15,8 @@
 #include "Objects/TrackObject.h"
 #include "Objects/TrainSignalObject.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 
 using namespace OpenLoco::Interop;
@@ -84,16 +88,16 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             case widx::both_directions:
             {
                 _isSignalBothDirections = 1;
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
             case widx::single_direction:
             {
                 _isSignalBothDirections = 0;
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::placeSignal);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }
@@ -193,7 +197,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.trackId = _signalGhostTrackId;
             args.index = _signalGhostTileIndex;
             args.flags = _signalGhostSides;
-            args.type = _signalGhostTrackObjId;
+            args.trackObjType = _signalGhostTrackObjId;
             GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
 
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::signal;
@@ -310,7 +314,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         {
             auto args = FormatArguments();
-            args.push(trainSignalObject->var_0C);
+            args.push(trainSignalObject->description);
 
             drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
@@ -346,16 +350,20 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         self->callOnMouseDown(Signal::widx::both_directions);
     }
 
-    void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = Common::onClose,
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    const WindowEventList& getEvents()
     {
-        events.onClose = Common::onClose;
-        events.onMouseUp = onMouseUp;
-        events.onMouseDown = onMouseDown;
-        events.onDropdown = onDropdown;
-        events.onUpdate = onUpdate;
-        events.onToolUpdate = onToolUpdate;
-        events.onToolDown = onToolDown;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
+        return kEvents;
     }
 }

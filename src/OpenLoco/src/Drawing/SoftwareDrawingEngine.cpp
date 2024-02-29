@@ -21,10 +21,6 @@ namespace OpenLoco::Drawing
     static loco_global<RenderTarget, 0x0050B884> _screenRT;
     static loco_global<Ui::ScreenInfo, 0x0050B894> _screenInfo;
 
-    // TODO: Combine those into one struct.
-    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
-    static loco_global<uint8_t[7500], 0x00E025C4> _screenInvalidationGrid;
-
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
@@ -71,58 +67,12 @@ namespace OpenLoco::Drawing
         createPalette();
     }
 
-    // T[m][n]
-    template<typename T>
-    class Grid
-    {
-        T* ptr;
-        size_t m;
-        size_t n;
-
-    public:
-        Grid(T* data, const int32_t n, const int32_t m)
-            : ptr(data)
-            , m(m)
-            , n(n)
-        {
-        }
-
-        T* operator[](std::size_t idx)
-        {
-            return ptr + idx * n;
-        }
-
-        size_t getRows(size_t x, size_t dX, size_t y)
-        {
-
-            int dy = 0;
-            for (size_t yy = y; yy < this->m; yy++)
-            {
-
-                for (size_t xx = x; xx < x + dX; xx++)
-                {
-                    if ((*this)[yy][xx] == 0)
-                    {
-                        return dy;
-                    }
-                }
-                dy++;
-            }
-            return dy;
-        }
-    };
-
     void SoftwareDrawingEngine::resize(const int32_t width, const int32_t height)
     {
         // Scale the width and height by configured scale factor
         const auto scaleFactor = Config::get().scaleFactor;
         const auto scaledWidth = (int32_t)(width / scaleFactor);
         const auto scaledHeight = (int32_t)(height / scaleFactor);
-
-        int32_t widthShift = 6;
-        int16_t blockWidth = 1 << widthShift;
-        int32_t heightShift = 3;
-        int16_t blockHeight = 1 << heightShift;
 
         // Release old resources.
         if (_screenSurface != nullptr)
@@ -233,13 +183,12 @@ namespace OpenLoco::Drawing
         _screenInfo->width_3 = scaledWidth;
         _screenInfo->height_3 = scaledHeight;
 
-        _screenInvalidation->blockWidth = blockWidth;
-        _screenInvalidation->blockHeight = blockHeight;
-        _screenInvalidation->columnCount = (scaledWidth / blockWidth) + 1;
-        _screenInvalidation->rowCount = (scaledHeight / blockHeight) + 1;
-        _screenInvalidation->columnShift = widthShift;
-        _screenInvalidation->rowShift = heightShift;
-        _screenInvalidation->initialised = 1;
+        int32_t widthShift = 6;
+        int16_t blockWidth = 1 << widthShift;
+        int32_t heightShift = 3;
+        int16_t blockHeight = 1 << heightShift;
+
+        _invalidationGrid.reset(scaledWidth, scaledHeight, blockWidth, blockHeight);
     }
 
     /**
@@ -252,35 +201,7 @@ namespace OpenLoco::Drawing
      */
     void SoftwareDrawingEngine::invalidateRegion(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        left = std::max(left, 0);
-        top = std::max(top, 0);
-        right = std::min(right, (int32_t)_screenInfo->width);
-        bottom = std::min(bottom, (int32_t)_screenInfo->height);
-
-        if (left >= right)
-            return;
-        if (top >= bottom)
-            return;
-
-        right--;
-        bottom--;
-
-        const int32_t dirtyBlockLeft = left >> _screenInvalidation->columnShift;
-        const int32_t dirtyBlockRight = right >> _screenInvalidation->columnShift;
-        const int32_t dirtyBlockTop = top >> _screenInvalidation->rowShift;
-        const int32_t dirtyBlockBottom = bottom >> _screenInvalidation->rowShift;
-
-        const size_t columns = _screenInvalidation->columnCount;
-        const size_t rows = _screenInvalidation->rowCount;
-        auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
-
-        for (int16_t y = dirtyBlockTop; y <= dirtyBlockBottom; y++)
-        {
-            for (int16_t x = dirtyBlockLeft; x <= dirtyBlockRight; x++)
-            {
-                grid[y][x] = 0xFF;
-            }
-        }
+        _invalidationGrid.invalidate(left, top, right, bottom);
     }
 
     // Helper function until all users of set_palette_callback are implemented
@@ -294,55 +215,6 @@ namespace OpenLoco::Drawing
         // Create a palette for the window
         _palette = SDL_AllocPalette(256);
         _setPaletteCallback = updatePaletteStatic;
-    }
-
-    // 0x004C5CFA
-    void SoftwareDrawingEngine::render()
-    {
-        const size_t columns = _screenInvalidation->columnCount;
-        const size_t rows = _screenInvalidation->rowCount;
-        auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
-
-        for (size_t x = 0; x < columns; x++)
-        {
-            for (size_t y = 0; y < rows; y++)
-            {
-                if (grid[y][x] == 0)
-                    continue;
-
-                // Don't determine columns will cause rendering z fighting issues
-                const size_t dX = 1;
-
-                // Check rows
-                size_t dY = grid.getRows(x, dX, y);
-
-                render(x, y, dX, dY);
-            }
-        }
-    }
-
-    void SoftwareDrawingEngine::render(size_t x, size_t y, size_t dx, size_t dy)
-    {
-        const auto columns = _screenInvalidation->columnCount;
-        const auto rows = _screenInvalidation->rowCount;
-        auto grid = Grid<uint8_t>(_screenInvalidationGrid, columns, rows);
-
-        // Unset dirty blocks
-        for (size_t top = y; top < y + dy; top++)
-        {
-            for (uint32_t left = x; left < x + dx; left++)
-            {
-                grid[top][left] = 0;
-            }
-        }
-
-        auto rect = Rect(
-            static_cast<int16_t>(x * _screenInvalidation->blockWidth),
-            static_cast<int16_t>(y * _screenInvalidation->blockHeight),
-            static_cast<uint16_t>(dx * _screenInvalidation->blockWidth),
-            static_cast<uint16_t>(dy * _screenInvalidation->blockHeight));
-
-        this->render(rect);
     }
 
     void SoftwareDrawingEngine::updatePalette(const PaletteEntry* entries, int32_t index, int32_t count)
@@ -360,6 +232,14 @@ namespace OpenLoco::Drawing
             basePtr->a = 0;
         }
         SDL_SetPaletteColors(_palette, &base[index], index, count);
+    }
+
+    // 0x004C5CFA
+    void SoftwareDrawingEngine::render()
+    {
+        _invalidationGrid.traverseDirtyCells([this](int32_t left, int32_t top, int32_t right, int32_t bottom) {
+            this->render(Rect::fromLTRB(left, top, right, bottom));
+        });
     }
 
     void SoftwareDrawingEngine::render(const Rect& _rect)
@@ -449,6 +329,11 @@ namespace OpenLoco::Drawing
     SoftwareDrawingContext& SoftwareDrawingEngine::getDrawingContext()
     {
         return _ctx;
+    }
+
+    bool SoftwareDrawingEngine::isInitialized() const
+    {
+        return _screenSurface != nullptr;
     }
 
 }

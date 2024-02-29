@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -15,7 +15,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::climate;
 
-        string_id name;          // 0x00
+        StringId name;           // 0x00
         uint8_t firstSeason;     // 0x02
         uint8_t seasonLength[4]; // 0x03
         uint8_t winterSnowLine;  // 0x07
@@ -23,7 +23,7 @@ namespace OpenLoco
         uint8_t pad_09;
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

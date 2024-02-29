@@ -1,5 +1,8 @@
+#include "Map/TileManager.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
+#include "Random.h"
 #include "RoutingManager.h"
 #include "Vehicle.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -12,6 +15,18 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x0113612C> _vehicleUpdate_var_113612C; // Speed
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
+
+    // If distance traveled in one tick this is the speed
+    constexpr Speed32 speedFromDistanceInATick(int32_t distance)
+    {
+        return Speed32(distance * 2);
+    }
+
+    constexpr int32_t distanceTraveledInATick(Speed32 speed)
+    {
+        return (speed / 2).getRaw();
+    }
+    static_assert(distanceTraveledInATick(speedFromDistanceInATick(100)) == 100);
 
     // 0x004A9788
     bool Vehicle1::update()
@@ -31,6 +46,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004F72FC
+    // TODO: Move to track data
     std::array<uint16_t, 10> _roadIdToCurveSpeedFraction = {
         0xFFFF, // 1.00
         0x0CCD, // 0.05
@@ -48,7 +64,7 @@ namespace OpenLoco::Vehicles
     bool Vehicle1::updateRoad()
     {
         uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
-        Speed16 maxSpeed = kSpeed16Max;
+        Speed16 newTargetSpeed = kSpeed16Max;
         RoutingManager::RingView ring(routingHandle);
         bool isOnRackRail = false;
         for (auto iter = ring.rbegin(); iter != ring.rend(); ++iter)
@@ -62,7 +78,7 @@ namespace OpenLoco::Vehicles
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
                 if (bridgeObj->maxSpeed != kSpeed16Null)
                 {
-                    maxSpeed = std::min(bridgeObj->maxSpeed, maxSpeed);
+                    newTargetSpeed = std::min(bridgeObj->maxSpeed, newTargetSpeed);
                 }
             }
         }
@@ -72,42 +88,43 @@ namespace OpenLoco::Vehicles
         {
             const auto* roadObj = ObjectManager::get<RoadObject>(train.veh2->var_4F);
             const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * roadObj->maxSpeed.getRaw());
-            maxSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), maxSpeed);
-            maxSpeed = std::max(maxSpeed, 12_mph);
+            newTargetSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), newTargetSpeed);
+            newTargetSpeed = std::max(newTargetSpeed, 12_mph);
 
             if (train.head->has38Flags(Flags38::unk_5))
             {
-                maxSpeed += maxSpeed / 4;
-                maxSpeed = std::min(roadObj->maxSpeed, maxSpeed);
+                newTargetSpeed += newTargetSpeed / 4;
+                newTargetSpeed = std::min(roadObj->maxSpeed, newTargetSpeed);
             }
         }
         else
         {
             const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * (60_mph).getRaw());
-            maxSpeed = toSpeed16(fractionalSpeed);
+            newTargetSpeed = toSpeed16(fractionalSpeed);
         }
 
-        maxSpeed = std::min(maxSpeed, train.veh2->maxSpeed);
+        newTargetSpeed = std::min(newTargetSpeed, train.veh2->maxSpeed);
         if (isOnRackRail)
         {
-            maxSpeed = std::min(maxSpeed, train.veh2->rackRailMaxSpeed);
+            newTargetSpeed = std::min(newTargetSpeed, train.veh2->rackRailMaxSpeed);
         }
 
-        // Distance to speed32 would be var_3C * 2 but since maxspeed is interms of speed16 we have this awkward 32768
-        maxSpeed = std::min(maxSpeed, Speed16(var_3C / 32768) + 5_mph);
+        // TODO: Original CS Bug. Fix when we diverge on replays
+        // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
+        newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
 
-        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->var_6E <= -20)
+        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
             || train.head->hasVehicleFlags(VehicleFlags::commandStop))
         {
             if (train.veh2->currentSpeed == 0.0_mph)
             {
-                maxSpeed = 0_mph;
+                newTargetSpeed = 0_mph;
             }
         }
-        var_44 = maxSpeed;
+        targetSpeed = newTargetSpeed;
 
-        _vehicleUpdate_var_1136134 = maxSpeed;
-        int32_t distance1 = (train.veh2->currentSpeed / 2).getRaw() - var_3C;
+        _vehicleUpdate_var_1136134 = newTargetSpeed;
+        int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
         const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
 
         distance1 = std::min(distance1, unk2);
@@ -126,13 +143,169 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
+    // 0x004F8974
+    // TODO: Move to track data
+    std::array<uint16_t, 44> _trackIdToCurveSpeedFraction = {
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x2666, // 0.15
+        0x2666, // 0.15
+        0x4000, // 0.25
+        0x4000, // 0.25
+        0x4000, // 0.25
+        0x4000, // 0.25
+        0x2666, // 0.15
+        0x2666, // 0.15
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0x199A, // 0.10
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0xFFFF, // 1.00
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+        0x0CCD, // 0.05
+    };
+
+    // 0x004B98DA
+    static void railProduceCrossingWhistle(const Vehicle2& veh2)
+    {
+        Vehicle train{ veh2.head };
+        auto* vehObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+
+        if (vehObj->numStartSounds == 0)
+        {
+            return;
+        }
+
+        gPrng1().randNext(); // TODO: Remove when we can diverge from vanilla
+
+        const auto soundNum = (vehObj->numStartSounds & NumStartSounds::kMask) - 1;
+        const auto soundObjId = vehObj->startSounds[soundNum];
+
+        const auto height = World::TileManager::getHeight(veh2.position);
+        const auto volume = veh2.position.z < height.landHeight ? -1500 : 0;
+
+        Audio::playSound(Audio::makeObjectSoundId(soundObjId), veh2.position + World::Pos3{ 0, 0, 22 }, volume, 22050);
+    }
+
     // 0x004A97A6
     bool Vehicle1::updateRail()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
+        Vehicle train{ head };
+        uint16_t curveSpeedFraction = std::numeric_limits<uint16_t>::max();
+        Speed16 newTargetSpeed = kSpeed16Max;
+        bool isOnRackRail = false;
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
+        {
+            RoutingManager::RingView ring(routingHandle);
+            for (auto iter = ring.rbegin(); iter != ring.rend(); ++iter)
+            {
+                auto res = RoutingManager::getRouting(*iter);
+                isOnRackRail |= (res & (1U << 13)) != 0; // rackrail
+                uint8_t trackId = (res >> 3) & 0x3F;
+                curveSpeedFraction = std::min(curveSpeedFraction, _trackIdToCurveSpeedFraction[trackId]);
+                if (res & (1U << 12))
+                {
+                    const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
+                    if (bridgeObj->maxSpeed != kSpeed16Null)
+                    {
+                        newTargetSpeed = std::min(bridgeObj->maxSpeed, newTargetSpeed);
+                    }
+                }
+            }
+        }
 
-        return !(call(0x004A97A6, regs) & X86_FLAG_CARRY);
+        const auto* trackObj = ObjectManager::get<TrackObject>(trackType);
+        const Speed32 fractionalSpeed = Speed32(static_cast<uint32_t>(curveSpeedFraction) * trackObj->curveSpeed.getRaw());
+        newTargetSpeed = std::min(toSpeed16(fractionalSpeed + 1.0_mph), newTargetSpeed);
+
+        if (train.head->has38Flags(Flags38::unk_5))
+        {
+            newTargetSpeed += newTargetSpeed / 4;
+            newTargetSpeed = std::min(trackObj->curveSpeed, newTargetSpeed);
+        }
+
+        const auto veh2MaxSpeed = [veh2 = train.veh2]() {
+            if (veh2->has73Flags(Flags73::isBrokenDown))
+            {
+                return veh2->maxSpeed / 4;
+            }
+            return veh2->maxSpeed;
+        }();
+
+        newTargetSpeed = std::min(newTargetSpeed, veh2MaxSpeed);
+        if (isOnRackRail)
+        {
+            newTargetSpeed = std::min(newTargetSpeed, train.veh2->rackRailMaxSpeed);
+        }
+
+        if (!train.head->hasVehicleFlags(VehicleFlags::manualControl))
+        {
+            // TODO: Original CS Bug. Fix when we diverge on replays
+            // newTargetSpeed = std::min(newTargetSpeed, toSpeed16(speedFromDistanceInATick(var_3C)) + 5_mph);
+            newTargetSpeed = std::min(newTargetSpeed, Speed16(static_cast<uint32_t>(var_3C) >> 15) + 5_mph);
+        }
+
+        if ((train.head->hasVehicleFlags(VehicleFlags::manualControl) && train.head->manualPower <= -20)
+            || train.head->hasVehicleFlags(VehicleFlags::commandStop))
+        {
+            if (train.veh2->currentSpeed == 0.0_mph)
+            {
+                newTargetSpeed = 0_mph;
+            }
+        }
+        targetSpeed = newTargetSpeed;
+
+        _vehicleUpdate_var_1136134 = newTargetSpeed;
+        int32_t distance1 = distanceTraveledInATick(train.veh2->currentSpeed) - var_3C;
+        const auto unk2 = std::max(_vehicleUpdate_var_113612C * 4, 0xCC48);
+
+        distance1 = std::min(distance1, unk2);
+        _vehicleUpdate_var_1136114 = 0;
+        var_3C += distance1 - updateTrackMotion(distance1);
+
+        if (!(_vehicleUpdate_var_1136114 & (1U << 1)))
+        {
+            if (_vehicleUpdate_var_1136114 & (1U << 4))
+            {
+                railProduceCrossingWhistle(*train.veh2);
+            }
+            return true;
+        }
+
+        train.head->sub_4AD93A();
+        if (train.head->status == Status::approaching)
+        {
+            train.head->status = Status::travelling;
+        }
+
+        return true;
     }
 
     // 0x0047CA71

@@ -100,10 +100,9 @@ namespace OpenLoco
     loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> _last_tick_time;
     loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
-    static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
+    static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    static loco_global<int16_t, 0x00525F62> _525F62;
 
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
@@ -188,7 +187,7 @@ namespace OpenLoco
     }
 
     // 0x004BE621
-    [[noreturn]] void exitWithError(string_id eax, string_id ebx)
+    [[noreturn]] void exitWithError(StringId eax, StringId ebx)
     {
         registers regs;
         regs.eax = eax;
@@ -198,7 +197,7 @@ namespace OpenLoco
     }
 
     // 0x004BE5EB
-    [[noreturn]] void exitWithError(string_id message, uint32_t errorCode)
+    [[noreturn]] void exitWithError(StringId message, uint32_t errorCode)
     {
         // Saves the error code for later writing to error log 1.TMP.
         registers regs;
@@ -278,7 +277,7 @@ namespace OpenLoco
 
     static void initialise()
     {
-        std::srand(std::time(0));
+        std::srand(std::time(nullptr));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE); // getSystemTime unused dead code?
         World::TileManager::allocateMapElements();
@@ -426,7 +425,7 @@ namespace OpenLoco
         }
 
         // Only run every other tick?
-        if (_525F62 % 2 != 0)
+        if (getGameState().var_014A % 2 != 0)
         {
             return;
         }
@@ -691,7 +690,7 @@ namespace OpenLoco
 
                     tickLogic(numUpdates);
 
-                    _525F62++;
+                    getGameState().var_014A++;
                     if (isEditorMode())
                     {
                         EditorController::tick();
@@ -762,7 +761,7 @@ namespace OpenLoco
     }
 
     static loco_global<int8_t, 0x0050C197> _loadErrorCode;
-    static loco_global<string_id, 0x0050C198> _loadErrorMessage;
+    static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
     // 0x0046ABCB
     static void tickLogic()
@@ -798,9 +797,9 @@ namespace OpenLoco
         {
             if (_loadErrorCode == -2)
             {
-                string_id title = _loadErrorMessage;
-                string_id message = StringIds::null;
-                Ui::Windows::showError(title, message);
+                StringId title = _loadErrorMessage;
+                StringId message = StringIds::null;
+                Ui::Windows::Error::open(title, message);
             }
             else
             {
@@ -1188,7 +1187,6 @@ namespace OpenLoco
 
             Ui::createWindow(cfg.display);
             call(0x004078FE); // getSystemInfo used for some config, multiplayer name,
-            call(0x00407B26); // videoCreate used for creating window (dead code?)
             Ui::initialiseInput();
             Audio::initialiseDSound();
             run();

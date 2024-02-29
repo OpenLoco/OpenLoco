@@ -63,7 +63,7 @@ namespace OpenLoco::World::TileClearance
                 {
                     return;
                 }
-                constexpr std::array<string_id, 4> kStationTypeNames = {
+                constexpr std::array<StringId, 4> kStationTypeNames = {
                     StringIds::capt_station,
                     StringIds::capt_station,
                     StringIds::capt_airport,
@@ -192,7 +192,7 @@ namespace OpenLoco::World::TileClearance
             while (!elp->isLast())
             {
                 elp = elp->next();
-                if (!elp->isFlag5())
+                if (!elp->isAiAllocated())
                 {
                     continue;
                 }
@@ -229,7 +229,7 @@ namespace OpenLoco::World::TileClearance
     // 0x0046297D
     static ClearFuncResult canConstructAtCheckSurfaceElement(uint8_t baseZ, uint8_t clearZ, const QuarterTile& qt, const std::function<ClearFuncResult(TileElement& el)>& clearFunc, TileElement& el, const SurfaceElement& elSurface)
     {
-        if (elSurface.isFlag5())
+        if (elSurface.isAiAllocated())
         {
             if (auto res = aiCompanyAboutToBuildCheck(el);
                 res != ClearFuncResult::noCollision)
@@ -360,7 +360,7 @@ namespace OpenLoco::World::TileClearance
         {
             return ClearFuncResult::noCollision;
         }
-        if (!el.isFlag5())
+        if (!el.isAiAllocated())
         {
             return callClearFunction(el, clearFunc);
         }

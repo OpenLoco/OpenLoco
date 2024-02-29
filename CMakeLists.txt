@@ -42,10 +42,10 @@ if (WIN32)
     endif()
 endif ()
 
-project(${PROJECT} LANGUAGES CXX VERSION 23.07)
+project(${PROJECT} LANGUAGES CXX VERSION 24.02.1)
 
 if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
 endif()
 
 if (APPLE)
@@ -72,6 +72,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
 list(APPEND COMMON_COMPILE_OPTIONS -DDEBUG=${DEBUG_LEVEL})
+
+if (MINGW)
+    # MingW32 does not at present compile OpenLoco.exe
+    # so we must ensure the .dll file has the same
+    # prefix on Windows and MingW32 i.e. none
+    set(CMAKE_SHARED_LIBRARY_PREFIX "")
+endif()
 
 # Display source files nicely in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

@@ -1,5 +1,78 @@
-23.07+ (???)
+24.02.1+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2312] Object selection allowing deselection of in-use objects, leading to crashes.
+
+24.02.1 (2024-02-28)
+------------------------------------------------------------------------
+- Fix: [#2310] Newly created stations and the tracks they are on have zero clearance.
+
+24.02 (2024-02-24)
+------------------------------------------------------------------------
+- Fix: [#2277] Dragging vehicle components does not visually remove the component being dragged in some cases.
+- Fix: [#2255] Load/save window fails to show all files in some cases.
+- Fix: [#2282] Crash when generating landscape with smallest town size.
+- Fix: [#2282] Town size selection does not match vanilla size selection.
+- Fix: [#2283] Bankrupt AI companies are not being removed from the game.
+- Fix: [#2287] Scroll wheel is not working in load/save window.
+- Fix: [#2290] Construction arrows are not correctly invalidated.
+- Fix: [#2291] Signals fail to be placed when selecting one end of large curve track.
+- Fix: [#2293] See-through trees flag is ignored when right-clicking a viewport.
+- Change: [#2294] Track and road elements are now ignored when they are see-through.
+
+24.01.1 (2024-01-17)
+------------------------------------------------------------------------
+- Fix: [#2253] Game crashes when loading some save games on Windows.
+
+24.01 (2024-01-14)
+------------------------------------------------------------------------
+- Feature: [#1238] Mountain tool is now a toggle, making it possible to specify the mountain table size.
+- Feature: [#2228] Max terraform tool sizes have been increased from 10x10 to 64x64.
+- Fix: [#2162] Build Vehicle window is not properly reset if opened for new or existing vehicle.
+- Fix: [#2210] Current language is not drawn correctly in options window.
+- Fix: [#2231] Height mark shortcuts for land and tracks are swapped in some cases.
+- Fix: [#2238] Scroll on map edge doesn't work for bottom and right edges.
+- Change: [#1180] Separate track/road see-through toggles.
+- Change: [#2231] Separate trees/buildings/scenery see-through toggles.
+- Change: [#2228] The landscape 'paint mode' button now uses a different paintbrush image.
+- Change: [#2228] The landscape texture selection is now hidden until the 'paint' mode is activated.
+
+23.12 (2023-12-17)
+------------------------------------------------------------------------
+- Fix: [#2200] Route through orders not working as expected.
+- Fix: [#2203] Crash when clipping strings for display.
+- Fix: [#2209] Town size limits are not being taken account in the map generator.
+- Fix: [#2217] Road stations loading at incorrect rate under certain situations.
+- Fix: [#2221] Cursor icon is reset when the game auto saves.
+- Fix: [#2225] Improve scroll wheel behaviour for zooming under some circumstances.
+
+23.11 (2023-11-26)
+------------------------------------------------------------------------
+- Fix: [#2111] Crash when viewing the orders of a vehicle and ai deletes a train.
+- Fix: [#2114] The company face preview in the object selection window is the wrong size.
+- Fix: [#2184] The game is stuck on a black screen for a long time on some double-density screen set-ups.
+
+23.10 (2023-10-25)
+------------------------------------------------------------------------
+- Feature: [#2148] Build vehicle window: add search box and filters for cargo and powered/unpowered.
+- Feature: [#2151] Add a cheat to disable the loading penalty at stations when vehicle length exceeds station length.
+- Fix: [#1685] Crash when removing a crashed vehicle.
+- Fix: [#2110] Very large signal placement cost when upgrading a signal.
+- Fix: [#2152] Crash when too many messages to be shown.
+- Fix: [#2153] Hang on scenario load when enabling custom owner name feature.
+
+23.09 (2023-09-28)
+------------------------------------------------------------------------
+- Feature: [#2116] Allow hiding vanilla and/or custom objects in object selection window.
+- Change: [#2018] Scroll bar thumbs now have a minimum size, making it easier to scroll long lists.
+- Change: [#2117] Scenario editor can generate maps with no towns, matching vanilla behaviour.
+
+23.08.1 (2023-08-30)
+------------------------------------------------------------------------
+- Fix: [#2095] Waypoints are not set properly in vehicle routing orders.
+
+23.08 (2023-08-16)
+------------------------------------------------------------------------
+- Feature: [#2036] Vehicle object selection is now split into tabs by vehicle subtype.
 - Change: [#61] Placing headquarters now respects the building rotation shortcut.
 - Change: [#2078] Building construction ghosts now show finished buildings instead of scaffolding.
 - Fix: [#56] Orphaned arrow bug when closing construction window with shortcut (original bug).
@@ -12,6 +85,7 @@
 - Fix: [#2077] Crash when generating scenario index if referenced custom cargo objects have been subsequently deleted.
 - Fix: [#2078] Remove any leftover headquarter ghost when the company window is closed with a shortcut.
 - Fix: [#2080] The map generator is not setting water levels correctly at map edges.
+- Fix: [#2092] Scrollbar positions are not reset when changing filters in the object selection window.
 
 23.07 (2023-07-25)
 ------------------------------------------------------------------------

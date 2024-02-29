@@ -15,6 +15,7 @@
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/ProgressBar.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 #include "World/CompanyManager.h"
@@ -43,7 +44,7 @@ namespace OpenLoco::Game
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    static bool openBrowsePrompt(string_id titleId, browse_type type, const char* filter)
+    static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
         setPauseFlag(1 << 2);
@@ -136,7 +137,7 @@ namespace OpenLoco::Game
         args.option2 = LoadOrQuitMode::loadGamePrompt;
         GameCommands::doCommand(args, GameCommands::Flags::apply);
 
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         if (isEditorMode())
         {
@@ -230,7 +231,7 @@ namespace OpenLoco::Game
 
                 Title::start();
 
-                Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game, StringIds::null);
+                Ui::Windows::Error::open(StringIds::error_the_other_player_has_exited_the_game);
 
                 throw GameException::Interrupt;
             }
@@ -271,7 +272,7 @@ namespace OpenLoco::Game
     // 0x0043C427
     void confirmSaveGame()
     {
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         if (isEditorMode())
         {
@@ -346,7 +347,7 @@ namespace OpenLoco::Game
 
         bool saveResult = !S5::exportGameStateToFile(path, S5::SaveFlags::scenario);
         if (saveResult)
-            Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
+            Ui::Windows::Error::open(StringIds::landscape_save_failed);
 
         return saveResult;
     }

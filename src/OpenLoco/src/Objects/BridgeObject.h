@@ -3,8 +3,8 @@
 #include "Object.h"
 #include "Speed.hpp"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Engine/World.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -22,7 +22,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::bridge;
 
-        string_id name;
+        StringId name;
         uint8_t noRoof; // 0x02
         uint8_t pad_03[0x06 - 0x03];
         uint16_t var_06;            // 0x06
@@ -44,7 +44,7 @@ namespace OpenLoco
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

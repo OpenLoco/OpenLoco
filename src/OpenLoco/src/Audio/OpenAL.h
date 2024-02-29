@@ -1,6 +1,7 @@
 #pragma once
 #include <AL/alc.h>
-#include <OpenLoco/Core/Span.hpp>
+#include <cstdint>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -68,7 +69,7 @@ namespace OpenAL
 
     public:
         ~BufferManager();
-        uint32_t allocate(stdx::span<const uint8_t> data, uint32_t sampleRate, bool stereo, uint8_t bits);
+        uint32_t allocate(std::span<const uint8_t> data, uint32_t sampleRate, bool stereo, uint8_t bits);
         void deAllocate(uint32_t id);
         void dispose();
     };

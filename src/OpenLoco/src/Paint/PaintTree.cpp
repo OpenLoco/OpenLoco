@@ -6,6 +6,7 @@
 #include "Objects/TreeObject.h"
 #include "Paint.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;

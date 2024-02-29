@@ -136,7 +136,7 @@ namespace OpenLoco::World
                         Ui::WindowManager::invalidate(Ui::WindowType::industryList);
                     }
 
-                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingPartHeight](int32_t total, uint8_t part) {
+                    const auto height = std::accumulate(parts.begin(), parts.end(), 0, [partHeights = indObj->buildingPartHeights](int32_t total, uint8_t part) {
                         return total + partHeights[part];
                     });
 
@@ -228,7 +228,7 @@ namespace OpenLoco::World
                     {
                         continue;
                     }
-                    if (elStation->isGhost() || elStation->isFlag5())
+                    if (elStation->isGhost() || elStation->isAiAllocated())
                     {
                         continue;
                     }

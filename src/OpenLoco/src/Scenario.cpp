@@ -1,5 +1,6 @@
 #include "Scenario.h"
 #include "Audio/Audio.h"
+#include "Config.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
@@ -21,6 +22,7 @@
 #include "MultiPlayer.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
@@ -30,6 +32,7 @@
 #include "SceneManager.h"
 #include "Title.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/OrderManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
 #include "World/CompanyRecords.h"
@@ -166,13 +169,6 @@ namespace OpenLoco::Scenario
         call(0x004A8810);
     }
 
-    // TODO: Move to OrderManager::reset
-    // 0x004702EC
-    static void sub_4702EC()
-    {
-        call(0x004702EC);
-    }
-
     // TODO: Move to Terraform::reset
     // 0x004BAEC4
     static void sub_4BAEC4()
@@ -183,7 +179,21 @@ namespace OpenLoco::Scenario
     // 0x0043C8FD
     static void sub_43C8FD()
     {
-        call(0x0043C8FD);
+        auto& gameState = getGameState();
+        gameState.currentSnowLine = 0xFF;
+        sub_4969E0(1);
+    }
+
+    // 0x004969E0
+    void sub_4969E0(uint8_t al)
+    {
+        auto& gameState = getGameState();
+        gameState.var_B94C = al;
+        gameState.var_B950 = 1;
+        gameState.var_B952 = 0;
+        gameState.var_B954 = 0;
+        gameState.var_B956 = 0;
+        gameState.currentRainLevel = 0;
     }
 
     // 0x0043C88C
@@ -210,7 +220,7 @@ namespace OpenLoco::Scenario
         StationManager::reset();
 
         sub_4A8810();
-        sub_4702EC();
+        Vehicles::OrderManager::reset();
         sub_4BAEC4();
         sub_43C8FD();
         Title::sub_4284C8();
@@ -372,7 +382,7 @@ namespace OpenLoco::Scenario
         savePath /= std::string(S5::getOptions().scenarioName) + S5::extensionSV5;
         std::strncpy(_currentScenarioFilename, savePath.u8string().c_str(), std::size(_currentScenarioFilename));
 
-        call(0x004C159C);
+        loadPreferredCurrencyNewGame();
         Gfx::loadCurrency();
         CompanyManager::reset();
         CompanyManager::createPlayerCompany();
@@ -484,5 +494,83 @@ namespace OpenLoco::Scenario
 
         args.push<uint16_t>(0);
         args.push<uint16_t>(0);
+    }
+
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
+    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+
+    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
+    {
+        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
+    }
+
+    // 0x004C153B
+    void loadPreferredCurrencyAlways()
+    {
+        if (!Config::get().hasFlags(Config::Flags::preferredCurrencyAlways))
+        {
+            return;
+        }
+
+        const auto& preferredCurreny = Config::get().old.preferredCurrency;
+
+        if (preferredCurreny.isEmpty())
+        {
+            return;
+        }
+
+        ObjectManager::prepareSelectionList(true);
+        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+        if (oldCurrency.index != -1)
+        {
+            if (*oldCurrency.object._header == preferredCurreny)
+            {
+                ObjectManager::freeSelectionList();
+                return;
+            }
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+        }
+        ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+        ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::reloadAll();
+        Gfx::loadCurrency();
+        ObjectManager::freeSelectionList();
+    }
+
+    // 0x004C159C
+    void loadPreferredCurrencyNewGame()
+    {
+        if (!Config::get().hasFlags(Config::Flags::preferredCurrencyForNewGames))
+        {
+            loadPreferredCurrencyAlways();
+            return;
+        }
+
+        const auto& preferredCurreny = Config::get().old.preferredCurrency;
+
+        if (preferredCurreny.isEmpty())
+        {
+            return;
+        }
+
+        ObjectManager::prepareSelectionList(true);
+        const auto oldCurrency = ObjectManager::getActiveObject(ObjectType::currency, getInUseSelectedObjectFlags());
+
+        if (oldCurrency.index != -1)
+        {
+            if (*oldCurrency.object._header == preferredCurreny)
+            {
+                ObjectManager::freeSelectionList();
+                return;
+            }
+            ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultDeselect, *oldCurrency.object._header, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+        }
+        ObjectManager::selectObjectFromIndex(ObjectManager::SelectObjectModes::defaultSelect, preferredCurreny, getInUseSelectedObjectFlags(), _objectSelectionMeta);
+        ObjectManager::unloadUnselectedSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::reloadAll();
+        Gfx::loadCurrency();
+        ObjectManager::freeSelectionList();
     }
 }

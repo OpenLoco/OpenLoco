@@ -1,6 +1,6 @@
 #pragma once
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -10,8 +10,8 @@ namespace OpenLoco::ObjectManager
 {
     struct StringTableResult
     {
-        string_id str;
+        StringId str;
         uint32_t tableLength;
     };
-    StringTableResult loadStringTable(stdx::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index);
+    StringTableResult loadStringTable(std::span<const std::byte> data, const LoadedObjectHandle& handle, uint8_t index);
 }

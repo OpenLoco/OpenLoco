@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "GameState.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -12,6 +13,7 @@
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/IndustryManager.h"
@@ -26,8 +28,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     static constexpr Ui::Size kLandTabSize = { 366, 247 };
 
     static constexpr uint8_t kRowHeight = 22; // CJK: 22
-
-    static loco_global<uint16_t, 0x00525FB2> _seaLevel;
 
     static constexpr size_t kMaxLandObjects = ObjectManager::getMaxObjects(ObjectType::land);
 
@@ -62,7 +62,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries)
 
         // Defined at the bottom of this file.
-        static void initEvents();
         static void switchTabWidgets(Window* window);
         static void switchTab(Window* window, WidgetIndex_t widgetIndex);
 
@@ -171,8 +170,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043DC30
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -323,14 +320,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
-            events.onDropdown = onDropdown;
+            return kEvents;
         }
     }
 
@@ -340,19 +340,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         auto window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::landscapeGeneration, 0);
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         // Start of 0x0043DAEA
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, &Options::events);
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, Options::getEvents());
             window->widgets = Options::widgets;
             window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
@@ -414,8 +411,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgetEnd()
         };
 
-        static WindowEventList events;
-
         // 0x0043DF89
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
@@ -452,7 +447,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::hill_density);
         }
 
-        static const string_id landDistributionLabelIds[] = {
+        static const StringId landDistributionLabelIds[] = {
             StringIds::land_distribution_everywhere,
             StringIds::land_distribution_nowhere,
             StringIds::land_distribution_far_from_water,
@@ -498,7 +493,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 drawingCtx.fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
 
                 // Draw current distribution setting.
-                const string_id distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
+                const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                 _commonFormatArgs[0] = distributionId;
                 drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
 
@@ -528,7 +523,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static const string_id topographyStyleIds[] = {
+        static const StringId topographyStyleIds[] = {
             StringIds::flat_land,
             StringIds::small_hills,
             StringIds::mountains,
@@ -567,11 +562,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             switch (widgetIndex)
             {
                 case widx::sea_level_up:
-                    *_seaLevel = std::min<int8_t>(*_seaLevel + 1, Scenario::kMaxSeaLevel);
+                    getGameState().seaLevel = std::min<int8_t>(getGameState().seaLevel + 1, Scenario::kMaxSeaLevel);
                     break;
 
                 case widx::sea_level_down:
-                    *_seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, *_seaLevel - 1);
+                    getGameState().seaLevel = std::max<int8_t>(Scenario::kMinSeaLevel, getGameState().seaLevel - 1);
                     break;
 
                 case widx::min_land_height_up:
@@ -682,7 +677,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            _commonFormatArgs[0] = *_seaLevel;
+            _commonFormatArgs[0] = getGameState().seaLevel;
             auto& options = S5::getOptions();
             _commonFormatArgs[1] = options.minLandHeight;
             _commonFormatArgs[2] = options.hillDensity;
@@ -716,18 +711,22 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = update,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.getScrollSize = getScrollSize;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = update;
-            events.scrollMouseDown = scrollMouseDown;
-            events.tooltip = tooltip;
+            return kEvents;
         }
     }
 
@@ -776,8 +775,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
             widgetEnd()
         };
-
-        static WindowEventList events;
 
         // 0x0043E53A
         static void draw(Window& window, Gfx::RenderTarget* rt)
@@ -986,13 +983,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             _commonFormatArgs[7] = options.maxAltitudeForTrees;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return kEvents;
         }
     }
 
@@ -1017,8 +1018,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgetEnd()
         };
 
-        static WindowEventList events;
-
         // 0x0043E9A3
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
@@ -1041,7 +1040,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::max_town_size);
         }
 
-        static const string_id townSizeLabels[] = {
+        static const StringId townSizeLabels[] = {
             StringIds::town_size_1,
             StringIds::town_size_2,
             StringIds::town_size_3,
@@ -1052,17 +1051,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             StringIds::town_size_8,
         };
 
-        // 0x0043EBF8
+        // 0x0043EA28
         static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
                 return;
 
-            S5::getOptions().maxTownSize = itemIndex;
+            S5::getOptions().maxTownSize = itemIndex + 1;
             window.invalidate();
         }
 
-        // 0x0043EBF1
+        // 0x0043EA0D
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
@@ -1079,8 +1078,15 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::number_of_towns_down:
                 {
-                    uint16_t newNumTowns = std::max<uint16_t>(Limits::kMinTowns, options.numberOfTowns - 1);
-                    options.numberOfTowns = newNumTowns;
+                    // Vanilla behaviour: Zero-town map generation is allowed in the scenario editor and
+                    // is checked on the editor stage progression for non-zero. It is required to be non-zero
+                    // for gameplay since industries must have at least one associated town. The user must
+                    // manually place at least one town if they generate a landscape with zero towns.
+                    if (options.numberOfTowns > 0)
+                    {
+                        uint16_t newNumTowns = std::max<uint16_t>(Limits::kMinTowns - 1, options.numberOfTowns - 1);
+                        options.numberOfTowns = newNumTowns;
+                    }
                     window.invalidate();
                     break;
                 }
@@ -1093,7 +1099,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
                         Dropdown::add(i, townSizeLabels[i]);
 
-                    Dropdown::setHighlightedItem(options.maxTownSize);
+                    Dropdown::setHighlightedItem(options.maxTownSize - 1);
                     break;
                 }
             }
@@ -1118,24 +1124,28 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        // 0x0043EAEB
+        // 0x0043E90D
         static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
             _commonFormatArgs[0] = S5::getOptions().numberOfTowns;
 
-            widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
+            widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return kEvents;
         }
     }
 
@@ -1160,8 +1170,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             widgetEnd()
         };
 
-        static WindowEventList events;
-
         // 0x0043EB9D
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
@@ -1177,7 +1185,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::number_of_industries);
         }
 
-        static const string_id numIndustriesLabels[] = {
+        static const StringId numIndustriesLabels[] = {
             StringIds::industry_size_low,
             StringIds::industry_size_medium,
             StringIds::industry_size_high,
@@ -1250,28 +1258,23 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 window.activatedWidgets |= 1 << widx::check_allow_industries_start_up;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.prepareDraw = prepareDraw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
+            return kEvents;
         }
     };
 
     namespace Common
     {
-        static void initEvents()
-        {
-            Options::initEvents();
-            Land::initEvents();
-            Forests::initEvents();
-            Towns::initEvents();
-            Industries::initEvents();
-        }
-
         static void switchTabWidgets(Window* window)
         {
             window->activatedWidgets = 0;
@@ -1306,8 +1309,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC98
         static void switchTab(Window* window, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window->currentTab = widgetIndex - widx::tab_options;
             window->frameNo = 0;
@@ -1334,12 +1337,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->holdableWidgets = *holdableWidgetsByTab[window->currentTab];
 
-            static WindowEventList* eventsByTab[] = {
-                &Options::events,
-                &Land::events,
-                &Forests::events,
-                &Towns::events,
-                &Industries::events,
+            static const WindowEventList* eventsByTab[] = {
+                &Options::getEvents(),
+                &Land::getEvents(),
+                &Forests::getEvents(),
+                &Towns::getEvents(),
+                &Industries::getEvents(),
             };
 
             window->eventHandlers = eventsByTab[window->currentTab];

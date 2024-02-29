@@ -21,6 +21,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/DockObject.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -29,6 +30,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -39,7 +41,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
 
@@ -62,7 +63,7 @@ namespace OpenLoco::CompanyManager
         for (auto& company : companies())
             company.name = StringIds::empty;
 
-        _byte_525FCB = 0;
+        getGameState().produceAICompanyTimeout = 0;
 
         // Reset player companies depending on network mode.
         if (isNetworkHost())
@@ -222,10 +223,10 @@ namespace OpenLoco::CompanyManager
                 }
             }
 
-            _byte_525FCB++;
-            if (_byte_525FCB >= 192)
+            getGameState().produceAICompanyTimeout++;
+            if (getGameState().produceAICompanyTimeout >= 192)
             {
-                _byte_525FCB = 0;
+                getGameState().produceAICompanyTimeout = 0;
                 produceCompanies();
             }
         }
@@ -389,7 +390,7 @@ namespace OpenLoco::CompanyManager
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
-    string_id getOwnerStatus(CompanyId id, FormatArguments& args)
+    StringId getOwnerStatus(CompanyId id, FormatArguments& args)
     {
         auto* company = get(id);
         if (company == nullptr)
@@ -400,7 +401,7 @@ namespace OpenLoco::CompanyManager
         if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
             return StringIds::company_status_bankrupt;
 
-        const string_id observationStatusStrings[] = {
+        const StringId observationStatusStrings[] = {
             StringIds::company_status_empty,
             StringIds::company_status_building_track_road,
             StringIds::company_status_building_airport,
@@ -409,7 +410,7 @@ namespace OpenLoco::CompanyManager
             StringIds::company_status_surveying_landscape,
         };
 
-        string_id statusString = observationStatusStrings[company->observationStatus];
+        StringId statusString = observationStatusStrings[company->observationStatus];
         if (company->observationStatus == ObservationStatus::empty || company->observationTownId == TownId::null)
             return StringIds::company_status_empty;
 
@@ -730,6 +731,42 @@ namespace OpenLoco::CompanyManager
         return 0;
     }
 
+    // 0x004353F4
+    std::vector<uint32_t> findAllOtherInUseCompetitors(const CompanyId id)
+    {
+        std::vector<uint8_t> takenCompetitorIds;
+        for (const auto& c : companies())
+        {
+            if (c.id() != id)
+            {
+                takenCompetitorIds.push_back(c.competitorId);
+            }
+        }
+
+        std::vector<uint32_t> inUseCompetitors;
+        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
+        {
+            auto competitorId = ObjectManager::findObjectHandle(*object.second._header);
+            if (competitorId)
+            {
+                auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), competitorId->id);
+                if (res != takenCompetitorIds.end())
+                {
+                    inUseCompetitors.push_back(object.first);
+                }
+            }
+        }
+        return inUseCompetitors;
+    }
+
+    // 0x00435AEF
+    void aiDestroy(const CompanyId id)
+    {
+        auto* company = get(id);
+        registers regs;
+        regs.esi = X86Pointer(company);
+        call(0x00435AEF, regs);
+    }
 }
 
 namespace OpenLoco

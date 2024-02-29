@@ -38,28 +38,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex);
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onScrollMouseDown(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onUpdate(Window& window);
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
-
-    static void initEvents()
-    {
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.getScrollSize = getScrollSize;
-        _events.onMouseUp = onMouseUp;
-        _events.onUpdate = onUpdate;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
-    }
+    static const WindowEventList& getEvents();
 
     // 0x004C1602
     Window* open()
@@ -72,10 +51,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             WindowType::musicSelection,
             kWindowSize,
             WindowFlags::none,
-            &_events);
-
-        // TODO: only needs to be called once.
-        initEvents();
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << widx::close;
@@ -121,7 +97,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 break;
             }
 
-            string_id text_colour_id = StringIds::black_stringid;
+            StringId text_colour_id = StringIds::black_stringid;
 
             // Draw hovered track
             if (i == window.rowHover)
@@ -138,7 +114,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 drawingCtx.drawStringLeft(rt, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
-            string_id music_title_id = Audio::getMusicInfo(i)->titleId;
+            StringId music_title_id = Audio::getMusicInfo(i)->titleId;
             drawingCtx.drawStringLeft(rt, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += kRowHeight;
@@ -216,5 +192,21 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
         return args;
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

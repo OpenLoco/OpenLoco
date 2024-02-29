@@ -1,5 +1,6 @@
 #include "SoftwareDrawingContext.h"
 #include "DrawSprite.h"
+#include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Localisation/Formatting.h"
 #include "Ui.h"
@@ -52,8 +53,9 @@ namespace OpenLoco::Drawing
 
         // TODO: Store in drawing context.
         static PaletteMap::Buffer<8> _textColours{ 0 };
-        static uint16_t getStringWidth(const char* buffer);
+        static uint16_t getStringWidth(const char* str);
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
+        static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
@@ -113,7 +115,7 @@ namespace OpenLoco::Drawing
             for (const auto* chr = string; *chr != '\0'; ++chr)
             {
                 curString.push_back(*chr);
-                switch (*chr)
+                switch (static_cast<uint8_t>(*chr))
                 {
                     case ControlCodes::moveX:
                         curString.push_back(*++chr);
@@ -152,12 +154,12 @@ namespace OpenLoco::Drawing
                         break;
 
                     default:
-                        if (*chr <= 0x16)
+                        if (static_cast<uint8_t>(*chr) <= 0x16)
                         {
                             curString.push_back(*++chr);
                             curString.push_back(*++chr);
                         }
-                        else if (*chr < 32)
+                        else if (static_cast<uint8_t>(*chr) < 32)
                         {
                             curString.push_back(*++chr);
                             curString.push_back(*++chr);
@@ -191,15 +193,14 @@ namespace OpenLoco::Drawing
          * @param buffer @<esi>
          * @return width @<cx>
          */
-        static uint16_t getStringWidth(const char* buffer)
+        static uint16_t getStringWidth(const char* str)
         {
             uint16_t width = 0;
-            const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
             auto fontSpriteBase = getCurrentFontSpriteBase();
 
-            while (*str != (uint8_t)0)
+            while (*str != '\0')
             {
-                const uint8_t chr = *str;
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 if (chr >= 32)
@@ -284,9 +285,10 @@ namespace OpenLoco::Drawing
             uint16_t lineWidth = 0;
             for (; *ptr != '\0'; ++ptr)
             {
-                if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                const auto chr = static_cast<uint8_t>(*ptr);
+                if (chr >= ControlCodes::noArgBegin && chr < ControlCodes::noArgEnd)
                 {
-                    switch (*ptr)
+                    switch (chr)
                     {
                         case ControlCodes::newline:
                         {
@@ -306,9 +308,9 @@ namespace OpenLoco::Drawing
                             break;
                     }
                 }
-                else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                else if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
                 {
-                    switch (*ptr)
+                    switch (chr)
                     {
                         case ControlCodes::moveX:
                             lineWidth = static_cast<uint8_t>(ptr[1]);
@@ -316,13 +318,13 @@ namespace OpenLoco::Drawing
                     }
                     ptr += 1;
                 }
-                else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
                 {
                     ptr += 2;
                 }
-                else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
                 {
-                    switch (*ptr)
+                    switch (chr)
                     {
                         case ControlCodes::inlineSpriteStr:
                         {
@@ -340,7 +342,7 @@ namespace OpenLoco::Drawing
                 }
                 else
                 {
-                    lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                    lineWidth += _characterWidths[font + (chr - 32)];
                 }
             }
             return std::make_tuple(lineWidth, ptr, font);
@@ -370,16 +372,15 @@ namespace OpenLoco::Drawing
          * @param buffer @<esi>
          * @return width @<cx>
          */
-        static uint16_t getMaxStringWidth(const char* buffer)
+        static uint16_t getMaxStringWidth(const char* str)
         {
             uint16_t width = 0;
             uint16_t maxWidth = 0;
-            const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
             auto fontSpriteBase = getCurrentFontSpriteBase();
 
-            while (*str != (uint8_t)0)
+            while (*str != '\0')
             {
-                const uint8_t chr = *str;
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 if (chr >= 32)
@@ -748,7 +749,7 @@ namespace OpenLoco::Drawing
         }
 
         // 0x00451189
-        static Ui::Point loopNewline(RenderTarget* rt, Ui::Point origin, uint8_t* str)
+        static Ui::Point loopNewline(RenderTarget* rt, Ui::Point origin, const char* str)
         {
             Ui::Point pos = origin;
             while (true)
@@ -763,12 +764,13 @@ namespace OpenLoco::Drawing
                         offscreen = false;
                     }
                 }
-                uint8_t chr = *str;
+
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 switch (chr)
                 {
-                    case '\0':
+                    case 0U:
                         return pos;
 
                     case ControlCodes::adjustPalette:
@@ -982,21 +984,21 @@ namespace OpenLoco::Drawing
          * @param rt @<edi>
          * @param text @<esi>
          */
-        static Ui::Point drawString(RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, void* str)
+        static Ui::Point drawString(RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, const char* str)
         {
             // 0x00E04348, 0x00E0434A
             Ui::Point origin = { x, y };
 
             if (colour.isFE())
             {
-                return loopNewline(&rt, origin, (uint8_t*)str);
+                return loopNewline(&rt, origin, str);
             }
 
             if (colour.isFD())
             {
                 _currentFontFlags = TextDrawFlags::none;
                 setTextColour(0);
-                return loopNewline(&rt, origin, (uint8_t*)str);
+                return loopNewline(&rt, origin, str);
             }
 
             if (x >= rt.x + rt.width)
@@ -1013,7 +1015,7 @@ namespace OpenLoco::Drawing
 
             if (colour.isFF())
             {
-                return loopNewline(&rt, origin, (uint8_t*)str);
+                return loopNewline(&rt, origin, str);
             }
 
             _currentFontFlags = TextDrawFlags::none;
@@ -1072,18 +1074,18 @@ namespace OpenLoco::Drawing
                 setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
             }
 
-            return loopNewline(&rt, origin, (uint8_t*)str);
+            return loopNewline(&rt, origin, str);
         }
 
         // Use only with buffer mangled by wrapString
-        static const char* advanceToNextLineWrapped(const char* buffer)
+        static const char* advanceToNextLineWrapped(const char* str)
         {
             // Traverse the buffer for the next line
-            const char* ptr = buffer;
+            const char* ptr = str;
             while (true)
             {
-                const auto chr = *ptr++;
-                if (chr == '\0')
+                const auto chr = static_cast<uint8_t>(*ptr++);
+                if (chr == 0U)
                     return ptr;
 
                 if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
@@ -1131,7 +1133,7 @@ namespace OpenLoco::Drawing
             int16_t y,
             int16_t width,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1176,7 +1178,7 @@ namespace OpenLoco::Drawing
             RenderTarget& rt,
             Point* origin,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1201,7 +1203,7 @@ namespace OpenLoco::Drawing
             int16_t x,
             int16_t y,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             Point origin = { x, y };
@@ -1222,7 +1224,7 @@ namespace OpenLoco::Drawing
             int16_t y,
             int16_t width,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1246,7 +1248,7 @@ namespace OpenLoco::Drawing
             int16_t x,
             int16_t y,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1270,7 +1272,7 @@ namespace OpenLoco::Drawing
             int16_t x,
             int16_t y,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1299,7 +1301,7 @@ namespace OpenLoco::Drawing
             int16_t x,
             int16_t y,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1328,7 +1330,7 @@ namespace OpenLoco::Drawing
             int16_t x,
             int16_t y,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1357,7 +1359,7 @@ namespace OpenLoco::Drawing
             int16_t y,
             int16_t width,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             char buffer[512];
@@ -1385,7 +1387,7 @@ namespace OpenLoco::Drawing
             Point& origin,
             uint16_t width,
             AdvancedColour colour,
-            string_id stringId,
+            StringId stringId,
             const void* args)
         {
             _currentFontSpriteBase = Font::medium_bold;
@@ -1472,9 +1474,282 @@ namespace OpenLoco::Drawing
             call(0x0045196C, regs);
         }
 
+        // 0x00451582
+        static int16_t drawStringMaxChars(RenderTarget& rt, Ui::Point origin, const AdvancedColour colour, uint8_t* str, const int16_t numCharsRemaining)
+        {
+            // This function has been somewhat simplified removing unreachable parts
+            if (!colour.isFE())
+            {
+                assert(false);
+                return numCharsRemaining;
+            }
+            int16_t numChars = numCharsRemaining;
+            Ui::Point pos = origin;
+            while (true)
+            {
+                if (numChars == 0)
+                {
+                    break;
+                }
+                // When offscreen in y dimension don't draw text
+                // In original this check only performed if pos.y updated instead of every loop
+                bool offscreen = true;
+                if (pos.y + 19 > rt.y)
+                {
+                    if (rt.y + rt.height > pos.y)
+                    {
+                        offscreen = false;
+                    }
+                }
+                const auto chr = static_cast<uint8_t>(*str);
+                str++;
+
+                switch (chr)
+                {
+                    case 0U:
+                        return numChars;
+
+                    case ControlCodes::adjustPalette:
+                        // This control character does not appear in the localisation files
+                        assert(false);
+                        str++;
+                        break;
+
+                    case ControlCodes::newlineSmaller:
+                        pos.x = origin.x;
+                        if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
+                        {
+                            pos.y += 5;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::small)
+                        {
+                            pos.y += 3;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::large)
+                        {
+                            pos.y += 9;
+                        }
+                        break;
+
+                    case ControlCodes::newline:
+                        pos.x = origin.x;
+                        if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
+                        {
+                            pos.y += 10;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::small)
+                        {
+                            pos.y += 6;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::large)
+                        {
+                            pos.y += 18;
+                        }
+                        break;
+
+                    case ControlCodes::moveX:
+                    {
+                        uint8_t offset = *str;
+                        str++;
+                        pos.x = origin.x + offset;
+
+                        break;
+                    }
+
+                    case ControlCodes::newlineXY:
+                    {
+                        uint8_t offset = *str;
+                        str++;
+                        pos.x = origin.x + offset;
+
+                        offset = *str;
+                        str++;
+                        pos.y = origin.y + offset;
+
+                        break;
+                    }
+
+                    case ControlCodes::Font::small:
+                        setCurrentFontSpriteBase(Font::small);
+                        break;
+                    case ControlCodes::Font::large:
+                        setCurrentFontSpriteBase(Font::large);
+                        break;
+                    case ControlCodes::Font::regular:
+                        setCurrentFontSpriteBase(Font::medium_normal);
+                        break;
+                    case ControlCodes::Font::bold:
+                        setCurrentFontSpriteBase(Font::medium_bold);
+                        break;
+                    case ControlCodes::Font::outline:
+                        _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                        break;
+                    case ControlCodes::Font::outlineOff:
+                        _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
+                        break;
+                    case ControlCodes::windowColour1:
+                    {
+                        auto hue = _windowColours[0].c();
+                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour2:
+                    {
+                        auto hue = _windowColours[1].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour3:
+                    {
+                        auto hue = _windowColours[2].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour4:
+                    {
+                        auto hue = _windowColours[3].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+
+                    case ControlCodes::inlineSpriteStr:
+                    {
+                        uint32_t image = ((uint32_t*)str)[0];
+                        ImageId imageId{ image & 0x7FFFF };
+                        str += 4;
+
+                        drawImage(&rt, pos.x, pos.y, image);
+
+                        // For some reason the wrapStringTicker doesn't do this??
+                        numChars--;
+                        pos.x += Gfx::getG1Element(imageId.getIndex())->width;
+                        break;
+                    }
+
+                    case ControlCodes::Colour::black:
+                        setTextColour(0);
+                        break;
+
+                    case ControlCodes::Colour::grey:
+                        setTextColour(1);
+                        break;
+
+                    case ControlCodes::Colour::white:
+                        setTextColour(2);
+                        break;
+
+                    case ControlCodes::Colour::red:
+                        setTextColour(3);
+                        break;
+
+                    case ControlCodes::Colour::green:
+                        setTextColour(4);
+                        break;
+
+                    case ControlCodes::Colour::yellow:
+                        setTextColour(5);
+                        break;
+
+                    case ControlCodes::Colour::topaz:
+                        setTextColour(6);
+                        break;
+
+                    case ControlCodes::Colour::celadon:
+                        setTextColour(7);
+                        break;
+
+                    case ControlCodes::Colour::babyBlue:
+                        setTextColour(8);
+                        break;
+
+                    case ControlCodes::Colour::paleLavender:
+                        setTextColour(9);
+                        break;
+
+                    case ControlCodes::Colour::paleGold:
+                        setTextColour(10);
+                        break;
+
+                    case ControlCodes::Colour::lightPink:
+                        setTextColour(11);
+                        break;
+
+                    case ControlCodes::Colour::pearlAqua:
+                        setTextColour(12);
+                        break;
+
+                    case ControlCodes::Colour::paleSilver:
+                        setTextColour(13);
+                        break;
+
+                    default:
+                        if (chr >= 32)
+                        {
+                            numChars--;
+                        }
+                        if (!offscreen)
+                        {
+                            // When offscreen in the y dimension there is no requirement to keep pos.x correct
+                            if (chr >= 32)
+                            {
+                                // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
+                                drawImagePaletteSet(rt, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                            }
+                            else
+                            {
+                                // Unhandled control code
+                                assert(false);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            return numChars;
+        }
+
+        // 0x004950EF
+        static void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+        {
+            _currentFontSpriteBase = Font::medium_bold;
+            // Setup the text colours (FIXME: This should be a separate function)
+            char empty[1] = "";
+            drawString(rt, rt.x, rt.y, colour, empty);
+
+            char buffer[512];
+            StringManager::formatString(buffer, std::size(buffer), stringId);
+
+            _currentFontSpriteBase = Font::medium_bold;
+            const auto numLinesToDisplayAllChars = wrapStringTicker(buffer, width, numCharactersToDisplay);
+            const auto lineToDisplayFrom = numLinesToDisplayAllChars - numLinesToDisplay;
+
+            // wrapString might change the font due to formatting codes
+            uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
+
+            _currentFontFlags = TextDrawFlags::none;
+            Ui::Point point = origin;
+            if (lineToDisplayFrom > 0)
+            {
+                point.y -= lineHeight * lineToDisplayFrom;
+            }
+            const char* ptr = buffer;
+
+            auto numChars = numCharactersToDisplay;
+            for (auto i = 0; ptr != nullptr && i < numLinesToDisplayAllChars; i++)
+            {
+                uint16_t lineWidth = getStringWidth(ptr);
+
+                // special drawstring
+                numChars = drawStringMaxChars(rt, point - Ui::Point(lineWidth / 2, 0), AdvancedColour::FE(), reinterpret_cast<uint8_t*>(const_cast<char*>(ptr)), numChars);
+                ptr = advanceToNextLineWrapped(ptr);
+                point.y += lineHeight;
+            }
+        }
+
         // 0x00495301
         // Note: Returned break count is -1. TODO: Refactor out this -1.
-        // @return maxWidth @<cx> (breakCount-1) @<di>
+        // @return maxWidth @<cx> (numLinesToDisplayAllChars-1) @<di>
         static std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth)
         {
             // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
@@ -1490,10 +1765,11 @@ namespace OpenLoco::Drawing
                 auto* wordStart = ptr;
                 for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
                 {
-                    if (*ptr >= ControlCodes::noArgBegin && *ptr < ControlCodes::noArgEnd)
+                    const auto chr = static_cast<uint8_t>(*ptr);
+                    if (chr >= ControlCodes::noArgBegin && chr < ControlCodes::noArgEnd)
                     {
                         bool forceEndl = false;
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::newline:
                             {
@@ -1523,9 +1799,9 @@ namespace OpenLoco::Drawing
                             break;
                         }
                     }
-                    else if (*ptr >= ControlCodes::oneArgBegin && *ptr < ControlCodes::oneArgEnd)
+                    else if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
                     {
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::moveX:
                                 lineWidth = static_cast<uint8_t>(ptr[1]);
@@ -1533,13 +1809,13 @@ namespace OpenLoco::Drawing
                         }
                         ptr += 1;
                     }
-                    else if (*ptr >= ControlCodes::twoArgBegin && *ptr < ControlCodes::twoArgEnd)
+                    else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
                     {
                         ptr += 2;
                     }
-                    else if (*ptr >= ControlCodes::fourArgBegin && *ptr < ControlCodes::fourArgEnd)
+                    else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
                     {
-                        switch (*ptr)
+                        switch (chr)
                         {
                             case ControlCodes::inlineSpriteStr:
                             {
@@ -1596,6 +1872,139 @@ namespace OpenLoco::Drawing
             // TODO: refactor to pair up with each line, and to not use a global.
             _currentFontSpriteBase = font;
             return std::make_pair(maxWidth, std::max(static_cast<uint16_t>(wrapCount) - 1, 0));
+        }
+
+        // 0x0049544E
+        // Vanilla would also return maxWidth @<cx> (breakCount-1) @<di>
+        // @return numLinesToDisplayAllChars @<ax>
+        static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters)
+        {
+            // std::vector<const char*> wrap; TODO: refactor to return pointers to line starts
+            auto font = *_currentFontSpriteBase;
+            uint16_t numLinesToDisplayAllChars = 1;
+
+            int16_t charNum = numCharacters;
+            for (auto* ptr = buffer; *ptr != '\0';)
+            {
+                auto* startLine = ptr;
+                uint16_t lineWidth = 0;
+                auto lastWordCharNum = charNum;
+                auto* wordStart = ptr;
+                for (; *ptr != '\0' && lineWidth < stringWidth; ++ptr)
+                {
+                    const auto chr = static_cast<uint8_t>(*ptr);
+                    if (chr >= ControlCodes::noArgBegin && chr < ControlCodes::noArgEnd)
+                    {
+                        bool forceEndl = false;
+                        switch (chr)
+                        {
+                            case ControlCodes::newline:
+                            {
+                                *ptr = '\0';
+                                forceEndl = true;
+                                ++ptr; // Skip over '\0' when forcing a new line
+                                // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
+                                if (charNum > 0)
+                                {
+                                    numLinesToDisplayAllChars++;
+                                }
+                                break;
+                            }
+                            case ControlCodes::Font::small:
+                                font = Font::small;
+                                break;
+                            case ControlCodes::Font::large:
+                                font = Font::large;
+                                break;
+                            case ControlCodes::Font::bold:
+                                font = Font::medium_bold;
+                                break;
+                            case ControlCodes::Font::regular:
+                                font = Font::medium_normal;
+                                break;
+                        }
+                        if (forceEndl)
+                        {
+                            break;
+                        }
+                    }
+                    else if (chr >= ControlCodes::oneArgBegin && chr < ControlCodes::oneArgEnd)
+                    {
+                        switch (*ptr)
+                        {
+                            case ControlCodes::moveX:
+                                lineWidth = static_cast<uint8_t>(ptr[1]);
+                                break;
+                        }
+                        ptr += 1;
+                    }
+                    else if (chr >= ControlCodes::twoArgBegin && chr < ControlCodes::twoArgEnd)
+                    {
+                        ptr += 2;
+                    }
+                    else if (chr >= ControlCodes::fourArgBegin && chr < ControlCodes::fourArgEnd)
+                    {
+                        switch (chr)
+                        {
+                            case ControlCodes::inlineSpriteStr:
+                            {
+                                uint32_t image = *reinterpret_cast<const uint32_t*>(ptr);
+                                ImageId imageId{ image & 0x7FFFF };
+                                auto* el = Gfx::getG1Element(imageId.getIndex());
+                                if (el != nullptr)
+                                {
+                                    lineWidth += el->width;
+                                }
+                                break;
+                            }
+                        }
+                        ptr += 4;
+                    }
+                    else
+                    {
+                        if (*ptr == ' ')
+                        {
+                            wordStart = ptr;
+                            lastWordCharNum = charNum;
+                        }
+
+                        charNum--;
+                        lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                    }
+                }
+                if (lineWidth >= stringWidth || *ptr == '\0')
+                {
+                    if (startLine == wordStart || (*ptr == '\0' && lineWidth < stringWidth))
+                    {
+                        // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
+                        if (startLine == wordStart && *ptr != '\0')
+                        {
+                            // Shuffle the string forward by one to make space for line ending
+                            const auto len = StringManager::locoStrlen(ptr) + 1; // +1 for null termination
+                            std::copy_backward(ptr, ptr + len, ptr + len + 1);
+                            // Insert line ending
+                            *ptr++ = '\0';
+                        }
+                    }
+                    else
+                    {
+                        // wrap.push_back(startLine); TODO: refactor to return pointers to line starts
+                        charNum = lastWordCharNum;
+                        if (charNum > 0)
+                        {
+                            numLinesToDisplayAllChars++;
+                        }
+                        // Insert line ending instead of space character
+                        *wordStart = '\0';
+                        ptr = wordStart + 1;
+                    }
+                }
+            }
+
+            // Note that this is always the font used in the last line.
+            // TODO: refactor to pair up with each line, and to not use a global.
+            _currentFontSpriteBase = font;
+            return numLinesToDisplayAllChars;
         }
 
         // 0x004474BA
@@ -1707,7 +2116,7 @@ namespace OpenLoco::Drawing
                 for (auto y = 0; y < drawRect.height(); y++)
                 {
                     auto* nextDst = dst + step * y;
-                    auto p = Numerics::ror(crossPattern, 1);
+                    auto p = std::rotr(crossPattern, 1);
 
                     // Fill every other pixel with the colour
                     for (auto x = 0; x < drawRect.width(); x++)
@@ -1995,57 +2404,57 @@ namespace OpenLoco::Drawing
         return Impl::getMaxStringWidth(buffer);
     }
 
-    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, void* str)
+    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, const char* str)
     {
         return Impl::drawString(rt, x, y, colour, str);
     }
 
-    int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeftWrapped(rt, x, y, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeft(rt, x, y, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, Ui::Point* origin, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, Ui::Point* origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeft(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeftClipped(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeftClipped(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeftClipped(rt, x, y, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringRight(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringRight(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringRight(rt, x, y, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringRightUnderline(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, string_id stringId, const void* args)
+    void SoftwareDrawingContext::drawStringRightUnderline(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, StringId stringId, const void* args)
     {
         return Impl::drawStringRightUnderline(rt, x, y, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeftUnderline(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeftUnderline(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeftUnderline(rt, x, y, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentred(rt, x, y, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, int16_t x, int16_t y, int16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentredClipped(rt, x, y, width, colour, stringId, args);
     }
 
-    uint16_t SoftwareDrawingContext::drawStringCentredWrapped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, string_id stringId, const void* args /*= nullptr*/)
+    uint16_t SoftwareDrawingContext::drawStringCentredWrapped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentredWrapped(rt, origin, width, colour, stringId, args);
     }
@@ -2058,6 +2467,11 @@ namespace OpenLoco::Drawing
     void SoftwareDrawingContext::drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
     {
         return Impl::drawStringYOffsets(rt, loc, colour, args, yOffsets);
+    }
+
+    void SoftwareDrawingContext::drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+    {
+        Impl::drawStringTicker(rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
     }
 
     uint16_t SoftwareDrawingContext::getStringWidthNewLined(const char* buffer)

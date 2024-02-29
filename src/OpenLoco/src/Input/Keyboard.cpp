@@ -41,7 +41,6 @@ namespace OpenLoco::Input
     static void loc_4BED04();
     static void loc_4BED79();
 
-    static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
     static loco_global<KeyModifier, 0x00508F18> _keyModifier;
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
@@ -52,8 +51,6 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
-
-    static ScreenshotType _screenshotType = ScreenshotType::regular;
 
     static const std::pair<std::string, std::function<void()>> kCheats[] = {
         { "DRIVER", loc_4BECDE },
@@ -312,55 +309,18 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            auto ti = WindowManager::find(WindowType::textInput);
-            if (ti != nullptr)
-            {
-                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                    continue;
-
-                Ui::Windows::TextInput::handleInput(nextKey->charCode, nextKey->keyCode);
-                continue;
-            }
-
-            if (*_modalWindowType == WindowType::fileBrowserPrompt)
-            {
-                ti = WindowManager::find(WindowType::fileBrowserPrompt);
-                if (ti != nullptr)
-                {
-                    if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                        continue;
-
-                    Ui::Windows::PromptBrowse::handleInput(nextKey->charCode, nextKey->keyCode);
-                    continue;
-                }
-            }
-
-            if (*_modalWindowType == WindowType::confirmationPrompt)
-            {
-                ti = WindowManager::find(WindowType::confirmationPrompt);
-                if (ti != nullptr)
-                {
-                    Ui::Windows::PromptOkCancel::handleInput(nextKey->charCode, nextKey->keyCode);
-                    continue;
-                }
-            }
-
-            ti = WindowManager::find(WindowType::objectSelection);
-            if (ti != nullptr)
-            {
-                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
-                    continue;
-
-                Ui::Windows::ObjectSelectionWindow::handleInput(nextKey->charCode, nextKey->keyCode);
-                continue;
-            }
-
-            ti = WindowManager::find(WindowType::editKeyboardShortcut);
+            auto ti = WindowManager::find(WindowType::editKeyboardShortcut);
             if (ti != nullptr)
             {
                 editShortcut(nextKey);
                 continue;
             }
+
+            if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
+                continue;
+
+            if (WindowManager::callKeyUpEventBackToFront(nextKey->charCode, nextKey->keyCode))
+                continue;
 
             if (Tutorial::state() == Tutorial::State::playing)
             {
@@ -405,7 +365,7 @@ namespace OpenLoco::Input
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (Config::get().old.edgeScrolling == 0)
+        if (!Config::get().edgeScrolling)
             return;
 
         if (Input::state() != State::normal && Input::state() != State::dropdownActive)
@@ -415,19 +375,19 @@ namespace OpenLoco::Input
             return;
 
         Ui::Point delta = { 0, 0 };
-        auto cursor = getMouseLocation();
+        auto cursor = getCursorPosScaled();
 
         if (cursor.x == 0)
-            delta.x -= 12;
+            delta.x -= Config::get().edgeScrollingSpeed;
 
-        if (cursor.x == Ui::width() - 1)
-            delta.x += 12;
+        if (cursor.x >= Ui::width() - 1)
+            delta.x += Config::get().edgeScrollingSpeed;
 
         if (cursor.y == 0)
-            delta.y -= 12;
+            delta.y -= Config::get().edgeScrollingSpeed;
 
-        if (cursor.y == Ui::height() - 1)
-            delta.y += 12;
+        if (cursor.y >= Ui::height() - 1)
+            delta.y += Config::get().edgeScrollingSpeed;
 
         if (delta.x == 0 && delta.y == 0)
             return;
@@ -464,16 +424,16 @@ namespace OpenLoco::Input
         Ui::Point delta = { 0, 0 };
 
         if (_keyboardState[SDL_SCANCODE_LEFT] & 0x80)
-            delta.x -= 8;
+            delta.x -= Config::get().edgeScrollingSpeed;
 
         if (_keyboardState[SDL_SCANCODE_UP] & 0x80)
-            delta.y -= 8;
+            delta.y -= Config::get().edgeScrollingSpeed;
 
         if (_keyboardState[SDL_SCANCODE_DOWN] & 0x80)
-            delta.y += 8;
+            delta.y += Config::get().edgeScrollingSpeed;
 
         if (_keyboardState[SDL_SCANCODE_RIGHT] & 0x80)
-            delta.x += 8;
+            delta.x += Config::get().edgeScrollingSpeed;
 
         if (delta.x == 0 && delta.y == 0)
             return;
@@ -496,38 +456,10 @@ namespace OpenLoco::Input
         Input::setFlag(Flags::viewportScrolling);
     }
 
-    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type)
-    {
-        _screenshotCountdown = numTicks;
-        _screenshotType = type;
-    }
-
     // 0x004BE92A
     void handleKeyboard()
     {
-        if (_screenshotCountdown != 0)
-        {
-            _screenshotCountdown--;
-            if (_screenshotCountdown == 0)
-            {
-                try
-                {
-                    std::string fileName;
-                    if (_screenshotType == ScreenshotType::giant)
-                        fileName = saveGiantScreenshot();
-                    else
-                        fileName = saveScreenshot();
-
-                    *((const char**)(&_commonFormatArgs[0])) = fileName.c_str();
-                    Windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
-                }
-                catch (const std::exception&)
-                {
-                    Windows::showError(StringIds::screenshot_failed);
-                }
-            }
-        }
-
+        handleScreenshotCountdown();
         edgeScroll();
 
         _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);

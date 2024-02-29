@@ -1721,7 +1721,7 @@ strings:
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Delay before competing companies start:"
   1685: "{POP16}{INT16} maanden"
-  1686: "{COLOUR WINDOW_2}Selection of competing companies:"
+  1686: "{COLOUR WINDOW_2}Selection of competing companies"
   1687: "{COLOUR WINDOW_2}Preferred Intelligence:"
   1688: "{COLOUR WINDOW_2}Preferred Aggressiveness:"
   1689: "{COLOUR WINDOW_2}Preferred Competitiveness:"
@@ -1912,8 +1912,8 @@ strings:
   1872: Allow new industries to start up during game
   1873: Share additional companies/owner faces
   1874: "{SMALLFONT}{COLOUR BLACK}Select this option to send any customized companies/owner face data files to the other computer during the connection process"
-  1875: "{COLOUR WINDOW_2}Forbid competing companies from using:"
-  1876: "{COLOUR WINDOW_2}Forbid player companies from using:"
+  1875: "{COLOUR WINDOW_2}Forbid competing companies from using"
+  1876: "{COLOUR WINDOW_2}Forbid player companies from using"
   1877: "{NEWLINE}Stopt op: {STRINGID}"
   1878: ", {STRINGID}"
 
@@ -2187,7 +2187,7 @@ strings:
   2132: "{COLOUR WINDOW_2}Vergrotingsfactor:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
-  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Zoomen op aanwijzerpositie"
   2137: "{SMALLFONT}{COLOUR BLACK}Als dit ingeschakeld, zal er worden ingezoomd op de locatie van de aanwijzer, in plaats van in het midden van het scherm."
   2138: "{COLOUR WINDOW_2}Muziek afspelen op titelscherm"

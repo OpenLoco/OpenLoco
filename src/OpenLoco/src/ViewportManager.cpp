@@ -2,9 +2,10 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Logging.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
 #include "World/Station.h"
@@ -339,7 +340,7 @@ namespace OpenLoco::Ui::ViewportManager
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                World::TileManager::mapInvalidateMapSelectionTiles();
+                World::mapInvalidateMapSelectionTiles();
                 regs = backup;
                 return 0;
             });
@@ -364,73 +365,95 @@ namespace OpenLoco::Ui::ViewportManager
         registerHook(
             0x004CBA2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 invalidate((Station*)regs.esi);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 invalidate((EntityBase*)regs.esi, ZoomLevel::eighth);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 invalidate((EntityBase*)regs.esi, ZoomLevel::quarter);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 invalidate((EntityBase*)regs.esi, ZoomLevel::half);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 invalidate((EntityBase*)regs.esi, ZoomLevel::full);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto pos = World::Pos2(regs.ax, regs.cx);
                 World::TileManager::mapInvalidateTileFull(pos);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CBFBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto pos = World::Pos2(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::eighth, 56);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CC098,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto pos = World::Pos2(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::eighth);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CC20F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto pos = World::Pos2(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::full);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CC390,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto pos = World::Pos2(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::half);
+                regs = backup;
                 return 0;
             });
         registerHook(
             0x004CC511,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto pos = World::Pos2(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::quarter);
+                regs = backup;
                 return 0;
             });
         registerHook(

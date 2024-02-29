@@ -7,6 +7,7 @@
 #include "Objects/TrainStationObject.h"
 #include "Paint.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 #include "World/StationManager.h"
@@ -217,10 +218,10 @@ namespace OpenLoco::Paint
         // Paint Canopy of platform
         {
             World::Pos3 bbOffset = platformImages.canopy.bbOffset + heightOffset;
-            session.addToPlotList4FD180(imageBase.withIndexOffset(platformImages.canopy.imageId), 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
+            session.addToPlotListTrackRoadAddition(imageBase.withIndexOffset(platformImages.canopy.imageId), 1, heightOffset, bbOffset, platformImages.canopy.bbSize);
             session.attachToPrevious(imageTranslucentBase.withIndexOffset(platformImages.canopyTranslucent.imageId), { 0, 0 });
         }
-        session.set525CF8(session.get525CF8() | 0x1FF);
+        session.set525CF8(session.get525CF8() | SegmentFlags::all);
     }
 
     // 0x00411AC6
@@ -296,7 +297,7 @@ namespace OpenLoco::Paint
         const World::Pos3 heightOffset(0, 0, elStation.baseHeight());
         World::Pos3 bbOffset = World::Pos3{ 0, 0, 26 } + heightOffset;
         World::Pos3 bbSize = World::Pos3{ 30, 30, 1 };
-        session.addToPlotList4FD180(imageBase.withIndexOffset(TrainStation::ImageIds::Style0::diagonalSE3), 1, heightOffset, bbOffset, bbSize);
+        session.addToPlotListTrackRoadAddition(imageBase.withIndexOffset(TrainStation::ImageIds::Style0::diagonalSE3), 1, heightOffset, bbOffset, bbSize);
         session.attachToPrevious(imageTranslucentBase.withIndexOffset(TrainStation::ImageIds::Style0::diagonalCanopyTranslucentSE3), { 0, 0 });
     }
 
@@ -369,10 +370,10 @@ namespace OpenLoco::Paint
     // 0x0048B34D
     static void paintTrainStation(PaintSession& session, const World::StationElement& elStation)
     {
-        session.setItemType(Ui::ViewportInteraction::InteractionItem::trackStation);
+        session.setItemType(Ui::ViewportInteraction::InteractionItem::trainStation);
 
         const auto* stationObj = ObjectManager::get<TrainStationObject>(elStation.objectId());
-        session.setF003F6(-1);
+        session.setOccupiedAdditionSupportSegments(SegmentFlags::all);
 
         const auto* elTrack = elStation.prev()->as<World::TrackElement>();
         if (elTrack == nullptr)
@@ -448,7 +449,7 @@ namespace OpenLoco::Paint
     // 0x0048B313
     void paintStation(PaintSession& session, const World::StationElement& elStation)
     {
-        if (elStation.isFlag5())
+        if (elStation.isAiAllocated())
         {
             return;
         }

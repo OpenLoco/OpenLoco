@@ -1,4 +1,5 @@
 #include "RenameCompanyOwner.h"
+#include "ChangeCompanyFace.h"
 #include "Economy/Expenditures.h"
 #include "Engine/Limits.h"
 #include "GameCommands/GameCommands.h"
@@ -7,6 +8,8 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "Objects/ObjectIndex.h"
+#include "Objects/ObjectManager.h"
 #include "Types.hpp"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -15,7 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    void sub_434BA1();
+    void tryLoadInstalledFaceForName(const CompanyId id, const char* companyName);
 
     /**
      * 0x00434914
@@ -81,7 +84,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Allocate a string id for the new name.
-        string_id allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+        StringId allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
         if (allocatedStringId == StringIds::empty)
             return GameCommands::FAILURE;
 
@@ -93,11 +96,11 @@ namespace OpenLoco::GameCommands
         }
 
         // Apply the new owner name to the company.
-        string_id oldStringId = company->ownerName;
+        StringId oldStringId = company->ownerName;
         company->ownerName = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
         Gfx::invalidateScreen();
-        sub_434BA1();
+        tryLoadInstalledFaceForName(_companyId, renameStringBuffer);
         return 0;
     }
 
@@ -107,8 +110,79 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00434BA1
-    void sub_434BA1()
+    void tryLoadInstalledFaceForName(const CompanyId id, const char* companyName)
     {
-        call(0x00434BA1);
+        const auto competitorInstalledObjects = CompanyManager::findAllOtherInUseCompetitors(id);
+
+        std::optional<ObjectHeader> foundInstalledObject = std::nullopt;
+        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
+        {
+            auto res = std::find(competitorInstalledObjects.begin(), competitorInstalledObjects.end(), object.first);
+            if (res != competitorInstalledObjects.end())
+            {
+                continue;
+            }
+
+            // Copy the string as it needs some processing
+            std::string objectName = object.second._name;
+            // Not sure what ControlCodes::pop16 is doing in the object name but it is at the start of all the object names
+            objectName.erase(std::remove(std::begin(objectName), std::end(objectName), static_cast<char>(ControlCodes::pop16)));
+
+            auto strcmpSpecial = [](const char* lhs, const char* rhs) {
+                while (*lhs && *rhs)
+                {
+                    const auto chr = *lhs;
+                    if (chr == '\xFF')
+                    {
+                        if (chr != *rhs)
+                        {
+                            return false;
+                        }
+                        lhs++;
+                        rhs++;
+                        const uint16_t unkLhs = *reinterpret_cast<const uint16_t*>(lhs);
+                        const uint16_t unkRhs = *reinterpret_cast<const uint16_t*>(rhs);
+                        if (unkLhs != unkRhs)
+                        {
+                            return false;
+                        }
+                        lhs += 2;
+                        rhs += 2;
+                        continue;
+                    }
+                    auto toUpper = [](const char chr) -> char {
+                        if (chr < 'a' || chr > 'z')
+                        {
+                            return chr;
+                        }
+                        return chr - 0x20;
+                    };
+                    if (toUpper(chr) != toUpper(*rhs))
+                    {
+                        return false;
+                    }
+                    lhs++;
+                    rhs++;
+                }
+                return *lhs == *rhs;
+            };
+
+            if (strcmpSpecial(companyName, objectName.c_str()))
+            {
+                foundInstalledObject = *object.second._header;
+                break;
+            }
+        }
+
+        if (foundInstalledObject.has_value())
+        {
+            ChangeCompanyFaceArgs args{};
+            args.companyId = id;
+            args.objHeader = foundInstalledObject.value();
+
+            auto regs = registers(args);
+            regs.bl = Flags::apply;
+            changeCompanyFace(regs);
+        }
     }
 }

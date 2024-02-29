@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -31,18 +31,18 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::land;
 
-        string_id name;
+        StringId name;
         uint8_t costIndex; // 0x02
         uint8_t var_03;
         uint8_t var_04;
         LandObjectFlags flags; // 0x05
-        uint8_t var_06;
-        uint8_t var_07;
+        uint8_t cliffEdgeHeader1;
+        uint8_t cliffEdgeHeader2;
         int8_t costFactor; // 0x08
         uint8_t pad_09;
         uint32_t image; // 0x0A
         uint32_t var_0E;
-        uint32_t var_12;
+        uint32_t cliffEdgeImage;
         uint32_t mapPixelImage; // 0x16
         uint8_t pad_1A;
         uint8_t numVariations;       // 0x1B
@@ -50,7 +50,7 @@ namespace OpenLoco
         uint8_t pad_1D;
 
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
 

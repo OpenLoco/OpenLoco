@@ -15,9 +15,7 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         widgetEnd()
     };
 
-    static Ui::WindowEventList _events;
-
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
@@ -28,10 +26,8 @@ namespace OpenLoco::Ui::Windows::TitleVersion
             Ui::Point(8, Ui::height() - height),
             Ui::Size(width, height),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
-            &_events);
+            getEvents());
         window->widgets = widgets;
-
-        _events.draw = draw;
 
         return window;
     }
@@ -42,6 +38,15 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto versionInfo = getVersionInfo();
-        drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), (void*)versionInfo.c_str());
+        drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

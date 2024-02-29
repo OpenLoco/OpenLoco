@@ -1,12 +1,13 @@
 #pragma once
 
+#include <OpenLoco/Core/Exception.hpp>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <stdexcept>
 #include <vector>
 
-#if defined(__i386__)
+#if defined(__i386__) || defined(_M_IX86)
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 #else
 #define assert_struct_size(x, y)
@@ -288,13 +289,9 @@ namespace OpenLoco::Interop
             --_ptr;
             return temp;
         }
-        bool operator==(const loco_global_iterator& rhs)
+        bool operator==(const loco_global_iterator& rhs) const
         {
             return _ptr == rhs._ptr;
-        }
-        bool operator!=(const loco_global_iterator& rhs)
-        {
-            return _ptr != rhs._ptr;
         }
         T& operator*()
         {
@@ -346,7 +343,7 @@ namespace OpenLoco::Interop
 #ifndef NDEBUG
             if (idx < 0 || static_cast<size_t>(idx) >= size())
             {
-                throw std::out_of_range("loco_global: bounds check violation!");
+                throw Exception::OutOfRange("loco_global: bounds check violation!");
             }
 #endif
             return get()[idx];
@@ -398,7 +395,6 @@ namespace OpenLoco::Interop
     };
 
     bool operator==(const save_state& lhs, const save_state& rhs);
-    bool operator!=(const save_state& lhs, const save_state& rhs);
 
     void readMemory(uint32_t address, void* data, size_t size);
     void writeMemory(uint32_t address, const void* data, size_t size);

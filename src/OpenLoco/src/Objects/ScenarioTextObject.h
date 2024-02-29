@@ -2,7 +2,7 @@
 
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -15,8 +15,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::scenarioText;
 
-        string_id name;
-        string_id details;
+        StringId name;
+        StringId details;
         uint8_t pad_04[0x6 - 0x4];
 
         // 0x0043EE17
@@ -24,7 +24,7 @@ namespace OpenLoco
         {
             return true;
         }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

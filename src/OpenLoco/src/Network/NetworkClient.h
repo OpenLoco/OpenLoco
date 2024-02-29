@@ -3,9 +3,9 @@
 #include "Network.h"
 #include "NetworkBase.h"
 #include "Socket.h"
-#include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 #include <list>
+#include <span>
 #include <vector>
 
 namespace OpenLoco::Network
@@ -52,7 +52,7 @@ namespace OpenLoco::Network
         void processReceivedPackets();
         bool hasTimedOut() const;
         void onReceivePacketFromServer(const Packet& packet);
-        void processFullState(stdx::span<uint8_t const> data);
+        void processFullState(std::span<uint8_t const> data);
         void updateLocalTick();
 
         void initStatus(std::string_view text);

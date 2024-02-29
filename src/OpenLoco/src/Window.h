@@ -123,13 +123,14 @@ namespace OpenLoco::Ui
         void (*scrollMouseOver)(Ui::Window& window, int16_t x, int16_t y, uint8_t scrollIndex) = nullptr;
         void (*textInput)(Window&, WidgetIndex_t, const char*) = nullptr;
         void (*viewportRotate)(Window&) = nullptr;
-        uint32_t event_22;
+        uint32_t event_22{};
         std::optional<FormatArguments> (*tooltip)(Window&, WidgetIndex_t) = nullptr;
         Ui::CursorId (*cursor)(Window&, int16_t, int16_t, int16_t, Ui::CursorId) = nullptr;
         void (*onMove)(Window&, const int16_t x, const int16_t y) = nullptr;
         void (*prepareDraw)(Window&) = nullptr;
         void (*draw)(Window&, Gfx::RenderTarget*) = nullptr;
         void (*drawScroll)(Window&, Gfx::RenderTarget&, const uint32_t scrollIndex) = nullptr;
+        bool (*keyUp)(Window&, uint32_t charCode, uint32_t keyCode) = nullptr;
     };
 
     struct SavedViewSimple
@@ -205,18 +206,13 @@ namespace OpenLoco::Ui
         {
             return mapX == rhs.mapX && mapY == rhs.mapY && zoomLevel == rhs.zoomLevel && rotation == rhs.rotation && surfaceZ == rhs.surfaceZ;
         }
-
-        bool operator!=(const SavedView& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
 
     struct Window
     {
         static constexpr size_t kMaxScrollAreas = 2;
 
-        WindowEventList* eventHandlers;                    // 0x00
+        const WindowEventList* eventHandlers;              // 0x00
         Ui::Viewport* viewports[2] = { nullptr, nullptr }; // 0x04
         uint64_t enabledWidgets = 0;                       // 0x0C
         uint64_t disabledWidgets = 0;                      // 0x14
@@ -413,6 +409,7 @@ namespace OpenLoco::Ui
         void callPrepareDraw();                                                                        // 26
         void callDraw(Gfx::RenderTarget* rt);                                                          // 27
         void callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex);                              // 28
+        bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                           // 29
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

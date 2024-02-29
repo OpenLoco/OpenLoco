@@ -20,6 +20,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -31,16 +32,27 @@ namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi);
     static void sub_4C13BE(Window* w);
-    static void sub_4C1519();
+    static void setPreferredCurrencyNameBuffer();
     static void sub_4BF935();
 
     static loco_global<uint32_t, 0x0050D430> _songProgress;
     static loco_global<int8_t, 0x0050D434> _currentSong;
     static loco_global<uint8_t, 0x0050D435> _lastSong;
 
-    // Should be a pointer to an array of u8's
-    static loco_global<void*, 0x011364A0> __11364A0;
+    // Pointer to an array of SelectedObjectsFlags
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x011364A0> __11364A0;
     static loco_global<uint16_t, 0x0112C185> _112C185;
+
+    // TODO: This shouldn't be required but its due to how the lifetime
+    // of the string needs to exist beyond a prepare draw function and
+    // into a draw function. Rework when custom formatter can store full
+    // strings or widgets can store dynamically allocated strings.
+    static std::string _chosenLanguage;
+
+    static std::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
+    {
+        return std::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
+    }
 
     static void onClose([[maybe_unused]] Window& w)
     {
@@ -219,8 +231,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 243 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::cash_popup_rendering, StringIds::tooltip_cash_popup_rendering),
             widgetEnd(),
         };
-
-        static WindowEventList _events;
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Widx::uncap_fps) | (1 << Widx::cash_popup_rendering) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
 
@@ -557,7 +567,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            string_id screenModeStringId = StringIds::empty;
+            StringId screenModeStringId = StringIds::empty;
             switch (Config::get().display.mode)
             {
                 case Config::ScreenMode::window:
@@ -583,7 +593,7 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 w.widgets[Widx::construction_marker].text = StringIds::white;
 
-            static constexpr string_id kScaleStringIds[] = {
+            static constexpr StringId kScaleStringIds[] = {
                 StringIds::full_scale,
                 StringIds::half_scale,
                 StringIds::quarter_scale,
@@ -687,16 +697,19 @@ namespace OpenLoco::Ui::Windows::Options
 #endif
         }
 
-        static const WindowEventList initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
-            return _events;
+            return kEvents;
         }
     }
 
@@ -722,8 +735,6 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music),
             widgetEnd(),
         };
-
-        static WindowEventList _events;
 
         static void audioDeviceMouseDown(Ui::Window* window);
         static void audioDeviceDropdown(Ui::Window* window, int16_t itemIndex);
@@ -883,15 +894,19 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -938,8 +953,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void currentlyPlayingMouseDown(Window* w);
         static void currentlyPlayingDropdown(Window* w, int16_t ax);
 
-        static WindowEventList _events;
-
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::music);
@@ -956,7 +969,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            string_id songName = StringIds::music_none;
+            StringId songName = StringIds::music_none;
             if (_currentSong != -1)
             {
                 songName = Audio::getMusicInfo(_currentSong)->titleId;
@@ -965,13 +978,13 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args = {};
             args.push(songName);
 
-            static const string_id playlist_string_ids[] = {
+            static const StringId playlist_string_ids[] = {
                 StringIds::play_only_music_from_current_era,
                 StringIds::play_all_music,
                 StringIds::play_custom_music_selection,
             };
 
-            string_id currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
+            StringId currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
             args.push(currentSongStringId);
 
             w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
@@ -1265,15 +1278,19 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1327,8 +1344,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void heightsLabelsMouseDown(Window* w);
         static void heightsLabelsDropdown(Window* w, int16_t ax);
 
-        static WindowEventList _events;
-
         // 0x004C0A59
         static void prepareDraw(Window& w)
         {
@@ -1349,9 +1364,10 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args = {};
 
             auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
-            args.push(language.nativeName.c_str());
+            _chosenLanguage = language.nativeName;
+            args.push(_chosenLanguage.c_str());
 
-            string_id current_height_units = StringIds::height_units;
+            StringId current_height_units = StringIds::height_units;
             if (!OpenLoco::Config::get().hasFlags(Config::Flags::showHeightAsUnits))
             {
                 current_height_units = StringIds::height_real_values;
@@ -1360,7 +1376,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.skip(0x2);
             args.push(current_height_units);
 
-            string_id current_measurement_format = StringIds::imperial;
+            StringId current_measurement_format = StringIds::imperial;
             if (OpenLoco::Config::get().old.measurementFormat == Config::MeasurementFormat::metric)
             {
                 current_measurement_format = StringIds::metric;
@@ -1532,7 +1548,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0C73
         static void currencyMouseDown(Window* w)
         {
-            uint8_t* _11364A0 = (uint8_t*)*__11364A0;
+            const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
             Widget dropdown = w->widgets[Widx::currency];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->getColour(WindowColour::secondary), _112C185, 0x80);
@@ -1542,7 +1558,7 @@ namespace OpenLoco::Ui::Windows::Options
                 index++;
                 Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
 
-                if (_11364A0[object.first] & 1)
+                if ((selectedObjectFlags[object.first] & ObjectManager::SelectedObjectsFlags::selected) != ObjectManager::SelectedObjectsFlags::none)
                 {
                     Dropdown::setItemSelected(index);
                 }
@@ -1558,7 +1574,7 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            uint8_t* _11364A0 = (uint8_t*)*__11364A0;
+            const auto selectedObjectFlags = getLoadedSelectedObjectFlags();
 
             int index = -1;
             for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::currency))
@@ -1566,7 +1582,7 @@ namespace OpenLoco::Ui::Windows::Options
                 index++;
                 if (index == ax)
                 {
-                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, _11364A0);
+                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, selectedObjectFlags);
 
                     if (ebp.index != -1)
                     {
@@ -1620,9 +1636,9 @@ namespace OpenLoco::Ui::Windows::Options
                     auto& cfg = OpenLoco::Config::get().old;
                     cfg.preferredCurrency = *object.second._header;
 
-                    sub_4C1519();
+                    setPreferredCurrencyNameBuffer();
                     Config::write();
-                    call(0x004C153B);
+                    Scenario::loadPreferredCurrencyAlways();
                     sub_4BF935();
 
                     break;
@@ -1663,7 +1679,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             Config::write();
 
-            call(0x004C153B);
+            Scenario::loadPreferredCurrencyAlways();
             sub_4BF935();
 
             w->invalidate();
@@ -1750,15 +1766,19 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1793,8 +1813,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void invertRightMouseViewPan(Window* w);
         static void openKeyboardShortcuts();
 
-        static WindowEventList _events;
-
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::controls);
@@ -1812,7 +1830,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
             w.activatedWidgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor | 1 << Widx::invertRightMouseViewPan);
-            if (Config::get().old.edgeScrolling)
+            if (Config::get().edgeScrolling)
             {
                 w.activatedWidgets |= (1 << Widx::edge_scrolling);
             }
@@ -1874,7 +1892,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C117A
         static void edgeScrollingMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get().old;
+            auto& cfg = OpenLoco::Config::get();
             cfg.edgeScrolling = !cfg.edgeScrolling;
             Config::write();
 
@@ -1913,19 +1931,23 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onUpdate = onUpdate;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 266 };
+        static constexpr Ui::Size kWindowSize = { 420, 301 };
 
         namespace Widx
         {
@@ -1933,13 +1955,18 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 groupCheats = 10,
                 enableCheatsToolbarButton,
-                disable_vehicle_breakdowns,
-                trainsReverseAtSignals,
                 disableAICompanies,
                 disableTownExpansion,
+
+                groupVehicleBehaviour,
+                disable_vehicle_breakdowns,
+                trainsReverseAtSignals,
+                disable_vehicle_load_penalty,
+
                 groupPreferredOwnerName,
                 use_preferred_owner_name,
                 change_btn,
+
                 groupSaveOptions,
                 autosave_frequency,
                 autosave_frequency_btn,
@@ -1950,33 +1977,35 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::enableCheatsToolbarButton) | (1 << Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Widx::disableAICompanies) | (1 << Widx::use_preferred_owner_name) | (1 << Widx::change_btn) | (1 << Widx::export_plugin_objects) | (1 << Widx::disableTownExpansion) | (1 << Widx::autosave_amount) | (1 << Widx::autosave_amount_down_btn) | (1 << Widx::autosave_amount_up_btn) | (1 << Widx::autosave_frequency_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::enableCheatsToolbarButton) | (1 << Widx::disable_vehicle_breakdowns) | (1 << Widx::trainsReverseAtSignals) | (1 << Widx::disableAICompanies) | (1 << Widx::disableAICompanies) | (1 << Widx::use_preferred_owner_name) | (1 << Widx::change_btn) | (1 << Widx::export_plugin_objects) | (1 << Widx::disableTownExpansion) | (1 << Widx::autosave_amount) | (1 << Widx::autosave_amount_down_btn) | (1 << Widx::autosave_amount_up_btn) | (1 << Widx::autosave_frequency_btn) | (1 << Widx::disable_vehicle_load_penalty);
 
         static Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_miscellaneous),
 
-            // Cheats group
-            makeWidget({ 4, 49 }, { 412, 93 }, WidgetType::groupbox, WindowColour::secondary, StringIds::gameplay_tweaks),
+            // Gameplay tweaks group
+            makeWidget({ 4, 49 }, { 412, 62 }, WidgetType::groupbox, WindowColour::secondary, StringIds::gameplay_tweaks),
             makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
-            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
-            makeWidget({ 10, 109 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
-            makeWidget({ 10, 124 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
+            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+            makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
+
+            // Vehicle behaviour
+            makeWidget({ 4, 115 }, { 412, 62 }, WidgetType::groupbox, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
+            makeWidget({ 10, 130 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
+            makeWidget({ 10, 145 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
+            makeWidget({ 10, 160 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
 
             // Preferred owner name group
-            makeWidget({ 4, 145 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner),
-            makeWidget({ 10, 160 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 335, 174 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            makeWidget({ 4, 181 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner),
+            makeWidget({ 10, 196 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 335, 211 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
 
             // Save options group
-            makeWidget({ 4, 196 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
-            makeDropdownWidgets({ 250, 212 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 250, 227 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 243 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 4, 232 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
+            makeDropdownWidgets({ 250, 247 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 250, 262 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 277 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
             widgetEnd(),
         };
-
-        static WindowEventList _events;
 
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 
@@ -2022,6 +2051,11 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 w.activatedWidgets &= ~(1 << Widx::trainsReverseAtSignals);
 
+            if (Config::get().disableVehicleLoadPenaltyCheat)
+                w.activatedWidgets |= (1 << Widx::disable_vehicle_load_penalty);
+            else
+                w.activatedWidgets &= ~(1 << Widx::disable_vehicle_load_penalty);
+
             if (Config::get().companyAIDisabled)
                 w.activatedWidgets |= (1 << Widx::disableAICompanies);
             else
@@ -2055,7 +2089,7 @@ namespace OpenLoco::Ui::Windows::Options
             sub_4C13BE(&w);
         }
 
-        static void drawDropdownContent(Window* w, Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex, string_id stringId, int32_t value)
+        static void drawDropdownContent(Window* w, Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
         {
             auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -2087,7 +2121,7 @@ namespace OpenLoco::Ui::Windows::Options
             drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
             auto freq = Config::get().autosaveFrequency;
-            string_id stringId;
+            StringId stringId;
             switch (freq)
             {
                 case 0:
@@ -2221,6 +2255,11 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::trainsReverseAtSignals:
                     trainsReverseAtSignalsMouseUp(&w);
+                    break;
+
+                case Widx::disable_vehicle_load_penalty:
+                    Config::get().disableVehicleLoadPenaltyCheat = !Config::get().disableVehicleLoadPenaltyCheat;
+                    WindowManager::invalidateWidget(w.type, w.number, Widx::disable_vehicle_load_penalty);
                     break;
 
                 case Widx::disableAICompanies:
@@ -2399,22 +2438,26 @@ namespace OpenLoco::Ui::Windows::Options
             WindowManager::invalidateWidget(w.type, w.number, w.currentTab + 4);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            _events.onClose = onClose;
-            _events.onMouseUp = onMouseUp;
-            _events.onMouseDown = onMouseDown;
-            _events.onDropdown = onDropdown;
-            _events.onUpdate = onUpdate;
-            _events.textInput = textInput;
-            _events.prepareDraw = prepareDraw;
-            _events.draw = draw;
+            return kEvents;
         }
     }
 
     static void sub_4BF8CD()
     {
-        auto ptr = malloc(ObjectManager::getNumInstalledObjects());
+        auto ptr = static_cast<ObjectManager::SelectedObjectsFlags*>(malloc(ObjectManager::getNumInstalledObjects()));
         // TODO: reimplement nullptr check?
 
         __11364A0 = ptr;
@@ -2423,7 +2466,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void sub_4BF935()
     {
-        // TODO: implement
+        // TODO: implement simiplified ObjectManager::markInUseObjects that doesn't do the inUse part only the loaded part
         call(0x004BF935);
     }
 
@@ -2443,9 +2486,15 @@ namespace OpenLoco::Ui::Windows::Options
         Widget::leftAlignTabs(*w, Common::Widx::tab_display, Common::Widx::tab_miscellaneous);
     }
 
-    static void sub_4C1519()
+    // 0x004C1519 & 0x00474911
+    static void setPreferredCurrencyNameBuffer()
     {
-        call(0x004C1519);
+        const auto res = ObjectManager::findObjectInIndex(Config::get().old.preferredCurrency);
+        if (res.has_value())
+        {
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::preferred_currency_buffer));
+            strcpy(buffer, res->_name);
+        }
     }
 
     // 0x004BF7B9
@@ -2457,20 +2506,12 @@ namespace OpenLoco::Ui::Windows::Options
         if (window != nullptr)
             return window;
 
-        // TODO: only needs to be called once
-        Display::initEvents();
-        Sound::initEvents();
-        Music::initEvents();
-        Regional::initEvents();
-        Controls::initEvents();
-        Misc::initEvents();
-
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(
             WindowType::options,
             Display::kWindowSize,
             WindowFlags::none,
-            &Display::_events);
+            Display::getEvents());
 
         window->widgets = Display::_widgets;
         window->number = 0;
@@ -2483,13 +2524,13 @@ namespace OpenLoco::Ui::Windows::Options
         window->setColour(WindowColour::secondary, interface->colour_10);
 
         sub_4BF8CD();
-        sub_4C1519();
+        setPreferredCurrencyNameBuffer();
 
         window->enabledWidgets = Display::enabledWidgets;
         Display::applyScreenModeRestrictions(window);
 
         window->holdableWidgets = 0;
-        window->eventHandlers = &Display::_events;
+        window->eventHandlers = &Display::getEvents();
         window->activatedWidgets = 0;
 
         window->callOnResize();
@@ -2512,24 +2553,26 @@ namespace OpenLoco::Ui::Windows::Options
     struct TabInformation
     {
         Widget* widgets;
-        WindowEventList* events;
+        const WindowEventList& events;
         Ui::Size kWindowSize;
         const uint64_t* enabledWidgets;
     };
 
+    // clang-format off
     static TabInformation tabInformationByTabOffset[] = {
-        { Display::_widgets, &Display::_events, Display::kWindowSize, &Display::enabledWidgets },
-        { Sound::_widgets, &Sound::_events, Sound::kWindowSize, &Sound::enabledWidgets },
-        { Music::_widgets, &Music::_events, Music::kWindowSize, &Music::enabledWidgets },
-        { Regional::_widgets, &Regional::_events, Regional::kWindowSize, &Regional::enabledWidgets },
-        { Controls::_widgets, &Controls::_events, Controls::kWindowSize, &Controls::enabledWidgets },
-        { Misc::_widgets, &Misc::_events, Misc::kWindowSize, &Misc::enabledWidgets },
+        { Display::_widgets,  Display::getEvents(),  Display::kWindowSize,  &Display::enabledWidgets },
+        { Sound::_widgets,    Sound::getEvents(),    Sound::kWindowSize,    &Sound::enabledWidgets },
+        { Music::_widgets,    Music::getEvents(),    Music::kWindowSize,    &Music::enabledWidgets },
+        { Regional::_widgets, Regional::getEvents(), Regional::kWindowSize, &Regional::enabledWidgets },
+        { Controls::_widgets, Controls::getEvents(), Controls::kWindowSize, &Controls::enabledWidgets },
+        { Misc::_widgets,     Misc::getEvents(),     Misc::kWindowSize,     &Misc::enabledWidgets },
     };
+    // clang-format on
 
     // 0x004BFC11
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi)
     {
-        Input::toolCancel(w->type, w->number);
+        ToolManager::toolCancel(w->type, w->number);
 
         TextInput::sub_4CE6C9(w->type, w->number);
         w->currentTab = wi - Common::Widx::tab_display;
@@ -2543,7 +2586,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         auto& tabInfo = tabInformationByTabOffset[w->currentTab];
         w->enabledWidgets = *tabInfo.enabledWidgets;
-        w->eventHandlers = tabInfo.events;
+        w->eventHandlers = &tabInfo.events;
         w->widgets = tabInfo.widgets;
         w->invalidate();
         w->setSize(tabInfo.kWindowSize);

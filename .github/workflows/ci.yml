@@ -10,7 +10,7 @@ jobs:
       image: openrct2/openrct2-build:8-format
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run clang-format
         run: scripts/check-code-formatting.sh
   windows:
@@ -22,12 +22,12 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
       - name: Restore artifacts, or setup vcpkg
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11.4
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: 1be4527b3f30ab4fd01b621a3fc355b49b995ad0 
@@ -39,10 +39,10 @@ jobs:
       - name: Build artifacts
         run: |
           mkdir artifacts | Out-Null
-          Copy-Item CHANGELOG.md,CONTRIBUTORS.md,DEVELOPMENTLOG.md,LICENSE artifacts
+          Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE artifacts
           Copy-Item build\windows-msvc\Release\* artifacts -Recurse
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: OpenLoco-${{ runner.os }}-Win32-cmake
           path: artifacts
@@ -55,15 +55,15 @@ jobs:
     name: Ubuntu ${{ matrix.distro }} ${{ matrix.compiler }} i686
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:6-${{ matrix.distro }}32
+    container: ghcr.io/openloco/openloco:7-${{ matrix.distro }}32
     strategy:
       fail-fast: false
       matrix:
         compiler: [g++, clang++]
-        distro: [focal, jammy]
+        distro: [jammy, mantic]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
@@ -81,14 +81,14 @@ jobs:
     name: Fedora shared=${{ matrix.build_shared_libs }} i686 MinGW32
     runs-on: ubuntu-latest
     needs: check-code-formatting
-    container: ghcr.io/openloco/openloco:6-mingw32
+    container: ghcr.io/openloco/openloco:7-mingw32
     strategy:
       fail-fast: false
       matrix:
         build_shared_libs: [on, off]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true

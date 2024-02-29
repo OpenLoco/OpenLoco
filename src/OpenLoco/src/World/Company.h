@@ -1,8 +1,10 @@
 #pragma once
 
+#include "CompanyAi.h"
 #include "Economy/Currency.h"
 #include "Economy/Expenditures.h"
 #include "Types.hpp"
+#include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstddef>
@@ -92,23 +94,16 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Company
     {
-        struct unk4A8
+        struct Unk25C0HashTableEntry
         {
-            uint8_t var_00;
-            uint8_t var_01;
-            uint8_t pad_02[0x42];
-            uint8_t var_44; // 0x4EC size of var_66
-            uint8_t pad_45[0x66 - 0x45];
-            EntityId var_66[11]; // 0x50E unsure on size
-            currency32_t var_7C; // 0x524
-            uint32_t var_80;     // 0x528
-            uint32_t var_84;     // 0x52C
-            uint8_t var_88;      // 0x530
-            uint8_t pad_89[3];
+            uint16_t var_00;
+            uint16_t var_02;
+            uint8_t var_04;
+            uint8_t var_05;
         };
-        static_assert(sizeof(unk4A8) == 0x8C);
-        string_id name;
-        string_id ownerName;
+
+        StringId name;
+        StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
         currency48_t cash;                // 0x08
         currency32_t currentLoan;         // 0x0E
@@ -119,7 +114,7 @@ namespace OpenLoco
         ColourScheme mainColours;         // 0x1A
         ColourScheme vehicleColours[10];  // 0x1C
         uint32_t customVehicleColoursSet; // 0x30
-        uint32_t unlockedVehicles[7];     // 0x34 (bit field based on VehicleObject index)
+        BitSet<224> unlockedVehicles;     // 0x34
         uint16_t availableVehicles;       // 0x50
         uint8_t pad_52[0x57 - 0x52];
         uint8_t numExpenditureMonths;                                                  // 0x57
@@ -127,21 +122,43 @@ namespace OpenLoco
         uint32_t startedDate;                                                          // 0x0498
         uint32_t var_49C;
         uint32_t var_4A0;
-        uint8_t var_4A4;
+        AiThinkState var_4A4; // 0x04A4
         uint8_t var_4A5;
         uint8_t var_4A6;
         uint8_t var_4A7;
-        unk4A8 var_4A8[60];
-        uint8_t var_2578;
+        AiThought aiThoughts[60];    // 0x04A8
+        uint8_t var_2578;            // 0x2578 activeThought?
         World::SmallZ headquartersZ; // 0x2579
         coord_t headquartersX;       // 0x257A -1 on no headquarter placed
         coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x85C4 - 0x25A2];
-        uint16_t var_85C4;
-        uint16_t var_85C6;
-        uint8_t pad_85C8[0x85F6 - 0x85C8];
+        uint8_t pad_25A2[0x25C0 - 0x25A2];
+        Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
+        uint16_t var_25C0_length;               // 0x85C0 Hash table length
+        uint8_t var_85C2;
+        uint8_t var_85C3;
+        World::Pos2 var_85C4;
+        World::SmallZ var_85C8;
+        World::Pos2 var_85C9;
+        World::SmallZ var_85CD;
+        uint8_t var_85CE;
+        uint8_t var_85CF;
+        World::Pos2 var_85D0;
+        World::SmallZ var_85D4;
+        uint16_t var_85D5;
+        World::Pos2 var_85D7;
+        World::SmallZ var_85DB;
+        uint16_t var_85DC;
+        uint32_t var_85DE;
+        uint32_t var_85E2;
+        uint8_t pad_85E6[0x85E8 - 0x85E6];
+        uint16_t var_85E8;
+        uint32_t var_85EA;
+        uint8_t var_85EE;
+        uint8_t var_85EF;
+        uint16_t var_85F0;
+        uint8_t pad_85F2[0x85F6 - 0x85F2];
         uint16_t var_85F6;
         uint32_t cargoUnitsTotalDelivered;        // 0x85F8
         uint32_t cargoUnitsDeliveredHistory[120]; // 0x85FC
@@ -201,7 +218,7 @@ namespace OpenLoco
     static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
     static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
 
-    string_id getCorporateRatingAsStringId(CorporateRating rating);
+    StringId getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 }

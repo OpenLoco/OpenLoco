@@ -54,20 +54,10 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         widgetEnd(),
     };
 
-    static WindowEventList _events;
     std::vector<const Company*> _sortedCompanies;
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
-
-    static void prepareDraw(Window& window);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onMouseDown(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window& w, WidgetIndex_t widgetIndex, int16_t item_index);
-    static Ui::CursorId onCursor(Ui::Window& window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static std::optional<FormatArguments> tooltip(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Window& w);
 
     // 0x43AA4C
     static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
@@ -86,7 +76,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 return a->performanceIndex > b->performanceIndex;
             });
 
-        const string_id positionArray[15] = {
+        const StringId positionArray[15] = {
             StringIds::position_1st,
             StringIds::position_2nd,
             StringIds::position_3rd,
@@ -159,30 +149,17 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         }
     }
 
-    static void initEvents()
-    {
-        _events.onMouseUp = onMouseUp;
-        _events.event_03 = onMouseDown;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onUpdate = onUpdate;
-        _events.tooltip = tooltip;
-        _events.cursor = onCursor;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-    }
+    static const WindowEventList& getEvents();
 
     // 0x00438BC7
     Window* open()
     {
-        initEvents();
-
         auto window = WindowManager::createWindow(
             WindowType::playerInfoToolbar,
             Ui::Point(0, Ui::height() - kWindowSize.height),
             Ui::Size(kWindowSize.width, kWindowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
-            &_events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performanceIndex);
         window->var_854 = 0;
@@ -384,5 +361,22 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             _50A004 = _50A004 & ~(1 << 0);
             WindowManager::invalidateWidget(WindowType::playerInfoToolbar, 0, Widx::inner_frame);
         }
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .event_03 = onMouseDown,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .tooltip = tooltip,
+        .cursor = onCursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

@@ -593,32 +593,42 @@ static void registerAudioHooks()
     writeRet(0x00404B40);
     registerHook(
         0x0048A18C,
-        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Audio::updateSounds();
+            regs = backup;
             return 0;
         });
     registerHook(
         0x00489C6A,
-        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Audio::stopVehicleNoise();
+            regs = backup;
             return 0;
         });
     registerHook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Audio::playSound(X86Pointer<Vehicles::Vehicle2or6>(regs.esi));
+            regs = backup;
             return 0;
         });
     registerHook(
         0x00489CB5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Audio::playSound((Audio::SoundId)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
+            regs = backup;
             return 0;
         });
     registerHook(
         0x00489F1B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Audio::playSound((Audio::SoundId)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
+            regs = backup;
             return 0;
         });
 }
@@ -648,6 +658,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             using namespace OpenLoco::Environment;
 
             auto buffer = (char*)0x009D0D72;
@@ -655,7 +666,7 @@ void OpenLoco::Interop::registerHooks()
 
             // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
-
+            regs = backup;
             regs.ebx = X86Pointer(buffer);
             return 0;
         });
@@ -663,23 +674,29 @@ void OpenLoco::Interop::registerHooks()
     // Replace Ui::update() with our own
     registerHook(
         0x004524C1,
-        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Ui::update();
+            regs = backup;
             return 0;
         });
 
     registerHook(
         0x00407BA3,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             auto cursor = (Ui::CursorId)regs.edx;
             Ui::setCursor(cursor);
+            regs = backup;
             return 0;
         });
 
     registerHook(
         0x00407231,
-        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             OpenLoco::Input::sub_407231();
+            regs = backup;
             return 0;
         });
 
@@ -688,7 +705,7 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            auto pos = drawingCtx.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<uint8_t>(regs.esi));
+            auto pos = drawingCtx.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), regs.cx, regs.dx, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -700,7 +717,9 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x00490F6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Ui::Windows::StationList::open(CompanyId(regs.ax));
+            regs = backup;
             return 0;
         });
 
@@ -718,8 +737,10 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x00438A6C,
-        [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Gui::init();
+            regs = backup;
             return 0;
         });
 
@@ -767,7 +788,6 @@ void OpenLoco::Interop::registerHooks()
     World::AnimationManager::registerHooks();
     Ui::Windows::TextInput::registerHooks();
     Ui::Windows::ToolTip::registerHooks();
-    Ui::Windows::Vehicle::registerHooks();
     Ui::Windows::BuildVehicle::registerHooks();
     Ui::Windows::Error::registerHooks();
     Ui::Windows::Construction::registerHooks();
@@ -801,16 +821,19 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004AB655,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Vehicles::VehicleBase* v = X86Pointer<Vehicles::VehicleBase>(regs.esi);
             v->asVehicleBody()->secondaryAnimationUpdate();
-
+            regs = backup;
             return 0;
         });
 
     registerHook(
         0x004392BD,
-        []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
             Gui::resize();
+            regs = backup;
             return 0;
         });
 

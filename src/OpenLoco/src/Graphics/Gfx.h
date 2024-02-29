@@ -41,7 +41,7 @@ namespace OpenLoco::Gfx
     enum class G1ElementFlags : uint16_t
     {
         none = 0U,
-        hasTransparancy = 1U << 0,   // Image data contains transparent sections (when not set data is plain bmp)
+        hasTransparency = 1U << 0,   // Image data contains transparent sections (when not set data is plain bmp)
         unk1 = 1U << 1,              // Unknown function not used on any entry
         isRLECompressed = 1U << 2,   // Image data is encoded using CS's form of run length encoding
         isR8G8B8Palette = 1U << 3,   // Image data is a sequence of palette entries R8G8B8
@@ -102,9 +102,9 @@ namespace OpenLoco::Gfx
 
     namespace ImageIdFlags
     {
-        constexpr uint32_t remap = 1 << 29;
-        constexpr uint32_t translucent = 1 << 30;
-        constexpr uint32_t remap2 = 1 << 31;
+        constexpr uint32_t remap = 1U << 29;
+        constexpr uint32_t translucent = 1U << 30;
+        constexpr uint32_t remap2 = 1U << 31;
     }
 
     void loadG1();

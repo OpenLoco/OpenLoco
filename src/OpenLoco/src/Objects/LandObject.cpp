@@ -34,7 +34,7 @@ namespace OpenLoco
     }
 
     // 0x0046983C
-    void LandObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void LandObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(LandObject));
 
@@ -50,24 +50,24 @@ namespace OpenLoco
         auto res = ObjectManager::findObjectHandle(cliffEdgeHeader);
         if (res.has_value())
         {
-            var_06 = res->id;
-            const auto* cliffObj = ObjectManager::get<CliffEdgeObject>(var_06);
-            var_12 = cliffObj->image;
+            cliffEdgeHeader1 = res->id;
+            const auto* cliffObj = ObjectManager::get<CliffEdgeObject>(cliffEdgeHeader1);
+            cliffEdgeImage = cliffObj->image;
         }
         remainingData = remainingData.subspan(sizeof(ObjectHeader));
 
         if (hasFlags(LandObjectFlags::unk1))
         {
             // TBC
-            ObjectHeader cliffEdgeHeader2 = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
+            ObjectHeader cliffEdgeHeader2_ = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
             if (dependencies != nullptr)
             {
-                dependencies->required.push_back(cliffEdgeHeader2);
+                dependencies->required.push_back(cliffEdgeHeader2_);
             }
-            auto res2 = ObjectManager::findObjectHandle(cliffEdgeHeader2);
+            auto res2 = ObjectManager::findObjectHandle(cliffEdgeHeader2_);
             if (res2.has_value())
             {
-                var_07 = res2->id;
+                cliffEdgeHeader2 = res2->id;
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
@@ -87,9 +87,9 @@ namespace OpenLoco
         name = 0;
         image = 0;
         var_0E = 0;
-        var_12 = 0;
-        var_06 = 0;
-        var_07 = 0;
+        cliffEdgeImage = 0;
+        cliffEdgeHeader1 = 0;
+        cliffEdgeHeader2 = 0;
         mapPixelImage = 0;
     }
 

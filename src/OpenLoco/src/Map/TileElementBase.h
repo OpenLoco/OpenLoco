@@ -2,14 +2,14 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
-#include <array>
 #include <cassert>
+#include <span>
 
 namespace OpenLoco::World
 {
     struct TileElement;
 
-    enum class ElementType
+    enum class ElementType : uint8_t
     {
         surface,  // 0x00
         track,    // 0x04
@@ -27,7 +27,7 @@ namespace OpenLoco::World
     namespace ElementFlags
     {
         constexpr uint8_t ghost = 1 << 4;
-        constexpr uint8_t flag_5 = 1 << 5;
+        constexpr uint8_t aiAllocated = 1 << 5; // Kind of like an ai ghost which players can't place on
         constexpr uint8_t flag_6 = 1 << 6;
         constexpr uint8_t last = 1 << 7;
     }
@@ -62,7 +62,12 @@ namespace OpenLoco::World
             _flags &= ~ElementFlags::ghost;
             _flags |= state == true ? ElementFlags::ghost : 0;
         }
-        bool isFlag5() const { return _flags & ElementFlags::flag_5; }
+        bool isAiAllocated() const { return _flags & ElementFlags::aiAllocated; }
+        void setAiAllocated(bool state)
+        {
+            _flags &= ~ElementFlags::aiAllocated;
+            _flags |= state == true ? ElementFlags::aiAllocated : 0;
+        }
         bool isFlag6() const { return _flags & ElementFlags::flag_6; } // in tracks/roads indicates is last tile of multi tile
         void setFlag6(bool state)
         {
@@ -78,10 +83,14 @@ namespace OpenLoco::World
             _flags |= state == true ? ElementFlags::last : 0;
         }
 
-        std::array<uint8_t, 8>& rawData()
+        std::span<uint8_t> rawData()
         {
-            auto array = reinterpret_cast<std::array<uint8_t, 8>*>(this);
-            return *array;
+            return std::span{ reinterpret_cast<uint8_t*>(this), kTileElementSize };
+        }
+
+        std::span<const uint8_t> rawData() const
+        {
+            return std::span{ reinterpret_cast<const uint8_t*>(this), kTileElementSize };
         }
 
         template<typename TType>

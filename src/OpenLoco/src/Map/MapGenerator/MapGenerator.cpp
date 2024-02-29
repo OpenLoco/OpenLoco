@@ -10,6 +10,8 @@
 #include "GameState.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
+#include "ModernTerrainGenerator.h"
+#include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -62,15 +64,15 @@ namespace OpenLoco::World::MapGenerator
     // 0x004C4BD7
     static void generateWater([[maybe_unused]] HeightMap& heightMap)
     {
-        static loco_global<uint16_t, 0x00525FB2> _seaLevel;
+        auto seaLevel = getGameState().seaLevel;
 
         for (auto pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
 
-            if (surface != nullptr && surface->baseZ() < (_seaLevel << 2))
-                surface->setWater(_seaLevel);
+            if (surface != nullptr && surface->baseZ() < (seaLevel << 2))
+                surface->setWater(seaLevel);
         }
     }
 
@@ -266,6 +268,32 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    // 0x004BE0C7
+    static void updateTreeSeasons()
+    {
+        auto currentSeason = getGameState().currentSeason;
+
+        for (auto pos : World::getDrawableTileRange())
+        {
+            auto tile = TileManager::get(pos);
+            for (auto el : tile)
+            {
+                auto* treeEl = el.as<TreeElement>();
+                if (treeEl == nullptr)
+                {
+                    continue;
+                }
+
+                if (treeEl->season() < 4 && !treeEl->unk6_80())
+                {
+                    treeEl->setSeason(enumValue(currentSeason));
+                    treeEl->setUnk7l(0x7);
+                }
+                break;
+            }
+        }
+    }
+
     // 0x004BDA49
     static void generateTrees()
     {
@@ -340,8 +368,7 @@ namespace OpenLoco::World::MapGenerator
             toBeRemoved.clear();
         }
 
-        // Update season of trees?
-        call(0x004BE0C7);
+        updateTreeSeasons();
     }
 
     // 0x00496BBC
@@ -352,7 +379,9 @@ namespace OpenLoco::World::MapGenerator
             // NB: vanilla was calling the game command directly; we're using the runner.
             GameCommands::TownPlacementArgs args{};
             args.pos = { -1, -1 };
-            args.size = getGameState().rng.randNext(7);
+            const auto maxTownSize = S5::getOptions().maxTownSize;
+
+            args.size = maxTownSize > 1 ? getGameState().rng.randNext(1, maxTownSize) : 1;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
     }
@@ -366,10 +395,74 @@ namespace OpenLoco::World::MapGenerator
         call(0x004597FD, regs);
     }
 
+    // 0x0042E731
+    static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042E731, regs);
+    }
+
+    // 0x0042E893
+    static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042E893, regs);
+    }
+
+    // 0x0042EA29
+    static void generateMiscBuildingType2(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042EA29, regs);
+    }
+
+    // 0x0042EB94
+    static void generateMiscBuildingType3(const BuildingObject* buildingObj, const size_t id)
+    {
+        registers regs;
+        regs.ebp = X86Pointer(buildingObj);
+        regs.ebx = id;
+        call(0x0042EB94, regs);
+    }
+
     // 0x0042E6F2
     static void generateMiscBuildings()
     {
-        call(0x0042E6F2);
+        GameCommands::setUpdatingCompanyId(CompanyId::neutral);
+
+        for (auto id = 0U; id < ObjectManager::getMaxObjects(ObjectType::building); id++)
+        {
+            auto* buildingObj = ObjectManager::get<BuildingObject>(id);
+            if (buildingObj == nullptr)
+            {
+                continue;
+            }
+
+            if (!buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+            {
+                continue;
+            }
+
+            if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+            {
+                continue;
+            }
+
+            static std::array<std::function<void(const BuildingObject*, const size_t)>, 4> generatorFunctions = {
+                generateMiscBuildingType0,
+                generateMiscBuildingType1,
+                generateMiscBuildingType2,
+                generateMiscBuildingType3,
+            };
+
+            generatorFunctions[buildingObj->generatorFunction](buildingObj, id);
+        }
     }
 
     static void updateProgress(uint8_t value)
@@ -433,7 +526,7 @@ namespace OpenLoco::World::MapGenerator
         call(0x004611DF);
         updateProgress(255);
 
-        call(0x004969E0);
+        Scenario::sub_4969E0(0);
         Scenario::sub_4748D4();
         Ui::ProgressBar::end();
     }

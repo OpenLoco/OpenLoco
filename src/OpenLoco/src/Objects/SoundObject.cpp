@@ -6,7 +6,7 @@
 namespace OpenLoco
 {
     // 0x0048AFAF
-    void SoundObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData, ObjectManager::DependentObjects*)
+    void SoundObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> objData, ObjectManager::DependentObjects*)
     {
         auto remainingData = objData.subspan(sizeof(SoundObject));
 

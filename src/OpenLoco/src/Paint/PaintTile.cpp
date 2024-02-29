@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -13,12 +14,15 @@
 #include "Map/TreeElement.h"
 #include "Map/WallElement.h"
 #include "Paint.h"
+#include "PaintBuilding.h"
 #include "PaintIndustry.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
 #include "PaintTrack.h"
 #include "PaintTree.h"
+#include "PaintWall.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "World/Station.h"
 
 using namespace OpenLoco::Interop;
@@ -58,7 +62,7 @@ namespace OpenLoco::Paint
     {
         static loco_global<World::Pos3, 0x00F24942> _constructionArrowLocation;
         static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
-        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow))
+        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow))
         {
             return;
         }
@@ -103,18 +107,6 @@ namespace OpenLoco::Paint
         call(0x0046748F);
     }
 
-    // 0x0045CA67
-    static void sub_45CA67([[maybe_unused]] PaintSession& session)
-    {
-        call(0x0045CA67);
-    }
-
-    // 0x0045CC1B
-    static void sub_45CC1B([[maybe_unused]] PaintSession& session)
-    {
-        call(0x0045CC1B);
-    }
-
     // 0x0042AC9C
     static bool sub_42AC9C([[maybe_unused]] PaintSession& session)
     {
@@ -130,26 +122,6 @@ namespace OpenLoco::Paint
         regs.esi = X86Pointer(&elSurface);
         regs.dx = elSurface.baseHeight();
         call(0x004656BF, regs);
-    }
-
-    // 0x0042C6C4
-    static void paintBuilding([[maybe_unused]] PaintSession& session, World::BuildingElement& elBuilding)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elBuilding);
-        regs.ecx = (session.getRotation() + (elBuilding.data()[0] & 0x3)) & 0x3;
-        regs.dx = elBuilding.baseHeight();
-        call(0x0042C6C4, regs);
-    }
-
-    // 0x004C3D7C
-    static void paintWall([[maybe_unused]] PaintSession& session, World::WallElement& elWall)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elWall);
-        regs.ecx = (session.getRotation() + (elWall.data()[0] & 0x3)) & 0x3;
-        regs.dx = elWall.baseHeight();
-        call(0x004C3D7C, regs);
     }
 
     // 0x004759A6
@@ -206,35 +178,32 @@ namespace OpenLoco::Paint
             {
                 sub_4792E7(session);
             }
-            if (session.getF003F4() != 0)
+            if (session.getAdditionSupportHeight() != 0)
             {
                 sub_46748F(session);
             }
 
-            sub_45CA67(session);
-            sub_45CC1B(session);
-            session.setF003F6(0);
-            if (session.get525CE4(0) != 0xFFFF)
+            session.finaliseTrackRoadOrdering();
+            session.finaliseTrackRoadAdditionsOrdering();
+            session.setOccupiedAdditionSupportSegments(SegmentFlags::none);
+            auto& bridgeEntry = session.getBridgeEntry();
+            if (!bridgeEntry.isEmpty())
             {
                 if (sub_42AC9C(session))
                 {
                     session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
-                if (session.getGeneralSupportHeight().height >= session.get525CE4(0))
+                if (session.getGeneralSupportHeight().height >= bridgeEntry.height)
                 {
-                    session.setGeneralSupportHeight(session.get525CE4(0), 0x20);
+                    session.setGeneralSupportHeight(bridgeEntry.height, 0x20);
                 }
-                session.set525CE4(0, 0xFFFF);
-                session.set525CF0(0);
+                session.setBridgeEntry(kNullBridgeEntry);
             }
 
-            if (session.get525CF8() != 0)
+            if (session.get525CF8() != SegmentFlags::none)
             {
-                for (auto bit = Numerics::bitScanForward(session.get525CF8()); bit != -1; bit = Numerics::bitScanForward(session.get525CF8()))
-                {
-                    session.set525CF8(session.get525CF8() & ~(1 << bit));
-                    session.setSegmentSupportHeight(static_cast<SegmentFlags>(1 << bit), 0xFFFF, 0);
-                }
+                session.setSegmentSupportHeight(session.get525CF8(), 0xFFFF, 0);
+                session.set525CF8(SegmentFlags::none);
             }
         }
     }

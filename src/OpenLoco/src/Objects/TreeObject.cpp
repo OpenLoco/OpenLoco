@@ -101,7 +101,7 @@ namespace OpenLoco
             return false;
         }
 
-        if (height < var_02)
+        if (height < initialHeight)
         {
             return false;
         }
@@ -110,7 +110,7 @@ namespace OpenLoco
     }
 
     // 0x004BE144
-    void TreeObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void TreeObject::load(const LoadedObjectHandle& handle, [[maybe_unused]] std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(TreeObject));
 

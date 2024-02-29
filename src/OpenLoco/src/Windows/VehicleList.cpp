@@ -14,6 +14,7 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
@@ -34,8 +35,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static constexpr Ui::Size kWindowSize = { 550, 213 };
     static constexpr Ui::Size kMaxDimensions = { 550, 1200 };
     static constexpr Ui::Size kMinDimensions = { 220, 160 };
-
-    static WindowEventList _events;
 
     enum Widx
     {
@@ -115,7 +114,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
     };
 
     static Widx getTabFromType(VehicleType type);
-    static void initEvents();
 
     constexpr bool isStationFilterActive(const Window* self, bool checkSelection = true)
     {
@@ -425,6 +423,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->disabledWidgets = (static_cast<uint64_t>(company->availableVehicles ^ 0x3F)) << Widx::tab_trains;
     }
 
+    static const WindowEventList& getEvents();
+
     // 0x004C1AA2
     static Window* create(CompanyId companyId)
     {
@@ -432,7 +432,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             WindowType::vehicleList,
             kWindowSize,
             WindowFlags::flag_11,
-            &_events);
+            getEvents());
 
         self->widgets = _widgets;
         self->enabledWidgets = _enabledWidgets;
@@ -457,8 +457,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self->callOnMouseUp(VehicleList::getTabFromType(type));
             return self;
         }
-
-        initEvents();
 
         // 0x004C1A05
         self = create(companyId);
@@ -528,7 +526,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto company = CompanyManager::get(CompanyId(self.number));
         [[maybe_unused]] auto args = FormatArguments::common(company->name);
 
-        static constexpr string_id typeToCaption[] = {
+        static constexpr StringId typeToCaption[] = {
             StringIds::stringid_trains,
             StringIds::stringid_buses,
             StringIds::stringid_trucks,
@@ -595,7 +593,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self.disabledWidgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
 
         // Set appropriate tooltip
-        static constexpr std::array<string_id, 3> kFilterTooltipByType = {
+        static constexpr std::array<StringId, 3> kFilterTooltipByType = {
             StringIds::null,
             StringIds::tooltip_open_station_window_to_filter,
             StringIds::tooltip_select_cargo_type,
@@ -620,7 +618,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(rt, x, y, image);
 
-        static constexpr std::pair<string_id, string_id> typeToFooterStringIds[]{
+        static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
             { StringIds::num_trains_singular, StringIds::num_trains_plural },
             { StringIds::num_buses_singular, StringIds::num_buses_plural },
             { StringIds::num_trucks_singular, StringIds::num_trucks_plural },
@@ -633,13 +631,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         {
             auto& footerStringPair = typeToFooterStringIds[self.currentTab];
-            string_id footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
+            StringId footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
             args = FormatArguments::common(footerStringId, self.var_83C);
             drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
-        static constexpr std::array<string_id, 3> typeToFilterStringIds{
+        static constexpr std::array<StringId, 3> typeToFilterStringIds{
             StringIds::all_vehicles,
             StringIds::stopping_at_station,
             StringIds::transporting_cargo,
@@ -647,7 +645,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         {
             // Show current filter type
-            string_id filter = typeToFilterStringIds[self.var_88A];
+            StringId filter = typeToFilterStringIds[self.var_88A];
             args = FormatArguments::common(filter);
             auto* widget = &self.widgets[Widx::filter_type];
             drawingCtx.drawStringLeftClipped(*rt, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
@@ -755,7 +753,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(status.status2);
                 args.push(status.status2Args);
 
-                string_id format = StringIds::vehicle_list_status_2pos;
+                StringId format = StringIds::vehicle_list_status_2pos;
                 if (status.status2 != StringIds::null)
                     format = StringIds::vehicle_list_status_3pos;
 
@@ -768,7 +766,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Vehicle profit
             {
-                string_id format = StringIds::vehicle_list_profit_pos;
+                StringId format = StringIds::vehicle_list_profit_pos;
                 currency32_t profit = vehicle.veh2->totalRecentProfit() / 4;
                 if (profit < 0)
                 {
@@ -782,7 +780,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Vehicle age
             {
-                string_id format = StringIds::vehicle_list_age_years;
+                StringId format = StringIds::vehicle_list_age_years;
                 auto age = (getCurrentDay() - vehicle.veh1->dayCreated) / 365;
                 if (age == 1)
                     format = StringIds::vehicle_list_age_year;
@@ -805,8 +803,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C24F7
     static void switchTab(Window* self, VehicleType type)
     {
-        if (Input::isToolActive(self->type, self->number))
-            Input::toolCancel();
+        if (ToolManager::isToolActive(self->type, self->number))
+            ToolManager::toolCancel();
 
         auto tabIndex = static_cast<uint8_t>(type);
         self->currentTab = tabIndex;
@@ -1051,7 +1049,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else
             self.rowHover = -1;
 
-        string_id tooltipId = StringIds::buffer_337;
+        StringId tooltipId = StringIds::buffer_337;
         if (self.rowHover == -1)
             tooltipId = StringIds::null;
 
@@ -1089,7 +1087,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (stopOrder == nullptr)
                 continue;
 
-            string_id stopFormat = StringIds::vehicle_list_tooltip_comma_stringid;
+            StringId stopFormat = StringIds::vehicle_list_tooltip_comma_stringid;
             if (isFirstStop)
                 stopFormat = StringIds::vehicle_list_tooltip_stops_at_stringid;
 
@@ -1149,22 +1147,26 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .event_08 = event_08,
+        .event_09 = event_09,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.onMouseUp = onMouseUp;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.tooltip = tooltip;
-        _events.onUpdate = onUpdate;
-        _events.event_08 = event_08;
-        _events.event_09 = event_09;
-        _events.getScrollSize = getScrollSize;
-        _events.cursor = cursor;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.onResize = onResize;
+        return kEvents;
     }
 }

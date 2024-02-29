@@ -13,6 +13,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -21,6 +22,8 @@
 #include "Random.h"
 #include "SceneManager.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/IndustryManager.h"
@@ -62,9 +65,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
 
-        static WindowEventList _events;
-
-        static void initEvents();
         static void refreshIndustryList(Window* self);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void prepareDraw(Window& self);
@@ -97,8 +97,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         enum SortMode : uint16_t
         {
@@ -250,7 +248,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static uint8_t getAverageTransportedCargo(const OpenLoco::Industry& industry)
         {
             auto industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
-            uint8_t productionTransported = -1;
+            uint8_t productionTransported = 0xFFU;
 
             if (industryObj->producesCargo())
             {
@@ -403,7 +401,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     continue;
                 }
 
-                string_id text_colour_id = StringIds::black_stringid;
+                StringId text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
                 if (industryId == IndustryId(self.rowHover))
@@ -497,20 +495,24 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Common::refreshIndustryList(self);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .event_09 = event_09,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = onScrollMouseDown,
+            .scrollMouseOver = onScrollMouseOver,
+            .tooltip = tooltip,
+            .cursor = cursor,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.cursor = cursor;
-            events.drawScroll = drawScroll;
-            events.event_08 = event_08;
-            events.event_09 = event_09;
-            events.getScrollSize = getScrollSize;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.prepareDraw = prepareDraw;
-            events.tooltip = tooltip;
+            return kEvents;
         }
     }
 
@@ -532,7 +534,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 origin,
                 IndustryList::kWindowSize,
                 WindowFlags::flag_8,
-                &IndustryList::events);
+                IndustryList::getEvents());
 
             window->number = 0;
             window->currentTab = 0;
@@ -543,7 +545,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             Common::refreshIndustryList(window);
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = IndustryList::kMinDimensions.width;
             window->minHeight = IndustryList::kMinDimensions.height;
@@ -557,11 +559,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             // 0x00457878 end
 
-            // TODO: only needs to be called once.
             window->width = IndustryList::kWindowSize.width;
             window->height = IndustryList::kWindowSize.height;
-
-            Common::initEvents();
 
             window->invalidate();
 
@@ -607,7 +606,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace NewIndustries
     {
-
         static constexpr Ui::Size kWindowSize = { 578, 172 };
 
         static constexpr uint8_t kRowHeight = 112;
@@ -624,8 +622,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0045819F
         static void prepareDraw(Window& self)
@@ -880,7 +876,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::industryList, self.number, self.currentTab + Common::widx::tab_industry_list);
 
-            if (!Input::isToolActive(self.type, self.number))
+            if (!ToolManager::isToolActive(self.type, self.number))
                 WindowManager::close(&self);
         }
 
@@ -1037,8 +1033,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045848A
         static void onToolUpdate(Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -1049,10 +1045,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
             // Always show buildings, not scaffolding, for ghost placements.
             placementArgs->buildImmediately = true;
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(4);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            World::TileManager::mapInvalidateSelectionRect();
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
+            World::setMapSelectionCorner(MapSelectionType::full);
+            World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::mapInvalidateSelectionRect();
 
             if (_industryGhostPlaced)
             {
@@ -1094,21 +1090,21 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeIndustryGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x0045845F
         static void onClose(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self.type, self.number))
+                ToolManager::toolCancel();
         }
 
         // 0x00458B51
         static void updateActiveThumb(Window* self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, nullptr, &scrollHeight);
             self->scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -1182,16 +1178,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->minHeight = NewIndustries::kWindowSize.height;
             self->maxWidth = NewIndustries::kWindowSize.width;
             self->maxHeight = NewIndustries::kWindowSize.height;
-            Input::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
+            ToolManager::toolSet(self, Common::widx::tab_new_industry, CursorId::placeFactory);
 
             Input::setFlag(Input::Flags::flag6);
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
             _industryGhostPlaced = false;
             _dword_E0C39C = 0x80000000;
 
             self->var_83C = 0;
             self->rowHover = -1;
-            self->var_846 = -1;
+            self->var_846 = 0xFFFFU;
 
             updateBuildableIndustries(self);
 
@@ -1211,23 +1207,27 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 updateActiveThumb(&self);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = onScrollMouseDown,
+            .scrollMouseOver = onScrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.event_08 = event_08;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.getScrollSize = getScrollSize;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = onUpdate;
-            events.scrollMouseDown = onScrollMouseDown;
-            events.scrollMouseOver = onScrollMouseOver;
-            events.prepareDraw = prepareDraw;
-            events.tooltip = tooltip;
-            events.onToolAbort = onToolAbort;
-            events.onClose = onClose;
-            events.onResize = onResize;
+            return kEvents;
         }
     }
 
@@ -1237,13 +1237,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { IndustryList::widgets, widx::tab_industry_list, &IndustryList::events, IndustryList::enabledWidgets },
-            { NewIndustries::widgets, widx::tab_new_industry, &NewIndustries::events, NewIndustries::enabledWidgets },
+            { IndustryList::widgets, widx::tab_industry_list, IndustryList::getEvents(), IndustryList::enabledWidgets },
+            { NewIndustries::widgets, widx::tab_new_industry, NewIndustries::getEvents(), NewIndustries::enabledWidgets },
         };
 
         // 0x00457B94
@@ -1276,8 +1276,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457F27
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_industry_list;
             self->frameNo = 0;
@@ -1289,7 +1289,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -1357,12 +1357,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 industry.flags &= ~IndustryFlags::sorted;
             }
-        }
-
-        static void initEvents()
-        {
-            IndustryList::initEvents();
-            NewIndustries::initEvents();
         }
     }
 }

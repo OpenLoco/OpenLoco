@@ -73,7 +73,6 @@ namespace OpenLoco::Ui
 #endif // _WIN32
     // TODO: Move this into renderer.
     static loco_global<ScreenInfo, 0x0050B894> _screenInfo;
-    static loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
     loco_global<uint8_t[256], 0x01140740> _keyboardState;
 
     bool _resolutionsAllowAnyAspectRatio = false;
@@ -81,6 +80,7 @@ namespace OpenLoco::Ui
 
     static SDL_Window* window;
     static std::map<CursorId, SDL_Cursor*> _cursors;
+    static CursorId _currentCursor = CursorId::pointer;
     static bool _exitRequested = false;
 
     static void setWindowIcon();
@@ -113,9 +113,10 @@ namespace OpenLoco::Ui
         return _screenInfo->height;
     }
 
+    // TODO: Rename misleading name.
     bool dirtyBlocksInitialised()
     {
-        return _screenInvalidation->initialised != 0;
+        return Gfx::getDrawingEngine().isInitialized();
     }
 
     static sdl_window_desc getWindowDesc(const Config::Display& cfg)
@@ -280,8 +281,14 @@ namespace OpenLoco::Ui
                 id = CursorId::pointer;
             }
 
+            _currentCursor = id;
             SDL_SetCursor(_cursors[id]);
         }
+    }
+
+    CursorId getCursor()
+    {
+        return _currentCursor;
     }
 
     // 0x00407FCD
@@ -515,7 +522,7 @@ namespace OpenLoco::Ui
                     break;
                 }
                 case SDL_MOUSEWHEEL:
-                    addr<0x00525330, int32_t>() += e.wheel.y * 128;
+                    Input::mouseWheel(e.wheel.y);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                 {
@@ -795,7 +802,7 @@ namespace OpenLoco::Ui
         }
         else
         {
-            Input::toolCancel();
+            ToolManager::toolCancel();
         }
     }
 
@@ -903,6 +910,8 @@ namespace OpenLoco::Ui
                 Input::processMouseOver(x, y);
                 processMouseTool(x, y);
             }
+
+            Input::processMouseWheel();
         }
 
         WindowManager::callEvent9OnAllWindows();

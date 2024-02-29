@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdio>
 #include <iterator>
@@ -84,19 +85,15 @@ namespace OpenLoco::EntityManager
             ++(*this);
             return retval;
         }
-        bool operator==(ListIterator& other) const
+        bool operator==(const ListIterator& other) const
         {
             return entity == other.entity;
-        }
-        bool operator!=(ListIterator& other) const
-        {
-            return !(*this == other);
         }
         TEntityType* operator*()
         {
             if (entity == nullptr)
             {
-                throw "Bad Entity List!";
+                throw Exception::RuntimeError("Bad Entity List!");
             }
             return entity;
         }

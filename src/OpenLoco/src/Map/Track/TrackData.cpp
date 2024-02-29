@@ -2,6 +2,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
+#include <bit>
 #include <cassert>
 
 namespace OpenLoco::World::TrackData
@@ -10,9 +11,9 @@ namespace OpenLoco::World::TrackData
     {
         return {
             connection,
-            Numerics::rol(connection, 2),
-            Numerics::rol(connection, 4),
-            Numerics::rol(connection, 6),
+            std::rotl(connection, 2),
+            std::rotl(connection, 4),
+            std::rotl(connection, 6),
         };
     }
 
@@ -215,7 +216,7 @@ namespace OpenLoco::World::TrackData
     };
 
     // 0x004F73D8, 0x004F78F8
-    const std::array<stdx::span<const PreviewTrack>, 44> trackPieces = { {
+    const std::array<std::span<const PreviewTrack>, 44> trackPieces = { {
         trackPiece0,
         trackPiece1,
         trackPiece2,
@@ -302,7 +303,7 @@ namespace OpenLoco::World::TrackData
     };
 
     // 0x004F6D1C, 0x004F6F1C
-    const std::array<stdx::span<const PreviewTrack>, 10> roadPieces = { {
+    const std::array<std::span<const PreviewTrack>, 10> roadPieces = { {
         roadPiece0,
         roadPiece1,
         roadPiece2,
@@ -315,13 +316,13 @@ namespace OpenLoco::World::TrackData
         roadPiece9,
     } };
 
-    const stdx::span<const PreviewTrack> getTrackPiece(size_t trackId)
+    const std::span<const PreviewTrack> getTrackPiece(size_t trackId)
     {
         assert(trackId < trackPieces.size());
         return trackPieces[trackId];
     }
 
-    const stdx::span<const PreviewTrack> getRoadPiece(size_t trackId)
+    const std::span<const PreviewTrack> getRoadPiece(size_t trackId)
     {
         assert(trackId < roadPieces.size());
         return roadPieces[trackId];
@@ -338,5 +339,111 @@ namespace OpenLoco::World::TrackData
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection)
     {
         return _4F6F8C[trackAndDirection];
+    }
+
+    // 0x004F891C
+    constexpr std::array<uint16_t, 44> kTrackCompatibleFlags = {
+        0x0000,
+        0x0001,
+        0x0010,
+        0x0010,
+        0x0008,
+        0x0008,
+        0x0004,
+        0x0004,
+        0x0002,
+        0x0002,
+        0x0002,
+        0x0002,
+        0x0200,
+        0x0200,
+        0x0020,
+        0x0020,
+        0x0040,
+        0x0040,
+        0x0128,
+        0x0128,
+        0x0128,
+        0x0128,
+        0x0148,
+        0x0148,
+        0x0148,
+        0x0148,
+        0x0080,
+        0x0080,
+        0x0090,
+        0x0090,
+        0x0090,
+        0x0090,
+        0x0080,
+        0x0080,
+        0x00C0,
+        0x00C0,
+        0x00C0,
+        0x00C0,
+        0x0080,
+        0x0080,
+        0x0080,
+        0x0080,
+        0x0080,
+        0x0080,
+    };
+
+    uint16_t getTrackCompatibleFlags(size_t trackId)
+    {
+        return kTrackCompatibleFlags[trackId];
+    }
+
+    // 0x004F870C
+    constexpr std::array<uint16_t, 44> kTrackCostFactor = {
+        0x100,
+        0x16A,
+        0x0C9,
+        0x0C9,
+        0x25B,
+        0x25B,
+        0x3ED,
+        0x3ED,
+        0x2BF,
+        0x2BF,
+        0x2BF,
+        0x2BF,
+        0x380,
+        0x380,
+        0x220,
+        0x220,
+        0x138,
+        0x138,
+        0x350,
+        0x350,
+        0x350,
+        0x350,
+        0x41F,
+        0x41F,
+        0x41F,
+        0x41F,
+        0x100,
+        0x100,
+        0x064,
+        0x12D,
+        0x12D,
+        0x064,
+        0x126,
+        0x126,
+        0x138,
+        0x138,
+        0x138,
+        0x138,
+        0x114,
+        0x114,
+        0x114,
+        0x114,
+        0x25B,
+        0x25B,
+    };
+
+    uint16_t getTrackCostFactor(size_t trackId)
+    {
+        return kTrackCostFactor[trackId];
     }
 }

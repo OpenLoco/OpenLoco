@@ -3,8 +3,8 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Engine/World.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -60,7 +60,7 @@ namespace OpenLoco
             uint32_t atLeastOneClearEdges; // 0x08 Which edges must have at least one clear to use transition edge
         };
 
-        string_id name;
+        StringId name;
         int16_t buildCostFactor; // 0x02
         int16_t sellCostFactor;  // 0x04
         uint8_t costIndex;       // 0x06
@@ -90,7 +90,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const;
     };

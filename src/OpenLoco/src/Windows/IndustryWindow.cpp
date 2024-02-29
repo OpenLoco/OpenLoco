@@ -16,6 +16,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -65,7 +66,6 @@ namespace OpenLoco::Ui::Windows::Industry
         static void setDisabledWidgets(Window* self);
         static void draw(Window& self, Gfx::RenderTarget* rt);
         static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
-        static void initEvents();
     }
 
     namespace Industry
@@ -94,8 +94,6 @@ namespace OpenLoco::Ui::Windows::Industry
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << demolish_industry);
-
-        static WindowEventList events;
 
         // 0x00455ADD
         static void prepareDraw(Window& self)
@@ -282,15 +280,19 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .viewportRotate = initViewport,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
-            events.viewportRotate = initViewport;
+            return kEvents;
         }
     }
 
@@ -300,8 +302,8 @@ namespace OpenLoco::Ui::Windows::Industry
         auto window = WindowManager::bringToFront(WindowType::industry, enumValue(industryId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::industry, enumValue(industryId));
         }
@@ -310,7 +312,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             // 0x00456DBC start
             const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, &Industry::events);
+            window = WindowManager::createWindow(WindowType::industry, Industry::kWindowSize, newFlags, Industry::getEvents());
             window->number = enumValue(industryId);
             window->minWidth = 192;
             window->minHeight = 137;
@@ -328,16 +330,13 @@ namespace OpenLoco::Ui::Windows::Industry
             window->savedView.clear();
         }
 
-        // TODO: only needs to be called once.
-        Common::initEvents();
-
         window->currentTab = Common::widx::tab_industry - Common::widx::tab_industry;
         window->invalidate();
 
         window->widgets = Industry::widgets;
         window->enabledWidgets = Industry::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &Industry::events;
+        window->eventHandlers = &Industry::getEvents();
         window->activatedWidgets = 0;
 
         Common::setDisabledWidgets(window);
@@ -355,8 +354,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
-        static WindowEventList events;
-
         // 0x00455FD9
         static void prepareDraw(Window& self)
         {
@@ -373,14 +370,18 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .prepareDraw = prepareDraw,
+            .draw = Common::draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = Common::draw;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
+            return kEvents;
         }
     }
 
@@ -394,8 +395,6 @@ namespace OpenLoco::Ui::Windows::Industry
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x0045626F
         static void prepareDraw(Window& self)
@@ -413,14 +412,18 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .prepareDraw = prepareDraw,
+            .draw = Common::draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = Common::draw;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
+            return kEvents;
         }
     }
 
@@ -432,8 +435,6 @@ namespace OpenLoco::Ui::Windows::Industry
             commonWidgets(300, 126, StringIds::title_statistics),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x00456665
         static void prepareDraw(Window& self)
@@ -531,14 +532,18 @@ namespace OpenLoco::Ui::Windows::Industry
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
+            return kEvents;
         }
     }
 
@@ -548,15 +553,15 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { Industry::widgets, widx::tab_industry, &Industry::events, &Industry::enabledWidgets },
-            { Production2::widgets, widx::tab_production, &Production::events, &Common::enabledWidgets },
-            { Production2::widgets, widx::tab_production_2, &Production2::events, &Common::enabledWidgets },
-            { Transported::widgets, widx::tab_transported, &Transported::events, &Common::enabledWidgets }
+            { Industry::widgets, widx::tab_industry, Industry::getEvents(), &Industry::enabledWidgets },
+            { Production2::widgets, widx::tab_production, Production::getEvents(), &Common::enabledWidgets },
+            { Production2::widgets, widx::tab_production_2, Production2::getEvents(), &Common::enabledWidgets },
+            { Transported::widgets, widx::tab_transported, Transported::getEvents(), &Common::enabledWidgets }
         };
 
         static void setDisabledWidgets(Window* self)
@@ -773,8 +778,8 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00455CC7
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -789,7 +794,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -849,7 +854,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[productionTabNumber]);
                 drawingCtx.drawImage(rt, xPos + 18, yPos + 14, caroObj->unitInlineSprite);
 
-                Widget::drawTab(self, rt, -2, tab);
+                Widget::drawTab(self, rt, Widget::kContentUnk, tab);
             }
         }
 
@@ -894,14 +899,6 @@ namespace OpenLoco::Ui::Windows::Industry
                     imageId += transportedTabImageIds[0];
                 Widget::drawTab(self, rt, imageId, widx::tab_transported);
             }
-        }
-
-        static void initEvents()
-        {
-            Industry::initEvents();
-            Production::initEvents();
-            Production2::initEvents();
-            Transported::initEvents();
         }
     }
 }

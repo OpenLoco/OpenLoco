@@ -117,8 +117,8 @@ namespace OpenLoco::Economy
         }
     }
 
-    currency32_t getInflationAdjustedCost(uint16_t costFactor, uint8_t costIndex, uint8_t divisor)
+    currency32_t getInflationAdjustedCost(int16_t costFactor, uint8_t costIndex, uint8_t divisor)
     {
-        return costFactor * currencyMultiplicationFactors()[costIndex] / (1 << divisor);
+        return costFactor * static_cast<int32_t>(currencyMultiplicationFactors()[costIndex]) / (1 << divisor);
     }
 }

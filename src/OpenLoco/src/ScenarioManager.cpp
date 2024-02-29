@@ -32,10 +32,6 @@ namespace OpenLoco::ScenarioManager
         {
             return ((numFiles & 0xFFFFFF) == (rhs.numFiles & 0xFFFFFF)) && (totalFileSize == rhs.totalFileSize);
         }
-        constexpr bool operator!=(const ScenarioFolderState& rhs) const
-        {
-            return !(*this == rhs);
-        }
     };
     static_assert(sizeof(ScenarioFolderState) == 0xC);
     struct ScoreHeader
@@ -246,7 +242,7 @@ namespace OpenLoco::ScenarioManager
 
         FormatArguments args{};
         Scenario::formatChallengeArguments(objective, progress, args);
-        StringManager::formatString(entry.objective, *reinterpret_cast<const string_id*>(&args), reinterpret_cast<const std::byte*>(&args) + sizeof(string_id));
+        StringManager::formatString(entry.objective, *reinterpret_cast<const StringId*>(&args), reinterpret_cast<const std::byte*>(&args) + sizeof(StringId));
 
         ObjectManager::freeTemporaryObject();
 

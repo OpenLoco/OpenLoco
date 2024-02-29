@@ -31,11 +31,6 @@ namespace OpenLoco::Math::Vector
             return x == rhs.x && y == rhs.y;
         }
 
-        constexpr bool operator!=(const TVector2& rhs) const noexcept
-        {
-            return !(*this == rhs);
-        }
-
         constexpr TVector2& operator+=(const TVector2& rhs) noexcept
         {
             x += rhs.x;
@@ -123,11 +118,6 @@ namespace OpenLoco::Math::Vector
             return Base::operator==(rhs) && z == rhs.z;
         }
 
-        constexpr bool operator!=(const TVector3& rhs) const noexcept
-        {
-            return !(*this == rhs);
-        }
-
         constexpr TVector3& operator+=(const TVector3& rhs) noexcept
         {
             Base::operator+=(rhs);
@@ -206,13 +196,13 @@ namespace OpenLoco::Math::Vector
     }
 
     template<typename T, typename TTypeTag>
-    static constexpr auto manhattanDistance(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
+    static constexpr auto manhattanDistance2D(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
     }
 
     template<typename T, typename TTypeTag>
-    static constexpr auto manhattanDistance(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
+    static constexpr auto manhattanDistance3D(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y) + std::abs(lhs.z - rhs.z);
     }
@@ -242,10 +232,19 @@ namespace OpenLoco::Math::Vector
     uint16_t fastSquareRoot(uint32_t distance);
 
     template<typename T, typename TTypeTag>
-    auto distance(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
+    auto distance2D(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
     {
         auto x = lhs.x - rhs.x;
         auto y = lhs.y - rhs.y;
         return fastSquareRoot(x * x + y * y);
+    }
+
+    template<typename T, typename TTypeTag>
+    auto distance3D(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
+    {
+        auto x = lhs.x - rhs.x;
+        auto y = lhs.y - rhs.y;
+        auto z = lhs.z - rhs.z;
+        return fastSquareRoot(x * x + y * y + z * z);
     }
 }

@@ -4,6 +4,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/VehicleObject.h"
 #include "Paint.h"
+#include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
 

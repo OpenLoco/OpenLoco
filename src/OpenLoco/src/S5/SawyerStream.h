@@ -3,9 +3,9 @@
 #include <OpenLoco/Core/FileStream.h>
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Core/MemoryStream.h>
-#include <OpenLoco/Core/Span.hpp>
 #include <cstdint>
 #include <memory>
+#include <span>
 
 namespace OpenLoco
 {
@@ -24,15 +24,15 @@ namespace OpenLoco
         MemoryStream _decodeBuffer;
         MemoryStream _decodeBuffer2;
 
-        stdx::span<const std::byte> decode(SawyerEncoding encoding, stdx::span<const std::byte> data);
-        static void decodeRunLengthSingle(MemoryStream& buffer, stdx::span<const std::byte> data);
-        static void decodeRunLengthMulti(MemoryStream& buffer, stdx::span<const std::byte> data);
-        static void decodeRotate(MemoryStream& buffer, stdx::span<const std::byte> data);
+        std::span<const std::byte> decode(SawyerEncoding encoding, std::span<const std::byte> data);
+        static void decodeRunLengthSingle(MemoryStream& buffer, std::span<const std::byte> data);
+        static void decodeRunLengthMulti(MemoryStream& buffer, std::span<const std::byte> data);
+        static void decodeRotate(MemoryStream& buffer, std::span<const std::byte> data);
 
     public:
         SawyerStreamReader(Stream& stream);
 
-        stdx::span<const std::byte> readChunk();
+        std::span<const std::byte> readChunk();
         size_t readChunk(void* data, size_t maxDataLen);
         void read(void* data, size_t dataLen);
         bool validateChecksum();
@@ -47,10 +47,10 @@ namespace OpenLoco
         MemoryStream _encodeBuffer2;
 
         void writeStream(const void* data, size_t dataLen);
-        stdx::span<const std::byte> encode(SawyerEncoding encoding, stdx::span<const std::byte> data);
-        static void encodeRunLengthSingle(MemoryStream& buffer, stdx::span<const std::byte> data);
-        static void encodeRunLengthMulti(MemoryStream& buffer, stdx::span<const std::byte> data);
-        static void encodeRotate(MemoryStream& buffer, stdx::span<const std::byte> data);
+        std::span<const std::byte> encode(SawyerEncoding encoding, std::span<const std::byte> data);
+        static void encodeRunLengthSingle(MemoryStream& buffer, std::span<const std::byte> data);
+        static void encodeRunLengthMulti(MemoryStream& buffer, std::span<const std::byte> data);
+        static void encodeRotate(MemoryStream& buffer, std::span<const std::byte> data);
 
     public:
         SawyerStreamWriter(Stream& stream);

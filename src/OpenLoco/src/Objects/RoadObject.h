@@ -4,7 +4,7 @@
 #include "Speed.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -40,7 +40,7 @@ namespace OpenLoco
         track = 1U << 1,
         slope = 1U << 2,
         steepSlope = 1U << 3,
-        intersection = 1U << 2,
+        intersection = 1U << 4,
         oneSided = 1U << 5,
         overtake = 1U << 6,
         streetLights = 1U << 8,
@@ -51,7 +51,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::road;
 
-        string_id name;
+        StringId name;
         RoadObjectPieceFlags roadPieces; // 0x02
         int16_t buildCostFactor;         // 0x04
         int16_t sellCostFactor;          // 0x06
@@ -77,7 +77,7 @@ namespace OpenLoco
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
 
         constexpr bool hasFlags(RoadObjectFlags flagsToTest) const

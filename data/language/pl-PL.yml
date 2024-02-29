@@ -1713,7 +1713,7 @@ strings:
   1683: '{INT16}'
   1684: '{COLOUR WINDOW_2}Opóźnienie działalności konkurencyjnych firm:'
   1685: '{POP16}{INT16} mies.'
-  1686: '{COLOUR WINDOW_2}Wybór konkurencyjnych przedsiębiorstw:'
+  1686: '{COLOUR WINDOW_2}Wybór konkurencyjnych przedsiębiorstw'
   1687: '{COLOUR WINDOW_2}Preferowana inteligencja:'
   1688: '{COLOUR WINDOW_2}Preferowana zaciekłość:'
   1689: '{COLOUR WINDOW_2}Preferowana konkurencyjność:'
@@ -1904,8 +1904,8 @@ strings:
   1872: Pozwól na powstawanie nowych zakładów podczas gry
   1873: Udostępniaj dodatkowe twarze firmy/właściciela
   1874: '{SMALLFONT}{COLOUR BLACK}Wybierz tę opcję, aby wysyłać niestandardowe pliki twarzy firmy/właściciela do innego komputera podczas łączenia'
-  1875: '{COLOUR WINDOW_2}Zabroń korzystania z tych pojazdów firmom konkurencyjnym:'
-  1876: '{COLOUR WINDOW_2}Zabroń korzystania z tych pojazdów firmie gracza:'
+  1875: '{COLOUR WINDOW_2}Zabroń korzystania z tych pojazdów firmom konkurencyjnym'
+  1876: '{COLOUR WINDOW_2}Zabroń korzystania z tych pojazdów firmie gracza'
   1877: '{NEWLINE}Zatrzymuje się: {STRINGID}'
   1878: ', {STRINGID}'
   1879: 'Poradnik 1: Uruchomienie usługi autobusowej w mieście'
@@ -2176,7 +2176,7 @@ strings:
   2132: "{COLOUR WINDOW_2}Współczynnik skalowania okien:"
   2133: "{COLOUR BLACK}+"
   2134: "{COLOUR BLACK}-"
-  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2135: "{COLOUR BLACK}{INT32_2DP}"
   2136: "{COLOUR WINDOW_2}Powiększaj do pozycji kursora"
   2137: "{SMALLFONT}{COLOUR BLACK}Po włączeniu tej funkcji widok będzie przybliżany do kursora, a nie do środka ekranu."
   2138: "{COLOUR WINDOW_2}Odtwarzaj muzykę tytułową w menu"

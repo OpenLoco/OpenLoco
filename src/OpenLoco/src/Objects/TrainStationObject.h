@@ -3,10 +3,10 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <array>
 #include <cstddef>
+#include <span>
 #include <vector>
 
 namespace OpenLoco
@@ -30,13 +30,13 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct TrainStationObject
     {
-        static constexpr auto kObjectType = ObjectType::trackStation;
+        static constexpr auto kObjectType = ObjectType::trainStation;
 
         using CargoOffset = std::array<World::Pos3, 2>;
 
-        string_id name;
-        uint8_t drawStyle; // 0x02
-        uint8_t var_03;
+        StringId name;
+        uint8_t drawStyle;       // 0x02
+        uint8_t height;          // 0x03 despite being uint8_t this is bigZ not smallZ
         uint16_t trackPieces;    // 0x04
         int16_t buildCostFactor; // 0x06
         int16_t sellCostFactor;  // 0x08
@@ -51,12 +51,12 @@ namespace OpenLoco
         uint16_t designedYear;                   // 0x2A
         uint16_t obsoleteYear;                   // 0x2C
         const std::byte* cargoOffsetBytes[4][4]; // 0x2E
-        const std::byte* var_6E[16];
+        const std::byte* manualPower[16];
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         std::vector<CargoOffset> getCargoOffsets(const uint8_t rotation, const uint8_t nibble) const;
         constexpr bool hasFlags(TrainStationFlags flagsToTest) const

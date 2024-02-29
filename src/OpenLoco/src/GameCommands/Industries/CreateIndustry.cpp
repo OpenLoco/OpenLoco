@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
 
         for (const auto& ind : IndustryManager::industries())
         {
-            const auto distance = Math::Vector::manhattanDistance(World::Pos2{ ind.x, ind.y }, pos);
+            const auto distance = Math::Vector::manhattanDistance2D(World::Pos2{ ind.x, ind.y }, pos);
 
             const auto* indObj2 = ind.getObject();
             const uint32_t producedCargoTypes2 = getProducedCargoBitSet(*indObj2);
@@ -186,7 +186,7 @@ namespace OpenLoco::GameCommands
         auto clearHeight = 0;
         for (auto part : buildingParts)
         {
-            clearHeight += indObj->buildingPartHeight[part];
+            clearHeight += indObj->buildingPartHeights[part];
         }
         if (!buildImmediate && indObj->scaffoldingSegmentType != 0xFF)
         {
@@ -304,7 +304,7 @@ namespace OpenLoco::GameCommands
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
                                 }
-                                else if (elStation != nullptr && elStation->unk5SLR5() == 2)
+                                else if (elStation != nullptr && elStation->stationType() == StationType::airport)
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
@@ -644,7 +644,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 0;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
@@ -652,7 +652,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 2;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
@@ -660,7 +660,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 3;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }
@@ -668,7 +668,7 @@ namespace OpenLoco::GameCommands
                             {
                                 wallArgs.rotation = 1;
                                 bool placeEntrance = buildingWallEntranceMask & (1ULL << 0);
-                                buildingWallEntranceMask = Numerics::ror(buildingWallEntranceMask, 1);
+                                buildingWallEntranceMask = std::rotr(buildingWallEntranceMask, 1);
                                 wallArgs.type = placeEntrance ? indObj->buildingWallEntrance : indObj->buildingWall;
                                 doCommand(wallArgs, Flags::apply);
                             }

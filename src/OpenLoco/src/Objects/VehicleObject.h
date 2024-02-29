@@ -4,7 +4,7 @@
 #include "Object.h"
 #include "Speed.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -55,6 +55,7 @@ namespace OpenLoco
         uint8_t baseVolume;        // 0x9
         uint8_t maxVolume;         // 0xA
     };
+    static_assert(sizeof(VehicleObjectFrictionSound) == 0xB);
 
     struct VehicleObjectEngine1Sound
     {
@@ -71,6 +72,7 @@ namespace OpenLoco
         uint8_t volumeDecreaseStep; // 0xF
         uint8_t speedFreqFactor;    // 0x10
     };
+    static_assert(sizeof(VehicleObjectEngine1Sound) == 0x11);
 
     struct VehicleObjectEngine2Sound
     {
@@ -92,6 +94,7 @@ namespace OpenLoco
         uint8_t volumeDecreaseStep; // 0x19
         uint8_t speedFreqFactor;    // 0x1A
     };
+    static_assert(sizeof(VehicleObjectEngine2Sound) == 0x1B);
 
     struct VehicleObjectSimpleAnimation
     {
@@ -99,6 +102,7 @@ namespace OpenLoco
         uint8_t height;           // 0x01
         SimpleAnimationType type; // 0x02
     };
+    static_assert(sizeof(VehicleObjectSimpleAnimation) == 0x3);
 
     struct VehicleObjectUnk
     {
@@ -109,6 +113,7 @@ namespace OpenLoco
         uint8_t bodySpriteInd;       // 0x04 index of a bodySprites struct
         uint8_t var_05;
     };
+    static_assert(sizeof(VehicleObjectUnk) == 0x6);
 
     enum class BogieSpriteFlags : uint8_t
     {
@@ -138,7 +143,6 @@ namespace OpenLoco
             return (flags & flagsToTest) != BogieSpriteFlags::none;
         }
     };
-
     static_assert(sizeof(VehicleObjectBogieSprite) == 0x12);
 
     enum class BodySpriteFlags : uint8_t
@@ -217,19 +221,19 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::vehicle;
         static constexpr auto kMaxBodySprites = 4;
 
-        string_id name;     // 0x00
+        StringId name;      // 0x00
         TransportMode mode; // 0x02
         VehicleType type;   // 0x03
         uint8_t var_04;
         uint8_t trackType;              // 0x05
-        uint8_t numMods;                // 0x06
+        uint8_t numTrackExtras;         // 0x06
         uint8_t costIndex;              // 0x07
         int16_t costFactor;             // 0x08
         uint8_t reliability;            // 0x0A
         uint8_t runCostIndex;           // 0x0B
         int16_t runCostFactor;          // 0x0C
         uint8_t colourType;             // 0x0E
-        uint8_t numCompat;              // 0x0F
+        uint8_t numCompatibleVehicles;  // 0x0F
         uint16_t compatibleVehicles[8]; // 0x10 array of compatible vehicle_types
         uint8_t requiredTrackExtras[4]; // 0x20
         VehicleObjectUnk var_24[4];
@@ -240,8 +244,8 @@ namespace OpenLoco
         Speed16 rackSpeed;                                    // 0xDC
         uint16_t weight;                                      // 0xDE
         VehicleObjectFlags flags;                             // 0xE0
-        uint8_t maxCargo[2];                                  // 0xE2 size is relative to the first cargoTypes
-        uint32_t cargoTypes[2];                               // 0xE4
+        uint8_t maxCargo[2];                                  // 0xE2 size is relative to the first compatibleCargoCategories
+        uint32_t compatibleCargoCategories[2];                // 0xE4
         uint8_t cargoTypeSpriteOffsets[32];                   // 0xEC
         uint8_t numSimultaneousCargoTypes;                    // 0x10C
         VehicleObjectSimpleAnimation animation[2];            // 0x10D
@@ -264,7 +268,7 @@ namespace OpenLoco
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const;
         void getCargoString(char* buffer) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();
         uint32_t getLength() const;
         constexpr bool hasFlags(VehicleObjectFlags flagsToTest) const
@@ -277,7 +281,7 @@ namespace OpenLoco
 
     namespace StringIds
     {
-        constexpr string_id getVehicleType(const VehicleType type)
+        constexpr StringId getVehicleType(const VehicleType type)
         {
             switch (type)
             {

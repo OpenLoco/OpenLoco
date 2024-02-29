@@ -40,20 +40,18 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-    static void initEvents();
+    static const WindowEventList& getEvents();
 
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
-    bool open(string_id captionId, string_id descriptionId, FormatArguments& descriptionArgs, string_id okButtonStringId)
+    bool open(StringId captionId, StringId descriptionId, FormatArguments& descriptionArgs, StringId okButtonStringId)
     {
-        initEvents();
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
             { 280, 92 },
             Ui::WindowFlags::flag_12 | Ui::WindowFlags::stickToFront,
-            &_events);
+            getEvents());
 
         if (window == nullptr)
             return false;
@@ -92,14 +90,14 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447125
-    void handleInput([[maybe_unused]] uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, [[maybe_unused]] uint32_t charCode, uint32_t keyCode)
     {
-        auto window = WindowManager::find(WindowType::confirmationPrompt);
-        if (window == nullptr)
-            return;
-
         if (keyCode == SDLK_ESCAPE)
-            window->callOnMouseUp(widx::closeButton);
+        {
+            w.callOnMouseUp(widx::closeButton);
+            return true;
+        }
+        return false;
     }
 
     // 0x00447093
@@ -141,10 +139,15 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .keyUp = keyUp,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.onMouseUp = onMouseUp;
-        _events.prepareDraw = prepareDraw;
+        return kEvents;
     }
 }

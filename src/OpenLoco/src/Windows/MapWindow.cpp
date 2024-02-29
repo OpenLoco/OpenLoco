@@ -3,6 +3,7 @@
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -75,6 +76,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[16], 0x00F253CE> _assignedIndustryColours;
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
+    static loco_global<uint8_t[8], 0x00F25404> _byte_F25404;
+    static loco_global<uint8_t[8], 0x00F2540C> _byte_F2540C;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -109,8 +112,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, WindowColour::secondary),
         widgetEnd()
     };
-
-    static WindowEventList events;
 
     static Pos2 mapWindowPosToLocation(Point pos)
     {
@@ -414,7 +415,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B6BF
     static void prepareDraw(Window& self)
     {
-        const string_id captionText[] = {
+        const StringId captionText[] = {
             StringIds::title_map,
             StringIds::title_map_vehicles,
             StringIds::title_map_industries,
@@ -558,7 +559,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             PaletteIndex::index_64,
         };
 
-        static const string_id lineNames[] = {
+        static const StringId lineNames[] = {
             StringIds::map_key_towns,
             StringIds::map_key_industries,
             StringIds::map_key_roads,
@@ -605,7 +606,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D379
     static void drawGraphKeyVehicles(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t* y)
     {
-        static const string_id lineNames[] = {
+        static const StringId lineNames[] = {
             StringIds::forbid_trains,
             StringIds::forbid_buses,
             StringIds::forbid_trucks,
@@ -775,7 +776,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D81F
     static void formatVehicleString(Window* self, FormatArguments args)
     {
-        static const string_id vehicleStringSingular[] = {
+        static const StringId vehicleStringSingular[] = {
             StringIds::num_trains_singular,
             StringIds::num_buses_singular,
             StringIds::num_trucks_singular,
@@ -784,7 +785,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::num_ships_singular,
         };
 
-        static const string_id vehicleStringPlural[] = {
+        static const StringId vehicleStringPlural[] = {
             StringIds::num_trains_plural,
             StringIds::num_buses_plural,
             StringIds::num_trucks_plural,
@@ -1400,19 +1401,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onUpdate = onUpdate,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseDrag = scrollMouseDown,
+        .tooltip = tooltip,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        events.onClose = onClose;
-        events.onMouseUp = onMouseUp;
-        events.onResize = onResize;
-        events.onUpdate = onUpdate;
-        events.getScrollSize = getScrollSize;
-        events.scrollMouseDown = scrollMouseDown;
-        events.scrollMouseDrag = scrollMouseDown;
-        events.tooltip = tooltip;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
-        events.drawScroll = drawScroll;
+        return kEvents;
     }
 
     // 0x0046D0C3
@@ -1508,12 +1513,102 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    // 0x0046CED0
-    static void sub_46CED0()
+    // 0x00478265
+    static void sub_478265(uint8_t* buffer)
     {
         registers regs;
-        call(0x0046CED0, regs);
+        regs.edi = X86Pointer(buffer);
+        call(0x00478265, regs);
     }
+
+    // 0x0046CED0
+    static void assignRouteColours()
+    {
+        uint32_t availableColours = 0x7FFFFFFF;
+
+        // First, assign water colour
+        {
+            auto waterObj = ObjectManager::get<WaterObject>();
+
+            auto waterPixel = Gfx::getG1Element(waterObj->mapPixelImage)->offset[0];
+            availableColours = checkIndustryColours(waterPixel, availableColours);
+
+            waterPixel = Gfx::getG1Element(waterObj->mapPixelImage)->offset[1];
+            availableColours = checkIndustryColours(waterPixel, availableColours);
+        }
+
+        // Then, assign surface texture colours
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
+        {
+            auto landObj = ObjectManager::get<LandObject>(i);
+            if (landObj == nullptr)
+                continue;
+
+            auto landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[0];
+            availableColours = checkIndustryColours(landPixel, availableColours);
+
+            landPixel = Gfx::getG1Element(landObj->mapPixelImage)->offset[1];
+            availableColours = checkIndustryColours(landPixel, availableColours);
+        }
+
+        availableColours = checkIndustryColours(PaletteIndex::index_3C, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_BA, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_D3, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_8B, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_0A, availableColours);
+        availableColours = checkIndustryColours(PaletteIndex::index_15, availableColours);
+
+        auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
+
+        std::array<uint8_t, 100> buffer = {};
+        assert(std::size(buffer) >= std::size(availableTracks));
+
+        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(buffer));
+        buffer[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
+
+        // TODO: setting this might be unnecessary, but matching vanilla for now.
+        auto backupCompanyId = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
+
+        auto* nextEl = &buffer[availableTracks.size()];
+        sub_478265(nextEl);
+
+        // TODO: see note above.
+        GameCommands::setUpdatingCompanyId(backupCompanyId);
+
+        for (auto i = 0U; i < buffer.size(); i++)
+        {
+            if (buffer[i] != 0xFF)
+            {
+                _byte_F253DF[i] = buffer[i];
+                auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
+                availableColours &= ~(1U << freeColour);
+
+                auto colour = industryColours[freeColour];
+                _routeColours[i] = colour;
+
+                if (buffer[i] & 0x80)
+                {
+                    _byte_F2540C[buffer[i] & 0x7F] = colour;
+                }
+                else
+                {
+                    _byte_F25404[buffer[i]] = colour;
+                }
+            }
+            else
+            {
+                _byte_F253DF[i] = 0xFE;
+                _byte_F253DF[i + 1] = 0xFD;
+                _byte_F253DF[i + 2] = 0xFF;
+                _routeColours[i] = 0xD3;
+                _routeColours[i + 1] = 0x8B;
+                break;
+            }
+        }
+    }
+
+    static const WindowEventList& getEvents();
 
     // 0x0046B490
     void open()
@@ -1525,7 +1620,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto ptr = malloc(kMapSize * 8);
 
-        if (ptr == NULL)
+        if (ptr == nullptr)
             return;
 
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
@@ -1538,11 +1633,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             size.height = std::clamp<uint16_t>(size.height, 272, Ui::height() - 56);
         }
 
-        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, &events);
+        window = WindowManager::createWindow(WindowType::map, size, WindowFlags::none, getEvents());
         window->widgets = widgets;
         window->enabledWidgets |= enabledWidgets;
-
-        initEvents();
 
         window->initScrollWidgets();
         window->frameNo = 0;
@@ -1570,7 +1663,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         window->var_856 = 0;
 
         assignIndustryColours();
-        sub_46CED0();
+        assignRouteColours();
 
         mapFrameNumber = 0;
     }

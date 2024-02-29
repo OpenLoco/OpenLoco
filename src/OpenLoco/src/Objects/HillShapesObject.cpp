@@ -19,7 +19,7 @@ namespace OpenLoco
     }
 
     // 0x00463B70
-    void HillShapesObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void HillShapesObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(HillShapesObject));
 
@@ -31,7 +31,7 @@ namespace OpenLoco
         // Load images
         auto imageRes = ObjectManager::loadImageTable(remainingData);
         image = imageRes.imageOffset;
-        var_08 = imageRes.imageOffset + this->hillHeightMapCount;
+        imageHills = imageRes.imageOffset + this->hillHeightMapCount;
 
         // Ensure we've loaded the entire object
         assert(remainingData.size() == imageRes.tableLength);
@@ -42,6 +42,6 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        var_08 = 0;
+        imageHills = 0;
     }
 }

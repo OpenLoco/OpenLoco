@@ -1,6 +1,7 @@
 #include "BuildCompanyHeadquarters.h"
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
+#include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/GameCommands.h"
 #include "Ui/WindowManager.h"
@@ -60,7 +61,7 @@ namespace OpenLoco::GameCommands
             Ui::WindowManager::invalidate(Ui::WindowType::company, Ui::WindowNumber_t(targetCompanyId));
         }
 
-        if ((flags & Flags::apply) && !(flags & (Flags::flag_4 | Flags::ghost)))
+        if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
         {
             Audio::playSound(Audio::SoundId::construct, args.pos);
         }

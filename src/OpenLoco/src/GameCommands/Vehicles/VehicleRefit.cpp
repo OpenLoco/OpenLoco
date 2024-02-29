@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
             }
 
             uint16_t maxPrimaryCargo = vehObj->maxCargo[0];
-            auto cargoTypes = vehObj->cargoTypes[0];
+            auto cargoTypes = vehObj->compatibleCargoCategories[0];
             auto primaryCargoId = Numerics::bitScanForward(cargoTypes);
             uint16_t maxCargoUnits = Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, args.cargoType);
 
@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (cargoObject->matchFlags == primaryCargoObj->matchFlags)
+                if (cargoObject->cargoCategory == primaryCargoObj->cargoCategory)
                 {
                     acceptedTypes |= 1 << cargoId;
                 }

@@ -157,7 +157,7 @@ namespace OpenAL
         dispose();
     }
 
-    uint32_t BufferManager::allocate(stdx::span<const uint8_t> data, uint32_t sampleRate, bool stereo, uint8_t bits)
+    uint32_t BufferManager::allocate(std::span<const uint8_t> data, uint32_t sampleRate, bool stereo, uint8_t bits)
     {
         uint32_t id = 0;
         alGenBuffers(1, &id);

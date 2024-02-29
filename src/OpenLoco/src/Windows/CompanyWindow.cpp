@@ -16,6 +16,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/BuildingObject.h"
@@ -28,6 +29,8 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
@@ -95,7 +98,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // Defined at the bottom of this file.
-        static void initEvents();
         static void renameCompanyPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void renameCompany(Window* self, const char* input);
         static void switchCompany(Window* self, int16_t itemIndex);
@@ -129,8 +131,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
-
-        static WindowEventList events;
 
         // 0x00431EBB
         static void prepareDraw(Window& self)
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // TODO: df fix this
                 // Until format arguments can allow pushing to the front we will have to call twice once for the status
                 FormatArguments args{};
-                string_id status = CompanyManager::getOwnerStatus(CompanyId(self.number), args);
+                StringId status = CompanyManager::getOwnerStatus(CompanyId(self.number), args);
                 args = FormatArguments{};
                 args.push(status);
                 // and once for the args
@@ -573,17 +573,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .viewportRotate = viewportRotate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.textInput = textInput;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            events.viewportRotate = viewportRotate;
+            return kEvents;
         }
     }
 
@@ -591,7 +595,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     static Window* create(CompanyId companyId)
     {
         const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::flag_11;
-        auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, &Status::events);
+        auto window = WindowManager::createWindow(WindowType::company, Status::kWindowSize, newFlags, Status::getEvents());
         window->number = enumValue(companyId);
         window->owner = companyId;
         window->currentTab = 0;
@@ -612,9 +616,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -624,9 +628,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             window = create(companyId);
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         window->currentTab = 0;
         window->width = Status::kWindowSize.width;
         window->height = Status::kWindowSize.height;
@@ -635,7 +636,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->widgets = Status::widgets;
         window->enabledWidgets = Status::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &Status::events;
+        window->eventHandlers = &Status::getEvents();
         window->activatedWidgets = 0;
 
         Common::disableChallengeTab(window);
@@ -686,8 +687,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
-
-        static WindowEventList events;
 
         // 0x004327CF
         static void prepareDraw(Window& self)
@@ -767,7 +766,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static std::array<string_id, 6> transportTypeCountString = {
+        static std::array<StringId, 6> transportTypeCountString = {
             {
                 StringIds::company_details_trains_count,
                 StringIds::company_details_buses_count,
@@ -800,7 +799,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 formatPerformanceIndex(company->performanceIndex, args);
 
-                string_id formatId = StringIds::company_details_performance;
+                StringId formatId = StringIds::company_details_performance;
                 if ((company->challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
                 {
                     formatId = StringIds::company_details_performance_decreasing;
@@ -900,7 +899,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::build_hq:
-                    Input::toolSet(&self, widgetIndex, CursorId::placeHQ);
+                    ToolManager::toolSet(&self, widgetIndex, CursorId::placeHQ);
                     Input::setFlag(Input::Flags::flag6);
                     break;
             }
@@ -1004,8 +1003,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432CA1
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getHeadquarterPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -1016,13 +1015,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // Always show buildings, not scaffolding, for ghost placements.
             placementArgs->buildImmediately = true;
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(4);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
+            World::setMapSelectionCorner(MapSelectionType::full);
 
             // TODO: This selection may be incorrect if getHeadquarterBuildingType returns 0
             auto posB = World::Pos2(placementArgs->pos) + World::Pos2(32, 32);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, posB);
-            World::TileManager::mapInvalidateSelectionRect();
+            World::setMapSelectionArea(placementArgs->pos, posB);
+            World::mapInvalidateSelectionRect();
 
             if (_headquarterGhostPlaced)
             {
@@ -1056,7 +1055,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto commandResult = GameCommands::doCommand(*placementArgs, flags);
             if (commandResult != GameCommands::FAILURE)
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
             }
         }
 
@@ -1064,13 +1063,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onToolAbort([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex)
         {
             removeHeadquarterGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         static void onClose(Window& self)
         {
-            if (Input::isToolActive(self.type, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self.type, self.number))
+                ToolManager::toolCancel();
         }
 
         // 0x0432D85
@@ -1163,21 +1162,25 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .onToolAbort = onToolAbort,
+            .textInput = textInput,
+            .viewportRotate = viewportRotate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.textInput = textInput;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.onToolAbort = onToolAbort;
-            events.onClose = onClose;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
-            events.viewportRotate = viewportRotate;
+            return kEvents;
         }
     }
 
@@ -1313,8 +1316,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
-
-        static WindowEventList events;
 
         // 0x00432E0F
         static void prepareDraw(Window& self)
@@ -1647,16 +1648,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize(kWindowSize);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.textInput = textInput;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
+            return kEvents;
         }
     }
 
@@ -1686,8 +1691,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase) | (1 << widx::loan_autopay);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
-
-        static WindowEventList events;
 
         // 0x004332E4
         static void prepareDraw(Window& self)
@@ -1766,7 +1769,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     nullptr);
             }
 
-            const string_id ExpenditureLabels[] = {
+            const StringId ExpenditureLabels[] = {
                 StringIds::train_income,
                 StringIds::train_running_costs,
                 StringIds::bus_income,
@@ -1885,7 +1888,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             auto args = FormatArguments::common(StringIds::uint16_raw, columnYear);
 
-            string_id format = StringIds::wcolour2_stringid;
+            StringId format = StringIds::wcolour2_stringid;
             if (columnYear != currentYear)
             {
                 format = StringIds::black_stringid;
@@ -2135,19 +2138,23 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize(kWindowSize);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .getScrollSize = getScrollSize,
+            .textInput = textInput,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.textInput = textInput;
-            events.onDropdown = onDropdown;
-            events.getScrollSize = getScrollSize;
-            events.tooltip = tooltip;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
+            return kEvents;
         }
     }
 
@@ -2157,9 +2164,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -2169,9 +2176,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             window = create(companyId);
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         window->currentTab = Common::tab_finances - Common::tab_status;
         window->width = Finances::kWindowSize.width;
         window->height = Finances::kWindowSize.height;
@@ -2180,7 +2184,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->widgets = Finances::widgets;
         window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
-        window->eventHandlers = &Finances::events;
+        window->eventHandlers = &Finances::getEvents();
         window->activatedWidgets = 0;
 
         Common::disableChallengeTab(window);
@@ -2201,8 +2205,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select);
-
-        static WindowEventList events;
 
         // 0x00433A22
         static void prepareDraw(Window& self)
@@ -2364,16 +2366,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize({ kWindowSize.width, kWindowHeight });
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onMouseDown = onMouseDown;
-            events.textInput = textInput;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
+            return kEvents;
         }
     }
 
@@ -2387,8 +2393,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
-
-        static WindowEventList events;
 
         // 0x00433D39
         static void prepareDraw(Window& self)
@@ -2543,14 +2547,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self.setSize(kWindowSize);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.textInput = textInput;
-            events.onUpdate = onUpdate;
-            events.onResize = onResize;
+            return kEvents;
         }
     }
 
@@ -2560,9 +2568,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
+            if (ToolManager::isToolActive(window->type, window->number))
             {
-                Input::toolCancel();
+                ToolManager::toolCancel();
                 window = WindowManager::bringToFront(WindowType::company, enumValue(companyId));
             }
         }
@@ -2572,9 +2580,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             window = create(companyId);
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         window->currentTab = Common::tab_challenge - Common::tab_status;
         window->width = Challenge::kWindowSize.width;
         window->height = Challenge::kWindowSize.height;
@@ -2583,7 +2588,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->widgets = Challenge::widgets;
         window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &Challenge::events;
+        window->eventHandlers = &Challenge::getEvents();
         window->activatedWidgets = 0;
 
         Common::disableChallengeTab(window);
@@ -2599,29 +2604,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const Ui::Size* kWindowSize;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Status::widgets, widx::tab_status, &Status::events, &Status::enabledWidgets, &Status::kWindowSize },
-            { Details::widgets, widx::tab_details, &Details::events, &Details::enabledWidgets, &Details::kWindowSize },
-            { ColourScheme::widgets, widx::tab_colour_scheme, &ColourScheme::events, &ColourScheme::enabledWidgets, &ColourScheme::kWindowSize },
-            { Finances::widgets, widx::tab_finances, &Finances::events, &Finances::enabledWidgets, &Finances::kWindowSize },
-            { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::events, &CargoDelivered::enabledWidgets, &CargoDelivered::kWindowSize },
-            { Challenge::widgets, widx::tab_challenge, &Challenge::events, &Challenge::enabledWidgets, &Challenge::kWindowSize }
+            { Status::widgets,         widx::tab_status,          Status::getEvents(),         &Status::enabledWidgets,         &Status::kWindowSize },
+            { Details::widgets,        widx::tab_details,         Details::getEvents(),        &Details::enabledWidgets,        &Details::kWindowSize },
+            { ColourScheme::widgets,   widx::tab_colour_scheme,   ColourScheme::getEvents(),   &ColourScheme::enabledWidgets,   &ColourScheme::kWindowSize },
+            { Finances::widgets,       widx::tab_finances,        Finances::getEvents(),       &Finances::enabledWidgets,       &Finances::kWindowSize },
+            { CargoDelivered::widgets, widx::tab_cargo_delivered, CargoDelivered::getEvents(), &CargoDelivered::enabledWidgets, &CargoDelivered::kWindowSize },
+            { Challenge::widgets,      widx::tab_challenge,       Challenge::getEvents(),      &Challenge::enabledWidgets,      &Challenge::kWindowSize }
         };
-
-        static void initEvents()
-        {
-            Status::initEvents();
-            Details::initEvents();
-            ColourScheme::initEvents();
-            Finances::initEvents();
-            CargoDelivered::initEvents();
-            Challenge::initEvents();
-        }
+        // clang-format on
 
         static void switchCompany(Window* self, int16_t itemIndex)
         {
@@ -2683,8 +2680,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043230B
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -2699,7 +2696,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 

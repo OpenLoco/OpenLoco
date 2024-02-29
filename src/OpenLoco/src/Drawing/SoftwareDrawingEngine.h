@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "InvalidationGrid.h"
 #include "SoftwareDrawingContext.h"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <algorithm>
@@ -32,6 +33,8 @@ namespace OpenLoco::Drawing
 
         void initialize(SDL_Window* window);
 
+        bool isInitialized() const;
+
         void resize(int32_t width, int32_t height);
 
         // Renders all invalidated regions.
@@ -53,8 +56,6 @@ namespace OpenLoco::Drawing
         SoftwareDrawingContext& getDrawingContext();
 
     private:
-        void render(size_t x, size_t y, size_t dx, size_t dy);
-
         SDL_Renderer* _renderer{};
         SDL_Window* _window{};
         SDL_Palette* _palette{};
@@ -68,5 +69,6 @@ namespace OpenLoco::Drawing
         SDL_Texture* _screenRGBATexture{};
 
         SoftwareDrawingContext _ctx;
+        InvalidationGrid _invalidationGrid;
     };
 }

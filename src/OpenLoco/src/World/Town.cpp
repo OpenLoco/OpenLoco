@@ -1,6 +1,7 @@
 #include "Town.h"
 #include "Config.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoad.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
@@ -195,9 +196,9 @@ namespace OpenLoco
         call(0x00498116, regs);
     }
 
-    string_id Town::getTownSizeString() const
+    StringId Town::getTownSizeString() const
     {
-        static string_id townSizeNames[5] = {
+        static StringId townSizeNames[5] = {
             StringIds::town_size_hamlet,
             StringIds::town_size_village,
             StringIds::town_size_town,
@@ -307,7 +308,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                if (elRoad->isGhost() || elRoad->isFlag5())
+                if (elRoad->isGhost() || elRoad->isAiAllocated())
                 {
                     continue;
                 }
@@ -324,7 +325,7 @@ namespace OpenLoco
                 if (res.has_value())
                 {
                     bool bitRes = randVal & 1;
-                    randVal = Numerics::ror(randVal, 1);
+                    randVal = std::rotr(randVal, 1);
                     if (bitRes)
                     {
                         return true;

@@ -3,7 +3,7 @@
 #include "Audio/Audio.h"
 #include "Object.h"
 #include "Types.hpp"
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -29,12 +29,13 @@ namespace OpenLoco
             return (void*)((uintptr_t)this + sizeof(SoundObjectData));
         }
     };
+    static_assert(sizeof(SoundObjectData) == 0x1E);
 
     struct SoundObject
     {
         static constexpr auto kObjectType = ObjectType::sound;
 
-        string_id name;
+        StringId name;
         const SoundObjectData* data;
         uint8_t var_06;
         uint8_t pad_07;
@@ -42,7 +43,7 @@ namespace OpenLoco
 
         // 0x0048AFEE
         bool validate() const { return true; }
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> objData, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> objData, ObjectManager::DependentObjects*);
         void unload();
     };
 #pragma pack(pop)

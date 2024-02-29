@@ -131,15 +131,15 @@ namespace OpenLoco
 
 namespace OpenLoco::StringManager
 {
-    char* formatString(char* buffer, string_id id, const void* args = nullptr);
-    char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args = nullptr);
+    char* formatString(char* buffer, StringId id, const void* args = nullptr);
+    char* formatString(char* buffer, size_t bufferLen, StringId id, const void* args = nullptr);
 
     // TODO: Move this somewhere more sensible, the string manager should have no idea about the meaning of strings
-    string_id isTownName(string_id stringId);
-    string_id toTownName(string_id stringId);
-    string_id fromTownName(string_id stringId);
+    StringId isTownName(StringId stringId);
+    StringId toTownName(StringId stringId);
+    StringId fromTownName(StringId stringId);
 
-    std::pair<string_id, string_id> monthToString(MonthId month);
+    std::pair<StringId, StringId> monthToString(MonthId month);
 
     int32_t internalLengthToComma1DP(const int32_t length);
     size_t locoStrlen(const char* buffer);

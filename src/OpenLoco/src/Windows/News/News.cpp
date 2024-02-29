@@ -34,8 +34,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             widgetEnd(),
         };
 
-        WindowEventList events;
-
         // 0x00429BB7
         static void onMouseUp([[maybe_unused]] Window& self, WidgetIndex_t widgetIndex)
         {
@@ -111,7 +109,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                             case MessageItemArgumentType::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
-                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
+                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1U << 31));
                                 window->rowHover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {
@@ -179,7 +177,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)-1;
+            view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
             switch (itemType)
             {
@@ -224,7 +222,12 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                 case MessageItemArgumentType::vehicle:
                 {
-                    Vehicles::Vehicle train(EntityId{ itemId });
+                    auto* head = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemId));
+                    if (head == nullptr)
+                    {
+                        break;
+                    }
+                    Vehicles::Vehicle train(*head);
                     if (train.head->tileX == -1)
                         break;
 
@@ -245,7 +248,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::company:
                     // Used to indicate to drawNewsSubjectImages to draw a company image
                     // TODO: Do this better
-                    view.zoomLevel = (ZoomLevel)-2;
+                    view.zoomLevel = (ZoomLevel)0xFEU;
                     self->invalidate();
                     *selectable = true;
                     break;
@@ -266,7 +269,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicleTab:
                     // Used to indicate to drawNewsSubjectImages to draw a vehicle image
                     // TODO: Do this better
-                    view.zoomLevel = (ZoomLevel)-3;
+                    view.zoomLevel = (ZoomLevel)0xFDU;
                     self->invalidate();
                     *selectable = true;
                     break;
@@ -282,7 +285,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)-1;
+            view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
             auto news = MessageManager::get(MessageManager::getActiveIndex());
             const auto& mtd = getMessageTypeDescriptor(news->type);
@@ -381,7 +384,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             view.mapY = -1;
             view.surfaceZ = -1;
             view.rotation = -1;
-            view.zoomLevel = (ZoomLevel)-1;
+            view.zoomLevel = (ZoomLevel)0xFFU;
             view.entityId = EntityId::null;
             selectable = false;
 
@@ -536,8 +539,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto vehicle = EntityManager::get<Vehicles::VehicleHead>(EntityId(itemIndex));
                     if (vehicle == nullptr)
                     {
-                        WindowManager::close(WindowType::news);
-                        break;
+                        // We could close the window now but then we can't view old news about removed vehicles.
+                        return;
                     }
                     auto company = CompanyManager::get(vehicle->owner);
                     if (CompanyManager::isPlayerCompany(vehicle->owner))
@@ -655,7 +658,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto y = self->widgets[Common::widx::viewport1].top + self->y;
                         auto width = self->widgets[Common::widx::viewport1].width() + 1;
                         auto height = self->widgets[Common::widx::viewport1].height() + 1;
-                        auto colour = enumValue(ExtColour::translucentGrey1);
+                        constexpr auto colour = enumValue(ExtColour::translucentGrey1);
                         drawingCtx.drawRect(*rt, x, y, width, height, colour, Drawing::RectFlags::transparent);
                     }
                 }
@@ -671,7 +674,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto y = self->widgets[Common::widx::viewport2].top + self->y;
                         auto width = self->widgets[Common::widx::viewport2].width() + 1;
                         auto height = self->widgets[Common::widx::viewport2].height() + 1;
-                        auto colour = enumValue(ExtColour::translucentGrey1);
+                        constexpr auto colour = enumValue(ExtColour::translucentGrey1);
                         drawingCtx.drawRect(*rt, x, y, width, height, colour, Drawing::RectFlags::transparent);
                     }
                 }
@@ -770,7 +773,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         y = self->widgets[Common::widx::viewport1].top + self->y;
                         auto width = self->widgets[Common::widx::viewport1].width();
                         auto height = self->widgets[Common::widx::viewport1].height();
-                        auto colour = enumValue(ExtColour::translucentGrey1);
+                        constexpr auto colour = enumValue(ExtColour::translucentGrey1);
                         drawingCtx.drawRect(*rt, x, y, width, height, colour, Drawing::RectFlags::transparent);
                     }
                 }
@@ -786,7 +789,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         y = self->widgets[Common::widx::viewport2].top + self->y;
                         auto width = self->widgets[Common::widx::viewport2].width();
                         auto height = self->widgets[Common::widx::viewport2].height();
-                        auto colour = enumValue(ExtColour::translucentGrey1);
+                        constexpr auto colour = enumValue(ExtColour::translucentGrey1);
                         drawingCtx.drawRect(*rt, x, y, width, height, colour, Drawing::RectFlags::transparent);
                     }
                 }
@@ -846,13 +849,16 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onUpdate = onUpdate,
+            .viewportRotate = initViewport,
+            .draw = draw,
+        };
+
+        const WindowEventList& getEvents()
         {
-            events.onMouseUp = onMouseUp;
-            events.onResize = initViewport;
-            events.onUpdate = onUpdate;
-            events.viewportRotate = initViewport;
-            events.draw = draw;
+            return kEvents;
         }
     }
 

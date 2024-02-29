@@ -4,6 +4,7 @@
 #include "GameCommands/Buildings/RemoveBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
+#include "GameCommands/Road/RemoveRoad.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
@@ -42,7 +43,7 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
-        // NB: vanilla did not set an expenditute type
+        // NB: vanilla did not set an expenditure type
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
         // Iterate over the entire map to find town tiles

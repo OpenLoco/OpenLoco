@@ -3,14 +3,17 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
 
     # MSVC
     set(COMMON_COMPILE_OPTIONS_MSVC
-        /MP                      # Multithreaded compilation
-        $<$<CONFIG:Debug>:/ZI>   # Debug Edit and Continue (Hot reload)
-        $<$<CONFIG:Release>:/Zi> # Debug information in release
+        /MP                                 # Multithreaded compilation
+        $<$<CONFIG:Debug>:/ZI>              # Debug Edit and Continue (Hot reload)
+        $<$<CONFIG:Release>:/Zi>            # Debug information in release
+        $<$<CONFIG:Release>:/Oi>            # Intrinsics
+        $<$<CONFIG:RelWithDebInfo>:/Oi>     # Intrinsics
+        /Zc:char8_t-                        # Enable char8_t<->char conversion :(
     )
 
     # GNU/CLANG
     set(COMMON_COMPILE_OPTIONS_GNU
-        -m32
+        -fno-char8_t             # Enable char8_t<->char conversion :(
     )
 
     set(COMMON_COMPILE_OPTIONS
@@ -23,14 +26,17 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
 
     # MSVC
     set(COMMON_LINK_OPTIONS_MSVC
-        $<$<CONFIG:Release>:/DEBUG>         # Generate debug symbols even in release
-        $<$<CONFIG:Debug>:/INCREMENTAL>     # Incremental linking required for hot reload
-        $<$<CONFIG:Debug>:/SAFESEH:NO>    # No safeseh linking required for hot reload
+        $<$<CONFIG:Release>:/DEBUG>             # Generate debug symbols even in release
+        $<$<CONFIG:Debug>:/INCREMENTAL>         # Incremental linking required for hot reload
+        /SAFESEH:NO                             # No safeseh linking required for hot reload and also crashes loading when enabled
+        $<$<CONFIG:Release>:/OPT:ICF>           # COMDAT folding
+        $<$<CONFIG:Release>:/OPT:REF>           # Eliminate unreferenced code/data
+        $<$<CONFIG:RelWithDebInfo>:/OPT:ICF>    # COMDAT folding
+        $<$<CONFIG:RelWithDebInfo>:/OPT:REF>    # Eliminate unreferenced code/data
     )
 
     # GNU/CLANG
     set(COMMON_LINK_OPTIONS_GNU
-        -m32
     )
 
     set(COMMON_LINK_OPTIONS
@@ -61,7 +67,7 @@ function(loco_target_compile_link_flags TARGET)
         /wd4200                  #   4200: nonstandard extension used : zero-sized array in struct/union
         /wd4201                  #   4201: nonstandard extension used : nameless struct/union
         /wd4244                  #   4244: 'argument' : conversion from 'type1' to 'type2', possible loss of data
-        /wd4245                  #   4245: 'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+        /Zc:char8_t-             # Enable char8_t<->char conversion :(
     )
 
     # GNU/CLANG
@@ -94,7 +100,8 @@ function(loco_target_compile_link_flags TARGET)
         -Wstrict-overflow=1
         -Wundef
         -Wunreachable-code
-        -m32
+        -fno-char8_t             # Enable char8_t<->char conversion :(
+        -Wno-deprecated-declarations
     )
 
     set(COMMON_COMPILE_OPTIONS
@@ -114,7 +121,6 @@ function(loco_target_compile_link_flags TARGET)
 
     # GNU/CLANG
     set(COMMON_LINK_OPTIONS_GNU
-        -m32
     )
 
     set(COMMON_LINK_OPTIONS

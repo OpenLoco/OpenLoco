@@ -43,24 +43,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex);
-    static void getScrollSize(Ui::Window& window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onScrollMouseOver(Ui::Window& window, int16_t x, int16_t y, uint8_t scroll_index);
-    static std::optional<FormatArguments> tooltip(Window& self, WidgetIndex_t widgetIndex);
-
-    static void initEvents()
-    {
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.getScrollSize = getScrollSize;
-        _events.onMouseUp = onMouseUp;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
-    }
+    static const WindowEventList& getEvents();
 
     Window* open(const std::vector<ObjectHeader>& list)
     {
@@ -78,10 +61,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             WindowType::objectLoadError,
             kWindowSize,
             WindowFlags::stickToFront,
-            &_events);
-
-        // TODO: only needs to be called once.
-        initEvents();
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = 1 << Widx::close;
@@ -107,7 +87,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         drawingCtx.drawStringLeftWrapped(*rt, self.x + 3, self.y + 19, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
 
-    static string_id objectTypeToString(ObjectType type)
+    static StringId objectTypeToString(ObjectType type)
     {
         switch (type)
         {
@@ -141,7 +121,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
                 return StringIds::object_tunnels;
             case ObjectType::bridge:
                 return StringIds::object_bridges;
-            case ObjectType::trackStation:
+            case ObjectType::trainStation:
                 return StringIds::object_track_stations;
             case ObjectType::trackExtra:
                 return StringIds::object_track_extras;
@@ -212,7 +192,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
                 break;
             }
 
-            string_id textColourId = StringIds::black_stringid;
+            StringId textColourId = StringIds::black_stringid;
 
             // Draw hover rectangle
             if (i == window.rowHover)
@@ -282,5 +262,19 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
         return args;
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

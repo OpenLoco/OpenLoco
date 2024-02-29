@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Object.h"
-#include <OpenLoco/Core/Span.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 #include <optional>
+#include <span>
 #include <vector>
 
 namespace OpenLoco
@@ -103,8 +103,7 @@ namespace OpenLoco::ObjectManager
         return counts[(size_t)type];
     };
 
-    constexpr size_t maxObjects = 859;
-    constexpr size_t maxObjectTypes = 34;
+    constexpr size_t kMaxObjects = 859;
 
     Object* getAny(const LoadedObjectHandle& handle);
 
@@ -127,6 +126,7 @@ namespace OpenLoco::ObjectManager
     {
         uint32_t decodedFileSize;
     };
+    static_assert(sizeof(ObjectHeader2) == 0x4);
 
     struct ObjectHeader3
     {
@@ -134,8 +134,10 @@ namespace OpenLoco::ObjectManager
         uint8_t intelligence;    // 0x4 competitor stats
         uint8_t aggressiveness;  // 0x5
         uint8_t competitiveness; // 0x6
-        uint8_t pad_07[0x5];
+        uint8_t vehicleSubType;  // 0x7
+        uint8_t pad_08[0x4];
     };
+    static_assert(sizeof(ObjectHeader3) == 0xC);
 
 #pragma pack(pop)
 
@@ -158,7 +160,7 @@ namespace OpenLoco::ObjectManager
     };
 
     void freeTemporaryObject();
-    std::optional<TempLoadMetaData> loadTemporaryObject(ObjectHeader& header);
+    std::optional<TempLoadMetaData> loadTemporaryObject(const ObjectHeader& header);
     Object* getTemporaryObject();
     bool isTemporaryObjectLoad();
 
@@ -170,7 +172,7 @@ namespace OpenLoco::ObjectManager
     ObjectHeader& getHeader(const LoadedObjectHandle& handle);
     std::vector<ObjectHeader> getHeaders();
 
-    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
+    LoadObjectsResult loadAll(std::span<ObjectHeader> objects);
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
@@ -180,7 +182,7 @@ namespace OpenLoco::ObjectManager
     void unload(const ObjectHeader& header);
     bool load(const ObjectHeader& header);
 
-    bool tryInstallObject(const ObjectHeader& object, stdx::span<const std::byte> data);
+    bool tryInstallObject(const ObjectHeader& object, std::span<const std::byte> data);
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 

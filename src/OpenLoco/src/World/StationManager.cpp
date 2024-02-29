@@ -112,21 +112,21 @@ namespace OpenLoco::StationManager
         {
             if (station.stationTileSize == 0)
             {
-                station.var_29++;
-                if (station.var_29 != 5 && CompanyManager::isPlayerCompany(station.owner))
+                station.noTilesTimeout++;
+                if (station.noTilesTimeout == 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
                     sub_437F29(station.owner, 8);
                 }
-                if (station.var_29 >= 10)
+                if (station.noTilesTimeout >= 10)
                 {
                     sub_49E1F1(station.id());
                     station.invalidate();
-                    station.sub_48F7D1();
+                    deallocateStation(station.id());
                 }
             }
             else
             {
-                station.var_29 = 0;
+                station.noTilesTimeout = 0;
             }
             if (station.updateCargo())
             {
@@ -141,7 +141,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x048F988
-    string_id generateNewStationName(StationId stationId, TownId townId, World::Pos3 position, uint8_t mode)
+    StringId generateNewStationName(StationId stationId, TownId townId, World::Pos3 position, uint8_t mode)
     {
         enum StationName : uint8_t
         {
@@ -311,7 +311,7 @@ namespace OpenLoco::StationManager
 
         auto town = TownManager::get(townId);
         {
-            auto manhattanDistance = Math::Vector::manhattanDistance(position, World::Pos2{ town->x, town->y });
+            auto manhattanDistance = Math::Vector::manhattanDistance2D(position, World::Pos2{ town->x, town->y });
             if (manhattanDistance / World::kTileSize <= 9)
             {
                 // Central
@@ -349,7 +349,7 @@ namespace OpenLoco::StationManager
         }
 
         // Additional names to try
-        static const std::pair<const StationName, const string_id> additionalNamePairs[] = {
+        static const std::pair<const StationName, const StringId> additionalNamePairs[] = {
             { StationName::townTransfer, StringIds::station_town_transfer },
             { StationName::townHalt, StringIds::station_town_halt },
             { StationName::townAnnexe, StringIds::station_town_annexe },
@@ -367,7 +367,7 @@ namespace OpenLoco::StationManager
         }
 
         // Ordinal names to try
-        static const std::pair<const StationName, const string_id> ordinalNamePairs[] = {
+        static const std::pair<const StationName, const StringId> ordinalNamePairs[] = {
             { StationName::townOrd1, StringIds::station_town_ord_1 },
             { StationName::townOrd2, StringIds::station_town_ord_2 },
             { StationName::townOrd3, StringIds::station_town_ord_3 },
@@ -486,7 +486,7 @@ namespace OpenLoco::StationManager
                         continue;
                     }
 
-                    if (elStation->isFlag5() || elStation->isGhost())
+                    if (elStation->isAiAllocated() || elStation->isGhost())
                     {
                         continue;
                     }
@@ -505,7 +505,7 @@ namespace OpenLoco::StationManager
                     {
                         continue;
                     }
-                    if ((station->cargoStats[cargoType].flags & StationCargoStatsFlags::flag1) == StationCargoStatsFlags::none)
+                    if ((station->cargoStats[cargoType].flags & StationCargoStatsFlags::acceptedFromProducer) == StationCargoStatsFlags::none)
                     {
                         continue;
                     }
@@ -536,14 +536,44 @@ namespace OpenLoco::StationManager
         return deliverCargoToStations(foundStations, cargoType, cargoQty);
     }
 
+    // 0x0048F8A0
+    StationId allocateNewStation(const World::Pos3 pos, [[maybe_unused]] const CompanyId owner, const uint8_t mode)
+    {
+        // Quite a simple function
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z;
+        regs.bl = mode;
+        // Owner is passed by _updatingCompanyId
+        auto allocated = !(call(0x0048F8A0, regs) & X86_FLAG_CARRY);
+        if (allocated)
+        {
+            return static_cast<StationId>(regs.bx);
+        }
+        return StationId::null;
+    }
+
+    // 0x0048F7D1
+    void deallocateStation(const StationId stationId)
+    {
+        // Quite a simple function
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x0048F7D1, regs);
+    }
+
     void registerHooks()
     {
         // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
         registerHook(
             0x048F988,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                regs.bx = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                const auto newName = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                regs = backup;
+                regs.bx = newName;
                 return 0;
             });
     }

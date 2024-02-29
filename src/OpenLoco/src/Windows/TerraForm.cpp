@@ -7,6 +7,7 @@
 #include "GameCommands/Terraform/CreateTree.h"
 #include "GameCommands/Terraform/CreateWall.h"
 #include "GameCommands/Terraform/LowerLand.h"
+#include "GameCommands/Terraform/LowerRaiseLandMountain.h"
 #include "GameCommands/Terraform/LowerWater.h"
 #include "GameCommands/Terraform/RaiseLand.h"
 #include "GameCommands/Terraform/RaiseWater.h"
@@ -18,6 +19,7 @@
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Map/Tree.h"
@@ -33,6 +35,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -76,9 +79,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_plant_trees),                            \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_walls)
 
-        static WindowEventList _events;
-
-        static void initEvents();
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
         static void prepareDraw(Window& self);
@@ -95,6 +95,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
         OPENLOCO_ENABLE_ENUM_OPERATORS(GhostPlacedFlags);
     }
+
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<uint8_t, 0x009C870E> _adjustLandToolSize;
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
@@ -120,6 +121,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
+
     namespace PlantTrees
     {
         static constexpr Ui::Size kWindowSize = { 634, 162 };
@@ -149,8 +151,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             widgetEnd(),
         };
 
-        static WindowEventList events;
-
         enum treeCluster
         {
             none = 0,
@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void updateActiveThumb(Window* self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, nullptr, &scrollHeight);
             self->scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -241,13 +241,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onClose([[maybe_unused]] Window& self)
         {
             removeTreeGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBC7D
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::plantTree);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             _lastTreeCost = 0x80000000;
@@ -412,9 +412,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBEDF
         static void event_08(Window& self)
         {
-            if (self.var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFFU)
             {
-                self.var_846 = -1;
+                self.var_846 = 0xFFFFU;
                 self.invalidate();
             }
         }
@@ -476,7 +476,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             // 0 for Z value means game command finds first available height
             args.pos = World::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
-            args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
+            args.quadrant = World::getQuadrantFromPos(res->first) ^ (1 << 1);
             args.colour = *_treeColour;
             args.rotation = (_treeRotation - WindowManager::getCurrentRotation()) & 0x3;
             if (isEditorMode())
@@ -493,8 +493,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 return;
             }
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getTreePlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -502,10 +502,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             }
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner((placementArgs->quadrant ^ (1 << 1)) + 6);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            World::TileManager::mapInvalidateSelectionRect();
+            auto cornerValue = enumValue(MapSelectionType::quarter0) + (placementArgs->quadrant ^ (1 << 1));
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
+            World::setMapSelectionCorner(static_cast<MapSelectionType>(cornerValue));
+            World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::mapInvalidateSelectionRect();
 
             if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::tree) != Common::GhostPlacedFlags::none)
             {
@@ -813,24 +814,28 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = onUpdate;
-            events.event_08 = event_08;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -852,7 +857,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 origin,
                 PlantTrees::kWindowSize,
                 WindowFlags::flag_11,
-                &PlantTrees::events);
+                PlantTrees::getEvents());
 
             window->number = 0;
             window->currentTab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
@@ -864,7 +869,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->savedView.mapX = 0;
             _treeClusterType = PlantTrees::treeCluster::none;
 
-            WindowManager::sub_4CEE0B(window);
+            WindowManager::sub_4CEE0B(*window);
 
             window->minWidth = PlantTrees::kWindowSize.width;
             window->minHeight = PlantTrees::kWindowSize.height;
@@ -876,10 +881,8 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // End of 0x004BB586
 
-            Ui::Windows::showGridlines();
+            Ui::Windows::Main::showGridlines();
             _treeRotation = 2;
-
-            Common::initEvents();
 
             window->invalidate();
 
@@ -899,7 +902,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             PlantTrees::refreshTreeList(window);
 
-            Input::toolSet(window, Common::widx::panel, CursorId::landTool);
+            ToolManager::toolSet(window, Common::widx::panel, CursorId::landTool);
 
             Input::setFlag(Input::Flags::flag6);
         }
@@ -926,18 +929,16 @@ namespace OpenLoco::Ui::Windows::Terraform
             widgetEnd(),
         };
 
-        static WindowEventList events;
-
         // 0x004BC671
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBBC7
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::bulldozerTool);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::bulldozerTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
@@ -967,8 +968,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::increase_area:
                 {
                     _adjustToolSize++;
-                    if (_adjustToolSize > 10)
-                        _adjustToolSize = 10;
+                    if (_adjustToolSize > 64)
+                        _adjustToolSize = 64;
                     _clearAreaToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -979,18 +980,18 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC677
         static void onToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
             uint32_t cost = 0x80000000;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
-                if (World::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                if (setMapSelectionTiles(res->first, MapSelectionType::full) == 0)
                 {
                     return;
                 }
-                const auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+                const auto [pointA, pointB] = World::getMapSelectionArea();
                 const Pos2 centre = (pointA + pointB) / 2;
 
                 ClearLandArgs args{};
@@ -1009,9 +1010,9 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void clearLand(uint8_t flags)
         {
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+            if (World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             {
-                auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+                auto [pointA, pointB] = World::getMapSelectionArea();
                 Pos2 centre = (pointA + pointB) / 2;
                 GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
@@ -1049,8 +1050,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex == Common::widx::panel)
             {
-                TileManager::mapInvalidateSelectionRect();
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::mapInvalidateSelectionRect();
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             }
         }
 
@@ -1061,7 +1062,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
-            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            if (_adjustToolSize <= 10)
+                self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            else
+                self.widgets[widx::tool_area].image = Widget::kContentNull;
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
@@ -1074,16 +1078,28 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
+            auto& toolArea = self.widgets[widx::tool_area];
+
+            // Draw as a number if we can't fit a sprite
+            if (_adjustToolSize > 10)
+            {
+
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
+
+                auto args = FormatArguments();
+                args.push<uint16_t>(_adjustToolSize);
+                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+            }
+
             if (_raiseLandCost == 0x80000000)
                 return;
 
             if (_raiseLandCost == 0)
                 return;
 
-            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
-            xPos /= 2;
-            xPos += self.x;
-            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 5;
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 5;
 
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
@@ -1091,19 +1107,23 @@ namespace OpenLoco::Ui::Windows::Terraform
             drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = Common::onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.toolDragContinue = toolDragContinue;
-            events.toolDragEnd = toolDragEnd;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1114,41 +1134,42 @@ namespace OpenLoco::Ui::Windows::Terraform
             tool_area = 9,
             decrease_area,
             increase_area,
-            land_material,
-            paint_mode
+            mountain_mode,
+            paint_mode,
+            land_material
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << paint_mode);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material) | (1 << mountain_mode) | (1 << paint_mode);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
+        static bool isMountainMode = false;
         static bool isPaintMode = false;
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 69 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
-            makeWidget({ 39 + 16, 92 }, { 28, 28 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_paint_landscape_tool),
+            makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
+            makeWidget({ 50, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
+            makeWidget({ 96, 72 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
+            makeWidget({ 57, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_up, StringIds::mountainModeTooltip),
+            makeWidget({ 83, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::paintbrush, StringIds::tooltip_paint_landscape_tool),
+            makeWidget({ 112, 94 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x004BC9D1
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBBF7
         static void tabReset(Window* self)
         {
-            Input::toolSet(
-                self,
-                isPaintMode
-                    ? static_cast<uint16_t>(widx::paint_mode)
-                    : static_cast<uint16_t>(Common::widx::panel),
-                CursorId::landTool);
+            if (isPaintMode)
+                ToolManager::toolSet(self, widx::paint_mode, CursorId::landTool);
+            else if (isMountainMode)
+                ToolManager::toolSet(self, widx::mountain_mode, CursorId::landTool);
+            else
+                ToolManager::toolSet(self, Common::widx::panel, CursorId::landTool);
 
             Input::setFlag(Input::Flags::flag6);
             for (auto i = 0; i < 32; i++)
@@ -1232,8 +1253,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::decrease_area:
                 {
                     _adjustToolSize--;
-                    if (_adjustToolSize < 0)
-                        _adjustToolSize = 0;
+                    if (_adjustToolSize < 1)
+                        _adjustToolSize = 1;
                     _adjustLandToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1242,17 +1263,47 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::increase_area:
                 {
                     _adjustToolSize++;
-                    if (_adjustToolSize > 10)
-                        _adjustToolSize = 10;
+                    if (_adjustToolSize > 64)
+                        _adjustToolSize = 64;
                     _adjustLandToolSize = _adjustToolSize;
+                    self.invalidate();
+                    break;
+                }
+            }
+        }
+
+        static void onMouseUp(Window& self, WidgetIndex_t widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case Common::widx::close_button:
+                    WindowManager::close(&self);
+                    break;
+
+                case Common::widx::tab_adjust_land:
+                case Common::widx::tab_adjust_water:
+                case Common::widx::tab_build_walls:
+                case Common::widx::tab_clear_area:
+                case Common::widx::tab_plant_trees:
+                    Common::switchTab(&self, widgetIndex);
+                    break;
+
+                case widx::mountain_mode:
+                {
+                    isMountainMode = !isMountainMode;
+                    isPaintMode = false;
+                    tabReset(&self);
                     self.invalidate();
                     break;
                 }
 
                 case widx::paint_mode:
                 {
+                    isMountainMode = false;
                     isPaintMode = !isPaintMode;
                     tabReset(&self);
+                    self.invalidate();
+                    break;
                 }
             }
         }
@@ -1275,17 +1326,17 @@ namespace OpenLoco::Ui::Windows::Terraform
             if ((flags & 1))
                 Common::sub_4A69DD();
 
-            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::getMapSelectionArea();
             auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_lower_land_here);
 
-            if (_adjustToolSize == 0)
+            if (isMountainMode)
             {
                 GameCommands::LowerRaiseLandMountainArgs args{};
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                args.di = 0xFFFF;
+                args.adjustment = -1;
                 cost = GameCommands::doCommand(args, flags);
             }
             else
@@ -1294,7 +1345,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                args.corner = World::TileManager::getMapSelectionCorner();
+                args.corner = World::getMapSelectionCorner();
                 cost = GameCommands::doCommand(args, flags);
             }
             return cost;
@@ -1307,17 +1358,17 @@ namespace OpenLoco::Ui::Windows::Terraform
             if ((flags & 1))
                 Common::sub_4A69DD();
 
-            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::getMapSelectionArea();
             auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_raise_land_here);
 
-            if (_adjustToolSize == 0)
+            if (isMountainMode)
             {
                 GameCommands::LowerRaiseLandMountainArgs args{};
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                args.di = 1;
+                args.adjustment = 1;
                 cost = GameCommands::doCommand(args, flags);
             }
             else
@@ -1326,7 +1377,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.centre = centre;
                 args.pointA = pointA;
                 args.pointB = pointB;
-                args.corner = World::TileManager::getMapSelectionCorner();
+                args.corner = World::getMapSelectionCorner();
                 cost = GameCommands::doCommand(args, flags);
             }
             return cost;
@@ -1348,18 +1399,18 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void onPaintToolUpdate([[maybe_unused]] Window& self, [[maybe_unused]] const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
             uint32_t cost = 0x80000000;
             auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
             if (res)
             {
-                if (World::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                if (setMapSelectionTiles(res->first, MapSelectionType::full) == 0)
                 {
                     return;
                 }
-                const auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+                const auto [pointA, pointB] = World::getMapSelectionArea();
                 const Pos2 centre = (pointA + pointB) / 2;
 
                 ClearLandArgs args{};
@@ -1380,24 +1431,24 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint16_t xPos = 0;
 
-            TileManager::mapInvalidateSelectionRect();
+            World::mapInvalidateSelectionRect();
 
             if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
                 auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
                 if (res)
                 {
-                    if (_adjustLandToolSize != 1)
+                    if (_adjustLandToolSize == 1 && !(isMountainMode || isPaintMode))
                     {
-                        auto count = TileManager::setMapSelectionTiles(res->first, 4);
+                        auto count = setMapSelectionSingleTile(res->first, true);
 
                         if (!count)
                             return;
                     }
                     else
                     {
-                        auto count = TileManager::setMapSelectionSingleTile(res->first, true);
+                        auto count = setMapSelectionTiles(res->first, MapSelectionType::full);
 
                         if (!count)
                             return;
@@ -1410,7 +1461,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                     return;
             }
 
@@ -1439,6 +1490,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     onPaintToolUpdate(self, widgetIndex, x, y);
                     break;
 
+                case widx::mountain_mode:
                 case Common::widx::panel:
                     onAdjustLandToolUpdate(widgetIndex, x, y);
                     break;
@@ -1453,7 +1505,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (_lastSelectedLand != 0xFF)
                 {
                     GameCommands::setErrorTitle(StringIds::error_cant_change_land_type);
-                    auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+                    auto [pointA, pointB] = World::getMapSelectionArea();
 
                     ChangeLandMaterialArgs args{};
                     args.pointA = pointA;
@@ -1472,12 +1524,16 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::paint_mode:
                     paintLand();
                     break;
+
+                case widx::mountain_mode:
                 case Common::widx::panel:
-                    if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                {
+                    if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                         return;
 
                     ToolManager::setToolCursor(CursorId::upDownArrow);
                     break;
+                }
             }
         }
 
@@ -1495,6 +1551,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                     }
                     break;
                 }
+
+                case widx::mountain_mode:
                 case Common::widx::panel:
                 {
                     auto window = WindowManager::findAt(x, y);
@@ -1548,13 +1606,15 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             switch (widgetIndex)
             {
+                case widx::mountain_mode:
                 case widx::paint_mode:
                 case Common::widx::panel:
-                    TileManager::mapInvalidateSelectionRect();
-
-                    Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                {
+                    World::mapInvalidateSelectionRect();
+                    World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
                     ToolManager::setToolCursor(CursorId::landTool);
                     break;
+                }
             }
         }
 
@@ -1565,27 +1625,28 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
+            if (isMountainMode)
+                self.activatedWidgets |= (1 << widx::mountain_mode);
+            else
+                self.activatedWidgets &= ~(1 << widx::mountain_mode);
+
+            if (isPaintMode)
+                self.activatedWidgets |= (1 << widx::paint_mode);
+            else
+                self.activatedWidgets &= ~(1 << widx::paint_mode);
+
+            auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
+            auto pixelColour = static_cast<Colour>(Gfx::getG1Element(landObj->mapPixelImage)->offset[0]);
+            self.widgets[widx::paint_mode].image = Gfx::recolour2(ImageIds::paintbrush, Colour::white, pixelColour);
+
             if (isPaintMode)
             {
-                self.activatedWidgets |= (1 << widx::paint_mode);
+                self.widgets[widx::land_material].type = WidgetType::wt_6;
+                self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
             else
             {
-                self.activatedWidgets &= ~(1 << widx::paint_mode);
-            }
-
-            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
-
-            self.widgets[widx::land_material].type = WidgetType::none;
-
-            // CHANGE: Allows the player to select which material is used in the adjust land tool outside of editor mode.
-            if (_adjustToolSize != 0)
-            {
-                self.widgets[widx::land_material].type = WidgetType::wt_6;
-
-                auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
-
-                self.widgets[widx::land_material].image = landObj->mapPixelImage + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
+                self.widgets[widx::land_material].type = WidgetType::none;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
@@ -1595,19 +1656,59 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
-            auto skin = ObjectManager::get<InterfaceSkinObject>();
-            auto imgId = skin->img;
-            self.widgets[widx::paint_mode].image = imgId + InterfaceSkin::ImageIds::tab_colour_scheme_frame0;
-
             self.draw(rt);
 
             Common::drawTabs(&self, rt);
 
-            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
-            xPos /= 2;
-            xPos += self.x;
-            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 28;
+            auto& toolArea = self.widgets[widx::tool_area];
+
+            // Draw land tool size as a grid
+            if (_adjustToolSize < 10)
+            {
+                // For mountain mode, we first draw the background grid
+                if (isMountainMode)
+                {
+                    auto areaImage = ImageId(ImageIds::tool_area);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
+
+                    if ((_adjustToolSize & 1) == 0)
+                    {
+                        // For even sizes, we need to draw the image twice
+                        // TODO: replace with proper grid images
+                        placeForImage -= { 4, 0 };
+                        drawingCtx.drawImage(*rt, placeForImage, areaImage);
+
+                        placeForImage += { 8, 0 };
+                        drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                    }
+                    else
+                    {
+                        // For odd sizes, we just need the one
+                        drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                    }
+                }
+
+                // Draw tool size
+                if (!isMountainMode || _adjustToolSize > 1)
+                {
+                    auto areaImage = ImageId(ImageIds::tool_area).withIndexOffset(_adjustToolSize);
+                    Ui::Point placeForImage(toolArea.left + self.x, toolArea.top + self.y);
+                    drawingCtx.drawImage(*rt, placeForImage, areaImage);
+                }
+            }
+            // Or draw as a number, if we can't fit a sprite
+            else
+            {
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
+
+                auto args = FormatArguments();
+                args.push<uint16_t>(_adjustToolSize);
+                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+            }
+
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 28;
 
             if (_raiseLandCost != 0x80000000)
             {
@@ -1632,20 +1733,24 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onDropdown = onDropdown;
-            events.onUpdate = Common::onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.toolDragContinue = toolDragContinue;
-            events.toolDragEnd = toolDragEnd;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1669,18 +1774,16 @@ namespace OpenLoco::Ui::Windows::Terraform
             widgetEnd(),
         };
 
-        static WindowEventList events;
-
         // 0x004BCDAE
         static void onClose([[maybe_unused]] Window& self)
         {
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBC46
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::waterTool);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::waterTool);
             Input::setFlag(Input::Flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
@@ -1711,8 +1814,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 case widx::increase_area:
                 {
                     _adjustToolSize++;
-                    if (_adjustToolSize > 10)
-                        _adjustToolSize = 10;
+                    if (_adjustToolSize > 64)
+                        _adjustToolSize = 64;
                     _adjustWaterToolSize = _adjustToolSize;
                     self.invalidate();
                     break;
@@ -1742,11 +1845,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex != Common::widx::panel)
                 return;
-            TileManager::mapInvalidateSelectionRect();
+            World::mapInvalidateSelectionRect();
 
             if (ToolManager::getToolCursor() != CursorId::upDownArrow)
             {
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
 
                 auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
                 auto& interaction = res.first;
@@ -1755,7 +1858,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     setAdjustCost(0x80000000, 0x80000000);
                     return;
                 }
-                if (!TileManager::setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), 5))
+                if (!setMapSelectionTiles(interaction.pos + World::Pos2(16, 16), MapSelectionType::fullWater))
                 {
                     // no change in selection
                     return;
@@ -1763,7 +1866,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                     return;
             }
 
@@ -1782,7 +1885,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex != Common::widx::panel)
                 return;
-            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+            if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
                 return;
 
             ToolManager::setToolCursor(CursorId::upDownArrow);
@@ -1796,7 +1899,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
             }
 
-            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::getMapSelectionArea();
             GameCommands::RaiseWaterArgs args{};
             args.pointA = pointA;
             args.pointB = pointB;
@@ -1811,7 +1914,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
             }
 
-            auto [pointA, pointB] = World::TileManager::getMapSelectionArea();
+            auto [pointA, pointB] = World::getMapSelectionArea();
             GameCommands::LowerWaterArgs args{};
             args.pointA = pointA;
             args.pointB = pointB;
@@ -1871,9 +1974,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex == Common::widx::panel)
             {
-                TileManager::mapInvalidateSelectionRect();
+                World::mapInvalidateSelectionRect();
 
-                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+                World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
                 ToolManager::setToolCursor(CursorId::waterTool);
             }
         }
@@ -1885,7 +1988,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self.activatedWidgets |= (1ULL << widx::tool_area);
 
-            self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            if (_adjustToolSize <= 10)
+                self.widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
+            else
+                self.widgets[widx::tool_area].image = Widget::kContentNull;
 
             Widget::leftAlignTabs(self, Common::widx::tab_clear_area, Common::widx::tab_build_walls);
         }
@@ -1898,10 +2004,21 @@ namespace OpenLoco::Ui::Windows::Terraform
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            auto xPos = self.widgets[widx::tool_area].left + self.widgets[widx::tool_area].right;
-            xPos /= 2;
-            xPos += self.x;
-            auto yPos = self.widgets[widx::tool_area].bottom + self.y + 5;
+            auto& toolArea = self.widgets[widx::tool_area];
+
+            // Draw as a number if we can't fit a sprite
+            if (_adjustToolSize > 10)
+            {
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.midY() + self.y - 5;
+
+                auto args = FormatArguments();
+                args.push<uint16_t>(_adjustToolSize);
+                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+            }
+
+            auto xPos = toolArea.midX() + self.x;
+            auto yPos = toolArea.bottom + self.y + 5;
 
             if (_raiseWaterCost != 0x80000000)
             {
@@ -1928,19 +2045,23 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::onUpdate,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .toolDragContinue = toolDragContinue,
+            .toolDragEnd = toolDragEnd,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onMouseDown = onMouseDown;
-            events.onUpdate = Common::onUpdate;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.toolDragContinue = toolDragContinue;
-            events.toolDragEnd = toolDragEnd;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
+            return kEvents;
         }
     }
 
@@ -1964,13 +2085,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             widgetEnd(),
         };
 
-        static WindowEventList events;
-
         // 0x004BC506
         static void updateActiveThumb(Window* self)
         {
             uint16_t scrollHeight = 0;
-            self->callGetScrollSize(0, 0, &scrollHeight);
+            self->callGetScrollSize(0, nullptr, &scrollHeight);
             self->scrollAreas[0].contentHeight = scrollHeight;
 
             auto i = 0;
@@ -2033,13 +2152,13 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onClose([[maybe_unused]] Window& self)
         {
             removeWallGhost();
-            Ui::Windows::hideGridlines();
+            Ui::Windows::Main::hideGridlines();
         }
 
         // 0x004BBCBF
         static void tabReset(Window* self)
         {
-            Input::toolSet(self, Common::widx::panel, CursorId::placeFence);
+            ToolManager::toolSet(self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
             _terraformGhostPlacedFlags = Common::GhostPlacedFlags::none;
             self->var_83C = 0;
@@ -2134,9 +2253,9 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC377
         static void event_08(Window& self)
         {
-            if (self.var_846 != 0xFFFF)
+            if (self.var_846 != 0xFFFFU)
             {
-                self.var_846 = -1;
+                self.var_846 = 0xFFFFU;
                 self.invalidate();
             }
         }
@@ -2194,7 +2313,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             // 0 for Z value means game command finds first available height
             args.pos = World::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
             args.type = self->rowHover;
-            args.rotation = ViewportInteraction::getSideFromPos(res->first);
+            args.rotation = World::getSideFromPos(res->first);
             args.primaryColour = Colour::black;
             args.secondaryColour = Colour::black;
             args.tertiaryColour = Colour::black;
@@ -2208,8 +2327,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 return;
             }
-            World::TileManager::mapInvalidateSelectionRect();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            World::mapInvalidateSelectionRect();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
             auto placementArgs = getWallPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
@@ -2217,10 +2336,11 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             }
 
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
-            World::TileManager::setMapSelectionCorner(placementArgs->rotation + 10);
-            World::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
-            World::TileManager::mapInvalidateSelectionRect();
+            auto cornerValue = enumValue(MapSelectionType::edge0) + placementArgs->rotation;
+            World::setMapSelectionFlags(World::MapSelectionFlags::enable);
+            World::setMapSelectionCorner(static_cast<MapSelectionType>(cornerValue));
+            World::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            World::mapInvalidateSelectionRect();
 
             if ((_terraformGhostPlacedFlags & Common::GhostPlacedFlags::wall) != Common::GhostPlacedFlags::none)
             {
@@ -2394,22 +2514,26 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onClose = onClose,
+            .onMouseUp = Common::onMouseUp,
+            .onResize = onResize,
+            .onUpdate = onUpdate,
+            .event_08 = event_08,
+            .onToolUpdate = onToolUpdate,
+            .onToolDown = onToolDown,
+            .getScrollSize = getScrollSize,
+            .scrollMouseDown = scrollMouseDown,
+            .scrollMouseOver = scrollMouseOver,
+            .tooltip = tooltip,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+            .drawScroll = drawScroll,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.onClose = onClose;
-            events.onMouseUp = Common::onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = onUpdate;
-            events.event_08 = event_08;
-            events.onToolUpdate = onToolUpdate;
-            events.onToolDown = onToolDown;
-            events.getScrollSize = getScrollSize;
-            events.scrollMouseDown = scrollMouseDown;
-            events.scrollMouseOver = scrollMouseOver;
-            events.tooltip = tooltip;
-            events.prepareDraw = prepareDraw;
-            events.draw = draw;
-            events.drawScroll = drawScroll;
+            return kEvents;
         }
     }
 
@@ -2419,18 +2543,20 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
             const uint64_t holdableWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets, ClearArea::holdableWidgets },
-            { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets, AdjustLand::holdableWidgets },
-            { AdjustWater::widgets, widx::tab_adjust_water, &AdjustWater::events, AdjustWater::enabledWidgets, AdjustWater::holdableWidgets },
-            { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets, PlantTrees::holdableWidgets },
-            { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets, BuildWalls::holdableWidgets },
+            { ClearArea::widgets,   widx::tab_clear_area,   ClearArea::getEvents(),   ClearArea::enabledWidgets,   ClearArea::holdableWidgets },
+            { AdjustLand::widgets,  widx::tab_adjust_land,  AdjustLand::getEvents(),  AdjustLand::enabledWidgets,  AdjustLand::holdableWidgets },
+            { AdjustWater::widgets, widx::tab_adjust_water, AdjustWater::getEvents(), AdjustWater::enabledWidgets, AdjustWater::holdableWidgets },
+            { PlantTrees::widgets,  widx::tab_plant_trees,  PlantTrees::getEvents(),  PlantTrees::enabledWidgets,  PlantTrees::holdableWidgets },
+            { BuildWalls::widgets,  widx::tab_build_walls,  BuildWalls::getEvents(),  BuildWalls::enabledWidgets,  BuildWalls::holdableWidgets },
         };
+        // clang-format on
 
         static void onResize(Window& self, uint8_t height)
         {
@@ -2552,8 +2678,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBB2B
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_clear_area;
             self->frameNo = 0;
@@ -2564,7 +2690,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->holdableWidgets = tabInfo.holdableWidgets;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -2616,15 +2742,6 @@ namespace OpenLoco::Ui::Windows::Terraform
                 Ui::Windows::Construction::removeConstructionGhosts();
             }
         }
-
-        static void initEvents()
-        {
-            PlantTrees::initEvents();
-            ClearArea::initEvents();
-            AdjustLand::initEvents();
-            AdjustWater::initEvents();
-            BuildWalls::initEvents();
-        }
     }
 
     // 0x004BB566
@@ -2662,21 +2779,36 @@ namespace OpenLoco::Ui::Windows::Terraform
         terraformWindow->callOnMouseUp(Common::widx::tab_build_walls);
     }
 
-    bool rotate(Window* self)
+    bool rotate(Window& self)
     {
-        if (self->currentTab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
+        if (self.currentTab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
         {
-            if (!self->isDisabled(PlantTrees::widx::rotate_object))
+            if (!self.isDisabled(PlantTrees::widx::rotate_object))
             {
-                if (self->widgets[PlantTrees::widx::rotate_object].type != WidgetType::none)
+                if (self.widgets[PlantTrees::widx::rotate_object].type != WidgetType::none)
                 {
-                    self->callOnMouseUp(PlantTrees::widx::rotate_object);
+                    self.callOnMouseUp(PlantTrees::widx::rotate_object);
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    void setAdjustLandToolSize(uint8_t size)
+    {
+        _adjustLandToolSize = size;
+    }
+
+    void setAdjustWaterToolSize(uint8_t size)
+    {
+        _adjustWaterToolSize = size;
+    }
+
+    void setClearAreaToolSize(uint8_t size)
+    {
+        _clearAreaToolSize = size;
     }
 
     void setLastPlacedTree(World::TreeElement* elTree)

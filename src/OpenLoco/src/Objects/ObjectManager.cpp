@@ -49,11 +49,11 @@
 #include "WaterObject.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Core/FileSystem.hpp>
-#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Core/Timer.hpp>
 #include <OpenLoco/Core/Traits.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <bit>
 #include <vector>
 
 using namespace OpenLoco::Interop;
@@ -84,7 +84,7 @@ namespace OpenLoco::ObjectManager
 
     static_assert(Traits::IsPOD<ObjectHeader>::value, "Object Header must be trivial for I/O purposes");
 
-    loco_global<ObjectRepositoryItem[maxObjectTypes], 0x4FE0B8> _objectRepository;
+    loco_global<ObjectRepositoryItem[kMaxObjectTypes], 0x4FE0B8> _objectRepository;
 
     static loco_global<std::byte*, 0x0050D158> _dependentObjectsVector;
     static loco_global<std::byte[0x2002], 0x0112A17F> _dependentObjectVectorData;
@@ -248,7 +248,7 @@ namespace OpenLoco::ObjectManager
                 return visitor(reinterpret_cast<TunnelObject*>(&obj));
             case ObjectType::bridge:
                 return visitor(reinterpret_cast<BridgeObject*>(&obj));
-            case ObjectType::trackStation:
+            case ObjectType::trainStation:
                 return visitor(reinterpret_cast<TrainStationObject*>(&obj));
             case ObjectType::trackExtra:
                 return visitor(reinterpret_cast<TrackExtraObject*>(&obj));
@@ -308,7 +308,7 @@ namespace OpenLoco::ObjectManager
         });
     }
 
-    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, stdx::span<const std::byte> data, DependentObjects* dependencies = nullptr)
+    static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, std::span<const std::byte> data, DependentObjects* dependencies = nullptr)
     {
         return visitObject(handle.type, obj, [&](auto&& obj) {
             return obj->load(handle, data, dependencies);
@@ -331,7 +331,7 @@ namespace OpenLoco::ObjectManager
                 if (obj != nullptr)
                 {
                     auto& extHdr = getRepositoryItem(type).objectEntryExtendeds[id];
-                    callObjectLoad(handle, *obj, stdx::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+                    callObjectLoad(handle, *obj, std::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
                     loadedObjects++;
                 }
             }
@@ -341,27 +341,27 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472754
-    static uint32_t computeChecksum(stdx::span<const std::byte> data, uint32_t seed)
+    static uint32_t computeChecksum(std::span<const std::byte> data, uint32_t seed)
     {
         auto checksum = seed;
         for (auto d : data)
         {
-            checksum = Numerics::rol(checksum ^ static_cast<uint8_t>(d), 11);
+            checksum = std::rotl(checksum ^ static_cast<uint8_t>(d), 11);
         }
         return checksum;
     }
 
     // 0x0047270B
-    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const std::byte> data)
+    static bool computeObjectChecksum(const ObjectHeader& object, std::span<const std::byte> data)
     {
         // Compute the checksum of header and data
 
         // Annoyingly the header you need to only compute the first byte of the flags
-        const auto headerFlag = stdx::span(reinterpret_cast<const std::byte*>(&object), 1);
+        const auto headerFlag = std::span(reinterpret_cast<const std::byte*>(&object), 1);
         auto checksum = computeChecksum(headerFlag, objectChecksumMagic);
 
         // And then the name
-        const auto headerName = stdx::span(reinterpret_cast<const std::byte*>(&object.name), sizeof(ObjectHeader::name));
+        const auto headerName = std::span(reinterpret_cast<const std::byte*>(&object.name), sizeof(ObjectHeader::name));
         checksum = computeChecksum(headerName, checksum);
 
         // Finally compute the datas checksum
@@ -383,7 +383,7 @@ namespace OpenLoco::ObjectManager
 
     struct PreLoadedObject
     {
-        stdx::span<std::byte> objectData;
+        std::span<std::byte> objectData;
         Object* object; // Owning pointer!
         ObjectHeader header;
     };
@@ -406,7 +406,7 @@ namespace OpenLoco::ObjectManager
         {
             // Something wrong has happened and installed object does not match index
             // Vanilla continued to search for subsequent matching installed headers.
-            Logging::error("Missmatch between installed object header and object file header!");
+            Logging::error("Mismatch between installed object header and object file header!");
             return std::nullopt;
         }
 
@@ -416,7 +416,7 @@ namespace OpenLoco::ObjectManager
         if (!computeObjectChecksum(preLoadObj.header, data))
         {
             // Something wrong has happened and installed object checksum is broken
-            Logging::error("Missmatch between installed object header checksum and object file checksum!");
+            Logging::error("Mismatch between installed object header checksum and object file checksum!");
             return std::nullopt;
         }
 
@@ -428,7 +428,7 @@ namespace OpenLoco::ObjectManager
         }
         std::copy(std::begin(data), std::end(data), reinterpret_cast<std::byte*>(preLoadObj.object));
 
-        preLoadObj.objectData = stdx::span<std::byte>(reinterpret_cast<std::byte*>(preLoadObj.object), data.size());
+        preLoadObj.objectData = std::span<std::byte>(reinterpret_cast<std::byte*>(preLoadObj.object), data.size());
 
         if (!callObjectValidate(preLoadObj.header.getType(), *preLoadObj.object))
         {
@@ -445,7 +445,7 @@ namespace OpenLoco::ObjectManager
 
     // 0x0047176D
     // TODO: Return a std::unique_ptr and a ObjectHeader3 & ObjectHeader2 for the metadata
-    std::optional<TempLoadMetaData> loadTemporaryObject(ObjectHeader& header)
+    std::optional<TempLoadMetaData> loadTemporaryObject(const ObjectHeader& header)
     {
         auto preLoadObj = findAndPreLoadObject(header);
         if (!preLoadObj.has_value())
@@ -455,12 +455,15 @@ namespace OpenLoco::ObjectManager
 
         const uint32_t oldNumImages = getTotalNumImages();
         setTotalNumImages(Gfx::G1ExpectedCount::kDisc);
+
         _temporaryObject = preLoadObj->object;
         _isPartialLoaded = true;
         _isTemporaryObject = 0xFF;
+
         auto* depObjs = Interop::addr<0x0050D158, uint8_t*>();
         DependentObjects dependencies;
         callObjectLoad({ preLoadObj->header.getType(), 0 }, *preLoadObj->object, preLoadObj->objectData, depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF) ? &dependencies : nullptr);
+
         if (depObjs != reinterpret_cast<uint8_t*>(0xFFFFFFFF))
         {
             *depObjs++ = static_cast<uint8_t>(dependencies.required.size());
@@ -475,14 +478,17 @@ namespace OpenLoco::ObjectManager
                 std::copy(dependencies.willLoad.begin(), dependencies.willLoad.end(), reinterpret_cast<ObjectHeader*>(depObjs));
             }
         }
+
         _isTemporaryObject = 0;
         _isPartialLoaded = false;
 
         _numImages = getTotalNumImages() - Gfx::G1ExpectedCount::kDisc;
         setTotalNumImages(oldNumImages);
+
         TempLoadMetaData result{};
         result.fileSizeHeader.decodedFileSize = preLoadObj->objectData.size();
         result.displayData.numImages = _numImages;
+
         if (header.getType() == ObjectType::competitor)
         {
             auto* competitor = reinterpret_cast<CompetitorObject*>(preLoadObj->object);
@@ -490,6 +496,12 @@ namespace OpenLoco::ObjectManager
             result.displayData.competitiveness = competitor->competitiveness;
             result.displayData.intelligence = competitor->intelligence;
         }
+        else if (header.getType() == ObjectType::vehicle)
+        {
+            auto* vehicle = reinterpret_cast<VehicleObject*>(preLoadObj->object);
+            result.displayData.vehicleSubType = enumValue(vehicle->type);
+        }
+
         return result;
     }
 
@@ -578,7 +590,7 @@ namespace OpenLoco::ObjectManager
     static LoadedObjectId getObjectId(LoadedObjectIndex index)
     {
         size_t objectType = 0;
-        while (objectType < maxObjectTypes)
+        while (objectType < kMaxObjectTypes)
         {
             auto count = getMaxObjects(static_cast<ObjectType>(objectType));
             if (index < count)
@@ -591,7 +603,7 @@ namespace OpenLoco::ObjectManager
         return NullObjectId;
     }
 
-    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects)
+    LoadObjectsResult loadAll(std::span<ObjectHeader> objects)
     {
         LoadObjectsResult result;
         result.success = true;
@@ -618,7 +630,7 @@ namespace OpenLoco::ObjectManager
         return result;
     }
 
-    static bool partialLoad(const ObjectHeader& header, stdx::span<std::byte> objectData)
+    static bool partialLoad(const ObjectHeader& header, std::span<std::byte> objectData)
     {
         auto type = header.getType();
         size_t index = 0;
@@ -727,7 +739,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472687 based on
-    bool tryInstallObject(const ObjectHeader& objectHeader, stdx::span<const std::byte> data)
+    bool tryInstallObject(const ObjectHeader& objectHeader, std::span<const std::byte> data)
     {
         unloadAll();
         if (!computeObjectChecksum(objectHeader, data))
@@ -755,7 +767,7 @@ namespace OpenLoco::ObjectManager
         }
 
         // Warning this saves a copy of the objectData pointer and must be unloaded prior to exiting this function
-        if (!partialLoad(objectHeader, stdx::span(objectData, data.size())))
+        if (!partialLoad(objectHeader, std::span(objectData, data.size())))
         {
             return false;
         }
@@ -890,7 +902,7 @@ namespace OpenLoco::ObjectManager
     std::vector<ObjectHeader> getHeaders()
     {
         std::vector<ObjectHeader> entries;
-        entries.reserve(ObjectManager::maxObjects);
+        entries.reserve(ObjectManager::kMaxObjects);
 
         addAllInUseHeadersOfTypes<InterfaceSkinObject, SoundObject, CurrencyObject, SteamObject, CliffEdgeObject, WaterObject, LandObject, TownNamesObject, CargoObject, WallObject, TrainSignalObject, LevelCrossingObject, StreetLightObject, TunnelObject, BridgeObject, TrainStationObject, TrackExtraObject, TrackObject, RoadStationObject, RoadExtraObject, RoadObject, AirportObject, DockObject, VehicleObject, TreeObject, SnowObject, ClimateObject, HillShapesObject, BuildingObject, ScaffoldingObject, IndustryObject, RegionObject, CompetitorObject, ScenarioTextObject>(entries);
 
@@ -939,6 +951,7 @@ namespace OpenLoco::ObjectManager
     void sub_4748FA()
     {
         call(0x004697A1);
+        // determine trafficHandedness
         call(0x0047D9F2);
         call(0x004C57A6);
         call(0x00469F90);
@@ -955,7 +968,7 @@ namespace OpenLoco::ObjectManager
                 LoadedObjectHandle handle = { static_cast<ObjectType>(regs.ecx), static_cast<LoadedObjectId>(regs.ebx) };
 
                 // 0x2000 chosen as a large number
-                stdx::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x2000);
+                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x2000);
                 auto res = ObjectManager::loadStringTable(data, handle, index);
 
                 regs = backup;
@@ -970,7 +983,7 @@ namespace OpenLoco::ObjectManager
                 registers backup = regs;
 
                 // 0x20000 chosen as a large number
-                stdx::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
+                std::span<const std::byte> data(static_cast<const std::byte*>(X86Pointer<const std::byte>(regs.ebp)), 0x20000);
                 auto res = ObjectManager::loadImageTable(data);
 
                 regs = backup;

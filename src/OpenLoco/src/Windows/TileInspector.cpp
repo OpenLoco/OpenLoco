@@ -8,6 +8,7 @@
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -30,6 +31,8 @@
 #include "Objects/TrainStationObject.h"
 #include "Objects/TreeObject.h"
 #include "Objects/WallObject.h"
+#include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -90,17 +93,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
         widgetEnd(),
     };
 
-    static WindowEventList _events;
-
     static loco_global<char[2], 0x005045F8> _strCheckmark;
-
-    static void initEvents();
 
     static void activateMapSelectionTool(Window* const self)
     {
-        Input::toolSet(self, widx::panel, CursorId::crosshair);
+        ToolManager::toolSet(self, widx::panel, CursorId::crosshair);
         Input::setFlag(Input::Flags::flag6);
     }
+
+    static const WindowEventList& getEvents();
 
     Window* open()
     {
@@ -108,13 +109,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (window != nullptr)
             return window;
 
-        initEvents();
-
         window = WindowManager::createWindow(
             WindowType::tileInspector,
             kWindowSize,
             WindowFlags::none,
-            &_events);
+            getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
@@ -134,7 +133,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void prepareDraw(Window& self)
     {
-        if (Input::isToolActive(WindowType::tileInspector))
+        if (ToolManager::isToolActive(WindowType::tileInspector))
             self.activatedWidgets |= (1 << widx::select);
         else
             self.activatedWidgets &= ~(1 << widx::select);
@@ -177,7 +176,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (self.var_842 != -1)
         {
             auto tile = TileManager::get(_currentPosition)[self.var_842];
-            std::array<uint8_t, 8>& data = tile->rawData();
+            const auto data = tile->rawData();
 
             char buffer[32] = {};
             buffer[0] = ControlCodes::windowColour2;
@@ -188,9 +187,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static string_id getElementTypeName(const TileElement& element)
+    static StringId getElementTypeName(const TileElement& element)
     {
-        static const std::map<ElementType, string_id> typeToString = {
+        static const std::map<ElementType, StringId> typeToString = {
             { ElementType::surface, StringIds::tile_inspector_element_type_surface },
             { ElementType::track, StringIds::tile_inspector_element_type_track },
             { ElementType::station, StringIds::tile_inspector_element_type_station },
@@ -205,7 +204,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return typeToString.at(element.type());
     }
 
-    static string_id getObjectName(const TileElement& element)
+    static StringId getObjectName(const TileElement& element)
     {
         switch (element.type())
         {
@@ -294,7 +293,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static string_id getOwnerName(const TileElement& element)
+    static StringId getOwnerName(const TileElement& element)
     {
         if (element.type() == ElementType::road)
         {
@@ -341,7 +340,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
             }
 
-            string_id formatString;
+            StringId formatString;
             if (self.var_842 == rowNum)
             {
                 drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::index_0A, Drawing::RectFlags::none);
@@ -359,9 +358,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             FormatArguments args = {};
 
-            string_id elementName = getElementTypeName(element);
-            string_id objectName = getObjectName(element);
-            string_id ownerName = getOwnerName(element);
+            StringId elementName = getElementTypeName(element);
+            StringId objectName = getObjectName(element);
+            StringId ownerName = getOwnerName(element);
 
             if (ownerName != StringIds::empty)
             {
@@ -492,18 +491,18 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (widgetIndex != widx::panel)
             return;
 
-        TileManager::mapInvalidateSelectionRect();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+        World::mapInvalidateSelectionRect();
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable);
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
         if (res)
         {
-            TileManager::setMapSelectionSingleTile(res->first);
+            World::setMapSelectionSingleTile(res->first);
         }
     }
 
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::panel || !Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+        if (widgetIndex != widx::panel || !World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
             return;
 
         auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
@@ -522,20 +521,24 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void onClose([[maybe_unused]] Window& self)
     {
-        Input::toolCancel();
+        ToolManager::toolCancel();
     }
 
-    static void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = onClose,
+        .onMouseUp = onMouseUp,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = scrollMouseDown,
+        .scrollMouseOver = scrollMouseOver,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
     {
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-        _events.getScrollSize = getScrollSize;
-        _events.onClose = onClose;
-        _events.onMouseUp = onMouseUp;
-        _events.onToolUpdate = onToolUpdate;
-        _events.onToolDown = onToolDown;
-        _events.prepareDraw = prepareDraw;
-        _events.scrollMouseDown = scrollMouseDown;
-        _events.scrollMouseOver = scrollMouseOver;
+        return kEvents;
     }
 }

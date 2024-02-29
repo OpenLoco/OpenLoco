@@ -59,11 +59,6 @@ namespace OpenLoco::Vehicles
                 return _currentOrder == other._currentOrder && (_hasLooped || other._hasLooped);
             }
 
-            bool operator!=(Iterator other) const
-            {
-                return !(*this == other);
-            }
-
             Order& operator*()
             {
                 return *_currentOrder;
@@ -121,7 +116,7 @@ namespace OpenLoco::Vehicles::OrderManager
     };
 
     Order* orders();
-    uint32_t& numOrders();
+    uint32_t& orderTableLength();
 
     void shiftOrdersLeft(const uint32_t offsetToShiftTowards, const int16_t sizeToShiftBy);
     void shiftOrdersRight(const uint32_t offsetToShiftFrom, const int16_t sizeToShiftBy);
@@ -132,7 +127,8 @@ namespace OpenLoco::Vehicles::OrderManager
     void insertOrder(VehicleHead* head, uint16_t orderOffset, const Order* order);
 
     void deleteOrder(VehicleHead* head, uint16_t orderOffset);
-    void zeroOrderTable();
+    void zeroUnusedOrderTable();
+    void reset();
     void freeOrders(VehicleHead* const head);
 
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
@@ -140,4 +136,5 @@ namespace OpenLoco::Vehicles::OrderManager
     const std::vector<NumDisplayFrame>& displayFrames();
     uint16_t reverseVehicleOrderTable(uint16_t tableOffset, uint16_t orderOfInterest);
     uint8_t swapAdjacentOrders(Order& a, Order& b);
+    void fixCorruptWaypointOrders();
 }

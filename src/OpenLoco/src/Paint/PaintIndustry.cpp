@@ -6,6 +6,7 @@
 #include "Paint.h"
 #include "ScenarioManager.h"
 #include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "World/Industry.h"
 
 namespace OpenLoco::Paint
@@ -31,7 +32,7 @@ namespace OpenLoco::Paint
             sectionProgress = elIndustry.sectionProgress();
         }
 
-        stdx::span<const std::uint8_t> animationSequence{};
+        std::span<const std::uint8_t> animationSequence{};
         if ((elIndustry.var_6_003F() & (1 << 5)) && (elIndustry.var_6_003F() & (1 << 4)))
         {
             animationSequence = indObj.getAnimationSequence(elIndustry.var_6_003F() & 0x3);
@@ -47,7 +48,7 @@ namespace OpenLoco::Paint
             int8_t sectionCount = numSections;
             for (const auto buildingPart : buildingParts)
             {
-                totalSectionHeight += indObj.buildingPartHeight[buildingPart];
+                totalSectionHeight += indObj.buildingPartHeights[buildingPart];
                 sectionCount--;
                 if (sectionCount == -1)
                 {
@@ -114,7 +115,7 @@ namespace OpenLoco::Paint
                     adjustedBuildingPart += animationSequence[tickThing];
                 }
             }
-            const auto sectionHeight = indObj.buildingPartHeight[adjustedBuildingPart];
+            const auto sectionHeight = indObj.buildingPartHeights[adjustedBuildingPart];
             const uint32_t imageIdx = adjustedBuildingPart * 4 + indObj.var_12 + rotation;
             ImageId image = baseColour.withIndex(imageIdx);
             if (sectionCount == 0 && !baseColour.isBlended())

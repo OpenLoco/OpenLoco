@@ -3,6 +3,7 @@
 #include "TileElement.h"
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -109,7 +110,7 @@ namespace OpenLoco::World
 
         size_t indexOf(const TileElementBase* element) const;
         SurfaceElement* surface() const;
-        StationElement* trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const;
+        StationElement* trainStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const;
         StationElement* roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const;
     };
 }

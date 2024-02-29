@@ -262,4 +262,8 @@ namespace OpenLoco::Colours
     {
         return _shadowColourMap[enumValue(colour)];
     }
+    ExtColour getGlass(Colour colour)
+    {
+        return static_cast<ExtColour>(enumValue(colour) + enumValue(ExtColour::unk74));
+    }
 }

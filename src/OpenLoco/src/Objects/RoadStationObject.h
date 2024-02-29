@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
+#include <span>
 
 namespace OpenLoco
 {
@@ -31,7 +31,7 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::roadStation;
 
-        string_id name;     // 0x00
+        StringId name;      // 0x00
         uint8_t paintStyle; // 0x02
         uint8_t pad_03;
         uint16_t roadPieces;     // 0x04
@@ -52,7 +52,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
 
         constexpr bool hasFlags(RoadStationFlags flagsToTest) const

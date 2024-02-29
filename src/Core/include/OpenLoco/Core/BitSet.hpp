@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -84,21 +85,6 @@ namespace OpenLoco
             static_assert(computeBlockSize<18>() == sizeof(uint32_t));
             static_assert(computeBlockSize<31>() == sizeof(uint32_t));
             static_assert(computeBlockSize<33>() == sizeof(uintptr_t));
-
-            // TODO: Replace with std::popcount when C++20 is enabled.
-            template<typename T>
-            static constexpr size_t popcount(const T val)
-            {
-                size_t res = 0;
-                auto x = static_cast<std::make_unsigned_t<T>>(val);
-                while (x > 0u)
-                {
-                    if (x & 1u)
-                        res++;
-                    x >>= 1u;
-                }
-                return res;
-            }
 
             template<size_t TByteSize>
             struct StorageBlockType;
@@ -228,11 +214,6 @@ namespace OpenLoco
                 return _bitset == other._bitset && _pos == other._pos;
             }
 
-            constexpr bool operator!=(iterator_base other) const
-            {
-                return !(*this == other);
-            }
-
             constexpr iterator_base& operator++()
             {
                 _pos++;
@@ -299,7 +280,7 @@ namespace OpenLoco
             size_t numBits = 0;
             for (auto& data : _data)
             {
-                numBits += Detail::BitSet::popcount(data);
+                numBits += std::popcount(data);
             }
             return numBits;
         }

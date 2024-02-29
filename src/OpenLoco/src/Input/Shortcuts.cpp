@@ -4,9 +4,13 @@
 #include "GameCommands/General/TogglePause.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
+#include "Ui/Screenshot.h"
+#include "Ui/TextInput.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
 #include "World/CompanyManager.h"
@@ -28,19 +32,29 @@ namespace OpenLoco::Input::Shortcuts
         WindowManager::closeTopmost();
     }
 
-    // 004BF0B6
+    // 0x004BF0B6
     static void closeAllFloatingWindows()
     {
         WindowManager::closeAllFloatingWindows();
     }
 
-    // 0x4BF0BC
+    // 0x004BF0BC
     static void cancelConstructionMode()
     {
-        call(0x004BF0BC);
+        auto* w = WindowManager::find(WindowType::error);
+        if (w != nullptr)
+        {
+            WindowManager::close(w);
+            return;
+        }
+
+        if (!Ui::Windows::Vehicle::cancelVehicleTools())
+        {
+            ToolManager::toolCancel();
+        }
     }
 
-    // 0x4BF0E6
+    // 0x004BF0E6
     static void pauseUnpauseGame()
     {
         if (isEditorMode())
@@ -95,7 +109,7 @@ namespace OpenLoco::Input::Shortcuts
         auto window = WindowManager::find(WindowType::terraform);
         if (window != nullptr)
         {
-            if (Ui::Windows::Terraform::rotate(window))
+            if (Ui::Windows::Terraform::rotate(*window))
                 return;
         }
 
@@ -103,14 +117,14 @@ namespace OpenLoco::Input::Shortcuts
         window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            if (Ui::Windows::Construction::rotate(window))
+            if (Ui::Windows::Construction::rotate(*window))
                 return;
         }
 
         window = WindowManager::find(WindowType::townList);
         if (window != nullptr)
         {
-            if (Ui::Windows::TownList::rotate(window))
+            if (Ui::Windows::TownList::rotate(*window))
                 return;
         }
 
@@ -134,27 +148,60 @@ namespace OpenLoco::Input::Shortcuts
         window->invalidate();
     }
 
-    // 0x004BF194
-    static void toggleHideForegroundTracks()
+    static void toggleSeeThroughBuildings()
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
+        viewport->flags ^= ViewportFlags::seeThroughBuildings;
+        window->invalidate();
+    }
+
+    static void toggleSeeThroughRoads()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::seeThroughRoads;
         window->invalidate();
     }
 
     // 0x004BF19E
-    static void toggleHideForegroundScenery()
+    static void toggleSeeThroughScenery()
     {
         auto window = WindowManager::getMainWindow();
         if (window == nullptr)
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
+        viewport->flags ^= ViewportFlags::seeThroughScenery;
+        window->invalidate();
+    }
+
+    // 0x004BF194
+    static void toggleSeeThroughTracks()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::seeThroughTracks;
+        window->invalidate();
+    }
+
+    static void toggleSeeThroughTrees()
+    {
+        auto window = WindowManager::getMainWindow();
+        if (window == nullptr)
+            return;
+
+        auto viewport = WindowManager::getMainWindow()->viewports[0];
+        viewport->flags ^= ViewportFlags::seeThroughTrees;
         window->invalidate();
     }
 
@@ -263,7 +310,7 @@ namespace OpenLoco::Input::Shortcuts
         if (LastGameOptionManager::getLastAirport() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(1 << 31);
+        Windows::Construction::openWithFlags(1U << 31);
     }
 
     // 0x004BF295
@@ -275,7 +322,7 @@ namespace OpenLoco::Input::Shortcuts
         if (LastGameOptionManager::getLastShipPort() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::Construction::openWithFlags(1 << 30);
+        Windows::Construction::openWithFlags(1U << 30);
     }
 
     // 0x004BF2B4
@@ -287,7 +334,7 @@ namespace OpenLoco::Input::Shortcuts
         if (LastGameOptionManager::getLastBuildVehiclesOption() == LastGameOptionManager::kNoLastOption)
             return;
 
-        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1 << 31);
+        Windows::BuildVehicle::open(LastGameOptionManager::getLastBuildVehiclesOption(), 1U << 31);
     }
 
     // 0x004BF2D1
@@ -374,7 +421,7 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3AB
     static void makeScreenshot()
     {
-        call(0x004BF3AB);
+        Ui::triggerScreenshotCountdown(2, Ui::ScreenshotType::regular);
     }
 
     // 0x004BF3B3
@@ -397,7 +444,28 @@ namespace OpenLoco::Input::Shortcuts
     // 0x004BF3DC
     static void sendMessage()
     {
-        call(0x004BF3DC);
+        if (isEditorMode())
+            return;
+
+        if (!isNetworked())
+            return;
+
+        if (isTitleMode())
+        {
+            auto* caller = WindowManager::find(WindowType::titleMenu);
+            if (caller == nullptr)
+                return;
+
+            Windows::TitleMenu::beginSendChatMessage(*caller);
+        }
+        else
+        {
+            auto* caller = WindowManager::find(WindowType::timeToolbar);
+            if (caller == nullptr)
+                return;
+
+            Windows::TimePanel::beginSendChatMessage(*caller);
+        }
     }
 
     static void constructionPreviousTab()
@@ -490,11 +558,14 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::rotateView,                      StringIds::shortcut_rotate_view,                        rotateView,                     "rotateView",                       "Return");
         ShortcutManager::add(Shortcut::rotateConstructionObject,        StringIds::shortcut_rotate_construction_object,         rotateConstructionObject,       "rotateConstructionObject",         "Z");
         ShortcutManager::add(Shortcut::toggleUndergroundView,           StringIds::shortcut_toggle_underground_view,            toggleUndergroundView,          "toggleUndergroundView",            "1");
-        ShortcutManager::add(Shortcut::toggleHideForegroundTracks,      StringIds::shortcut_toggle_hide_foreground_tracks,      toggleHideForegroundTracks,     "toggleHideForegroundTracks",       "2");
-        ShortcutManager::add(Shortcut::toggleHideForegroundScenery,     StringIds::shortcut_toggle_hide_foreground_scenery,     toggleHideForegroundScenery,    "toggleHideForegroundScenery",      "3");
-        ShortcutManager::add(Shortcut::toggleHeightMarksonLand,         StringIds::shortcut_toggle_height_marks_on_land,        toggleHeightMarksOnLand,        "toggleHeightMarksOnLand",          "4");
-        ShortcutManager::add(Shortcut::toggleHeightMarksonTracks,       StringIds::shortcut_toggle_height_marks_on_tracks,      toggleHeightMarksOnTracks,      "toggleHeightMarksOnTracks",        "5");
-        ShortcutManager::add(Shortcut::toggleDirArrowsonTracks,         StringIds::shortcut_toggle_dir_arrows_on_tracks,        toggleDirArrowsOnTracks,        "toggleDirArrowsOnTracks",          "6");
+        ShortcutManager::add(Shortcut::toggleSeeThroughTracks,          StringIds::shortcutSeeThroughTracks,                    toggleSeeThroughTracks,         "toggleSeeThroughTracks",           "2");
+        ShortcutManager::add(Shortcut::toggleSeeThroughRoads,           StringIds::shortcutSeeThroughRoads,                     toggleSeeThroughRoads,          "toggleSeeThroughRoads",            "3");
+        ShortcutManager::add(Shortcut::toggleSeeThroughTrees,           StringIds::shortcutSeeThroughTrees,                     toggleSeeThroughTrees,          "toggleSeeThroughTrees",            "4");
+        ShortcutManager::add(Shortcut::toggleSeeThroughBuildings,       StringIds::shortcutSeeThroughBuildings,                 toggleSeeThroughBuildings,      "toggleSeeThroughBuildings",        "5");
+        ShortcutManager::add(Shortcut::toggleSeeThroughScenery,         StringIds::shortcutSeeThroughScenery,                   toggleSeeThroughScenery,        "toggleSeeThroughScenery",          "6");
+        ShortcutManager::add(Shortcut::toggleHeightMarksOnLand,         StringIds::shortcut_toggle_height_marks_on_land,        toggleHeightMarksOnLand,        "toggleHeightMarksOnLand",          "7");
+        ShortcutManager::add(Shortcut::toggleHeightMarksOnTracks,       StringIds::shortcut_toggle_height_marks_on_tracks,      toggleHeightMarksOnTracks,      "toggleHeightMarksOnTracks",        "8");
+        ShortcutManager::add(Shortcut::toggleDirArrowsonTracks,         StringIds::shortcut_toggle_dir_arrows_on_tracks,        toggleDirArrowsOnTracks,        "toggleDirArrowsOnTracks",          "9");
         ShortcutManager::add(Shortcut::adjustLand,                      StringIds::shortcut_adjust_land,                        adjustLand,                     "adjustLand",                       "L");
         ShortcutManager::add(Shortcut::adjustWater,                     StringIds::shortcut_adjust_water,                       adjustWater,                    "adjustWater",                      "W");
         ShortcutManager::add(Shortcut::plantTrees,                      StringIds::shortcut_plant_trees,                        plantTrees,                     "plantTrees",                       "P");

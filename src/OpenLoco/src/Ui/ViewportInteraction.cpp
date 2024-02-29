@@ -1,5 +1,16 @@
+#include "ViewportInteraction.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
+#include "GameCommands/Airports/RemoveAirport.h"
+#include "GameCommands/Buildings/RemoveBuilding.h"
+#include "GameCommands/Company/RemoveCompanyHeadquarters.h"
+#include "GameCommands/Docks/RemovePort.h"
+#include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/RemoveRoadStation.h"
+#include "GameCommands/Terraform/RemoveTree.h"
+#include "GameCommands/Terraform/RemoveWall.h"
+#include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveTrainStation.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -7,6 +18,7 @@
 #include "Localisation/StringManager.h"
 #include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/StationElement.h"
@@ -27,6 +39,7 @@
 #include "SceneManager.h"
 #include "Ui.h"
 #include "Ui/ScrollView.h"
+#include "Ui/ToolManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
@@ -68,10 +81,10 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* station = tileElement->as<StationElement>();
         if (station == nullptr)
             return false;
-        if (station->isFlag5())
+        if (station->isAiAllocated())
             return false;
 
-        interaction.type = InteractionItem::trackStation;
+        interaction.type = InteractionItem::trainStation;
         interaction.object = station;
         return getStationArguments(interaction);
     }
@@ -104,7 +117,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         interaction.object = station;
         interaction.type = InteractionItem::dock;
-        if (station->isFlag5())
+        if (station->isAiAllocated())
             return false;
 
         interaction.type = InteractionItem::roadStation;
@@ -135,7 +148,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         auto station = StationManager::get(id);
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::hoveringOverStation);
+        World::setMapSelectionFlags(World::MapSelectionFlags::hoveringOverStation);
         ViewportManager::invalidate(station);
         Windows::MapToolTip::setOwner(station->owner);
         auto args = FormatArguments::mapToolTip(StringIds::stringid_stringid_wcolour3_stringid);
@@ -358,7 +371,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::stationLabel:
                 success = getStationArguments(static_cast<StationId>(interaction.value));
                 break;
-            case InteractionItem::trackStation:
+            case InteractionItem::trainStation:
             case InteractionItem::roadStation:
             case InteractionItem::airport:
             case InteractionItem::dock:
@@ -508,7 +521,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CDD8C
-    static bool rightOverTrackStation(InteractionArg& interaction)
+    static bool rightOverTrainStation(InteractionArg& interaction)
     {
         auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
         auto* elStation = tileElement->as<StationElement>();
@@ -784,7 +797,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    constexpr std::array<string_id, 7> quantityToString = {
+    constexpr std::array<StringId, 7> quantityToString = {
         StringIds::quantity_eigth,
         StringIds::quantity_quarter,
         StringIds::quantity_three_eigths,
@@ -872,7 +885,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                             buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A8[i]]);
                         }
                         requiresComma = true;
-                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->var_A4[i]);
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->requiredCargoType[i]);
                         buffer = StringManager::formatString(buffer, cargo->name);
                     }
                 }
@@ -901,9 +914,25 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
                 {
-                    if (vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings))
+                    if (vp->hasFlags(ViewportFlags::seeThroughBuildings))
                     {
-                        interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry | InteractionItemFlags::tree | InteractionItemFlags::wall;
+                        interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughTrees))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::tree;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughScenery))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::wall;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughTracks))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::track | InteractionItemFlags::trackExtra | InteractionItemFlags::signal;
+                    }
+                    if (vp->hasFlags(ViewportFlags::seeThroughRoads))
+                    {
+                        interactionsToExclude |= InteractionItemFlags::roadAndTram | InteractionItemFlags::roadAndTramExtra;
                     }
                 }
             }
@@ -926,8 +955,8 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::signal:
                 hasInteraction = rightOverSignal(interaction);
                 break;
-            case InteractionItem::trackStation:
-                hasInteraction = rightOverTrackStation(interaction);
+            case InteractionItem::trainStation:
+                hasInteraction = rightOverTrainStation(interaction);
                 break;
             case InteractionItem::roadStation:
                 hasInteraction = rightOverRoadStation(interaction);
@@ -978,6 +1007,355 @@ namespace OpenLoco::Ui::ViewportInteraction
                 break;
         }
         return hasInteraction ? interaction : InteractionArg{};
+    }
+
+    // 0x004A5AA1
+    static void rightReleasedSignal(World::SignalElement* signal, const bool isLeftSignal, const World::Pos2 pos)
+    {
+        auto* track = signal->prev()->as<World::TrackElement>();
+        if (track == nullptr)
+        {
+            return;
+        }
+
+        uint16_t unkFlags = 1 << 15; // right
+        if (isLeftSignal)
+        {
+            unkFlags = 1 << 14; // left
+        }
+
+        // If in construction mode with both directions selection (actually does not single direction but this is what is implied)
+        if (!ToolManager::isToolActive(WindowType::construction, 0, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
+        {
+            if (signal->getLeft().hasSignal() && signal->getRight().hasSignal())
+            {
+                unkFlags = (1 << 15) | (1 << 14); // both
+            }
+        }
+
+        GameCommands::SignalRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
+        args.rotation = track->unkDirection();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.trackObjType = track->trackObjectId();
+        args.flags = unkFlags;
+
+        auto* window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+        {
+            Ui::Windows::Construction::removeConstructionGhosts();
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_signal);
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
+    // 0x004A5B66
+    static void rightReleasedTrainStation(World::StationElement* station, const World::Pos2 pos)
+    {
+        auto* track = station->prev()->as<World::TrackElement>();
+        if (track == nullptr)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_station);
+        GameCommands::TrainStationRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseHeight());
+        args.rotation = track->unkDirection();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.type = track->trackObjectId();
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
+    // 0x004A5BDF
+    static void rightReleasedRoadStation(World::StationElement* station, const World::Pos2 pos)
+    {
+        auto* road = station->prev()->as<RoadElement>();
+        if (road == nullptr)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_station);
+        GameCommands::RoadStationRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, road->baseHeight());
+        args.rotation = road->unkDirection();
+        args.roadId = road->roadId();
+        args.index = road->sequenceIndex();
+        args.type = road->roadObjectId();
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
+    // 0x004A5C58
+    static void rightReleasedAirport(World::StationElement* station, const World::Pos2 pos)
+    {
+        if (!Ui::Windows::Construction::isStationTabOpen())
+        {
+            Ui::Windows::Construction::openWithFlags(1ULL << 31);
+            return;
+        }
+        GameCommands::setErrorTitle(StringIds::cant_remove_airport);
+        GameCommands::AirportRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, station->baseHeight());
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
+    // 0x004A5CC5
+    static void rightReleasedDock(World::StationElement* station, const World::Pos2 pos)
+    {
+        if (!Ui::Windows::Construction::isStationTabOpen())
+        {
+            Ui::Windows::Construction::openWithFlags(1ULL << 30);
+            return;
+        }
+        GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
+        GameCommands::PortRemovalArgs args;
+        Pos2 firstTile = pos - World::kOffsets[station->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
+    // 0x004BB116
+    static void rightReleasedTree(World::TreeElement* tree, const World::Pos2 pos)
+    {
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::TreeRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, tree->baseHeight());
+        args.elementType = tree->rawData()[0];
+        args.type = tree->treeObjectId();
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+    }
+
+    // 0x0042D9BF
+    static void rightReleasedBuilding(World::BuildingElement* building, const World::Pos2 pos)
+    {
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::BuildingRemovalArgs args;
+        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+    }
+
+    // 0x004C4809
+    static void rightReleasedWall(World::WallElement* wall, const World::Pos2 pos)
+    {
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::WallRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, wall->baseHeight());
+        args.rotation = wall->rotation();
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+    }
+
+    // 0x0042F007
+    static void rightReleasedHeadquarter(World::BuildingElement* building, const World::Pos2 pos)
+    {
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::HeadquarterRemovalArgs args;
+        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
+    }
+
+    void handleRightReleased(Window* window, int16_t xPos, int16_t yPos)
+    {
+        auto interaction = ViewportInteraction::rightOver(xPos, yPos);
+
+        auto* tileElement = reinterpret_cast<World::TileElement*>(interaction.object);
+
+        switch (interaction.type)
+        {
+            case InteractionItem::noInteraction:
+            default:
+            {
+                auto item2 = ViewportInteraction::getItemLeft(xPos, yPos);
+                switch (item2.type)
+                {
+                    case InteractionItem::entity:
+                    {
+                        auto* entity = reinterpret_cast<EntityBase*>(item2.object);
+                        auto* veh = entity->asBase<Vehicles::VehicleBase>();
+                        if (veh != nullptr)
+                        {
+                            auto* head = EntityManager::get<Vehicles::VehicleHead>(veh->getHead());
+                            if (head != nullptr)
+                            {
+                                Ui::Windows::VehicleList::open(head->owner, head->vehicleType);
+                            }
+                        }
+                        break;
+                    }
+                    case InteractionItem::townLabel:
+                        Ui::Windows::TownList::open();
+                        break;
+                    case InteractionItem::stationLabel:
+                    {
+                        auto station = StationManager::get(StationId(item2.value));
+                        Ui::Windows::StationList::open(station->owner);
+                        break;
+                    }
+                    case InteractionItem::industry:
+                        Ui::Windows::IndustryList::open();
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+            }
+
+            case InteractionItem::track:
+            {
+                auto* track = tileElement->as<TrackElement>();
+                if (track != nullptr)
+                {
+                    if (track->owner() == CompanyManager::getControllingId())
+                    {
+                        Ui::Windows::Construction::openAtTrack(*window, track, interaction.pos);
+                    }
+                    else
+                    {
+                        Ui::Windows::CompanyWindow::open(track->owner());
+                    }
+                }
+                break;
+            }
+            case InteractionItem::road:
+            {
+                auto* road = tileElement->as<RoadElement>();
+                if (road != nullptr)
+                {
+                    auto owner = road->owner();
+
+                    auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
+                    if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || roadObject->hasFlags(RoadObjectFlags::unk_03))
+                    {
+                        Ui::Windows::Construction::openAtRoad(*window, road, interaction.pos);
+                    }
+                    else
+                    {
+                        Ui::Windows::CompanyWindow::open(owner);
+                    }
+                }
+                break;
+            }
+            case InteractionItem::trackExtra:
+            {
+                auto* track = tileElement->as<TrackElement>();
+                if (track != nullptr)
+                {
+                    Ui::Windows::Construction::setToTrackExtra(*window, track, interaction.modId, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::roadExtra:
+            {
+                auto* road = tileElement->as<RoadElement>();
+                if (road != nullptr)
+                {
+                    Ui::Windows::Construction::setToRoadExtra(*window, road, interaction.modId, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::signal:
+            {
+                auto* signal = tileElement->as<SignalElement>();
+                if (signal != nullptr)
+                {
+                    rightReleasedSignal(signal, interaction.modId != 0, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::trainStation:
+            {
+                auto* station = tileElement->as<StationElement>();
+                if (station != nullptr)
+                {
+                    rightReleasedTrainStation(station, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::roadStation:
+            {
+                auto* station = tileElement->as<StationElement>();
+                if (station != nullptr)
+                {
+                    rightReleasedRoadStation(station, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::airport:
+            {
+                auto* station = tileElement->as<StationElement>();
+                if (station != nullptr)
+                {
+                    rightReleasedAirport(station, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::dock:
+            {
+                auto* station = tileElement->as<StationElement>();
+                if (station != nullptr)
+                {
+                    rightReleasedDock(station, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::tree:
+            {
+                auto* tree = tileElement->as<TreeElement>();
+                if (tree != nullptr)
+                {
+                    rightReleasedTree(tree, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::building:
+            {
+                auto* building = tileElement->as<BuildingElement>();
+                if (building != nullptr)
+                {
+                    rightReleasedBuilding(building, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::wall:
+            {
+                auto* wall = tileElement->as<WallElement>();
+                if (wall != nullptr)
+                {
+                    rightReleasedWall(wall, interaction.pos);
+                }
+                break;
+            }
+            case InteractionItem::headquarterBuilding:
+            {
+                auto* building = tileElement->as<BuildingElement>();
+                if (building != nullptr)
+                {
+                    rightReleasedHeadquarter(building, interaction.pos);
+                }
+                break;
+            }
+        }
     }
 
     // 0x00459E54
@@ -1093,7 +1471,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         // Determine to which edge the cursor is closest
-        [[maybe_unused]] uint32_t closestEdge = getSideFromPos(mapPos); // ecx
+        [[maybe_unused]] uint32_t closestEdge = World::getSideFromPos(mapPos); // ecx
 
         return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
     }
@@ -1122,59 +1500,5 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         return { std::make_pair(mapPos, viewport) };
-    }
-
-    // 0x0045FE05
-    // NOTE: Original call getSurfaceLocFromUi within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getQuadrantFromPos(const World::Pos2& loc)
-    {
-        const auto xNibble = loc.x & 0x1F;
-        const auto yNibble = loc.y & 0x1F;
-        if (xNibble > 16)
-        {
-            return (yNibble >= 16) ? 0 : 1;
-        }
-        else
-        {
-            return (yNibble >= 16) ? 3 : 2;
-        }
-    }
-
-    // 0x0045FE4C
-    // NOTE: Original call getSurfaceLocFromUi within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getSideFromPos(const World::Pos2& loc)
-    {
-        const auto xNibble = loc.x & 0x1F;
-        const auto yNibble = loc.y & 0x1F;
-        if (xNibble < yNibble)
-        {
-            return (xNibble + yNibble < 32) ? 0 : 1;
-        }
-        else
-        {
-            return (xNibble + yNibble < 32) ? 3 : 2;
-        }
-    }
-
-    // 0x0045FD8E
-    // NOTE: Original call getSurfaceLocFromUi within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getQuadrantOrCentreFromPos(const World::Pos2& loc)
-    {
-        // Determine to which quadrants the cursor is closest 4 == all quadrants
-        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
-        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
-        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
-        {
-            // Is centre so all quadrants
-            return 4;
-        }
-
-        return getQuadrantFromPos(loc);
     }
 }

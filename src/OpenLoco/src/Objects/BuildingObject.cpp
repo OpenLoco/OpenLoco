@@ -1,4 +1,5 @@
 #include "BuildingObject.h"
+#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "ObjectImageTable.h"
@@ -24,14 +25,15 @@ namespace OpenLoco
     // 0x0042DB95
     void BuildingObject::drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
     {
-        registers regs;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = enumValue(colour);
-        regs.eax = buildingRotation;
-        regs.edi = X86Pointer(clipped);
-        regs.ebp = X86Pointer(this);
-        call(0x0042DB95, regs);
+        ImageId baseImage(image, colour);
+        Ui::Point pos{ x, y };
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        for (const auto part : getBuildingParts(0))
+        {
+            auto partImage = baseImage.withIndexOffset(part * 4 + buildingRotation);
+            drawingCtx.drawImage(*clipped, pos, partImage);
+            pos.y -= partHeights[part];
+        }
     }
 
     // 0x0042DE82
@@ -44,7 +46,7 @@ namespace OpenLoco
     // 0x0042DE1E
     bool BuildingObject::validate() const
     {
-        if ((var_06 == 0) || (var_06 > 63))
+        if ((numParts == 0) || (numParts > 63))
         {
             return false;
         }
@@ -52,7 +54,7 @@ namespace OpenLoco
     }
 
     // 0x0042DBE8
-    void BuildingObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void BuildingObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(BuildingObject));
 
@@ -64,17 +66,17 @@ namespace OpenLoco
 
         // LOAD BUILDING PARTS Start
         // Load Part Heights
-        varationHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
-        remainingData = remainingData.subspan(var_06 * sizeof(uint8_t));
+        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(uint8_t));
 
         // Load Part Animations (probably)
-        var_0C = reinterpret_cast<const uint16_t*>(remainingData.data());
-        remainingData = remainingData.subspan(var_06 * sizeof(uint16_t));
+        partAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
+        remainingData = remainingData.subspan(numParts * sizeof(BuildingPartAnimation));
 
         // Load Parts
         for (auto i = 0; i < numVariations; ++i)
         {
-            auto& part = variationsArr10[i];
+            auto& part = variationParts[i];
             part = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
@@ -104,10 +106,10 @@ namespace OpenLoco
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // Load ??? Cargo
-        for (auto& unkObj : var_A4)
+        // Load Required Cargo
+        for (auto& cargo : requiredCargoType)
         {
-            unkObj = 0xFF; // This is a cargo
+            cargo = 0xFF;
             if (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 ObjectHeader cargoHeader = *reinterpret_cast<const ObjectHeader*>(remainingData.data());
@@ -119,17 +121,17 @@ namespace OpenLoco
                 auto res = ObjectManager::findObjectHandle(cargoHeader);
                 if (res.has_value())
                 {
-                    unkObj = res->id;
+                    cargo = res->id;
                 }
             }
             remainingData = remainingData.subspan(sizeof(ObjectHeader));
         }
 
-        // Load ???
-        for (auto i = 0; i < var_AD; ++i)
+        // Load Elevator Sequences
+        for (auto i = 0; i < numElevatorSequences; ++i)
         {
-            var_AE[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
-            const auto size = *reinterpret_cast<const uint16_t*>(var_AE[i]);
+            elevatorHeightSequences[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[i]);
             remainingData = remainingData.subspan(sizeof(uint16_t) + size);
         }
 
@@ -144,11 +146,29 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        varationHeights = nullptr;
-        var_0C = 0;
-        std::fill(std::begin(variationsArr10), std::end(variationsArr10), nullptr);
+        partHeights = nullptr;
+        partAnimations = nullptr;
+        std::fill(std::begin(variationParts), std::end(variationParts), nullptr);
         std::fill(std::begin(producedCargoType), std::end(producedCargoType), 0);
-        std::fill(std::begin(var_A4), std::end(var_A4), 0);
-        std::fill(std::begin(var_AE), std::end(var_AE), nullptr);
+        std::fill(std::begin(requiredCargoType), std::end(requiredCargoType), 0);
+        std::fill(std::begin(elevatorHeightSequences), std::end(elevatorHeightSequences), nullptr);
+    }
+
+    std::span<const std::uint8_t> BuildingObject::getBuildingParts(const uint8_t variation) const
+    {
+        const auto* partsPointer = variationParts[variation];
+        auto* end = partsPointer;
+        while (*end != 0xFF)
+            end++;
+
+        return std::span<const std::uint8_t>(partsPointer, end);
+    }
+
+    std::span<const std::uint8_t> BuildingObject::getElevatorHeightSequence(const uint8_t animIdx) const
+    {
+        // elevatorHeightSequences comprises of a size (16bit) then data (8 bit). Size will always be a power of 2
+        const auto size = *reinterpret_cast<const uint16_t*>(elevatorHeightSequences[animIdx]);
+        const auto* sequencePointer = elevatorHeightSequences[animIdx] + sizeof(uint16_t);
+        return std::span<const std::uint8_t>(sequencePointer, size);
     }
 }

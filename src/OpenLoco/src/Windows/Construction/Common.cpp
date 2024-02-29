@@ -5,6 +5,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/TileElement.h"
 #include "Map/Track/TrackData.h"
@@ -207,9 +208,9 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A0EAD
-    Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
+    Window* openAtTrack(const Window& main, TrackElement* track, const Pos2 pos)
     {
-        auto* viewport = main->viewports[0];
+        auto* viewport = main.viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(track);
         auto* copyElement = (*_backupTileElement).as<TrackElement>();
         if (copyElement == nullptr)
@@ -302,9 +303,9 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A147F
-    Window* openAtRoad(Window* main, RoadElement* road, const Pos2 pos)
+    Window* openAtRoad(const Window& main, RoadElement* road, const Pos2 pos)
     {
-        auto* viewport = main->viewports[0];
+        auto* viewport = main.viewports[0];
         _backupTileElement = *reinterpret_cast<TileElement*>(road);
         auto* copyElement = (*_backupTileElement).as<RoadElement>();
         if (copyElement == nullptr)
@@ -391,10 +392,10 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A1303
-    void setToTrackExtra(Window* main, TrackElement* track, const uint8_t bh, const Pos2 pos)
+    void setToTrackExtra(const Window& main, TrackElement* track, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
-        regs.esi = X86Pointer(main);
+        regs.esi = X86Pointer(&main);
         regs.edx = X86Pointer(track);
         regs.bh = bh;
         regs.ax = pos.x;
@@ -403,10 +404,10 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A13C1
-    void setToRoadExtra(Window* main, RoadElement* road, const uint8_t bh, const Pos2 pos)
+    void setToRoadExtra(const Window& main, RoadElement* road, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
-        regs.esi = X86Pointer(main);
+        regs.esi = X86Pointer(&main);
         regs.edx = X86Pointer(road);
         regs.bh = bh;
         regs.ax = pos.x;
@@ -556,7 +557,7 @@ namespace OpenLoco::Ui::Windows::Construction
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
         {
             World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             _ghostVisibilityFlags = _ghostVisibilityFlags & ~GhostVisibilityFlags::constructArrow;
         }
         Construction::removeTrackGhosts();
@@ -576,17 +577,19 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t enabledWidgets;
             void (*tabReset)(Window*);
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Construction::widgets, widx::tab_construction, &Construction::events, Construction::enabledWidgets, &Construction::tabReset },
-            { Station::widgets, widx::tab_station, &Station::events, Station::enabledWidgets, &Station::tabReset },
-            { Signal::widgets, widx::tab_signal, &Signal::events, Signal::enabledWidgets, &Signal::tabReset },
-            { Overhead::widgets, widx::tab_overhead, &Overhead::events, Overhead::enabledWidgets, &Overhead::tabReset },
+            { Construction::widgets, widx::tab_construction, Construction::getEvents(), Construction::enabledWidgets, &Construction::tabReset },
+            { Station::widgets,      widx::tab_station,      Station::getEvents(),      Station::enabledWidgets,      &Station::tabReset },
+            { Signal::widgets,       widx::tab_signal,       Signal::getEvents(),       Signal::enabledWidgets,       &Signal::tabReset },
+            { Overhead::widgets,     widx::tab_overhead,     Overhead::getEvents(),     Overhead::enabledWidgets,     &Overhead::tabReset },
         };
+        // clang-format on
 
         void prepareDraw(Window* self)
         {
@@ -611,7 +614,7 @@ namespace OpenLoco::Ui::Windows::Construction
             const auto& tabInfo = tabInformationByTabOffset[tabWidgetIndex - widx::tab_construction];
 
             self.enabledWidgets = tabInfo.enabledWidgets;
-            self.eventHandlers = tabInfo.events;
+            self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
             self.widgets = tabInfo.widgets;
 
@@ -674,11 +677,11 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             const auto vpPosNext = gameToScreen(*_nextTile + World::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosNext = viewport.viewportToScreen(vpPosNext);
-            const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, point);
+            const auto distanceToNext = Math::Vector::manhattanDistance2D(uiPosNext, point);
 
             const auto vpPosPrevious = gameToScreen(*_previousTile + World::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosPrevious = viewport.viewportToScreen(vpPosPrevious);
-            const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, point);
+            const auto distanceToPrevious = Math::Vector::manhattanDistance2D(uiPosPrevious, point);
 
             return distanceToNext < distanceToPrevious;
         }
@@ -700,16 +703,16 @@ namespace OpenLoco::Ui::Windows::Construction
             }
 
             removeConstructionGhosts();
-            TileManager::mapInvalidateMapSelectionTiles();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
+            World::mapInvalidateMapSelectionTiles();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
             _trackCost = 0x80000000;
             _signalCost = 0x80000000;
             _stationCost = 0x80000000;
             _modCost = 0x80000000;
             _byte_1136076 = 0;
 
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             self->currentTab = widgetIndex - widx::tab_construction;
             self->frameNo = 0;
@@ -718,7 +721,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
             self->enabledWidgets = tabInfo.enabledWidgets;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->holdableWidgets = 0;
@@ -788,7 +791,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         drawingCtx.drawImage(&*clipped, -4, -10, imageId);
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_station);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_station);
                 }
             }
             // Overhead tab
@@ -811,10 +814,29 @@ namespace OpenLoco::Ui::Windows::Construction
                         }
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_overhead);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_overhead);
                 }
             }
         }
+
+        std::array<uint32_t, 16> kTrackPreviewImages = {
+            TrackObj::ImageIds::kUiPreviewImage0,
+            TrackObj::ImageIds::kUiPreviewImage1,
+            TrackObj::ImageIds::kUiPreviewImage2,
+            TrackObj::ImageIds::kUiPreviewImage3,
+            TrackObj::ImageIds::kUiPreviewImage4,
+            TrackObj::ImageIds::kUiPreviewImage5,
+            TrackObj::ImageIds::kUiPreviewImage6,
+            TrackObj::ImageIds::kUiPreviewImage7,
+            TrackObj::ImageIds::kUiPreviewImage8,
+            TrackObj::ImageIds::kUiPreviewImage9,
+            TrackObj::ImageIds::kUiPreviewImage10,
+            TrackObj::ImageIds::kUiPreviewImage11,
+            TrackObj::ImageIds::kUiPreviewImage12,
+            TrackObj::ImageIds::kUiPreviewImage13,
+            TrackObj::ImageIds::kUiPreviewImage14,
+            TrackObj::ImageIds::kUiPreviewImage15,
+        };
 
         // 0x0049ED40
         static void drawTrackTabs(Window* self, Gfx::RenderTarget* rt)
@@ -828,7 +850,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 auto imageId = trackObj->image;
                 if (self->currentTab == widx::tab_construction - widx::tab_construction)
-                    imageId += (self->frameNo / 4) % 15;
+                    imageId += kTrackPreviewImages[(self->frameNo / 4) % kTrackPreviewImages.size()];
 
                 Widget::drawTab(self, rt, Gfx::recolour(imageId, companyColour), widx::tab_construction);
             }
@@ -882,7 +904,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 drawingCtx.drawImage(&*clipped, -4, -9, imageId);
                             }
 
-                            Widget::drawTab(self, rt, -2, widx::tab_station);
+                            Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_station);
                         }
                     }
                 }
@@ -916,7 +938,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         drawingCtx.drawImage(&*clipped, 15, 31, imageId);
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_signal);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_signal);
                 }
             }
             // Overhead Tab
@@ -939,7 +961,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         }
                     }
 
-                    Widget::drawTab(self, rt, -2, widx::tab_overhead);
+                    Widget::drawTab(self, rt, Widget::kContentUnk, widx::tab_overhead);
                 }
             }
         }
@@ -983,11 +1005,11 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
-            TileManager::mapInvalidateMapSelectionTiles();
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
-            hideDirectionArrows();
-            hideGridlines();
+            World::mapInvalidateMapSelectionTiles();
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstruct);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
+            Windows::Main::hideDirectionArrows();
+            Windows::Main::hideGridlines();
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
@@ -997,21 +1019,13 @@ namespace OpenLoco::Ui::Windows::Construction
             self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::construction, self->number, self->currentTab + Common::widx::tab_construction);
 
-            if (Input::isToolActive(WindowType::construction, self->number))
+            if (ToolManager::isToolActive(WindowType::construction, self->number))
                 return;
 
             if ((_ghostVisibilityFlags & flag) == GhostVisibilityFlags::none)
                 return;
 
             removeConstructionGhosts();
-        }
-
-        void initEvents()
-        {
-            Construction::initEvents();
-            Station::initEvents();
-            Signal::initEvents();
-            Overhead::initEvents();
         }
 
         // 0x004CD454
@@ -1021,7 +1035,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 auto window = WindowManager::find(ToolManager::getToolWindowType(), ToolManager::getToolWindowNumber());
                 if (window != nullptr)
-                    Input::toolCancel();
+                    ToolManager::toolCancel();
             }
         }
 
@@ -1078,7 +1092,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 WindowType::construction,
                 Construction::kWindowSize,
                 WindowFlags::flag_11 | WindowFlags::noAutoClose,
-                &Construction::events);
+                Construction::getEvents());
 
             window->widgets = Construction::widgets;
             window->currentTab = 0;
@@ -1093,11 +1107,9 @@ namespace OpenLoco::Ui::Windows::Construction
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_0D);
 
-            WindowManager::sub_4CEE0B(window);
-            Ui::Windows::showDirectionArrows();
-            Ui::Windows::showGridlines();
-
-            Common::initEvents();
+            WindowManager::sub_4CEE0B(*window);
+            Windows::Main::showDirectionArrows();
+            Windows::Main::showGridlines();
         }
 
         // 0x004723BD
@@ -1398,7 +1410,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (!company->isVehicleIndexUnlocked(vehicle))
                     continue;
 
-                for (auto i = 0; i < vehicleObj->numMods; i++)
+                for (auto i = 0; i < vehicleObj->numTrackExtras; i++)
                 {
                     flags |= 1ULL << vehicleObj->requiredTrackExtras[i];
                 }
@@ -1537,23 +1549,23 @@ namespace OpenLoco::Ui::Windows::Construction
         }
     }
 
-    bool rotate(Window* self)
+    bool rotate(Window& self)
     {
-        switch (self->currentTab)
+        switch (self.currentTab)
         {
             case Common::widx::tab_construction - Common::widx::tab_construction:
                 if (_constructionHover == 1)
                 {
-                    self->callOnMouseUp(Construction::widx::rotate_90);
+                    self.callOnMouseUp(Construction::widx::rotate_90);
                     removeConstructionGhosts();
                     return true;
                 }
                 break;
 
             case Common::widx::tab_station - Common::widx::tab_construction:
-                if (self->widgets[Station::widx::rotate].type != WidgetType::none)
+                if (self.widgets[Station::widx::rotate].type != WidgetType::none)
                 {
-                    self->callOnMouseUp(Station::widx::rotate);
+                    self.callOnMouseUp(Station::widx::rotate);
                     return true;
                 }
                 break;

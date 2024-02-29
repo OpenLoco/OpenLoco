@@ -11,11 +11,11 @@
 #include "Map/TileManager.h"
 #include "PaintEntity.h"
 #include "PaintTile.h"
-#include "PaintTrack.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -49,15 +49,11 @@ namespace OpenLoco::Paint
     {
         setVpPosition(pos);
         _didPassSurface = false;
-        _525CE4[0] = 0xFFFF;
-        _525CF0 = 0;
-        _525CF0 = 0;
-        _525CF8 = 0;
-        _F003F4 = 0;
-        _F003F6 = 0;
-        std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
-        std::fill(std::begin(_E400D0), std::end(_E400D0), nullptr);
-        std::fill(std::begin(_E400E4), std::end(_E400E4), nullptr);
+        setBridgeEntry(kNullBridgeEntry);
+        _525CF8 = SegmentFlags::none;
+        _trackRoadAdditionSupports = TrackRoadAdditionSupports{};
+        std::fill(std::begin(_trackRoadPaintStructs), std::end(_trackRoadPaintStructs), nullptr);
+        std::fill(std::begin(_trackRoadAdditionsPaintStructs), std::end(_trackRoadAdditionsPaintStructs), nullptr);
         _112C300 = 0;
         _112C306 = 0;
     }
@@ -92,6 +88,7 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD140> _4FD140;
     loco_global<int32_t[4], 0x4FD150> _4FD150;
     loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
+    loco_global<int32_t[4], 0x4FD170> _4FD170;
     loco_global<int32_t[4], 0x4FD180> _4FD180;
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
@@ -144,8 +141,9 @@ namespace OpenLoco::Paint
         _quadrantBackIndex = std::min(*_quadrantBackIndex, paintQuadrantIndex);
         _quadrantFrontIndex = std::max(*_quadrantFrontIndex, paintQuadrantIndex);
     }
+
     // 0x004FD120
-    PaintStringStruct* PaintSession::addToStringPlotList(const uint32_t amount, const string_id stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
+    PaintStringStruct* PaintSession::addToStringPlotList(const uint32_t amount, const StringId stringId, const uint16_t z, const int16_t xOffset, const int8_t* yOffsets, const uint16_t colour)
     {
         auto* psString = allocatePaintStruct<PaintStringStruct>();
         if (psString == nullptr)
@@ -233,22 +231,10 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD150
-    void PaintSession::addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    PaintStruct* PaintSession::addToPlotList4FD150(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        registers regs;
-        regs.ebx = imageId.toUInt32();
-        // regs.al = offset.x;
-        // regs.cl = offset.y;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
-
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
-
-        call(_4FD150[currentRotation], regs);
+        // This is identical to addToPlotListAsParent but the offset.x and offset.y are 0
+        return addToPlotListAsParent(imageId, offset, boundBoxOffset, boundBoxSize);
     }
 
     // 0x004FD200
@@ -263,9 +249,8 @@ namespace OpenLoco::Paint
         regs.si = boundBoxSize.y;
         regs.ah = boundBoxSize.z;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        setBoundingBoxOffset(boundBoxOffset);
+
         // Similar to addToPlotListAsParent but shrinks the bound box based on the rt
         call(_4FD200[currentRotation], regs);
     }
@@ -287,21 +272,38 @@ namespace OpenLoco::Paint
         return ps;
     }
 
-    void PaintSession::addToPlotList4FD180(ImageId imageId, uint32_t ecx, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    // 0x004FD170
+    PaintStruct* PaintSession::addToPlotListTrackRoad(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
     {
-        registers regs;
-        regs.ebx = imageId.toUInt32();
-        regs.ecx = ecx;
-        regs.dx = offset.z;
-        regs.di = boundBoxSize.x;
-        regs.si = boundBoxSize.y;
-        regs.ah = boundBoxSize.z;
+        _lastPS = nullptr;
 
-        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
-        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
-        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps != nullptr)
+        {
+            _lastPS = ps;
+            auto* lastTRS = _trackRoadPaintStructs[priority];
+            _trackRoadPaintStructs[priority] = ps;
+            ps->children = lastTRS;
+        }
 
-        call(_4FD180[currentRotation], regs);
+        return ps;
+    }
+
+    // 0x004FD180
+    PaintStruct* PaintSession::addToPlotListTrackRoadAddition(ImageId imageId, uint32_t priority, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize)
+    {
+        _lastPS = nullptr;
+
+        auto* ps = createNormalPaintStruct(imageId, offset, boundBoxOffset, boundBoxSize);
+        if (ps != nullptr)
+        {
+            _lastPS = ps;
+            auto* lastTRS = _trackRoadAdditionsPaintStructs[priority];
+            _trackRoadAdditionsPaintStructs[priority] = ps;
+            ps->children = lastTRS;
+        }
+
+        return ps;
     }
 
     // 0x0045E779
@@ -333,13 +335,15 @@ namespace OpenLoco::Paint
         {
             quadrant = nullptr;
         }
-        _quadrantBackIndex = -1;
+        _quadrantBackIndex = std::numeric_limits<uint32_t>::max();
         _quadrantFrontIndex = 0;
-        _lastPaintString = 0;
-        _paintStringHead = 0;
+        _lastPaintString = nullptr;
+        _paintStringHead = nullptr;
 
         _viewFlags = options.viewFlags;
         currentRotation = options.rotation;
+
+        // TODO: unused
         _foregroundCullingHeight = options.foregroundCullHeight;
     }
 
@@ -348,6 +352,44 @@ namespace OpenLoco::Paint
     {
         _session.init(rt, options);
         return &_session;
+    }
+
+    static PaintStruct* addToPlotListTrackRoadHookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto priority = regs.ecx;
+        const auto offset = World::Pos3(0, 0, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotListTrackRoad(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
+    static PaintStruct* addToPlotListTrackRoadAdditionHookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto priority = regs.ecx;
+        const auto offset = World::Pos3(0, 0, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotListTrackRoadAddition(imageId, priority, offset, boundingBoxOffset, boundingBoxSize);
+    }
+
+    static PaintStruct* addToPlot4FD150HookHelper(registers& regs, uint8_t rotation)
+    {
+        PaintSession session;
+        const auto imageId = ImageId::fromUInt32(regs.ebx);
+        const auto offset = World::Pos3(0, 0, regs.dx);
+        const auto boundingBoxSize = World::Pos3(regs.di, regs.si, regs.ah);
+        const auto& boundingBoxOffset = session.getBoundingBoxOffset();
+
+        session.setRotation(rotation);
+        return session.addToPlotList4FD150(imageId, offset, boundingBoxOffset, boundingBoxSize);
     }
 
     void registerHooks()
@@ -363,16 +405,148 @@ namespace OpenLoco::Paint
                 regs = backup;
                 return 0;
             });
-        registerTrackHooks();
-    }
 
-    const SegmentFlags segmentOffsets[9] = { SegmentFlags::_58, SegmentFlags::_5C, SegmentFlags::_60, SegmentFlags::_64, SegmentFlags::_68, SegmentFlags::_6C, SegmentFlags::_70, SegmentFlags::_74, SegmentFlags::_78 };
+        registerHook(
+            0x0045BF9F,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 0);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C0F2,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 1);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C24C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 2);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C3A7,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadHookHelper(regs, 3);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+
+        registerHook(
+            0x0045C503,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 0);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C656,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 1);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C7B0,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 2);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045C90B,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlotListTrackRoadAdditionHookHelper(regs, 3);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+
+        registerHook(
+            0x0045B405,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlot4FD150HookHelper(regs, 0);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045B58D,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlot4FD150HookHelper(regs, 1);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045B721,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlot4FD150HookHelper(regs, 2);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+        registerHook(
+            0x0045B8B9,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                auto* ps = addToPlot4FD150HookHelper(regs, 3);
+                auto res = ps != nullptr ? X86_FLAG_CARRY : 0;
+                regs = backup;
+                regs.ebp = X86Pointer(ps);
+                return res;
+            });
+    }
 
     void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
     {
         for (int32_t s = 0; s < 9; s++)
         {
-            if ((segments & segmentOffsets[s]) != SegmentFlags::none)
+            if ((segments & kSegmentOffsets[s]) != SegmentFlags::none)
             {
                 _supportSegments[s].height = height;
                 if (height != 0xFFFF)
@@ -398,6 +572,38 @@ namespace OpenLoco::Paint
         _tunnels1[0].height = 0xFF;
         _tunnels2[0].height = 0xFF;
         _tunnels3[0].height = 0xFF;
+    }
+
+    void PaintSession::insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge)
+    {
+        TunnelEntry entry{ static_cast<World::MicroZ>(z / World::kMicroZStep), tunnelType };
+        auto tunnelCount = _tunnelCounts[edge];
+        auto tunnels = getTunnels(edge);
+        bool insert = true;
+        if (tunnelCount > 0)
+        {
+            if (tunnels[tunnelCount - 1] == entry)
+            {
+                insert = false;
+            }
+        }
+        if (insert)
+        {
+            tunnels[tunnelCount] = entry;
+            tunnels[tunnelCount + 1] = { 0xFF, 0xFFU };
+            tunnelCount++;
+        }
+    }
+
+    void PaintSession::insertTunnels(const std::array<int16_t, 4>& tunnelHeights, coord_t height, uint8_t tunnelType)
+    {
+        for (auto edge = 0U; edge < tunnelHeights.size(); edge++)
+        {
+            if (tunnelHeights[edge] != -1)
+            {
+                insertTunnel(tunnelHeights[edge] + height, tunnelType, edge);
+            }
+        }
     }
 
     struct GenerationParameters
@@ -759,13 +965,10 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool isTypeForegroundCullableScenery(const Ui::ViewportInteraction::InteractionItem type)
+    static bool isTypeCullableBuilding(const Ui::ViewportInteraction::InteractionItem type)
     {
         switch (type)
         {
-            case Ui::ViewportInteraction::InteractionItem::industryTree:
-            case Ui::ViewportInteraction::InteractionItem::tree:
-            case Ui::ViewportInteraction::InteractionItem::wall:
             case Ui::ViewportInteraction::InteractionItem::building:
             case Ui::ViewportInteraction::InteractionItem::industry:
             case Ui::ViewportInteraction::InteractionItem::headquarterBuilding:
@@ -775,19 +978,40 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool isTypeForegroundCullableTrack(const Ui::ViewportInteraction::InteractionItem type)
+    static bool isTypeCullableRoad(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        switch (type)
+        {
+            case Ui::ViewportInteraction::InteractionItem::roadStation:
+            case Ui::ViewportInteraction::InteractionItem::road:
+            case Ui::ViewportInteraction::InteractionItem::roadExtra:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    static bool isTypeCullableScenery(const Ui::ViewportInteraction::InteractionItem type)
+    {
+        switch (type)
+        {
+            case Ui::ViewportInteraction::InteractionItem::wall:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    static bool isTypeCullableTrack(const Ui::ViewportInteraction::InteractionItem type)
     {
         switch (type)
         {
             case Ui::ViewportInteraction::InteractionItem::track:
             case Ui::ViewportInteraction::InteractionItem::trackExtra:
             case Ui::ViewportInteraction::InteractionItem::signal:
-            case Ui::ViewportInteraction::InteractionItem::trackStation:
-            case Ui::ViewportInteraction::InteractionItem::roadStation:
+            case Ui::ViewportInteraction::InteractionItem::trainStation:
             case Ui::ViewportInteraction::InteractionItem::airport:
             case Ui::ViewportInteraction::InteractionItem::dock:
-            case Ui::ViewportInteraction::InteractionItem::road:
-            case Ui::ViewportInteraction::InteractionItem::roadExtra:
             case Ui::ViewportInteraction::InteractionItem::bridge:
                 return true;
             default:
@@ -795,32 +1019,53 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const Ui::ViewportFlags viewFlags, const uint8_t rotation, const int16_t foregroundCullingHeight)
+    static bool isTypeCullableTree(const Ui::ViewportInteraction::InteractionItem type)
     {
-        if ((viewFlags & Ui::ViewportFlags::hide_foreground_scenery_buildings) != Ui::ViewportFlags::none)
+        switch (type)
         {
-            if (isTypeForegroundCullableScenery(ps.type))
-            {
-                const auto pos = Math::Vector::rotate(World::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
-                const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
-                if (height > foregroundCullingHeight)
-                {
+            case Ui::ViewportInteraction::InteractionItem::industryTree:
+            case Ui::ViewportInteraction::InteractionItem::tree:
+                return true;
+            default:
+                return false;
+        }
+    }
 
-                    return true;
-                }
+    static bool shouldTryCullPaintStruct(const PaintStruct& ps, const Ui::ViewportFlags viewFlags)
+    {
+        if ((viewFlags & Ui::ViewportFlags::seeThroughTracks) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableTrack(ps.type))
+            {
+                return true;
             }
         }
-        else if ((viewFlags & Ui::ViewportFlags::hide_foreground_tracks_roads) != Ui::ViewportFlags::none)
+        if ((viewFlags & Ui::ViewportFlags::seeThroughRoads) != Ui::ViewportFlags::none)
         {
-            if (isTypeForegroundCullableTrack(ps.type))
+            if (isTypeCullableRoad(ps.type))
             {
-                const auto pos = Math::Vector::rotate(World::Pos2{ ps.bounds.xEnd, ps.bounds.yEnd }, rotation);
-                const auto height = (pos.x + pos.y) / 2 - ps.bounds.z;
-                if (height > foregroundCullingHeight)
-                {
-
-                    return true;
-                }
+                return true;
+            }
+        }
+        if ((viewFlags & Ui::ViewportFlags::seeThroughTrees) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableTree(ps.type))
+            {
+                return true;
+            }
+        }
+        if ((viewFlags & Ui::ViewportFlags::seeThroughScenery) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableScenery(ps.type))
+            {
+                return true;
+            }
+        }
+        if ((viewFlags & Ui::ViewportFlags::seeThroughBuildings) != Ui::ViewportFlags::none)
+        {
+            if (isTypeCullableBuilding(ps.type))
+            {
+                return true;
             }
         }
         return false;
@@ -911,7 +1156,7 @@ namespace OpenLoco::Paint
 
         for (const auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
-            const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+            const bool shouldCull = shouldTryCullPaintStruct(*ps, _viewFlags);
 
             if (shouldCull)
             {
@@ -927,7 +1172,7 @@ namespace OpenLoco::Paint
             for (const auto* childPs = ps->children; childPs != nullptr; childPs = childPs->children)
             {
                 // assert(childPs->attachedPS == nullptr); Children can have attachments but we are skipping them to be investigated!
-                const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags, getRotation(), _foregroundCullingHeight);
+                const bool shouldCullChild = shouldTryCullPaintStruct(*childPs, _viewFlags);
 
                 if (shouldCullChild)
                 {
@@ -943,7 +1188,7 @@ namespace OpenLoco::Paint
             // Draw any attachments to the struct
             for (const auto* attachPs = ps->attachedPS; attachPs != nullptr; attachPs = attachPs->next)
             {
-                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags, getRotation(), _foregroundCullingHeight);
+                const bool shouldCullAttach = shouldTryCullPaintStruct(*ps, _viewFlags);
                 if (shouldCullAttach)
                 {
                     if (cullPaintStructImage(attachPs->imageId, _viewFlags))
@@ -1171,5 +1416,134 @@ namespace OpenLoco::Paint
             interaction.pos.y = town.y;
         }
         return interaction;
+    }
+
+    static PaintStruct* getLastChild(PaintStruct& ps)
+    {
+        auto* lastChild = &ps;
+        for (; lastChild->children != nullptr; lastChild = lastChild->children)
+            ;
+        return lastChild;
+    }
+
+    static PaintStruct* appendTogetherStructs(std::span<PaintStruct*> paintStructs)
+    {
+        PaintStruct* routeEntry = nullptr;
+        // Append all of the paint structs together onto the route entry as children in order of array
+        PaintStruct* lastEntry = nullptr;
+        for (auto* entry : paintStructs)
+        {
+            if (entry == nullptr)
+            {
+                continue;
+            }
+            if (lastEntry == nullptr)
+            {
+                routeEntry = entry;
+            }
+            else
+            {
+                lastEntry->children = entry;
+            }
+            lastEntry = getLastChild(*entry);
+        }
+
+        // Reset table now that we have appended into one
+        std::fill(std::begin(paintStructs), std::end(paintStructs), nullptr);
+        return routeEntry;
+    }
+
+    // 0x0045CABF, 0x0045CAF4, 0x0045CB29, 0x0045CB5A, 0x0045CC73, 0x0045CCA8, 0x0045CCDD, 0x0045CD0E
+    static PaintStructBoundBox getMinMaxXYBounding(PaintStruct& routeEntry, uint8_t rotation)
+    {
+        auto minMaxBounds = routeEntry.bounds;
+        switch (rotation)
+        {
+            case 0:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+            case 1:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::max(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::min(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+            case 2:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::min(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::max(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+            case 3:
+                for (auto* child = routeEntry.children; child != nullptr; child = child->children)
+                {
+                    minMaxBounds.x = std::max(minMaxBounds.x, child->bounds.x);
+                    minMaxBounds.y = std::min(minMaxBounds.y, child->bounds.y);
+                    minMaxBounds.xEnd = std::min(minMaxBounds.xEnd, child->bounds.xEnd);
+                    minMaxBounds.yEnd = std::max(minMaxBounds.yEnd, child->bounds.yEnd);
+                }
+                break;
+        }
+        return minMaxBounds;
+    }
+
+    void PaintSession::finaliseOrdering(std::span<PaintStruct*> paintStructs)
+    {
+        auto* routeEntry = appendTogetherStructs(paintStructs);
+
+        if (routeEntry == nullptr)
+        {
+            return;
+        }
+
+        auto minMaxBounds = getMinMaxXYBounding(*routeEntry, getRotation());
+
+        routeEntry->bounds.x = minMaxBounds.x;
+        routeEntry->bounds.y = minMaxBounds.y;
+        routeEntry->bounds.xEnd = minMaxBounds.xEnd;
+        routeEntry->bounds.yEnd = minMaxBounds.yEnd;
+
+        addPSToQuadrant(*routeEntry);
+    }
+
+    // 0x0045CA67
+    void PaintSession::finaliseTrackRoadOrdering()
+    {
+        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadPaintStructs[0], &_trackRoadPaintStructs[0] + std::size(_trackRoadPaintStructs)));
+    }
+
+    // 0x0045CC1B
+    void PaintSession::finaliseTrackRoadAdditionsOrdering()
+    {
+        finaliseOrdering(std::span<PaintStruct*>(&_trackRoadAdditionsPaintStructs[0], &_trackRoadAdditionsPaintStructs[0] + std::size(_trackRoadAdditionsPaintStructs)));
+    }
+
+    // Note: Size includes for 1 extra at end that should never be anything other than 0xFF, 0xFF or 0, 0
+    std::span<TunnelEntry> PaintSession::getTunnels(uint8_t edge)
+    {
+        switch (edge)
+        {
+            case 0:
+                return std::span<TunnelEntry>(&_tunnels0[0], _tunnels0.size());
+            case 1:
+                return std::span<TunnelEntry>(&_tunnels1[0], _tunnels1.size());
+            case 2:
+                return std::span<TunnelEntry>(&_tunnels2[0], _tunnels2.size());
+            case 3:
+                return std::span<TunnelEntry>(&_tunnels3[0], _tunnels3.size());
+        }
+        return std::span<TunnelEntry>();
     }
 }

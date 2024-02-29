@@ -32,11 +32,6 @@ namespace OpenLoco
         {
             return level == other.level;
         }
-
-        constexpr bool operator!=(const ZoomLevel other) const
-        {
-            return level != other.level;
-        }
     };
 #pragma pack(pop)
 

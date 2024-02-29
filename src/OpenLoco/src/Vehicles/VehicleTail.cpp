@@ -77,7 +77,7 @@ namespace OpenLoco::Vehicles
         const World::Pos3 _oldTilePos = World::Pos3(tileX, tileY, tileBaseZ * World::kSmallZStep);
 
         _vehicleUpdate_var_1136114 = 0;
-        sub_4B15FF(*_vehicleUpdate_var_113612C);
+        updateTrackMotion(*_vehicleUpdate_var_113612C);
 
         if (*_vehicleUpdate_var_1136114 & (1 << 1))
         {

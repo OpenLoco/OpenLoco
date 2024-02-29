@@ -123,6 +123,7 @@ namespace OpenLoco::Scenario
 
     void reset();
     void sub_4748D4();
+    void sub_4969E0(uint8_t al);
     void eraseLandscape();
     void generateLandscape();
     void initialiseDate(uint16_t year);
@@ -147,4 +148,7 @@ namespace OpenLoco::Scenario
     void registerHooks();
     void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args);
     void sub_46115C();
+
+    void loadPreferredCurrencyAlways();
+    void loadPreferredCurrencyNewGame();
 }

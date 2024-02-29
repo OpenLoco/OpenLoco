@@ -16,8 +16,11 @@ namespace OpenLoco
     enum class StationCargoStatsFlags : uint8_t
     {
         none = 0U,
-        flag0 = (1U << 0),
-        flag1 = (1U << 1),
+        // Is there a consumer of this cargo at this station.
+        acceptedForConsumer = (1U << 0),
+        // Can a producer (town building, industry) distribute cargo to
+        // this station.
+        acceptedFromProducer = (1U << 1),
         flag2 = (1U << 2),
         flag3 = (1U << 3),
     };
@@ -43,12 +46,12 @@ namespace OpenLoco
 
         bool isAccepted() const
         {
-            return (flags & StationCargoStatsFlags::flag0) != StationCargoStatsFlags::none;
+            return (flags & StationCargoStatsFlags::acceptedForConsumer) != StationCargoStatsFlags::none;
         }
 
         void isAccepted(bool value)
         {
-            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::flag0, value);
+            flags = Numerics::setMask<StationCargoStatsFlags>(flags, StationCargoStatsFlags::acceptedForConsumer, value);
         }
     };
 
@@ -70,7 +73,7 @@ namespace OpenLoco
         transportModeAir = (1U << 2),
         transportModeWater = (1U << 3),
         flag_4 = (1U << 4),
-        flag_5 = (1U << 5),
+        flag_5 = (1U << 5), // isNotFullyCreated ?? like ghost will never have this set
         flag_6 = (1U << 6),
         flag_7 = (1U << 7),
         flag_8 = (1U << 8),
@@ -78,7 +81,7 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(StationFlags);
 
-    string_id getTransportIconsFromStationFlags(const StationFlags flags);
+    StringId getTransportIconsFromStationFlags(const StationFlags flags);
 
     struct CargoSearchState;
 
@@ -90,18 +93,18 @@ namespace OpenLoco
 
     struct Station
     {
-        string_id name = StringIds::null; // 0x00
-        coord_t x{};                      // 0x02
-        coord_t y{};                      // 0x04
-        coord_t z{};                      // 0x06
-        LabelFrame labelFrame;            // 0x08
-        CompanyId owner{};                // 0x28
-        uint8_t var_29{};
+        StringId name = StringIds::null;              // 0x00
+        coord_t x{};                                  // 0x02
+        coord_t y{};                                  // 0x04
+        coord_t z{};                                  // 0x06
+        LabelFrame labelFrame;                        // 0x08
+        CompanyId owner{};                            // 0x28
+        uint8_t noTilesTimeout{};                     // 0x29 measured in days
         StationFlags flags{};                         // 0x2A
         TownId town{};                                // 0x2C
         StationCargoStats cargoStats[kMaxCargoStats]; // 0x2E
         uint16_t stationTileSize{};                   // 0x1CE
-        World::Pos3 stationTiles[80];                 // 0x1D0
+        World::Pos3 stationTiles[80];                 // 0x1D0 Note: z coordinate also contains rotation so always floor
         uint8_t var_3B0{};
         uint8_t var_3B1{};
         uint16_t var_3B2{};
@@ -115,7 +118,6 @@ namespace OpenLoco
         StationId id() const;
         void update();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState) const;
-        void sub_48F7D1();
         char* getStatusString(char* buffer);
         bool updateCargo();
         int32_t calculateCargoRating(const StationCargoStats& cargo) const;
@@ -140,10 +142,14 @@ namespace OpenLoco
         uint32_t accepted;
         uint32_t produced;
     };
-    PotentialCargo calcAcceptedCargoTrackStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
+    PotentialCargo calcAcceptedCargoTrainStationGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
     PotentialCargo calcAcceptedCargoAirportGhost(const Station* ghostStation, const uint8_t type, const World::Pos2& location, const uint8_t rotation, const uint32_t filter);
     PotentialCargo calcAcceptedCargoDockGhost(const Station* ghostStation, const World::Pos2& location, const uint32_t filter);
     void sub_491C6F(const uint8_t type, const World::Pos2& pos, const uint8_t rotation, const CatchmentFlags flag);
     void sub_491D20(const World::Pos2& pos, const CatchmentFlags flag);
     void sub_491BF5(const World::Pos2& pos, const CatchmentFlags flag);
+
+    void recalculateStationCenter(const StationId stationId);
+    void recalculateStationModes(const StationId stationId);
+    void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 }

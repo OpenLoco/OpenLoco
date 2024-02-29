@@ -38,7 +38,7 @@ namespace OpenLoco
         Unk4F9274{ { 32, 32 }, 2 },
         Unk4F9274{ { 32, 0 }, 3 },
     };
-    const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type)
+    const std::span<const Unk4F9274> getBuildingTileOffsets(bool type)
     {
         if (type)
             return word_4F927C;
@@ -693,7 +693,7 @@ namespace OpenLoco
                 }
 
                 const auto& cargoStats = station->cargoStats[cargoType];
-                if ((cargoStats.flags & StationCargoStatsFlags::flag1) == StationCargoStatsFlags::none)
+                if ((cargoStats.flags & StationCargoStatsFlags::acceptedFromProducer) == StationCargoStatsFlags::none)
                 {
                     continue;
                 }

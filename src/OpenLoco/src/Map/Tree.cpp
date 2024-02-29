@@ -1,6 +1,8 @@
 #include "Tree.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/CreateTree.h"
+#include "Graphics/Colour.h"
+#include "Map/MapSelection.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TreeObject.h"
@@ -8,7 +10,7 @@
 #include "Scenario.h"
 #include "SurfaceElement.h"
 #include "TileManager.h"
-#include "Ui.h"
+#include "Ui/ViewportInteraction.h"
 #include <OpenLoco/Math/Trigonometry.hpp>
 
 namespace OpenLoco::World
@@ -98,7 +100,7 @@ namespace OpenLoco::World
     bool placeRandomTree(const World::Pos2& pos, std::optional<uint8_t> treeType)
     {
         GameCommands::TreePlacementArgs args;
-        args.quadrant = Ui::ViewportInteraction::getQuadrantFromPos(pos);
+        args.quadrant = World::getQuadrantFromPos(pos);
         args.pos = World::Pos2(pos.x & 0xFFE0, pos.y & 0xFFE0);
         // Note: this is not the same as the randomDirection above as it is the trees rotation
         args.rotation = gPrng1().randNext(3);

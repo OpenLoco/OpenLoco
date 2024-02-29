@@ -18,7 +18,7 @@ namespace OpenLoco
     }
 
     // 0x004697C9
-    void TunnelObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void TunnelObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(TunnelObject));
 

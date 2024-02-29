@@ -102,7 +102,7 @@ namespace OpenLoco::World
         return nullptr;
     }
 
-    StationElement* Tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
+    StationElement* Tile::trainStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
     {
         StationElement* result = nullptr;
         bool trackFound = false;
@@ -144,15 +144,26 @@ namespace OpenLoco::World
                 result = tile.as<StationElement>();
                 if (result != nullptr)
                 {
-                    break;
+                    return result;
                 }
             }
             auto* elRoad = tile.as<RoadElement>();
             if (elRoad == nullptr)
+            {
+                // We can have any amount of road elements between the station
+                // this is different to a track where the station is always the next
+                // element.
+                trackFound = false;
                 continue;
-            trackFound = false;
+            }
             if (elRoad->baseZ() != baseZ)
+            {
+                // We can have any amount of road elements between the station
+                // but if the base height is different then the station doesn't
+                // exist here! (Should never happen)
+                trackFound = false;
                 continue;
+            }
             if (elRoad->unkDirection() != direction)
                 continue;
             if (elRoad->roadId() != roadId)
@@ -165,7 +176,11 @@ namespace OpenLoco::World
     }
 
     StationType StationElement::stationType() const { return StationType(_5 >> 5); }
-
+    void StationElement::setStationType(StationType type)
+    {
+        _5 &= ~0xE0;
+        _5 |= (enumValue(type) & 0x7) << 5;
+    }
     /**
      *
      * @param x @<ax>

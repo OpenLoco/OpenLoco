@@ -3,8 +3,8 @@
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
-#include <OpenLoco/Core/Span.hpp>
 #include <array>
+#include <span>
 
 namespace OpenLoco
 {
@@ -36,8 +36,8 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::tree;
 
-        string_id name;                  // 0x00
-        uint8_t var_02;                  // 0x02
+        StringId name;                   // 0x00
+        uint8_t initialHeight;           // 0x02
         uint8_t height;                  // 0x03
         uint8_t var_04;                  // 0x04
         uint8_t var_05;                  // 0x05
@@ -60,7 +60,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         uint8_t getTreeGrowthDisplayOffset() const;
         bool validate() const;
-        void load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*);
+        void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
         constexpr bool hasFlags(TreeObjectFlags flagsToTest) const
         {

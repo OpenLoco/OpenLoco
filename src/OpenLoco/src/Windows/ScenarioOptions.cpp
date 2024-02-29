@@ -15,6 +15,7 @@
 #include "ScenarioObjective.h"
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -25,7 +26,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
     static constexpr Ui::Size kChallengeWindowSize = { 366, 197 };
-    static constexpr Ui::Size kCompaniesWindowSize = { 366, 327 };
+    static constexpr Ui::Size kCompaniesWindowSize = { 366, 260 };
     static constexpr Ui::Size kOtherWindowSize = { 366, 217 };
 
     namespace Common
@@ -53,9 +54,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_company_options),            \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_financial_options),          \
         makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_scenario_options)
-
-        // Defined at the bottom of this file.
-        static void initEvents();
 
         // 0x00440082
         static void update(Window& window)
@@ -189,8 +187,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widgetEnd(),
         };
 
-        static WindowEventList events;
-
         // 0x0043FC91
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
@@ -208,7 +204,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, window.width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
-        static const string_id objectiveTypeLabelIds[] = {
+        static const StringId objectiveTypeLabelIds[] = {
             StringIds::objective_achieve_a_certain_company_value,
             StringIds::objective_achieve_a_certain_monthly_profit_from_vehicles,
             StringIds::objective_achieve_a_certain_performance_index,
@@ -478,14 +474,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
+            return kEvents;
         }
     }
 
@@ -495,8 +495,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         auto window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         }
@@ -504,7 +504,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         if (window == nullptr)
         {
             // 0x0043EEFF start
-            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, kOtherWindowSize, WindowFlags::none, &Challenge::events);
+            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, kOtherWindowSize, WindowFlags::none, Challenge::getEvents());
             window->widgets = Challenge::widgets;
             window->enabledWidgets = Challenge::enabledWidgets;
             window->number = 0;
@@ -523,16 +523,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             window->height = kOtherWindowSize.height;
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         window->currentTab = 0;
         window->invalidate();
 
         window->widgets = Challenge::widgets;
         window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = Challenge::holdableWidgets;
-        window->eventHandlers = &Challenge::events;
+        window->eventHandlers = &Challenge::getEvents();
         window->activatedWidgets = 0;
 
         window->callOnResize();
@@ -552,18 +549,21 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             delay_before_competing_companies_start,
             delay_before_competing_companies_start_down,
             delay_before_competing_companies_start_up,
+            groupbox_preferred_ai,
             preferred_intelligence,
             preferred_intelligence_btn,
             preferred_aggressiveness,
             preferred_aggressiveness_btn,
             preferred_competitiveness,
             preferred_competitiveness_btn,
+            groupbox_forbid_competitor_vehicles,
             competitor_forbid_trains,
             competitor_forbid_buses,
             competitor_forbid_trucks,
             competitor_forbid_trams,
             competitor_forbid_aircraft,
             competitor_forbid_ships,
+            groupbox_forbid_player_vehicles,
             player_forbid_trains,
             player_forbid_buses,
             player_forbid_trucks,
@@ -576,28 +576,29 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             commonWidgets(327, StringIds::title_company_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
-            makeDropdownWidgets({ 246, 102 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 117 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeDropdownWidgets({ 246, 132 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeWidget({ 15, 160 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
-            makeWidget({ 15, 172 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
-            makeWidget({ 15, 184 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
-            makeWidget({ 15, 196 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
-            makeWidget({ 15, 208 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 15, 220 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
-            makeWidget({ 15, 247 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
-            makeWidget({ 15, 259 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
-            makeWidget({ 15, 271 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
-            makeWidget({ 15, 283 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
-            makeWidget({ 15, 295 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
-            makeWidget({ 15, 307 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
+            makeWidget({ 5, 102 - 14 - 5 }, { 356, 63 }, WidgetType::groupbox, WindowColour::secondary, StringIds::selection_of_competing_companies),
+            makeDropdownWidgets({ 246, 102 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 246, 117 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeDropdownWidgets({ 246, 132 - 4 }, { 110, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 5, 150 }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_competing_companies_from_using),
+            makeWidget({ 15, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
+            makeWidget({ 15, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
+            makeWidget({ 130, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
+            makeWidget({ 130, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
+            makeWidget({ 260, 166 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
+            makeWidget({ 260, 180 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
+            makeWidget({ 5, 202 }, { 356, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::forbid_player_companies_from_using),
+            makeWidget({ 15, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trains),
+            makeWidget({ 15, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trams),
+            makeWidget({ 130, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_buses),
+            makeWidget({ 130, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_trucks),
+            makeWidget({ 260, 219 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_aircraft),
+            makeWidget({ 260, 233 }, { 341, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::forbid_ships),
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
-        const uint64_t holdableWidgets = (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up);
-
-        static WindowEventList events;
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up) | (1ULL << widx::preferred_intelligence) | (1ULL << widx::preferred_intelligence_btn) | (1ULL << widx::preferred_aggressiveness) | (1ULL << widx::preferred_aggressiveness_btn) | (1ULL << widx::preferred_competitiveness) | (1ULL << widx::preferred_competitiveness_btn) | (1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships);
+        const uint64_t holdableWidgets = (1ULL << widx::max_competing_companies_down) | (1ULL << widx::max_competing_companies_up) | (1ULL << widx::delay_before_competing_companies_start_down) | (1ULL << widx::delay_before_competing_companies_start_up);
 
         // 0x0043F4EB
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
@@ -619,12 +620,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             {
-                const int16_t xPos = window.x + 15;
-                int16_t yPos = window.y + widgets[widx::preferred_intelligence].top - 14;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
-            }
-
-            {
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::preferred_intelligence].top + 1;
                 drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
@@ -641,21 +636,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 int16_t yPos = window.y + widgets[widx::preferred_competitiveness].top + 1;
                 drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
             }
-
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::competitor_forbid_trains].top - 12;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
-            }
-
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::player_forbid_trains].top - 12;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
-            }
         }
 
-        static string_id preferenceLabelIds[] = {
+        static StringId preferenceLabelIds[] = {
             StringIds::preference_any,
             StringIds::preference_low,
             StringIds::preference_medium,
@@ -835,21 +818,25 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.widgets[widx::preferred_aggressiveness].text = preferenceLabelIds[state.preferredAIAggressiveness];
             self.widgets[widx::preferred_competitiveness].text = preferenceLabelIds[state.preferredAICompetitiveness];
 
-            self.activatedWidgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
+            self.activatedWidgets &= ~((1ULL << widx::competitor_forbid_trains) | (1ULL << widx::competitor_forbid_buses) | (1ULL << widx::competitor_forbid_trucks) | (1ULL << widx::competitor_forbid_trams) | (1ULL << widx::competitor_forbid_aircraft) | (1ULL << widx::competitor_forbid_ships) | (1ULL << widx::player_forbid_trains) | (1ULL << widx::player_forbid_buses) | (1ULL << widx::player_forbid_trucks) | (1ULL << widx::player_forbid_trams) | (1ULL << widx::player_forbid_aircraft) | (1ULL << widx::player_forbid_ships));
 
             // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
             self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
             self.activatedWidgets |= static_cast<uint64_t>(state.forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
+            return kEvents;
         }
     }
 
@@ -878,8 +865,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
         const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
-
-        static WindowEventList events;
 
         // 0x0043F97D
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
@@ -965,7 +950,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0046E306
         static uint32_t getLoanSizeInCurrency()
         {
-            uint64_t loanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getStartingLoanSize(), 0, 8) / 100 * 100;
+            currency32_t loanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getStartingLoanSize(), 0, 8) / 100 * 100;
             return static_cast<uint32_t>(loanSizeInCurrency);
         }
 
@@ -986,13 +971,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             args.push<uint32_t>(state.loanInterestRate);
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onUpdate = Common::update,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
+            return kEvents;
         }
     }
 
@@ -1016,8 +1005,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
         const uint64_t holdableWidgets = 0;
-
-        static WindowEventList events;
 
         // 0x0043F004
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
@@ -1079,7 +1066,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static string_id scenarioGroupLabelIds[] = {
+        static StringId scenarioGroupLabelIds[] = {
             StringIds::scenario_group_beginner,
             StringIds::scenario_group_easy,
             StringIds::scenario_group_medium,
@@ -1181,15 +1168,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = Common::update,
+            .textInput = textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onDropdown = onDropdown;
-            events.onMouseDown = onMouseDown;
-            events.onMouseUp = onMouseUp;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = textInput;
+            return kEvents;
         }
     }
 
@@ -1199,17 +1190,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Challenge::widgets, widx::tab_challenge, &Challenge::events, &Challenge::enabledWidgets, &Challenge::holdableWidgets },
-            { Companies::widgets, widx::tab_companies, &Companies::events, &Companies::enabledWidgets, &Companies::holdableWidgets },
-            { Finances::widgets, widx::tab_finances, &Finances::events, &Finances::enabledWidgets, &Finances::holdableWidgets },
-            { ScenarioTab::widgets, widx::tab_scenario, &ScenarioTab::events, &ScenarioTab::enabledWidgets, &ScenarioTab::holdableWidgets }
+            { Challenge::widgets,   widx::tab_challenge,  Challenge::getEvents(),   &Challenge::enabledWidgets,   &Challenge::holdableWidgets },
+            { Companies::widgets,   widx::tab_companies,  Companies::getEvents(),   &Companies::enabledWidgets,   &Companies::holdableWidgets },
+            { Finances::widgets,    widx::tab_finances,   Finances::getEvents(),    &Finances::enabledWidgets,    &Finances::holdableWidgets },
+            { ScenarioTab::widgets, widx::tab_scenario,   ScenarioTab::getEvents(), &ScenarioTab::enabledWidgets, &ScenarioTab::holdableWidgets }
         };
+        // clang-format on
 
         static void prepareDraw(Window& self)
         {
@@ -1252,8 +1245,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F16B
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -1266,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = *tabInfo.holdableWidgets;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
 
@@ -1286,14 +1279,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->initScrollWidgets();
             self->invalidate();
             self->moveInsideScreenEdges();
-        }
-
-        static void initEvents()
-        {
-            Challenge::initEvents();
-            Companies::initEvents();
-            Finances::initEvents();
-            ScenarioTab::initEvents();
         }
     }
 }

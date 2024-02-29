@@ -2,6 +2,10 @@
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoadMod.h"
+#include "GameCommands/Road/RemoveRoadMod.h"
+#include "GameCommands/Track/CreateTrackMod.h"
+#include "GameCommands/Track/RemoveTrackMod.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -16,6 +20,7 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 
@@ -99,8 +104,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             case widx::image:
             {
-                Input::toolCancel();
-                Input::toolSet(&self, widgetIndex, CursorId::crosshair);
+                ToolManager::toolCancel();
+                ToolManager::toolSet(&self, widgetIndex, CursorId::crosshair);
                 break;
             }
         }
@@ -380,7 +385,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, string_id name)
+    static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, StringId name)
     {
         auto widgetIndex = checkboxIndex + widx::checkbox_1;
         self->widgets[widgetIndex].type = WidgetType::checkbox;
@@ -459,7 +464,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        static string_id modString[] = {
+        static StringId modString[] = {
             StringIds::single_section,
             StringIds::block_section,
             StringIds::all_connected_track,
@@ -530,16 +535,20 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         self->callOnMouseDown(Overhead::widx::image);
     }
 
-    void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = Common::onClose,
+        .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    const WindowEventList& getEvents()
     {
-        events.onClose = Common::onClose;
-        events.onMouseUp = onMouseUp;
-        events.onMouseDown = onMouseDown;
-        events.onDropdown = onDropdown;
-        events.onUpdate = onUpdate;
-        events.onToolUpdate = onToolUpdate;
-        events.onToolDown = onToolDown;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
+        return kEvents;
     }
 }

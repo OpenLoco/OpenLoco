@@ -21,8 +21,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
     static const int kRowHeight = 10; // CJK: 13
 
-    static WindowEventList _events;
-
     static Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
@@ -46,25 +44,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::Window& self, Gfx::RenderTarget* rt);
-    static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, const uint32_t scrollIndex);
-    static void onMouseUp(Window& self, WidgetIndex_t widgetIndex);
     static void resetShortcuts(Window* self);
-    static std::optional<FormatArguments> tooltip(Window&, WidgetIndex_t);
-    static void getScrollSize(Ui::Window& self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onScrollMouseOver(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseDown(Ui::Window& self, int16_t x, int16_t y, uint8_t scroll_index);
-
-    static void initEvents()
-    {
-        _events.onMouseUp = onMouseUp;
-        _events.getScrollSize = getScrollSize;
-        _events.scrollMouseDown = onScrollMouseDown;
-        _events.scrollMouseOver = onScrollMouseOver;
-        _events.tooltip = tooltip;
-        _events.draw = draw;
-        _events.drawScroll = drawScroll;
-    }
+    static const WindowEventList& getEvents();
 
     // 0x004BE6C7
     Window* open()
@@ -75,10 +56,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         if (window != nullptr)
             return window;
 
-        initEvents();
-
         // 0x004BF833 (create_options_window)
-        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, &_events);
+        window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, WindowFlags::none, getEvents());
 
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);
@@ -103,7 +82,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
     {
-        static const std::unordered_map<uint32_t, string_id> keysToString = { {
+        static const std::unordered_map<uint32_t, StringId> keysToString = { {
             { SDLK_BACKSPACE, StringIds::keyboard_backspace },
             { SDLK_TAB, StringIds::keyboard_tab },
             { SDLK_RETURN, StringIds::keyboard_return },
@@ -177,7 +156,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 break;
             }
 
-            string_id format = StringIds::black_stringid;
+            StringId format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
                 drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
@@ -190,11 +169,11 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 
             const auto& def = shortcutDefs[i];
             auto& shortcut = shortcuts.at(def.id);
-            if (shortcut.keyCode != 0xFFFFFFFF)
+            if (shortcut.keyCode != 0xFFFFFFFF && shortcut.modifiers != KeyModifier::invalid)
             {
-                if (shortcut.modifiers == KeyModifier::shift)
+                if ((shortcut.modifiers & KeyModifier::shift) == KeyModifier::shift)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
-                else if (shortcut.modifiers == KeyModifier::control)
+                else if ((shortcut.modifiers & KeyModifier::control) == KeyModifier::control)
                     modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
 
                 baseStringId = StringIds::stringptr;
@@ -273,5 +252,20 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             return;
 
         EditKeyboardShortcut::open(row);
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .getScrollSize = getScrollSize,
+        .scrollMouseDown = onScrollMouseDown,
+        .scrollMouseOver = onScrollMouseOver,
+        .tooltip = tooltip,
+        .draw = draw,
+        .drawScroll = drawScroll,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

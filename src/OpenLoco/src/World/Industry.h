@@ -7,19 +7,20 @@
 #include <OpenLoco/Core/BitSet.hpp>
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Prng.h>
-#include <OpenLoco/Core/Span.hpp>
 #include <limits>
+#include <span>
 
 namespace OpenLoco
 {
     struct IndustryObject;
 
+    // TODO: Move this to a different header shared with buildings
     struct Unk4F9274
     {
         World::Pos2 pos;
         uint8_t index;
     };
-    const stdx::span<const Unk4F9274> getBuildingTileOffsets(bool type);
+    const std::span<const Unk4F9274> getBuildingTileOffsets(bool type);
 
     enum class IndustryFlags : uint16_t
     {
@@ -34,7 +35,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Industry
     {
-        string_id name;
+        StringId name;
         coord_t x;                  // 0x02
         coord_t y;                  // 0x04
         IndustryFlags flags;        // 0x06

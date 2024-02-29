@@ -15,6 +15,7 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include "Widget.h"
@@ -63,7 +64,6 @@ namespace OpenLoco::Ui::Windows::Town
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void drawTabs(Window* self, Gfx::RenderTarget* rt);
-        static void initEvents();
     }
 
     namespace Town
@@ -88,8 +88,6 @@ namespace OpenLoco::Ui::Windows::Town
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
-
-        static WindowEventList events;
 
         // 0x00498EAF
         static void prepareDraw(Window& self)
@@ -318,15 +316,19 @@ namespace OpenLoco::Ui::Windows::Town
             }
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .viewportRotate = initViewport,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
-            events.viewportRotate = initViewport;
+            return kEvents;
         }
     }
 
@@ -336,8 +338,8 @@ namespace OpenLoco::Ui::Windows::Town
         auto window = WindowManager::bringToFront(WindowType::town, townId);
         if (window != nullptr)
         {
-            if (Input::isToolActive(window->type, window->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(window->type, window->number))
+                ToolManager::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::town, townId);
         }
@@ -346,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const WindowFlags newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
-            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, &Town::events);
+            window = WindowManager::createWindow(WindowType::town, kWindowSize, newFlags, Town::getEvents());
             window->number = townId;
             window->minWidth = 192;
             window->minHeight = 161;
@@ -364,16 +366,13 @@ namespace OpenLoco::Ui::Windows::Town
             window->savedView.clear();
         }
 
-        // TODO(avgeffen): only needs to be called once.
-        Common::initEvents();
-
         window->currentTab = 0;
         window->invalidate();
 
         window->widgets = Town::widgets;
         window->enabledWidgets = Town::enabledWidgets;
         window->holdableWidgets = 0;
-        window->eventHandlers = &Town::events;
+        window->eventHandlers = &Town::getEvents();
         window->activatedWidgets = 0;
         window->disabledWidgets = 0;
         window->initScrollWidgets();
@@ -388,8 +387,6 @@ namespace OpenLoco::Ui::Windows::Town
             commonWidgets(223, 161, StringIds::title_town_population),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x00499469
         static void prepareDraw(Window& self)
@@ -499,14 +496,18 @@ namespace OpenLoco::Ui::Windows::Town
             self.setSize(Ui::Size(299, 172), Ui::Size(299, 327));
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
+            return kEvents;
         }
     }
 
@@ -516,8 +517,6 @@ namespace OpenLoco::Ui::Windows::Town
             commonWidgets(340, 208, StringIds::title_town_local_authority),
             widgetEnd(),
         };
-
-        static WindowEventList events;
 
         // 0x00499761
         static void prepareDraw(Window& self)
@@ -546,7 +545,7 @@ namespace OpenLoco::Ui::Windows::Town
                     continue;
 
                 int16_t rating = (std::clamp<int16_t>(town->companyRatings[i], -1000, 1000) + 1000) / 20;
-                string_id rank{};
+                StringId rank{};
                 if (rating >= 70)
                     rank = StringIds::town_rating_excellent;
                 else if (rating >= 60)
@@ -599,14 +598,18 @@ namespace OpenLoco::Ui::Windows::Town
             self.setSize(Ui::Size(340, 208), Ui::Size(340, 208));
         }
 
-        static void initEvents()
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onResize = onResize,
+            .onUpdate = Common::update,
+            .textInput = Common::textInput,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
         {
-            events.draw = draw;
-            events.onMouseUp = onMouseUp;
-            events.onResize = onResize;
-            events.onUpdate = Common::update;
-            events.prepareDraw = prepareDraw;
-            events.textInput = Common::textInput;
+            return kEvents;
         }
     }
 
@@ -616,15 +619,17 @@ namespace OpenLoco::Ui::Windows::Town
         {
             Widget* widgets;
             const widx widgetIndex;
-            WindowEventList* events;
+            const WindowEventList& events;
             const uint64_t* enabledWidgets;
         };
 
+        // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Town::widgets, widx::tab_town, &Town::events, &Town::enabledWidgets },
-            { Population::widgets, widx::tab_population, &Population::events, &Common::enabledWidgets },
-            { CompanyRatings::widgets, widx::tab_company_ratings, &CompanyRatings::events, &Common::enabledWidgets }
+            { Town::widgets,           widx::tab_town,            Town::getEvents(),           &Town::enabledWidgets },
+            { Population::widgets,     widx::tab_population,      Population::getEvents(),     &Common::enabledWidgets },
+            { CompanyRatings::widgets, widx::tab_company_ratings, CompanyRatings::getEvents(), &Common::enabledWidgets }
         };
+        // clang-format on
 
         static void prepareDraw(Window& self)
         {
@@ -693,8 +698,8 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004991BC
         static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (Input::isToolActive(self->type, self->number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(self->type, self->number))
+                ToolManager::toolCancel();
 
             TextInput::sub_4CE6C9(self->type, self->number);
 
@@ -709,7 +714,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self->enabledWidgets = *tabInfo.enabledWidgets;
             self->holdableWidgets = 0;
-            self->eventHandlers = tabInfo.events;
+            self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
             self->widgets = tabInfo.widgets;
             self->disabledWidgets = 0;
@@ -786,13 +791,6 @@ namespace OpenLoco::Ui::Windows::Town
 
                 Widget::drawTab(self, rt, imageId, widx::tab_company_ratings);
             }
-        }
-
-        static void initEvents()
-        {
-            Town::initEvents();
-            Population::initEvents();
-            CompanyRatings::initEvents();
         }
     }
 }

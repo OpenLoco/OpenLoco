@@ -23,6 +23,8 @@
 #include "SceneManager.h"
 #include "ToolbarTopCommon.h"
 #include "Ui/Dropdown.h"
+#include "Ui/Screenshot.h"
+#include "Ui/ToolManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -87,12 +89,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         quitToDesktop
     };
 
-    static WindowEventList _events;
-
-    static void onMouseDown(Window& window, WidgetIndex_t widgetIndex);
-    static void onDropdown(Window& window, WidgetIndex_t widgetIndex, int16_t itemIndex);
-    static void prepareDraw(Window& window);
-    static void draw(Window& window, Gfx::RenderTarget* rt);
+    static const WindowEventList& getEvents();
 
     // 0x00438B26
     void open()
@@ -101,20 +98,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         _lastTownOption = 0;
         _lastPortOption = 0;
 
-        _events.onResize = Common::onResize;
-        _events.event_03 = onMouseDown;
-        _events.onMouseDown = onMouseDown;
-        _events.onDropdown = onDropdown;
-        _events.onUpdate = Common::onUpdate;
-        _events.prepareDraw = prepareDraw;
-        _events.draw = draw;
-
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
             Ui::Size(Ui::width(), 28),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
-            &_events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
@@ -173,7 +162,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043B1C4
     static void prepareSaveGame()
     {
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         if (isNetworked())
         {
@@ -252,11 +241,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case LoadSaveDropdownId::screenshot:
-                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::regular);
+                triggerScreenshotCountdown(10, ScreenshotType::regular);
                 break;
 
             case LoadSaveDropdownId::giantScreenshot:
-                Input::triggerScreenshotCountdown(10, Input::ScreenshotType::giant);
+                triggerScreenshotCountdown(10, ScreenshotType::giant);
                 break;
 
             case LoadSaveDropdownId::server:
@@ -428,7 +417,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         for (auto i = 0u; i < std::size(availableTracks); i++)
         {
             uint32_t objImage;
-            string_id objStringId;
+            StringId objStringId;
 
             auto objIndex = availableTracks[i];
             if ((objIndex & (1 << 7)) != 0)
@@ -441,7 +430,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             {
                 auto track = ObjectManager::get<TrackObject>(objIndex);
                 objStringId = track->name;
-                objImage = Gfx::recolour(track->image, companyColour);
+                objImage = Gfx::recolour(track->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { objImage, objStringId });
@@ -508,11 +497,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (_lastPortOption == 0)
         {
-            Construction::openWithFlags(1 << 31);
+            Construction::openWithFlags(1U << 31);
         }
         else if (_lastPortOption == 1)
         {
-            Construction::openWithFlags(1 << 30);
+            Construction::openWithFlags(1U << 30);
         }
     }
 
@@ -520,9 +509,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         uint32_t image;
         uint32_t buildImage;
-        string_id buildString;
-        string_id numSingular;
-        string_id numPlural;
+        StringId buildString;
+        StringId numSingular;
+        StringId numPlural;
     };
 
     // clang-format off
@@ -576,7 +565,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         itemIndex = _menuOptions[itemIndex];
         LastGameOptionManager::setLastBuildVehiclesOption(itemIndex);
 
-        BuildVehicle::open(itemIndex, 1 << 31);
+        BuildVehicle::open(itemIndex, 1U << 31);
     }
 
     // 0x0043ABCB
@@ -613,7 +602,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint16_t vehicle_count = vehicle_counts[vehicleType];
 
             // TODO: replace with locale-based plurals.
-            string_id vehicleStringId;
+            StringId vehicleStringId;
             if (vehicle_count == 1)
                 vehicleStringId = interfaceParam.numSingular;
             else
@@ -785,7 +774,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             else
             {
                 auto obj = ObjectManager::get<TrackObject>(ebx);
-                fg_image = Gfx::recolour(obj->image, companyColour);
+                fg_image = Gfx::recolour(obj->image + TrackObj::ImageIds::kUiPreviewImage0, companyColour);
             }
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
@@ -959,5 +948,20 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Common::rightAlignTabs(&window, x, { Common::Widx::terraform_menu });
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onResize = Common::onResize,
+        .event_03 = onMouseDown,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = Common::onUpdate,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

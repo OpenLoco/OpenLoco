@@ -54,18 +54,18 @@ namespace OpenLoco
     }
 
     // 0x004898E4
-    void TrainSignalObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void TrainSignalObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(TrainSignalObject));
 
-        auto loadString = [&remainingData, &handle](string_id& dst, uint8_t num) {
+        auto loadString = [&remainingData, &handle](StringId& dst, uint8_t num) {
             auto strRes = ObjectManager::loadStringTable(remainingData, handle, num);
             dst = strRes.str;
             remainingData = remainingData.subspan(strRes.tableLength);
         };
 
         loadString(name, 0);
-        loadString(var_0C, 1);
+        loadString(description, 1);
 
         // NOTE: These aren't dependent objects as this can load without the
         // related object.
@@ -92,7 +92,7 @@ namespace OpenLoco
     void TrainSignalObject::unload()
     {
         name = 0;
-        var_0C = 0;
+        description = 0;
         image = 0;
         std::fill(std::begin(mods), std::end(mods), 0);
     }
@@ -100,7 +100,7 @@ namespace OpenLoco
     // 0x004899A7
     void TrainSignalObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
-        auto frames = signalFrames[(((numFrames + 2) / 3) - 2)];
+        auto& frames = signalFrames[(((numFrames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;
         auto animationFrame = frameCount & (ScenarioManager::getScenarioTicks() >> animationSpeed);
 

@@ -16,7 +16,7 @@ namespace OpenLoco
     }
 
     // 0x00469A35
-    void SnowObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects*)
+    void SnowObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*)
     {
         auto remainingData = data.subspan(sizeof(SnowObject));
 

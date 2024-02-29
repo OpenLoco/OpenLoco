@@ -36,10 +36,14 @@ namespace OpenLoco::TownManager
         auto townId = res->first;
         auto town = get(townId);
         _dword_1135C38 = town;
-        if (town != nullptr)
+
+        if (town == nullptr)
         {
-            town->populationCapacity += populationCapacity;
+            return nullptr;
         }
+
+        town->populationCapacity += populationCapacity;
+
         if (population != 0)
         {
             town->population += population;
@@ -193,7 +197,7 @@ namespace OpenLoco::TownManager
         auto closestTown = TownId::null; // ebx
         for (const auto& town : towns())
         {
-            const auto distance = Math::Vector::manhattanDistance(World::Pos2(town.x, town.y), loc);
+            const auto distance = Math::Vector::manhattanDistance2D(World::Pos2(town.x, town.y), loc);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
@@ -211,7 +215,7 @@ namespace OpenLoco::TownManager
         {
             return std::nullopt;
         }
-        const int32_t realDistance = Math::Vector::distance(World::Pos2(town->x, town->y), loc);
+        const int32_t realDistance = Math::Vector::distance2D(World::Pos2(town->x, town->y), loc);
         // Works out a proxiy for how likely there is to be buildings at the location
         // i.e. how dense the area is.
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
@@ -224,7 +228,9 @@ namespace OpenLoco::TownManager
         registerHook(
             0x00497348,
             []([[maybe_unused]] registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
                 resetBuildingsInfluence();
+                regs = backup;
                 return 0;
             });
 

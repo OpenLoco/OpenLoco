@@ -12,6 +12,7 @@
 #include "Ui.h"
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
@@ -211,7 +212,7 @@ namespace OpenLoco::Ui
         if (diffX == 0 && diffY == 0)
             return;
 
-        if (vp->hasFlags(ViewportFlags::hide_foreground_tracks_roads) || vp->hasFlags(ViewportFlags::hide_foreground_scenery_buildings) || w->hasFlags(WindowFlags::flag_8))
+        if (vp->hasFlags(ViewportFlags::seeThroughTracks | ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughRoads | ViewportFlags::seeThroughBuildings | ViewportFlags::seeThroughTrees) || w->hasFlags(WindowFlags::flag_8))
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::render(rect);
@@ -1169,6 +1170,14 @@ namespace OpenLoco::Ui
         eventHandlers->drawScroll(*this, *rt, scrollIndex);
     }
 
+    bool Window::callKeyUp(uint32_t charCode, uint32_t keyCode)
+    {
+        if (eventHandlers->keyUp == nullptr)
+            return false;
+
+        return eventHandlers->keyUp(*this, charCode, keyCode);
+    }
+
     // 0x004CA4DF
     void Window::draw(Gfx::RenderTarget* rt)
     {
@@ -1190,7 +1199,7 @@ namespace OpenLoco::Ui
         }
 
         uint64_t tool_widget = 0;
-        if (Input::isToolActive(this->type, this->number))
+        if (ToolManager::isToolActive(this->type, this->number))
         {
             tool_widget = 1ULL << ToolManager::getToolWidgetIndex();
         }

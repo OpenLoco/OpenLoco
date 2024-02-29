@@ -30,13 +30,6 @@ namespace OpenLoco::Input
         scrollRight,       // 9
     };
 
-    // TODO: move this
-    enum class ScreenshotType : uint8_t
-    {
-        regular = 0,
-        giant = 1,
-    };
-
     enum class Flags : uint32_t
     {
         none = 0U,
@@ -50,19 +43,6 @@ namespace OpenLoco::Input
         viewportScrolling = 1U << 7,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
-
-    enum class MapSelectionFlags : uint8_t
-    {
-        none = 0U,
-        enable = 1U << 0,
-        enableConstruct = 1U << 1,
-        enableConstructionArrow = 1U << 2,
-        unk_03 = 1U << 3,
-        unk_04 = 1U << 4, // Vehicle orders?
-        catchmentArea = 1U << 5,
-        hoveringOverStation = 1U << 6,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(MapSelectionFlags);
 
     enum class KeyModifier : uint8_t
     {
@@ -99,32 +79,20 @@ namespace OpenLoco::Input
 
     void updateCursorPosition();
 
-    Ui::Window* toolGetActiveWindow();
-    bool isToolActive(Ui::WindowType);
-
-    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
-    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
-    void toolCancel();
-    void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
-
     void enqueueText(const char* text);
     void enqueueKey(uint32_t key);
     bool hasKeyModifier(KeyModifier modifier);
 
     StationId getHoveredStationId();
 
-    MapSelectionFlags getMapSelectionFlags();
-    bool hasMapSelectionFlag(MapSelectionFlags flags);
-    void setMapSelectionFlags(MapSelectionFlags flags);
-    void resetMapSelectionFlag(MapSelectionFlags flags);
-
-    void triggerScreenshotCountdown(int8_t numTicks, ScreenshotType type);
-
     void handleKeyboard();
     void handleMouse(int16_t x, int16_t y, MouseButton button);
     MouseButton getLastKnownButtonState();
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
+    // Inputs the mouse wheel delta.
+    void mouseWheel(int wheel);
+    // Processes the mouse wheel delta.
+    void processMouseWheel();
     void sub_407218();
     void sub_407231();
     Ui::Point getNextDragOffset();

@@ -57,7 +57,7 @@ namespace OpenLoco::GameCommands
             Ui::WindowManager::invalidate(Ui::WindowType::company, Ui::WindowNumber_t(targetCompanyId));
         }
 
-        if ((flags & Flags::apply) && !(flags & (Flags::flag_4 | Flags::ghost)))
+        if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
         {
             Audio::playSound(Audio::SoundId::demolish, pos);
         }

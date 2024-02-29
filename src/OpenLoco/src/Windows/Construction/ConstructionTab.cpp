@@ -2,10 +2,16 @@
 #include "Construction.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/CreateRoad.h"
+#include "GameCommands/Road/RemoveRoad.h"
+#include "GameCommands/Track/CreateTrack.h"
+#include "GameCommands/Track/RemoveTrack.h"
+#include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/MapSelection.h"
 #include "Map/RoadElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/Track/Track.h"
@@ -20,6 +26,7 @@
 #include "Paint/PaintTile.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/ViewportInteraction.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
@@ -31,7 +38,7 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
-    static loco_global<uint8_t, 0x00508F09> _byte_508F09;
+    static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<uint8_t, 0x00522090> _byte_522090;
     static loco_global<uint8_t, 0x00522091> _byte_522091;
     static loco_global<uint8_t, 0x00522092> _byte_522092;
@@ -130,8 +137,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static std::optional<TrackPieceId> getRoadPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
     static std::optional<TrackPieceId> getTrackPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
 
-    static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // From Vehicle.cpp window
-
     // 0x0049B50C
     void reset()
     {
@@ -139,7 +144,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         LastGameOptionManager::setLastAirport(LastGameOptionManager::kNoLastOption);
         LastGameOptionManager::setLastShipPort(LastGameOptionManager::kNoLastOption);
-        _pickupDirection = 0;
+        getGameState().pickupDirection = 0;
     }
 
     // 0x004A18D4
@@ -195,7 +200,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -265,7 +270,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         auto* roadObj = ObjectManager::get<TrackObject>(_trackType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(roadObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -380,7 +385,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         auto* trackObj = ObjectManager::get<TrackObject>(_trackType);
         auto formatArgs = FormatArguments::common();
-        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.skip(3 * sizeof(StringId));
         formatArgs.push(trackObj->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -413,7 +418,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _113601A[0] = 0;
         _113601A[1] = 0;
         _113609C->size = 0;
-        World::Track::getRoadConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), trackAndDirection);
+        const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
+        World::Track::getRoadConnections(roadEnd.first, roadEnd.second, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7));
 
         if (_113609C->size == 0)
         {
@@ -460,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             auto* trackObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
             auto formatArgs = FormatArguments::common();
-            formatArgs.skip(3 * sizeof(string_id));
+            formatArgs.skip(3 * sizeof(StringId));
             formatArgs.push(trackObj->name);
             GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
 
@@ -529,7 +535,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
                 removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
-                Input::toolSet(&self, widx::construct, CursorId::crosshair);
+                ToolManager::toolSet(&self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
 
                 _constructionHover = 1;
@@ -627,7 +633,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
     }
 
-    static void setMapSelectedTilesFromPiece(const stdx::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
+    static void setMapSelectedTilesFromPiece(const std::span<const TrackData::PreviewTrack> pieces, const World::Pos2& origin, const uint8_t rotation)
     {
         size_t i = 0;
         for (const auto& piece : pieces)
@@ -645,8 +651,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void activateSelectedRoadWidgets(Window* window)
     {
-        TileManager::mapInvalidateMapSelectionTiles();
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_03);
+        World::mapInvalidateMapSelectionTiles();
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::unk_03);
 
         auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -726,7 +732,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
             window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
-            if (_trafficHandedness == 0)
+            if (getGameState().trafficHandedness == 0)
                 window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_left_turnaround;
         }
 
@@ -821,8 +827,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     static void activateSelectedTrackWidgets(Window* window)
     {
-        TileManager::mapInvalidateMapSelectionTiles();
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_03);
+        World::mapInvalidateMapSelectionTiles();
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::unk_03);
 
         auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1762,10 +1768,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _ghostVisibilityFlags = _ghostVisibilityFlags ^ GhostVisibilityFlags::constructArrow;
             _constructionArrowPos = World::Pos3(_x, _y, _constructionZ);
             _constructionArrowDirection = _constructionRotation;
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+            World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
             if ((_ghostVisibilityFlags & GhostVisibilityFlags::constructArrow) != GhostVisibilityFlags::none)
             {
-                Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
+                World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
             }
             World::TileManager::mapInvalidateTileFull(World::Pos2(_x, _y));
         }
@@ -1827,13 +1833,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover == 1)
         {
-            if (!Input::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
+            if (!ToolManager::isToolActive(WindowType::construction, self.number) || ToolManager::getToolWidgetIndex() != widx::construct)
                 WindowManager::close(&self);
         }
         if (_constructionHover == 0)
         {
-            if (Input::isToolActive(WindowType::construction, self.number))
-                Input::toolCancel();
+            if (ToolManager::isToolActive(WindowType::construction, self.number))
+                ToolManager::toolCancel();
         }
         updateConstruction();
     }
@@ -1930,46 +1936,38 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             activateSelectedConstructionWidgets();
             auto window = WindowManager::find(WindowType::construction);
 
-            _byte_508F09 = _byte_508F09 | (1 << 0);
-
+            // Attempt to place track piece -- in silent
+            _suppressErrorSound = true;
             onMouseUp(*window, widx::construct);
+            _suppressErrorSound = false;
 
-            _byte_508F09 = _byte_508F09 & ~(1 << 0);
-
-            if (_dword_1135F42 == 0x80000000)
-            {
-                if (GameCommands::getErrorText() != StringIds::error_can_only_build_above_ground)
-                {
-                    maxRetries--;
-                    if (maxRetries != 0)
-                    {
-                        height -= 16;
-                        if (height >= 0)
-                        {
-                            if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                height += 32;
-                                continue;
-                            }
-                        }
-                    }
-                }
-            }
-            else
+            if (_dword_1135F42 != 0x80000000)
             {
                 _byte_113607E = 1;
                 WindowManager::close(WindowType::error, 0);
                 return;
             }
 
+            if (GameCommands::getErrorText() != StringIds::error_can_only_build_above_ground)
+            {
+                maxRetries--;
+                if (maxRetries != 0)
+                {
+                    height -= 16;
+                    if (height >= 0)
+                    {
+                        if (!Input::hasKeyModifier(Input::KeyModifier::shift))
+                        {
+                            height += 32;
+                        }
+                        continue;
+                    }
+                }
+            }
+
+            // Failed to place track piece -- rotate and make error sound
             onMouseUp(*window, widx::rotate_90);
-
             Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
-
             return;
         }
     }
@@ -1979,7 +1977,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         int16_t maxHeight = 0;
 
-        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
+        if (World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
         {
             for (const auto& tile : _mapSelectedTiles)
             {
@@ -2061,7 +2059,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(World::toTileSpace(*mapPos), height) };
     }
 
-    static int16_t getMaxPieceHeight(const stdx::span<const TrackData::PreviewTrack> piece)
+    static int16_t getMaxPieceHeight(const std::span<const TrackData::PreviewTrack> piece)
     {
         int16_t maxPieceHeight = 0;
 
@@ -2321,8 +2319,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
     static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
-        World::TileManager::mapInvalidateMapSelectionTiles();
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        World::mapInvalidateMapSelectionTiles();
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
         int16_t constructHeight = 0;
@@ -2347,8 +2345,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _makeJunction = 0;
         }
 
-        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+        World::setMapSelectionFlags(World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::unk_03);
 
         _constructionArrowPos = World::Pos3(constructPos.x, constructPos.y, constructHeight);
         _constructionArrowDirection = _constructionRotation;
@@ -2359,7 +2357,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (!pieceId)
         {
             removeConstructionGhosts();
-            World::TileManager::mapInvalidateMapSelectionTiles();
+            World::mapInvalidateMapSelectionTiles();
             return;
         }
         _byte_1136065 = pieceId->id;
@@ -2382,7 +2380,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionArrowPos->z = constructHeight;
         }
         constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
-        World::TileManager::mapInvalidateMapSelectionTiles();
+        World::mapInvalidateMapSelectionTiles();
     }
 
     // 0x0049DC8C
@@ -2419,7 +2417,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         int16_t constructHeight = getMaxConstructHeightFromExistingSelection();
         _word_1136000 = constructHeight;
 
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enable | World::MapSelectionFlags::enableConstruct | World::MapSelectionFlags::enableConstructionArrow);
 
         Pos2 constructPos;
         const auto junctionRes = tryMakeJunction(x, y);
@@ -2441,7 +2439,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             _makeJunction = 0;
         }
-        Input::toolCancel();
+        ToolManager::toolCancel();
 
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
@@ -2536,14 +2534,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         options.rotation = WindowManager::getCurrentRotation(); // This shouldn't be needed...
         auto* session = Paint::allocateSession(rt, options);
 
-        const auto backupSelectionFlags = Input::getMapSelectionFlags();
+        const auto backupSelectionFlags = World::getMapSelectionFlags();
         const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
         const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
 
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstructionArrow);
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
         if (_byte_522095 & (1 << 1))
         {
-            Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstructionArrow);
+            World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
             _constructionArrowPos = pos;
             _constructionArrowDirection = direction;
         }
@@ -2555,7 +2553,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (selectedMods & (1 << mod))
             {
                 const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-                if ((trackExtraObj->trackPieces & _trackPieceToFlags[trackPieceId]) != _trackPieceToFlags[trackPieceId])
+                if ((trackExtraObj->trackPieces & TrackData::getTrackCompatibleFlags(trackPieceId)) != TrackData::getTrackCompatibleFlags(trackPieceId))
                 {
                     selectedMods &= ~(1 << mod);
                 }
@@ -2616,7 +2614,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         session->arrangeStructs();
         session->drawStructs();
 
-        Input::setMapSelectionFlags(backupSelectionFlags);
+        // setMapSelectionFlags OR's flags so reset them to zero to set the backup
+        World::resetMapSelectionFlags();
+        World::setMapSelectionFlags(backupSelectionFlags);
         _constructionArrowPos = backupConstructionArrowPos;
         _constructionArrowDirection = backupConstructionArrowDir;
 
@@ -2843,19 +2843,23 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    void initEvents()
+    static constexpr WindowEventList kEvents = {
+        .onClose = Common::onClose,
+        .onMouseUp = onMouseUp,
+        .onResize = onResize,
+        .onMouseDown = onMouseDown,
+        .onDropdown = onDropdown,
+        .onUpdate = onUpdate,
+        .onToolUpdate = onToolUpdate,
+        .onToolDown = onToolDown,
+        .cursor = cursor,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+    };
+
+    const WindowEventList& getEvents()
     {
-        events.onClose = Common::onClose;
-        events.onMouseUp = onMouseUp;
-        events.onResize = onResize;
-        events.onMouseDown = onMouseDown;
-        events.onDropdown = onDropdown;
-        events.onUpdate = onUpdate;
-        events.onToolUpdate = onToolUpdate;
-        events.onToolDown = onToolDown;
-        events.cursor = cursor;
-        events.prepareDraw = prepareDraw;
-        events.draw = draw;
+        return kEvents;
     }
 
     void previousTrackPiece(Window* self)

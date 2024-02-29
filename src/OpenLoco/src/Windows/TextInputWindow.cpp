@@ -22,14 +22,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     static loco_global<WindowType, 0x523364> _callingWindowType;
 
     static char _formatArgs[16];
-    static string_id _title;
-    static string_id _message;
+    static StringId _title;
+    static StringId _message;
 
     static Ui::TextInput::InputSession inputSession;
 
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
-
-    static WindowEventList _events;
 
     namespace Widx
     {
@@ -84,10 +82,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             });
     }
 
-    static void prepareDraw(Ui::Window& window);
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt);
-    static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Ui::Window& window);
+    static const WindowEventList& getEvents();
 
     /**
      * 0x004CE523
@@ -98,7 +93,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs, uint32_t inputSize)
+    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, void* valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
@@ -110,16 +105,11 @@ namespace OpenLoco::Ui::Windows::TextInput
         // Close any previous text input window
         cancel();
 
-        _events.draw = draw;
-        _events.prepareDraw = prepareDraw;
-        _events.onMouseUp = onMouseUp;
-        _events.onUpdate = onUpdate;
-
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
             WindowFlags::stickToFront | WindowFlags::flag_12,
-            &_events);
+            getEvents());
         window->widgets = _widgets;
         window->enabledWidgets |= 1ULL << Widx::close;
         window->enabledWidgets |= 1ULL << Widx::ok;
@@ -227,7 +217,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         window.draw(rt);
 
-        *((string_id*)(&_commonFormatArgs[0])) = _message;
+        *((StringId*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Ui::Point position = { (int16_t)(window.x + window.width / 2), (int16_t)(window.y + 30) };
@@ -243,7 +233,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strcpy(drawnBuffer, inputSession.buffer.c_str());
 
-        *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
+        *((StringId*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
         position = { inputSession.xOffset, 1 };
         drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
@@ -266,7 +256,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
         drawnBuffer[inputSession.cursorPosition] = '\0';
 
-        *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
+        *((StringId*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
         drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
@@ -303,27 +293,21 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE910
-    void handleInput(uint32_t charCode, uint32_t keyCode)
+    static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
-        auto w = WindowManager::find(WindowType::textInput);
-        if (w == nullptr)
-        {
-            return;
-        }
-
         if (charCode == SDLK_RETURN)
         {
-            w->callOnMouseUp(Widx::ok);
-            return;
+            w.callOnMouseUp(Widx::ok);
+            return true;
         }
         else if (charCode == SDLK_ESCAPE)
         {
-            w->callOnMouseUp(Widx::close);
-            return;
+            w.callOnMouseUp(Widx::close);
+            return true;
         }
         else if (!inputSession.handleInput(charCode, keyCode))
         {
-            return;
+            return false;
         }
 
         WindowManager::invalidate(WindowType::textInput, 0);
@@ -334,5 +318,20 @@ namespace OpenLoco::Ui::Windows::TextInput
         {
             inputSession.calculateTextOffset(containerWidth);
         }
+
+        return true;
+    }
+
+    static constexpr WindowEventList kEvents = {
+        .onMouseUp = onMouseUp,
+        .onUpdate = onUpdate,
+        .prepareDraw = prepareDraw,
+        .draw = draw,
+        .keyUp = keyUp,
+    };
+
+    static const WindowEventList& getEvents()
+    {
+        return kEvents;
     }
 }

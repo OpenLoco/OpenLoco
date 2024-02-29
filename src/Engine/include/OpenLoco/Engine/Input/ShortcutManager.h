@@ -8,7 +8,7 @@
 namespace OpenLoco
 {
     // TODO: Remove this when Localisation/StringTable/StringManager is moved to the engine.
-    using string_id = uint16_t;
+    using StringId = uint16_t;
 }
 
 namespace OpenLoco::Input
@@ -24,20 +24,20 @@ namespace OpenLoco::Input::ShortcutManager
     {
         Shortcut id;
         ShortcutAction action;
-        string_id displayName;
+        StringId displayName;
         const char* configName;
         const char* defaultBinding;
     };
 
     using ShortcutMap = std::vector<ShortcutEntry>;
 
-    void add(Shortcut id, string_id displayName, const ShortcutAction& action, const char* configName, const char* defaultBinding);
+    void add(Shortcut id, StringId displayName, const ShortcutAction& action, const char* configName, const char* defaultBinding);
 
     void remove(Shortcut id);
 
     void execute(Shortcut s);
 
-    string_id getName(Shortcut s);
+    StringId getName(Shortcut s);
 
     const ShortcutMap& getList();
 }

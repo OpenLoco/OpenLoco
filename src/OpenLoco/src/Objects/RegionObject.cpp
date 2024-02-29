@@ -16,7 +16,7 @@ namespace OpenLoco
     }
 
     // 0x0043CA8C
-    void RegionObject::load(const LoadedObjectHandle& handle, stdx::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
+    void RegionObject::load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies)
     {
         auto remainingData = data.subspan(sizeof(RegionObject));
 

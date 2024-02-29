@@ -30,7 +30,7 @@ namespace OpenLoco::Drawing
             // Used for glass.
             op = DrawBlendOp::transparent | DrawBlendOp::dst;
         }
-        else if (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::hasTransparancy))
+        else if (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::hasTransparency))
         {
             // Copy raw bitmap data to target
             op = DrawBlendOp::none;
