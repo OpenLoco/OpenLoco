@@ -1,6 +1,6 @@
 24.02.1+ (???)
 ------------------------------------------------------------------------
-- Fix: [#2312] Object selection allowing deselection of in use objects.
+- Fix: [#2312] Object selection allowing deselection of in-use objects, leading to crashes.
 
 24.02.1 (2024-02-28)
 ------------------------------------------------------------------------
