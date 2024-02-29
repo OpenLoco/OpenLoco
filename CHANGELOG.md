@@ -1,5 +1,6 @@
 24.02.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#126] Station size limitations can now be disabled (though still max 80 tiles per station).
 - Feature: [#2331] Allow setting a preferred owner face to be used for new games.
 - Fix: [#2312] Object selection allowing deselection of in-use objects, leading to crashes.
 - Fix: [#2316, #2321] Vehicles do not rotate in announcement for their invention.
@@ -7,7 +8,6 @@
 24.02.1 (2024-02-28)
 ------------------------------------------------------------------------
 - Fix: [#2310] Newly created stations and the tracks they are on have zero clearance.
-- Change: [#126] Station lengths are no longer limited to 8 tiles (though still max 80 tiles per station).
 
 24.02 (2024-02-24)
 ------------------------------------------------------------------------
