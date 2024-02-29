@@ -10,7 +10,6 @@
 #include "GameState.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
-#include "ModernTerrainGenerator.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/LandObject.h"

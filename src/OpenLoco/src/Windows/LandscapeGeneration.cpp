@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::generator);
         }
 
-        static const string_id generatorIds[] = {
+        static const StringId generatorIds[] = {
             StringIds::generator_original,
             StringIds::generator_simplex,
         };
@@ -323,6 +323,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
             .onUpdate = Common::update,
             .prepareDraw = prepareDraw,
             .draw = draw,
