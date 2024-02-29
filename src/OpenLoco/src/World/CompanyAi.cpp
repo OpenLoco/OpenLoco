@@ -506,7 +506,7 @@ namespace OpenLoco
         company.var_85E2 = 0;
         company.var_85E8 = 0;
 
-        const auto distance = std::max<uint16_t>(256, Math::Vector::distanceXYZ(World::Pos3(company.var_85C4, company.var_85C8 * World::kSmallZStep), World::Pos3(company.var_85C9, company.var_85CD * World::kSmallZStep)));
+        const auto distance = std::max<uint16_t>(256, Math::Vector::distance3D(World::Pos3(company.var_85C4, company.var_85C8 * World::kSmallZStep), World::Pos3(company.var_85C9, company.var_85CD * World::kSmallZStep)));
         company.var_85EA = distance / 2 + distance * 2;
         // TODO: When diverging just set this all to a fixed value rather than only first entry
         for (auto& htEntry : company.var_25C0)

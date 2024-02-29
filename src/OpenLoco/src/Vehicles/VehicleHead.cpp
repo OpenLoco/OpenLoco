@@ -2029,7 +2029,7 @@ namespace OpenLoco::Vehicles
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
         // manhattan distance to target
-        auto manhattanDistance = Math::Vector::manhattanDistance(World::Pos2{ position }, World::Pos2{ *targetPos });
+        auto manhattanDistance = Math::Vector::manhattanDistance2D(World::Pos2{ position }, World::Pos2{ *targetPos });
 
         // Manhatten distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
@@ -2308,7 +2308,7 @@ namespace OpenLoco::Vehicles
         Vehicle train(*this);
 
         breakdownFlags &= ~BreakdownFlags::journeyStarted;
-        const auto distanceTravelled = Math::Vector::distanceXY(journeyStartPos, Pos2(train.veh2->position));
+        const auto distanceTravelled = Math::Vector::distance2D(journeyStartPos, Pos2(train.veh2->position));
 
         const auto timeInTicks = ScenarioManager::getScenarioTicks() - journeyStartTicks;
 
@@ -2483,7 +2483,7 @@ namespace OpenLoco::Vehicles
             veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
-        auto manhattanDistance = Math::Vector::manhattanDistance(World::Pos2{ position }, World::Pos2{ veh2->position });
+        auto manhattanDistance = Math::Vector::manhattanDistance2D(World::Pos2{ position }, World::Pos2{ veh2->position });
         auto targetTolerance = 3;
         if (veh2->currentSpeed >= 20.0_mph)
         {
@@ -2702,7 +2702,7 @@ namespace OpenLoco::Vehicles
             auto* sourceStation = StationManager::get(cargo.townFrom);
             auto stationLoc = World::Pos2{ station->x, station->y };
             auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
-            auto tilesDistance = Math::Vector::distanceXY(stationLoc, sourceLoc) / 32;
+            auto tilesDistance = Math::Vector::distance2D(stationLoc, sourceLoc) / 32;
 
             Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(owner));
             auto* company = CompanyManager::get(owner);
@@ -2804,11 +2804,11 @@ namespace OpenLoco::Vehicles
                 auto stationLoc = World::Pos2{ station->x, station->y };
                 auto cargoSourceLoc = World::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
-                auto stationSourceDistance = Math::Vector::distanceXY(stationLoc, cargoSourceLoc);
+                auto stationSourceDistance = Math::Vector::distance2D(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
                 auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
-                auto cargoSourceDistance = Math::Vector::distanceXY(stationLoc, sourceLoc);
+                auto cargoSourceDistance = Math::Vector::distance2D(stationLoc, sourceLoc);
                 if (cargoSourceDistance > stationSourceDistance)
                 {
                     setOrigin = false;
@@ -3027,11 +3027,11 @@ namespace OpenLoco::Vehicles
                 auto stationLoc = World::Pos2{ station->x, station->y };
                 auto cargoSourceLoc = World::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
-                auto stationSourceDistance = Math::Vector::distanceXY(stationLoc, cargoSourceLoc);
+                auto stationSourceDistance = Math::Vector::distance2D(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
                 auto sourceLoc = World::Pos2{ sourceStation->x, sourceStation->y };
-                auto cargoSourceDistance = Math::Vector::distanceXY(stationLoc, sourceLoc);
+                auto cargoSourceDistance = Math::Vector::distance2D(stationLoc, sourceLoc);
                 if (cargoSourceDistance >= stationSourceDistance)
                 {
                     cargo.townFrom = stationCargo.origin;

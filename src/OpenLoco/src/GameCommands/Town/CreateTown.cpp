@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
 
         for (auto& town : TownManager::towns())
         {
-            auto manhattanDistance = Math::Vector::manhattanDistance(pos, Pos2(town.x, town.y));
+            auto manhattanDistance = Math::Vector::manhattanDistance2D(pos, Pos2(town.x, town.y));
             if (manhattanDistance < 768)
             {
                 setErrorText(StringIds::too_close_to_another_town);

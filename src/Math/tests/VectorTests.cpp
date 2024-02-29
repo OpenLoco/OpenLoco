@@ -21,22 +21,22 @@ TEST(VectorTest, distance)
     Point2D a{ 10, 10 };
     Point2D b{ 15, 15 };
 
-    ASSERT_EQ(Vector::distanceXY(a, b), 7);
+    ASSERT_EQ(Vector::distance2D(a, b), 7);
     a = { 0, 0 };
     b = { 0, 0 };
-    ASSERT_EQ(Vector::distanceXY(a, b), 0);
+    ASSERT_EQ(Vector::distance2D(a, b), 0);
     a = { -10, -10 };
     b = { 0, 0 };
-    ASSERT_EQ(Vector::distanceXY(a, b), 14);
+    ASSERT_EQ(Vector::distance2D(a, b), 14);
     a = { 0, 0 };
     b = { -10, -10 };
-    ASSERT_EQ(Vector::distanceXY(a, b), 14);
+    ASSERT_EQ(Vector::distance2D(a, b), 14);
     a = { -10, -10 };
     b = { -10, -10 };
-    ASSERT_EQ(Vector::distanceXY(a, b), 0);
+    ASSERT_EQ(Vector::distance2D(a, b), 0);
     a = { 10, 10 };
     b = { 10, 10 };
-    ASSERT_EQ(Vector::distanceXY(a, b), 0);
+    ASSERT_EQ(Vector::distance2D(a, b), 0);
 }
 
 static_assert(Vector::rotate(Point2D{ 10, 10 }, 0) == Point2D{ 10, 10 });
@@ -53,20 +53,20 @@ TEST(VectorTest, manhattenDistance)
     Point2D a{ 10, 10 };
     Point2D b{ 15, 15 };
 
-    ASSERT_EQ(Vector::manhattanDistance(a, b), 10);
+    ASSERT_EQ(Vector::manhattanDistance2D(a, b), 10);
     a = { 0, 0 };
     b = { 0, 0 };
-    ASSERT_EQ(Vector::manhattanDistance(a, b), 0);
+    ASSERT_EQ(Vector::manhattanDistance2D(a, b), 0);
     a = { -10, -10 };
     b = { 0, 0 };
-    ASSERT_EQ(Vector::manhattanDistance(a, b), 20);
+    ASSERT_EQ(Vector::manhattanDistance2D(a, b), 20);
     a = { 0, 0 };
     b = { -10, -10 };
-    ASSERT_EQ(Vector::manhattanDistance(a, b), 20);
+    ASSERT_EQ(Vector::manhattanDistance2D(a, b), 20);
     a = { -10, -10 };
     b = { -10, -10 };
-    ASSERT_EQ(Vector::manhattanDistance(a, b), 0);
+    ASSERT_EQ(Vector::manhattanDistance2D(a, b), 0);
     a = { 10, 10 };
     b = { 10, 10 };
-    ASSERT_EQ(Vector::manhattanDistance(a, b), 0);
+    ASSERT_EQ(Vector::manhattanDistance2D(a, b), 0);
 }

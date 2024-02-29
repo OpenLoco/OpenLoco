@@ -197,7 +197,7 @@ namespace OpenLoco::TownManager
         auto closestTown = TownId::null; // ebx
         for (const auto& town : towns())
         {
-            const auto distance = Math::Vector::manhattanDistance(World::Pos2(town.x, town.y), loc);
+            const auto distance = Math::Vector::manhattanDistance2D(World::Pos2(town.x, town.y), loc);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
@@ -215,7 +215,7 @@ namespace OpenLoco::TownManager
         {
             return std::nullopt;
         }
-        const int32_t realDistance = Math::Vector::distanceXY(World::Pos2(town->x, town->y), loc);
+        const int32_t realDistance = Math::Vector::distance2D(World::Pos2(town->x, town->y), loc);
         // Works out a proxiy for how likely there is to be buildings at the location
         // i.e. how dense the area is.
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);

@@ -3576,7 +3576,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
                         auto boatLoc = firstTile + World::toWorldSpace(TilePos2{ 1, 1 }) + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
 
-                        auto distance = Math::Vector::manhattanDistance(boatLoc, centerPos);
+                        auto distance = Math::Vector::manhattanDistance2D(boatLoc, centerPos);
                         if (distance < bestDistance)
                         {
                             bestDistance = distance;
@@ -3769,7 +3769,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 auto viewPos = World::gameToScreen(*nodeLoc, res.second->getRotation());
                 auto uiPos = res.second->viewportToScreen(viewPos);
-                auto distance = Math::Vector::manhattanDistance(uiPos, Point{ x, y });
+                auto distance = Math::Vector::manhattanDistance2D(uiPos, Point{ x, y });
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;
@@ -3846,7 +3846,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto potentialLoc = roadFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
                 auto uiPos = viewport.viewportToScreen(viewPos);
-                auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
+                auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;
@@ -3946,7 +3946,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
                 auto viewPos = World::gameToScreen(potentialLoc, viewport.getRotation());
                 auto uiPos = viewport.viewportToScreen(viewPos);
-                auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
+                auto distance = Math::Vector::manhattanDistance2D(uiPos, cursorLoc);
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;
