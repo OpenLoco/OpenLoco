@@ -446,4 +446,41 @@ namespace OpenLoco::World::TrackData
     {
         return kTrackCostFactor[trackId];
     }
+
+    // 0x004F72E8
+    constexpr std::array<uint16_t, 10> kRoadCompatibleFlags = {
+        0x00,
+        0x02,
+        0x02,
+        0x01,
+        0x01,
+        0x04,
+        0x04,
+        0x08,
+        0x08,
+        0x20,
+    };
+
+    uint16_t getRoadCompatibleFlags(size_t roadId)
+    {
+        return kRoadCompatibleFlags[roadId];
+    }
+
+    constexpr std::array<uint16_t, 10> kRoadCostFactor = {
+        0x100,
+        0x0C9,
+        0x0C9,
+        0x25B,
+        0x25B,
+        0x220,
+        0x220,
+        0x138,
+        0x138,
+        0x25B,
+    };
+
+    uint16_t getRoadCostFactor(size_t roadId)
+    {
+        return kRoadCostFactor[roadId];
+    }
 }

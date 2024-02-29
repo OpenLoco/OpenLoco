@@ -12,6 +12,10 @@
 
 namespace OpenLoco
 {
+    namespace World
+    {
+        struct StationElement;
+    }
 #pragma pack(push, 1)
     enum class StationCargoStatsFlags : uint8_t
     {
@@ -152,4 +156,6 @@ namespace OpenLoco
     void recalculateStationCenter(const StationId stationId);
     void recalculateStationModes(const StationId stationId);
     void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
+
+    World::StationElement* getStationElement(const World::Pos3& pos);
 }
