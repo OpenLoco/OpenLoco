@@ -2376,3 +2376,4 @@ strings:
   2321: "See-through tracks toggle"
   2322: "See-through trees toggle"
   2323: "{SMALLFONT}{COLOUR BLACK}Enable to smoothen the outer edges of land raised. Useful for creating mountains."
+  2324: "Vehicle/track behaviour"
