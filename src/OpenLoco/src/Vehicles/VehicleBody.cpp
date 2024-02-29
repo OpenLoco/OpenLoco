@@ -248,7 +248,7 @@ namespace OpenLoco::Vehicles
             return;
 
         auto bogieDifference = front_bogie->position - back_bogie->position;
-        auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
+        auto distanceBetweenBogies = Math::Vector::distance2D(front_bogie->position, back_bogie->position);
         const auto* vehObj = getObject();
         if (vehObj->bodySprites[objectSpriteType].hasFlags(BodySpriteFlags::hasSteepSprites))
         {

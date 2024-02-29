@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
 
         for (const auto& ind : IndustryManager::industries())
         {
-            const auto distance = Math::Vector::manhattanDistance(World::Pos2{ ind.x, ind.y }, pos);
+            const auto distance = Math::Vector::manhattanDistance2D(World::Pos2{ ind.x, ind.y }, pos);
 
             const auto* indObj2 = ind.getObject();
             const uint32_t producedCargoTypes2 = getProducedCargoBitSet(*indObj2);

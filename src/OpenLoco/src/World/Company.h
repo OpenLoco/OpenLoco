@@ -94,6 +94,14 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Company
     {
+        struct Unk25C0HashTableEntry
+        {
+            uint16_t var_00;
+            uint16_t var_02;
+            uint8_t var_04;
+            uint8_t var_05;
+        };
+
         StringId name;
         StringId ownerName;
         CompanyFlags challengeFlags;      // 0x04
@@ -125,15 +133,30 @@ namespace OpenLoco
         coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x85C2 - 0x25A2];
+        uint8_t pad_25A2[0x25C0 - 0x25A2];
+        Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
+        uint16_t var_25C0_length;               // 0x85C0 Hash table length
         uint8_t var_85C2;
         uint8_t var_85C3;
         World::Pos2 var_85C4;
-        uint8_t pad_85C8[0x85DE - 0x85C8];
+        World::SmallZ var_85C8;
+        World::Pos2 var_85C9;
+        World::SmallZ var_85CD;
+        uint8_t var_85CE;
+        uint8_t var_85CF;
+        World::Pos2 var_85D0;
+        World::SmallZ var_85D4;
+        uint16_t var_85D5;
+        World::Pos2 var_85D7;
+        World::SmallZ var_85DB;
+        uint16_t var_85DC;
         uint32_t var_85DE;
-        uint8_t pad_85E2[0x85EA - 0x85E2];
+        uint32_t var_85E2;
+        uint8_t pad_85E6[0x85E8 - 0x85E6];
+        uint16_t var_85E8;
         uint32_t var_85EA;
-        uint8_t pad_85EE[0x85F0 - 0x85EE];
+        uint8_t var_85EE;
+        uint8_t var_85EF;
         uint16_t var_85F0;
         uint8_t pad_85F2[0x85F6 - 0x85F2];
         uint16_t var_85F6;

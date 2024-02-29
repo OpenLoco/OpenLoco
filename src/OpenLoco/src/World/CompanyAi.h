@@ -59,7 +59,11 @@ namespace OpenLoco
             uint8_t rotation; // 0x3
             World::Pos2 pos;  // 0x4
             uint8_t baseZ;    // 0x8
-            uint8_t pad_9[0xE - 0x9];
+            uint8_t var_9;    // 0x9
+            uint8_t var_A;    // 0xA
+            uint8_t var_B;    // 0xB
+            uint8_t var_C;    // 0xC
+            uint8_t pad_D[0xE - 0xD];
         };
         static_assert(sizeof(unk4AE) == 0xE);
         AiThoughtType type; // 0x00 0x4A8
@@ -86,8 +90,8 @@ namespace OpenLoco
         currency32_t var_84; // 0x52C
         uint8_t var_88;      // 0x530
         uint8_t var_89;      // 0x531 station obj type?
-        uint8_t pad_8A;
-        uint8_t var_8B; // 0x533
+        uint8_t var_8A;      // 0x532
+        uint8_t var_8B;      // 0x533
     };
 #pragma pack(pop)
     static_assert(sizeof(AiThought) == 0x8C);

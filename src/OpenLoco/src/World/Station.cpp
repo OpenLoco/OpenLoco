@@ -1040,7 +1040,7 @@ namespace OpenLoco
                 {
                     continue;
                 }
-                const auto distance = Math::Vector::manhattanDistance(World::Pos2{ station->x, station->y }, World::Pos2{ station2.x, station2.y });
+                const auto distance = Math::Vector::manhattanDistance2D(World::Pos2{ station->x, station->y }, World::Pos2{ station2.x, station2.y });
                 if (distance <= 256)
                 {
                     StationManager::sub_437F29(station2.owner, 5);

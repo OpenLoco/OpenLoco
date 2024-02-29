@@ -332,12 +332,311 @@ namespace OpenLoco
         call(0x004309FD, regs);
     }
 
-    // 0x00430DB6
-    static void aiThinkState3(Company& company)
+    // 0x0048259F
+    static uint8_t sub_48259F(const Company& company, const AiThought& thought)
     {
         registers regs;
         regs.esi = X86Pointer(&company);
-        call(0x00430DB6, regs);
+        regs.edi = X86Pointer(&thought);
+        call(0x0048259F, regs);
+        return regs.al;
+    }
+
+    // 0x0048377C
+    static void sub_48377C(Company& company, AiThought& thought)
+    {
+        company.var_85C2 = 0xFFU;
+        company.var_85C3 = 0;
+        if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 17))
+        {
+            company.var_85C3 |= (1U << 3);
+        }
+        if (thought.var_8B & (1U << 0))
+        {
+            company.var_85C3 |= (1U << 2);
+        }
+        if (thought.var_8B & (1U << 1))
+        {
+            company.var_85C3 |= (1U << 4);
+        }
+    }
+
+    // 0x00430DDF
+    static void sub_430DDF(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 3;
+        }
+        else
+        {
+            switch (sub_48259F(company, thought))
+            {
+                case 1:
+                    company.var_4A4 = AiThinkState::unk6;
+                    company.var_4A5 = 3;
+                    break;
+                case 2:
+                    company.var_4A5 = 1;
+                    sub_48377C(company, thought);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // 0x00483FBA
+    static bool sub_483FBA(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        return call(0x00483FBA, regs) & X86_FLAG_CARRY;
+    }
+
+    // 0x004837C2
+    static bool sub_4837C2(Company& company, AiThought& thought)
+    {
+        company.var_85C3 &= ~((1U << 0) | (1U << 1));
+
+        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        {
+            return true;
+        }
+
+        auto findRequiredUnk = [&thought, &company]() -> int8_t {
+            for (auto i = 0U; i < thought.var_03; ++i)
+            {
+                const auto& unk4AE = thought.var_06[i];
+                if (unk4AE.var_9 != 0xFFU)
+                {
+                    if (!(unk4AE.var_B & ((1U << 2) | (1U << 1))))
+                    {
+                        return i;
+                    }
+                    if (unk4AE.var_B & (1U << 0))
+                    {
+                        if (!(unk4AE.var_B & ((1U << 4) | (1U << 3))))
+                        {
+                            return i;
+                        }
+                    }
+                }
+                if (unk4AE.var_A != 0xFFU)
+                {
+                    if (!(unk4AE.var_C & ((1U << 2) | (1U << 1))))
+                    {
+                        company.var_85C3 |= 1U << 0;
+                        return i;
+                    }
+                    if (unk4AE.var_C & (1U << 0))
+                    {
+                        if (!(unk4AE.var_C & ((1U << 4) | (1U << 3))))
+                        {
+                            company.var_85C3 |= 1U << 0;
+                            return i;
+                        }
+                    }
+                }
+            }
+            return -1;
+        }();
+
+        if (findRequiredUnk == -1)
+        {
+            return true;
+        }
+
+        {
+            company.var_85C2 = findRequiredUnk;
+            const auto& unk4AE = thought.var_06[findRequiredUnk];
+            auto pos = unk4AE.pos;
+            auto rotation = unk4AE.rotation;
+            if (company.var_85C3 & (1U << 0))
+            {
+                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                {
+                    const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                    pos += stationEndDiff;
+                }
+                rotation ^= (1U << 1);
+            }
+            rotation ^= (1U << 1);
+
+            company.var_85C4 = pos;
+            company.var_85C8 = unk4AE.baseZ;
+            company.var_85CE = rotation;
+            company.var_85D0 = pos;
+            company.var_85D4 = unk4AE.baseZ;
+            company.var_85D5 = rotation;
+        }
+        {
+            const auto unk = (company.var_85C3 & (1U << 0)) ? thought.var_06[findRequiredUnk].var_A : thought.var_06[findRequiredUnk].var_9;
+            const auto& unk4AE = thought.var_06[unk];
+            if (unk4AE.var_9 != company.var_85C2)
+            {
+                company.var_85C3 |= (1U << 1);
+            }
+            auto pos = unk4AE.pos;
+            auto rotation = unk4AE.rotation;
+            if (company.var_85C3 & (1U << 1))
+            {
+                if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 3))
+                {
+                    const auto stationEndDiff = _503C6C[rotation] * (thought.var_04 - 1);
+                    pos += stationEndDiff;
+                }
+                rotation ^= (1U << 1);
+            }
+            rotation ^= (1U << 1);
+
+            company.var_85C9 = pos;
+            company.var_85CD = unk4AE.baseZ;
+            company.var_85CF = rotation;
+            company.var_85D7 = pos;
+            company.var_85DB = unk4AE.baseZ;
+            company.var_85DC = rotation;
+        }
+        company.var_85F0 = 0;
+        company.var_85EE = 0;
+        company.var_85EF = 0;
+        company.var_85DE = 0;
+        company.var_85E2 = 0;
+        company.var_85E8 = 0;
+
+        const auto distance = std::max<uint16_t>(256, Math::Vector::distance3D(World::Pos3(company.var_85C4, company.var_85C8 * World::kSmallZStep), World::Pos3(company.var_85C9, company.var_85CD * World::kSmallZStep)));
+        company.var_85EA = distance / 2 + distance * 2;
+        // TODO: When diverging just set this all to a fixed value rather than only first entry
+        for (auto& htEntry : company.var_25C0)
+        {
+            htEntry.var_00 = 0xFFFFU;
+        }
+        company.var_25C0_length = 0;
+        return false;
+    }
+
+    // 0x00486324
+    static bool sub_486324(Company& company, AiThought& thought)
+    {
+        // Likely this is asking if the track/road should try place a signal
+
+        if (thought.trackObjId & (1U << 7))
+        {
+            return false;
+        }
+
+        if (kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 15) | (1U << 16)))
+        {
+            return false;
+        }
+
+        if (!(kThoughtTypeFlags[enumValue(thought.type)] & ((1U << 17) | (1U << 6))))
+        {
+            return false;
+        }
+
+        if (thought.var_8A == 0xFFU)
+        {
+            return true;
+        }
+
+        company.var_85C2 = 0;
+        return false;
+    }
+
+    // 0x00430E21
+    static void sub_430E21(Company& company, AiThought& thought)
+    {
+        if ((company.challengeFlags & CompanyFlags::unk1) != CompanyFlags::none)
+        {
+            company.var_4A4 = AiThinkState::unk6;
+            company.var_4A5 = 2;
+            company.var_85C4 = World::Pos2(0, 0);
+            return;
+        }
+
+        if (company.var_85C2 != 0xFFU)
+        {
+            if (sub_483FBA(company, thought))
+            {
+                company.var_4A4 = AiThinkState::unk6;
+                company.var_4A5 = 2;
+                company.var_85C4 = World::Pos2(0, 0);
+            }
+        }
+        else
+        {
+            if (sub_4837C2(company, thought))
+            {
+                company.var_4A5 = 2;
+                if (sub_486324(company, thought))
+                {
+                    company.var_4A4 = AiThinkState::unk6;
+                    company.var_4A5 = 2;
+                    company.var_85C4 = World::Pos2(0, 0);
+                }
+            }
+        }
+    }
+
+    // 0x00430EB5
+    static void sub_430EB5(Company& company, AiThought& thought)
+    {
+        // place signals ?
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430EB5, regs);
+    }
+
+    // 0x00430EEF
+    static void sub_430EEF(Company& company, AiThought& thought)
+    {
+        // Decide if station placement attempt
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430EEF, regs);
+    }
+
+    // 0x00430F50
+    static void sub_430F50(Company& company, AiThought& thought)
+    {
+        // Calculate station cost?
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430F50, regs);
+    }
+
+    // 0x00430F87
+    static void sub_430F87(Company& company, AiThought& thought)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&company);
+        regs.edi = X86Pointer(&thought);
+        call(0x00430F87, regs);
+    }
+
+    using AiThinkState3Function = void (*)(Company&, AiThought&);
+
+    static constexpr std::array<AiThinkState3Function, 6> _funcs_4F94E8 = {
+        sub_430DDF,
+        sub_430E21,
+        sub_430EB5,
+        sub_430EEF,
+        sub_430F50,
+        sub_430F87,
+    };
+
+    // 0x00430DB6
+    static void aiThinkState3(Company& company)
+    {
+        company.var_85F6++;
+
+        _funcs_4F94E8[company.var_4A5](company, company.aiThoughts[company.var_2578]);
     }
 
     // 0x0047BA2C
@@ -906,7 +1205,6 @@ namespace OpenLoco
     // 0x00431287
     static void aiThinkEndCompany(Company& company)
     {
-
         if (!removeAllCompanyAssetsOnMapByChunk(company))
         {
             return;

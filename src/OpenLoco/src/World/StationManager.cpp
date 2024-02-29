@@ -311,7 +311,7 @@ namespace OpenLoco::StationManager
 
         auto town = TownManager::get(townId);
         {
-            auto manhattanDistance = Math::Vector::manhattanDistance(position, World::Pos2{ town->x, town->y });
+            auto manhattanDistance = Math::Vector::manhattanDistance2D(position, World::Pos2{ town->x, town->y });
             if (manhattanDistance / World::kTileSize <= 9)
             {
                 // Central
