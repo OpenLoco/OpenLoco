@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window.invalidate();
         }
 
-        // 0x0043EBF1
+        // 0x0043EA0D
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
             auto& options = S5::getOptions();
@@ -1089,7 +1089,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
                         Dropdown::add(i, townSizeLabels[i]);
 
-                    Dropdown::setHighlightedItem(options.maxTownSize);
+                    Dropdown::setHighlightedItem(options.maxTownSize - 1);
                     break;
                 }
             }
@@ -1114,14 +1114,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        // 0x0043EAEB
+        // 0x0043E90D
         static void prepareDraw(Window& window)
         {
             Common::prepareDraw(window);
 
             _commonFormatArgs[0] = S5::getOptions().numberOfTowns;
 
-            widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
+            widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
         }
 
         static constexpr WindowEventList kEvents = {
