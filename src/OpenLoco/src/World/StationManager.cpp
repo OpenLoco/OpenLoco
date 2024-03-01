@@ -17,6 +17,8 @@
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/OrderManager.h"
+#include "Vehicles/VehicleManager.h"
 #include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -593,6 +595,14 @@ namespace OpenLoco::StationManager
         return StationId::null;
     }
 
+    // 0x0048F850
+    static void removeStationFromCargoStats(const StationId stationId)
+    {
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x0048F850, regs);
+    }
+
     // 0x0048F7D1
     void deallocateStation(const StationId stationId)
     {
@@ -612,11 +622,10 @@ namespace OpenLoco::StationManager
             }
         }
 
-        // TODO: these need their parameters passed -- make proper sub functions
-        call(0x004910AB); // update station list window
-        call(0x0047062B); // prune order table
-        call(0x0048F850); // remove refs to this station in cargo stats
-        call(0x004B93DC); // something with entities -- routing?
+        Windows::StationList::removeStationFromList(stationId);
+        Vehicles::OrderManager::removeOrdersForStation(stationId);
+        removeStationFromCargoStats(stationId);
+        VehicleManager::resetIfHeadingForStation(stationId);
 
         MessageManager::removeAllSubjectRefs(enumValue(stationId), MessageItemArgumentType::station);
         StringManager::emptyUserString(station->name);

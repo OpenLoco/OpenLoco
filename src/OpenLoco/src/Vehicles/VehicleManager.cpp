@@ -132,6 +132,14 @@ namespace OpenLoco::VehicleManager
         call(0x004B05E4, regs);
     }
 
+    // 0x004B93DC
+    void resetIfHeadingForStation(const StationId stationId)
+    {
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x004B93DC, regs);
+    }
+
     // 0x004AEFB5
     void deleteCar(Vehicles::Car& car)
     {

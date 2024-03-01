@@ -255,6 +255,14 @@ namespace OpenLoco::Ui::Windows::StationList
         }
     }
 
+    // 0x004910AB
+    void removeStationFromList(const StationId stationId)
+    {
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x004910AB, regs);
+    }
+
     static const WindowEventList& getEvents();
 
     // 0x00490F6C
