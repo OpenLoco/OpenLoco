@@ -67,9 +67,9 @@ namespace OpenLoco
     void Company::updateDaily()
     {
         updateOwnerEmotion();
-        for (auto& unk : activeEmotions)
+        for (auto& emotionDuration : activeEmotions)
         {
-            unk = Math::Bound::sub(unk, 1u);
+            emotionDuration = Math::Bound::sub(emotionDuration, 1u);
         }
         updateDailyLogic();
         observationTimeout = Math::Bound::sub(observationTimeout, 1u);
@@ -165,7 +165,7 @@ namespace OpenLoco
                     Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(secondaryPlayer->id()));
                 }
                 MessageManager::post(MessageType::congratulationsCompleted, id(), enumValue(id()), 0xFFFF);
-                companyEmotionEvent(id(), Emotion::unk1);
+                companyEmotionEvent(id(), Emotion::happy);
                 updateOwnerEmotion();
                 Ui::Windows::CompanyWindow::openChallenge(id());
                 Scenario::getObjectiveProgress().completedChallengeInMonths = Scenario::getObjectiveProgress().monthsInChallenge;
@@ -180,7 +180,7 @@ namespace OpenLoco
                     Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(secondaryPlayer->id()));
                 }
                 MessageManager::post(MessageType::haveBeenBeaten, id(), enumValue(id()), 0xFFFF);
-                companyEmotionEvent(id(), Emotion::unk5);
+                companyEmotionEvent(id(), Emotion::surprised);
                 updateOwnerEmotion();
                 Ui::Windows::CompanyWindow::openChallenge(id());
                 Scenario::getObjectiveProgress().completedChallengeInMonths = Scenario::getObjectiveProgress().monthsInChallenge;
@@ -192,7 +192,7 @@ namespace OpenLoco
             if (CompanyManager::getControllingId() == id())
             {
                 MessageManager::post(MessageType::failedObjectives, id(), enumValue(id()), 0xFFFF);
-                companyEmotionEvent(id(), Emotion::unk4);
+                companyEmotionEvent(id(), Emotion::dejected);
                 updateOwnerEmotion();
                 Ui::Windows::CompanyWindow::openChallenge(id());
             }
@@ -440,10 +440,10 @@ namespace OpenLoco
     // 0x00437F47
     void Company::updateOwnerEmotion()
     {
-        Emotion newEmotion = Emotion::unk4;
+        Emotion newEmotion = Emotion::dejected;
         if ((challengeFlags & CompanyFlags::bankrupt) == CompanyFlags::none)
         {
-            newEmotion = Emotion::unk0;
+            newEmotion = Emotion::neutral;
             uint8_t newEmotionWeight = 0;
             for (auto emotion = 0U; emotion < std::size(activeEmotions); ++emotion)
             {

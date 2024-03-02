@@ -2369,7 +2369,7 @@ namespace OpenLoco::Vehicles
         CompanyManager::setRecords(records);
 
         MessageManager::post(MessageType::newSpeedRecord, owner, enumValue(head), enumValue(owner), recordType);
-        companyEmotionEvent(owner, Emotion::unk1);
+        companyEmotionEvent(owner, Emotion::happy);
 
         Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(owner));
     }

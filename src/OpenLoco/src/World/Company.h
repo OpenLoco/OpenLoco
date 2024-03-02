@@ -57,15 +57,15 @@ namespace OpenLoco
 
     enum class Emotion : uint8_t
     {
-        unk0,
-        unk1,
-        unk2,
-        unk3,
-        unk4,
-        unk5,
-        unk6,
-        unk7,
-        unk8,
+        neutral,
+        happy,
+        worried,
+        thinking,
+        dejected,
+        surprised,
+        scared,
+        angry,
+        disgusted,
     };
 
     class OwnerStatus

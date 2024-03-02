@@ -105,7 +105,7 @@ namespace OpenLoco::StationManager
                 station.noTilesTimeout++;
                 if (station.noTilesTimeout == 5 && CompanyManager::isPlayerCompany(station.owner))
                 {
-                    companyEmotionEvent(station.owner, Emotion::unk8);
+                    companyEmotionEvent(station.owner, Emotion::disgusted);
                 }
                 if (station.noTilesTimeout >= 10)
                 {

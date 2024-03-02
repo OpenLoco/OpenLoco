@@ -1043,7 +1043,7 @@ namespace OpenLoco
                 const auto distance = Math::Vector::manhattanDistance2D(World::Pos2{ station->x, station->y }, World::Pos2{ station2.x, station2.y });
                 if (distance <= 256)
                 {
-                    companyEmotionEvent(station2.owner, Emotion::unk5);
+                    companyEmotionEvent(station2.owner, Emotion::surprised);
                 }
             }
         }
