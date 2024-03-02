@@ -9,7 +9,7 @@
 #include "S5/Limits.h"
 #include "S5/S5.h"
 #include "Vehicles/Vehicle.h"
-#include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Core/FileStream.h>
 
 using namespace OpenLoco::Diagnostics;
 
@@ -597,7 +597,9 @@ namespace OpenLoco::GameSaveCompare
         char* gameStateChar = (char*)(&getGameState());
         S5::GameState* currentS5GameState = reinterpret_cast<S5::GameState*>(gameStateChar);
         Logging::info("Comparing reference file {} to current GameState frame", path);
-        return compareGameStates(*currentS5GameState, S5::importSave(path).get()->gameState, false);
+        FileStream referenceFile(path, StreamMode::read);
+        auto referenceGameState = S5::importSave(referenceFile);
+        return compareGameStates(*currentS5GameState, referenceGameState->gameState, false);
     }
 
     bool compareGameStates(const fs::path& path1, const fs::path& path2, bool displayAllDivergences)
@@ -606,8 +608,10 @@ namespace OpenLoco::GameSaveCompare
         Logging::info("   file1: {}", path1);
         Logging::info("   file2: {}", path2);
 
-        auto state1 = S5::importSave(path1);
-        auto state2 = S5::importSave(path2);
+        FileStream file1(path1, StreamMode::read);
+        auto state1 = S5::importSave(file1);
+        FileStream file2(path2, StreamMode::read);
+        auto state2 = S5::importSave(file2);
         auto match = compareGameStates(state1->gameState, state2->gameState, displayAllDivergences);
         match &= compareElements(state1->tileElements, state2->tileElements, displayAllDivergences);
         return match;

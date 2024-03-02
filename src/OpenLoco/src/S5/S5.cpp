@@ -402,9 +402,8 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FC9
-    static std::unique_ptr<S5File> importSave(Stream& stream)
+    std::unique_ptr<S5File> importSave(Stream& stream)
     {
-
         SawyerStreamReader fs(stream);
         if (!fs.validateChecksum())
         {
@@ -483,17 +482,6 @@ namespace OpenLoco::S5
         }
 
         return file;
-    }
-
-    std::unique_ptr<S5File> importSave(const fs::path& path)
-    {
-        FileStream stream(path, StreamMode::read);
-        return importSave(stream);
-    }
-
-    void setGameState(std::unique_ptr<S5File> importSave)
-    {
-        _gameState = importSave.get()->gameState;
     }
 
     // 0x00444D76
