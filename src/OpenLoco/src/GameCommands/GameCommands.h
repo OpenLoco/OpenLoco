@@ -215,19 +215,6 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    // Rename industry
-    inline void do_79(IndustryId cl, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cl = enumValue(cl); // industry number or 0
-        regs.ax = ax;            // [ 0, 1, 2]
-        regs.edx = edx;          // part of name buffer
-        regs.ebp = ebp;          // part of name buffer
-        regs.edi = edi;          // part of name buffer
-        doCommand(GameCommand::renameIndustry, regs);
-    }
-
     inline bool do_80(EntityId head)
     {
         registers regs;
