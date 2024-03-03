@@ -215,19 +215,6 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    enum class CheatCommand : uint8_t;
-
-    inline bool do_81(CheatCommand command, int32_t param1 = 0, int32_t param2 = 0, int32_t param3 = 0)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.eax = static_cast<int32_t>(command);
-        regs.ebx = param1;
-        regs.ecx = param2;
-        regs.edx = param3;
-        return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
-    }
-
     const World::Pos3& getPosition();
     void setPosition(const World::Pos3& pos);
     void setErrorText(const StringId message);
