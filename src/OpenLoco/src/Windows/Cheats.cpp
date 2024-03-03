@@ -345,18 +345,35 @@ namespace OpenLoco::Ui::Windows::Cheats
                     break;
 
                 case Widx::cash_step_apply:
-                    GameCommands::do_81(CheatCommand::addCash, _cashIncreaseStep);
+                {
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::addCash;
+                    args.param1 = _cashIncreaseStep;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     break;
+                }
 
                 case Widx::loan_clear:
-                    GameCommands::do_81(CheatCommand::clearLoan);
+                {
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::clearLoan;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidateWidget(self.type, self.number, Widx::loan_value);
                     break;
+                }
 
                 case Widx::date_change_apply:
                 {
-                    GameCommands::do_81(CheatCommand::modifyDate, _date.year, static_cast<int32_t>(_date.month), _date.day + 1); // +1 days again
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::modifyDate;
+                    args.param1 = _date.year;
+                    args.param2 = enumValue(_date.month);
+                    args.param3 = _date.day + 1; // +1 days again
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::timeToolbar);
                     break;
                 }
@@ -559,35 +576,55 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::acquire_company_assets_button:
                 {
-                    GameCommands::do_81(CheatCommand::acquireAssets, enumValue(_targetCompanyId));
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::acquireAssets;
+                    args.param1 = enumValue(_targetCompanyId);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     Gfx::invalidateScreen();
                     return;
                 }
 
                 case Widx::switch_company_button:
                 {
-                    GameCommands::do_81(CheatCommand::switchCompany, enumValue(_targetCompanyId));
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::switchCompany;
+                    args.param1 = enumValue(_targetCompanyId);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     return;
                 }
 
                 case Widx::toggle_bankruptcy_button:
                 {
-                    GameCommands::do_81(CheatCommand::toggleBankruptcy, enumValue(_targetCompanyId));
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::toggleBankruptcy;
+                    args.param1 = enumValue(_targetCompanyId);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     return;
                 }
 
                 case Widx::toggle_jail_status_button:
                 {
-                    GameCommands::do_81(CheatCommand::toggleJail, enumValue(_targetCompanyId));
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::toggleJail;
+                    args.param1 = enumValue(_targetCompanyId);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     return;
                 }
 
                 case Widx::complete_challenge_button:
                 {
-                    GameCommands::do_81(CheatCommand::completeChallenge, enumValue(_targetCompanyId));
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::completeChallenge;
+                    args.param1 = enumValue(_targetCompanyId);
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     return;
                 }
@@ -713,7 +750,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::reliablity_all_to_zero:
                 {
-                    GameCommands::do_81(CheatCommand::vehicleReliability, 0);
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::vehicleReliability;
+                    args.param1 = 0;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::vehicle);
                     WindowManager::invalidate(WindowType::vehicleList);
                     return;
@@ -721,13 +762,18 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::reliablity_all_to_hundred:
                 {
-                    GameCommands::do_81(CheatCommand::vehicleReliability, 100);
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::vehicleReliability;
+                    args.param1 = 100;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::vehicle);
                     WindowManager::invalidate(WindowType::vehicleList);
                     return;
                 }
-                case Widx::checkbox_display_locked_vehicles:
 
+                case Widx::checkbox_display_locked_vehicles:
+                {
                     Config::get().displayLockedVehicles = !Config::get().displayLockedVehicles;
 
                     // if we don't want to display locked vehicles, there is no reason to allow building them
@@ -745,8 +791,10 @@ namespace OpenLoco::Ui::Windows::Cheats
                     WindowManager::invalidateWidget(self.type, self.number, Widx::checkbox_display_locked_vehicles);
                     WindowManager::invalidate(WindowType::buildVehicle);
                     break;
+                }
 
                 case Widx::checkbox_build_locked_vehicles:
+                {
                     if (Config::get().displayLockedVehicles)
                     {
                         Config::get().buildLockedVehicles = !Config::get().buildLockedVehicles;
@@ -754,6 +802,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                         WindowManager::invalidate(WindowType::buildVehicle);
                     }
                     break;
+                }
             }
         }
 
@@ -834,28 +883,48 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 case Widx::ratings_all_min_10pct:
                 {
-                    GameCommands::do_81(CheatCommand::companyRatings, false, -10);
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::companyRatings;
+                    args.param1 = false;
+                    args.param2 = -10;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::town);
                     return;
                 }
 
                 case Widx::ratings_all_plus_10pct:
                 {
-                    GameCommands::do_81(CheatCommand::companyRatings, false, 10);
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::companyRatings;
+                    args.param1 = false;
+                    args.param2 = 10;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::town);
                     return;
                 }
 
                 case Widx::ratings_all_to_min:
                 {
-                    GameCommands::do_81(CheatCommand::companyRatings, true, -1);
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::companyRatings;
+                    args.param1 = true;
+                    args.param2 = -1;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::town);
                     return;
                 }
 
                 case Widx::ratings_all_to_max:
                 {
-                    GameCommands::do_81(CheatCommand::companyRatings, true, 1);
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::companyRatings;
+                    args.param1 = true;
+                    args.param2 = 1;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
                     WindowManager::invalidate(WindowType::town);
                     return;
                 }
