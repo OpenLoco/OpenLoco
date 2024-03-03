@@ -5,6 +5,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/RemoveTown.h"
+#include "GameCommands/Town/RenameTown.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
@@ -673,10 +674,21 @@ namespace OpenLoco::Ui::Windows::Town
 
             GameCommands::setErrorTitle(StringIds::error_cant_rename_town);
 
-            uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_46(self.number, 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_46(0, 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_46(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::RenameTownArgs args{};
+
+            args.townId = TownId(self.number);
+            args.nameBufferIndex = 1;
+            std::memcpy(args.buffer, input, 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.nameBufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.nameBufferIndex = 0;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         static void update(Window& self)

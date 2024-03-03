@@ -1,6 +1,7 @@
 #include "RenameTown.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Town/RenameTown.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -31,33 +32,31 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
      * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::FAILURE
      */
-    static uint32_t renameTown(const uint8_t flags, TownId townId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t renameTown(const GameCommands::RenameTownArgs& args, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
         // Keep track of the town id over several calls.
         static TownId _townId{};
-        if (index == 1)
-            _townId = townId;
+        if (args.nameBufferIndex == 1)
+            _townId = args.townId;
 
-        static uint32_t renameBuffer[9];
+        static char staticRenameBuffer[37]{};
 
-        // Fill buffer over calls into the renameBuffer
+        // Fill buffer over calls into the staticRenameBuffer
         if ((flags & GameCommands::Flags::apply) != 0)
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
-            int arrayIndex = kTransformTable.at(index);
-            renameBuffer[arrayIndex * 3] = buffer0;
-            renameBuffer[arrayIndex * 3 + 1] = buffer1;
-            renameBuffer[arrayIndex * 3 + 2] = buffer2;
+            int arrayIndex = kTransformTable.at(args.nameBufferIndex);
+            std::memcpy(staticRenameBuffer + arrayIndex * 12, args.buffer, 12);
         }
 
         // Applying the buffer?
-        if (index != 0)
+        if (args.nameBufferIndex != 0)
             return 0;
 
         char renameStringBuffer[37] = "";
-        memcpy(renameStringBuffer, renameBuffer, sizeof(renameBuffer));
+        memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
         renameStringBuffer[36] = '\0';
 
         // Ensure the new name isn't empty.
@@ -100,6 +99,6 @@ namespace OpenLoco::GameCommands
 
     void renameTown(registers& regs)
     {
-        regs.ebx = renameTown(regs.bl, TownId(regs.cx), regs.ax, regs.edx, regs.ebp, regs.edi);
+        regs.ebx = renameTown(GameCommands::RenameTownArgs(regs), regs.bl);
     }
 }
