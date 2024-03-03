@@ -10,7 +10,6 @@
 #include "GameState.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/StringIds.h"
-#include "ModernTerrainGenerator.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/LandObject.h"
@@ -19,6 +18,7 @@
 #include "Random.h"
 #include "S5/S5.h"
 #include "Scenario.h"
+#include "SimplexTerrainGenerator.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -47,7 +47,7 @@ namespace OpenLoco::World::MapGenerator
         }
         else
         {
-            ModernTerrainGenerator generator;
+            SimplexTerrainGenerator generator;
             generator.generate(options, heightMap, std::random_device{}());
         }
     }

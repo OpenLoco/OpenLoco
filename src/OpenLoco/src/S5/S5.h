@@ -66,7 +66,7 @@ namespace OpenLoco::S5
     enum class LandGeneratorType : uint8_t
     {
         Original,
-        Improved,
+        Simplex,
     };
 
     enum class LandDistributionPattern : uint8_t
