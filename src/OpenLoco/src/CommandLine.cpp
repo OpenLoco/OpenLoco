@@ -1,4 +1,5 @@
 #include "CommandLine.h"
+#include "GameSaveCompare.h"
 #include "GameState.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
@@ -20,6 +21,7 @@ namespace OpenLoco
 
     static int uncompressFile(const CommandLineOptions& options);
     static int simulate(const CommandLineOptions& options);
+    static int compare(const CommandLineOptions& options);
 
     const CommandLineOptions& getCommandLineOptions()
     {
@@ -298,7 +300,8 @@ namespace OpenLoco
                           .registerOption("--help", "-h")
                           .registerOption("--version")
                           .registerOption("--intro")
-                          .registerOption("--log_levels", 1);
+                          .registerOption("--log_levels", 1)
+                          .registerOption("--all", "-a");
 
         if (!parser.parse())
         {
@@ -342,6 +345,22 @@ namespace OpenLoco
                 options.action = CommandLineAction::simulate;
                 options.path = parser.getArg(1);
                 options.ticks = parser.getArg<int32_t>(2);
+                options.path2 = parser.getArg(3);
+            }
+            else if (firstArg == "compare")
+            {
+                options.action = CommandLineAction::compare;
+                if (parser.hasOption("--all") || parser.hasOption("-a"))
+                {
+                    options.all = "all";
+                    options.path = parser.getArg(1);
+                    options.path2 = parser.getArg(2);
+                }
+                else
+                {
+                    options.path = parser.getArg(1);
+                    options.path2 = parser.getArg(2);
+                }
             }
             else
             {
@@ -375,7 +394,8 @@ namespace OpenLoco
         std::cout << "                host [options] <path>" << std::endl;
         std::cout << "                join [options] <address>" << std::endl;
         std::cout << "                uncompress [options] <path>" << std::endl;
-        std::cout << "                simulate [options] <path> <ticks>" << std::endl;
+        std::cout << "                simulate [options] <path> <ticks> [path]" << std::endl;
+        std::cout << "                compare [options] <path1> <path2>" << std::endl;
         std::cout << std::endl;
         std::cout << "options:" << std::endl;
         std::cout << "--bind            Address to bind to when hosting a server" << std::endl;
@@ -389,6 +409,7 @@ namespace OpenLoco
         std::cout << "                  - info, warning, error, verbose, all" << std::endl;
         std::cout << "                  Example: --log_levels \"all, -verbose\", logs all but verbose levels" << std::endl;
         std::cout << "                  Default: \"info, warning, error\"" << std::endl;
+        std::cout << "--all      -a     For compare, print out all divergences" << std::endl;
     }
 
     std::optional<int> runCommandLineOnlyCommand(const CommandLineOptions& options)
@@ -405,6 +426,8 @@ namespace OpenLoco
                 return uncompressFile(options);
             case CommandLineAction::simulate:
                 return simulate(options);
+            case CommandLineAction::compare:
+                return compare(options);
             default:
                 return {};
         }
@@ -507,6 +530,7 @@ namespace OpenLoco
 
         auto inPath = fs::u8path(options.path);
         auto outPath = fs::u8path(options.outputPath);
+        auto comparePath = fs::u8path(options.path2);
 
         const auto timeStarted = std::chrono::high_resolution_clock::now();
 
@@ -517,6 +541,11 @@ namespace OpenLoco
         catch (...)
         {
             Logging::error("Unable to load and simulate {}", inPath.u8string());
+        }
+
+        if (!options.path2.empty())
+        {
+            OpenLoco::GameSaveCompare::compareGameStates(comparePath);
         }
 
         const auto timeElapsed = std::chrono::high_resolution_clock::now() - timeStarted;
@@ -544,6 +573,36 @@ namespace OpenLoco
             {
                 Logging::error("Unable to save game to {}", outPath.u8string());
             }
+        }
+
+        return 0;
+    }
+
+    static int compare(const CommandLineOptions& options)
+    {
+        auto file1 = fs::u8path(options.path);
+        auto file2 = fs::u8path(options.path2);
+        auto displayAllDivergences = options.all.empty() == false;
+
+        if (file1.empty() || file2.empty())
+        {
+            Logging::error("Unable to compare gamestates...");
+            Logging::error("    The required compare file paths have not been specified.");
+            Logging::error("    compare [options] <path1> <path2>");
+            return 1;
+        }
+
+        try
+        {
+            if (OpenLoco::GameSaveCompare::compareGameStates(file1, file2, displayAllDivergences))
+            {
+                Logging::info("MATCHES", file1, file2);
+            }
+        }
+        catch (std::exception& e)
+        {
+            Logging::error("Unable to compare gamestates: {} to {}", file1, file2);
+            Logging::error("Execption reason {}", e.what());
         }
 
         return 0;

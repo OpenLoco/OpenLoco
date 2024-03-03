@@ -67,6 +67,7 @@
 #include "Ui.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"

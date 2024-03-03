@@ -319,8 +319,8 @@ namespace OpenLoco::S5
         uint8_t lastLandOption;                                                          // 0x00019E (0x00525FB6)
         uint8_t maxCompetingCompanies;                                                   // 0x00019F (0x00525FB7)
         uint32_t orderTableLength;                                                       // 0x0001A0 (0x00525FB8)
-        uint32_t var_1A4;                                                                // 0x0001A4 (0x00525FBC)
-        uint32_t var_1A8;                                                                // 0x0001A8 (0x00525FC0)
+        uint32_t roadObjectIdIsTram;                                                     // 0x0001A4 (0x00525FBC)
+        uint32_t roadObjectIdIsFlag7;                                                    // 0x0001A8 (0x00525FC0)
         uint8_t var_1AC;                                                                 // 0x0001AC (0x00525FC4)
         uint8_t lastTrackTypeOption;                                                     // 0x0001AD (0x00525FC5)
         uint8_t loanInterestRate;                                                        // 0x0001AE (0x00525FC6)
@@ -328,7 +328,7 @@ namespace OpenLoco::S5
         uint8_t lastBuildingOption;                                                      // 0x0001B0 (0x00525FC8)
         uint8_t lastMiscBuildingOption;                                                  // 0x0001B1 (0x00525FC9)
         uint8_t lastWallOption;                                                          // 0x0001B2 (0x00525FCA)
-        uint8_t var_1B3;                                                                 // 0x0001B3 (0x00525FCB)
+        uint8_t produceAICompanyTimeout;                                                 // 0x0001B3 (0x00525FCB)
         uint32_t tickStartPrngState[2];                                                  // 0x0001B4 (0x00525FCC)
         char scenarioFileName[256];                                                      // 0x0001BC (0x00525FD4)
         char scenarioName[64];                                                           // 0x0002BC (0x005260D4)
@@ -458,6 +458,7 @@ namespace OpenLoco::S5
 
     const std::vector<ObjectHeader>& getObjectErrorList();
 
+    std::unique_ptr<S5File> importSave(Stream& stream);
     bool importSaveToGameState(const fs::path& path, LoadFlags flags);
     bool importSaveToGameState(Stream& stream, LoadFlags flags);
     std::unique_ptr<SaveDetails> readSaveDetails(const fs::path& path);
