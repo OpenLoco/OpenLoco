@@ -215,14 +215,6 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::multiplayerSave, regs);
     }
 
-    inline bool do_80(EntityId head)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.ax = enumValue(head);
-        return GameCommands::doCommand(GameCommand::vehicleClone, regs) != FAILURE;
-    }
-
     enum class CheatCommand : uint8_t;
 
     inline bool do_81(CheatCommand command, int32_t param1 = 0, int32_t param2 = 0, int32_t param3 = 0)
