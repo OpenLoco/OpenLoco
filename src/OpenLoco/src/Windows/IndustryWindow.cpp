@@ -4,6 +4,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
+#include "GameCommands/Industries/RenameIndustry.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
@@ -742,10 +743,21 @@ namespace OpenLoco::Ui::Windows::Industry
 
             GameCommands::setErrorTitle(StringIds::error_cant_rename_industry);
 
-            uint32_t* buffer = (uint32_t*)input;
-            GameCommands::do_79(IndustryId(self.number), 1, buffer[0], buffer[1], buffer[2]);
-            GameCommands::do_79(IndustryId(0), 2, buffer[3], buffer[4], buffer[5]);
-            GameCommands::do_79(IndustryId(0), 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::RenameIndustryArgs args{};
+
+            args.industryId = IndustryId(self.number);
+            args.nameBufferIndex = 1;
+            std::memcpy(args.buffer, input, 36);
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.nameBufferIndex = 2;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+            args.nameBufferIndex = 0;
+
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
         }
 
         static void update(Window& self)
