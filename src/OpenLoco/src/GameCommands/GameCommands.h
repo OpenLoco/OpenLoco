@@ -138,19 +138,6 @@ namespace OpenLoco::GameCommands
         return doCommand(T::command, regs);
     }
 
-    // Rename town
-    inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = cx;   // town number or 0
-        regs.ax = ax;   // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::renameTown, regs);
-    }
-
     struct Unk52Args
     {
         static constexpr auto command = GameCommand::gc_unk_52;
