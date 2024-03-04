@@ -25,7 +25,8 @@ namespace OpenLoco
 
         StringId name;
         uint8_t noRoof; // 0x02
-        uint8_t pad_03[0x06 - 0x03];
+        uint8_t pad_03;
+        uint16_t clearHeight;                            // 0x04
         uint16_t var_06;                                 // 0x06
         uint8_t spanLength;                              // 0x08
         uint8_t pillarSpacing;                           // 0x09

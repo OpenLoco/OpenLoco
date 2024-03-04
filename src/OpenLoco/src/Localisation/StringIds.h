@@ -376,7 +376,8 @@ namespace OpenLoco::StringIds
     constexpr StringId title_name_vehicle = 375;
     constexpr StringId prompt_enter_new_vehicle_name = 376;
     constexpr StringId cant_rename_this_vehicle = 377;
-
+    constexpr StringId bridge_needed = 378;
+    constexpr StringId too_far_above_ground_for_bridge_type = 379;
     constexpr StringId bridge_already_at_maximum_height = 380;
     constexpr StringId stringid_requires_a_bridge = 381;
     constexpr StringId bridge_type_unsuitable_for_this_configuration = 382;

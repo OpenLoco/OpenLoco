@@ -1,19 +1,43 @@
 #include "CreateTrack.h"
 #include "Economy/Economy.h"
+#include "Localisation/StringIds.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
+#include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "World/StationManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands
 {
     static loco_global<uint8_t, 0x01136072> _byte_1136072;
     static loco_global<uint8_t, 0x01136073> _byte_1136073;
-    static loco_global<uint8_t, 0x01136074> _byte_1136074;
+    static loco_global<World::MicroZ, 0x01136074> _byte_1136074;
     static loco_global<uint8_t, 0x01136075> _byte_1136075;
     static loco_global<uint16_t[44], 0x004F8764> _4F8764;
+
+    static bool isBridgeRequired(const World::SmallZ baseZ, const World::SurfaceElement& elSurface, const World::TrackData::PreviewTrack& piece, const uint8_t unk)
+    {
+        if (baseZ > elSurface.baseZ())
+        {
+            return true;
+        }
+        else if (baseZ == elSurface.baseZ())
+        {
+            if (!piece.hasFlags(World::TrackData::PreviewTrackFlags::unk4))
+            {
+                if (unk == 0 || unk == elSurface.slopeCorners())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     // 0x0049BB98
     uint32_t createTrack(const TrackPlacementArgs& args, uint8_t flags)
@@ -89,6 +113,63 @@ namespace OpenLoco::GameCommands
         auto& trackPieces = World::TrackData::getTrackPiece(args.trackId);
         for (auto& piece : trackPieces)
         {
+            const auto trackLoc = args.pos + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
+            const auto quarterTile = piece.subTileClearance.rotate(args.rotation);
+            const auto unk = Numerics::rotl4bit(enumValue(piece.flags) & 0xF, 1);
+
+            if (trackLoc.z < 16)
+            {
+                setErrorText(StringIds::error_too_low);
+                return FAILURE;
+            }
+
+            const auto baseZ = trackLoc.z / World::kSmallZStep;
+            auto clearZ = baseZ + (piece.clearZ + 32) / World::kSmallZStep;
+            _byte_1136073 = _byte_1136073 & ~(1U << 1);
+
+            // Why aren't we just failing invalid???
+            if (World::validCoords(trackLoc))
+            {
+                const auto tile = World::TileManager::get(trackLoc);
+                auto* elSurface = tile.surface();
+                if (elSurface->water())
+                {
+                    _byte_1136073 = _byte_1136073 | (1U << 7);
+                }
+
+                const bool requiresBridge = isBridgeRequired(baseZ, *elSurface, piece, unk);
+                if (requiresBridge)
+                {
+                    // 0x0049BF1E
+                    _byte_1136073 = _byte_1136073 | (1U << 1) | (1U << 0);
+                    World::MicroZ heightDiff = (baseZ - elSurface->baseZ()) / World::kMicroToSmallZStep;
+                    if (args.bridge == 0xFFU)
+                    {
+                        setErrorText(StringIds::bridge_needed);
+                        return FAILURE;
+                    }
+                    auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
+                    if (heightDiff > bridgeObj->maxHeight)
+                    {
+                        setErrorText(StringIds::too_far_above_ground_for_bridge_type);
+                        return FAILURE;
+                    }
+                    _byte_1136074 = std::max(heightDiff, *_byte_1136074);
+                    if (bridgeObj->disabledTrackCfg & _4F8764[args.trackId])
+                    {
+                        setErrorText(StringIds::bridge_type_unsuitable_for_this_configuration);
+                        return FAILURE;
+                    }
+                    clearZ += bridgeObj->clearHeight / World::kSmallZStep;
+                }
+
+                // 0x0049BF7C
+                if (clearZ > 236)
+                {
+                    setErrorText(StringIds::error_too_high);
+                    return FAILURE;
+                }
+            }
         }
 
         return totalCost;
