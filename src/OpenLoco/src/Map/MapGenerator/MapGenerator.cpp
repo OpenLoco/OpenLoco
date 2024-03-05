@@ -55,9 +55,46 @@ namespace OpenLoco::World::MapGenerator
     // 0x004625D0
     static void generateLand(HeightMap& heightMap)
     {
-        _heightMap = heightMap.data();
-        call(0x004625D0);
-        _heightMap = nullptr;
+        for (auto pos : World::getDrawableTileRange())
+        {
+            const uint8_t q00 = heightMap[{ pos.x + 0, pos.y + 0 }];
+            const uint8_t q01 = heightMap[{ pos.x + 0, pos.y + 1 }];
+            const uint8_t q10 = heightMap[{ pos.x + 1, pos.y + 0 }];
+            const uint8_t q11 = heightMap[{ pos.x + 1, pos.y + 1 }];
+
+            const auto tile = TileManager::get(pos);
+            auto* surfaceElement = tile.surface();
+            if (surfaceElement == nullptr)
+            {
+                continue;
+            }
+
+            const uint8_t baseHeight = (q00 + q01 + q10 + q11) / 4;
+            surfaceElement->setBaseZ(std::max(2, baseHeight * kSmallZStep));
+
+            uint8_t currentSlope = surfaceElement->slope();
+            if (q00 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::south;
+            if (q01 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::west;
+            if (q10 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::east;
+            if (q11 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::north;
+
+            surfaceElement->setSlope(currentSlope);
+
+            auto clearZ = surfaceElement->baseZ();
+            if (surfaceElement->slopeCorners())
+            {
+                clearZ += kSmallZStep;
+            }
+            if (surfaceElement->isSlopeDoubleHeight())
+            {
+                clearZ += kSmallZStep;
+            }
+            surfaceElement->setClearZ(clearZ);
+        }
     }
 
     // 0x004C4BD7
