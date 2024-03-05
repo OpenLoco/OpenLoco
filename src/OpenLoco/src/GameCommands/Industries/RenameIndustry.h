@@ -6,7 +6,7 @@ namespace OpenLoco::GameCommands
 {
     struct RenameIndustryArgs
     {
-        static constexpr auto command = GameCommand::renameTown;
+        static constexpr auto command = GameCommand::renameIndustry;
 
         RenameIndustryArgs() = default;
         explicit RenameIndustryArgs(const registers& regs)
