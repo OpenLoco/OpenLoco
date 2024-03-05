@@ -607,6 +607,11 @@ namespace OpenLoco::World::TileClearance
         return ClearFuncResult::collisionRemoved;
     }
 
+    ElementPositionFlags getPositionFlags()
+    {
+        return *_constructAtElementPositionFlags;
+    }
+
     void registerHooks()
     {
         registerHook(
