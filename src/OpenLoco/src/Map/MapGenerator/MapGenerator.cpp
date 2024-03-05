@@ -267,6 +267,54 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    // 0x004611DF
+    static void sub_4611DF()
+    {
+        for (auto pos : World::getDrawableTileRange())
+        {
+            auto tile = TileManager::get(pos);
+            auto* surface = tile.surface();
+
+            if (surface == nullptr)
+                continue;
+
+            if (surface->isIndustrial())
+            {
+                auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+                if (landObj->hasFlags(LandObjectFlags::unk0))
+                {
+                    if (surface->water())
+                    {
+                        auto waterHeight = surface->waterHeight();
+                        if (surface->slope())
+                            waterHeight -= kSmallZStep;
+
+                        if (waterHeight > surface->baseZ())
+                        {
+                            if (surface->terrain() & 0xE)
+                            {
+                                surface->setVar6SLR5(0);
+                            }
+                        }
+                        else
+                        {
+                            surface->setVar6SLR5(landObj->var_03 - 1);
+                        }
+                    }
+                    else
+                    {
+                        surface->setVar6SLR5(landObj->var_03 - 1);
+                    }
+                }
+            }
+
+            auto snowLine = Scenario::getCurrentSnowLine() / kSmallZStep;
+            auto baseZ = (surface->baseZ() / kSmallZStep) + 1;
+            auto unk = std::clamp(baseZ - snowLine, 0, 5);
+            surface->setVar4SLR5(unk);
+        }
+    }
+
     // 0x004BE0C7
     static void updateTreeSeasons()
     {
@@ -507,7 +555,7 @@ namespace OpenLoco::World::MapGenerator
             updateProgress(35);
         }
 
-        call(0x004611DF);
+        sub_4611DF();
         updateProgress(40);
 
         generateTrees();
@@ -522,7 +570,7 @@ namespace OpenLoco::World::MapGenerator
         generateMiscBuildings();
         updateProgress(250);
 
-        call(0x004611DF);
+        sub_4611DF();
         updateProgress(255);
 
         Scenario::sub_4969E0(0);
