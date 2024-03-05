@@ -851,6 +851,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         static constexpr WindowEventList kEvents = {
             .onMouseUp = onMouseUp,
+            .onResize = initViewport,
             .onUpdate = onUpdate,
             .viewportRotate = initViewport,
             .draw = draw,
