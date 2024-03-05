@@ -66,10 +66,10 @@ namespace OpenLoco::GameCommands
         {
         }
 
-        CheatCommand subcommand;
-        int32_t param1;
-        int32_t param2;
-        int32_t param3;
+        CheatCommand subcommand{};
+        int32_t param1{};
+        int32_t param2{};
+        int32_t param3{};
 
         explicit operator registers() const
         {
