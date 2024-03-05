@@ -1,4 +1,5 @@
 #include "CreateTrack.h"
+#include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "GameState.h"
 #include "Localisation/StringIds.h"
@@ -6,21 +7,34 @@
 #include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
+#include "Random.h"
+#include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<uint8_t, 0x01136072> _byte_1136072;
+    using namespace World::TileManager;
+
+    static loco_global<ElementPositionFlags, 0x01136072> _byte_1136072;
     static loco_global<uint8_t, 0x01136073> _byte_1136073;
     static loco_global<World::MicroZ, 0x01136074> _byte_1136074;
     static loco_global<uint8_t, 0x01136075> _byte_1136075;
     static loco_global<uint16_t[44], 0x004F8764> _4F8764;
+
+    // TODO: Move this somewhere else used by multiple game commands
+    // 0x0048B013
+    void playPlacementSound(World::Pos3 pos)
+    {
+        const auto frequency = gPrng1().randNext(17955, 26146);
+        Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
+    }
 
     static bool isBridgeRequired(const World::SmallZ baseZ, const World::SurfaceElement& elSurface, const World::TrackData::PreviewTrack& piece, const uint8_t unk)
     {
@@ -62,7 +76,7 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
-        _byte_1136072 = 0; // Tunnel related
+        _byte_1136072 = ElementPositionFlags::none;
         _byte_1136073 = 0; // Bridge related
         _byte_1136074 = 0;
         _byte_1136075 = 0xFFU;
@@ -222,8 +236,98 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x0049C015
+            const auto posFlags = World::TileClearance::getPositionFlags();
+
+            // Abridged flags for just above/underground
+            const auto newGroundFlags = posFlags & (ElementPositionFlags::aboveGround | ElementPositionFlags::underground);
+            if (_byte_1136072 != ElementPositionFlags::none && (*_byte_1136072 & newGroundFlags) == ElementPositionFlags::none)
+            {
+                setErrorText(StringIds::cant_build_partly_above_partly_below_ground);
+                return FAILURE;
+            }
+            _byte_1136072 = newGroundFlags;
+
+            if ((posFlags & ElementPositionFlags::partiallyUnderwater) != ElementPositionFlags::none)
+            {
+                setErrorText(StringIds::cant_build_this_underwater);
+                return FAILURE;
+            }
+            if ((posFlags & ElementPositionFlags::underwater) != ElementPositionFlags::none)
+            {
+                setErrorText(StringIds::too_close_to_water_surface);
+                return FAILURE;
+            }
+
+            if (!(flags & Flags::apply))
+            {
+                continue;
+            }
+
+            if (CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
+            {
+                companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
+            }
+            if (!(flags & (Flags::ghost | Flags::aiAllocated)))
+            {
+                // sub_46908D
+                // sub_469174
+            }
+
+            auto* newElTrack = World::TileManager::insertElement<World::TrackElement>(trackLoc, baseZ, quarterTile.getBaseQuarterOccupied());
+            if (newElTrack == nullptr)
+            {
+                return FAILURE;
+            }
+            newElTrack->setClearZ(clearZ);
+            newElTrack->setRotation(args.rotation);
+            newElTrack->setTrackObjectId(args.trackObjectId);
+            newElTrack->setSequenceIndex(pieceIndex);
+            newElTrack->setTrackId(args.trackId);
+            newElTrack->setOwner(getUpdatingCompanyId());
+            for (auto i = 0U; i < 4; ++i)
+            {
+                if (validMods & (1U << i))
+                {
+                    newElTrack->setMod(i, true);
+                }
+            }
+            newElTrack->setBridgeObjectId(args.bridge);
+            newElTrack->setHasBridge(_byte_1136073 & (1U << 1));
+            newElTrack->setHasLevelCrossing(hasLevelCrossing);
+            newElTrack->setFlag6(isLastPiece);
+            newElTrack->setGhost(flags & Flags::ghost);
+            newElTrack->setAiAllocated(flags & Flags::aiAllocated);
+            if (!(flags & Flags::aiAllocated))
+            {
+                World::TileManager::mapInvalidateTileFull(trackLoc);
+            }
         }
 
+        if (_byte_1136073 & (1U << 0))
+        {
+            auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
+            const auto heightCost = _byte_1136074 * bridgeObj->heightCostFactor;
+            const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
+            auto cost = (bridgeBaseCost * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+            if (_byte_1136073 & (1U << 7))
+            {
+                cost *= 2;
+            }
+            totalCost += cost;
+        }
+
+        if ((_byte_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none)
+        {
+            const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, 2, 8);
+            auto cost = (tunnelBaseCost * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+
+            totalCost += cost;
+        }
+
+        if (flags & Flags::apply && !(flags & (Flags::aiAllocated | Flags::ghost)))
+        {
+            playPlacementSound(getPosition());
+        }
         return totalCost;
     }
 

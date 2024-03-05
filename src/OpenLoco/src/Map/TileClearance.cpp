@@ -597,6 +597,11 @@ namespace OpenLoco::World::TileClearance
         return tileClearFunction(el, pos, removedBuildings, flags, cost, false);
     }
 
+    ElementPositionFlags getPositionFlags()
+    {
+        return *_constructAtElementPositionFlags;
+    }
+
     void registerHooks()
     {
         registerHook(

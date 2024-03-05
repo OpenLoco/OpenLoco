@@ -115,6 +115,7 @@ namespace OpenLoco::StringIds
     constexpr StringId screenshot_saved_as = 109;
     constexpr StringId screenshot_failed = 110;
 
+    constexpr StringId cant_build_partly_above_partly_below_ground = 112;
     constexpr StringId stringid_2 = 113;
     constexpr StringId tooltip_left_hand_curve = 114;
     constexpr StringId tooltip_right_hand_curve = 115;
@@ -355,7 +356,7 @@ namespace OpenLoco::StringIds
     constexpr StringId move_main_view_to_show_this = 355;
     constexpr StringId off_edge_of_map = 356;
     constexpr StringId cannot_build_partly_above_below_water = 357;
-
+    constexpr StringId too_close_to_water_surface = 358;
     constexpr StringId cant_build_this_underwater = 359;
     constexpr StringId error_can_only_build_above_ground = 360;
     constexpr StringId can_only_build_this_on_level_land = 361;
