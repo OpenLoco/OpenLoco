@@ -865,6 +865,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             Config::write();
             Environment::resolvePaths();
         }
+        // ... and similarly for landscapes
+        else if (_fileType == BrowseFileType::landscape)
+        {
+            if (!fs::is_directory(_currentDirectory))
+                Config::get().lastLandscapePath = _currentDirectory.parent_path().u8string();
+            else
+                Config::get().lastLandscapePath = _currentDirectory.u8string();
+            Config::write();
+            Environment::resolvePaths();
+        }
 
         // Close browse window to continue saving.
         WindowManager::close(self);

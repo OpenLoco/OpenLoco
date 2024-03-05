@@ -58,6 +58,7 @@ namespace OpenLoco::Environment
         languageFiles,
         save,
         autosave,
+        landscape,
         _1tmp,
         objects,
         scenarios,

@@ -227,8 +227,11 @@ namespace OpenLoco::Environment
         auto basePath = resolveLocoInstallPath();
         setDirectory(_pathInstall, basePath);
 
+        // Figure out what save directory to default to.
         // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
         auto saveDirectory = getPathNoWarning(PathId::save) / "";
+        autoCreateDirectory(saveDirectory);
+
         auto& configLastSavePath = Config::get().lastSavePath;
         if (!configLastSavePath.empty())
         {
@@ -247,10 +250,31 @@ namespace OpenLoco::Environment
         }
         setDirectory(_pathSavesSinglePlayer, saveDirectory);
         setDirectory(_pathSavesTwoPlayer, saveDirectory);
-        autoCreateDirectory(saveDirectory);
 
+        // Figure out what landscape directory to default to.
+        // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
+        auto landscapeDirectory = getPathNoWarning(PathId::landscape) / "";
+        autoCreateDirectory(landscapeDirectory);
+
+        auto& configLastLandscapePath = Config::get().lastLandscapePath;
+        if (!configLastLandscapePath.empty())
+        {
+            // Getting the directory can fail if config is bad.
+            try
+            {
+                auto directory = fs::u8path(configLastLandscapePath);
+                if (fs::is_directory(directory))
+                {
+                    landscapeDirectory = directory;
+                }
+            }
+            catch (std::system_error&)
+            {
+            }
+        }
+
+        setDirectory(_pathLandscapes, landscapeDirectory / "*.SC5");
         setDirectory(_pathScenarios, basePath / "Scenarios/*.SC5");
-        setDirectory(_pathLandscapes, basePath / "Scenarios/Landscapes/*.SC5");
         setDirectory(_pathObjects, basePath / "ObjData/*.DAT");
     }
 
@@ -265,6 +289,7 @@ namespace OpenLoco::Environment
             case PathId::openlocoYML:
             case PathId::save:
             case PathId::autosave:
+            case PathId::landscape:
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
 #if defined(__APPLE__) && defined(__MACH__)
@@ -332,6 +357,7 @@ namespace OpenLoco::Environment
             "language",
             "save",
             "save/autosave",
+            "landscape",
             "1.TMP",
             "ObjData",
             "Scenarios",
