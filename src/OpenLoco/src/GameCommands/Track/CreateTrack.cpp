@@ -1,10 +1,13 @@
 #include "CreateTrack.h"
 #include "Economy/Economy.h"
+#include "GameState.h"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Objects/BridgeObject.h"
+#include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
@@ -37,6 +40,21 @@ namespace OpenLoco::GameCommands
             return true;
         }
         return false;
+    }
+
+    // 0x0049C275
+    World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, uint8_t flags, currency32_t& totalCost, uint8_t trackObjectId, uint8_t bridgeId, uint8_t trackId, uint8_t rotation, bool& hasLevelCrossing, uint8_t pieceIndex, bool isLastPiece)
+    {
+        // 0x0113607C hasLevelCrossing
+        // 0x01135F5E pieceIndex
+        // 0x01135F5E isLastPiece as well
+        // ebp+14h flags
+        // ebp+0h cost
+        // ebp+Ch trackObjectId
+        // ebp+Fh bridge
+        // ebp+Dh trackId
+        // ebp+15h rotation
+        return World::TileClearance::ClearFuncResult::noCollision;
     }
 
     // 0x0049BB98
@@ -162,14 +180,48 @@ namespace OpenLoco::GameCommands
                     }
                     clearZ += bridgeObj->clearHeight / World::kSmallZStep;
                 }
-
-                // 0x0049BF7C
-                if (clearZ > 236)
-                {
-                    setErrorText(StringIds::error_too_high);
-                    return FAILURE;
-                }
             }
+            // 0x0049BF7C
+            if (clearZ > 236)
+            {
+                setErrorText(StringIds::error_too_high);
+                return FAILURE;
+            }
+
+            // 0x0113607C
+            bool hasLevelCrossing = false;
+            // 0x01135F5E
+            uint8_t pieceIndex = piece.index;
+            // 0x01135F5E as well
+            bool isLastPiece = piece.index == (trackPieces.size() - 1);
+            // ebp+14h flags
+            // ebp+0h cost
+            // ebp+Ch trackObjectId
+            // ebp+Fh bridge
+            // ebp+Dh trackId
+            // ebp+15h rotation
+
+            auto clearFunc = [flags, &totalCost, trackObjectId = args.trackObjectId, bridgeId = args.bridge, trackId = args.trackId, rotation = args.rotation, &hasLevelCrossing, pieceIndex, isLastPiece](World::TileElement& el) {
+                return clearFunction(el, flags, totalCost, trackObjectId, bridgeId, trackId, rotation, hasLevelCrossing, pieceIndex, isLastPiece);
+            };
+
+            if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, quarterTile, clearFunc))
+            {
+                return FAILURE;
+            }
+
+            if (hasLevelCrossing)
+            {
+                auto* levelCrossObj = ObjectManager::get<LevelCrossingObject>(getGameState().var_1AC);
+                totalCost += Economy::getInflationAdjustedCost(levelCrossObj->costFactor, levelCrossObj->costIndex, 10);
+            }
+
+            if (flags & Flags::apply && !(flags & (Flags::ghost | Flags::aiAllocated)))
+            {
+                World::TileManager::removeAllWallsOnTileBelow(World::toTileSpace(trackLoc), baseZ);
+            }
+
+            // 0x0049C015
         }
 
         return totalCost;
