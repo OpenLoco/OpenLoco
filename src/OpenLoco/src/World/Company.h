@@ -55,6 +55,19 @@ namespace OpenLoco
         surveyingLandscape,
     };
 
+    enum class Emotion : uint8_t
+    {
+        neutral,
+        happy,
+        worried,
+        thinking,
+        dejected,
+        surprised,
+        scared,
+        angry,
+        disgusted,
+    };
+
     class OwnerStatus
     {
         int16_t data[2];
@@ -85,6 +98,25 @@ namespace OpenLoco
             res[0] = data[0];
             res[1] = data[1];
         }
+
+        bool isEmpty() const { return data[0] == -1; }
+        bool isEntity() const { return data[0] == -2; }
+        EntityId getEntity() const
+        {
+            if (isEntity())
+            {
+                return static_cast<EntityId>(data[1]);
+            }
+            return EntityId::null;
+        }
+        World::Pos2 getPosition() const
+        {
+            if (isEntity())
+            {
+                return {};
+            }
+            return World::Pos2{ data[0], data[1] };
+        }
     };
 
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
@@ -110,7 +142,7 @@ namespace OpenLoco
         uint32_t updateCounter;           // 0x12
         int16_t performanceIndex;         // 0x16
         uint8_t competitorId;             // 0x18
-        uint8_t ownerEmotion;             // 0x19
+        Emotion ownerEmotion;             // 0x19
         ColourScheme mainColours;         // 0x1A
         ColourScheme vehicleColours[10];  // 0x1C
         uint32_t customVehicleColoursSet; // 0x30
@@ -167,15 +199,15 @@ namespace OpenLoco
         currency48_t companyValueHistory[120];    // 0x88CE
         currency48_t vehicleProfit;               // 0x8B9E
         uint16_t transportTypeCount[6];           // 0x8BA4
-        uint8_t var_8BB0[9];
-        ObservationStatus observationStatus; // 0x8BB9;
-        TownId observationTownId;            // 0x8BBA;
-        EntityId observationEntity;          // 0x8BBC;
-        int16_t observationX;                // 0x8BBE;
-        int16_t observationY;                // 0x8BC0;
-        uint16_t observationObject;          // 0x8BC2;
-        uint16_t var_8BC4;
-        OwnerStatus ownerStatus; // 0x8BC6
+        uint8_t activeEmotions[9];                // 0x8BB0 duration in days that emotion is active 0 == not active
+        ObservationStatus observationStatus;      // 0x8BB9;
+        TownId observationTownId;                 // 0x8BBA;
+        EntityId observationEntity;               // 0x8BBC;
+        int16_t observationX;                     // 0x8BBE;
+        int16_t observationY;                     // 0x8BC0;
+        uint16_t observationObject;               // 0x8BC2;
+        uint16_t observationTimeout;              // 0x8BC4
+        OwnerStatus ownerStatus;                  // 0x8BC6
         uint8_t pad_8BCA[0x8BCE - 0x8BCA];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
@@ -216,9 +248,11 @@ namespace OpenLoco
     static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
     static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
     static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
-    static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
+    static_assert(offsetof(Company, activeEmotions) == 0x8BB0);
 
     StringId getCorporateRatingAsStringId(CorporateRating rating);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
+    void companyEmotionEvent(CompanyId companyId, Emotion emotion);
+    void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
 }

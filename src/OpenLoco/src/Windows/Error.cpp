@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::Error
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
 
-                auto imageId = companyObj->images[company->ownerEmotion];
+                auto imageId = companyObj->images[enumValue(company->ownerEmotion)];
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 

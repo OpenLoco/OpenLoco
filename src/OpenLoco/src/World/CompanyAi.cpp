@@ -26,8 +26,11 @@
 #include "Station.h"
 #include "StationManager.h"
 #include "TownManager.h"
+#include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <bit>
+#include <numeric>
 
 using namespace OpenLoco::Interop;
 
@@ -303,7 +306,7 @@ namespace OpenLoco
             {
                 company.var_4A4 = AiThinkState::unk7;
                 company.var_4A5 = 0;
-                StationManager::sub_437F29(company.id(), 8);
+                companyEmotionEvent(company.id(), Emotion::disgusted);
                 return;
             }
 
@@ -862,7 +865,7 @@ namespace OpenLoco
     static void sub_4310E9(Company& company, AiThought& thought)
     {
         sub_4876CB(thought);
-        StationManager::sub_437F29(company.id(), 1);
+        companyEmotionEvent(company.id(), Emotion::happy);
         company.var_4A4 = AiThinkState::unk0;
     }
 
@@ -878,7 +881,7 @@ namespace OpenLoco
     // 0x00431035
     static void aiThinkState4(Company& company)
     {
-        StationManager::sub_437F29(company.id(), 3);
+        companyEmotionEvent(company.id(), Emotion::thinking);
         company.var_85F6++;
 
         _funcs_4F9500[company.var_4A5](company, company.aiThoughts[company.var_2578]);
@@ -1358,6 +1361,68 @@ namespace OpenLoco
             args.rotation = rot;
             args.type = buildingType;
             GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+    }
+
+    // 0x0043821D
+    void setAiObservation(CompanyId id)
+    {
+        auto* company = CompanyManager::get(id);
+        if (company->var_4A4 == AiThinkState::unk3)
+        {
+            World::Pos2 pos{};
+            auto& thought = company->aiThoughts[company->var_2578];
+            if (kThoughtTypeFlags[enumValue(thought.type)] & (1U << 1))
+            {
+                auto* industry = IndustryManager::get(static_cast<IndustryId>(thought.var_01));
+                pos = World::Pos2{ industry->x, industry->y };
+            }
+            else
+            {
+                // Interestingly var_01 isn't a uint16_t
+                auto* town = TownManager::get(static_cast<TownId>(thought.var_01));
+                pos = World::Pos2{ town->x, town->y };
+            }
+            companySetObservation(id, ObservationStatus::surveyingLandscape, pos, EntityId::null, 0xFFFFU);
+        }
+        else
+        {
+            if (company->observationTimeout != 0)
+            {
+                return;
+            }
+
+            const auto totalVehicles = std::accumulate(std::begin(company->transportTypeCount), std::end(company->transportTypeCount), 0);
+
+            const auto randVehicleNum = totalVehicles * static_cast<uint64_t>(gPrng1().randNext()) / (1ULL << 32);
+            auto i = 0U;
+            EntityId randVehicle = EntityId::null;
+            for (auto* vehicle : VehicleManager::VehicleList())
+            {
+                if (vehicle->owner != id)
+                {
+                    continue;
+                }
+                if (vehicle->has38Flags(Vehicles::Flags38::isGhost))
+                {
+                    continue;
+                }
+                if (i == randVehicleNum)
+                {
+                    randVehicle = vehicle->id;
+                    break;
+                }
+                i++;
+            }
+            if (randVehicle == EntityId::null)
+            {
+                return;
+            }
+            Vehicles::Vehicle train(randVehicle);
+            if (train.veh2->position.x != Location::null)
+            {
+                companySetObservation(id, ObservationStatus::checkingServices, train.veh2->position, train.head->id, 0xFFFFU);
+            }
         }
     }
 }

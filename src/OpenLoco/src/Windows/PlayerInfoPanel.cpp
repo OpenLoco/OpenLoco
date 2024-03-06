@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(positionArray[index]);
-            args.push(Gfx::recolour(competitorObj->images[company->ownerEmotion], company->mainColours.primary));
+            args.push(Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary));
             args.push(company->name);
             args.push<uint16_t>(0); // Needed after a user string id
             formatPerformanceIndex(company->performanceIndex, args);
@@ -196,7 +196,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
-        auto image = Gfx::recolour(competitor->images[playerCompany->ownerEmotion], playerCompany->mainColours.primary);
+        auto image = Gfx::recolour(competitor->images[enumValue(playerCompany->ownerEmotion)], playerCompany->mainColours.primary);
         drawingCtx.drawImage(rt, window.x + frame.left + 2, window.y + frame.top + 2, image);
 
         auto x = window.x + frame.width() / 2 + 12;
