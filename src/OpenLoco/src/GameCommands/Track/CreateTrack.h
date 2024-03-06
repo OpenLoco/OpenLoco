@@ -15,7 +15,7 @@ namespace OpenLoco::GameCommands
             , trackId(regs.dh & 0x3F)
             , mods(regs.di >> 16)
             , unkFlags((regs.edx >> 20) & 0xF)
-            , bridge((regs.edx >> 24) & 0xF)
+            , bridge((regs.edx >> 24) & 0xFF)
             , trackObjectId(regs.dl)
             , unk(regs.edi & 0x800000)
         {

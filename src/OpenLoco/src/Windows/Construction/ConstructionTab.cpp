@@ -282,6 +282,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         args.bridge = _lastSelectedBridge;
         args.trackObjectId = _trackType;
         args.unk = _byte_113607E & (1 << 0);
+        args.unkFlags = 0;
 
         _dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
 
@@ -2239,6 +2240,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         args.trackObjectId = _trackType;
         args.trackId = trackId->id;
         args.unk = _byte_113607E & (1 << 0);
+        args.unkFlags = 0;
         return args;
     }
 
