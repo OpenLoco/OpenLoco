@@ -85,6 +85,7 @@ namespace OpenLoco::World::MapGenerator
                 currentSlope |= SurfaceSlope::CornerUp::north;
 
             // Now, deduce if we should go for double height
+            // clang-format off
             if ((currentSlope == SurfaceSlope::CornerDown::north && q00 - baseHeight >= 2) ||
                 (currentSlope == SurfaceSlope::CornerDown::east  && q01 - baseHeight >= 2) ||
                 (currentSlope == SurfaceSlope::CornerDown::west  && q10 - baseHeight >= 2) ||
@@ -92,6 +93,7 @@ namespace OpenLoco::World::MapGenerator
             {
                 currentSlope |= SurfaceSlope::doubleHeight;
             }
+            // clang-format on
 
             surfaceElement->setSlope(currentSlope);
 
