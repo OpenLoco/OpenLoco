@@ -3,6 +3,7 @@
 #include "Economy/Economy.h"
 #include "GameState.h"
 #include "Localisation/StringIds.h"
+#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileClearance.h"
 #include "Map/TileManager.h"
@@ -70,7 +71,7 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0049C275
-    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, const ClearFunctionArgs& args)
+    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
     {
         static loco_global<World::TileElement*, 0x00F0015C> _F0015C;
         static loco_global<const World::TrackData::PreviewTrack*, 0x01135F5E> _1135F5E;
@@ -106,37 +107,32 @@ namespace OpenLoco::GameCommands
         // ebp+Dh trackId
         // ebp+15h rotation
 
-        registers regs{};
-        regs.esi = X86Pointer(&el);
-        bool hasCollision = call(0x0049C275, regs) & Interop::X86_FLAG_CARRY;
-
-        hasLevelCrossing = _113607C;
-        totalCost = _stack[0];
-
-        if (hasCollision)
+        switch (el.type())
         {
-            if (regs.esi == -1)
-            {
-                return World::TileClearance::ClearFuncResult::collisionErrorSet;
-            }
-            else
-            {
+            case World::ElementType::track:
+                // 0x0049C4FF
+                break;
+            case World::ElementType::station:
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation->stationType() == StationType::trainStation)
+                {
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
                 return World::TileClearance::ClearFuncResult::collision;
-            }
-        }
-        else
-        {
-            if (_F0015C == nullptr)
-            {
+            case World::ElementType::signal:
                 return World::TileClearance::ClearFuncResult::noCollision;
-            }
-            if (_F0015C == World::TileManager::kInvalidTile)
-            {
-                // This is a no collision as it has removed all the collisions
-                return World::TileClearance::ClearFuncResult::allCollisionsRemoved;
-            }
-            // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
-            return World::TileClearance::ClearFuncResult::collisionRemoved;
+            case World::ElementType::building:
+                _byte_1136073 = _byte_1136073 | (1U << 4);
+                return World::TileClearance::clearWithDefaultCollision(el, args.pos, removedBuildings, args.flags, totalCost);
+            case World::ElementType::tree:
+                return World::TileClearance::clearWithDefaultCollision(el, args.pos, removedBuildings, args.flags, totalCost);
+            case World::ElementType::road:
+                // 0x0049C401
+                break;
+            case World::ElementType::surface:
+            case World::ElementType::wall:
+            case World::ElementType::industry:
+                return World::TileClearance::ClearFuncResult::collision;
         }
     }
 
@@ -212,6 +208,8 @@ namespace OpenLoco::GameCommands
         }
 
         auto& trackPieces = World::TrackData::getTrackPiece(args.trackId);
+        std::set<World::Pos3, World::LessThanPos3> removedBuildings;
+
         for (auto& piece : trackPieces)
         {
             const auto trackLoc = args.pos + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
@@ -285,8 +283,8 @@ namespace OpenLoco::GameCommands
             clearArgs.isLastIndex = piece.index == (trackPieces.size() - 1);
             clearArgs.flags = flags;
 
-            auto clearFunc = [&totalCost, &hasLevelCrossing, &clearArgs](World::TileElement& el) {
-                return clearFunction(el, totalCost, hasLevelCrossing, clearArgs);
+            auto clearFunc = [&totalCost, &hasLevelCrossing, &removedBuildings, &clearArgs](World::TileElement& el) {
+                return clearFunction(el, totalCost, hasLevelCrossing, removedBuildings, clearArgs);
             };
 
             if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, quarterTile, clearFunc))
