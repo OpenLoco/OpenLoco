@@ -56,8 +56,21 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
+    struct ClearFunctionArgs
+    {
+        World::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t unkFlags;
+        uint8_t bridgeId;
+        uint8_t trackObjectId;
+        uint8_t index;
+        bool isLastIndex;
+        uint8_t flags;
+    };
+
     // 0x0049C275
-    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, World::Pos3 pos, uint8_t flags, currency32_t& totalCost, uint8_t trackObjectId, uint8_t bridgeId, uint8_t trackId, uint8_t rotation, bool& hasLevelCrossing, uint8_t pieceIndex, bool isLastPiece, uint8_t unkFlags)
+    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, const ClearFunctionArgs& args)
     {
         static loco_global<World::TileElement*, 0x00F0015C> _F0015C;
         static loco_global<const World::TrackData::PreviewTrack*, 0x01135F5E> _1135F5E;
@@ -66,23 +79,22 @@ namespace OpenLoco::GameCommands
         static loco_global<uint8_t, 0x0113601C> _113601C;
         static loco_global<bool, 0x0113607C> _113607C;
         static loco_global<uint32_t, 0x01135C68> _1135C68;
-        isLastPiece = isLastPiece;
-        auto& piece = World::TrackData::getTrackPiece(trackId)[pieceIndex];
-        _1135F5E = &piece;
+        auto& piece = World::TrackData::getTrackPiece(args.trackId)[args.index];
+        _1135F5E = &piece; // NOTE: This does not work as vanilla expects piece ptr + 1 to work
         _113607C = hasLevelCrossing;
-        _1135FE0 = pos;
-        _113601C = pos.z / World::kSmallZStep;
+        _1135FE0 = args.pos;
+        _113601C = args.pos.z / World::kSmallZStep;
 
         std::array<uint32_t, 6> _stack{
-            static_cast<uint32_t>(totalCost),                                         // 0x00
-            0,                                                                        // 0x04
-            0,                                                                        // 0x08
-            static_cast<uint32_t>(trackObjectId) | (trackId << 8) | (bridgeId << 24), // 0x0C
-            0,                                                                        // 0x10
-            static_cast<uint32_t>(flags) | (rotation << 8),                           // 0x14
+            static_cast<uint32_t>(totalCost),                                                        // 0x00
+            0,                                                                                       // 0x04
+            0,                                                                                       // 0x08
+            static_cast<uint32_t>(args.trackObjectId) | (args.trackId << 8) | (args.bridgeId << 24), // 0x0C
+            0,                                                                                       // 0x10
+            static_cast<uint32_t>(args.flags) | (args.rotation << 8),                                // 0x14
         };
         _1135F5A = &_stack;
-        _1135C68 = unkFlags << 20;
+        _1135C68 = args.unkFlags << 20;
 
         // 0x0113607C hasLevelCrossing
         // 0x01135F5E pieceIndex
@@ -261,13 +273,20 @@ namespace OpenLoco::GameCommands
 
             // 0x0113607C
             bool hasLevelCrossing = false;
-            // 0x01135F5E
-            uint8_t pieceIndex = piece.index;
-            // 0x01135F5E as well
-            bool isLastPiece = piece.index == (trackPieces.size() - 1);
 
-            auto clearFunc = [trackLoc, flags, &totalCost, trackObjectId = args.trackObjectId, bridgeId = args.bridge, trackId = args.trackId, rotation = args.rotation, &hasLevelCrossing, pieceIndex, isLastPiece, unkFlags = args.unkFlags](World::TileElement& el) {
-                return clearFunction(el, trackLoc, flags, totalCost, trackObjectId, bridgeId, trackId, rotation, hasLevelCrossing, pieceIndex, isLastPiece, unkFlags);
+            ClearFunctionArgs clearArgs{};
+            clearArgs.pos = trackLoc;
+            clearArgs.rotation = args.rotation;
+            clearArgs.trackId = args.trackId;
+            clearArgs.unkFlags = args.unkFlags;
+            clearArgs.bridgeId = args.bridge;
+            clearArgs.trackObjectId = args.trackObjectId;
+            clearArgs.index = piece.index;
+            clearArgs.isLastIndex = piece.index == (trackPieces.size() - 1);
+            clearArgs.flags = flags;
+
+            auto clearFunc = [&totalCost, &hasLevelCrossing, &clearArgs](World::TileElement& el) {
+                return clearFunction(el, totalCost, hasLevelCrossing, clearArgs);
             };
 
             if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, quarterTile, clearFunc))
@@ -332,7 +351,7 @@ namespace OpenLoco::GameCommands
             newElTrack->setClearZ(clearZ);
             newElTrack->setRotation(args.rotation);
             newElTrack->setTrackObjectId(args.trackObjectId);
-            newElTrack->setSequenceIndex(pieceIndex);
+            newElTrack->setSequenceIndex(piece.index);
             newElTrack->setTrackId(args.trackId);
             newElTrack->setOwner(getUpdatingCompanyId());
             for (auto i = 0U; i < 4; ++i)
@@ -345,7 +364,7 @@ namespace OpenLoco::GameCommands
             newElTrack->setBridgeObjectId(args.bridge);
             newElTrack->setHasBridge(_byte_1136073 & (1U << 1));
             newElTrack->setHasLevelCrossing(hasLevelCrossing);
-            newElTrack->setFlag6(isLastPiece);
+            newElTrack->setFlag6(piece.index == (trackPieces.size() - 1));
             newElTrack->setGhost(flags & Flags::ghost);
             newElTrack->setAiAllocated(flags & Flags::aiAllocated);
             if (!(flags & Flags::aiAllocated))
