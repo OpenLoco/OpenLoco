@@ -267,8 +267,8 @@ namespace OpenLoco
         {
             return true;
         }
-        if (status == ObservationStatus::checkingServices
-            && company.observationStatus == ObservationStatus::checkingServices)
+        if (status == ObservationStatus::surveyingLandscape
+            && company.observationStatus != ObservationStatus::surveyingLandscape)
         {
             return false;
         }

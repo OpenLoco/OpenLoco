@@ -1414,6 +1414,10 @@ namespace OpenLoco
                 }
                 i++;
             }
+            if (randVehicle == EntityId::null)
+            {
+                return;
+            }
             Vehicles::Vehicle train(randVehicle);
             if (train.veh2->position.x != Location::null)
             {
