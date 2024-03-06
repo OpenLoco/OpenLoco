@@ -57,8 +57,33 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049C275
-    World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, uint8_t flags, currency32_t& totalCost, uint8_t trackObjectId, uint8_t bridgeId, uint8_t trackId, uint8_t rotation, bool& hasLevelCrossing, uint8_t pieceIndex, bool isLastPiece)
+    static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, World::Pos3 pos, uint8_t flags, currency32_t& totalCost, uint8_t trackObjectId, uint8_t bridgeId, uint8_t trackId, uint8_t rotation, bool& hasLevelCrossing, uint8_t pieceIndex, bool isLastPiece, uint8_t unkFlags)
     {
+        static loco_global<World::TileElement*, 0x00F0015C> _F0015C;
+        static loco_global<const World::TrackData::PreviewTrack*, 0x01135F5E> _1135F5E;
+        static loco_global<std::array<uint32_t, 6>*, 0x01135F5A> _1135F5A;
+        static loco_global<World::Pos2, 0x01135FE0> _1135FE0;
+        static loco_global<uint8_t, 0x0113601C> _113601C;
+        static loco_global<bool, 0x0113607C> _113607C;
+        static loco_global<uint32_t, 0x01135C68> _1135C68;
+        isLastPiece = isLastPiece;
+        auto& piece = World::TrackData::getTrackPiece(trackId)[pieceIndex];
+        _1135F5E = &piece;
+        _113607C = hasLevelCrossing;
+        _1135FE0 = pos;
+        _113601C = pos.z / World::kSmallZStep;
+
+        std::array<uint32_t, 6> _stack{
+            static_cast<uint32_t>(totalCost),                                         // 0x00
+            0,                                                                        // 0x04
+            0,                                                                        // 0x08
+            static_cast<uint32_t>(trackObjectId) | (trackId << 8) | (bridgeId << 24), // 0x0C
+            0,                                                                        // 0x10
+            static_cast<uint32_t>(flags) | (rotation << 8),                           // 0x14
+        };
+        _1135F5A = &_stack;
+        _1135C68 = unkFlags << 20;
+
         // 0x0113607C hasLevelCrossing
         // 0x01135F5E pieceIndex
         // 0x01135F5E isLastPiece as well
@@ -68,7 +93,39 @@ namespace OpenLoco::GameCommands
         // ebp+Fh bridge
         // ebp+Dh trackId
         // ebp+15h rotation
-        return World::TileClearance::ClearFuncResult::noCollision;
+
+        registers regs{};
+        regs.esi = X86Pointer(&el);
+        bool hasCollision = call(0x0049C275, regs) & Interop::X86_FLAG_CARRY;
+
+        hasLevelCrossing = _113607C;
+        totalCost = _stack[0];
+
+        if (hasCollision)
+        {
+            if (regs.esi == -1)
+            {
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+            else
+            {
+                return World::TileClearance::ClearFuncResult::collision;
+            }
+        }
+        else
+        {
+            if (_F0015C == nullptr)
+            {
+                return World::TileClearance::ClearFuncResult::noCollision;
+            }
+            if (_F0015C == World::TileManager::kInvalidTile)
+            {
+                // This is a no collision as it has removed all the collisions
+                return World::TileClearance::ClearFuncResult::allCollisionsRemoved;
+            }
+            // reset tile iterator to _F0015C (its saying we have removed a tile so pointer is stale)
+            return World::TileClearance::ClearFuncResult::collisionRemoved;
+        }
     }
 
     // 0x0049BB98
@@ -87,7 +144,7 @@ namespace OpenLoco::GameCommands
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingTrackRoad, args.pos, EntityId::null, args.trackObjectId);
         }
 
-        if (World::TileManager::checkFreeElementsAndReorganise())
+        if (!World::TileManager::checkFreeElementsAndReorganise())
         {
             return FAILURE;
         }
@@ -208,15 +265,9 @@ namespace OpenLoco::GameCommands
             uint8_t pieceIndex = piece.index;
             // 0x01135F5E as well
             bool isLastPiece = piece.index == (trackPieces.size() - 1);
-            // ebp+14h flags
-            // ebp+0h cost
-            // ebp+Ch trackObjectId
-            // ebp+Fh bridge
-            // ebp+Dh trackId
-            // ebp+15h rotation
 
-            auto clearFunc = [flags, &totalCost, trackObjectId = args.trackObjectId, bridgeId = args.bridge, trackId = args.trackId, rotation = args.rotation, &hasLevelCrossing, pieceIndex, isLastPiece](World::TileElement& el) {
-                return clearFunction(el, flags, totalCost, trackObjectId, bridgeId, trackId, rotation, hasLevelCrossing, pieceIndex, isLastPiece);
+            auto clearFunc = [trackLoc, flags, &totalCost, trackObjectId = args.trackObjectId, bridgeId = args.bridge, trackId = args.trackId, rotation = args.rotation, &hasLevelCrossing, pieceIndex, isLastPiece, unkFlags = args.unkFlags](World::TileElement& el) {
+                return clearFunction(el, trackLoc, flags, totalCost, trackObjectId, bridgeId, trackId, rotation, hasLevelCrossing, pieceIndex, isLastPiece, unkFlags);
             };
 
             if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, quarterTile, clearFunc))
