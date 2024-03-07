@@ -43,7 +43,6 @@ namespace OpenLoco::Input
     static void loc_4BED79();
 
     static loco_global<KeyModifier, 0x00508F18> _keyModifier;
-    static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
     static loco_global<Key[64], 0x0113E300> _keyQueue;
     static loco_global<uint32_t, 0x00525388> _keyQueueLastWrite;
