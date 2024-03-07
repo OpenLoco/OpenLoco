@@ -157,8 +157,11 @@ namespace OpenLoco::StringIds
     constexpr StringId station_not_compatible_with_string_id = 149;
     constexpr StringId level_crossing_in_the_way = 150;
 
+    constexpr StringId junction_must_be_entirely_level = 153;
+    constexpr StringId string_id_in_the_way_wrong_height_for_junction = 154;
+    constexpr StringId already_built_here = 155;
     constexpr StringId unable_to_cross_or_create_junction_with_string = 156;
-
+    constexpr StringId junctions_not_possible = 157;
     constexpr StringId capt_signal = 158;
     constexpr StringId capt_station = 159;
     constexpr StringId capt_airport = 160;
@@ -169,7 +172,9 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_remove_ship_port = 165;
     constexpr StringId cant_remove_station = 166;
     constexpr StringId wrong_type_of_track_road = 167;
-
+    constexpr StringId bridge_types_must_match = 168;
+    constexpr StringId bridge_not_suitable_for_junction = 169;
+    constexpr StringId track_combination_not_possible = 170;
     constexpr StringId too_many_objects_in_game = 171;
     constexpr StringId menu_rotate_clockwise = 172;
     constexpr StringId menu_rotate_anti_clockwise = 173;
