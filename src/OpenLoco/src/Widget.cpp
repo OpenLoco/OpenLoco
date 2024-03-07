@@ -34,8 +34,6 @@ namespace OpenLoco::Ui
         return (this->bottom - this->top) + 1;
     }
 
-    static loco_global<char[2], 0x005045F8> _strCheckmark;
-
     void draw_11_c(Gfx::RenderTarget* rt, const Window* window, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, StringId string);
     void draw_14(Gfx::RenderTarget* rt, Widget* widget, AdvancedColour colour, bool disabled, int16_t x, int16_t y, StringId string);
 
@@ -896,8 +894,9 @@ namespace OpenLoco::Ui
 
         if (activated)
         {
+            static constexpr char strCheckmark[] = "\xAC";
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
-            drawingCtx.drawString(*rt, window->x + left, window->y + top, colour.opaque(), _strCheckmark);
+            drawingCtx.drawString(*rt, window->x + left, window->y + top, colour.opaque(), strCheckmark);
         }
     }
 

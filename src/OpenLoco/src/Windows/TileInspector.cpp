@@ -93,8 +93,6 @@ namespace OpenLoco::Ui::Windows::TileInspector
         widgetEnd(),
     };
 
-    static loco_global<char[2], 0x005045F8> _strCheckmark;
-
     static void activateMapSelectionTool(Window* const self)
     {
         ToolManager::toolSet(self, widx::panel, CursorId::crosshair);
@@ -406,7 +404,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
             widget = &self.widgets[widx::ghostHeader];
             if (element.isGhost())
             {
-                drawingCtx.drawString(rt, widget->left - 4, yPos, Colour::white, _strCheckmark);
+                static constexpr char strCheckmark[] = "\xAC";
+                drawingCtx.drawString(rt, widget->left - 4, yPos, Colour::white, strCheckmark);
             }
 
             rowNum++;

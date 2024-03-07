@@ -1058,7 +1058,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     checkColour = checkColour.inset();
                 }
 
-                drawingCtx.drawString(rt, x, y, checkColour, _strCheckmark);
+                static constexpr char strCheckmark[] = "\xAC";
+                drawingCtx.drawString(rt, x, y, checkColour, strCheckmark);
             }
 
             char buffer[512]{};
