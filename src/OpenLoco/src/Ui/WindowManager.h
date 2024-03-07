@@ -359,7 +359,7 @@ namespace OpenLoco::Ui::Windows
     {
         void registerHooks();
 
-        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
+        void openTextInput(Ui::Window* w, StringId title, StringId message, StringId value, int callingWidget, const void* valueArgs, uint32_t inputSize = StringManager::kUserStringSize - 1);
         void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void sub_4CE6FF();
