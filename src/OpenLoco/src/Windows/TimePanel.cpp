@@ -61,8 +61,6 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
-    static loco_global<uint16_t[8], 0x112C826> _commonFormatArgs;
-
     static const WindowEventList& getEvents();
 
     Window* open()
@@ -162,9 +160,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         drawingCtx.drawRectInset(*rt, self.x + frame.left + 1, self.y + frame.top + 1, frame.width() - 2, frame.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
-        *(uint32_t*)&_commonFormatArgs[0] = getCurrentDay();
-        StringId format = StringIds::date_daymonthyear;
+        FormatArguments args{};
+        args.push<uint32_t>(getCurrentDay());
 
+        StringId format = StringIds::date_daymonthyear;
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
             if (self.var_856 >= 30)
@@ -178,7 +177,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             c = Colour::white;
         }
-        drawingCtx.drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].midX(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &*_commonFormatArgs);
+        drawingCtx.drawStringCentred(*rt, self.x + _widgets[Widx::date_btn].midX(), self.y + _widgets[Widx::date_btn].top + 1, c, format, &args);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         drawingCtx.drawImage(rt, self.x + _widgets[Widx::map_chat_menu].left - 2, self.y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[WindowManager::getCurrentRotation()]);
