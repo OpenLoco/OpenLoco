@@ -1,6 +1,7 @@
 #include "Station.h"
 #include "CompanyManager.h"
 #include "IndustryManager.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/BuildingElement.h"
@@ -594,12 +595,12 @@ namespace OpenLoco
             if (*buffer != '\0')
                 ptr = StringManager::formatString(ptr, StringIds::waiting_cargo_separator);
 
-            loco_global<uint32_t, 0x112C826> _commonFormatArgs;
-            *_commonFormatArgs = stationCargoStat.quantity;
+            FormatArguments args{};
+            args.push<uint32_t>(stationCargoStat.quantity);
 
             auto cargo = ObjectManager::get<CargoObject>(cargoId);
             auto unitName = stationCargoStat.quantity == 1 ? cargo->unitNameSingular : cargo->unitNamePlural;
-            ptr = StringManager::formatString(ptr, unitName, &*_commonFormatArgs);
+            ptr = StringManager::formatString(ptr, unitName, &args);
         }
 
         StringId suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
