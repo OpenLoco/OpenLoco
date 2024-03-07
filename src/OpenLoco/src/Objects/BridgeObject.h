@@ -35,7 +35,7 @@ namespace OpenLoco
         int16_t baseCostFactor;     // 0x0E
         int16_t heightCostFactor;   // 0x10
         int16_t sellCostFactor;     // 0x12
-        uint16_t disabledTrackCfg;  // 0x14
+        uint16_t disabledTrackCfg;  // 0x14 maybe just general flags
         uint32_t image;             // 0x16
         uint8_t trackNumCompatible; // 0x1A
         uint8_t trackMods[7];       // 0x1B

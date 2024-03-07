@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "Economy/Economy.h"
 #include "GameState.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -26,8 +27,9 @@ namespace OpenLoco::GameCommands
     static loco_global<ElementPositionFlags, 0x01136072> _byte_1136072;
     static loco_global<uint8_t, 0x01136073> _byte_1136073;
     static loco_global<World::MicroZ, 0x01136074> _byte_1136074;
-    static loco_global<uint8_t, 0x01136075> _byte_1136075;
+    static loco_global<uint8_t, 0x01136075> _byte_1136075; // bridgeType of any overlapping track
     static loco_global<uint16_t[44], 0x004F8764> _4F8764;
+    static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
 
     // TODO: Move this somewhere else used by multiple game commands
     // 0x0048B013
@@ -70,32 +72,164 @@ namespace OpenLoco::GameCommands
         uint8_t flags;
     };
 
+    // 0x0049C4FF
+    static World::TileClearance::ClearFuncResult clearTrack(World::TrackElement& elTrack, const ClearFunctionArgs& args)
+    {
+        if (elTrack.hasBridge())
+        {
+            _byte_1136075 = elTrack.bridge();
+        }
+
+        const auto& targetPiece = World::TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
+        const auto& newPiece = World::TrackData::getTrackPiece(args.trackId)[args.index];
+
+        const auto targetConnectFlags = targetPiece.connectFlags[elTrack.unkDirection()];
+        const auto newConnectFlags = newPiece.connectFlags[args.rotation];
+        if (!(targetConnectFlags & newConnectFlags))
+        {
+            return World::TileClearance::ClearFuncResult::noCollision;
+        }
+
+        if (args.unkFlags & (1U << 2))
+        {
+            setErrorText(StringIds::junctions_not_possible);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (!sub_431E6A(elTrack.owner(), reinterpret_cast<const World::TileElement*>(&elTrack)))
+        {
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if ((_4F8764[elTrack.trackId()] & ((1U << 0) | (1U << 1)))
+            || (_4F8764[args.trackId] & ((1U << 0) | (1U << 1))))
+        {
+            setErrorText(StringIds::junction_must_be_entirely_level);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        auto* targetTrackObj = ObjectManager::get<TrackObject>(elTrack.trackObjectId());
+        auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
+        if (elTrack.baseHeight() != args.pos.z)
+        {
+            FormatArguments::common(targetTrackObj->name);
+            setErrorText(StringIds::string_id_in_the_way_wrong_height_for_junction);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (elTrack.hasSignal())
+        {
+            setErrorText(StringIds::signal_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (elTrack.hasStationElement())
+        {
+            setErrorText(StringIds::station_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (!((args.rotation ^ elTrack.unkDirection()) & 0b1))
+        {
+            if ((_4F8764[elTrack.trackId()] ^ _4F8764[args.trackId]) & (1U << 9))
+            {
+                setErrorText(StringIds::track_combination_not_possible);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        if (elTrack.hasBridge())
+        {
+            if (elTrack.bridge() != args.bridgeId)
+            {
+                setErrorText(StringIds::bridge_types_must_match);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+
+            auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridgeId);
+            if (bridgeObj->disabledTrackCfg & (1U << 11))
+            {
+                setErrorText(StringIds::bridge_not_suitable_for_junction);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        if (elTrack.trackObjectId() == args.trackObjectId)
+        {
+            if (elTrack.trackId() == args.trackId)
+            {
+                if (elTrack.unkDirection() == args.rotation)
+                {
+                    if (elTrack.sequenceIndex() == args.index)
+                    {
+                        setErrorText(StringIds::already_built_here);
+                        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+                    }
+                }
+            }
+            // This is working out reversed elements
+            if (_4F87BC[elTrack.trackId() * 8 + 0] == args.trackId)
+            {
+                if (((_4F87BC[elTrack.trackId() * 8 + 2] + elTrack.unkDirection()) & 0x3) == args.rotation)
+                {
+                    if (args.isLastIndex && elTrack.sequenceIndex() == 0)
+                    {
+                        setErrorText(StringIds::already_built_here);
+                        return World::TileClearance::ClearFuncResult::collisionErrorSet;
+                    }
+                }
+            }
+        }
+
+        if (elTrack.trackObjectId() == args.trackObjectId)
+        {
+            if (!targetTrackObj->hasPieceFlags(TrackObjectPieceFlags::junction))
+            {
+                setErrorText(StringIds::junctions_not_possible);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+        else
+        {
+            if (!(targetTrackObj->compatibleTracks & (1U << args.trackObjectId))
+                && !(trackObj->compatibleTracks & (1U << elTrack.trackObjectId())))
+            {
+                FormatArguments::common(targetTrackObj->name);
+                setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        _byte_1136073 = _byte_1136073 | (1U << 3);
+        return World::TileClearance::ClearFuncResult::noCollision;
+    }
+
     // 0x0049C275
     static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
     {
-        static loco_global<World::TileElement*, 0x00F0015C> _F0015C;
-        static loco_global<const World::TrackData::PreviewTrack*, 0x01135F5E> _1135F5E;
-        static loco_global<std::array<uint32_t, 6>*, 0x01135F5A> _1135F5A;
-        static loco_global<World::Pos2, 0x01135FE0> _1135FE0;
-        static loco_global<uint8_t, 0x0113601C> _113601C;
-        static loco_global<bool, 0x0113607C> _113607C;
-        static loco_global<uint32_t, 0x01135C68> _1135C68;
-        auto& piece = World::TrackData::getTrackPiece(args.trackId)[args.index];
-        _1135F5E = &piece; // NOTE: This does not work as vanilla expects piece ptr + 1 to work
-        _113607C = hasLevelCrossing;
-        _1135FE0 = args.pos;
-        _113601C = args.pos.z / World::kSmallZStep;
+        // static loco_global<World::TileElement*, 0x00F0015C> _F0015C;
+        // static loco_global<const World::TrackData::PreviewTrack*, 0x01135F5E> _1135F5E;
+        // static loco_global<std::array<uint32_t, 6>*, 0x01135F5A> _1135F5A;
+        // static loco_global<World::Pos2, 0x01135FE0> _1135FE0;
+        // static loco_global<uint8_t, 0x0113601C> _113601C;
+        // static loco_global<bool, 0x0113607C> _113607C;
+        // static loco_global<uint32_t, 0x01135C68> _1135C68;
+        // auto& piece = World::TrackData::getTrackPiece(args.trackId)[args.index];
+        //_1135F5E = &piece; // NOTE: This does not work as vanilla expects piece ptr + 1 to work
+        //_113607C = hasLevelCrossing;
+        //_1135FE0 = args.pos;
+        //_113601C = args.pos.z / World::kSmallZStep;
 
-        std::array<uint32_t, 6> _stack{
-            static_cast<uint32_t>(totalCost),                                                        // 0x00
-            0,                                                                                       // 0x04
-            0,                                                                                       // 0x08
-            static_cast<uint32_t>(args.trackObjectId) | (args.trackId << 8) | (args.bridgeId << 24), // 0x0C
-            0,                                                                                       // 0x10
-            static_cast<uint32_t>(args.flags) | (args.rotation << 8),                                // 0x14
-        };
-        _1135F5A = &_stack;
-        _1135C68 = args.unkFlags << 20;
+        // std::array<uint32_t, 6> _stack{
+        //     static_cast<uint32_t>(totalCost),                                                        // 0x00
+        //     0,                                                                                       // 0x04
+        //     0,                                                                                       // 0x08
+        //     static_cast<uint32_t>(args.trackObjectId) | (args.trackId << 8) | (args.bridgeId << 24), // 0x0C
+        //     0,                                                                                       // 0x10
+        //     static_cast<uint32_t>(args.flags) | (args.rotation << 8),                                // 0x14
+        // };
+        //_1135F5A = &_stack;
+        //_1135C68 = args.unkFlags << 20;
 
         // 0x0113607C hasLevelCrossing
         // 0x01135F5E pieceIndex
@@ -106,19 +240,21 @@ namespace OpenLoco::GameCommands
         // ebp+Fh bridge
         // ebp+Dh trackId
         // ebp+15h rotation
+        hasLevelCrossing = hasLevelCrossing;
 
         switch (el.type())
         {
             case World::ElementType::track:
-                // 0x0049C4FF
-                break;
+                return clearTrack(*el.as<World::TrackElement>(), args);
             case World::ElementType::station:
+            {
                 auto* elStation = el.as<World::StationElement>();
                 if (elStation->stationType() == StationType::trainStation)
                 {
                     return World::TileClearance::ClearFuncResult::noCollision;
                 }
                 return World::TileClearance::ClearFuncResult::collision;
+            }
             case World::ElementType::signal:
                 return World::TileClearance::ClearFuncResult::noCollision;
             case World::ElementType::building:
@@ -134,6 +270,7 @@ namespace OpenLoco::GameCommands
             case World::ElementType::industry:
                 return World::TileClearance::ClearFuncResult::collision;
         }
+        return World::TileClearance::ClearFuncResult::collision;
     }
 
     // 0x0049BB98
