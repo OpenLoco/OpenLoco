@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Input.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
@@ -32,8 +33,6 @@ namespace OpenLoco::Ui
     {
         return (this->bottom - this->top) + 1;
     }
-
-    static loco_global<char[1], 0x112C826> _commonFormatArgs;
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
 
@@ -543,7 +542,7 @@ namespace OpenLoco::Ui
         int16_t centreX = window->x + (widget->left + widget->right + 1) / 2 - 1;
         int16_t width = widget->right - widget->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, centreX, y, width, colour, string, _commonFormatArgs);
+        drawingCtx.drawStringCentredClipped(*rt, centreX, y, width, colour, string, &FormatArguments::common());
     }
 
     // 0x004CB263
@@ -559,7 +558,7 @@ namespace OpenLoco::Ui
 
         int width = widget->right - widget->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, x, y, width, colour, string, _commonFormatArgs);
+        drawingCtx.drawStringLeftClipped(*rt, x, y, width, colour, string, &FormatArguments::common());
     }
 
     // 0x4CB2D6
@@ -581,7 +580,7 @@ namespace OpenLoco::Ui
 
         int width = this->right - this->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, window->x + left + 1, window->y + top, width, colour, text, _commonFormatArgs);
+        drawingCtx.drawStringLeftClipped(*rt, window->x + left + 1, window->y + top, width, colour, text, &FormatArguments::common());
     }
 
     // 0x4CB29C
@@ -608,7 +607,7 @@ namespace OpenLoco::Ui
         int16_t y = t + 1;
         int16_t x = l + 2 + (width / 2);
 
-        drawingCtx.drawStringCentredClipped(*rt, x, y, width, AdvancedColour(Colour::white).outline(), text, _commonFormatArgs);
+        drawingCtx.drawStringCentredClipped(*rt, x, y, width, AdvancedColour(Colour::white).outline(), text, &FormatArguments::common());
     }
 
     // 0x004CA750
@@ -616,7 +615,7 @@ namespace OpenLoco::Ui
     {
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::black;
-        StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
+        StringManager::formatString(&stringBuffer[1], text, &FormatArguments::common());
 
         int16_t width = right - left - 4 - 14;
         int16_t x = left + window->x + 2 + (width / 2);
@@ -638,7 +637,7 @@ namespace OpenLoco::Ui
     {
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::windowColour1;
-        StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
+        StringManager::formatString(&stringBuffer[1], text, &FormatArguments::common());
 
         int16_t x = left + window->x + 2;
         int16_t width = right - left - 4 - 14;
@@ -657,7 +656,7 @@ namespace OpenLoco::Ui
     {
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::white;
-        StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
+        StringManager::formatString(&stringBuffer[1], text, &FormatArguments::common());
 
         int16_t x = left + window->x + 2;
         int16_t width = right - left - 4 - 14;
@@ -918,7 +917,7 @@ namespace OpenLoco::Ui
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeft(*rt, window->x + left + 14, window->y + top, colour, text, _commonFormatArgs);
+        drawingCtx.drawStringLeft(*rt, window->x + left + 14, window->y + top, colour, text, &FormatArguments::common());
     }
 
     // 0x004CA679
