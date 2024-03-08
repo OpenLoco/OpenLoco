@@ -93,8 +93,6 @@ namespace OpenLoco::Ui::Windows::StationList
         CargoAccepted,
     };
 
-    loco_global<uint16_t[4], 0x112C826> _commonFormatArgs;
-
     // 0x004910E8
     static void refreshStationList(Window* window)
     {
@@ -368,7 +366,8 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Set company name.
         auto company = CompanyManager::get(CompanyId(window.number));
-        *_commonFormatArgs = company->name;
+        auto args = FormatArguments::common();
+        args.push(company->name);
 
         // Set window title.
         window.widgets[widx::caption].text = tabInformationByType[window.currentTab].windowTitleId;
@@ -450,28 +449,31 @@ namespace OpenLoco::Ui::Windows::StationList
             auto station = StationManager::get(stationId);
 
             // First, draw the town name.
-            _commonFormatArgs[0] = StringIds::stringid_stringid;
-            _commonFormatArgs[1] = station->name;
-            _commonFormatArgs[2] = enumValue(station->town);
-            _commonFormatArgs[3] = getTransportIconsFromStationFlags(station->flags);
+            auto args = FormatArguments{};
+            args.push(StringIds::stringid_stringid);
+            args.push(station->name);
+            args.push<uint16_t>(enumValue(station->town));
+            args.push<uint16_t>(getTransportIconsFromStationFlags(station->flags));
 
-            drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
+            drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
 
             // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
-            _commonFormatArgs[0] = StringIds::buffer_1250;
-            drawingCtx.drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &*_commonFormatArgs);
+            args.rewind();
+            args.push(StringIds::buffer_1250);
+            drawingCtx.drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &args);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
             for (const auto& stats : station->cargoStats)
                 totalUnits += stats.quantity;
 
-            _commonFormatArgs[0] = StringIds::num_units;
-            *(uint32_t*)&_commonFormatArgs[1] = totalUnits;
-            drawingCtx.drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &*_commonFormatArgs);
+            args.rewind();
+            args.push(StringIds::num_units);
+            args.push<uint32_t>(totalUnits);
+            drawingCtx.drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &args);
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -490,8 +492,9 @@ namespace OpenLoco::Ui::Windows::StationList
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
 
-            _commonFormatArgs[0] = StringIds::buffer_1250;
-            drawingCtx.drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &*_commonFormatArgs);
+            args.rewind();
+            args.push(StringIds::buffer_1250);
+            drawingCtx.drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &args);
 
             yPos += kRowHeight;
         }
@@ -528,12 +531,16 @@ namespace OpenLoco::Ui::Windows::StationList
         drawingCtx.drawImage(rt, x, y, image);
 
         // TODO: locale-based pluralisation.
-        _commonFormatArgs[0] = window.var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
-        _commonFormatArgs[1] = window.var_83C;
+        auto args = FormatArguments{};
+        if (window.var_83C == 1)
+            args.push(StringIds::status_num_stations_singular);
+        else
+            args.push(StringIds::status_num_stations_plural);
+        args.push<uint16_t>(window.var_83C);
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
+        drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::black_stringid, &args);
     }
 
     // 0x004917BB
