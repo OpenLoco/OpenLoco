@@ -2386,3 +2386,5 @@ strings:
   2331: "Select preferred company owner face"
   2332: "{COLOUR WINDOW_2}Disable station size limitations"
   2333: "{SMALLFONT}{COLOUR BLACK}When enabled, the maximum length for railroad stations is no longer constrained to 16 tiles. Note that stations can still not occupy more than 80 tiles overall."
+  2334: Landscape Generation - Water
+  2335: "{SMALLFONT}{COLOUR BLACK}Water generation options"
