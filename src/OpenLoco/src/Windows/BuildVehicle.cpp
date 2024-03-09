@@ -1215,12 +1215,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (!clipped)
             return;
 
-        FormatArguments args{};
-        args.push(StringIds::buffer_2039);
-
         auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw search box input buffer
+        FormatArguments args{};
+        args.push(StringIds::buffer_2039);
+
         Ui::Point position = { inputSession.xOffset, 1 };
         drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
 
@@ -1267,7 +1267,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
         {
             auto cargoObj = ObjectManager::get<CargoObject>(_cargoSupportedFilter);
-            auto args = FormatArguments::common(StringIds::cargoIdSprite, cargoObj->name, cargoObj->unitInlineSprite);
+
+            FormatArguments args{};
+            args.push(StringIds::cargoIdSprite);
+            args.push(cargoObj->name);
+            args.push(cargoObj->unitInlineSprite);
 
             auto& widget = window.widgets[widx::cargoLabel];
             drawingCtx.drawStringLeftClipped(*rt, window.x + widget.left + 2, window.y + widget.top, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);

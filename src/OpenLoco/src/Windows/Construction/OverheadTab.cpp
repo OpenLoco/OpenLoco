@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto trackType = _trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
             args.push(roadObj->name);
 
             for (auto i = 0; i < 2; i++)
@@ -428,7 +428,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         {
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
             args.push(trackObj->name);
 
             for (auto i = 0; i < 4; i++)
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         if (_modCost != 0x80000000 && _modCost != 0)
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint32_t>(_modCost);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();

@@ -196,14 +196,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             char lhsString[256] = { 0 };
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 auto statusString = CompanyManager::getOwnerStatus(lhs.id(), args);
                 StringManager::formatString(lhsString, statusString, &args);
             }
 
             char rhsString[256] = { 0 };
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 auto statusString = CompanyManager::getOwnerStatus(rhs.id(), args);
                 StringManager::formatString(rhsString, statusString, &args);
             }
@@ -435,7 +435,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             if (self.var_83C == 1)
                 args.push(StringIds::company_singular);
             else
@@ -485,7 +485,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 auto imageId = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
 
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(StringIds::table_item_company);
                     args.push(imageId);
                     args.push(company->name);
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.skip(sizeof(StringId));
                     StringId ownerStatus = CompanyManager::getOwnerStatus(company->id(), args);
                     args.rewind();
@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
 
                     args.push(performanceStringId);
                     formatPerformanceIndex(company->performanceIndex, args);
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
 
                     args.push(StringIds::company_value_currency);
                     args.push(company->companyValueHistory[0]);
@@ -1133,7 +1133,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             x = self.x + 8;
             y = self.widgets[Common::widx::panel].top + self.y + 1;
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint16_t>(100);
             args.push<uint16_t>(10);
 
@@ -1246,7 +1246,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (recordSpeed == 0_mph)
                     continue;
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(recordSpeed);
 
                     const StringId string[] = {
@@ -1276,7 +1276,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     x = self.x + 33;
                     y += 7;
 
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(company->name);
                     args.push<uint16_t>(0);
                     args.push(CompanyManager::getRecords().date[i]);
@@ -1678,7 +1678,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, colour, Drawing::RectFlags::none);
                 }
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(company.name);
 
                 drawingCtx.drawStringLeftClipped(*rt, x + 6, y, 94, Colour::black, stringId, &args);

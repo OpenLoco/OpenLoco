@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name in title.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments::common();
             args.push(company->name);
 
             self.disabledWidgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
@@ -234,7 +234,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw owner name
             {
-                auto args = FormatArguments::common(company->ownerName);
+                FormatArguments args{};
+                args.push(company->ownerName);
+
                 auto& widget = self.widgets[widx::change_owner_name];
                 auto origin = Ui::Point(self.x + (widget.left + widget.right) / 2, self.y + widget.top + 5);
                 drawingCtx.drawStringCentredWrapped(
@@ -369,7 +371,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strcpy(buffer, input);
 
-            auto args = FormatArguments::common(StringIds::buffer_2039);
+            FormatArguments args{};
+            args.push(StringIds::buffer_2039);
             // Add the ' Transport' suffix to the company name, and rename the company.
             StringManager::formatString(buffer, StringIds::company_owner_name_transport, const_cast<void*>(&args));
             Common::renameCompany(self, buffer);
@@ -695,8 +698,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments::common();
             args.push(company->name);
+
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
@@ -790,7 +794,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto x = self.x + 3;
             auto y = self.y + 48;
             {
-                auto args = FormatArguments::common(company->startedDate);
+                FormatArguments args{};
+                args.push(company->startedDate);
                 drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::company_details_started, &args);
                 y += 10;
             }
@@ -813,7 +818,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             {
-                auto args = FormatArguments::common(company->ownerName);
+                FormatArguments args{};
+                args.push(company->ownerName);
                 drawingCtx.drawStringLeftClipped(*rt, x, y, 213, Colour::black, StringIds::owner_label, &args);
                 y += 10;
             }
@@ -830,7 +836,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     auto count = company->transportTypeCount[i];
                     if (count != 0)
                     {
-                        auto args = FormatArguments::common(count);
+                        FormatArguments args{};
+                        args.push(count);
                         drawingCtx.drawStringLeft(*rt, x, y, Colour::black, transportTypeCountString[i], &args);
                         y += 10;
                     }
@@ -1799,7 +1806,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     drawingCtx.fillRect(*rt, self.x + 4, y, self.x + 129, y + 9, colour, Drawing::RectFlags::crossHatching);
                 }
 
-                auto args = FormatArguments::common(ExpenditureLabels[i]);
+                FormatArguments args{};
+                args.push(ExpenditureLabels[i]);
+
                 drawingCtx.drawStringLeft(
                     *rt,
                     self.x + 5,
@@ -1838,7 +1847,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 'Cash' label with value
             {
                 // Set cash value in format args.
-                auto args = FormatArguments::common(company->cash);
+                FormatArguments args{};
+                args.push(company->cash);
 
                 auto cashFormat = StringIds::cash_positive;
                 if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
@@ -1858,7 +1868,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 'Company value' label with value
             {
                 // Set company value in format args.
-                auto args = FormatArguments::common(company->companyValueHistory[0]);
+                FormatArguments args{};
+                args.push(company->companyValueHistory[0]);
 
                 drawingCtx.drawStringLeft(
                     *rt,
@@ -1872,7 +1883,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 'Profit from vehicles' label with value
             {
                 // Set company value in format args.
-                auto args = FormatArguments::common(company->vehicleProfit);
+                FormatArguments args{};
+                args.push(company->vehicleProfit);
 
                 drawingCtx.drawStringLeft(
                     *rt,
@@ -1886,7 +1898,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawFinanceYear(Gfx::RenderTarget* rt, int16_t x, int16_t& y, uint16_t columnYear, uint16_t currentYear)
         {
-            auto args = FormatArguments::common(StringIds::uint16_raw, columnYear);
+            FormatArguments args{};
+            args.push(StringIds::uint16_raw);
+            args.push(columnYear);
 
             StringId format = StringIds::wcolour2_stringid;
             if (columnYear != currentYear)
@@ -1917,7 +1931,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 if (expenditures != 0)
                 {
-                    auto args = FormatArguments::common(StringIds::currency48, expenditures);
+                    FormatArguments args{};
+                    args.push(StringIds::currency48);
+                    args.push(expenditures);
 
                     drawingCtx.drawStringRight(
                         *rt,
@@ -1943,7 +1959,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 mainFormat = StringIds::red_stringid;
                 sumFormat = StringIds::currency48;
             }
-            auto args = FormatArguments::common(sumFormat, sum);
+
+            FormatArguments args{};
+            args.push(sumFormat);
+            args.push(sum);
 
             y += 4;
 
@@ -2213,7 +2232,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments::common();
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -2401,7 +2420,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments::common();
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -2443,8 +2462,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 10;
 
             {
-                FormatArguments args = {};
+                FormatArguments args{};
                 Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
+
                 y = drawingCtx.drawStringLeftWrapped(*rt, self.x + 5, y, self.width - 10, Colour::black, StringIds::challenge_value, &args);
                 y += 5;
             }
@@ -2456,7 +2476,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t years = Scenario::getObjectiveProgress().completedChallengeInMonths / 12;
                 uint16_t months = Scenario::getObjectiveProgress().completedChallengeInMonths % 12;
 
-                auto args = FormatArguments::common(years, months);
+                FormatArguments args{};
+                args.push(years);
+                args.push(months);
+
                 drawingCtx.drawStringLeftWrapped(*rt, self.x + 5, y, self.width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
                 return;
             }
@@ -2494,7 +2517,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t years = monthsLeft / 12;
                 uint16_t months = monthsLeft % 12;
 
-                auto args = FormatArguments::common(years, months);
+                FormatArguments args{};
+                args.push(years);
+                args.push(months);
+
                 drawingCtx.drawStringLeftWrapped(*rt, self.x + 5, y, self.width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
                 return;
             }

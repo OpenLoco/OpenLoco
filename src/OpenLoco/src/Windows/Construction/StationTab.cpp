@@ -873,7 +873,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         self.widgets[widx::rotate].type = WidgetType::none;
 
-        auto args = FormatArguments();
+        auto args = FormatArguments::common();
 
         if (_byte_1136063 & (1 << 7))
         {
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             xPos = self.x + 69;
             yPos = self.widgets[widx::image].bottom + self.y + 4;
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint32_t>(_stationCost);
 
             drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
@@ -996,7 +996,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) == GhostVisibilityFlags::none)
             return;
 
-        auto args = FormatArguments();
+        FormatArguments args{};
 
         // Todo: change globals type to be StationId and make this StationId::null
         if (_constructingStationId == 0xFFFFFFFF)

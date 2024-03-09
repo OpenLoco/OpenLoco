@@ -485,18 +485,22 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 drawingCtx.drawImage(&rt, 2, yPos + 1, imageId);
 
                 // Draw land description.
-                FormatArguments args{};
-                args.push(landObject->name);
-                drawingCtx.drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &args);
+                {
+                    FormatArguments args{};
+                    args.push(landObject->name);
+                    drawingCtx.drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &args);
+                }
 
                 // Draw rectangle.
                 drawingCtx.fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
 
                 // Draw current distribution setting.
-                const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
-                args.rewind();
-                args.push(distributionId);
-                drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &args);
+                {
+                    FormatArguments args{};
+                    const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
+                    args.push(distributionId);
+                    drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &args);
+                }
 
                 // Draw rectangle (knob).
                 const Drawing::RectInsetFlags flags = window.rowHover == i ? Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker : Drawing::RectInsetFlags::none;

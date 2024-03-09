@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
-        auto args = FormatArguments();
+        FormatArguments args{};
         args.push<uint16_t>(numCharacters);
         args.push<uint16_t>(maxNumCharacters);
 

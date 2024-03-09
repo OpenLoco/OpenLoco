@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             auto town = TownManager::get(TownId(self.number));
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(town->getTownSizeString());
             args.push(town->population);
 
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::Town
             int32_t yTick = town->historyMinPopulation;
             for (int16_t yPos = self.height - 57; yPos >= 14; yPos -= 20)
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     if (yearSkip == 0)
                     {
-                        auto args = FormatArguments();
+                        FormatArguments args{};
                         args.push(year);
 
                         drawingCtx.drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     rank = StringIds::town_rating_appalling;
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(CompanyManager::get(CompanyId(i))->name);
                 args.push<int16_t>(0);
                 args.push(rating);

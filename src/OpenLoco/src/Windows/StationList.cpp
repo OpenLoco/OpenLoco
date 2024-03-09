@@ -449,31 +449,37 @@ namespace OpenLoco::Ui::Windows::StationList
             auto station = StationManager::get(stationId);
 
             // First, draw the town name.
-            auto args = FormatArguments{};
-            args.push(StringIds::stringid_stringid);
-            args.push(station->name);
-            args.push<uint16_t>(enumValue(station->town));
-            args.push<uint16_t>(getTransportIconsFromStationFlags(station->flags));
+            {
+                auto args = FormatArguments{};
+                args.push(StringIds::stringid_stringid);
+                args.push(station->name);
+                args.push<uint16_t>(enumValue(station->town));
+                args.push<uint16_t>(getTransportIconsFromStationFlags(station->flags));
 
-            drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
+            }
 
-            // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
-            args.rewind();
-            args.push(StringIds::buffer_1250);
-            drawingCtx.drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &args);
+            // Then the station's current status.
+            {
+                auto args = FormatArguments{};
+                args.push(StringIds::buffer_1250);
+                drawingCtx.drawStringLeftClipped(rt, 200, yPos, 198, Colour::black, text_colour_id, &args);
+            }
 
             // Total units waiting.
-            uint16_t totalUnits = 0;
-            for (const auto& stats : station->cargoStats)
-                totalUnits += stats.quantity;
+            {
+                uint16_t totalUnits = 0;
+                for (const auto& stats : station->cargoStats)
+                    totalUnits += stats.quantity;
 
-            args.rewind();
-            args.push(StringIds::num_units);
-            args.push<uint32_t>(totalUnits);
-            drawingCtx.drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &args);
+                auto args = FormatArguments{};
+                args.push(StringIds::num_units);
+                args.push<uint32_t>(totalUnits);
+                drawingCtx.drawStringLeftClipped(rt, 400, yPos, 88, Colour::black, text_colour_id, &args);
+            }
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -492,9 +498,11 @@ namespace OpenLoco::Ui::Windows::StationList
                 ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
 
-            args.rewind();
-            args.push(StringIds::buffer_1250);
-            drawingCtx.drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &args);
+            {
+                auto args = FormatArguments{};
+                args.push(StringIds::buffer_1250);
+                drawingCtx.drawStringLeftClipped(rt, 490, yPos, 118, Colour::black, text_colour_id, &args);
+            }
 
             yPos += kRowHeight;
         }

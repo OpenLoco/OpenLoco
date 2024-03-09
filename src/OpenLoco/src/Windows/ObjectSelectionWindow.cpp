@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        auto args = FormatArguments();
+        auto args = FormatArguments::common();
         args.push(_tabDisplayInfo[self.currentTab].name);
 
         const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
@@ -840,6 +840,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             strncpy(buffer, indexEntry._filename, strlen(indexEntry._filename) + 1);
+
             FormatArguments args{};
             args.push<StringId>(StringIds::buffer_1250);
             drawingCtx.drawStringLeft(*clipped, 18, height - kDescriptionRowHeight * 3 - 4, Colour::black, StringIds::object_selection_filename, &args);

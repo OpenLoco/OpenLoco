@@ -206,12 +206,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static bool orderByName(const VehicleHead& lhs, const VehicleHead& rhs)
     {
         char lhsString[256] = { 0 };
-        auto args = FormatArguments::common(lhs.ordinalNumber);
-        StringManager::formatString(lhsString, lhs.name, &args);
+        FormatArguments lhsArgs{};
+        lhsArgs.push(lhs.ordinalNumber);
+        StringManager::formatString(lhsString, lhs.name, &lhsArgs);
 
         char rhsString[256] = { 0 };
-        args = FormatArguments::common(rhs.ordinalNumber);
-        StringManager::formatString(rhsString, rhs.name, &args);
+        FormatArguments rhsArgs{};
+        rhsArgs.push(rhs.ordinalNumber);
+        StringManager::formatString(rhsString, rhs.name, &rhsArgs);
 
         return Utility::strlogicalcmp(lhsString, rhsString) < 0;
     }
@@ -627,13 +629,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
             { StringIds::num_ships_singular, StringIds::num_ships_plural },
         };
 
-        FormatArguments args = {};
-
         {
             auto& footerStringPair = typeToFooterStringIds[self.currentTab];
             StringId footerStringId = self.var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
-            args = FormatArguments::common(footerStringId, self.var_83C);
+            FormatArguments args{};
+            args.push(footerStringId);
+            args.push(self.var_83C);
             drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
@@ -645,8 +647,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         {
             // Show current filter type
-            StringId filter = typeToFilterStringIds[self.var_88A];
-            args = FormatArguments::common(filter);
+            FormatArguments args{};
+            args.push(typeToFilterStringIds[self.var_88A]);
             auto* widget = &self.widgets[Widx::filter_type];
             drawingCtx.drawStringLeftClipped(*rt, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
@@ -654,6 +656,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto* widget = &self.widgets[Widx::cargo_type];
         auto xPos = self.x + widget->left + 1;
         bool filterActive = false;
+        FormatArguments args{};
 
         if (isStationFilterActive(&self, false))
         {
@@ -661,11 +664,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (self.var_88C != -1)
             {
                 auto station = StationManager::get(StationId(self.var_88C));
-                args = FormatArguments::common(station->name, station->town);
+                args.push(station->name);
+                args.push(station->town);
             }
             else
             {
-                args = FormatArguments::common(StringIds::no_station_selected);
+                args.push(StringIds::no_station_selected);
             }
         }
 
@@ -676,14 +680,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
             {
                 // Show current cargo
                 auto cargoObj = ObjectManager::get<CargoObject>(self.var_88C);
-                args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unitInlineSprite);
+                args.push(StringIds::carrying_cargoid_sprite);
+                args.push(cargoObj->name);
+                args.push(cargoObj->unitInlineSprite);
 
                 // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
                 xPos = self.x + widget->left - 9;
             }
             else
             {
-                args = FormatArguments::common(StringIds::no_cargo_selected);
+                args.push(StringIds::no_cargo_selected);
             }
         }
 
@@ -1092,7 +1098,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 stopFormat = StringIds::vehicle_list_tooltip_stops_at_stringid;
 
             // Append station name to the tooltip buffer
-            auto args = FormatArguments::common();
+            FormatArguments args{};
             stopOrder->setFormatArguments(args);
             buffer = StringManager::formatString(buffer, stopFormat, &args);
 

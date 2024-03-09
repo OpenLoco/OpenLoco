@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         const auto company = CompanyManager::get(self.owner);
 
-        FormatArguments args{};
+        auto args = FormatArguments::common();
         args.push(company->name);
     }
 

@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::Error
 
         char* buffer = _errorText;
 
-        auto args = FormatArguments();
+        auto args = FormatArguments::common();
 
         buffer = formatErrorString(title, message, args, buffer);
 

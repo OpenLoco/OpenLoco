@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             auto& header = _loadErrorObjectsList[i];
 
-            FormatArguments args;
+            FormatArguments args{};
             args.push(StringIds::buffer_2039);
 
             // Copy object name to buffer

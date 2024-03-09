@@ -119,8 +119,10 @@ namespace OpenLoco
 
             StringId strFormat = (amount < 0) ? StringIds::format_currency_expense_red_negative : StringIds::format_currency_income_green;
             char buffer[255] = {};
-            auto args = FormatArguments::common(amount);
+            FormatArguments args{};
+            args.push(amount);
             StringManager::formatString(buffer, strFormat, &args);
+
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             m->offsetX = -drawingCtx.getStringWidth(buffer) / 2;

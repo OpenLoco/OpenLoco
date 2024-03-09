@@ -68,7 +68,9 @@ namespace OpenLoco::Ui::Windows::Tutorial
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
-        auto args = FormatArguments::common(titleStringIds[tutorialNumber]);
+
+        FormatArguments args{};
+        args.push(titleStringIds[tutorialNumber]);
 
         auto& widget = self.widgets[Widx::frame];
         auto yPos = self.y + widget.top + 4;

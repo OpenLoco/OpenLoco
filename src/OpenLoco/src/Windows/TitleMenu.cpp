@@ -427,7 +427,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     {
         WindowManager::close(WindowType::multiplayer);
 
-        FormatArguments args{};
+        auto args = FormatArguments::common();
         args.push(StringIds::the_other_player);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments

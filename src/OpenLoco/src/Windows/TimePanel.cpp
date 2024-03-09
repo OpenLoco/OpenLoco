@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     void beginSendChatMessage(Window& self)
     {
         const auto* opponent = CompanyManager::getOpponent();
-        FormatArguments args{};
+        auto args = FormatArguments::common();
         args.push(opponent->name);
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments

@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     Colour::black,
                     StringIds::cheat_amount);
 
-                auto args = FormatArguments::common();
+                FormatArguments args{};
                 args.push(_cashIncreaseStep);
                 drawingCtx.drawStringLeft(
                     *rt,
@@ -253,7 +253,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                     StringIds::company_current_loan);
 
                 auto company = CompanyManager::getPlayerCompany();
-                auto args = FormatArguments::common();
+
+                FormatArguments args{};
                 args.push(company->currentLoan);
 
                 drawingCtx.drawStringLeft(
@@ -275,8 +276,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                     Colour::black,
                     StringIds::cheat_year);
 
-                auto args = FormatArguments::common();
+                FormatArguments args{};
                 args.push(_date.year);
+
                 drawingCtx.drawStringLeft(
                     *rt,
                     self.x + widget.left + 1,
@@ -296,8 +298,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                     Colour::black,
                     StringIds::cheat_month);
 
-                auto args = FormatArguments::common();
-                args.push((StringId)OpenLoco::StringManager::monthToString(_date.month).second);
+                FormatArguments args{};
+                args.push((StringId)StringManager::monthToString(_date.month).second);
+
                 drawingCtx.drawStringLeft(
                     *rt,
                     self.x + widget.left + 1,
@@ -317,8 +320,9 @@ namespace OpenLoco::Ui::Windows::Cheats
                     Colour::black,
                     StringIds::cheat_day);
 
-                auto args = FormatArguments::common();
+                FormatArguments args{};
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
+
                 drawingCtx.drawStringLeft(
                     *rt,
                     self.x + widget.left + 1,

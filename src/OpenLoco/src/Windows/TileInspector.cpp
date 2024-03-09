@@ -146,25 +146,27 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         // Coord X/Y labels
         {
-            auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
+            FormatArguments args{};
+            args.push(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
             drawingCtx.drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
-            auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
+            FormatArguments args{};
+            args.push(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
             drawingCtx.drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
         {
-            FormatArguments args = {};
+            FormatArguments args{};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
             drawingCtx.drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
-            FormatArguments args = {};
+            FormatArguments args{};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
             drawingCtx.drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
@@ -176,7 +178,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             auto tile = TileManager::get(_currentPosition)[self.var_842];
             const auto data = tile->rawData();
 
-            char buffer[32] = {};
+            char buffer[32]{};
             buffer[0] = ControlCodes::windowColour2;
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 

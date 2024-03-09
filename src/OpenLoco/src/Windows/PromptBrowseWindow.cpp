@@ -333,9 +333,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         self.widgets[widx::parent_button].right = self.width - 3;
 
         // Get width of the base 'Folder:' string
-        auto args = FormatArguments::common(StringIds::empty);
         char folderBuffer[256]{};
+        FormatArguments args{};
+        args.push(StringIds::empty);
         StringManager::formatString(folderBuffer, StringIds::window_browse_folder, &args);
+
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         const auto folderLabelWidth = drawingCtx.getStringWidth(folderBuffer);

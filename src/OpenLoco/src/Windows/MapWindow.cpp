@@ -577,7 +577,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
-            auto args = FormatArguments();
+
+            FormatArguments args{};
             args.push(lineNames[i]);
 
             auto stringId = StringIds::small_black_string;
@@ -625,7 +626,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
-            auto args = FormatArguments();
+
+            FormatArguments args{};
             args.push(lineNames[i]);
 
             auto stringId = StringIds::small_black_string;
@@ -674,7 +676,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(industry->name);
 
             auto stringId = StringIds::small_black_string;
@@ -726,7 +728,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 }
             }
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(routeType);
 
             auto stringId = StringIds::small_black_string;
@@ -757,7 +759,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 drawingCtx.drawRect(*rt, x, *y + 3, 5, 5, colour, Drawing::RectFlags::none);
             }
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(company.name);
 
             auto stringId = StringIds::small_black_string;
@@ -774,7 +776,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D81F
-    static void formatVehicleString(Window* self, FormatArguments args)
+    static void formatVehicleString(Window* self, FormatArguments& args)
     {
         static const StringId vehicleStringSingular[] = {
             StringIds::num_trains_singular,
@@ -826,7 +828,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D87C
-    static void formatIndustryString(Window* self, FormatArguments args)
+    static void formatIndustryString(Window* self, FormatArguments& args)
     {
         int16_t industryIndex = Numerics::bitScanForward(self->var_854);
 
@@ -942,7 +944,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             self.minHeight = y;
         }
 
-        auto args = FormatArguments();
+        FormatArguments args{};
 
         switch (self.currentTab + widx::tabOverall)
         {

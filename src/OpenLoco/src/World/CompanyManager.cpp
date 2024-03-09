@@ -635,7 +635,8 @@ namespace OpenLoco::CompanyManager
         // Prepare '{NAME} Transport' in a buffer.
         {
             char companyName[256] = { 0 };
-            auto args = FormatArguments::common(StringIds::buffer_2039);
+            FormatArguments args{};
+            args.push(StringIds::buffer_2039);
             StringManager::formatString(companyName, StringIds::company_owner_name_transport, &args);
 
             // Now, set the company name.

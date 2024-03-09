@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 getBindingString(shortcut.keyCode, buffer, std::size(buffer));
             }
 
-            auto formatter = FormatArguments::common();
+            FormatArguments formatter{};
             formatter.push(StringIds::keyboard_shortcut_list_format);
             formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
             formatter.push(modifierStringId);

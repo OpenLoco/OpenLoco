@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(StringIds::buffer_2039);
 
             x += colWidth / 2;
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             x += 64;
             y += 59;
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(StringIds::randomly_generated_landscape);
 
             // Overlay random map note.
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strncpy(str, scenarioInfo->description, std::size(scenarioInfo->description));
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(StringIds::buffer_2039);
             y = drawingCtx.drawStringLeftWrapped(*rt, x, y, 170, Colour::black, StringIds::black_stringid, &args);
 
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
                 strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(StringIds::buffer_2039);
 
                 const int16_t x = 210;
@@ -399,7 +399,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
                 strncpy(str, scenarioInfo->highscoreName, std::size(scenarioInfo->highscoreName));
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(StringIds::completed_by_name_in_years_months);
                 args.push(StringIds::buffer_2039);
                 args.push<uint16_t>(scenarioInfo->completedMonths / 12);
