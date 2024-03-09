@@ -59,6 +59,20 @@ namespace OpenLoco::World::TrackData
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 
+    struct MiscData
+    {
+        uint16_t costFactor;             // 0x004F870C
+        uint16_t flags;                  // 0x004F8764
+        uint8_t reverseTrackId;          // 0x004F87BC
+        uint8_t reverseRotation;         // 0x004F87BD
+        uint8_t signalHeightOffsetLeft;  // 0x004F87BE
+        uint8_t signalHeightOffsetRight; // 0x004F87BF
+        uint16_t compatibleFlags;        // 0x004F891C
+        uint16_t curveSpeedFraction;     // 0x004F8974
+        uint32_t unkWeighting;           // 0x004F89CC
+        bool sparkDirection;             // 0x004F8A7C true == right
+    };
+
     // TODO: Combine these two
     uint16_t getTrackCompatibleFlags(size_t trackId);
     uint16_t getTrackCostFactor(size_t trackId);
