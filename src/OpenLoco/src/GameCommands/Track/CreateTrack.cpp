@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileClearance.h"
@@ -13,6 +14,7 @@
 #include "Objects/BridgeObject.h"
 #include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
 #include "Random.h"
@@ -204,6 +206,75 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::noCollision;
     }
 
+    // 0x0049C401
+    static World::TileClearance::ClearFuncResult clearRoad(World::RoadElement& elRoad, const ClearFunctionArgs& args, bool& hasLevelCrossing)
+    {
+        if (elRoad.hasBridge())
+        {
+            _byte_1136075 = elRoad.bridge();
+            auto* bridgeObj = ObjectManager::get<BridgeObject>(elRoad.bridge());
+            if (bridgeObj->disabledTrackCfg & (1U << 11))
+            {
+                setErrorText(StringIds::bridge_not_suitable_for_junction);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(elRoad.roadObjectId());
+        auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
+
+        if (!(roadObj->compatibleTracks & (1U << args.trackObjectId))
+            && !(trackObj->compatibleTracks & (1U << elRoad.roadObjectId())))
+        {
+            FormatArguments::common(roadObj->name);
+            setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (elRoad.hasSignalElement())
+        {
+            setErrorText(StringIds::signal_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (elRoad.hasStationElement())
+        {
+            setErrorText(StringIds::station_in_the_way);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        if (elRoad.hasBridge())
+        {
+            if (elRoad.bridge() != args.bridgeId)
+            {
+                setErrorText(StringIds::bridge_types_must_match);
+                return World::TileClearance::ClearFuncResult::collisionErrorSet;
+            }
+        }
+
+        if (elRoad.roadId() != 0
+            || !((elRoad.unkDirection() - args.rotation) & 0b1)
+            || elRoad.baseHeight() != args.pos.z)
+        {
+            setErrorText(StringIds::level_crossing_only_possible_with_straight_road_and_track_at_same_level);
+            return World::TileClearance::ClearFuncResult::collisionErrorSet;
+        }
+
+        hasLevelCrossing = true;
+        _byte_1136073 = _byte_1136073 | (1U << 2);
+
+        if (!(args.flags & (Flags::aiAllocated | Flags::ghost))
+            && (args.flags & Flags::apply))
+        {
+            elRoad.setHasLevelCrossing(true);
+            elRoad.setLevelCrossingObjectId(getGameState().var_1AC);
+            elRoad.setUnk7_10(false);
+            elRoad.setUnk6l(0);
+        }
+
+        return World::TileClearance::ClearFuncResult::noCollision;
+    }
+
     // 0x0049C275
     static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
     {
@@ -263,14 +334,33 @@ namespace OpenLoco::GameCommands
             case World::ElementType::tree:
                 return World::TileClearance::clearWithDefaultCollision(el, args.pos, removedBuildings, args.flags, totalCost);
             case World::ElementType::road:
-                // 0x0049C401
-                break;
+                return clearRoad(*el.as<World::RoadElement>(), args, hasLevelCrossing);
             case World::ElementType::surface:
             case World::ElementType::wall:
             case World::ElementType::industry:
                 return World::TileClearance::ClearFuncResult::collision;
         }
         return World::TileClearance::ClearFuncResult::collision;
+    }
+
+    // 0x0046908D
+    void sub_46908D(const World::Pos3 pos)
+    {
+        registers regs{};
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z;
+        call(0x0046908D, regs);
+    }
+
+    // 0x00469174
+    void sub_469174(const World::Pos3 pos)
+    {
+        registers regs{};
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = pos.z;
+        call(0x00469174, regs);
     }
 
     // 0x0049BB98
@@ -474,8 +564,8 @@ namespace OpenLoco::GameCommands
             }
             if (!(flags & (Flags::ghost | Flags::aiAllocated)))
             {
-                // sub_46908D
-                // sub_469174
+                sub_46908D(trackLoc);
+                sub_469174(trackLoc);
             }
 
             auto* newElTrack = World::TileManager::insertElement<World::TrackElement>(trackLoc, baseZ, quarterTile.getBaseQuarterOccupied());
