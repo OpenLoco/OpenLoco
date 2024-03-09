@@ -35,7 +35,7 @@ namespace OpenLoco::GameCommands
 
     // TODO: Move this somewhere else used by multiple game commands
     // 0x0048B013
-    void playPlacementSound(World::Pos3 pos)
+    static void playPlacementSound(World::Pos3 pos)
     {
         const auto frequency = gPrng1().randNext(17955, 26146);
         Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
@@ -311,12 +311,18 @@ namespace OpenLoco::GameCommands
         // ebp+Fh bridge
         // ebp+Dh trackId
         // ebp+15h rotation
-        hasLevelCrossing = hasLevelCrossing;
 
         switch (el.type())
         {
             case World::ElementType::track:
-                return clearTrack(*el.as<World::TrackElement>(), args);
+            {
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack != nullptr)
+                {
+                    return clearTrack(*elTrack, args);
+                }
+                break;
+            }
             case World::ElementType::station:
             {
                 auto* elStation = el.as<World::StationElement>();
@@ -334,7 +340,14 @@ namespace OpenLoco::GameCommands
             case World::ElementType::tree:
                 return World::TileClearance::clearWithDefaultCollision(el, args.pos, removedBuildings, args.flags, totalCost);
             case World::ElementType::road:
-                return clearRoad(*el.as<World::RoadElement>(), args, hasLevelCrossing);
+            {
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad != nullptr)
+                {
+                    return clearRoad(*elRoad, args, hasLevelCrossing);
+                }
+                break;
+            }
             case World::ElementType::surface:
             case World::ElementType::wall:
             case World::ElementType::industry:
@@ -344,7 +357,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0046908D
-    void sub_46908D(const World::Pos3 pos)
+    static void sub_46908D(const World::Pos3 pos)
     {
         registers regs{};
         regs.ax = pos.x;
@@ -354,7 +367,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00469174
-    void sub_469174(const World::Pos3 pos)
+    static void sub_469174(const World::Pos3 pos)
     {
         registers regs{};
         regs.ax = pos.x;
@@ -364,7 +377,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049BB98
-    uint32_t createTrack(const TrackPlacementArgs& args, uint8_t flags)
+    static uint32_t createTrack(const TrackPlacementArgs& args, uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
