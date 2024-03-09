@@ -224,7 +224,7 @@ namespace OpenLoco::GameCommands
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
 
         if (!(roadObj->compatibleTracks & (1U << args.trackObjectId))
-            && !(trackObj->compatibleTracks & (1U << elRoad.roadObjectId())))
+            && !(trackObj->compatibleRoads & (1U << elRoad.roadObjectId())))
         {
             FormatArguments::common(roadObj->name);
             setErrorText(StringIds::unable_to_cross_or_create_junction_with_string);
