@@ -4,7 +4,6 @@
 #include "GameCommands/General/TogglePause.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
-#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "S5/S5.h"
 #include "SceneManager.h"
