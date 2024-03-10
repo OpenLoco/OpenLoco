@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 {
     static int16_t _callingWidget;
     static WindowNumber_t _callingWindowNumber;
-    static loco_global<WindowType, 0x523364> _callingWindowType;
+    static WindowType _callingWindowType;
 
     static char _formatArgs[16];
     static StringId _title;
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         if (window == nullptr)
             return;
 
-        if (_callingWindowNumber == number && *_callingWindowType == type)
+        if (_callingWindowNumber == number && _callingWindowType == type)
         {
             cancel();
         }
