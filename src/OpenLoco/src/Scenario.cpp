@@ -507,12 +507,12 @@ namespace OpenLoco::Scenario
     // 0x004C153B
     void loadPreferredCurrencyAlways()
     {
-        if (!Config::get().hasFlags(Config::Flags::preferredCurrencyAlways))
+        if (!Config::get().usePreferredCurrencyAlways)
         {
             return;
         }
 
-        const auto& preferredCurreny = Config::get().old.preferredCurrency;
+        const auto& preferredCurreny = Config::get().preferredCurrency;
 
         if (preferredCurreny.isEmpty())
         {
@@ -541,13 +541,13 @@ namespace OpenLoco::Scenario
     // 0x004C159C
     void loadPreferredCurrencyNewGame()
     {
-        if (!Config::get().hasFlags(Config::Flags::preferredCurrencyForNewGames))
+        if (!Config::get().usePreferredCurrencyForNewGames)
         {
             loadPreferredCurrencyAlways();
             return;
         }
 
-        const auto& preferredCurreny = Config::get().old.preferredCurrency;
+        const auto& preferredCurreny = Config::get().preferredCurrency;
 
         if (preferredCurreny.isEmpty())
         {
