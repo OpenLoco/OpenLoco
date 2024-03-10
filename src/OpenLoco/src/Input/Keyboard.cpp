@@ -12,6 +12,7 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Screenshot.h"
+#include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
@@ -42,7 +43,6 @@ namespace OpenLoco::Input
     static void loc_4BED79();
 
     static loco_global<KeyModifier, 0x00508F18> _keyModifier;
-    static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
     static loco_global<Key[64], 0x0113E300> _keyQueue;
@@ -415,7 +415,7 @@ namespace OpenLoco::Input
         if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (*_modalWindowType != WindowType::undefined)
+        if (WindowManager::getCurrentModalType() != WindowType::undefined)
             return;
 
         if (WindowManager::find(WindowType::textInput) != nullptr)
