@@ -11,6 +11,7 @@
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
+#include "Objects/CompetitorObject.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectIndex.h"
@@ -52,11 +53,6 @@ namespace OpenLoco::Ui::Windows::Options
     static std::span<ObjectManager::SelectedObjectsFlags> getLoadedSelectedObjectFlags()
     {
         return std::span<ObjectManager::SelectedObjectsFlags>(*__11364A0, ObjectManager::getNumInstalledObjects());
-    }
-
-    static void onClose([[maybe_unused]] Window& w)
-    {
-        free(__11364A0);
     }
 
     namespace Common
@@ -180,6 +176,12 @@ namespace OpenLoco::Ui::Windows::Options
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
                 Widget::drawTab(w, rt, imageId, Widx::tab_company);
             }
+        }
+
+        static void onClose([[maybe_unused]] Window& w)
+        {
+            ObjectManager::freeTemporaryObject();
+            free(__11364A0);
         }
 
 #define common_options_widgets(kWindowSize, window_caption_id)                                                                                                                         \
@@ -717,7 +719,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -915,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -1300,7 +1302,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -1784,7 +1786,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,
@@ -1950,7 +1952,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
             .prepareDraw = prepareDraw,
@@ -1975,9 +1977,9 @@ namespace OpenLoco::Ui::Windows::Options
                 usePreferredOwnerName,
                 changeOwnerNameBtn,
 
-                groupPreferredFaceName,
-                usePreferredFaceName,
-                changeFaceNameBtn,
+                groupPreferredOwnerFace,
+                usePreferredOwnerFace,
+                changeOwnerFaceBtn,
             };
         }
 
@@ -1985,8 +1987,8 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
             (1 << Widx::usePreferredOwnerName) |
             (1 << Widx::changeOwnerNameBtn) |
-            (1 << Widx::usePreferredFaceName) |
-            (1 << Widx::changeFaceNameBtn);
+            (1 << Widx::usePreferredOwnerFace) |
+            (1 << Widx::changeOwnerFaceBtn);
         // clang-format on
 
         static Widget _widgets[] = {
@@ -2004,6 +2006,37 @@ namespace OpenLoco::Ui::Windows::Options
 
             widgetEnd(),
         };
+
+        static void loadPreferredFace(Window& self)
+        {
+            if (WindowManager::getCurrentModalType() == WindowType::companyFaceSelection)
+            {
+                self.object = nullptr;
+                return;
+            }
+
+            auto& preferredOwnerFace = Config::get().preferredOwnerFace;
+
+            if (self.object != nullptr)
+            {
+                // Ensure our temporary object is still loaded
+                auto* object = ObjectManager::getTemporaryObject();
+                if (object == reinterpret_cast<Object*>(self.object))
+                {
+                    return;
+                }
+            }
+
+            ObjectManager::freeTemporaryObject();
+            if (ObjectManager::loadTemporaryObject(preferredOwnerFace))
+            {
+                self.object = reinterpret_cast<std::byte*>(ObjectManager::getTemporaryObject());
+            }
+            else
+            {
+                self.object = nullptr;
+            }
+        }
 
         static void prepareDraw(Window& w)
         {
@@ -2033,6 +2066,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             sub_4C13BE(&w);
+            loadPreferredFace(w);
         }
 
         static void draw(Window& w, Gfx::RenderTarget* rt)
@@ -2050,6 +2084,15 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args = {};
             args.push(StringIds::buffer_2039);
             drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+
+            // Draw small competitor face
+            if (w.object != nullptr)
+            {
+                const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(w.object);
+                const auto image = Gfx::recolour(competitor->images[0], Colour::black);
+                const auto& widget = w.widgets[Widx::groupPreferredOwnerFace];
+                drawingCtx.drawImage(rt, w.x + widget.right - 50, w.y + widget.top + 5, image);
+            }
         }
 
         // 0x004C1319
@@ -2109,7 +2152,7 @@ namespace OpenLoco::Ui::Windows::Options
                     changePreferredName(&w);
                     break;
 
-                case Widx::changeFaceNameBtn:
+                case Widx::changeOwnerFaceBtn:
                     changePreferredFace(w);
                     break;
             }
@@ -2147,7 +2190,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onUpdate = onUpdate,
             .textInput = textInput,
@@ -2570,7 +2613,7 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         static constexpr WindowEventList kEvents = {
-            .onClose = onClose,
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onMouseDown = onMouseDown,
             .onDropdown = onDropdown,

@@ -67,7 +67,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             _9C68F2 = id;
             self->owner = id;
-            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
             self->invalidate();
         }
         else
@@ -82,19 +81,29 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->colour_0A);
 
-            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
-            _callingWindowType = callingWindowType;
-
             self->rowCount = _numberCompetitorObjects;
             self->rowHover = -1;
             self->object = nullptr;
         }
+
+        // How will we be using the selected face?
+        _callingWindowType = callingWindowType;
+
+        // Make window blocking while open
+        WindowManager::setCurrentModalType(WindowType::companyFaceSelection);
+
+        // Enumerate competitors that are in use if we are applying the selection in-game
+        if (_callingWindowType == WindowType::company)
+            _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
+        else
+            _inUseCompetitors.clear();
     }
 
     // 0x004352A4
     static void onClose([[maybe_unused]] Window& self)
     {
         ObjectManager::freeTemporaryObject();
+        WindowManager::setCurrentModalType(WindowType::undefined);
     }
 
     // 0x435299
@@ -128,6 +137,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         const int16_t rowIndex = y / kRowHeight;
         const auto objects = ObjectManager::getAvailableObjects(ObjectType::competitor);
+
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
             return { ObjectManager::ObjectIndexEntry{}, -1 };
@@ -137,6 +147,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         {
             return { ObjectManager::ObjectIndexEntry{}, -1 };
         }
+
         return { objects[rowIndex].second, rowIndex };
     }
 
@@ -171,6 +182,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             auto& config = Config::get();
             config.preferredOwnerFace = *objRow.object._header;
             Config::write();
+
+            WindowManager::invalidate(WindowType::options);
             WindowManager::close(&self);
         }
     }
@@ -243,7 +256,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             drawingCtx.fillRect(*rt, l, t, r, b, colour, Drawing::RectFlags::none);
 
             const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
-            uint32_t img = competitor->images[0] + 1 + (1 << 29);
+            uint32_t img = Gfx::recolour(competitor->images[0] + 1, Colour::black);
             drawingCtx.drawImage(rt, l, t, img);
         }
 
