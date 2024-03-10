@@ -2097,19 +2097,27 @@ namespace OpenLoco::Ui::Windows::Options
             w.draw(rt);
             Common::drawTabs(&w, rt);
 
-            auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = Config::get().preferredName;
-            strcpy(buffer, playerName);
-            buffer[strlen(playerName)] = '\0';
+            // Draw preferred owner name
+            {
+                auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
+                const char* playerName = Config::get().preferredOwnerName.c_str();
+                strcpy(buffer, playerName);
+                buffer[strlen(playerName)] = '\0';
 
-            FormatArguments args = {};
-            args.push(StringIds::buffer_2039);
-            drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+                FormatArguments args = {};
+                args.push(StringIds::buffer_2039);
+                drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+            }
 
-            // Draw small competitor face
+            // Draw small competitor face and name
             if (w.object != nullptr)
             {
                 const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(w.object);
+
+                FormatArguments args = {};
+                args.push(competitor->name);
+                drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1, Colour::black, StringIds::currentPreferredFace, &args);
+
                 const auto image = Gfx::recolour(competitor->images[0], Colour::black);
                 const auto& widget = w.widgets[Widx::groupPreferredOwnerFace];
                 drawingCtx.drawImage(rt, w.x + widget.right - 50, w.y + widget.top + 5, image);
