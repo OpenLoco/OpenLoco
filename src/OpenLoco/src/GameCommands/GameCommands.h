@@ -138,19 +138,6 @@ namespace OpenLoco::GameCommands
         return doCommand(T::command, regs);
     }
 
-    // Rename town
-    inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cx = cx;   // town number or 0
-        regs.ax = ax;   // [ 0, 1, 2]
-        regs.edx = edx; // part of name buffer
-        regs.ebp = ebp; // part of name buffer
-        regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::renameTown, regs);
-    }
-
     struct Unk52Args
     {
         static constexpr auto command = GameCommand::gc_unk_52;
@@ -226,40 +213,6 @@ namespace OpenLoco::GameCommands
         registers regs;
         regs.bl = Flags::apply;
         doCommand(GameCommand::multiplayerSave, regs);
-    }
-
-    // Rename industry
-    inline void do_79(IndustryId cl, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.cl = enumValue(cl); // industry number or 0
-        regs.ax = ax;            // [ 0, 1, 2]
-        regs.edx = edx;          // part of name buffer
-        regs.ebp = ebp;          // part of name buffer
-        regs.edi = edi;          // part of name buffer
-        doCommand(GameCommand::renameIndustry, regs);
-    }
-
-    inline bool do_80(EntityId head)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.ax = enumValue(head);
-        return GameCommands::doCommand(GameCommand::vehicleClone, regs) != FAILURE;
-    }
-
-    enum class CheatCommand : uint8_t;
-
-    inline bool do_81(CheatCommand command, int32_t param1 = 0, int32_t param2 = 0, int32_t param3 = 0)
-    {
-        registers regs;
-        regs.bl = Flags::apply;
-        regs.eax = static_cast<int32_t>(command);
-        regs.ebx = param1;
-        regs.ecx = param2;
-        regs.edx = param3;
-        return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
     }
 
     const World::Pos3& getPosition();

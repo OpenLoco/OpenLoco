@@ -192,45 +192,48 @@ namespace OpenLoco::GameCommands
 
         static uint32_t modifyDateCheat(int32_t year, int32_t month, int32_t day)
         {
-            OpenLoco::Scenario::initialiseDate(static_cast<uint16_t>(year), static_cast<MonthId>(month), static_cast<uint8_t>(day));
+            Scenario::initialiseDate(static_cast<uint16_t>(year), static_cast<MonthId>(month), static_cast<uint8_t>(day));
             Logging::info("Date set to: Day={} Month={} Year={}", day, month, year);
             return 0;
         }
     }
 
-    static uint32_t cheat(CheatCommand command, int32_t param1, int32_t param2, int32_t param3)
+    static uint32_t cheat(const GameCommands::GenericCheatArgs& args, uint8_t flags)
     {
-        switch (command)
+        if (!(flags & GameCommands::Flags::apply))
+            return 0;
+
+        switch (args.subcommand)
         {
             case CheatCommand::acquireAssets:
-                return Cheats::acquireAssets(CompanyId(param1));
+                return Cheats::acquireAssets(CompanyId(args.param1));
 
             case CheatCommand::addCash:
-                return Cheats::addCash(param1);
+                return Cheats::addCash(args.param1);
 
             case CheatCommand::clearLoan:
                 return Cheats::clearLoan();
 
             case CheatCommand::companyRatings:
-                return Cheats::companyRatings(param1, param2);
+                return Cheats::companyRatings(args.param1, args.param2);
 
             case CheatCommand::switchCompany:
-                return Cheats::switchCompany(CompanyId(param1));
+                return Cheats::switchCompany(CompanyId(args.param1));
 
             case CheatCommand::toggleBankruptcy:
-                return Cheats::toggleBankruptcy(CompanyId(param1));
+                return Cheats::toggleBankruptcy(CompanyId(args.param1));
 
             case CheatCommand::toggleJail:
-                return Cheats::toggleJail(CompanyId(param1));
+                return Cheats::toggleJail(CompanyId(args.param1));
 
             case CheatCommand::vehicleReliability:
-                return Cheats::vehicleReliability(param1);
+                return Cheats::vehicleReliability(args.param1);
 
             case CheatCommand::modifyDate:
-                return Cheats::modifyDateCheat(param1, param2, param3);
+                return Cheats::modifyDateCheat(args.param1, args.param2, args.param3);
 
             case CheatCommand::completeChallenge:
-                return Cheats::completeChallenge(CompanyId(param1));
+                return Cheats::completeChallenge(CompanyId(args.param1));
 
             default:
                 break;
@@ -241,7 +244,7 @@ namespace OpenLoco::GameCommands
 
     void cheat(registers& regs)
     {
-        regs.ebx = cheat(CheatCommand(regs.eax), regs.ebx, regs.ecx, regs.edx);
+        regs.ebx = cheat(GameCommands::GenericCheatArgs(regs), regs.bl);
     }
 
     // 0x004BAC53

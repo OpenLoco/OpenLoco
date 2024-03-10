@@ -1,6 +1,7 @@
 #include "RenameIndustry.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Industries/RenameIndustry.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -30,33 +31,31 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
      * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::FAILURE
      */
-    static uint32_t renameIndustry(const uint8_t flags, IndustryId industryId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t renameIndustry(const GameCommands::RenameIndustryArgs& args, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
         // Keep track of the industry id over several calls.
         static IndustryId _industryId{};
-        if (index == 1)
-            _industryId = industryId;
+        if (args.nameBufferIndex == 1)
+            _industryId = args.industryId;
 
-        static uint32_t renameBuffer[9];
+        static char staticRenameBuffer[37]{};
 
         // Fill buffer over calls into the renameBuffer
         if ((flags & GameCommands::Flags::apply) != 0)
         {
             static constexpr std::array<int, 3> kTransformTable = { 2, 0, 1 };
-            int arrayIndex = kTransformTable.at(index);
-            renameBuffer[arrayIndex * 3] = buffer0;
-            renameBuffer[arrayIndex * 3 + 1] = buffer1;
-            renameBuffer[arrayIndex * 3 + 2] = buffer2;
+            int arrayIndex = kTransformTable.at(args.nameBufferIndex);
+            std::memcpy(staticRenameBuffer + arrayIndex * 12, args.buffer, 12);
         }
 
         // Applying the buffer?
-        if (index != 0)
+        if (args.nameBufferIndex != 0)
             return 0;
 
         char renameStringBuffer[37] = "";
-        memcpy(renameStringBuffer, renameBuffer, sizeof(renameBuffer));
+        memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
         renameStringBuffer[36] = '\0';
 
         // Ensure the new name isn't empty.
@@ -66,8 +65,8 @@ namespace OpenLoco::GameCommands
         // Figure out the current name for this industry.
         char currentIndustryName[256] = "";
         auto industry = IndustryManager::get(_industryId);
-        auto args = FormatArguments::common(industry->town);
-        StringManager::formatString(currentIndustryName, industry->name, &args);
+        auto fargs = FormatArguments::common(industry->town);
+        StringManager::formatString(currentIndustryName, industry->name, &fargs);
 
         // Verify the new name actually differs from the old one.
         if (strcmp(currentIndustryName, renameStringBuffer) == 0)
@@ -95,6 +94,6 @@ namespace OpenLoco::GameCommands
 
     void renameIndustry(registers& regs)
     {
-        regs.ebx = renameIndustry(regs.bl, IndustryId(regs.cl), regs.ax, regs.edx, regs.ebp, regs.edi);
+        regs.ebx = renameIndustry(GameCommands::RenameIndustryArgs(regs), regs.bl);
     }
 }

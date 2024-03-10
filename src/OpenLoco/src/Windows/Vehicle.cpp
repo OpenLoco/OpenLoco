@@ -3,6 +3,7 @@
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/CloneVehicle.h"
 #include "GameCommands/Vehicles/RenameVehicle.h"
 #include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "GameCommands/Vehicles/VehicleOrderDelete.h"
@@ -1086,13 +1087,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
+
             GameCommands::setErrorTitle(StringIds::cant_clone_vehicle);
-            if (GameCommands::do_80(head->head))
+
+            GameCommands::VehicleCloneArgs args{};
+            args.vehicleHeadId = head->head;
+
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply))
             {
                 auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVehicle != nullptr)
                 {
-                    OpenLoco::Ui::Windows::Vehicle::Details::open(newVehicle);
+                    Windows::Vehicle::Details::open(newVehicle);
                 }
             }
         }
