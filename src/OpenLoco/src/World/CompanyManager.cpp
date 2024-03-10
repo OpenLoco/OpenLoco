@@ -300,7 +300,26 @@ namespace OpenLoco::CompanyManager
         // Original network logic removed
         auto& gameState = getGameState();
         gameState.flags |= GameStateFlags::preferredOwnerName;
-        auto competitorId = selectNewCompetitor(-1);
+
+        // Any preference with respect to owner face?
+        int8_t competitorId = -1;
+        if (Config::get().usePreferredOwnerFace)
+        {
+            auto& preferredFace = Config::get().preferredOwnerFace;
+            if (ObjectManager::load(preferredFace))
+            {
+                auto handle = ObjectManager::findObjectHandle(preferredFace);
+                if (handle)
+                {
+                    competitorId = (*handle).id;
+                }
+            }
+        }
+
+        // No preference or unavailable, just pick one
+        if (competitorId == -1)
+            competitorId = selectNewCompetitor(-1);
+
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
         sub_4A6DA9();
