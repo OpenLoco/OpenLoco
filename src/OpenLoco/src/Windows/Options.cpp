@@ -2072,12 +2072,15 @@ namespace OpenLoco::Ui::Windows::Options
                 w.activatedWidgets |= (1 << Widx::export_plugin_objects);
             }
 
-            w.activatedWidgets &= ~(1 << Widx::use_preferred_owner_name);
-            w.disabledWidgets |= (1 << Widx::change_btn);
-            if (Config::get().hasFlags(Config::Flags::usePreferredOwnerName))
+            if (Config::get().usePreferredOwnerName)
             {
                 w.activatedWidgets |= (1 << Widx::use_preferred_owner_name);
                 w.disabledWidgets &= ~(1 << Widx::change_btn);
+            }
+            else
+            {
+                w.activatedWidgets &= ~(1 << Widx::use_preferred_owner_name);
+                w.disabledWidgets |= (1 << Widx::change_btn);
             }
 
             w.widgets[Widx::export_plugin_objects].type = WidgetType::none;
@@ -2109,7 +2112,7 @@ namespace OpenLoco::Ui::Windows::Options
             Common::drawTabs(&w, rt);
 
             auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = Config::get().old.preferredName;
+            const char* playerName = Config::get().preferredOwnerName.c_str();
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
@@ -2325,7 +2328,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void changePreferredName(Window* w)
         {
             auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = Config::get().old.preferredName;
+            const char* playerName = Config::get().preferredOwnerName.c_str();
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
@@ -2335,41 +2338,27 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C1342
         static void setPreferredName(Window* w, const char* str)
         {
-            auto& cfg = OpenLoco::Config::get().old;
-
-            if (strlen(str) == 0)
-                cfg.flags &= ~Config::Flags::usePreferredOwnerName;
-
-            strcpy(cfg.preferredName, str);
-            cfg.preferredName[strlen(str)] = '\0';
+            auto& cfg = Config::get();
+            cfg.preferredOwnerName = str;
+            if (cfg.preferredOwnerName.empty())
+                cfg.usePreferredOwnerName = false;
 
             Config::write();
-
             w->invalidate();
         }
 
         // 0x004C135F
         static void usePreferredOwnerNameMouseUp(Window* w)
         {
-            auto& cfg = OpenLoco::Config::get();
-            if (cfg.hasFlags(Config::Flags::usePreferredOwnerName))
-            {
-                cfg.old.flags &= ~Config::Flags::usePreferredOwnerName;
-            }
-            else
-            {
-                cfg.old.flags |= Config::Flags::usePreferredOwnerName;
-            }
+            auto& cfg = Config::get();
+            cfg.usePreferredOwnerName ^= true;
             Config::write();
 
             w->invalidate();
 
-            if (cfg.hasFlags(Config::Flags::usePreferredOwnerName))
+            if (cfg.usePreferredOwnerName && cfg.preferredOwnerName.empty())
             {
-                if (strlen(cfg.old.preferredName) == 0)
-                {
-                    changePreferredName(w);
-                }
+                changePreferredName(w);
             }
         }
 
