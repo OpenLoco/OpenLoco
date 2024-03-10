@@ -2015,6 +2015,16 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
+            if (!Config::get().usePreferredOwnerFace)
+            {
+                if (self.object != nullptr)
+                {
+                    ObjectManager::freeTemporaryObject();
+                    self.object = nullptr;
+                }
+                return;
+            }
+
             auto& preferredOwnerFace = Config::get().preferredOwnerFace;
 
             if (self.object != nullptr)
@@ -2063,6 +2073,17 @@ namespace OpenLoco::Ui::Windows::Options
             {
                 w.activatedWidgets &= ~(1 << Widx::usePreferredOwnerName);
                 w.disabledWidgets |= (1 << Widx::changeOwnerNameBtn);
+            }
+
+            if (Config::get().usePreferredOwnerFace)
+            {
+                w.activatedWidgets |= (1 << Widx::usePreferredOwnerFace);
+                w.disabledWidgets &= ~(1 << Widx::changeOwnerFaceBtn);
+            }
+            else
+            {
+                w.activatedWidgets &= ~(1 << Widx::usePreferredOwnerFace);
+                w.disabledWidgets |= (1 << Widx::changeOwnerFaceBtn);
             }
 
             sub_4C13BE(&w);
@@ -2126,6 +2147,20 @@ namespace OpenLoco::Ui::Windows::Options
             CompanyFaceSelection::open(CompanyId::neutral, self.type);
         }
 
+        static void usePreferredOwnerFaceMouseUp(Window* w)
+        {
+            auto& cfg = Config::get();
+            cfg.usePreferredOwnerFace ^= true;
+            Config::write();
+
+            w->invalidate();
+
+            if (cfg.usePreferredOwnerFace && cfg.preferredOwnerFace == kEmptyObjectHeader)
+            {
+                changePreferredFace(*w);
+            }
+        }
+
         static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
@@ -2150,6 +2185,10 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::changeOwnerNameBtn:
                     changePreferredName(&w);
+                    break;
+
+                case Widx::usePreferredOwnerFace:
+                    usePreferredOwnerFaceMouseUp(&w);
                     break;
 
                 case Widx::changeOwnerFaceBtn:
