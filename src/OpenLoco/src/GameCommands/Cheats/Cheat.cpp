@@ -198,8 +198,11 @@ namespace OpenLoco::GameCommands
         }
     }
 
-    static uint32_t cheat(const GameCommands::GenericCheatArgs& args, [[maybe_unused]] uint8_t flags)
+    static uint32_t cheat(const GameCommands::GenericCheatArgs& args, uint8_t flags)
     {
+        if (!(flags & GameCommands::Flags::apply))
+            return 0;
+
         switch (args.subcommand)
         {
             case CheatCommand::acquireAssets:
