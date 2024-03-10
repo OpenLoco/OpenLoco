@@ -19,6 +19,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Widget.h"
 #include "World/CompanyManager.h"
@@ -102,7 +103,6 @@ namespace OpenLoco::Input
     static loco_global<uint16_t, 0x005233AC> _hoverWidgetIdx;
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
-    static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
 
     static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
 
@@ -281,15 +281,16 @@ namespace OpenLoco::Input
             widgetIndex = window->findWidgetAt(x, y);
         }
 
-        if (*_modalWindowType != Ui::WindowType::undefined)
+        auto modalType = WindowManager::getCurrentModalType();
+        if (modalType != WindowType::undefined)
         {
             if (window != nullptr)
             {
-                if (window->type != *_modalWindowType)
+                if (window->type != modalType)
                 {
                     if (button == MouseButton::leftPressed)
                     {
-                        WindowManager::bringToFront(_modalWindowType);
+                        WindowManager::bringToFront(modalType);
                         Audio::playSound(Audio::SoundId::error, x);
                         return;
                     }
@@ -837,7 +838,7 @@ namespace OpenLoco::Input
         _tooltipWindowType = _pressedWindowType;
         _tooltipWindowNumber = _pressedWindowNumber;
 
-        if (*_modalWindowType == Ui::WindowType::undefined || *_modalWindowType == window->type)
+        if (WindowManager::getCurrentModalType() == Ui::WindowType::undefined || WindowManager::getCurrentModalType() == window->type)
         {
             window->callOnDropdown(_pressedWidgetIndex, item);
         }
@@ -1341,11 +1342,11 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (*_modalWindowType != Ui::WindowType::undefined)
+        if (WindowManager::getCurrentModalType() != Ui::WindowType::undefined)
         {
-            if (*_modalWindowType == window->type)
+            if (WindowManager::getCurrentModalType() == window->type)
             {
-                Ui::ScrollView::scrollModalRight(x, y, window, widget, widgetIndex);
+                ScrollView::scrollModalRight(x, y, window, widget, widgetIndex);
             }
 
             return;
