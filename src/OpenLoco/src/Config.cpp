@@ -282,6 +282,8 @@ namespace OpenLoco::Config
         // Preferred owner
         _newConfig.preferredOwnerName = config["preferredOwnerName"].as<std::string>("");
         _newConfig.usePreferredOwnerName = config["usePreferredOwnerName"].as<bool>(false);
+        _newConfig.preferredOwnerFace = config["preferredOwnerFace"].as<ObjectHeader>(kEmptyObjectHeader);
+        _newConfig.usePreferredOwnerFace = config["usePreferredOwnerFace"].as<bool>(false);
 
         // Shortcuts
         auto& scNode = config["shortcuts"];
@@ -378,6 +380,8 @@ namespace OpenLoco::Config
         // Preferred owner
         node["preferredOwnerName"] = _newConfig.preferredOwnerName;
         node["usePreferredOwnerName"] = _newConfig.usePreferredOwnerName;
+        node["preferredOwnerFace"] = _newConfig.preferredOwnerFace;
+        node["usePreferredOwnerFace"] = _newConfig.usePreferredOwnerFace;
 
         // Shortcuts
         const auto& shortcuts = _newConfig.shortcuts;

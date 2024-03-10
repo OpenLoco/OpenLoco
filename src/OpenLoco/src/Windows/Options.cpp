@@ -1965,7 +1965,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Company
     {
-        static constexpr Ui::Size kWindowSize = { 420, 101 };
+        static constexpr Ui::Size kWindowSize = { 420, 154 };
 
         namespace Widx
         {
@@ -1974,13 +1974,19 @@ namespace OpenLoco::Ui::Windows::Options
                 groupPreferredOwnerName = Common::Widx::tab_miscellaneous + 1,
                 usePreferredOwnerName,
                 changeOwnerNameBtn,
+
+                groupPreferredFaceName,
+                usePreferredFaceName,
+                changeFaceNameBtn,
             };
         }
 
         // clang-format off
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
             (1 << Widx::usePreferredOwnerName) |
-            (1 << Widx::changeOwnerNameBtn);
+            (1 << Widx::changeOwnerNameBtn) |
+            (1 << Widx::usePreferredFaceName) |
+            (1 << Widx::changeFaceNameBtn);
         // clang-format on
 
         static Widget _widgets[] = {
@@ -1990,6 +1996,11 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 4, 49 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner_name),
             makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             makeWidget({ 335, 79 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+
+            // Preferred owner face group
+            makeWidget({ 4, 102 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferredCompanyFace),
+            makeWidget({ 10, 117 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
+            makeWidget({ 335, 132 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
 
             widgetEnd(),
         };
@@ -2067,6 +2078,11 @@ namespace OpenLoco::Ui::Windows::Options
             }
         }
 
+        static void changePreferredFace(Window& self)
+        {
+            CompanyFaceSelection::open(CompanyId::neutral, self.type);
+        }
+
         static void onMouseUp(Window& w, WidgetIndex_t wi)
         {
             switch (wi)
@@ -2091,6 +2107,10 @@ namespace OpenLoco::Ui::Windows::Options
 
                 case Widx::changeOwnerNameBtn:
                     changePreferredName(&w);
+                    break;
+
+                case Widx::changeFaceNameBtn:
+                    changePreferredFace(w);
                     break;
             }
         }

@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::face:
-                    CompanyFaceSelection::open(CompanyId(self.number));
+                    CompanyFaceSelection::open(CompanyId(self.number), self.type);
                     break;
 
                 case widx::change_owner_name:

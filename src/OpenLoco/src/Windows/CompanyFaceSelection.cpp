@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Config.h"
 #include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/Company/ChangeCompanyFace.h"
 #include "GameCommands/GameCommands.h"
@@ -26,6 +27,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
     static loco_global<int32_t, 0x0113E72C> _cursorX;
+
+    static WindowType _callingWindowType;
 
     static constexpr Ui::Size kWindowSize = { 400, 272 };
     static constexpr int16_t kRowHeight = 10;
@@ -56,11 +59,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static std::vector<uint32_t> _inUseCompetitors;
 
     // 0x00434F52
-    void open(const CompanyId id)
+    void open(const CompanyId id, const WindowType callingWindowType)
     {
         auto* self = WindowManager::bringToFront(WindowType::companyFaceSelection, 0);
 
-        if (self)
+        if (self != nullptr)
         {
             _9C68F2 = id;
             self->owner = id;
@@ -75,9 +78,13 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self->initScrollWidgets();
             _9C68F2 = id;
             self->owner = id;
+
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->setColour(WindowColour::secondary, skin->colour_0A);
+
             _inUseCompetitors = CompanyManager::findAllOtherInUseCompetitors(id);
+            _callingWindowType = callingWindowType;
+
             self->rowCount = _numberCompetitorObjects;
             self->rowHover = -1;
             self->object = nullptr;
@@ -144,15 +151,26 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
         self.invalidate();
         Audio::playSound(Audio::SoundId::clickDown, _cursorX);
-        GameCommands::setErrorTitle(StringIds::cant_select_face);
 
-        GameCommands::ChangeCompanyFaceArgs args{};
-        args.companyId = self.owner;
-        args.objHeader = *objRow.object._header;
-
-        const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
-        if (result)
+        if (_callingWindowType == WindowType::company)
         {
+            GameCommands::setErrorTitle(StringIds::cant_select_face);
+
+            GameCommands::ChangeCompanyFaceArgs args{};
+            args.companyId = self.owner;
+            args.objHeader = *objRow.object._header;
+
+            const auto result = GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE;
+            if (result)
+            {
+                WindowManager::close(&self);
+            }
+        }
+        else if (_callingWindowType == WindowType::options)
+        {
+            auto& config = Config::get();
+            config.preferredOwnerFace = *objRow.object._header;
+            Config::write();
             WindowManager::close(&self);
         }
     }
@@ -191,10 +209,18 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x434FE8
     static void prepareDraw(Window& self)
     {
-        const auto company = CompanyManager::get(self.owner);
+        if (_callingWindowType == WindowType::company)
+        {
+            self.widgets[widx::caption].text = StringIds::company_face_selection_title;
 
-        auto args = FormatArguments::common();
-        args.push(company->name);
+            const auto company = CompanyManager::get(self.owner);
+            auto args = FormatArguments::common();
+            args.push(company->name);
+        }
+        else
+        {
+            self.widgets[widx::caption].text = StringIds::selectPreferredCompanyOwnerFace;
+        }
     }
 
     // 0x435003

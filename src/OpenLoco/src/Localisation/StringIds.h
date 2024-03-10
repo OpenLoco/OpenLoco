@@ -1939,7 +1939,12 @@ namespace OpenLoco::StringIds
     constexpr StringId mountainModeTooltip = 2323;
     constexpr StringId vehicleTrackBehaviour = 2324;
     constexpr StringId tooltip_title_company = 2325;
-    constexpr StringId options_title_company = 2325;
+    constexpr StringId options_title_company = 2326;
+    constexpr StringId preferredCompanyFace = 2327;
+    constexpr StringId usePreferredCompanyFace = 2328;
+    constexpr StringId usePreferredCompanyFaceTip = 2329;
+    constexpr StringId currentPreferredFace = 2330;
+    constexpr StringId selectPreferredCompanyOwnerFace = 2331;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
