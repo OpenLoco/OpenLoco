@@ -1003,13 +1003,13 @@ namespace OpenLoco::World::TileManager
         if (surface->var_6_SLR5() > 0)
         {
             surface->setVar6SLR5(0);
-            surface->setVar4SLR5(0);
+            surface->setSnowCoverage(0);
 
             Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
         }
-        if (surface->var_4_E0() > 0)
+        if (surface->snowCoverage() > 0)
         {
-            surface->setVar4SLR5(0);
+            surface->setSnowCoverage(0);
 
             Ui::ViewportManager::invalidate(pos, surface->baseHeight(), surface->baseHeight() + 32, ZoomLevel::eighth);
         }

@@ -797,7 +797,7 @@ namespace OpenLoco::ObjectManager
                 if (elSurface != nullptr)
                 {
                     loadedObjectFlags[enumValue(ObjectType::land)][elSurface->terrain()] |= (1U << 0);
-                    if (elSurface->var_4_E0())
+                    if (elSurface->snowCoverage())
                     {
                         loadedObjectFlags[enumValue(ObjectType::snow)][0] |= (1U << 0);
                     }

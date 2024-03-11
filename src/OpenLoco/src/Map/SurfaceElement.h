@@ -73,11 +73,11 @@ namespace OpenLoco::World
         uint8_t slope() const { return _slope & 0x1F; }
         void setSlope(uint8_t slope)
         {
-            uint8_t var = var_4_E0();
+            uint8_t var = snowCoverage();
             _slope = var | (slope & 0x1F);
         }
-        uint8_t var_4_E0() const { return _slope & 0xE0; }
-        void setVar4SLR5(uint8_t var4)
+        uint8_t snowCoverage() const { return _slope & 0xE0; }
+        void setSnowCoverage(uint8_t var4)
         {
             _slope &= 0x1F;
             _slope |= var4 << 5;

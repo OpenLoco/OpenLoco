@@ -311,7 +311,7 @@ namespace OpenLoco::World::MapGenerator
             auto snowLine = Scenario::getCurrentSnowLine() / kMicroToSmallZStep;
             MicroZ baseMicroZ = (surface->baseZ() / kMicroToSmallZStep) + 1;
             auto unk = std::clamp(baseMicroZ - snowLine, 0, 5);
-            surface->setVar4SLR5(unk);
+            surface->setSnowCoverage(unk);
         }
     }
 
