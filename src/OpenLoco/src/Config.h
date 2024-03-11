@@ -24,7 +24,7 @@ namespace OpenLoco::Config
         preferredCurrencyForNewGames = 1U << 6,
         preferredCurrencyAlways = 1U << 7,
 
-        usePreferredOwnerName = 1U << 9,
+        usePreferredOwnerName = 1U << 9, // unused
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
@@ -192,6 +192,9 @@ namespace OpenLoco::Config
         bool invertRightMouseViewPan = false;
         bool townGrowthDisabled = false;
         bool trainsReverseAtSignals = true;
+
+        bool usePreferredOwnerName = false;
+        std::string preferredOwnerName;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
 

@@ -274,6 +274,10 @@ namespace OpenLoco::Config
         _newConfig.townGrowthDisabled = config["townGrowthDisabled"].as<bool>(false);
         _newConfig.trainsReverseAtSignals = config["trainsReverseAtSignals"].as<bool>(false);
 
+        // Preferred owner
+        _newConfig.preferredOwnerName = config["preferredOwnerName"].as<std::string>("");
+        _newConfig.usePreferredOwnerName = config["usePreferredOwnerName"].as<bool>(false);
+
         // Shortcuts
         auto& scNode = config["shortcuts"];
         // Protect from empty shortcuts
@@ -360,6 +364,10 @@ namespace OpenLoco::Config
         node["invertRightMouseViewPan"] = _newConfig.invertRightMouseViewPan;
         node["townGrowthDisabled"] = _newConfig.townGrowthDisabled;
         node["trainsReverseAtSignals"] = _newConfig.trainsReverseAtSignals;
+
+        // Preferred owner
+        node["preferredOwnerName"] = _newConfig.preferredOwnerName;
+        node["usePreferredOwnerName"] = _newConfig.usePreferredOwnerName;
 
         // Shortcuts
         const auto& shortcuts = _newConfig.shortcuts;

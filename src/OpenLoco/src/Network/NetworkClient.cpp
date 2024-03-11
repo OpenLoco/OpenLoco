@@ -181,9 +181,9 @@ void NetworkClient::onReceivePacketFromServer(const Packet& packet)
 
 void NetworkClient::sendConnectPacket()
 {
-    const auto& config = Config::get().old;
+    const auto& config = Config::get();
     ConnectPacket packet;
-    std::strncpy(packet.name, config.preferredName, sizeof(packet.name));
+    std::strncpy(packet.name, config.preferredOwnerName.c_str(), sizeof(packet.name));
     packet.version = kNetworkVersion;
     _serverConnection->sendPacket(packet);
 }

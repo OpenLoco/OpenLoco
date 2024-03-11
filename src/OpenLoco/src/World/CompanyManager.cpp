@@ -597,7 +597,7 @@ namespace OpenLoco::CompanyManager
     // 0x004C95A6
     void setPreferredName()
     {
-        if (!Config::get().hasFlags(Config::Flags::usePreferredOwnerName))
+        if (!Config::get().usePreferredOwnerName)
             return;
 
         // First, set the owner name.
@@ -607,7 +607,7 @@ namespace OpenLoco::CompanyManager
 
             args.companyId = CompanyId(_updatingCompanyId);
             args.bufferIndex = 1;
-            std::memcpy(args.newName, Config::get().old.preferredName, 36);
+            std::memcpy(args.newName, Config::get().preferredOwnerName.c_str(), 36);
 
             GameCommands::doCommand(args, GameCommands::Flags::apply);
 
