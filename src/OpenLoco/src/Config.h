@@ -193,7 +193,7 @@ namespace OpenLoco::Config
         bool townGrowthDisabled = false;
         bool trainsReverseAtSignals = true;
 
-        bool usePreferredOwnerName;
+        bool usePreferredOwnerName = false;
         std::string preferredOwnerName;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
