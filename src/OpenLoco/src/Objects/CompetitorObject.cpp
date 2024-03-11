@@ -35,7 +35,7 @@ namespace OpenLoco
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         Ui::Point rowPosition = { x, y };
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
@@ -43,7 +43,7 @@ namespace OpenLoco
             rowPosition.y += kDescriptionRowHeight;
         }
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
@@ -51,7 +51,7 @@ namespace OpenLoco
             rowPosition.y += kDescriptionRowHeight;
         }
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 

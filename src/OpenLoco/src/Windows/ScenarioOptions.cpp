@@ -198,8 +198,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             int16_t yPos = window.y + widgets[widx::check_time_limit].bottom + 10;
             drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::challenge_label);
 
-            FormatArguments args = {};
+            FormatArguments args{};
             OpenLoco::Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
+
             yPos += 10;
             drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, window.width - 10, Colour::black, StringIds::challenge_value, &args);
         }
@@ -424,7 +425,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widgets[widx::time_limit_value_down].type = WidgetType::none;
             widgets[widx::time_limit_value_up].type = WidgetType::none;
 
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
 
             switch (Scenario::getObjective().type)
             {
@@ -808,7 +809,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
             args.push<uint16_t>(CompanyManager::getMaxCompetingCompanies());
             args.push<uint16_t>(CompanyManager::getCompetitorStartDelay());
 
@@ -959,7 +960,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
 
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
             args.push<uint32_t>(loanSizeInCurrency);
@@ -1014,11 +1015,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             Common::draw(window, rt);
 
             {
-                auto args = FormatArguments();
-
                 // Prepare scenario name text.
                 char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                 strncpy(buffer, S5::getOptions().scenarioName, 512);
+
+                FormatArguments args{};
                 args.push(StringIds::buffer_2039);
 
                 auto* stex = ObjectManager::get<ScenarioTextObject>();
@@ -1047,11 +1048,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             {
-                auto args = FormatArguments();
-
                 // Prepare scenario details text.
                 char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                 strncpy(buffer, S5::getOptions().scenarioDetails, 512);
+
+                FormatArguments args{};
                 args.push(StringIds::buffer_2039);
 
                 auto* stex = ObjectManager::get<ScenarioTextObject>();

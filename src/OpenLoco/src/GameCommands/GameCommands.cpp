@@ -108,7 +108,6 @@ namespace OpenLoco::GameCommands
     static loco_global<StringId, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<CompanyId, 0x009C68EE> _errorCompanyId;
-    static loco_global<StringId[8], 0x112C826> _commonFormatArgs;
 
     using GameCommandFunc = void (*)(registers& regs);
 

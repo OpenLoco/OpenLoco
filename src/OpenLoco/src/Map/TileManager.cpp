@@ -1128,7 +1128,7 @@ namespace OpenLoco::World::TileManager
                     else
                     {
                         auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
-                        FormatArguments args{};
+                        auto args = FormatArguments::common();
                         args.push(trackObj->name);
                         GameCommands::setErrorText(StringIds::stringid_requires_a_bridge);
                         return GameCommands::FAILURE;
@@ -1152,7 +1152,7 @@ namespace OpenLoco::World::TileManager
                     else
                     {
                         auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
-                        FormatArguments args{};
+                        auto args = FormatArguments::common();
                         args.push(roadObj->name);
                         GameCommands::setErrorText(StringIds::stringid_requires_a_bridge);
                         return GameCommands::FAILURE;

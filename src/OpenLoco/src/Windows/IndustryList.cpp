@@ -140,10 +140,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
-            auto args = FormatArguments();
+
             auto xPos = self.x + 4;
             auto yPos = self.y + self.height - 12;
 
+            FormatArguments args{};
             if (self.var_83C == 1)
                 args.push(StringIds::status_num_industries_singular);
             else
@@ -416,7 +417,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 // Industry Name
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(industry->name);
                     args.push(industry->town);
 
@@ -427,7 +428,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     const char* buffer = StringManager::getString(StringIds::buffer_1250);
                     industry->getStatusString((char*)buffer);
 
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(StringIds::buffer_1250);
 
                     drawingCtx.drawStringLeftClipped(rt, 200, yPos, 238, Colour::black, text_colour_id, &args);
@@ -442,7 +443,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                     auto productionTransported = getAverageTransportedCargo(*industry);
 
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push<uint16_t>(productionTransported);
 
                     drawingCtx.drawStringLeftClipped(rt, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
@@ -680,7 +681,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->costFactor, industryObj->costIndex, 3);
             }
-            auto args = FormatArguments();
+
+            FormatArguments args{};
             args.push(industryCost);
 
             auto widthOffset = 0;

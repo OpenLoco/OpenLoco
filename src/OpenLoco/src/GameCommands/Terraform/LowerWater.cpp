@@ -2,7 +2,6 @@
 #include "Audio/Audio.h"
 #include "Economy/Expenditures.h"
 #include "GameCommands/GameCommands.h"
-#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileLoop.hpp"

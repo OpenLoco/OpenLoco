@@ -288,7 +288,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-        auto args = FormatArguments();
+        auto args = FormatArguments::common();
         args.push(trackObj->name);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
@@ -313,7 +313,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         auto width = 130;
 
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(trainSignalObject->description);
 
             drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         if (_signalCost != 0x80000000 && _signalCost != 0)
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint32_t>(_signalCost);
 
             xPos = self.x + 69;

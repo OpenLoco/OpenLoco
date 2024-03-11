@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Input.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
@@ -41,12 +42,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 
         window.draw(rt);
 
-        static loco_global<StringId, 0x0112C826> _commonFormatArgs;
-        StringId prompt = window.var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
-        *_commonFormatArgs = prompt;
+        FormatArguments args{};
+        if (window.var_846 == 0)
+            args.push(StringIds::prompt_confirm_generate_landscape);
+        else
+            args.push(StringIds::prompt_confirm_random_landscape);
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*_commonFormatArgs);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
     // 0x004C18E4

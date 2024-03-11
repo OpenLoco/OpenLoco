@@ -61,7 +61,8 @@ namespace OpenLoco::GameCommands
         // Figure out the current name for this station.
         char currentStationName[256] = "";
         auto station = StationManager::get(_stationId);
-        auto fArgs = FormatArguments::common(station->town);
+        FormatArguments fArgs{};
+        fArgs.push(station->town);
         StringManager::formatString(currentStationName, station->name, &fArgs);
 
         // Verify the new name actually differs from the old one.

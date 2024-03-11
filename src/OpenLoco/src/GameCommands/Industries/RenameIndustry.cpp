@@ -65,7 +65,8 @@ namespace OpenLoco::GameCommands
         // Figure out the current name for this industry.
         char currentIndustryName[256] = "";
         auto industry = IndustryManager::get(_industryId);
-        auto fargs = FormatArguments::common(industry->town);
+        FormatArguments fargs{};
+        fargs.push(industry->town);
         StringManager::formatString(currentIndustryName, industry->name, &fargs);
 
         // Verify the new name actually differs from the old one.

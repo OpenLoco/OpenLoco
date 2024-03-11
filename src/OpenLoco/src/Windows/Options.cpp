@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             w.widgets[Widx::screen_mode].text = screenModeStringId;
 
-            FormatArguments args = {};
+            auto args = FormatArguments::common();
             args.skip(0x10);
             auto& resolution = Config::get().display.fullscreenResolution;
             args.push<uint16_t>(resolution.width);
@@ -757,7 +757,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            FormatArguments args = {};
+            auto args = FormatArguments::common();
 
             auto audioDeviceName = Audio::getCurrentDeviceName();
             if (audioDeviceName != nullptr)
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::Options
                 songName = Audio::getMusicInfo(_currentSong)->titleId;
             }
 
-            FormatArguments args = {};
+            auto args = FormatArguments::common();
             args.push(songName);
 
             static const StringId playlist_string_ids[] = {
@@ -1361,7 +1361,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            FormatArguments args = {};
+            auto args = FormatArguments::common();
 
             auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
             _chosenLanguage = language.nativeName;
@@ -2092,7 +2092,7 @@ namespace OpenLoco::Ui::Windows::Options
             auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto& widget = w->widgets[widgetIndex];
-            FormatArguments args = {};
+            FormatArguments args{};
             args.push(stringId);
             args.push(value);
             drawingCtx.drawStringLeft(*rt, w->x + widget.left + 1, w->y + widget.top + 1, Colour::black, StringIds::black_stringid, &args);
@@ -2111,7 +2111,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            FormatArguments args = {};
+            FormatArguments args{};
             args.push(StringIds::buffer_2039);
             drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::change_btn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
 

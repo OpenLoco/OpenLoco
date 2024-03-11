@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Dropdown
     void add(size_t index, StringId title);
     void add(size_t index, StringId title, std::initializer_list<format_arg> l);
     void add(size_t index, StringId title, format_arg l);
-    void add(size_t index, StringId title, FormatArguments& fArgs);
+    void add(size_t index, StringId title, const FormatArguments& fArgs);
     int16_t getHighlightedItem();
     void setItemDisabled(size_t index);
     void setHighlightedItem(size_t index);

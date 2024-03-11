@@ -733,7 +733,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
             }
-            auto args = FormatArguments();
+
+            FormatArguments args{};
             args.push<uint32_t>(treeCost);
 
             if (!isEditorMode())
@@ -1087,7 +1088,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto xPos = toolArea.midX() + self.x;
                 auto yPos = toolArea.midY() + self.y - 5;
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
                 drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
             }
@@ -1101,7 +1102,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = toolArea.midX() + self.x;
             auto yPos = toolArea.bottom + self.y + 5;
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push<uint32_t>(_raiseLandCost);
 
             drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
@@ -1229,7 +1230,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (i == _lastSelectedLand)
                     Dropdown::setHighlightedItem(landIndex);
 
-                auto args = FormatArguments();
+                auto args = FormatArguments::common();
                 args.push(landObj->mapPixelImage + Land::ImageIds::landscape_generator_tile_icon);
                 args.push<uint16_t>(i);
 
@@ -1702,7 +1703,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto xPos = toolArea.midX() + self.x;
                 auto yPos = toolArea.midY() + self.y - 5;
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
                 drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
             }
@@ -1714,7 +1715,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 if (_raiseLandCost != 0)
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push<uint32_t>(_raiseLandCost);
                     drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
@@ -1726,7 +1727,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 if (_lowerLandCost != 0)
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push<uint32_t>(_lowerLandCost);
                     drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
@@ -2012,7 +2013,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto xPos = toolArea.midX() + self.x;
                 auto yPos = toolArea.midY() + self.y - 5;
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
                 drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
             }
@@ -2024,7 +2025,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 if (_raiseWaterCost != 0)
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push<uint32_t>(_raiseWaterCost);
 
                     drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
@@ -2037,7 +2038,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 if (_lowerWaterCost != 0)
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push<uint32_t>(_lowerWaterCost);
 
                     drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);

@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x0042A036
         static void drawViewportString(Gfx::RenderTarget* rt, uint16_t x, uint16_t y, uint16_t width, MessageItemArgumentType itemType, uint16_t itemIndex)
         {
-            auto args = FormatArguments();
+            FormatArguments args{};
 
             switch (itemType)
             {

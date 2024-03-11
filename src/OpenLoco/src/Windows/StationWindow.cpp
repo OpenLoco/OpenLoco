@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Windows::Station
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             station->getStatusString((char*)buffer);
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(StringIds::buffer_1250);
 
             const auto& widget = self.widgets[widx::status_bar];
@@ -509,28 +509,33 @@ namespace OpenLoco::Ui::Windows::Station
                 if (cargo.quantity != 1)
                     cargoName = cargoObj->unitNamePlural;
 
-                auto args = FormatArguments();
-                args.push(cargoName);
-                args.push<uint32_t>(cargo.quantity);
-                auto cargoStr = StringIds::station_cargo;
-
-                if (cargo.origin != StationId(self.number))
-                    cargoStr = StringIds::station_cargo_en_route_start;
                 const auto& widget = self.widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
-                y += 10;
+                {
+                    FormatArguments args{};
+                    args.push(cargoName);
+                    args.push<uint32_t>(cargo.quantity);
+
+                    auto cargoStr = StringIds::station_cargo;
+                    if (cargo.origin != StationId(self.number))
+                        cargoStr = StringIds::station_cargo_en_route_start;
+
+                    drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
+                    y += 10;
+                }
+
                 if (cargo.origin != StationId(self.number))
                 {
                     auto originStation = StationManager::get(cargo.origin);
-                    auto args2 = FormatArguments();
-                    args2.push(originStation->name);
-                    args2.push(originStation->town);
+                    FormatArguments args{};
+                    args.push(originStation->name);
+                    args.push(originStation->town);
 
-                    drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args2);
+                    drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args);
                     y += 10;
                 }
+
                 y += 2;
                 cargoId++;
             }
@@ -541,7 +546,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             if (totalUnits == 0)
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(StringIds::nothing_waiting);
                 drawingCtx.drawStringLeft(rt, 1, 0, Colour::black, StringIds::black_stringid, &args);
             }

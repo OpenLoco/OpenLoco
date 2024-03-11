@@ -31,8 +31,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
     static constexpr size_t kMaxLandObjects = ObjectManager::getMaxObjects(ObjectType::land);
 
-    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
-
     namespace Common
     {
         enum widx
@@ -201,7 +199,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            _commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
+            auto args = FormatArguments::common();
+            args.push<uint16_t>(S5::getOptions().scenarioStartYear);
+
             auto& options = S5::getOptions();
             window.widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
 
@@ -485,16 +485,22 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 drawingCtx.drawImage(&rt, 2, yPos + 1, imageId);
 
                 // Draw land description.
-                _commonFormatArgs[0] = landObject->name;
-                drawingCtx.drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*_commonFormatArgs);
+                {
+                    FormatArguments args{};
+                    args.push(landObject->name);
+                    drawingCtx.drawStringLeftClipped(rt, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &args);
+                }
 
                 // Draw rectangle.
                 drawingCtx.fillRectInset(rt, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker);
 
                 // Draw current distribution setting.
-                const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
-                _commonFormatArgs[0] = distributionId;
-                drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*_commonFormatArgs);
+                {
+                    FormatArguments args{};
+                    const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
+                    args.push(distributionId);
+                    drawingCtx.drawStringLeftClipped(rt, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &args);
+                }
 
                 // Draw rectangle (knob).
                 const Drawing::RectInsetFlags flags = window.rowHover == i ? Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillDarker : Drawing::RectInsetFlags::none;
@@ -676,10 +682,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            _commonFormatArgs[0] = getGameState().seaLevel;
+            auto args = FormatArguments::common();
             auto& options = S5::getOptions();
-            _commonFormatArgs[1] = options.minLandHeight;
-            _commonFormatArgs[2] = options.hillDensity;
+            args.push<uint16_t>(getGameState().seaLevel);
+            args.push<uint16_t>(options.minLandHeight);
+            args.push<uint16_t>(options.hillDensity);
 
             window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
@@ -972,14 +979,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::prepareDraw(window);
 
             auto& options = S5::getOptions();
-            _commonFormatArgs[0] = options.numberOfForests;
-            _commonFormatArgs[1] = options.minForestRadius;
-            _commonFormatArgs[2] = options.maxForestRadius;
-            _commonFormatArgs[3] = options.minForestDensity * 14;
-            _commonFormatArgs[4] = options.maxForestDensity * 14;
-            _commonFormatArgs[5] = options.numberRandomTrees;
-            _commonFormatArgs[6] = options.minAltitudeForTrees;
-            _commonFormatArgs[7] = options.maxAltitudeForTrees;
+            auto args = FormatArguments::common();
+
+            args.push<uint16_t>(options.numberOfForests);
+            args.push<uint16_t>(options.minForestRadius);
+            args.push<uint16_t>(options.maxForestRadius);
+            args.push<uint16_t>(options.minForestDensity * 14);
+            args.push<uint16_t>(options.maxForestDensity * 14);
+            args.push<uint16_t>(options.numberRandomTrees);
+            args.push<uint16_t>(options.minAltitudeForTrees);
+            args.push<uint16_t>(options.maxAltitudeForTrees);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1128,7 +1137,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            _commonFormatArgs[0] = S5::getOptions().numberOfTowns;
+            auto args = FormatArguments::common();
+            args.push<uint16_t>(S5::getOptions().numberOfTowns);
 
             widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
         }

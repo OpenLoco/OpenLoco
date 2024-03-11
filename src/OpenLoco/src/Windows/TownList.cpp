@@ -177,21 +177,21 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 // Town Name
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(town->name);
 
                     drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(town->getTownSizeString());
 
                     drawingCtx.drawStringLeftClipped(rt, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
                 // Town Stations
                 {
-                    auto args = FormatArguments();
+                    FormatArguments args{};
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->numStations);
 
@@ -216,10 +216,11 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
-            auto args = FormatArguments();
+
             auto xPos = self.x + 4;
             auto yPos = self.y + self.height - 12;
 
+            FormatArguments args{};
             if (self.var_83C == 1)
                 args.push(StringIds::status_towns_singular);
             else

@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto industry = IndustryManager::get(IndustryId(self.number));
             industry->getStatusString(const_cast<char*>(buffer));
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(StringIds::buffer_1250);
 
             auto widget = &self.widgets[widx::status_bar];
@@ -472,7 +472,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     if (receivedCargoType != 0xFF)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(receivedCargoType);
-                        auto args = FormatArguments();
+                        FormatArguments args{};
 
                         if (industry->receivedCargoQuantityPreviousMonth[cargoNumber] == 1)
                         {
@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     if (producedCargoType != 0xFF)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
-                        auto args = FormatArguments();
+                        FormatArguments args{};
 
                         if (industry->producedCargoQuantityPreviousMonth[cargoNumber] == 1)
                         {
@@ -593,7 +593,7 @@ namespace OpenLoco::Ui::Windows::Industry
             const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->producedCargoType[0]);
 
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(cargoObj->unitsAndCargoName);
 
                 int16_t x = self.x + 2;
@@ -607,7 +607,7 @@ namespace OpenLoco::Ui::Windows::Industry
             int32_t yTick = 0;
             for (int16_t yPos = graphBottom; yPos >= self.y + 68; yPos -= 20)
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(yTick);
 
                 drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
@@ -634,7 +634,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 {
                     if (yearSkip == 0)
                     {
-                        auto args = FormatArguments();
+                        FormatArguments args{};
                         args.push(year);
 
                         drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Put industry name in place.
             auto industry = IndustryManager::get(IndustryId(self.number));
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
             args.push(industry->name);
             args.push(industry->town);
 
@@ -779,7 +779,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     return;
             }
 
-            auto args = FormatArguments();
+            auto args = FormatArguments::common();
             args.push<int64_t>(0);
             args.push(industry->name);
             args.push(industry->town);

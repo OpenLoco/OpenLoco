@@ -388,7 +388,8 @@ namespace OpenLoco::StationManager
 
         // Default to an ordinal string instead, e.g. 'Station 42'.
         char stationName[256] = "";
-        auto args = FormatArguments::common(stationId);
+        FormatArguments args{};
+        args.push(stationId);
         StringManager::formatString(stationName, StringIds::station_name_ordinal, &args);
         return StringManager::userStringAllocate(stationName, 0);
     }

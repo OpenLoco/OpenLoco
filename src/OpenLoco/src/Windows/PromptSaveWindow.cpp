@@ -4,7 +4,6 @@
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "Graphics/Colour.h"
 #include "Input.h"
-#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
 #include "Ui.h"

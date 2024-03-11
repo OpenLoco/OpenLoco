@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, void* valueArgs, uint32_t inputSize)
+    void openTextInput(Ui::Window* caller, StringId title, StringId message, StringId value, int callingWidget, const void* valueArgs, uint32_t inputSize)
     {
         _title = title;
         _message = message;
@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
-        auto args = FormatArguments();
+        FormatArguments args{};
         args.push<uint16_t>(numCharacters);
         args.push<uint16_t>(maxNumCharacters);
 

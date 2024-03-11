@@ -684,12 +684,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto [errorTitle, mode] = itemToGameCommandInfo[item];
             GameCommands::setErrorTitle(errorTitle);
-            FormatArguments args{};
             auto head = Common::getVehicle(self);
             if (head == nullptr)
             {
                 return;
             }
+
+            auto args = FormatArguments::common();
             args.skip(6);
             args.push(head->name);
             args.push(head->ordinalNumber);
@@ -1485,7 +1486,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            auto args = FormatArguments();
+
+            auto args = FormatArguments::common();
             args.push(head->name);
             args.push(head->ordinalNumber);
 
@@ -2075,7 +2077,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     format = StringIds::dropdown_stringid_selected;
                 }
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push<StringId>(cargoObject->unitNamePlural);
                 args.push<uint32_t>(Vehicles::getNumUnitsForCargo(maxPrimaryCargo, primaryCargoId, cargoId));
                 args.push<uint16_t>(cargoId);
@@ -2264,7 +2266,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            auto args = FormatArguments();
+
+            auto args = FormatArguments::common();
             args.push(vehicle->name);
             args.push(vehicle->ordinalNumber);
 
@@ -2298,10 +2301,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto veh1 = train.veh1;
             if (veh1->lastIncome.day != -1)
             {
-                auto args = FormatArguments();
-                args.push<uint32_t>(veh1->lastIncome.day);
-                // Last income on: {DATE DMY}
-                drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
+                {
+                    FormatArguments args{};
+                    args.push<uint32_t>(veh1->lastIncome.day);
+                    // Last income on: {DATE DMY}
+                    drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
+                }
+
                 pos.y += 10;
                 for (int i = 0; i < 4; i++)
                 {
@@ -2313,7 +2319,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     auto str = veh1->lastIncome.cargoQtys[i] == 1 ? cargoObject->unitNameSingular : cargoObject->unitNamePlural;
 
-                    args = FormatArguments();
+                    FormatArguments args{};
                     args.push(str);
                     args.push<uint32_t>(veh1->lastIncome.cargoQtys[i]);
                     args.push(veh1->lastIncome.cargoDistances[i]);
@@ -2338,7 +2344,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (head->lastAverageSpeed != 0_mph)
             {
                 // Last journey average speed: {VELOCITY}
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(head->lastAverageSpeed);
                 drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
                 pos.y += 10 + 5;
@@ -2346,7 +2352,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             {
                 // Monthly Running Cost: {CURRENCY32}
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(head->calculateRunningCost());
                 drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
                 pos.y += 10;
@@ -2354,7 +2360,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             {
                 // Monthly Profit: {CURRENCY32}
-                auto args = FormatArguments();
+                FormatArguments args{};
                 auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
                 drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
@@ -2363,7 +2369,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             {
                 // Sale value of vehicle: {CURRENCY32}
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(train.head->totalRefundCost);
                 pos.y = self.y + self.height - 14;
                 drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);

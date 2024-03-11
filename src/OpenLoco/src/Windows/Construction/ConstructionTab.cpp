@@ -2656,7 +2656,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             if (_trackCost != 0)
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push<uint32_t>(_trackCost);
                 drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::build_cost, &args);
             }

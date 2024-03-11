@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::Dropdown
         }
     }
 
-    void add(size_t index, StringId title, FormatArguments& fArgs)
+    void add(size_t index, StringId title, const FormatArguments& fArgs)
     {
         add(index, title);
         std::byte* args = _dropdownItemArgs[index];
@@ -176,7 +176,7 @@ namespace OpenLoco::Ui::Dropdown
             self.invalidate();
         }
 
-        static void dropdownFormatArgsToFormatArgs(uint8_t itemIndex, FormatArguments args)
+        static void dropdownFormatArgsToFormatArgs(uint8_t itemIndex, FormatArguments& args)
         {
             args.push(*reinterpret_cast<uint32_t*>(&_dropdownItemArgs[itemIndex][0]));
             args.push(*reinterpret_cast<uint32_t*>(&_dropdownItemArgs[itemIndex][4]));

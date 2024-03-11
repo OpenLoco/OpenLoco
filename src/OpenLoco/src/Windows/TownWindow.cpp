@@ -32,8 +32,6 @@ namespace OpenLoco::Ui::Windows::Town
 {
     static constexpr Ui::Size kWindowSize = { 223, 161 };
 
-    static loco_global<uint16_t[10], 0x0112C826> _commonFormatArgs;
-
     namespace Common
     {
         enum widx
@@ -140,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             auto town = TownManager::get(TownId(self.number));
 
-            auto args = FormatArguments();
+            FormatArguments args{};
             args.push(town->getTownSizeString());
             args.push(town->population);
 
@@ -413,7 +411,7 @@ namespace OpenLoco::Ui::Windows::Town
             int32_t yTick = town->historyMinPopulation;
             for (int16_t yPos = self.height - 57; yPos >= 14; yPos -= 20)
             {
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
@@ -438,7 +436,7 @@ namespace OpenLoco::Ui::Windows::Town
                 {
                     if (yearSkip == 0)
                     {
-                        auto args = FormatArguments();
+                        FormatArguments args{};
                         args.push(year);
 
                         drawingCtx.drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
@@ -558,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     rank = StringIds::town_rating_appalling;
 
-                auto args = FormatArguments();
+                FormatArguments args{};
                 args.push(CompanyManager::get(CompanyId(i))->name);
                 args.push<int16_t>(0);
                 args.push(rating);
@@ -648,7 +646,8 @@ namespace OpenLoco::Ui::Windows::Town
             self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            _commonFormatArgs[0] = TownManager::get(TownId(self.number))->name;
+            FormatArguments args{};
+            args.push(TownManager::get(TownId(self.number))->name);
 
             // Resize common widgets.
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -701,10 +700,13 @@ namespace OpenLoco::Ui::Windows::Town
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto town = TownManager::get(TownId(self->number));
-            _commonFormatArgs[4] = town->name;
-            _commonFormatArgs[8] = town->name;
 
-            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &_commonFormatArgs);
+            FormatArguments args{};
+            args.skip(4);
+            args.push(town->name);
+            args.push(town->name);
+
+            TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &args);
         }
 
         // 0x004991BC
