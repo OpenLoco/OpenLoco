@@ -283,6 +283,7 @@ namespace OpenLoco::World::MapGenerator
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
                 if (landObj->hasFlags(LandObjectFlags::unk0))
                 {
+                    bool setVariation = false;
                     if (surface->water())
                     {
                         auto waterLevel = surface->water();
@@ -294,14 +295,12 @@ namespace OpenLoco::World::MapGenerator
                             if (surface->terrain() != 0)
                             {
                                 surface->setVar6SLR5(0);
+                                setVariation = true;
                             }
                         }
-                        else
-                        {
-                            surface->setVar6SLR5(landObj->var_03 - 1);
-                        }
                     }
-                    else
+
+                    if (!setVariation)
                     {
                         surface->setVar6SLR5(landObj->var_03 - 1);
                     }
