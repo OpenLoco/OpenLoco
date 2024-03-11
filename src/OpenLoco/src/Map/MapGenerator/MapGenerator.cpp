@@ -268,7 +268,7 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x004611DF
-    static void sub_4611DF()
+    static void generateSurfaceVariation()
     {
         for (auto pos : World::getDrawableTileRange())
         {
@@ -554,7 +554,7 @@ namespace OpenLoco::World::MapGenerator
             updateProgress(35);
         }
 
-        sub_4611DF();
+        generateSurfaceVariation();
         updateProgress(40);
 
         generateTrees();
@@ -569,7 +569,7 @@ namespace OpenLoco::World::MapGenerator
         generateMiscBuildings();
         updateProgress(250);
 
-        sub_4611DF();
+        generateSurfaceVariation();
         updateProgress(255);
 
         Scenario::sub_4969E0(0);
