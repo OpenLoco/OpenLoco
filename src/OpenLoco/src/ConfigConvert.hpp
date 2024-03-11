@@ -141,10 +141,10 @@ namespace YAML
         {
             if (node.IsMap())
             {
-                rhs.flags = node["flags"].as<uint32_t>(0);
-                rhs.checksum = node["checksum"].as<uint32_t>(0);
+                rhs.flags = node["flags"].as<uint32_t>(OpenLoco::kEmptyObjectHeader.flags);
+                rhs.checksum = node["checksum"].as<uint32_t>(OpenLoco::kEmptyObjectHeader.checksum);
 
-                auto name = node["name"].as<std::string>("");
+                auto name = node["name"].as<std::string>(OpenLoco::kEmptyObjectHeader.name);
                 memcpy(rhs.name, name.c_str(), 8);
                 return true;
             }
