@@ -278,20 +278,20 @@ namespace OpenLoco::World::MapGenerator
             if (surface == nullptr)
                 continue;
 
-            if (surface->isIndustrial())
+            if (!surface->isIndustrial())
             {
                 auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
                 if (landObj->hasFlags(LandObjectFlags::unk0))
                 {
                     if (surface->water())
                     {
-                        auto waterHeight = surface->waterHeight();
+                        auto waterLevel = surface->water();
                         if (surface->slope())
-                            waterHeight -= kSmallZStep;
+                            waterLevel -= 4;
 
-                        if (waterHeight > surface->baseZ())
+                        if (waterLevel > surface->baseZ())
                         {
-                            if (surface->terrain() & 0xE)
+                            if (surface->terrain() != 0)
                             {
                                 surface->setVar6SLR5(0);
                             }
@@ -308,9 +308,9 @@ namespace OpenLoco::World::MapGenerator
                 }
             }
 
-            auto snowLine = Scenario::getCurrentSnowLine() / kSmallZStep;
-            auto baseZ = (surface->baseZ() / kSmallZStep) + 1;
-            auto unk = std::clamp(baseZ - snowLine, 0, 5);
+            auto snowLine = Scenario::getCurrentSnowLine() / kMicroToSmallZStep;
+            MicroZ baseMicroZ = (surface->baseZ() / kMicroToSmallZStep) + 1;
+            auto unk = std::clamp(baseMicroZ - snowLine, 0, 5);
             surface->setVar4SLR5(unk);
         }
     }
