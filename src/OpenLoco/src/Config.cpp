@@ -245,7 +245,12 @@ namespace OpenLoco::Config
         // General
         _newConfig.locoInstallPath = config["loco_install_path"].as<std::string>("");
         _newConfig.lastSavePath = config["last_save_path"].as<std::string>("");
+
+        // Regional
         _newConfig.language = config["language"].as<std::string>("en-GB");
+        _newConfig.preferredCurrency = config["language"].as<ObjectHeader>(kDefaultPreferredCurrency);
+        _newConfig.usePreferredCurrencyForNewGames = config["usePreferredCurrencyForNewGames"].as<bool>(false);
+        _newConfig.usePreferredCurrencyAlways = config["usePreferredCurrencyAlways"].as<bool>(false);
 
         // Rendering
         _newConfig.scaleFactor = config["scale_factor"].as<float>(1.0f);
@@ -336,7 +341,12 @@ namespace OpenLoco::Config
         // General
         node["loco_install_path"] = _newConfig.locoInstallPath;
         node["last_save_path"] = _newConfig.lastSavePath;
+
+        // Regional
         node["language"] = _newConfig.language;
+        node["preferredCurrency"] = _newConfig.preferredCurrency;
+        node["usePreferredCurrencyForNewGames"] = _newConfig.usePreferredCurrencyForNewGames;
+        node["usePreferredCurrencyAlways"] = _newConfig.usePreferredCurrencyAlways;
 
         // Rendering
         node["scale_factor"] = _newConfig.scaleFactor;

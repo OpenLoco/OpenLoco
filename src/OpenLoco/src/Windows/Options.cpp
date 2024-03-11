@@ -1386,24 +1386,33 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(ObjectManager::get<CurrencyObject>()->name);
             args.push(current_measurement_format);
 
-            w.activatedWidgets &= ~(1 << Widx::preferred_currency_for_new_games);
-            if (Config::get().hasFlags(Config::Flags::preferredCurrencyForNewGames))
+            if (Config::get().usePreferredCurrencyForNewGames)
             {
                 w.activatedWidgets |= (1 << Widx::preferred_currency_for_new_games);
             }
+            else
+            {
+                w.activatedWidgets &= ~(1 << Widx::preferred_currency_for_new_games);
+            }
 
-            w.activatedWidgets &= ~(1 << Widx::preferred_currency_always);
-            if (Config::get().hasFlags(Config::Flags::preferredCurrencyAlways))
+            if (Config::get().usePreferredCurrencyAlways)
             {
                 w.activatedWidgets |= (1 << Widx::preferred_currency_always);
             }
+            else
+            {
+                w.activatedWidgets &= ~(1 << Widx::preferred_currency_always);
+            }
 
-            w.disabledWidgets &= ~(1 << Widx::currency);
-            w.disabledWidgets &= ~(1 << Widx::currency_btn);
-            if (Config::get().hasFlags(Config::Flags::preferredCurrencyAlways))
+            if (Config::get().usePreferredCurrencyAlways)
             {
                 w.disabledWidgets |= (1 << Widx::currency);
                 w.disabledWidgets |= (1 << Widx::currency_btn);
+            }
+            else
+            {
+                w.disabledWidgets &= ~(1 << Widx::currency);
+                w.disabledWidgets &= ~(1 << Widx::currency_btn);
             }
 
             sub_4C13BE(&w);
@@ -1633,7 +1642,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 if (index == ax)
                 {
-                    auto& cfg = OpenLoco::Config::get().old;
+                    auto& cfg = OpenLoco::Config::get();
                     cfg.preferredCurrency = *object.second._header;
 
                     setPreferredCurrencyNameBuffer();
@@ -1652,14 +1661,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyNewGameMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (cfg.hasFlags(Config::Flags::preferredCurrencyForNewGames))
-            {
-                cfg.old.flags &= ~Config::Flags::preferredCurrencyForNewGames;
-            }
-            else
-            {
-                cfg.old.flags |= Config::Flags::preferredCurrencyForNewGames;
-            }
+            cfg.usePreferredCurrencyForNewGames ^= true;
             Config::write();
 
             w->invalidate();
@@ -1669,14 +1671,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyAlwaysMouseUp(Window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (cfg.hasFlags(Config::Flags::preferredCurrencyAlways))
-            {
-                cfg.old.flags &= ~Config::Flags::preferredCurrencyAlways;
-            }
-            else
-            {
-                cfg.old.flags |= Config::Flags::preferredCurrencyAlways;
-            }
+            cfg.usePreferredCurrencyAlways ^= true;
             Config::write();
 
             Scenario::loadPreferredCurrencyAlways();
@@ -2478,7 +2473,7 @@ namespace OpenLoco::Ui::Windows::Options
     // 0x004C1519 & 0x00474911
     static void setPreferredCurrencyNameBuffer()
     {
-        const auto res = ObjectManager::findObjectInIndex(Config::get().old.preferredCurrency);
+        const auto res = ObjectManager::findObjectInIndex(Config::get().preferredCurrency);
         if (res.has_value())
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::preferred_currency_buffer));

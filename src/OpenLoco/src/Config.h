@@ -21,8 +21,8 @@ namespace OpenLoco::Config
         landscapeSmoothing = 1U << 2,
         exportObjectsWithSaves = 1U << 3,
 
-        preferredCurrencyForNewGames = 1U << 6,
-        preferredCurrencyAlways = 1U << 7,
+        preferredCurrencyForNewGames = 1U << 6, // unused
+        preferredCurrencyAlways = 1U << 7,      // unused
 
         usePreferredOwnerName = 1U << 9, // unused
     };
@@ -168,7 +168,11 @@ namespace OpenLoco::Config
         Network network;
         std::string locoInstallPath;
         std::string lastSavePath;
+
         std::string language = "en-GB";
+        ObjectHeader preferredCurrency;
+        bool usePreferredCurrencyForNewGames = false;
+        bool usePreferredCurrencyAlways = false;
 
         float scaleFactor = 1.0f;
         bool showFPS = false;

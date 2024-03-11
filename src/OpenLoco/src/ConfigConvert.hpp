@@ -2,6 +2,7 @@
 
 #include "Config.h"
 #include "Input.h"
+#include "Objects/Object.h"
 #include <SDL2/SDL.h>
 #include <yaml-cpp/yaml.h>
 
@@ -120,6 +121,34 @@ namespace YAML
             rhs.keyCode = keyCode;
 
             return true;
+        }
+    };
+
+    // OpenLoco::ObjectHeader
+    template<>
+    struct convert<OpenLoco::ObjectHeader>
+    {
+        static Node encode(const OpenLoco::ObjectHeader& rhs)
+        {
+            Node node;
+            node["flags"] = rhs.flags;
+            node["name"] = std::string(rhs.name, 8);
+            node["checksum"] = rhs.checksum;
+            return node;
+        }
+
+        static bool decode(const Node& node, OpenLoco::ObjectHeader& rhs)
+        {
+            if (node.IsMap())
+            {
+                rhs.flags = node["flags"].as<uint32_t>(OpenLoco::kEmptyObjectHeader.flags);
+                rhs.checksum = node["checksum"].as<uint32_t>(OpenLoco::kEmptyObjectHeader.checksum);
+
+                auto name = node["name"].as<std::string>(OpenLoco::kEmptyObjectHeader.name);
+                memcpy(rhs.name, name.c_str(), 8);
+                return true;
+            }
+            return false;
         }
     };
 
