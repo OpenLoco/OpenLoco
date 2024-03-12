@@ -286,11 +286,11 @@ namespace OpenLoco::World::MapGenerator
                     bool setVariation = false;
                     if (surface->water())
                     {
-                        auto waterLevel = surface->water();
+                        auto waterBaseZ = surface->water() * kMicroToSmallZStep;
                         if (surface->slope())
-                            waterLevel -= 4;
+                            waterBaseZ -= 4;
 
-                        if (waterLevel > surface->baseZ())
+                        if (waterBaseZ > surface->baseZ())
                         {
                             if (surface->terrain() != 0)
                             {
