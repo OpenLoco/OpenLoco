@@ -1967,42 +1967,49 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Company
     {
-        static constexpr Ui::Size kWindowSize = { 420, 154 };
+        static constexpr Ui::Size kWindowSize = { 420, 134 };
 
         namespace Widx
         {
             enum
             {
-                groupPreferredOwnerName = Common::Widx::tab_miscellaneous + 1,
+                groupPreferredOwner = Common::Widx::tab_miscellaneous + 1,
+
+                usePreferredOwnerFace,
+                changeOwnerFaceBtn,
+
                 usePreferredOwnerName,
                 changeOwnerNameBtn,
 
-                groupPreferredOwnerFace,
-                usePreferredOwnerFace,
-                changeOwnerFaceBtn,
+                ownerFacePreview,
             };
         }
 
         // clang-format off
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
+            (1 << Widx::usePreferredOwnerFace) |
+            (1 << Widx::changeOwnerFaceBtn) |
             (1 << Widx::usePreferredOwnerName) |
             (1 << Widx::changeOwnerNameBtn) |
-            (1 << Widx::usePreferredOwnerFace) |
-            (1 << Widx::changeOwnerFaceBtn);
+            (1 << Widx::ownerFacePreview);
         // clang-format on
 
         static Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_company),
 
-            // Preferred owner name group
-            makeWidget({ 4, 49 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner_name),
-            makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 335, 79 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            // Preferred owner group
+            makeWidget({ 4, 50 }, { 412, 80 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferred_owner_name),
 
-            // Preferred owner face group
-            makeWidget({ 4, 102 }, { 412, 47 }, WidgetType::groupbox, WindowColour::secondary, StringIds::preferredCompanyFace),
-            makeWidget({ 10, 117 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
-            makeWidget({ 335, 132 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            // Preferred owner face
+            makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::usePreferredCompanyFace, StringIds::usePreferredCompanyFaceTip),
+            makeWidget({ 265, 79 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+
+            // Preferred owner name
+            makeWidget({ 10, 97 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 265, 112 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+
+            // Preferred owner preview
+            makeWidget({ 345, 59 }, { 66, 66 }, WidgetType::button, WindowColour::secondary, Widget::kContentNull),
 
             widgetEnd(),
         };
@@ -2109,7 +2116,7 @@ namespace OpenLoco::Ui::Windows::Options
                 drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
             }
 
-            // Draw small competitor face and name
+            // Draw competitor name and face
             if (w.object != nullptr)
             {
                 const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(w.object);
@@ -2118,9 +2125,9 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(competitor->name);
                 drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1, Colour::black, StringIds::currentPreferredFace, &args);
 
-                const auto image = Gfx::recolour(competitor->images[0], Colour::black);
-                const auto& widget = w.widgets[Widx::groupPreferredOwnerFace];
-                drawingCtx.drawImage(rt, w.x + widget.right - 50, w.y + widget.top + 5, image);
+                const auto image = Gfx::recolour(competitor->images[0] + 1, Colour::black);
+                const auto& widget = w.widgets[Widx::ownerFacePreview];
+                drawingCtx.drawImage(rt, w.x + widget.left + 1, w.y + widget.top + 1, image);
             }
         }
 
@@ -2200,6 +2207,7 @@ namespace OpenLoco::Ui::Windows::Options
                     break;
 
                 case Widx::changeOwnerFaceBtn:
+                case Widx::ownerFacePreview:
                     changePreferredFace(w);
                     break;
             }
