@@ -232,7 +232,8 @@ namespace OpenLoco::GameCommands
 
                 if (connections.size > 0)
                 {
-                    const uint16_t tad2 = (1 << 3) | args.rotation;
+                    // Check other side of road
+                    const uint16_t tad2 = (1 << 2) | args.rotation;
                     _113601A[0] = 0;
                     _113601A[1] = 0;
                     const auto roadEnd2 = World::Track::getRoadConnectionEnd(args.pos, tad2);
@@ -478,7 +479,7 @@ namespace OpenLoco::GameCommands
                     }
                     if (isCompatible)
                     {
-                        break;
+                        continue;
                     }
                     for (auto i = 0U; i < roadObj2->numStations; ++i)
                     {
@@ -495,7 +496,7 @@ namespace OpenLoco::GameCommands
                     }
                     if (isCompatible)
                     {
-                        break;
+                        continue;
                     }
                     // if neither above for loop
                     auto formatter = FormatArguments::common();
