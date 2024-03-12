@@ -2022,16 +2022,6 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
             }
 
-            if (!Config::get().usePreferredOwnerFace)
-            {
-                if (self.object != nullptr)
-                {
-                    ObjectManager::freeTemporaryObject();
-                    self.object = nullptr;
-                }
-                return;
-            }
-
             auto& preferredOwnerFace = Config::get().preferredOwnerFace;
 
             if (self.object != nullptr)
@@ -2125,9 +2115,11 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(competitor->name);
                 drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1, Colour::black, StringIds::currentPreferredFace, &args);
 
-                const auto image = Gfx::recolour(competitor->images[0] + 1, Colour::black);
                 const auto& widget = w.widgets[Widx::ownerFacePreview];
-                drawingCtx.drawImage(rt, w.x + widget.left + 1, w.y + widget.top + 1, image);
+                auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
+
+                auto image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black);
+                drawingCtx.drawImage(rt, placeForImage.x, placeForImage.y, image.toUInt32());
             }
         }
 
