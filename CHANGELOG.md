@@ -1,5 +1,6 @@
 24.02.1+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2331] Allow setting a preferred owner face to be used for new games.
 - Fix: [#2312] Object selection allowing deselection of in-use objects, leading to crashes.
 - Fix: [#2316, #2321] Vehicles do not rotate in announcement for their invention.
 
