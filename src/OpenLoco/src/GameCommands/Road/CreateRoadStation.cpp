@@ -577,7 +577,7 @@ namespace OpenLoco::GameCommands
 
             if (CompanyManager::isPlayerCompany(getUpdatingCompanyId()))
             {
-                StationManager::sub_437F29(getUpdatingCompanyId(), 3);
+                companyEmotionEvent(getUpdatingCompanyId(), Emotion::thinking);
             }
 
             World::StationElement* newStationElement = nullptr;
