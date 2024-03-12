@@ -410,7 +410,7 @@ namespace OpenLoco
                     {
                         // loc_4532E5
                         var_DB++;
-                        if ((!obj->hasFlags(IndustryObjectFlags::flag_28) && surface->var_4_E0() != 0) || findTree(surface))
+                        if ((!obj->hasFlags(IndustryObjectFlags::flag_28) && surface->snowCoverage() != 0) || findTree(surface))
                         {
                             var_DD++;
                         }

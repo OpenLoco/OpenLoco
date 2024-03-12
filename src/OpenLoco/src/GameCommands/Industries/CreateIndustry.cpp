@@ -332,7 +332,7 @@ namespace OpenLoco::GameCommands
                         surface->setBaseZ(highestBaseZ);
                         surface->setClearZ(highestBaseZ);
                         surface->setSlope(0);
-                        surface->setVar4SLR5(0);
+                        surface->setSnowCoverage(0);
                         surface->setVar6SLR5(0);
                     }
                 }

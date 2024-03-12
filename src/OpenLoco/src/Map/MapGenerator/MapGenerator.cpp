@@ -267,6 +267,53 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    // 0x004611DF
+    static void generateSurfaceVariation()
+    {
+        for (auto pos : World::getDrawableTileRange())
+        {
+            auto tile = TileManager::get(pos);
+            auto* surface = tile.surface();
+
+            if (surface == nullptr)
+                continue;
+
+            if (!surface->isIndustrial())
+            {
+                auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+                if (landObj->hasFlags(LandObjectFlags::unk0))
+                {
+                    bool setVariation = false;
+                    if (surface->water())
+                    {
+                        auto waterBaseZ = surface->water() * kMicroToSmallZStep;
+                        if (surface->slope())
+                            waterBaseZ -= 4;
+
+                        if (waterBaseZ > surface->baseZ())
+                        {
+                            if (surface->terrain() != 0)
+                            {
+                                surface->setVar6SLR5(0);
+                                setVariation = true;
+                            }
+                        }
+                    }
+
+                    if (!setVariation)
+                    {
+                        surface->setVar6SLR5(landObj->var_03 - 1);
+                    }
+                }
+            }
+
+            auto snowLine = Scenario::getCurrentSnowLine() / kMicroToSmallZStep;
+            MicroZ baseMicroZ = (surface->baseZ() / kMicroToSmallZStep) + 1;
+            auto unk = std::clamp(baseMicroZ - snowLine, 0, 5);
+            surface->setSnowCoverage(unk);
+        }
+    }
+
     // 0x004BE0C7
     static void updateTreeSeasons()
     {
@@ -507,7 +554,7 @@ namespace OpenLoco::World::MapGenerator
             updateProgress(35);
         }
 
-        call(0x004611DF);
+        generateSurfaceVariation();
         updateProgress(40);
 
         generateTrees();
@@ -522,7 +569,7 @@ namespace OpenLoco::World::MapGenerator
         generateMiscBuildings();
         updateProgress(250);
 
-        call(0x004611DF);
+        generateSurfaceVariation();
         updateProgress(255);
 
         Scenario::sub_4969E0(0);

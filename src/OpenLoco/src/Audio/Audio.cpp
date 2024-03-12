@@ -897,7 +897,7 @@ namespace OpenLoco::Audio
                             waterCount++;
                             break;
                         }
-                        else if (elSurface->var_4_E0() && elSurface->isLast())
+                        else if (elSurface->snowCoverage() && elSurface->isLast())
                         {
                             wildernessCount++;
                             break;
