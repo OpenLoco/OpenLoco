@@ -541,7 +541,7 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0048F8A0
-    StationId allocateNewStation(const World::Pos3 pos, [[maybe_unused]] const CompanyId owner, const uint8_t mode)
+    StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode)
     {
         if (!World::validCoords(pos))
         {
@@ -562,12 +562,9 @@ namespace OpenLoco::StationManager
                 return StationId::null;
             }
 
-            auto posSmallZ = pos;
-            posSmallZ.z /= World::kSmallZStep;
-
             station.town = maybeTown->first;
             station.owner = owner;
-            station.name = generateNewStationName(station.id(), station.town, posSmallZ, mode);
+            station.name = generateNewStationName(station.id(), station.town, pos, mode);
 
             // Reset cargo stats
             for (auto& stats : station.cargoStats)
