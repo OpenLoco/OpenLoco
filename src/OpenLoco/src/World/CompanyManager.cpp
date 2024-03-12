@@ -272,10 +272,14 @@ namespace OpenLoco::CompanyManager
     }
 
     // 0x0042F9CB
-    static LoadedObjectId selectNewCompetitor(int32_t ebp)
+    static LoadedObjectId selectNewCompetitor(ObjectHeader* header = nullptr)
     {
         registers regs;
-        regs.ebp = ebp;
+        if (header != nullptr)
+            regs.ebp = X86Pointer(header);
+        else
+            regs.ebp = -1;
+
         call(0x0042F9CB, regs);
         return static_cast<LoadedObjectId>(regs.al);
     }
@@ -302,24 +306,13 @@ namespace OpenLoco::CompanyManager
         gameState.flags |= GameStateFlags::preferredOwnerName;
 
         // Any preference with respect to owner face?
-        int8_t competitorId = -1;
+        ObjectHeader* preferredOwner = nullptr;
         if (Config::get().usePreferredOwnerFace)
         {
-            auto& preferredFace = Config::get().preferredOwnerFace;
-            if (ObjectManager::load(preferredFace))
-            {
-                auto handle = ObjectManager::findObjectHandle(preferredFace);
-                if (handle)
-                {
-                    competitorId = (*handle).id;
-                }
-            }
+            preferredOwner = &Config::get().preferredOwnerFace;
         }
 
-        // No preference or unavailable, just pick one
-        if (competitorId == -1)
-            competitorId = selectNewCompetitor(-1);
-
+        auto competitorId = selectNewCompetitor(preferredOwner);
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
         sub_4A6DA9();
@@ -328,7 +321,7 @@ namespace OpenLoco::CompanyManager
     // 0x0042F9AC
     static void createAiCompany()
     {
-        auto competitorId = selectNewCompetitor(-1);
+        auto competitorId = selectNewCompetitor();
         if (competitorId != NullObjectId)
         {
             createCompany(competitorId, false);
