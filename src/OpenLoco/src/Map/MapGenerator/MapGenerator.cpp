@@ -5,6 +5,7 @@
 #include "../TileManager.h"
 #include "../Tree.h"
 #include "../TreeElement.h"
+#include "Date.h"
 #include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
@@ -13,6 +14,7 @@
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
+#include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "OriginalTerrainGenerator.h"
@@ -433,13 +435,79 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    static void updateProgress(uint8_t value);
+
+    // 0x004595B7
+    static bool isIndustryCargoAvailable(uint8_t cargoType)
+    {
+        registers regs;
+        regs.eax = cargoType;
+        return call(0x004595B7, regs) & X86_FLAG_CARRY;
+    }
+
     // 0x004597FD
     static void generateIndustries(uint32_t minProgress, uint32_t maxProgress)
     {
-        registers regs;
-        regs.eax = minProgress;
-        regs.ebx = maxProgress;
-        call(0x004597FD, regs);
+        auto progressTicksPerIndustry = (maxProgress - minProgress) / S5::getOptions().numberOfIndustries;
+        auto currentProgress = minProgress;
+
+        auto numIndustriesAvailable = 0;
+        // auto numIndustriesGenerated = 0;
+
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            if (ObjectManager::get<IndustryObject>(i) != nullptr)
+            {
+                numIndustriesAvailable++;
+            }
+        }
+
+        CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(i);
+            if (industryObj == nullptr)
+            {
+                continue;
+            }
+
+            currentProgress += progressTicksPerIndustry;
+            updateProgress(currentProgress);
+
+            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() > industryObj->obsoleteYear)
+            {
+                continue;
+            }
+
+            if (industryObj->requiredCargoType[0] != 0xFF)
+            {
+                auto numCargoSpecified = 0;
+                auto numCargoAvailable = 0;
+                for (auto cargoType : industryObj->requiredCargoType)
+                {
+                    if (cargoType == 0xFF)
+                        continue;
+
+                    numCargoSpecified++;
+                    if (isIndustryCargoAvailable(cargoType))
+                        numCargoAvailable++;
+                }
+
+                if (industryObj->hasFlags(IndustryObjectFlags::requiresAllCargo))
+                {
+                    if (numCargoSpecified != numCargoAvailable)
+                        continue;
+                }
+                else if (numCargoAvailable == 0)
+                {
+                    continue;
+                }
+            }
+
+            // 0x004598F0
+            // ...
+        }
     }
 
     template<typename Func>
