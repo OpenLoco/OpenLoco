@@ -104,6 +104,18 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         ObjectManager::freeTemporaryObject();
         WindowManager::setCurrentModalType(WindowType::undefined);
+
+        if (_callingWindowType == WindowType::options)
+        {
+            auto& config = Config::get();
+            if (config.preferredOwnerFace == kEmptyObjectHeader)
+            {
+                config.usePreferredOwnerFace = false;
+                Config::write();
+            }
+        }
+
+        WindowManager::invalidate(WindowType::options);
     }
 
     // 0x435299
@@ -183,7 +195,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             config.preferredOwnerFace = *objRow.object._header;
             Config::write();
 
-            WindowManager::invalidate(WindowType::options);
             WindowManager::close(&self);
         }
     }
