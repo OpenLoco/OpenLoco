@@ -420,7 +420,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x00459722 & 0x004598F0
-    static int32_t capOfTypeOfIndustry(const uint8_t indObjId)
+    int32_t capOfTypeOfIndustry(const uint8_t indObjId)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
 
@@ -448,7 +448,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0045979C & 0x00459949
-    static void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts)
+    void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts)
     {
         // Try find valid coordinates for this industry
         for (auto attempt = 0; attempt < numAttempts; ++attempt)
