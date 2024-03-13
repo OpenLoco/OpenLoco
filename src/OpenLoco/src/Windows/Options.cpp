@@ -2041,6 +2041,12 @@ namespace OpenLoco::Ui::Windows::Options
             }
             else
             {
+                // Can't be loaded? Disable the option
+                auto cfg = Config::get();
+                cfg.usePreferredOwnerFace = false;
+                cfg.preferredOwnerFace = kEmptyObjectHeader;
+                Config::write();
+
                 self.object = nullptr;
             }
         }
