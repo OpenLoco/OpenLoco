@@ -448,12 +448,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x004597FD
     static void generateIndustries(uint32_t minProgress, uint32_t maxProgress)
     {
-        auto progressTicksPerIndustry = (maxProgress - minProgress) / S5::getOptions().numberOfIndustries;
-        auto currentProgress = minProgress;
-
         auto numIndustriesAvailable = 0;
-        // auto numIndustriesGenerated = 0;
-
         for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
         {
             if (ObjectManager::get<IndustryObject>(i) != nullptr)
@@ -463,6 +458,9 @@ namespace OpenLoco::World::MapGenerator
         }
 
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+
+        auto progressTicksPerIndustry = (maxProgress - minProgress) / numIndustriesAvailable;
+        auto currentProgress = minProgress;
 
         for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
         {
@@ -475,11 +473,13 @@ namespace OpenLoco::World::MapGenerator
             currentProgress += progressTicksPerIndustry;
             updateProgress(currentProgress);
 
+            // Check if industry is available at present
             if (getCurrentYear() < industryObj->designedYear || getCurrentYear() > industryObj->obsoleteYear)
             {
                 continue;
             }
 
+            // Check if required cargo is available
             if (industryObj->requiredCargoType[0] != 0xFF)
             {
                 auto numCargoSpecified = 0;
@@ -506,7 +506,65 @@ namespace OpenLoco::World::MapGenerator
             }
 
             // 0x004598F0
-            // ...
+            auto ecx = industryObj->totalOfTypeInScenario;
+            auto ebx = S5::getOptions().numberOfIndustries + 1;
+
+            // !!!
+            ecx *= ebx;
+            edx = 0;
+
+            eax = ecx;
+            ecx = 3;
+            edx = 0;
+
+            eax /= ecx;
+            ecx = eax;
+            edx = 0;
+
+            ebx = ecx;
+            ebx >>= 2;
+            ecx -= ebx;
+
+            // !!!Call random functions instead
+            eax = _gameState;
+            edi = srand_1;
+            eax = (eax >> 3) | (eax << (32 - 3));
+            edi ^= 0x1234567F;
+            srand_1 = eax;
+            edi = (edi >> 7) | (edi << (32 - 7));
+            _gameState += edi;
+
+            ebx = ecx;
+            ebx >>= 1;
+            eax = (unsigned char)ebx;
+            ecx += eax;
+
+            auto numIndustriesToBuild = ecx;
+            if (numIndustriesToBuild == 0)
+            {
+                continue;
+            }
+
+            // 0x00459947
+            for (auto j = 0U; j <= numIndustriesToBuild; j++)
+            {
+                for (auto attempts = 0U; attempts < 50; attempts++)
+                {
+                    auto pos = findRandomNewIndustryLocation();
+                    if (!pos)
+                        continue;
+
+                    auto args = IndustryPlacementArgs{};
+                    args.pos = *pos;
+                    args.type = i;
+                    args.buildImmediately = true;
+                    args.srand0 = regs.ebp; // !!!
+                    args.srand1 = regs.edi; // !!!
+
+                    if (GameCommands::doCommand(args, GameCommands::Flags::apply))
+                        break;
+                }
+            }
         }
     }
 
