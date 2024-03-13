@@ -27,7 +27,7 @@ namespace OpenLoco::IndustryManager
     void update();
     void updateDaily();
     void updateMonthly();
-    int32_t capOfTypeOfIndustry(const uint8_t indObjId);
+    int32_t capOfTypeOfIndustry(const uint8_t indObjId, const uint8_t numIndustriesFactor);
     void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts);
     void createAllMapAnimations();
     bool industryNearPosition(const World::Pos2& position, IndustryObjectFlags flags);

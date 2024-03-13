@@ -505,7 +505,8 @@ namespace OpenLoco::World::MapGenerator
                 }
             }
 
-            auto numIndustriesToCreate = IndustryManager::capOfTypeOfIndustry(indObjId);
+            const uint8_t numIndustriesFactor = S5::getOptions().numberOfIndustries;
+            const auto numIndustriesToCreate = IndustryManager::capOfTypeOfIndustry(indObjId, numIndustriesFactor);
             for (auto i = 0; i < numIndustriesToCreate; i++)
             {
                 IndustryManager::createNewIndustry(indObjId, true, 50);
