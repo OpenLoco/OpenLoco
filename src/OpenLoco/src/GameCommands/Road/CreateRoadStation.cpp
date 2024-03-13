@@ -164,7 +164,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048BAF5
-    static World::TileClearance::ClearFuncResult clearFunc0(World::TileElement& el, World::RoadElement& elReferenceRoad0, World::RoadElement& elReferenceRoad1)
+    static World::TileClearance::ClearFuncResult clearFunc0(World::TileElement& el, World::RoadElement* elReferenceRoad0, World::RoadElement* elReferenceRoad1)
     {
         auto* elStation = el.as<World::StationElement>();
         auto* elRoad = el.as<World::RoadElement>();
@@ -175,7 +175,7 @@ namespace OpenLoco::GameCommands
                 return World::TileClearance::ClearFuncResult::noCollision;
             }
         }
-        else if (elRoad != nullptr && (elRoad > &elReferenceRoad0 && elRoad <= &elReferenceRoad1))
+        else if (elRoad != nullptr && elReferenceRoad0 != nullptr && elReferenceRoad1 != nullptr && (elRoad > elReferenceRoad0 && elRoad <= elReferenceRoad1))
         {
             return World::TileClearance::ClearFuncResult::noCollision;
         }
@@ -542,12 +542,12 @@ namespace OpenLoco::GameCommands
             }
 
             // Perform clearance
-            const auto baseZ = roadStart.z + 8; // Vanilla bug? should really be roadLoc.z
+            const auto baseZ = (roadStart.z / World::kSmallZStep) + 8; // Vanilla bug? should really be roadLoc.z
             const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
             World::QuarterTile qt(0b1111, 0);
 
             auto clearFunc = [&elRoads](World::TileElement& el) {
-                return clearFunc0(el, *elRoads[0], *elRoads[1]);
+                return clearFunc0(el, elRoads[0], elRoads[1]);
             };
             if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ, clearZ, qt, clearFunc))
             {

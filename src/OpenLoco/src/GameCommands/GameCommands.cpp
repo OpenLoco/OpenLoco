@@ -230,10 +230,19 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        // Used by a gc_unk_51 of going via doCommand
+        // Used by a gc_unk_51 instead of going via doCommand
         registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createTrainStation(backup);
+
+            regs = backup;
+            return 0;
+        });
+
+        // Used by a gc_unk_53 instead of going via doCommand
+        registerHook(0x0048C708, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createRoadStation(backup);
 
             regs = backup;
             return 0;
