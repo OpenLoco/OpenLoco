@@ -2109,7 +2109,9 @@ namespace OpenLoco::Ui::Windows::Options
 
                 FormatArguments args = {};
                 args.push(StringIds::buffer_2039);
-                drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+
+                auto width = w.widgets[Widx::changeOwnerNameBtn].left - 24;
+                drawingCtx.drawStringLeftClipped(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, width, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
             }
 
             // Draw competitor name and face
@@ -2119,7 +2121,8 @@ namespace OpenLoco::Ui::Windows::Options
 
                 FormatArguments args = {};
                 args.push(competitor->name);
-                drawingCtx.drawStringLeft(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1, Colour::black, StringIds::currentPreferredFace, &args);
+                const auto width = w.widgets[Widx::changeOwnerFaceBtn].left - 24;
+                drawingCtx.drawStringLeftClipped(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1, width, Colour::black, StringIds::currentPreferredFace, &args);
 
                 const auto& widget = w.widgets[Widx::ownerFacePreview];
                 auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
