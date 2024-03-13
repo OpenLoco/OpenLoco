@@ -2075,12 +2075,12 @@ namespace OpenLoco::Ui::Windows::Options
             if (Config::get().usePreferredOwnerFace)
             {
                 w.activatedWidgets |= (1 << Widx::usePreferredOwnerFace);
-                w.disabledWidgets &= ~(1 << Widx::changeOwnerFaceBtn);
+                w.disabledWidgets &= ~((1 << Widx::changeOwnerFaceBtn) | (1 << Widx::ownerFacePreview));
             }
             else
             {
                 w.activatedWidgets &= ~(1 << Widx::usePreferredOwnerFace);
-                w.disabledWidgets |= (1 << Widx::changeOwnerFaceBtn);
+                w.disabledWidgets |= ((1 << Widx::changeOwnerFaceBtn) | (1 << Widx::ownerFacePreview));
             }
 
             sub_4C13BE(&w);
