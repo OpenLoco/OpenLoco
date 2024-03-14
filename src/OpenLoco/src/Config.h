@@ -199,6 +199,8 @@ namespace OpenLoco::Config
 
         bool usePreferredOwnerName = false;
         std::string preferredOwnerName;
+        bool usePreferredOwnerFace;
+        ObjectHeader preferredOwnerFace;
 
         std::map<Input::Shortcut, KeyboardShortcut> shortcuts;
 

@@ -1150,12 +1150,12 @@ namespace OpenLoco::StringIds
     constexpr StringId enter_host_address = 1483;
     constexpr StringId enter_host_address_description = 1484;
 
-    constexpr StringId display_options = 1486;
-    constexpr StringId sound_options = 1487;
-    constexpr StringId music_options = 1488;
-    constexpr StringId regional_options = 1489;
-    constexpr StringId control_options = 1490;
-    constexpr StringId miscellaneous_options = 1491;
+    constexpr StringId tooltip_display_options = 1486;
+    constexpr StringId tooltip_sound_options = 1487;
+    constexpr StringId tooltip_music_options = 1488;
+    constexpr StringId tooltip_regional_options = 1489;
+    constexpr StringId tooltip_control_options = 1490;
+    constexpr StringId tooltip_miscellaneous_options = 1491;
     constexpr StringId options_title_display = 1492;
     constexpr StringId options_title_sound = 1493;
     constexpr StringId options_title_music = 1494;
@@ -1581,7 +1581,7 @@ namespace OpenLoco::StringIds
     constexpr StringId use_preferred_owner_name = 1919;
     constexpr StringId use_preferred_owner_name_tip = 1920;
     constexpr StringId wcolour2_preferred_owner_name = 1921;
-    constexpr StringId preferred_owner_name = 1922;
+    constexpr StringId title_preferred_owner_name = 1922;
     constexpr StringId enter_preferred_owner_name = 1923;
     constexpr StringId tiny_power = 1924;
     constexpr StringId tiny_brake = 1925;
@@ -1882,7 +1882,7 @@ namespace OpenLoco::StringIds
     constexpr StringId open_scenario_options = 2266;
     constexpr StringId open_object_selection = 2267;
     constexpr StringId gameplay_tweaks = 2268;
-    constexpr StringId preferred_owner = 2269;
+    constexpr StringId preferred_owner_name = 2269;
     constexpr StringId autosave_preferences = 2270;
     constexpr StringId disableTownExpansion = 2271;
     constexpr StringId disableTownExpansion_tip = 2272;
@@ -1938,6 +1938,13 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcutSeeThroughTrees = 2322;
     constexpr StringId mountainModeTooltip = 2323;
     constexpr StringId vehicleTrackBehaviour = 2324;
+    constexpr StringId tooltip_title_company = 2325;
+    constexpr StringId options_title_company = 2326;
+    constexpr StringId preferredCompanyFace = 2327;
+    constexpr StringId usePreferredCompanyFace = 2328;
+    constexpr StringId usePreferredCompanyFaceTip = 2329;
+    constexpr StringId currentPreferredFace = 2330;
+    constexpr StringId selectPreferredCompanyOwnerFace = 2331;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace CompanyFaceSelection
     {
-        void open(CompanyId id);
+        void open(const CompanyId id, const WindowType callingWindowType);
     }
 
     namespace CompanyList
