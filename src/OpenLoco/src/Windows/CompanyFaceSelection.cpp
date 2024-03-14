@@ -113,9 +113,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 config.usePreferredOwnerFace = false;
                 Config::write();
             }
-        }
 
-        WindowManager::invalidate(WindowType::options);
+            WindowManager::invalidate(WindowType::options);
+        }
     }
 
     // 0x435299
