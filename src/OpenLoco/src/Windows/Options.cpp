@@ -2294,7 +2294,6 @@ namespace OpenLoco::Ui::Windows::Options
             (1 << Widx::disable_vehicle_breakdowns) |
             (1 << Widx::trainsReverseAtSignals) |
             (1 << Widx::disableAICompanies) |
-            (1 << Widx::disableAICompanies) |
             (1 << Widx::export_plugin_objects) |
             (1 << Widx::disableTownExpansion) |
             (1 << Widx::autosave_amount) |
