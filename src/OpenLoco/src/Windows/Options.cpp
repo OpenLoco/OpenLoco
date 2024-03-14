@@ -2262,7 +2262,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 251 };
+        static constexpr Ui::Size kWindowSize = { 420, 266 };
 
         namespace Widx
         {
@@ -2292,16 +2292,17 @@ namespace OpenLoco::Ui::Windows::Options
         // clang-format off
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
             (1 << Widx::enableCheatsToolbarButton) |
-            (1 << Widx::disable_vehicle_breakdowns) |
-            (1 << Widx::trainsReverseAtSignals) |
             (1 << Widx::disableAICompanies) |
-            (1 << Widx::export_plugin_objects) |
             (1 << Widx::disableTownExpansion) |
+            (1 << Widx::disable_vehicle_breakdowns) |
+            (1 << Widx::disable_vehicle_load_penalty) |
+            (1 << Widx::disableStationSizeLimit) |
+            (1 << Widx::trainsReverseAtSignals) |
             (1 << Widx::autosave_amount) |
             (1 << Widx::autosave_amount_down_btn) |
             (1 << Widx::autosave_amount_up_btn) |
             (1 << Widx::autosave_frequency_btn) |
-            (1 << Widx::disable_vehicle_load_penalty);
+            (1 << Widx::export_plugin_objects);
         // clang-format on
 
         static Widget _widgets[] = {
