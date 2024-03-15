@@ -71,7 +71,12 @@ namespace OpenLoco
             _buffer = _bufferStart;
         }
 
-        const void* operator&()
+        const void* operator&() const
+        {
+            return _bufferStart;
+        }
+
+        const std::byte* getBufferStart() const
         {
             return _bufferStart;
         }

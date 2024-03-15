@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Dropdown
 
         int32_t copyLength = std::min(fArgs.getLength(), sizeof(_dropdownItemArgs[index]));
 
-        memcpy(args, &fArgs, copyLength);
+        memcpy(args, fArgs.getBufferStart(), copyLength);
         copyLength = std::min(fArgs.getLength() - sizeof(_dropdownItemArgs[index]), sizeof(_dropdownItemArgs2[index]));
         if (copyLength > 0)
         {

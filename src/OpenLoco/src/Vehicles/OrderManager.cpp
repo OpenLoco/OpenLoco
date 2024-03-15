@@ -141,6 +141,7 @@ namespace OpenLoco::Vehicles::OrderManager
     // 0x004704AB
     void insertOrder(VehicleHead* head, uint16_t orderOffset, const Order* order)
     {
+        assert(order->getType() != OrderType::End && orderOffset < head->sizeOfOrderTable);
         auto insOrderLength = kOrderSizes[enumValue(order->getType())];
 
         // Shift current order to compensate for the new order.
@@ -169,6 +170,7 @@ namespace OpenLoco::Vehicles::OrderManager
     // 0x004705C0
     void deleteOrder(VehicleHead* head, uint16_t orderOffset)
     {
+        assert(orderOffset < head->sizeOfOrderTable);
         // Find out what type the selected order is
         OrderRingView orders(head->orderTableOffset, orderOffset);
         auto& selectedOrder = *(orders.begin());
