@@ -449,15 +449,17 @@ namespace OpenLoco::World::MapGenerator
         // TODO: remove before merging
         printf("Running generateMiscBuildingType0 for '%s'\n", StringManager::getString(buildingObj->name));
 
-        uint64_t randomComponent = ((buildingObj->var_9F / 2) * getGameState().rng.randNext());
+        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->var_9F / 2);
         uint8_t staticComponent = buildingObj->var_9F - (buildingObj->var_9F / 4);
 
-        auto amountToBuild = (randomComponent >> 32) + staticComponent;
+        uint8_t amountToBuild = randomComponent + staticComponent;
         if (amountToBuild == 0)
             return;
 
         for (auto i = 0U; i < amountToBuild; i++)
         {
+            printf("Building %d of %d\n", i + 1, amountToBuild);
+
             for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
             {
                 // NB: coordinate selection has been simplified compared to vanilla
@@ -479,7 +481,7 @@ namespace OpenLoco::World::MapGenerator
                 GameCommands::BuildingPlacementArgs args{};
                 args.pos = Pos3(randomX * kTileSize, randomY * kTileSize, baseHeight);
                 args.rotation = randomRotation;
-                args.type = id;
+                args.type = static_cast<uint8_t>(id);
                 args.variation = randomVariation;
                 args.colour = Colour::black;
                 args.buildImmediately = true;
@@ -559,7 +561,6 @@ namespace OpenLoco::World::MapGenerator
                 generateMiscBuildingType3,
             };
 
-            printf("buildingObj->generatorFunction: %d\n", buildingObj->generatorFunction);
             generatorFunctions[buildingObj->generatorFunction](buildingObj, id);
         }
     }
