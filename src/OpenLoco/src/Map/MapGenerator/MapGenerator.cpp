@@ -453,10 +453,53 @@ namespace OpenLoco::World::MapGenerator
     // 0x0042E893
     static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042E893, regs);
+        // TODO: remove before merging
+        printf("Running generateMiscBuildingType1 for '%s'\n", StringManager::getString(buildingObj->name));
+
+        for (auto& industry : IndustryManager::industries())
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
+            if (!industryObj->hasFlags(IndustryObjectFlags::requiresElectricityPylons))
+                continue;
+
+            auto numTownsLeft = 3;
+            for (auto& town : TownManager::towns())
+            {
+                auto bl = 2;
+                auto xDiff = town.x - industry.x;
+                if (xDiff < 0)
+                {
+                    xDiff = -xDiff;
+                    bl = 0;
+                }
+
+                auto bh = 1;
+                auto yDiff = town.y - industry.y;
+                if (yDiff < 0)
+                {
+                    yDiff = -yDiff;
+                    bh = 3;
+                }
+
+                auto totalDiff = xDiff + yDiff;
+                if (totalDiff < 800 || totalDiff > 2240)
+                    continue;
+
+                auto xBase = xDiff;
+                auto yBase = yDiff;
+                if (yBase > xBase)
+                {
+                    std::swap(xBase, yBase);
+                    std::swap(bl, bh);
+                }
+
+                // TODO: ...
+
+                numTownsLeft--;
+                if (!numTownsLeft)
+                    break;
+            }
+        }
     }
 
     // 0x0042EA29
