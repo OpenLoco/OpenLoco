@@ -510,10 +510,47 @@ namespace OpenLoco::World::MapGenerator
         // TODO: remove before merging
         printf("Running generateMiscBuildingType2 for '%s'\n", StringManager::getString(buildingObj->name));
 
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042EA29, regs);
+        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->var_9F / 2);
+        uint8_t staticComponent = buildingObj->var_9F - (buildingObj->var_9F / 4);
+
+        uint8_t amountToBuild = randomComponent + staticComponent;
+        if (amountToBuild == 0)
+            return;
+
+        for (auto i = 0U; i < amountToBuild; i++)
+        {
+            for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
+            {
+                // NB: coordinate selection has been simplified compared to vanilla
+                auto randomX = getGameState().rng.randNext(2, 382);
+                auto randomY = getGameState().rng.randNext(2, 382);
+
+                auto tile = TileManager::get(TilePos2(randomX, randomY));
+                auto* surface = tile.surface();
+                if (surface == nullptr)
+                    continue;
+
+                // This kind of object (e.g. a lighthouse) needs to be around water
+                if (TileManager::countSurroundingWaterTiles(toWorldSpace(tile.pos)) < 50)
+                    continue;
+
+                auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kMicroToSmallZStep;
+
+                auto randomRotation = getGameState().rng.randNext(0, 3);
+                auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations - 1);
+
+                GameCommands::BuildingPlacementArgs args{};
+                args.pos = Pos3(randomX * kTileSize, randomY * kTileSize, baseHeight);
+                args.rotation = randomRotation;
+                args.type = static_cast<uint8_t>(id);
+                args.variation = randomVariation;
+                args.colour = Colour::black;
+                args.buildImmediately = true;
+
+                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                    break;
+            }
+        }
     }
 
     // 0x0042EB94
