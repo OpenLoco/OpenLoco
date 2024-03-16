@@ -507,6 +507,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileElementBase.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileLoop.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileManager.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TileSquareSearch.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/SubpositionData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/Track.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/TrackData.h"
