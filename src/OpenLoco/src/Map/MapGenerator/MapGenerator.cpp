@@ -458,8 +458,6 @@ namespace OpenLoco::World::MapGenerator
 
         for (auto i = 0U; i < amountToBuild; i++)
         {
-            printf("Building %d of %d\n", i + 1, amountToBuild);
-
             for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
             {
                 // NB: coordinate selection has been simplified compared to vanilla
@@ -476,7 +474,7 @@ namespace OpenLoco::World::MapGenerator
                 auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kMicroToSmallZStep;
 
                 auto randomRotation = getGameState().rng.randNext(0, 3);
-                auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations);
+                auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations - 1);
 
                 GameCommands::BuildingPlacementArgs args{};
                 args.pos = Pos3(randomX * kTileSize, randomY * kTileSize, baseHeight);
