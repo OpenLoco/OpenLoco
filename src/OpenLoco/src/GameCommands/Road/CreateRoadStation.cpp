@@ -542,21 +542,23 @@ namespace OpenLoco::GameCommands
             }
 
             // Perform clearance
-            const auto baseZ = (roadStart.z / World::kSmallZStep) + 8; // Vanilla bug? should really be roadLoc.z
-            const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
+            const auto baseZ = (roadStart.z / World::kSmallZStep); // Vanilla bug? should really be roadLoc.z
+            const auto clearZ = baseZ + 8 + stationObj->height / World::kSmallZStep;
             World::QuarterTile qt(0b1111, 0);
 
             auto clearFunc = [&elRoads](World::TileElement& el) {
                 return clearFunc0(el, elRoads[0], elRoads[1]);
             };
-            if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ, clearZ, qt, clearFunc))
+            // Perform clearance at just the road clear height to road clear height + station height
+            if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ + 8, clearZ, qt, clearFunc))
             {
                 return FAILURE;
             }
 
             if (!(flags & Flags::aiAllocated))
             {
-                if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ - 8, clearZ, qt, clearFuncCollideWithSurface))
+                // Perform clearance at full station height (only checks for surface collisions)
+                if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ, clearZ, qt, clearFuncCollideWithSurface))
                 {
                     return FAILURE;
                 }
