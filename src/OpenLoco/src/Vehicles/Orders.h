@@ -60,6 +60,10 @@ namespace OpenLoco::Vehicles
     struct OrderEnd : Order
     {
         static constexpr OrderType kType = OrderType::End;
+        OrderEnd()
+        {
+            setType(kType);
+        }
     };
 
     struct OrderStation : Order
