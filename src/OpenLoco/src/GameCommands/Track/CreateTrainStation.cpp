@@ -169,14 +169,14 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0048BAE5
-    static World::TileClearance::ClearFuncResult clearFuncCollideWithNotSurface(World::TileElement& el)
+    static World::TileClearance::ClearFuncResult clearFuncCollideWithSurface(World::TileElement& el)
     {
         auto* elSurface = el.as<World::SurfaceElement>();
         if (elSurface != nullptr)
         {
-            return World::TileClearance::ClearFuncResult::noCollision;
+            return World::TileClearance::ClearFuncResult::collision;
         }
-        return World::TileClearance::ClearFuncResult::collision;
+        return World::TileClearance::ClearFuncResult::noCollision;
     };
 
     // 0x0048BB20
@@ -325,8 +325,8 @@ namespace OpenLoco::GameCommands
 
                 // Perform clearance
                 // Subtly different to below (baseZ and qt stuff)
-                const auto baseZ = trackLoc.z / World::kSmallZStep + 8;
-                const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
+                const auto baseZ = trackLoc.z / World::kSmallZStep;
+                const auto clearZ = baseZ + 8 + stationObj->height / World::kSmallZStep;
 
                 // Vanilla did the following code wrong so we have taken a best guess as to what it should do.
                 // Vanilla had the following issues:
@@ -337,7 +337,7 @@ namespace OpenLoco::GameCommands
                 // - Performed a clearance on the wrong clearZ due to adding 8 twice.
                 const auto qt = World::QuarterTile(World::TrackData::getTrackPiece(args.trackId)[index].subTileClearance.getBaseQuarterOccupied(), 0);
 
-                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithNotSurface))
+                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithSurface))
                 {
                     return FAILURE;
                 }
@@ -418,20 +418,20 @@ namespace OpenLoco::GameCommands
                 }
 
                 // Perform clearance
-                const auto baseZ = elTrack->baseZ() + 8;
-                const auto clearZ = baseZ + stationObj->height / World::kSmallZStep;
+                const auto baseZ = elTrack->baseZ();
+                const auto clearZ = baseZ + 8 + stationObj->height / World::kSmallZStep;
                 World::QuarterTile qt(elTrack->occupiedQuarter(), 0);
                 if (!(flags & Flags::aiAllocated))
                 {
                     auto clearFunc = [&elTrack](World::TileElement& el) {
                         return clearFuncAiReservation(el, *elTrack);
                     };
-                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFunc))
+                    if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ + 8, clearZ, qt, clearFunc))
                     {
                         return FAILURE;
                     }
                 }
-                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithNotSurface))
+                if (!World::TileClearance::applyClearAtStandardHeight(trackLoc, baseZ, clearZ, qt, clearFuncCollideWithSurface))
                 {
                     return FAILURE;
                 }
