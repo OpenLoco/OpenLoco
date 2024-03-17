@@ -1,4 +1,5 @@
 #include <OpenLoco/Engine/World.hpp>
+#include <array>
 #include <cassert>
 
 namespace OpenLoco::World
