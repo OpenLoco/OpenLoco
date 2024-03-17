@@ -28,6 +28,8 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::StationManager
 {
+    constexpr auto kStationDistanceLimit = 8 * World::kTileSize;
+
     static auto& rawStations() { return getGameState().stations; }
 
     // 0x0048B1D8
@@ -538,8 +540,7 @@ namespace OpenLoco::StationManager
         auto stationCentre = World::Pos2(station.x, station.y);
         auto distance = Math::Vector::manhattanDistance2D(centreTile, stationCentre);
 
-        const auto stationDistanceLimit = 8 * World::kTileSize;
-        return distance > stationDistanceLimit;
+        return distance > kStationDistanceLimit;
     }
 
     // 0x0048F8A0
