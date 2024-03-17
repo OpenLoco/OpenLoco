@@ -442,13 +442,9 @@ namespace OpenLoco::World::MapGenerator
         call(0x004597FD, regs);
     }
 
-    // 0x0042E731
-    // Example: 'Transmitter' building object
-    static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
+    template<typename Func>
+    static void generateMiscBuilding(const BuildingObject* buildingObj, const size_t id, Func&& predicate)
     {
-        // TODO: remove before merging
-        printf("Running generateMiscBuildingType0 for '%s'\n", StringManager::getString(buildingObj->name));
-
         uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->var_9F / 2);
         uint8_t staticComponent = buildingObj->var_9F - (buildingObj->var_9F / 4);
 
@@ -465,10 +461,11 @@ namespace OpenLoco::World::MapGenerator
                 auto randomY = getGameState().rng.randNext(2, 382);
 
                 auto tile = TileManager::get(TilePos2(randomX, randomY));
+                if (!predicate(tile))
+                    continue;
+
                 auto* surface = tile.surface();
                 if (surface == nullptr)
-                    continue;
-                if (surface->baseZ() > 100)
                     continue;
 
                 auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kMicroToSmallZStep;
@@ -490,13 +487,20 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    // 0x0042E731
+    // Example: 'Transmitter' building object
+    static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
+    {
+        generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            auto* surface = tile.surface();
+            return surface->baseZ() <= 100;
+        });
+    }
+
     // 0x0042E893
     // Example: 'Electricity Pylon' building object
     static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
-        // TODO: remove before merging
-        printf("Running generateMiscBuildingType1 for '%s'\n", StringManager::getString(buildingObj->name));
-
         registers regs;
         regs.ebp = X86Pointer(buildingObj);
         regs.ebx = id;
@@ -507,98 +511,20 @@ namespace OpenLoco::World::MapGenerator
     // Example: 'Lighthouse' building object
     static void generateMiscBuildingType2(const BuildingObject* buildingObj, const size_t id)
     {
-        // TODO: remove before merging
-        printf("Running generateMiscBuildingType2 for '%s'\n", StringManager::getString(buildingObj->name));
-
-        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->var_9F / 2);
-        uint8_t staticComponent = buildingObj->var_9F - (buildingObj->var_9F / 4);
-
-        uint8_t amountToBuild = randomComponent + staticComponent;
-        if (amountToBuild == 0)
-            return;
-
-        for (auto i = 0U; i < amountToBuild; i++)
-        {
-            for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
-            {
-                // NB: coordinate selection has been simplified compared to vanilla
-                auto randomX = getGameState().rng.randNext(2, 382);
-                auto randomY = getGameState().rng.randNext(2, 382);
-
-                auto tile = TileManager::get(TilePos2(randomX, randomY));
-                auto* surface = tile.surface();
-                if (surface == nullptr)
-                    continue;
-
-                // This kind of object (e.g. a lighthouse) needs to be around water
-                if (TileManager::countSurroundingWaterTiles(toWorldSpace(tile.pos)) < 50)
-                    continue;
-
-                auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kMicroToSmallZStep;
-
-                auto randomRotation = getGameState().rng.randNext(0, 3);
-                auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations - 1);
-
-                GameCommands::BuildingPlacementArgs args{};
-                args.pos = Pos3(randomX * kTileSize, randomY * kTileSize, baseHeight);
-                args.rotation = randomRotation;
-                args.type = static_cast<uint8_t>(id);
-                args.variation = randomVariation;
-                args.colour = Colour::black;
-                args.buildImmediately = true;
-
-                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-                    break;
-            }
-        }
+        generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            // This kind of object (e.g. a lighthouse) needs to be around water
+            return TileManager::countSurroundingWaterTiles(toWorldSpace(tile.pos)) >= 50;
+        });
     }
 
     // 0x0042EB94
     // Example: 'Castle Ruins' building object
     static void generateMiscBuildingType3(const BuildingObject* buildingObj, const size_t id)
     {
-        // TODO: remove before merging
-        printf("Running generateMiscBuildingType3 for '%s'\n", StringManager::getString(buildingObj->name));
-
-        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->var_9F / 2);
-        uint8_t staticComponent = buildingObj->var_9F - (buildingObj->var_9F / 4);
-
-        uint8_t amountToBuild = randomComponent + staticComponent;
-        if (amountToBuild == 0)
-            return;
-
-        for (auto i = 0U; i < amountToBuild; i++)
-        {
-            for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
-            {
-                // NB: coordinate selection has been simplified compared to vanilla
-                auto randomX = getGameState().rng.randNext(2, 382);
-                auto randomY = getGameState().rng.randNext(2, 382);
-
-                auto tile = TileManager::get(TilePos2(randomX, randomY));
-                auto* surface = tile.surface();
-                if (surface == nullptr)
-                    continue;
-                if (surface->baseZ() < 40 || surface->baseZ() > 92)
-                    continue;
-
-                auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kMicroToSmallZStep;
-
-                auto randomRotation = getGameState().rng.randNext(0, 3);
-                auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations - 1);
-
-                GameCommands::BuildingPlacementArgs args{};
-                args.pos = Pos3(randomX * kTileSize, randomY * kTileSize, baseHeight);
-                args.rotation = randomRotation;
-                args.type = static_cast<uint8_t>(id);
-                args.variation = randomVariation;
-                args.colour = Colour::black;
-                args.buildImmediately = true;
-
-                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
-                    break;
-            }
-        }
+        generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            auto* surface = tile.surface();
+            return surface->baseZ() >= 40 && surface->baseZ() < 92;
+        });
     }
 
     // 0x0042E6F2
