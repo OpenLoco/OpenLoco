@@ -50,8 +50,7 @@ namespace OpenLoco::GameCommands
     static loco_global<int16_t, 0x01136250> _backupX;
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
-    static loco_global<EntityId, 0x0113642A> _113642A;                   // used by build window and others
-    static loco_global<uint8_t[Limits::kMaxOrders], 0x00987C5C> _987C5C; // ?orders? ?routing related?
+    static loco_global<EntityId, 0x0113642A> _113642A; // used by build window and others
 
     // 0x004B1D96
     static bool aiIsBelowVehicleLimit()
@@ -392,15 +391,6 @@ namespace OpenLoco::GameCommands
         return true;
     }
 
-    static void sub_470312(VehicleHead* const newHead)
-    {
-        _987C5C[OrderManager::orderTableLength()] = 0;
-        newHead->orderTableOffset = OrderManager::orderTableLength();
-        OrderManager::orderTableLength()++;
-        newHead->currentOrder = 0;
-        newHead->sizeOfOrderTable = 1;
-    }
-
     // 0x004B64F9
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
@@ -461,7 +451,7 @@ namespace OpenLoco::GameCommands
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
         newHead->var_79 = 0;
-        sub_470312(newHead);
+        OrderManager::allocateOrders(*newHead);
         return newHead;
     }
 

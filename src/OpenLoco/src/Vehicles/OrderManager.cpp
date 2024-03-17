@@ -230,6 +230,25 @@ namespace OpenLoco::Vehicles::OrderManager
         orderTableLength() -= head->sizeOfOrderTable;
     }
 
+    // 0x00470312
+    void allocateOrders(VehicleHead& head)
+    {
+        OrderEnd end{};
+        constexpr auto insOrderLength = kOrderSizes[enumValue(OrderEnd::kType)];
+
+        head.orderTableOffset = orderTableLength();
+        // Bookkeeping: change order table size
+        orderTableLength() += insOrderLength;
+
+        head.currentOrder = 0;
+        head.sizeOfOrderTable = insOrderLength;
+
+        // Calculate destination offset and copy data
+        auto rawOrder = end.getRaw();
+        auto dest = reinterpret_cast<uint8_t*>(orders() + head.orderTableOffset);
+        std::memcpy(dest, &rawOrder, insOrderLength);
+    }
+
     // 0x00470B76
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum)
     {

@@ -71,6 +71,11 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
+        if (args.orderOffset > head->sizeOfOrderTable)
+        {
+            return FAILURE;
+        }
+
         if (!(flags & GameCommands::Flags::apply))
         {
             return 0;

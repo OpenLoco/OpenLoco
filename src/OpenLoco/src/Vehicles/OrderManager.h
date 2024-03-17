@@ -130,6 +130,7 @@ namespace OpenLoco::Vehicles::OrderManager
     void zeroUnusedOrderTable();
     void reset();
     void freeOrders(VehicleHead* const head);
+    void allocateOrders(VehicleHead& head);
 
     std::pair<World::Pos3, std::string> generateOrderUiStringAndLoc(uint32_t orderOffset, uint8_t orderNum);
     void generateNumDisplayFrames(Vehicles::VehicleHead* head);

@@ -25,6 +25,11 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
+        if (args.orderOffset > head->sizeOfOrderTable)
+        {
+            return FAILURE;
+        }
+
         Ui::WindowManager::sub_4B93A5(enumValue(head->id));
 
         // Figure out which orders to swap
