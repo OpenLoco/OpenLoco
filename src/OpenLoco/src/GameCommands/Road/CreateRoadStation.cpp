@@ -554,7 +554,7 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            if (flags & Flags::aiAllocated)
+            if (!(flags & Flags::aiAllocated))
             {
                 if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ - 8, clearZ, qt, clearFuncCollideWithNotSurface))
                 {
