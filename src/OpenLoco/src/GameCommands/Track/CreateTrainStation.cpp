@@ -42,16 +42,6 @@ namespace OpenLoco::GameCommands
         return result;
     }
 
-    static bool sub_48FEF4(StationId id, World::Pos3 pos)
-    {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.ebx = enumValue(id);
-        return call(0x0048FEF4, regs) & X86_FLAG_CARRY;
-    }
-
     // 0x0048FFF7
     static NearbyStation sub_48FFF7(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
@@ -101,7 +91,7 @@ namespace OpenLoco::GameCommands
         {
             if (!(flags & Flags::aiAllocated))
             {
-                if (sub_48FEF4(nearbyStation.id, pos))
+                if (StationManager::exceedsStationSize(*station, pos))
                 {
                     if (nearbyStation.isPhysicallyAttached)
                     {

@@ -2384,3 +2384,5 @@ strings:
   2329: "{SMALLFONT}{COLOUR BLACK}When selected, the preferred company face will be used when starting a new scenario."
   2330: "{COLOUR WINDOW_2}Preferred owner face: {COLOUR BLACK}{STRINGID}"
   2331: "Select preferred company owner face"
+  2332: "{COLOUR WINDOW_2}Disable station size limitations"
+  2333: "{SMALLFONT}{COLOUR BLACK}When enabled, the maximum length for railroad stations is no longer constrained to 16 tiles. Note that stations can still not occupy more than 80 tiles overall."

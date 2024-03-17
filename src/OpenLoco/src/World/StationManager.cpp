@@ -1,5 +1,6 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
+#include "Config.h"
 #include "Game.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
@@ -27,6 +28,8 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::StationManager
 {
+    constexpr auto kStationDistanceLimit = 8 * World::kTileSize;
+
     static auto& rawStations() { return getGameState().stations; }
 
     // 0x0048B1D8
@@ -525,6 +528,19 @@ namespace OpenLoco::StationManager
         }
 
         return deliverCargoToStations(foundStations, cargoType, cargoQty);
+    }
+
+    // 0x0048FEF4
+    bool exceedsStationSize(Station& station, World::Pos3 pos)
+    {
+        if (Config::get().disableStationSizeLimit)
+            return false;
+
+        auto centreTile = World::Pos2(pos.x + World::kTileSize / 2, pos.y + World::kTileSize / 2);
+        auto stationCentre = World::Pos2(station.x, station.y);
+        auto distance = Math::Vector::manhattanDistance2D(centreTile, stationCentre);
+
+        return distance > kStationDistanceLimit;
     }
 
     // 0x0048F8A0

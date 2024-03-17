@@ -2262,7 +2262,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static constexpr Ui::Size kWindowSize = { 420, 251 };
+        static constexpr Ui::Size kWindowSize = { 420, 266 };
 
         namespace Widx
         {
@@ -2275,8 +2275,9 @@ namespace OpenLoco::Ui::Windows::Options
 
                 groupVehicleBehaviour,
                 disable_vehicle_breakdowns,
-                trainsReverseAtSignals,
                 disable_vehicle_load_penalty,
+                disableStationSizeLimit,
+                trainsReverseAtSignals,
 
                 groupSaveOptions,
                 autosave_frequency,
@@ -2291,16 +2292,17 @@ namespace OpenLoco::Ui::Windows::Options
         // clang-format off
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets |
             (1 << Widx::enableCheatsToolbarButton) |
-            (1 << Widx::disable_vehicle_breakdowns) |
-            (1 << Widx::trainsReverseAtSignals) |
             (1 << Widx::disableAICompanies) |
-            (1 << Widx::export_plugin_objects) |
             (1 << Widx::disableTownExpansion) |
+            (1 << Widx::disable_vehicle_breakdowns) |
+            (1 << Widx::disable_vehicle_load_penalty) |
+            (1 << Widx::disableStationSizeLimit) |
+            (1 << Widx::trainsReverseAtSignals) |
             (1 << Widx::autosave_amount) |
             (1 << Widx::autosave_amount_down_btn) |
             (1 << Widx::autosave_amount_up_btn) |
             (1 << Widx::autosave_frequency_btn) |
-            (1 << Widx::disable_vehicle_load_penalty);
+            (1 << Widx::export_plugin_objects);
         // clang-format on
 
         static Widget _widgets[] = {
@@ -2313,16 +2315,18 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableTownExpansion, StringIds::disableTownExpansion_tip),
 
             // Vehicle behaviour
-            makeWidget({ 4, 115 }, { 412, 62 }, WidgetType::groupbox, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
+            makeWidget({ 4, 115 }, { 412, 77 }, WidgetType::groupbox, WindowColour::secondary, StringIds::vehicleTrackBehaviour),
             makeWidget({ 10, 130 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disable_vehicle_breakdowns),
-            makeWidget({ 10, 145 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
-            makeWidget({ 10, 160 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
+            makeWidget({ 10, 145 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableVehicleLoadingPenalty, StringIds::disableVehicleLoadingPenaltyTip),
+            makeWidget({ 10, 160 }, { 200, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::disableStationSizeLimitLabel, StringIds::disableStationSizeLimitTooltip),
+            makeWidget({ 10, 175 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::trainsReverseAtSignals),
 
             // Save options group
-            makeWidget({ 4, 182 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
-            makeDropdownWidgets({ 250, 197 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeStepperWidgets({ 250, 212 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
-            makeWidget({ 10, 227 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 4, 196 }, { 412, 65 }, WidgetType::groupbox, WindowColour::secondary, StringIds::autosave_preferences),
+            makeDropdownWidgets({ 250, 211 }, { 156, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
+            makeStepperWidgets({ 250, 226 }, { 156, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 10, 241 }, { 400, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+
             widgetEnd(),
         };
 
@@ -2372,6 +2376,11 @@ namespace OpenLoco::Ui::Windows::Options
             else
                 w.activatedWidgets &= ~(1 << Widx::disable_vehicle_load_penalty);
 
+            if (Config::get().disableStationSizeLimit)
+                w.activatedWidgets |= (1 << Widx::disableStationSizeLimit);
+            else
+                w.activatedWidgets &= ~(1 << Widx::disableStationSizeLimit);
+
             if (Config::get().companyAIDisabled)
                 w.activatedWidgets |= (1 << Widx::disableAICompanies);
             else
@@ -2416,9 +2425,11 @@ namespace OpenLoco::Ui::Windows::Options
             w.draw(rt);
             Common::drawTabs(&w, rt);
 
+            // Label for autosave frequency
             auto y = w.y + w.widgets[Widx::autosave_frequency].top;
             drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
 
+            // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
             StringId stringId;
             switch (freq)
@@ -2435,9 +2446,11 @@ namespace OpenLoco::Ui::Windows::Options
             }
             drawDropdownContent(&w, rt, Widx::autosave_frequency, stringId, freq);
 
+            // Label for autosave amount
             y = w.y + w.widgets[Widx::autosave_amount].top;
             drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
 
+            // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
             drawDropdownContent(&w, rt, Widx::autosave_amount, StringIds::int_32, scale);
         }
@@ -2560,6 +2573,11 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::disable_vehicle_load_penalty:
                     Config::get().disableVehicleLoadPenaltyCheat = !Config::get().disableVehicleLoadPenaltyCheat;
                     WindowManager::invalidateWidget(w.type, w.number, Widx::disable_vehicle_load_penalty);
+                    break;
+
+                case Widx::disableStationSizeLimit:
+                    Config::get().disableStationSizeLimit ^= true;
+                    WindowManager::invalidateWidget(w.type, w.number, Widx::disableStationSizeLimit);
                     break;
 
                 case Widx::disableAICompanies:

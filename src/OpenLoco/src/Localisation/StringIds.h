@@ -1945,6 +1945,8 @@ namespace OpenLoco::StringIds
     constexpr StringId usePreferredCompanyFaceTip = 2329;
     constexpr StringId currentPreferredFace = 2330;
     constexpr StringId selectPreferredCompanyOwnerFace = 2331;
+    constexpr StringId disableStationSizeLimitLabel = 2332;
+    constexpr StringId disableStationSizeLimitTooltip = 2333;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
