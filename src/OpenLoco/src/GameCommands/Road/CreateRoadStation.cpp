@@ -184,14 +184,14 @@ namespace OpenLoco::GameCommands
 
     // TODO THIS IS A DUPLICATE MOVE TO SOMEWHERE ELSE
     // 0x0048BAE5
-    static World::TileClearance::ClearFuncResult clearFuncCollideWithNotSurface(World::TileElement& el)
+    static World::TileClearance::ClearFuncResult clearFuncCollideWithSurface(World::TileElement& el)
     {
         auto* elSurface = el.as<World::SurfaceElement>();
         if (elSurface != nullptr)
         {
-            return World::TileClearance::ClearFuncResult::noCollision;
+            return World::TileClearance::ClearFuncResult::collision;
         }
-        return World::TileClearance::ClearFuncResult::collision;
+        return World::TileClearance::ClearFuncResult::noCollision;
     };
 
     // 0x0048C708
@@ -556,7 +556,7 @@ namespace OpenLoco::GameCommands
 
             if (!(flags & Flags::aiAllocated))
             {
-                if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ - 8, clearZ, qt, clearFuncCollideWithNotSurface))
+                if (!World::TileClearance::applyClearAtStandardHeight(roadLoc, baseZ - 8, clearZ, qt, clearFuncCollideWithSurface))
                 {
                     return FAILURE;
                 }
