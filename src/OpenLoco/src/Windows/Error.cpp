@@ -241,7 +241,8 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _linebreakCount, Colour::black, &_errorText[0]);
+                auto point = Point(((width + 1) / 2) + x - 1, y + 1);
+                drawingCtx.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
             }
             else
             {
@@ -262,7 +263,8 @@ namespace OpenLoco::Ui::Windows::Error
                     drawingCtx.drawImage(rt, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                drawingCtx.drawStringCentredRaw(*rt, self.x + 156, self.y + 20, _linebreakCount, Colour::black, &_errorText[0]);
+                auto point = Point(self.x + 156, self.y + 20);
+                drawingCtx.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
             }
         }
 

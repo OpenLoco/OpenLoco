@@ -279,7 +279,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             *str++ = ControlCodes::windowColour2;
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
-            drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::buffer_2039);
+
+            auto point = Point(x, y);
+            drawingCtx.drawStringCentredClipped(*rt, point, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -324,7 +326,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 drawingCtx.setCurrentFontSpriteBase(Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
-            drawingCtx.drawString(rt, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
+
+            auto point = Point(0, y - 1);
+            drawingCtx.drawString(rt, point, stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

@@ -57,25 +57,25 @@ namespace OpenLoco
         {
             FormatArguments args{};
             args.push(power);
-            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_power, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
-            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_length, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_length, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
-            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_weight, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_max_speed, &args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -85,7 +85,7 @@ namespace OpenLoco
 
         if (StringManager::locoStrlen(buffer) != 0)
         {
-            drawingCtx.drawStringLeftWrapped(rt, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+            drawingCtx.drawStringLeftWrapped(rt, rowPosition, width - 4, Colour::black, StringIds::buffer_1250);
         }
     }
 

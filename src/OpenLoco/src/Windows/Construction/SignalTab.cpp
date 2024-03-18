@@ -316,7 +316,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             FormatArguments args{};
             args.push(trainSignalObject->description);
 
-            drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
+            auto point = Point(xPos, yPos);
+            drawingCtx.drawStringLeftWrapped(*rt, point, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->image;
@@ -338,10 +339,8 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             FormatArguments args{};
             args.push<uint32_t>(_signalCost);
 
-            xPos = self.x + 69;
-            yPos = self.widgets[widx::single_direction].bottom + self.y + 5;
-
-            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
         }
     }
 
