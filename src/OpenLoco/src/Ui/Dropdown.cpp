@@ -196,7 +196,8 @@ namespace OpenLoco::Ui::Dropdown
 
             drawingCtx.setCurrentFontSpriteBase(Font::m1);
 
-            drawingCtx.drawString(*rt, x, y, colour, _byte_112CC04);
+            auto point = Point(x, y);
+            drawingCtx.drawString(*rt, point, colour, _byte_112CC04);
         }
 
         // 0x004CD00E

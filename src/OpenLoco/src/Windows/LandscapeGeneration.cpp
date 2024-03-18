@@ -251,17 +251,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             Common::draw(window, rt);
 
+            auto point = Point(window.x + 10, window.y + window.widgets[widx::start_year].top);
             drawingCtx.drawStringLeft(
                 *rt,
-                window.x + 10,
-                window.y + window.widgets[widx::start_year].top,
+                point,
                 Colour::black,
                 StringIds::start_year);
 
+            point = Point(window.x + 10, window.y + window.widgets[widx::heightMapBox].top);
             drawingCtx.drawStringLeft(
                 *rt,
-                window.x + 10,
-                window.y + window.widgets[widx::heightMapBox].top,
+                point,
                 Colour::black,
                 StringIds::height_map_source);
 
@@ -620,24 +620,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             Common::draw(window, rt);
 
+            auto point = Point(window.x + 10, window.y + window.widgets[widx::min_land_height].top);
             drawingCtx.drawStringLeft(
                 *rt,
-                window.x + 10,
-                window.y + window.widgets[widx::min_land_height].top,
+                point,
                 Colour::black,
                 StringIds::min_land_height);
 
+            point.y = window.y + window.widgets[widx::topography_style].top;
             drawingCtx.drawStringLeft(
                 *rt,
-                window.x + 10,
-                window.y + window.widgets[widx::topography_style].top,
+                point,
                 Colour::black,
                 StringIds::topography_style);
 
+            point.y = window.y + window.widgets[widx::hill_density].top;
             drawingCtx.drawStringLeft(
                 *rt,
-                window.x + 10,
-                window.y + window.widgets[widx::hill_density].top,
+                point,
                 Colour::black,
                 StringIds::hill_density);
         }
@@ -940,10 +940,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             Common::draw(window, rt);
 
+            auto point = Point(window.x + 10, window.y + window.widgets[widx::sea_level].top);
             drawingCtx.drawStringLeft(
                 *rt,
-                window.x + 10,
-                window.y + window.widgets[widx::sea_level].top,
+                point,
                 Colour::black,
                 StringIds::sea_level);
         }
