@@ -918,7 +918,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(designed);
-            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_designed, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
 
@@ -926,7 +926,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(obsolete);
-            drawingCtx.drawStringLeft(rt, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_obsolete, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
     }

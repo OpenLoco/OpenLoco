@@ -390,8 +390,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
 
-                const int16_t x = 210;
-                drawingCtx.drawStringCentred(rt, x, y + 1, Colour::black, formatStringId, &args);
+                auto point = Point(210, y + 1);
+                drawingCtx.drawStringCentred(rt, point, Colour::black, formatStringId, &args);
             }
 
             // Completed?
@@ -415,8 +415,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push<uint16_t>(scenarioInfo->completedMonths / 12);
                 args.push<uint16_t>(scenarioInfo->completedMonths % 12);
 
-                const int16_t x = (self.widgets[widx::list].width() - ScrollView::barWidth) / 2;
-                drawingCtx.drawStringCentred(rt, x, y + 10, Colour::black, formatStringId, &args);
+                auto point = Point((self.widgets[widx::list].width() - ScrollView::barWidth) / 2, y + 10);
+                drawingCtx.drawStringCentred(rt, point, Colour::black, formatStringId, &args);
             }
 
             y += kRowHeight;

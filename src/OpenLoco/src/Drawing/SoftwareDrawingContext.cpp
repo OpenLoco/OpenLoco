@@ -998,16 +998,16 @@ namespace OpenLoco::Drawing
                 return loopNewline(&rt, origin, str);
             }
 
-            if (x >= rt.x + rt.width)
+            if (origin.x >= rt.x + rt.width)
                 return origin;
 
-            if (x < rt.x - 1280)
+            if (origin.x < rt.x - 1280)
                 return origin;
 
-            if (y >= rt.y + rt.height)
+            if (origin.y >= rt.y + rt.height)
                 return origin;
 
-            if (y < rt.y - 90)
+            if (origin.y < rt.y - 90)
                 return origin;
 
             if (colour.isFF())
@@ -1126,7 +1126,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static int32_t drawStringLeftWrapped(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             int16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1138,7 +1138,7 @@ namespace OpenLoco::Drawing
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
             char empty[1] = "";
-            drawString(rt, rt.x, rt.y, colour, empty);
+            drawString(rt, origin, colour, empty);
 
             _currentFontSpriteBase = Font::medium_bold;
             auto wrapResult = wrapString(buffer, width);
@@ -1171,7 +1171,7 @@ namespace OpenLoco::Drawing
          */
         static void drawStringLeft(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Drawing
         // bp: width
         static void drawStringLeftClipped(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1217,7 +1217,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringRight(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringRightUnderline(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1273,7 +1273,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringLeftUnderline(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1301,7 +1301,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringCentred(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1331,7 +1331,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringCentredClipped(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1343,7 +1343,8 @@ namespace OpenLoco::Drawing
             _currentFontSpriteBase = Font::medium_bold;
             width = clipString(width, buffer);
 
-            drawString(rt, x - (width / 2), y, colour, buffer);
+            auto point = Point(origin.x - (width / 2), origin.y);
+            drawString(rt, point, colour, buffer);
         }
 
         /**
@@ -1368,7 +1369,7 @@ namespace OpenLoco::Drawing
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
             char empty[1] = "";
-            drawString(rt, rt.x, rt.y, colour, empty);
+            drawString(rt, origin, colour, empty);
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1381,8 +1382,9 @@ namespace OpenLoco::Drawing
             uint16_t lineHeight = lineHeightFromFont(_currentFontSpriteBase); // _112D404
 
             _currentFontFlags = TextDrawFlags::none;
-            Ui::Point point = origin;
-            point.y -= (lineHeight / 2) * (breakCount - 1);
+
+            Ui::Point basePoint = origin;
+            basePoint.y -= (lineHeight / 2) * (breakCount - 1);
 
             const char* ptr = buffer;
 
@@ -1390,12 +1392,16 @@ namespace OpenLoco::Drawing
             {
                 uint16_t lineWidth = getStringWidth(ptr);
 
-                drawString(rt, point.x - (lineWidth / 2), point.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+                auto point = basePoint;
+                point.x -= lineWidth / 2;
+
+                drawString(rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
                 ptr = advanceToNextLineWrapped(ptr);
-                point.y += lineHeight;
+
+                basePoint.y += lineHeight;
             }
 
-            return point.y;
+            return basePoint.y;
         }
 
         // 0x00494E33
@@ -1408,7 +1414,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringCentredRaw(
             RenderTarget& rt,
-            Point32& origin,
+            Point& origin,
             uint16_t linebreakCount,
             AdvancedColour colour,
             const char* wrappedStr)
@@ -1416,21 +1422,25 @@ namespace OpenLoco::Drawing
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
             char empty[1] = "";
-            drawString(rt, rt.x, rt.y, colour, empty);
+            drawString(rt, origin, colour, empty);
 
             _currentFontSpriteBase = Font::medium_bold;
             _currentFontFlags = TextDrawFlags::none;
 
             const char* ptr = wrappedStr;
+            auto basePoint = origin;
 
             for (auto i = 0; i < linebreakCount + 1 && ptr != nullptr; ++i)
             {
                 uint16_t lineWidth = getStringWidth(ptr);
 
-                drawString(rt, origin.x - (lineWidth / 2), origin.y, AdvancedColour::FE(), const_cast<char*>(ptr));
+                auto point = basePoint;
+                point.x -= lineWidth / 2;
+
+                drawString(rt, point, AdvancedColour::FE(), const_cast<char*>(ptr));
 
                 ptr = advanceToNextLineWrapped(ptr);
-                origin.y += lineHeightFromFont(_currentFontSpriteBase);
+                basePoint.y += lineHeightFromFont(_currentFontSpriteBase);
             }
         }
 
@@ -1682,12 +1692,12 @@ namespace OpenLoco::Drawing
         }
 
         // 0x004950EF
-        static void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+        static void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
         {
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
             char empty[1] = "";
-            drawString(rt, rt.x, rt.y, colour, empty);
+            drawString(rt, origin, colour, empty);
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId);
@@ -2398,7 +2408,7 @@ namespace OpenLoco::Drawing
 
     int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
-        return Impl::drawStringLeftWrapped(rt, x, y, width, colour, stringId, args);
+        return Impl::drawStringLeftWrapped(rt, origin, width, colour, stringId, args);
     }
 
     void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
@@ -2406,12 +2416,12 @@ namespace OpenLoco::Drawing
         return Impl::drawStringCentred(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, Ui::Point& origin, int16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentredClipped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredRaw(Gfx::RenderTarget& rt, Ui::Point& origin, int16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
+    void SoftwareDrawingContext::drawStringCentredRaw(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
     {
         return Impl::drawStringCentredRaw(rt, origin, linebreakCount, colour, wrappedStr);
     }
@@ -2436,7 +2446,7 @@ namespace OpenLoco::Drawing
         return Impl::drawStringYOffsets(rt, loc, colour, args, yOffsets);
     }
 
-    void SoftwareDrawingContext::drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+    void SoftwareDrawingContext::drawStringTicker(Gfx::RenderTarget& rt, Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
     {
         Impl::drawStringTicker(rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
     }

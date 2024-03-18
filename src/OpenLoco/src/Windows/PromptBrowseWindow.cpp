@@ -448,7 +448,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (filenameBox.type != WidgetType::none)
         {
             // Draw filename label
-            drawingCtx.drawStringLeft(*rt, window.x + 3, window.y + filenameBox.top + 2, Colour::black, StringIds::window_browse_filename, nullptr);
+            auto point = Point(window.x + 3, window.y + filenameBox.top + 2);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_filename);
 
             // Clip to text box
             auto context2 = Gfx::clipRenderTarget(*rt, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
@@ -511,7 +512,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     progress = saveInfo.challengeProgress;
                 }
             }
-            drawingCtx.drawStringLeftWrapped(rt, x, y, maxWidth, Colour::black, stringId, &progress);
+
+            auto point = Point(x, y);
+            drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, stringId, &progress);
         }
     }
 

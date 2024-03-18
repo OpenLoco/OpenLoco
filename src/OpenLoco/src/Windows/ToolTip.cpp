@@ -191,7 +191,8 @@ namespace OpenLoco::Ui::Windows::ToolTip
         drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
         drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
-        drawingCtx.drawStringCentredRaw(*rt, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
+        auto point = Point(((width + 1) / 2) + x - 1, y + 1);
+        drawingCtx.drawStringCentredRaw(*rt, point, _lineBreakCount, Colour::black, _text);
     }
 
     // 0x004C94F7

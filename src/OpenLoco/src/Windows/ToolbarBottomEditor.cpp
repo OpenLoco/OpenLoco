@@ -80,7 +80,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
         drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
-        drawingCtx.drawStringCentred(*rt, (previous.right + next.left) / 2 + self.x, self.y + self.height - 12, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
+        auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
+        drawingCtx.drawStringCentred(*rt, point self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {
@@ -92,8 +93,12 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             {
                 textColour = Colour::white;
             }
-            drawingCtx.drawStringCentred(*rt, self.x + x, self.y + y, textColour, StringIds::editor_previous_step);
-            drawingCtx.drawStringCentred(*rt, self.x + x, self.y + y + 10, textColour, _stepNames[EditorController::getPreviousStep()]);
+
+            point = Point(self.x + x, self.y + y);
+            drawingCtx.drawStringCentred(*rt, point, textColour, StringIds::editor_previous_step);
+
+            point = Point(self.x + x, self.y + y + 10);
+            drawingCtx.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getPreviousStep()]);
         }
         drawingCtx.drawImage(rt, self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
@@ -103,8 +108,12 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         {
             textColour = Colour::white;
         }
-        drawingCtx.drawStringCentred(*rt, self.x + x, self.y + y, textColour, StringIds::editor_next_step);
-        drawingCtx.drawStringCentred(*rt, self.x + x, self.y + y + 10, textColour, _stepNames[EditorController::getNextStep()]);
+
+        point = Point(self.x + x, self.y + y);
+        drawingCtx.drawStringCentred(*rt, point, textColour, StringIds::editor_next_step);
+
+        point = Point(self.x + x, self.y + y + 10);
+        drawingCtx.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getNextStep()]);
     }
 
     // 0x0043D0ED

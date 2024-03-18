@@ -61,7 +61,7 @@ namespace OpenLoco::Drawing
         virtual void drawStringLeftClipped(
             Gfx::RenderTarget& rt,
             Ui::Point& origin,
-            int16_t width,
+            uint16_t width,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr)
@@ -104,7 +104,7 @@ namespace OpenLoco::Drawing
         virtual void drawStringCentredRaw(
             Gfx::RenderTarget& rt,
             Ui::Point& origin,
-            int16_t linebreakCount,
+            uint16_t linebreakCount,
             AdvancedColour colour,
             const char* wrappedStr)
             = 0;
@@ -136,7 +136,7 @@ namespace OpenLoco::Drawing
 
         virtual void drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) = 0;
 
-        virtual void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
+        virtual void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
 
         virtual uint16_t getStringWidthNewLined(const char* buffer) = 0;
 
