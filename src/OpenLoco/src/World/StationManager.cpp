@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Game.h"
+#include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryManager.h"
@@ -11,11 +12,14 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "MessageManager.h"
 #include "Objects/IndustryObject.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/OrderManager.h"
+#include "Vehicles/VehicleManager.h"
 #include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -544,30 +548,92 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0048F8A0
-    StationId allocateNewStation(const World::Pos3 pos, [[maybe_unused]] const CompanyId owner, const uint8_t mode)
+    StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode)
     {
-        // Quite a simple function
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bl = mode;
-        // Owner is passed by _updatingCompanyId
-        auto allocated = !(call(0x0048F8A0, regs) & X86_FLAG_CARRY);
-        if (allocated)
+        if (!World::validCoords(pos))
         {
-            return static_cast<StationId>(regs.bx);
+            GameCommands::setErrorTitle(StringIds::off_edge_of_map);
+            return StationId::null;
         }
+
+        // Find first available station
+        for (auto& station : rawStations())
+        {
+            if (!station.empty())
+                continue;
+
+            auto maybeTown = TownManager::getClosestTownAndDensity(pos);
+            if (!maybeTown)
+            {
+                GameCommands::setErrorTitle(StringIds::town_must_be_built_first);
+                return StationId::null;
+            }
+
+            station.town = maybeTown->first;
+            station.owner = owner;
+            station.name = generateNewStationName(station.id(), station.town, pos, mode);
+
+            // Reset cargo stats
+            for (auto& stats : station.cargoStats)
+            {
+                stats.quantity = 0;
+                stats.origin = StationId::null;
+                stats.flags = StationCargoStatsFlags::none;
+                stats.rating = 150;
+                stats.densityPerTile = 0;
+            }
+
+            station.x = pos.x;
+            station.y = pos.y;
+            station.z = pos.z;
+            station.flags = StationFlags::flag_5;
+            station.stationTileSize = 0;
+            station.noTilesTimeout = 0;
+            station.var_3B0 = 0;
+            station.var_3B1 = 0;
+
+            return station.id();
+        }
+
+        GameCommands::setErrorTitle(StringIds::too_many_stations_in_game);
         return StationId::null;
+    }
+
+    // 0x0048F850
+    static void removeStationFromCargoStats(const StationId stationId)
+    {
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x0048F850, regs);
     }
 
     // 0x0048F7D1
     void deallocateStation(const StationId stationId)
     {
-        // Quite a simple function
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0048F7D1, regs);
+        WindowManager::close(WindowType::station, WindowNumber_t(stationId));
+
+        auto station = get(stationId);
+        if (station == nullptr)
+            return;
+
+        if ((station->flags & StationFlags::flag_5) == StationFlags::none)
+        {
+            auto town = TownManager::get(station->town);
+            if (town != nullptr)
+            {
+                town->numStations--;
+                WindowManager::invalidate(WindowType::town, WindowNumber_t(station->town));
+            }
+        }
+
+        Windows::StationList::removeStationFromList(stationId);
+        Vehicles::OrderManager::removeOrdersForStation(stationId);
+        removeStationFromCargoStats(stationId);
+        VehicleManager::resetIfHeadingForStation(stationId);
+
+        MessageManager::removeAllSubjectRefs(enumValue(stationId), MessageItemArgumentType::station);
+        StringManager::emptyUserString(station->name);
+        station->name = StringIds::null;
     }
 
     void registerHooks()

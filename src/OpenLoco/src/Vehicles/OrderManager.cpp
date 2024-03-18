@@ -477,6 +477,14 @@ namespace OpenLoco::Vehicles::OrderManager
         return lengthOrderB;
     }
 
+    // 0x0047062B
+    void removeOrdersForStation(const StationId stationId)
+    {
+        registers regs;
+        regs.ebx = enumValue(stationId);
+        call(0x0047062B, regs);
+    }
+
     // Fixes saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
     // TODO: remove this at some point in 2024 or so
     void fixCorruptWaypointOrders()

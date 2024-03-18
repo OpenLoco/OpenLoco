@@ -338,6 +338,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open(CompanyId companyId);
         Window* open(CompanyId companyId, uint8_t type);
+        void removeStationFromList(const StationId stationId);
     }
 
     namespace Terraform

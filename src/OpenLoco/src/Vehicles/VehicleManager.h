@@ -22,6 +22,7 @@ namespace OpenLoco::VehicleManager
     void updateMonthly();
     void updateDaily();
     void determineAvailableVehicles(Company& company);
+    void resetIfHeadingForStation(const StationId stationId);
     void deleteTrain(Vehicles::VehicleHead& head);
     void deleteCar(Vehicles::Car& car);
     void placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2);
