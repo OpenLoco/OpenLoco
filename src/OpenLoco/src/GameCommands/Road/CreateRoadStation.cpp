@@ -46,16 +46,6 @@ namespace OpenLoco::GameCommands
         return result;
     }
 
-    static bool sub_48FEF4(StationId id, World::Pos3 pos)
-    {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.ebx = enumValue(id);
-        return call(0x0048FEF4, regs) & X86_FLAG_CARRY;
-    }
-
     enum class NearbyStationValidation
     {
         okay,
@@ -85,7 +75,7 @@ namespace OpenLoco::GameCommands
         }
         else
         {
-            if (sub_48FEF4(nearbyStation.id, pos))
+            if (StationManager::exceedsStationSize(*station, pos))
             {
                 if (nearbyStation.isPhysicallyAttached)
                 {
