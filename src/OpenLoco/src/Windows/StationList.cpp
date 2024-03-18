@@ -464,7 +464,6 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push<uint16_t>(enumValue(station->town));
                 args.push<uint16_t>(getTransportIconsFromStationFlags(station->flags));
 
-
                 auto point = Point(0, yPos);
                 drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, &args);
             }

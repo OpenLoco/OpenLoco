@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push(StringIds::buffer_1250);
 
             origin = Point(x, y);
-            y = drawingCtx.drawStringLeftWrapped(*rt, point, 170, Colour::black, StringIds::challenge_value, &args);
+            y = drawingCtx.drawStringLeftWrapped(*rt, origin, 170, Colour::black, StringIds::challenge_value, &args);
 
             // Start year
             y += 5;
@@ -324,7 +324,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push(scenarioInfo->startYear);
 
             origin = Point(x, y);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_start_date, &args);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::challenge_start_date, &args);
 
             // Competing companies
             y += 10;
@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
 
             origin = Point(x, y);
-            drawingCtx.drawStringLeftWrapped(*rt, point, 170, Colour::black, competitionStringId, &args);
+            drawingCtx.drawStringLeftWrapped(*rt, origin, 170, Colour::black, competitionStringId, &args);
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
                 return;
@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
             competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, competitionStringId, &args);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, competitionStringId, &args);
         }
     }
 

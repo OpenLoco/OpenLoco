@@ -719,7 +719,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 uint8_t amount = (rating * 327) / 256;
-                drawRatingBar(&self, &rt, 100, y, amount, colour);
+                drawRatingBar(&self, &rt, 100, point.y, amount, colour);
 
                 uint16_t percent = rating / 2;
                 point.x = 201;

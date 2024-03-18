@@ -2648,7 +2648,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         if (_constructionHover != 1)
-            drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::build_this);
+        {
+            auto point = Point(x, y);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_this);
+        }
 
         y += 11;
 
@@ -2658,7 +2661,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 FormatArguments args{};
                 args.push<uint32_t>(_trackCost);
-                drawingCtx.drawStringCentred(*rt, x, y, Colour::black, StringIds::build_cost, &args);
+                auto point = Point(x, y);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
             }
         }
     }
