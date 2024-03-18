@@ -194,15 +194,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             Common::draw(window, rt);
 
-            const int16_t xPos = window.x + 5;
-            int16_t yPos = window.y + widgets[widx::check_time_limit].bottom + 10;
-            drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::challenge_label);
+            auto point = Point(window.x + 5, window.y + widgets[widx::check_time_limit].bottom + 10);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_label);
 
             FormatArguments args{};
             OpenLoco::Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
 
-            yPos += 10;
-            drawingCtx.drawStringLeftWrapped(*rt, xPos, yPos, window.width - 10, Colour::black, StringIds::challenge_value, &args);
+            point.y += 10;
+            drawingCtx.drawStringLeftWrapped(*rt, point, window.width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
         static const StringId objectiveTypeLabelIds[] = {
@@ -608,35 +607,20 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             Common::draw(window, rt);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::max_competing_companies].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::max_competing_companies);
-            }
+            auto point = Point(window.x + 10, window.y + widgets[widx::max_competing_companies].top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::max_competing_companies);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::delay_before_competing_companies_start].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::delay_before_competing_companies_start);
-            }
+            point.y = window.y + widgets[widx::delay_before_competing_companies_start].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::delay_before_competing_companies_start);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::preferred_intelligence].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
-            }
+            point.y = window.y + widgets[widx::preferred_intelligence].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_intelligence);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::preferred_aggressiveness].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_aggressiveness);
-            }
+            point.y = window.y + widgets[widx::preferred_aggressiveness].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_aggressiveness);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::preferred_competitiveness].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
-            }
+            point.y = window.y + widgets[widx::preferred_competitiveness].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_competitiveness);
         }
 
         static StringId preferenceLabelIds[] = {
@@ -874,23 +858,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             Common::draw(window, rt);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::starting_loan].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::starting_loan);
-            }
+            auto point = Point(window.x + 10, window.y + widgets[widx::starting_loan].top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::starting_loan);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::max_loan_size].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::max_loan_size);
-            }
+            point.y = window.y + widgets[widx::max_loan_size].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::max_loan_size);
 
-            {
-                const int16_t xPos = window.x + 10;
-                int16_t yPos = window.y + widgets[widx::loan_interest_rate].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::loan_interest_rate);
-            }
+            point.y = window.y + widgets[widx::loan_interest_rate].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::loan_interest_rate);
         }
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
@@ -1032,19 +1007,25 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
-                drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &args);
+
+                auto point = Point(xPos, yPos);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::scenario_name_stringid, &args);
             }
 
             {
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::scenario_group].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::scenario_group);
+
+                auto point = Point(xPos, yPos);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scenario_group);
             }
 
             {
                 const int16_t xPos = window.x + 10;
                 int16_t yPos = window.y + widgets[widx::change_details_btn].top + 1;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::scenario_details);
+
+                auto point = Point(xPos, yPos);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scenario_details);
             }
 
             {
@@ -1063,7 +1044,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 }
 
                 auto& target = window.widgets[widx::change_details_btn];
-                drawingCtx.drawStringLeftWrapped(*rt, window.x + 16, window.y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &args);
+                auto point = Point(window.x + 16, window.y + 12 + target.top);
+                drawingCtx.drawStringLeftWrapped(*rt, point, target.left - 26, Colour::black, StringIds::black_stringid, &args);
             }
         }
 

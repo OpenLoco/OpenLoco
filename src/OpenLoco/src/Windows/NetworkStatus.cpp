@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
         self.draw(rt);
 
-        auto origin = Point32(self.x + (self.width / 2), self.y + (self.height / 2));
+        auto origin = Point(self.x + (self.width / 2), self.y + (self.height / 2));
         auto width = self.width;
 
         drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::buffer_1250, nullptr);
