@@ -39,4 +39,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void createRoadStation(registers& regs);
 }

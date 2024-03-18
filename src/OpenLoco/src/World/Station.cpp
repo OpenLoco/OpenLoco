@@ -174,8 +174,6 @@ namespace OpenLoco
         }
     };
 
-    static StationElement* getStationElement(const Pos3& pos);
-
     // 0x0048B23E
     void Station::update()
     {
@@ -812,7 +810,7 @@ namespace OpenLoco
     }
 
     // 0x0048F6D4
-    static StationElement* getStationElement(const Pos3& pos)
+    StationElement* getStationElement(const Pos3& pos)
     {
         auto tile = TileManager::get(pos.x, pos.y);
         auto baseZ = pos.z / 4;

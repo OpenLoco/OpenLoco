@@ -163,7 +163,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeRoad,                   nullptr,                   0x004775A5, true  },
         { GameCommand::createRoadMod,                nullptr,                   0x0047A21E, true  },
         { GameCommand::removeRoadMod,                nullptr,                   0x0047A42F, true  },
-        { GameCommand::createRoadStation,            nullptr,                   0x0048C708, true  },
+        { GameCommand::createRoadStation,            createRoadStation,         0x0048C708, true  },
         { GameCommand::removeRoadStation,            nullptr,                   0x0048D2AC, true  },
         { GameCommand::createBuilding,               nullptr,                   0x0042D133, true  },
         { GameCommand::removeBuilding,               removeBuilding,            0x0042D74E, true  },
@@ -230,10 +230,19 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        // Used by a gc_unk_51 of going via doCommand
+        // Used by a gc_unk_51 instead of going via doCommand
         registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createTrainStation(backup);
+
+            regs = backup;
+            return 0;
+        });
+
+        // Used by a gc_unk_53 instead of going via doCommand
+        registerHook(0x0048C708, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createRoadStation(backup);
 
             regs = backup;
             return 0;

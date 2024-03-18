@@ -151,7 +151,9 @@ namespace OpenLoco::StringIds
 
     // String below is unused
     constexpr StringId menu_hide_foreground_tracks_roads = 146;
-
+    constexpr StringId station_type_can_only_be_built_at_road_ends = 147;
+    constexpr StringId wrong_type_of_station_for_string_id = 148;
+    constexpr StringId station_not_compatible_with_string_id = 149;
     constexpr StringId level_crossing_in_the_way = 150;
 
     constexpr StringId unable_to_cross_or_create_junction_with_string = 156;
