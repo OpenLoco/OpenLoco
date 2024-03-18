@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
 
         auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
-        drawingCtx.drawStringCentred(*rt, point self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
+        drawingCtx.drawStringCentred(*rt, point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {

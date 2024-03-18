@@ -143,10 +143,9 @@ namespace OpenLoco::Ui::Windows::Town
             args.push(town->population);
 
             const auto& widget = self.widgets[widx::status_bar];
-            const auto x = self.x + widget.left - 1;
-            const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
-            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::status_town_population, &args);
+            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -417,7 +416,8 @@ namespace OpenLoco::Ui::Windows::Town
                 const uint16_t xPos = 39;
                 drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
 
-                drawingCtx.drawStringRight(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                auto point = Point(xPos, yPos - 6);
+                drawingCtx.drawStringRight(*clipped, point, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -439,7 +439,8 @@ namespace OpenLoco::Ui::Windows::Town
                         FormatArguments args{};
                         args.push(year);
 
-                        drawingCtx.drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        auto point = Point(xPos, yPos);
+                        drawingCtx.drawStringCentred(*clipped, point, Colour::black, StringIds::population_graph_year, &args);
                     }
 
                     drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
@@ -531,12 +532,11 @@ namespace OpenLoco::Ui::Windows::Town
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            uint16_t xPos = self.x + 4;
-            uint16_t yPos = self.y + 46;
-            drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            auto point = Point(self.x + 4, self.y + 46);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
-            xPos += 4;
-            yPos += 14;
+            point.x += 4;
+            point.y += 14;
             auto town = TownManager::get(TownId(self.number));
             for (uint8_t i = 0; i < std::size(town->companyRatings); i++)
             {
@@ -562,9 +562,9 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
+                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
-                yPos += 10;
+                point.y += 10;
             }
         }
 

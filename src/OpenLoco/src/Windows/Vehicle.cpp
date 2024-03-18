@@ -982,14 +982,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     strFormat = StringIds::black_stringid;
                 }
 
-                drawingCtx.drawStringLeftClipped(
-                    *rt,
-                    self.x + self.widgets[widx::status].left - 1,
-                    self.y + self.widgets[widx::status].top - 1,
-                    self.widgets[widx::status].width() - 1,
-                    Colour::black,
-                    strFormat,
-                    &args);
+                auto& widget = self.widgets[widx::status];
+                auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+                drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 1, Colour::black, strFormat, &args);
             }
 
             Widget& speedWidget = self.widgets[widx::speedControl];
@@ -1001,19 +996,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     self.y + speedWidget.top + 10,
                     Gfx::recolour(ImageIds::speed_control_track, self.getColour(WindowColour::secondary).c()));
 
-                drawingCtx.drawStringCentred(
-                    *rt,
-                    self.x + speedWidget.midX(),
-                    self.y + speedWidget.top + 4,
-                    Colour::black,
-                    StringIds::tiny_power);
+                auto point = Point(self.x + speedWidget.midX(), self.y + speedWidget.top + 4);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tiny_power);
 
-                drawingCtx.drawStringCentred(
-                    *rt,
-                    self.x + speedWidget.midX(),
-                    self.y + speedWidget.bottom - 10,
-                    Colour::black,
-                    StringIds::tiny_brake);
+                point = Point(self.x + speedWidget.midX(), self.y + speedWidget.bottom - 10);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tiny_brake);
 
                 drawingCtx.drawImage(
                     rt,
@@ -1031,17 +1018,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 FormatArguments args = {};
                 args.push(StringIds::getVehicleType(veh->vehicleType));
-                Ui::Point origin;
-                Widget& button = self.widgets[widx::viewport];
-                origin.x = self.x + button.midX();
-                origin.y = self.y + button.midY();
-                drawingCtx.drawStringCentredWrapped(
-                    *rt,
-                    origin,
-                    button.width() - 6,
-                    Colour::black,
-                    StringIds::click_on_view_select_string_id_start,
-                    &args);
+
+                auto& button = self.widgets[widx::viewport];
+                auto origin = Point(self.x + button.midX(), self.y + button.midY());
+                drawingCtx.drawStringCentredWrapped(*rt, origin, button.width() - 6, Colour::black, StringIds::click_on_view_select_string_id_start, &args);
             }
         }
 
@@ -1581,7 +1561,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_total_power_and_weight;
                 }
-                drawingCtx.drawStringLeftClipped(*rt, pos.x, pos.y, self.width - 6, Colour::black, str, &args);
+                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 6, Colour::black, str, &args);
             }
 
             {
@@ -1595,7 +1575,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
                 }
-                drawingCtx.drawStringLeftClipped(*rt, pos.x, pos.y, self.width - 16, Colour::black, str, &args);
+                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 16, Colour::black, str, &args);
             }
 
             {
@@ -1609,7 +1589,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_car_count_and_length;
                     args.push<uint32_t>(head->getCarCount());
                 }
-                drawingCtx.drawStringLeftClipped(*rt, pos.x, pos.y, self.width - 16, Colour::black, str, &args);
+                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 16, Colour::black, str, &args);
             }
         }
 
