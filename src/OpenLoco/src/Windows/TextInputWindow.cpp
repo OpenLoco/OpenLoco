@@ -250,7 +250,8 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push<uint16_t>(maxNumCharacters);
 
             widget = &_widgets[Widx::ok];
-            drawingCtx.drawStringRight(*rt, window.x + widget->left - 5, window.y + widget->top + 1, Colour::black, StringIds::num_characters_left_int_int, &args);
+            auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
+            drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::num_characters_left_int_int, &args);
         }
 
         if ((inputSession.cursorFrame % 32) >= 16)
@@ -266,7 +267,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push(StringIds::buffer_2039);
 
             position = { inputSession.xOffset, 1 };
-            drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
             drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
         }
     }

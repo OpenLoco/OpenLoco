@@ -1639,7 +1639,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(vehicleObj->name);
                 x += 2;
                 y = pos.y + (self.rowHeight / 2) - 6;
-                drawingCtx.drawStringLeft(rt, x, y, Colour::black, carStr, &args);
+
+                {
+                    auto point = Point(x, y);
+                    drawingCtx.drawStringLeft(rt, point, Colour::black, carStr, &args);
+                }
 
                 pos.y += self.rowHeight;
             }
@@ -1886,16 +1890,26 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             head->generateCargoTotalString(buffer);
-            FormatArguments args = {};
-            args.push<StringId>(StringIds::buffer_1250);
-            drawingCtx.drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 25, self.width - 15, Colour::black, StringIds::total_stringid, &args);
+
+            {
+                FormatArguments args = {};
+                args.push<StringId>(StringIds::buffer_1250);
+
+                auto point = Point(self.x + 3, self.y + self.height - 25);
+                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 15, Colour::black, StringIds::total_stringid, &args);
+            }
 
             // draw cargo capacity
-            buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            head->generateCargoCapacityString(buffer);
-            args = {};
-            args.push<StringId>(StringIds::buffer_1250);
-            drawingCtx.drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
+            {
+                buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+                head->generateCargoCapacityString(buffer);
+
+                FormatArguments args = {};
+                args.push<StringId>(StringIds::buffer_1250);
+
+                auto point = Point(self.x + 3, self.y + self.height - 13);
+                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
+            }
         }
 
         // based on 0x004B40C7
@@ -1911,13 +1925,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
             auto unitNameFormat = cargoQty == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural;
             auto station = StationManager::get(stationId);
+
             FormatArguments args{};
             args.push(StringIds::cargo_from);
             args.push(unitNameFormat);
             args.push<uint32_t>(cargoQty);
             args.push(station->name);
             args.push(station->town);
-            drawingCtx.drawStringLeft(rt, x, y, Colour::black, strFormat, &args);
+
+            auto point = Point(x, y);
+            drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, &args);
             y += 10;
         }
 
@@ -1966,7 +1983,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     {
                         FormatArguments args{};
                         args.push<StringId>(StringIds::cargo_empty);
-                        drawingCtx.drawStringLeft(rt, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
+
+                        auto point = Point(width, cargoTextHeight + 5);
+                        drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, &args);
                     }
                 }
 
@@ -2285,7 +2304,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     FormatArguments args{};
                     args.push<uint32_t>(veh1->lastIncome.day);
                     // Last income on: {DATE DMY}
-                    drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_on_date, &args);
                 }
 
                 pos.y += 10;
@@ -2305,8 +2324,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     args.push(veh1->lastIncome.cargoDistances[i]);
                     args.push<uint16_t>(veh1->lastIncome.cargoAges[i]);
                     args.push<currency32_t>(veh1->lastIncome.cargoProfits[i]);
+
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
-                    drawingCtx.drawStringLeftWrapped(*rt, pos.x + 4, pos.y, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
+                    pos.x += 4;
+                    drawingCtx.drawStringLeftWrapped(*rt, pos, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
+                    pos.x -= 4;
 
                     // TODO: fix function to take pointer to offset
                     pos.y += 12;
@@ -2315,7 +2337,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
             {
                 // Last income: N/A"
-                drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_income_na);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_na);
                 pos.y += 10;
             }
 
@@ -2326,7 +2348,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Last journey average speed: {VELOCITY}
                 FormatArguments args{};
                 args.push(head->lastAverageSpeed);
-                drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_journey_average_speed, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2334,7 +2356,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Monthly Running Cost: {CURRENCY32}
                 FormatArguments args{};
                 args.push(head->calculateRunningCost());
-                drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
                 pos.y += 10;
             }
 
@@ -2343,7 +2365,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
-                drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_profit, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2352,7 +2374,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 args.push(train.head->totalRefundCost);
                 pos.y = self.y + self.height - 14;
-                drawingCtx.drawStringLeft(*rt, pos.x, pos.y, Colour::black, StringIds::sale_value_of_vehicle, &args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::sale_value_of_vehicle, &args);
             }
         }
 
@@ -3193,9 +3215,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (ToolManager::isToolActive(WindowType::vehicle, self.number))
             {
                 // Location at bottom left edge of window
-                Ui::Point loc{ static_cast<int16_t>(self.x + 3), static_cast<int16_t>(self.y + self.height - 13) };
-
-                drawingCtx.drawStringLeftClipped(*rt, loc.x, loc.y, self.width - 14, Colour::black, StringIds::route_click_on_waypoint);
+                auto loc = Point(self.x + 3, self.y + self.height - 13);
+                drawingCtx.drawStringLeftClipped(*rt, loc, self.width - 14, Colour::black, StringIds::route_click_on_waypoint);
             }
         }
 
@@ -3283,8 +3304,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
-            drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
+            auto loc = Point(8, y - 1);
+            drawingCtx.drawStringLeft(rt, loc, Colour::black, strFormat, &args);
+
             if (order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 if (ToolManager::isToolActive(self.type, self.number))
@@ -3313,7 +3335,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto rowNum = 0;
             if (head->sizeOfOrderTable == 1)
             {
-                drawingCtx.drawStringLeft(rt, 8, 0, Colour::black, StringIds::no_route_defined);
+                auto point = Point(8, 0);
+                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::no_route_defined);
                 rowNum++; // Used to move down the text
             }
 
@@ -3361,7 +3384,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 sub_4B4A58(self, rt, strFormat, args, order, y);
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
-                    drawingCtx.drawStringLeft(rt, 1, y - 1, Colour::black, StringIds::orders_current_order);
+                    auto point = Point(1, y - 1);
+                    drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::orders_current_order);
                 }
 
                 rowNum++;
@@ -3383,7 +3407,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            drawingCtx.drawStringLeft(rt, &loc, Colour::black, strFormat, &args);
+            drawingCtx.drawStringLeft(rt, loc, Colour::black, strFormat, &args);
         }
 
         static constexpr WindowEventList kEvents = {
