@@ -230,7 +230,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push(StringIds::buffer_2039);
 
             x += colWidth / 2;
-            drawingCtx.drawStringCentredClipped(*rt, x, y, 170, Colour::black, StringIds::wcolour2_stringid, &args);
+
+            drawingCtx.drawStringCentredClipped(*rt, Point32(x, y), 170, Colour::black, StringIds::wcolour2_stringid, &args);
 
             y += 14;
         }

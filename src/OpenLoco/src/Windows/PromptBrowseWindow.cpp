@@ -396,7 +396,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             auto folder = &_displayFolderBuffer[0];
             auto args = getStringPtrFormatArgs(folder);
-            drawingCtx.drawStringLeft(*rt, window.x + 3, window.y + window.widgets[widx::parent_button].top + 6, Colour::black, StringIds::window_browse_folder, &args);
+            auto point = Point(window.x + 3, window.y + window.widgets[widx::parent_button].top + 6);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_folder, &args);
         }
 
         auto selectedIndex = window.var_85A;
@@ -415,10 +416,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
 
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
+                auto point = Point(x + (width / 2), y);
                 drawingCtx.drawStringCentredClipped(
                     *rt,
-                    x + (width / 2),
-                    y,
+                    point,
                     width,
                     Colour::black,
                     StringIds::wcolour2_stringid,
