@@ -917,8 +917,10 @@ namespace OpenLoco::Ui
         if (activated)
         {
             static constexpr char strCheckmark[] = "\xAC";
+            auto point = Point(window->x + left, window->y + top);
+
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
-            drawingCtx.drawString(*rt, window->x + left, window->y + top, colour.opaque(), strCheckmark);
+            drawingCtx.drawString(*rt, point, colour.opaque(), strCheckmark);
         }
     }
 
@@ -938,7 +940,8 @@ namespace OpenLoco::Ui
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeft(*rt, window->x + left + 14, window->y + top, colour, text, &FormatArguments::common());
+        auto point = Point(window->x + left + 14, window->y + top);
+        drawingCtx.drawStringLeft(*rt, point, colour, text, &FormatArguments::common());
     }
 
     // 0x004CA679
@@ -968,7 +971,8 @@ namespace OpenLoco::Ui
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), text);
 
-            drawingCtx.drawString(*rt, l, t, colour, buffer);
+            auto point = Point(l, t);
+            drawingCtx.drawString(*rt, point, colour, buffer);
             textEndPos = l + drawingCtx.getStringWidth(buffer) + 1;
         }
 

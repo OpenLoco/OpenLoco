@@ -636,7 +636,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             FormatArguments args{};
             args.push(footerStringId);
             args.push(self.var_83C);
-            drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
+
+            auto point = Point(self.x + 3, self.y + self.height - 13);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
         }
 
         static constexpr std::array<StringId, 3> typeToFilterStringIds{
@@ -650,7 +652,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             FormatArguments args{};
             args.push(typeToFilterStringIds[self.var_88A]);
             auto* widget = &self.widgets[Widx::filter_type];
-            drawingCtx.drawStringLeftClipped(*rt, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+
+            auto point = Point(self.x + widget->left + 1, self.y + widget->top);
+            drawingCtx.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         auto* widget = &self.widgets[Widx::cargo_type];
