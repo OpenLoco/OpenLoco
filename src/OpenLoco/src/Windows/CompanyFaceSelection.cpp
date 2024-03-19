@@ -280,8 +280,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
 
-            auto point = Point(x, y);
-            drawingCtx.drawStringCentredClipped(*rt, point, width, Colour::black, StringIds::buffer_2039);
+            drawingCtx.drawStringCentredClipped(*rt, Point(x, y), width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -327,8 +326,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
 
-            auto point = Point(0, y - 1);
-            drawingCtx.drawString(rt, point, stringColour, const_cast<char*>(name.c_str()));
+            drawingCtx.drawString(rt, Point(0, y - 1), stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

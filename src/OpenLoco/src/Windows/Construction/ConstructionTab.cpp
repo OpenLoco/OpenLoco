@@ -2649,8 +2649,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_constructionHover != 1)
         {
-            auto point = Point(x, y);
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_this);
+            drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_this);
         }
 
         y += 11;
@@ -2661,8 +2660,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 FormatArguments args{};
                 args.push<uint32_t>(_trackCost);
-                auto point = Point(x, y);
-                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
+                drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, &args);
             }
         }
     }

@@ -538,11 +538,10 @@ namespace OpenLoco::Ui
         }
 
         int16_t centreX = window->x + (widget->left + widget->right + 1) / 2 - 1;
-        auto point = Point(centreX, y);
         int16_t width = widget->right - widget->left - 2;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, point, width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &FormatArguments::common());
     }
 
     // 0x004CB263
@@ -556,10 +555,9 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
-        auto point = Point(x, y);
         int width = widget->right - widget->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &FormatArguments::common());
     }
 
     // 0x4CB2D6
@@ -630,8 +628,7 @@ namespace OpenLoco::Ui
 
         drawStationNameBackground(rt, window, this, x, y, colour, width);
 
-        auto point = Point(x, y);
-        drawingCtx.drawString(*rt, point, Colour::black, stringBuffer);
+        drawingCtx.drawString(*rt, Point(x, y), Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
@@ -703,9 +700,8 @@ namespace OpenLoco::Ui
 
         // pusha
         {
-            auto point = Point(ax + 2, cx);
             const char* hLeftStr = "\x90\xBE";
-            drawingCtx.drawString(*rt, point, Colour::black, hLeftStr);
+            drawingCtx.drawString(*rt, Point(ax + 2, cx), Colour::black, hLeftStr);
         }
         // popa
 
@@ -720,9 +716,8 @@ namespace OpenLoco::Ui
 
         // pusha
         {
-            auto point = Point(bx - 7, cx);
             const char* hRightStr = "\x90\xAF";
-            drawingCtx.drawString(*rt, point, Colour::black, hRightStr);
+            drawingCtx.drawString(*rt, Point(bx - 7, cx), Colour::black, hRightStr);
         }
         // popa
 
@@ -776,9 +771,8 @@ namespace OpenLoco::Ui
 
         // pusha
         {
-            auto point = Point(ax + 1, cx - 1);
             const char* vTopStr = "\x90\xA0";
-            drawingCtx.drawString(*rt, point, Colour::black, vTopStr);
+            drawingCtx.drawString(*rt, Point(ax + 1, cx - 1), Colour::black, vTopStr);
         }
         // popa
 
@@ -793,9 +787,8 @@ namespace OpenLoco::Ui
 
         // pusha
         {
-            auto point = Point(ax + 1, dx - 9);
             const char* vBottomStr = "\x90\xAA";
-            drawingCtx.drawString(*rt, point, Colour::black, vBottomStr);
+            drawingCtx.drawString(*rt, Point(ax + 1, dx - 9), Colour::black, vBottomStr);
         }
         // popa
 

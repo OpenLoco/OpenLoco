@@ -231,8 +231,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             x += colWidth / 2;
 
-            auto point = Point(x, y);
-            drawingCtx.drawStringCentredClipped(*rt, point, 170, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringCentredClipped(*rt, Point(x, y), 170, Colour::black, StringIds::wcolour2_stringid, &args);
 
             y += 14;
         }
@@ -284,8 +283,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push(StringIds::randomly_generated_landscape);
 
             // Overlay random map note.
-            auto origin = Ui::Point(x, y);
-            drawingCtx.drawStringCentredWrapped(*rt, origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringCentredWrapped(*rt, Point(x, y), 128, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         {
@@ -299,13 +297,11 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             FormatArguments args{};
             args.push(StringIds::buffer_2039);
 
-            auto origin = Ui::Point(x, y);
-            y = drawingCtx.drawStringLeftWrapped(*rt, origin, 170, Colour::black, StringIds::black_stringid, &args);
+            y = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::black_stringid, &args);
 
             // Challenge header
             y += 5;
-            origin = Point(x, y);
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::challenge_label, nullptr);
+            drawingCtx.drawStringLeft(*rt, Point(x, y), Colour::black, StringIds::challenge_label, nullptr);
 
             // Challenge text
             str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -315,16 +311,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push(StringIds::buffer_1250);
 
-            origin = Point(x, y);
-            y = drawingCtx.drawStringLeftWrapped(*rt, origin, 170, Colour::black, StringIds::challenge_value, &args);
+            y = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::challenge_value, &args);
 
             // Start year
             y += 5;
             args = FormatArguments();
             args.push(scenarioInfo->startYear);
 
-            origin = Point(x, y);
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::challenge_start_date, &args);
+            drawingCtx.drawStringLeft(*rt, Point(x, y), Colour::black, StringIds::challenge_start_date, &args);
 
             // Competing companies
             y += 10;
@@ -332,8 +326,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
             StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
 
-            origin = Point(x, y);
-            drawingCtx.drawStringLeftWrapped(*rt, origin, 170, Colour::black, competitionStringId, &args);
+            drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, competitionStringId, &args);
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
                 return;
@@ -342,7 +335,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
             competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, competitionStringId, &args);
+            drawingCtx.drawStringLeft(*rt, Point(x, y), Colour::black, competitionStringId, &args);
         }
     }
 

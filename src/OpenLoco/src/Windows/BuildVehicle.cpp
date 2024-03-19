@@ -1400,8 +1400,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto x = window.widgets[widx::scrollview_vehicle_selection].right + window.x + 2;
         auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + window.y + 2;
-        auto point = Point(x, y);
-        drawingCtx.drawStringLeftWrapped(*rt, point, 180, Colour::black, StringIds::buffer_1250);
+        drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 180, Colour::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
@@ -1535,8 +1534,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
 
-                auto point = Point(89, 52);
-                drawingCtx.drawStringCentredClipped(rt, point, 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
+                drawingCtx.drawStringCentredClipped(rt, Point(89, 52), 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
                 break;
             }
         }
