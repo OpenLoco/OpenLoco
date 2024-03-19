@@ -1127,7 +1127,7 @@ namespace OpenLoco::Drawing
         // dx: y
         // esi: args
         // edi: rt
-        static int32_t drawStringLeftWrapped(
+        static int16_t drawStringLeftWrapped(
             RenderTarget& rt,
             Point origin,
             int16_t width,
@@ -1390,10 +1390,11 @@ namespace OpenLoco::Drawing
             basePoint.y -= (lineHeight / 2) * (breakCount - 1);
 
             const char* ptr = buffer;
+            uint16_t lineWidth{};
 
             for (auto i = 0; ptr != nullptr && i < breakCount; i++)
             {
-                uint16_t lineWidth = getStringWidth(ptr);
+                lineWidth = getStringWidth(ptr);
 
                 auto point = basePoint;
                 point.x -= lineWidth / 2;
@@ -1404,7 +1405,7 @@ namespace OpenLoco::Drawing
                 basePoint.y += lineHeight;
             }
 
-            return basePoint.y;
+            return lineWidth;
         }
 
         // 0x00494E33
