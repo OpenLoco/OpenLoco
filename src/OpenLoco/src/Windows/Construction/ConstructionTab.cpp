@@ -603,7 +603,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             disabledWidgets |= (1 << widx::left_hand_curve_very_small) | (1 << widx::left_hand_curve) | (1 << widx::left_hand_curve_large) | (1 << widx::right_hand_curve_large) | (1 << widx::right_hand_curve) | (1 << widx::right_hand_curve_very_small);
             disabledWidgets |= (1 << widx::s_bend_dual_track_left) | (1 << widx::s_bend_left) | (1 << widx::s_bend_right) | (1 << widx::s_bend_dual_track_right);
 
-            if (!trackObj.hasPieceFlags(TrackObjectPieceFlags::slopedCurve))
+            if (!trackObj.hasPieceFlags(Track::TrackPieceFlags::slopedCurve))
                 disabledWidgets |= (1 << widx::left_hand_curve_small) | (1 << widx::right_hand_curve_small);
         }
 
@@ -622,12 +622,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAF3
     static void disableTrackSlopes(Window* self, TrackObject trackObj, uint64_t disabledWidgets)
     {
-        if (!trackObj.hasPieceFlags(TrackObjectPieceFlags::slope)
-            && !trackObj.hasPieceFlags(TrackObjectPieceFlags::slopedCurve))
+        if (!trackObj.hasPieceFlags(Track::TrackPieceFlags::slope)
+            && !trackObj.hasPieceFlags(Track::TrackPieceFlags::slopedCurve))
             disabledWidgets |= (1 << widx::slope_down) | (1 << widx::slope_up);
 
-        if (!trackObj.hasPieceFlags(TrackObjectPieceFlags::steepSlope)
-            && !trackObj.hasPieceFlags(TrackObjectPieceFlags::slopedCurve))
+        if (!trackObj.hasPieceFlags(Track::TrackPieceFlags::steepSlope)
+            && !trackObj.hasPieceFlags(Track::TrackPieceFlags::slopedCurve))
             disabledWidgets |= (1 << widx::steep_slope_down) | (1 << widx::steep_slope_up);
 
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
@@ -876,7 +876,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::verySmallCurve))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::verySmallCurve))
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -891,19 +891,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::largeCurve))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::largeCurve))
         {
             window->widgets[widx::left_hand_curve_large].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_large].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::normalCurve))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::normalCurve))
         {
             window->widgets[widx::left_hand_curve].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::smallCurve))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::smallCurve))
         {
             window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
         window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::oneSided))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::oneSided))
         {
             window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_right].type = WidgetType::buttonWithImage;
@@ -948,13 +948,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::slope_up].type = WidgetType::none;
         window->widgets[widx::steep_slope_up].type = WidgetType::none;
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::slope))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::slope))
         {
             window->widgets[widx::slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::slope_up].type = WidgetType::buttonWithImage;
         }
 
-        if (trackObj->hasPieceFlags(TrackObjectPieceFlags::steepSlope))
+        if (trackObj->hasPieceFlags(Track::TrackPieceFlags::steepSlope))
         {
             window->widgets[widx::steep_slope_down].type = WidgetType::buttonWithImage;
             window->widgets[widx::steep_slope_up].type = WidgetType::buttonWithImage;
@@ -2118,8 +2118,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static loco_global<uint16_t[44], 0x004F8764> _4F8764;
-    static loco_global<uint16_t[10], 0x004F7284> _4F7284;
+    static loco_global<Track::MiscFlags[10], 0x004F7284> _4F7284;
 
     // 0x0049FB63
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
@@ -2138,7 +2137,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         break;
                     }
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
-                    if (bridgeObj->disabledTrackCfg & _4F8764[args.trackId])
+                    if ((bridgeObj->disabledTrackCfg & TrackData::getTrackMiscData(args.trackId).flags) != Track::MiscFlags::none)
                     {
                         continue;
                     }
@@ -2191,7 +2190,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         break;
                     }
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
-                    if (bridgeObj->disabledTrackCfg & _4F7284[args.roadId])
+                    if ((bridgeObj->disabledTrackCfg & _4F7284[args.roadId]) != Track::MiscFlags::none)
                     {
                         continue;
                     }
@@ -2553,7 +2552,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (selectedMods & (1 << mod))
             {
                 const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-                if ((trackExtraObj->trackPieces & TrackData::getTrackCompatibleFlags(trackPieceId)) != TrackData::getTrackCompatibleFlags(trackPieceId))
+                if ((trackExtraObj->trackPieces & TrackData::getTrackMiscData(trackPieceId).compatibleFlags) != TrackData::getTrackMiscData(trackPieceId).compatibleFlags)
                 {
                     selectedMods &= ~(1 << mod);
                 }
