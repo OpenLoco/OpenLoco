@@ -508,7 +508,7 @@ namespace OpenLoco::World::TileClearance
                 auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
                 cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
 
-                if (flags & GameCommands::Flags::ghost || !(flags & GameCommands::Flags::apply))
+                if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)) || !(flags & GameCommands::Flags::apply))
                 {
                     return ClearFuncResult::noCollision;
                 }
@@ -550,9 +550,9 @@ namespace OpenLoco::World::TileClearance
                 {
                     removeBuildingFlags |= GameCommands::Flags::flag_7;
                 }
-                if (flags & GameCommands::Flags::ghost)
+                if (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
                 {
-                    removeBuildingFlags &= ~(GameCommands::Flags::ghost | GameCommands::Flags::apply);
+                    removeBuildingFlags &= ~(GameCommands::Flags::aiAllocated | GameCommands::Flags::ghost | GameCommands::Flags::apply);
                 }
                 GameCommands::BuildingRemovalArgs args{};
                 args.pos = buildingStart;
@@ -572,7 +572,7 @@ namespace OpenLoco::World::TileClearance
                 }
                 cost += buildingCost;
 
-                if (!(flags & GameCommands::Flags::apply) || flags & GameCommands::Flags::ghost)
+                if (!(flags & GameCommands::Flags::apply) || (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)))
                 {
                     return ClearFuncResult::noCollision;
                 }
