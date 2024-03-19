@@ -984,35 +984,38 @@ namespace OpenLoco::Drawing
          * @param rt @<edi>
          * @param text @<esi>
          */
-        static Ui::Point drawString(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
+        static void drawString(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
         {
             if (colour.isFE())
             {
-                return loopNewline(&rt, origin, str);
+                loopNewline(&rt, origin, str);
+                return;
             }
 
             if (colour.isFD())
             {
                 _currentFontFlags = TextDrawFlags::none;
                 setTextColour(0);
-                return loopNewline(&rt, origin, str);
+                loopNewline(&rt, origin, str);
+                return;
             }
 
             if (origin.x >= rt.x + rt.width)
-                return origin;
+                return;
 
             if (origin.x < rt.x - 1280)
-                return origin;
+                return;
 
             if (origin.y >= rt.y + rt.height)
-                return origin;
+                return;
 
             if (origin.y < rt.y - 90)
-                return origin;
+                return;
 
             if (colour.isFF())
             {
-                return loopNewline(&rt, origin, str);
+                loopNewline(&rt, origin, str);
+                return;
             }
 
             _currentFontFlags = TextDrawFlags::none;
@@ -1071,7 +1074,7 @@ namespace OpenLoco::Drawing
                 setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
             }
 
-            return loopNewline(&rt, origin, str);
+            loopNewline(&rt, origin, str);
         }
 
         // Use only with buffer mangled by wrapString
@@ -1180,7 +1183,7 @@ namespace OpenLoco::Drawing
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
 
             _currentFontSpriteBase = Font::medium_bold;
-            origin = drawString(rt, origin, colour, buffer);
+            drawString(rt, origin, colour, buffer);
         }
 
         // 0x00494BBF
@@ -2386,7 +2389,7 @@ namespace OpenLoco::Drawing
         return Impl::getMaxStringWidth(buffer);
     }
 
-    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
+    void SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
     {
         return Impl::drawString(rt, origin, colour, str);
     }

@@ -19,7 +19,7 @@ namespace OpenLoco::Drawing
         uint16_t getStringWidth(const char* buffer) override;
         uint16_t getMaxStringWidth(const char* buffer) override;
 
-        Ui::Point drawString(
+        void drawString(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
