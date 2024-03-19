@@ -984,7 +984,7 @@ namespace OpenLoco::Drawing
          * @param rt @<edi>
          * @param text @<esi>
          */
-        static Ui::Point drawString(RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, const char* str)
+        static Ui::Point drawString(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
         {
             if (colour.isFE())
             {
@@ -1126,7 +1126,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static int32_t drawStringLeftWrapped(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             int16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1171,7 +1171,7 @@ namespace OpenLoco::Drawing
          */
         static void drawStringLeft(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Drawing
         // bp: width
         static void drawStringLeftClipped(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1217,7 +1217,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringRight(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringRightUnderline(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1273,7 +1273,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringLeftUnderline(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1301,7 +1301,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringCentred(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args)
@@ -1331,7 +1331,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringCentredClipped(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1360,7 +1360,7 @@ namespace OpenLoco::Drawing
          */
         static uint16_t drawStringCentredWrapped(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -1414,7 +1414,7 @@ namespace OpenLoco::Drawing
         // edi: rt
         static void drawStringCentredRaw(
             RenderTarget& rt,
-            Point& origin,
+            Point origin,
             uint16_t linebreakCount,
             AdvancedColour colour,
             const char* wrappedStr)
@@ -1692,7 +1692,7 @@ namespace OpenLoco::Drawing
         }
 
         // 0x004950EF
-        static void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+        static void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
         {
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
@@ -2386,67 +2386,67 @@ namespace OpenLoco::Drawing
         return Impl::getMaxStringWidth(buffer);
     }
 
-    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, const char* str)
+    Ui::Point SoftwareDrawingContext::drawString(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
     {
         return Impl::drawString(rt, origin, colour, str);
     }
 
-    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeft(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeftClipped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeftClipped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeftClipped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeftUnderline(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeftUnderline(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeftUnderline(rt, origin, colour, stringId, args);
     }
 
-    int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringLeftWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentred(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentredClipped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredRaw(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
+    void SoftwareDrawingContext::drawStringCentredRaw(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
     {
         return Impl::drawStringCentredRaw(rt, origin, linebreakCount, colour, wrappedStr);
     }
 
-    uint16_t SoftwareDrawingContext::drawStringCentredWrapped(Gfx::RenderTarget& rt, Ui::Point& origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    uint16_t SoftwareDrawingContext::drawStringCentredWrapped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringCentredWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringRight(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringRight(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
     {
         return Impl::drawStringRight(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringRightUnderline(Gfx::RenderTarget& rt, Ui::Point& origin, AdvancedColour colour, StringId stringId, const void* args)
+    void SoftwareDrawingContext::drawStringRightUnderline(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args)
     {
         return Impl::drawStringRightUnderline(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
+    void SoftwareDrawingContext::drawStringYOffsets(Gfx::RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
     {
         return Impl::drawStringYOffsets(rt, loc, colour, args, yOffsets);
     }
 
-    void SoftwareDrawingContext::drawStringTicker(Gfx::RenderTarget& rt, Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+    void SoftwareDrawingContext::drawStringTicker(Gfx::RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
     {
         Impl::drawStringTicker(rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
     }
