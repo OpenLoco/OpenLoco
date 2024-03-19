@@ -1,9 +1,12 @@
 #include "TrackData.h"
+#include "TrackEnum.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <bit>
 #include <cassert>
+
+using namespace OpenLoco::World::Track;
 
 namespace OpenLoco::World::TrackData
 {
@@ -405,7 +408,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000000,
+            .compatibleFlags = TrackPieceFlags::none,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 32,
             .sparkDirection = true },
@@ -416,7 +419,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000001,
+            .compatibleFlags = TrackPieceFlags::diagonal,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 45,
             .sparkDirection = false },
@@ -427,7 +430,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000010000,
+            .compatibleFlags = TrackPieceFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 25,
             .sparkDirection = true },
@@ -438,7 +441,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000010000,
+            .compatibleFlags = TrackPieceFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 25,
             .sparkDirection = false },
@@ -449,7 +452,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000001000,
+            .compatibleFlags = TrackPieceFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 75,
             .sparkDirection = true },
@@ -460,7 +463,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000001000,
+            .compatibleFlags = TrackPieceFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 75,
             .sparkDirection = false },
@@ -471,7 +474,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000100,
+            .compatibleFlags = TrackPieceFlags::normalCurve,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 126,
             .sparkDirection = true },
@@ -482,7 +485,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000100,
+            .compatibleFlags = TrackPieceFlags::normalCurve,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 126,
             .sparkDirection = false },
@@ -493,7 +496,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000010,
+            .compatibleFlags = TrackPieceFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
             .sparkDirection = true },
@@ -504,7 +507,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000010,
+            .compatibleFlags = TrackPieceFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
             .sparkDirection = false },
@@ -515,7 +518,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000010,
+            .compatibleFlags = TrackPieceFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
             .sparkDirection = true },
@@ -526,7 +529,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b000000010,
+            .compatibleFlags = TrackPieceFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
             .sparkDirection = false },
@@ -537,7 +540,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b1000000000,
+            .compatibleFlags = TrackPieceFlags::sBend,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 106,
             .sparkDirection = false },
@@ -548,7 +551,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b1000000000,
+            .compatibleFlags = TrackPieceFlags::sBend,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 106,
             .sparkDirection = false },
@@ -559,7 +562,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 1,
             .signalHeightOffsetRight = 15,
-            .compatibleFlags = 0b000100000,
+            .compatibleFlags = TrackPieceFlags::slope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 66,
             .sparkDirection = false },
@@ -570,7 +573,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 15,
             .signalHeightOffsetRight = 1,
-            .compatibleFlags = 0b000100000,
+            .compatibleFlags = TrackPieceFlags::slope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 66,
             .sparkDirection = true },
@@ -581,7 +584,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 2,
             .signalHeightOffsetRight = 14,
-            .compatibleFlags = 0b001000000,
+            .compatibleFlags = TrackPieceFlags::steepSlope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
             .sparkDirection = false },
@@ -592,7 +595,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 14,
             .signalHeightOffsetRight = 2,
-            .compatibleFlags = 0b001000000,
+            .compatibleFlags = TrackPieceFlags::steepSlope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
             .sparkDirection = true },
@@ -603,7 +606,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 1,
             .signalHeightOffsetRight = 15,
-            .compatibleFlags = 0b100101000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::slope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
             .sparkDirection = true },
@@ -614,7 +617,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 1,
             .signalHeightOffsetRight = 15,
-            .compatibleFlags = 0b100101000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::slope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
             .sparkDirection = false },
@@ -625,7 +628,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 15,
             .signalHeightOffsetRight = 1,
-            .compatibleFlags = 0b100101000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::slope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
             .sparkDirection = true },
@@ -636,7 +639,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 15,
             .signalHeightOffsetRight = 1,
-            .compatibleFlags = 0b100101000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::slope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
             .sparkDirection = false },
@@ -647,7 +650,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 2,
             .signalHeightOffsetRight = 14,
-            .compatibleFlags = 0b101001000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::steepSlope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
             .sparkDirection = true },
@@ -658,7 +661,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 2,
             .signalHeightOffsetRight = 14,
-            .compatibleFlags = 0b101001000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::steepSlope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
             .sparkDirection = false },
@@ -669,7 +672,7 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 14,
             .signalHeightOffsetRight = 2,
-            .compatibleFlags = 0b101001000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::steepSlope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
             .sparkDirection = true },
@@ -680,208 +683,222 @@ namespace OpenLoco::World::TrackData
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 14,
             .signalHeightOffsetRight = 2,
-            .compatibleFlags = 0b101001000,
+            .compatibleFlags = TrackPieceFlags::smallCurve | TrackPieceFlags::steepSlope | TrackPieceFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x100,
-            .flags = MiscFlags::unk,
+            .flags = MiscFlags::oneSided,
             .reverseTrackId = 27,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 32,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x100,
-            .flags = MiscFlags::unk,
+            .flags = MiscFlags::oneSided,
             .reverseTrackId = 26,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 32,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x064,
-            .flags = MiscFlags::verySmallCurve | MiscFlags::unk,
+            .flags = MiscFlags::verySmallCurve | MiscFlags::oneSided,
             .reverseTrackId = 31,
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010010000,
+            .compatibleFlags = TrackPieceFlags::verySmallCurve | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 13,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x12D,
-            .flags = MiscFlags::verySmallCurve | MiscFlags::unk,
+            .flags = MiscFlags::verySmallCurve | MiscFlags::oneSided,
             .reverseTrackId = 30,
             .reverseRotation = 1,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010010000,
+            .compatibleFlags = TrackPieceFlags::verySmallCurve | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 38,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x12D,
-            .flags = MiscFlags::verySmallCurve | MiscFlags::unk,
+            .flags = MiscFlags::verySmallCurve | MiscFlags::oneSided,
             .reverseTrackId = 29,
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010010000,
+            .compatibleFlags = TrackPieceFlags::verySmallCurve | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 38,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x064,
-            .flags = MiscFlags::verySmallCurve | MiscFlags::unk,
+            .flags = MiscFlags::verySmallCurve | MiscFlags::oneSided,
             .reverseTrackId = 28,
             .reverseRotation = 3,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010010000,
+            .compatibleFlags = TrackPieceFlags::verySmallCurve | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 13,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x126,
-            .flags = MiscFlags::sBendCurve | MiscFlags::unk,
+            .flags = MiscFlags::sBendCurve | MiscFlags::oneSided,
             .reverseTrackId = 32,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 36,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x126,
-            .flags = MiscFlags::sBendCurve | MiscFlags::unk,
+            .flags = MiscFlags::sBendCurve | MiscFlags::oneSided,
             .reverseTrackId = 33,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 36,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x138,
-            .flags = MiscFlags::steepSlope | MiscFlags::unk,
+            .flags = MiscFlags::steepSlope | MiscFlags::oneSided,
             .reverseTrackId = 37,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 2,
             .signalHeightOffsetRight = 14,
-            .compatibleFlags = 0b011000000,
+            .compatibleFlags = TrackPieceFlags::steepSlope | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x138,
-            .flags = MiscFlags::steepSlope | MiscFlags::unk,
+            .flags = MiscFlags::steepSlope | MiscFlags::oneSided,
             .reverseTrackId = 36,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 2,
             .signalHeightOffsetRight = 14,
-            .compatibleFlags = 0b011000000,
+            .compatibleFlags = TrackPieceFlags::steepSlope | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x138,
-            .flags = MiscFlags::steepSlope | MiscFlags::unk,
+            .flags = MiscFlags::steepSlope | MiscFlags::oneSided,
             .reverseTrackId = 35,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 14,
             .signalHeightOffsetRight = 2,
-            .compatibleFlags = 0b011000000,
+            .compatibleFlags = TrackPieceFlags::steepSlope | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x138,
-            .flags = MiscFlags::steepSlope | MiscFlags::unk,
+            .flags = MiscFlags::steepSlope | MiscFlags::oneSided,
             .reverseTrackId = 34,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 14,
             .signalHeightOffsetRight = 2,
-            .compatibleFlags = 0b011000000,
+            .compatibleFlags = TrackPieceFlags::steepSlope | TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x114,
-            .flags = MiscFlags::sBendCurve | MiscFlags::unk,
+            .flags = MiscFlags::sBendCurve | MiscFlags::oneSided,
             .reverseTrackId = 41,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x114,
-            .flags = MiscFlags::sBendCurve | MiscFlags::unk,
+            .flags = MiscFlags::sBendCurve | MiscFlags::oneSided,
             .reverseTrackId = 40,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x114,
-            .flags = MiscFlags::sBendCurve | MiscFlags::unk,
+            .flags = MiscFlags::sBendCurve | MiscFlags::oneSided,
             .reverseTrackId = 39,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x114,
-            .flags = MiscFlags::sBendCurve | MiscFlags::unk,
+            .flags = MiscFlags::sBendCurve | MiscFlags::oneSided,
             .reverseTrackId = 38,
             .reverseRotation = 2,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x25B,
-            .flags = MiscFlags::verySmallCurve | MiscFlags::unk,
+            .flags = MiscFlags::verySmallCurve | MiscFlags::oneSided,
             .reverseTrackId = 43,
             .reverseRotation = 0,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 26,
             .sparkDirection = false },
         MiscData{
             .costFactor = 0x25B,
-            .flags = MiscFlags::verySmallCurve | MiscFlags::unk,
+            .flags = MiscFlags::verySmallCurve | MiscFlags::oneSided,
             .reverseTrackId = 42,
             .reverseRotation = 0,
             .signalHeightOffsetLeft = 0,
             .signalHeightOffsetRight = 0,
-            .compatibleFlags = 0b010000000,
+            .compatibleFlags = TrackPieceFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 26,
             .sparkDirection = false },
+    };
+
+    std::array<std::string, 11> _pieceFlagsToString{
+        "TrackPieceFlags::diagonal",
+        "TrackPieceFlags::largeCurve",
+        "TrackPieceFlags::normalCurve",
+        "TrackPieceFlags::smallCurve",
+        "TrackPieceFlags::verySmallCurve",
+        "TrackPieceFlags::slope",
+        "TrackPieceFlags::steepSlope",
+        "TrackPieceFlags::oneSided",
+        "TrackPieceFlags::slopedCurve",
+        "TrackPieceFlags::sBend",
+        "TrackPieceFlags::junction",
     };
 
     std::array<std::string, 10> _miscToString{
@@ -894,7 +911,7 @@ namespace OpenLoco::World::TrackData
         "MiscFlags::curve",
         "MiscFlags::largeCurve",
         "MiscFlags::sBendCurve",
-        "MiscFlags::unk",
+        "MiscFlags::oneSided",
     };
 
     std::string toMiscString(uint16_t val)
@@ -920,6 +937,34 @@ namespace OpenLoco::World::TrackData
         }
         return out;
     }
+    std::string toTrackPieceString(uint16_t val)
+    {
+        std::string out;
+        for (auto i = 0; i < 11; ++i)
+        {
+            if (val & (1U << i))
+            {
+                if (out.empty())
+                {
+                    out = _pieceFlagsToString[i];
+                }
+                else
+                {
+                    out += " | " + _pieceFlagsToString[i];
+                }
+            }
+        }
+        if (out.empty())
+        {
+            out = "TrackPieceFlags::none";
+        }
+        return out;
+    }
+
+    const MiscData& getTrackMiscData(size_t trackId)
+    {
+        return _miscData[trackId];
+    }
 
     uint16_t getTrackCompatibleFlags(size_t trackId)
     {
@@ -932,7 +977,7 @@ namespace OpenLoco::World::TrackData
             data.reverseRotation = _variousThings[i * 8 + 1];
             data.signalHeightOffsetLeft = _variousThings[i * 8 + 2];
             data.signalHeightOffsetRight = _variousThings[i * 8 + 3];
-            data.compatibleFlags = _compatibleFlags[i];
+            data.compatibleFlags = static_cast<TrackPieceFlags>(_compatibleFlags[i]);
             data.curveSpeedFraction = _curveSpeedFraction[i];
             data.unkWeighting = _unkWeighting[i];
             data.sparkDirection = _sparkDirection[i];
@@ -940,7 +985,7 @@ namespace OpenLoco::World::TrackData
             fmt::println("MiscData {{");
             fmt::println(".costFactor = 0x{:03X},\n.flags = {},\n.reverseTrackId = {},", data.costFactor, toMiscString(enumValue(data.flags)), data.reverseTrackId);
             fmt::println(".reverseRotation = {},\n.signalHeightOffsetLeft = {},\n.signalHeightOffsetRight = {},", data.reverseRotation, data.signalHeightOffsetLeft, data.signalHeightOffsetRight);
-            fmt::println(".compatibleFlags = {:#011b},\n.curveSpeedFraction = 0x{:04X},\n.unkWeighting = {},\n.sparkDirection = {}", data.compatibleFlags, data.curveSpeedFraction, data.unkWeighting, data.sparkDirection);
+            fmt::println(".compatibleFlags = {},\n.curveSpeedFraction = 0x{:04X},\n.unkWeighting = {},\n.sparkDirection = {}", toTrackPieceString(enumValue(data.compatibleFlags)), data.curveSpeedFraction, data.unkWeighting, data.sparkDirection);
             fmt::println("}},");
         }
         return kTrackCompatibleFlags[trackId];

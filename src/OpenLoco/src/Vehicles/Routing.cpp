@@ -757,7 +757,7 @@ namespace OpenLoco::Vehicles
 
             auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
 
-            const auto pieceFlags = TrackData::getTrackCompatibleFlags(interest.tad().id());
+            const auto pieceFlags = TrackData::getTrackMiscData(interest.tad().id()).compatibleFlags;
             if ((trackModObj->trackPieces & pieceFlags) != pieceFlags)
             {
                 //_1135F64 |= (1 << 0); placement failed at least once
