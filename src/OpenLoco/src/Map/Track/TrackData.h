@@ -59,10 +59,26 @@ namespace OpenLoco::World::TrackData
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 
+    enum class MiscFlags : uint16_t
+    {
+        none = 0U,
+        slope = 1U << 0,
+        steepSlope = 1U << 1,
+        curveSlope = 1U << 2,
+        diagonal = 1U << 3,
+        verySmallCurve = 1U << 4,
+        smallCurve = 1U << 5,
+        curve = 1U << 6,
+        largeCurve = 1U << 7,
+        sBendCurve = 1U << 8,
+        unk = 1U << 9,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(MiscFlags);
+
     struct MiscData
     {
         uint16_t costFactor;             // 0x004F870C
-        uint16_t flags;                  // 0x004F8764
+        MiscFlags flags;                 // 0x004F8764
         uint8_t reverseTrackId;          // 0x004F87BC
         uint8_t reverseRotation;         // 0x004F87BD
         uint8_t signalHeightOffsetLeft;  // 0x004F87BE
