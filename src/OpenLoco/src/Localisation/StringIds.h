@@ -1949,6 +1949,8 @@ namespace OpenLoco::StringIds
     constexpr StringId selectPreferredCompanyOwnerFace = 2331;
     constexpr StringId disableStationSizeLimitLabel = 2332;
     constexpr StringId disableStationSizeLimitTooltip = 2333;
+    constexpr StringId title_landscape_generation_water = 2334;
+    constexpr StringId tooltip_landscape_generation_water = 2335;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
