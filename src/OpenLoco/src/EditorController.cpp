@@ -80,7 +80,7 @@ namespace OpenLoco::EditorController
         }
 
         options.scenarioFlags &= ~Scenario::ScenarioFlags::landscapeGenerationDone;
-        if (addr<0x00525E28, uint32_t>() & 1)
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             options.scenarioFlags |= Scenario::ScenarioFlags::landscapeGenerationDone;
             Game::sub_46DB4C(); // draw preview map
@@ -97,7 +97,7 @@ namespace OpenLoco::EditorController
     // 0x0043EE25
     static bool validateStep1()
     {
-        if ((addr<0x00525E28, uint32_t>() & 1) == 0)
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             return true;
         }
@@ -196,7 +196,7 @@ namespace OpenLoco::EditorController
                 Windows::LandscapeGeneration::open();
                 if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
                 {
-                    if ((addr<0x00525E28, uint32_t>() & 1) == 0)
+                    if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
                     {
                         Scenario::generateLandscape();
                     }
