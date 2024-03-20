@@ -2118,8 +2118,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    static loco_global<Track::MiscFlags[10], 0x004F7284> _4F7284;
-
     // 0x0049FB63
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
     {
@@ -2190,7 +2188,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         break;
                     }
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
-                    if ((bridgeObj->disabledTrackCfg & _4F7284[args.roadId]) != Track::MiscFlags::none)
+                    if ((bridgeObj->disabledTrackCfg & TrackData::getRoadMiscData(args.roadId).flags) != Track::MiscFlags::none)
                     {
                         continue;
                     }

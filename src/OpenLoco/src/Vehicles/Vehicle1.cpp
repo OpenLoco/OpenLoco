@@ -46,21 +46,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004F72FC
-    // TODO: Move to track data
-    std::array<uint16_t, 10> _roadIdToCurveSpeedFraction = {
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-    };
-
     // 0x004A9969
     bool Vehicle1::updateRoad()
     {
@@ -73,7 +58,7 @@ namespace OpenLoco::Vehicles
             auto res = RoutingManager::getRouting(*iter);
             isOnRackRail |= (res & (1 << 13)) != 0; // rackrail
             uint8_t roadId = (res >> 3) & 0xF;
-            curveSpeedFraction = std::min(curveSpeedFraction, _roadIdToCurveSpeedFraction[roadId]);
+            curveSpeedFraction = std::min(curveSpeedFraction, World::TrackData::getRoadMiscData(roadId).curveSpeedFraction);
             if (res & (1 << 12))
             {
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);

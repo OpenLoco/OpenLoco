@@ -91,9 +91,6 @@ namespace OpenLoco::World::TrackData
         uint16_t curveSpeedFraction;           // 0x004F72FC
         uint32_t unkWeighting;                 // 0x004F7310
     };
-    // TODO: Combine these two
-    uint16_t getRoadCompatibleFlags(size_t roadId);
-    uint16_t getRoadCostFactor(size_t roadId);
 
     const MiscData& getTrackMiscData(size_t trackId);
     const RoadMiscData& getRoadMiscData(size_t roadId);

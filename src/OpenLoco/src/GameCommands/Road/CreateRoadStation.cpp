@@ -196,7 +196,7 @@ namespace OpenLoco::GameCommands
 
         auto* stationObj = ObjectManager::get<RoadStationObject>(args.type);
 
-        const auto trackIdCompatFlags = World::TrackData::getRoadCompatibleFlags(args.roadId);
+        const auto trackIdCompatFlags = World::TrackData::getRoadMiscData(args.roadId).compatibleFlags;
         const auto compatibleTrack = stationObj->roadPieces & trackIdCompatFlags;
         if (compatibleTrack != trackIdCompatFlags)
         {
@@ -519,14 +519,14 @@ namespace OpenLoco::GameCommands
                     {
                         auto* oldStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
                         auto removeCostBase = Economy::getInflationAdjustedCost(oldStationObj->sellCostFactor, oldStationObj->costIndex, 8);
-                        const auto cost = (removeCostBase * World::TrackData::getRoadCostFactor(args.roadId)) / 256;
+                        const auto cost = (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
                         totalCost += cost;
                     }
                 }
                 if (calculateCost)
                 {
                     auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
-                    const auto cost = (placementCostBase * World::TrackData::getRoadCostFactor(args.roadId)) / 256;
+                    const auto cost = (placementCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
                     totalCost += cost;
                 }
             }
