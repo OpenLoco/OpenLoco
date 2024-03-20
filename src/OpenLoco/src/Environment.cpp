@@ -221,57 +221,45 @@ namespace OpenLoco::Environment
         }
     }
 
+    static fs::path tryPathOrDefault(fs::path pathToTry, PathId defaultPathId)
+    {
+        if (!pathToTry.empty())
+        {
+            // Getting the directory can fail if config is bad.
+            try
+            {
+                if (fs::is_directory(pathToTry))
+                {
+                    return pathToTry;
+                }
+            }
+            catch (std::system_error&)
+            {
+            }
+        }
+
+        // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
+        auto defaultPath = getPathNoWarning(defaultPathId) / "";
+        autoCreateDirectory(defaultPath);
+        return defaultPath;
+    }
+
     // 0x004412CE
     void resolvePaths()
     {
         auto basePath = resolveLocoInstallPath();
         setDirectory(_pathInstall, basePath);
 
-        // Figure out what save directory to default to.
-        // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
-        auto saveDirectory = getPathNoWarning(PathId::save) / "";
-        autoCreateDirectory(saveDirectory);
+        // Figure out what save directory to default to
+        auto configLastSavePath = fs::u8path(Config::get().lastSavePath);
+        auto saveDirectory = tryPathOrDefault(configLastSavePath, PathId::save);
 
-        auto& configLastSavePath = Config::get().lastSavePath;
-        if (!configLastSavePath.empty())
-        {
-            // Getting the directory can fail if config is bad.
-            try
-            {
-                auto directory = fs::u8path(configLastSavePath);
-                if (fs::is_directory(directory))
-                {
-                    saveDirectory = directory;
-                }
-            }
-            catch (std::system_error&)
-            {
-            }
-        }
         setDirectory(_pathSavesSinglePlayer, saveDirectory);
         setDirectory(_pathSavesTwoPlayer, saveDirectory);
 
-        // Figure out what landscape directory to default to.
-        // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
-        auto landscapeDirectory = getPathNoWarning(PathId::landscape) / "";
-        autoCreateDirectory(landscapeDirectory);
-
-        auto& configLastLandscapePath = Config::get().lastLandscapePath;
-        if (!configLastLandscapePath.empty())
-        {
-            // Getting the directory can fail if config is bad.
-            try
-            {
-                auto directory = fs::u8path(configLastLandscapePath);
-                if (fs::is_directory(directory))
-                {
-                    landscapeDirectory = directory;
-                }
-            }
-            catch (std::system_error&)
-            {
-            }
-        }
+        // Figure out what landscape directory to default to
+        auto configLastLandscapePath = fs::u8path(Config::get().lastLandscapePath);
+        auto landscapeDirectory = tryPathOrDefault(configLastLandscapePath, PathId::landscape);
 
         setDirectory(_pathLandscapes, landscapeDirectory / "*.SC5");
         setDirectory(_pathScenarios, basePath / "Scenarios/*.SC5");
