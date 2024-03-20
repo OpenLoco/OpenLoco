@@ -10,6 +10,7 @@
 namespace OpenLoco
 {
     enum class LoadOrQuitMode : uint16_t;
+    enum class ObjectType : uint8_t;
 }
 
 namespace OpenLoco::Gfx
@@ -273,6 +274,7 @@ namespace OpenLoco::Ui::Windows
     namespace ObjectSelectionWindow
     {
         Window* open();
+        Window& openInTab(ObjectType objectType);
         bool tryCloseWindow();
     }
 
