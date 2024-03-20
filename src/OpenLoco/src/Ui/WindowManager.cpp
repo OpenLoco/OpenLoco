@@ -1,7 +1,6 @@
 #include "WindowManager.h"
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
-#include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
@@ -92,15 +91,6 @@ namespace OpenLoco::Ui::WindowManager
                 Windows::CompanyWindow::openChallenge(CompanyId(regs.ax));
                 regs = backup;
 
-                return 0;
-            });
-
-        registerHook(
-            0x0043CB9F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                EditorController::showEditor();
-                regs = backup;
                 return 0;
             });
 
