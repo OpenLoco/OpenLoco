@@ -34,7 +34,6 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<uint8_t, 0x00508F17> _paused_state;
     static loco_global<char[267], 0x00050B745> _activeSavePath;
     static loco_global<char[512], 0x00112CE04> _scenarioFilename;
 
