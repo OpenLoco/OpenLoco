@@ -1763,7 +1763,7 @@ namespace OpenLoco::StringIds
     constexpr StringId autosave_never = 2145;
     constexpr StringId autosave_every_month = 2146;
     constexpr StringId autosave_every_x_months = 2147;
-    constexpr StringId generator = 2148;
+    constexpr StringId height_map_source = 2148;
     constexpr StringId generator_original = 2149;
     constexpr StringId generator_simplex = 2150;
     constexpr StringId dropdown_modify_vehicle = 2151;
@@ -1952,8 +1952,8 @@ namespace OpenLoco::StringIds
     constexpr StringId title_landscape_generation_water = 2334;
     constexpr StringId tooltip_landscape_generation_water = 2335;
     constexpr StringId landscapeOptionsGroupGeneral = 2336;
-    constexpr StringId landscapeOptionsGroupGenerator = 2336;
-    constexpr StringId landscapeOptionsCurrentHillObject = 2337;
+    constexpr StringId landscapeOptionsGroupGenerator = 2337;
+    constexpr StringId landscapeOptionsCurrentHillObject = 2338;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

@@ -164,8 +164,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             start_year,
             start_year_down,
             start_year_up,
-            generator,
-            generator_btn,
+            heightMapBox,
+            heightMapDropdown,
 
             groupGenerator,
             change_heightmap_btn,
@@ -179,8 +179,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets |
              (1 << widx::start_year_up) |
              (1 << widx::start_year_down) |
-             (1 << widx::generator) |
-             (1 << widx::generator_btn) |
+             (1 << widx::heightMapBox) |
+             (1 << widx::heightMapDropdown) |
              (1 << widx::change_heightmap_btn) |
              (1 << widx::generate_when_game_starts) |
              (1 << widx::generate_now);
@@ -221,9 +221,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             drawingCtx.drawStringLeft(
                 *rt,
                 window.x + 10,
-                window.y + window.widgets[widx::generator].top,
+                window.y + window.widgets[widx::heightMapBox].top,
                 Colour::black,
-                StringIds::generator);
+                StringIds::height_map_source);
 
             auto& options = S5::getOptions();
             if (options.generator == S5::LandGeneratorType::Original)
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             args.push<uint16_t>(S5::getOptions().scenarioStartYear);
 
             auto& options = S5::getOptions();
-            window.widgets[widx::generator].text = generatorIds[enumValue(options.generator)];
+            window.widgets[widx::heightMapBox].text = generatorIds[enumValue(options.generator)];
 
             if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             switch (widgetIndex)
             {
-                case widx::generator_btn:
+                case widx::heightMapDropdown:
                     if (itemIndex != -1)
                     {
                         S5::getOptions().generator = static_cast<S5::LandGeneratorType>(itemIndex);
@@ -316,9 +316,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     window.invalidate();
                     break;
 
-                case widx::generator_btn:
+                case widx::heightMapDropdown:
                 {
-                    Widget& target = window.widgets[widx::generator];
+                    Widget& target = window.widgets[widx::heightMapBox];
                     Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
 
                     for (size_t i = 0; i < std::size(generatorIds); i++)
