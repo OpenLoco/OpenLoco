@@ -1,6 +1,8 @@
 #include "ObjectIndex.h"
 #include "Environment.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -970,7 +972,7 @@ namespace OpenLoco::ObjectManager
 
         markLoadedObjects(loadedObjectFlags);
 
-        if ((addr<0x00525E28, uint32_t>() & 1) != 0)
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             loadedObjectFlags[enumValue(ObjectType::region)][0] |= (1U << 0);
             markInUseObjectsByTile(loadedObjectFlags);
