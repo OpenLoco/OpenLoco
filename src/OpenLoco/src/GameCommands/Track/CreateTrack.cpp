@@ -253,6 +253,7 @@ namespace OpenLoco::GameCommands
         }
 
         if (elRoad.roadId() != 0
+            || args.trackId != 0
             || !((elRoad.unkDirection() - args.rotation) & 0b1)
             || elRoad.baseHeight() != args.pos.z)
         {
