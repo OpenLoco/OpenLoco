@@ -7,6 +7,7 @@
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Objects/HillShapesObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
@@ -164,18 +165,37 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             start_year_up,
             generator,
             generator_btn,
+
+            change_heightmap_btn,
             generate_when_game_starts,
+
             generate_now,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::start_year_up) | (1 << widx::start_year_down) | (1 << widx::generate_when_game_starts) | (1 << widx::generate_now) | (1 << widx::generator) | (1 << widx::generator_btn);
+        // clang-format off
         const uint64_t holdable_widgets = (1 << widx::start_year_up) | (1 << widx::start_year_down);
+        const uint64_t enabled_widgets = Common::enabled_widgets |
+             (1 << widx::start_year_up) |
+             (1 << widx::start_year_down) |
+             (1 << widx::generator) |
+             (1 << widx::generator_btn) |
+             (1 << widx::change_heightmap_btn) |
+             (1 << widx::generate_when_game_starts) |
+             (1 << widx::generate_now);
+        // clang-format on
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_options),
+
+            // General options
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::start_year_value),
             makeDropdownWidgets({ 176, 68 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
+
+            // Generator options
+            makeWidget({ 205, 112 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeWidget({ 10, 84 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+
+            // Generate button
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
@@ -200,6 +220,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 window.y + window.widgets[widx::generator].top,
                 Colour::black,
                 StringIds::generator);
+
+            auto& options = S5::getOptions();
+            if (options.generator == S5::LandGeneratorType::Original)
+            {
+                auto* obj = ObjectManager::get<HillShapesObject>();
+                auto pos = Point(window.x + 10, window.y + window.widgets[widx::change_heightmap_btn].top);
+                drawingCtx.drawStringLeft(*rt, &pos, Colour::black, obj->name);
+            }
         }
 
         static const StringId generatorIds[] = {
@@ -216,7 +244,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             args.push<uint16_t>(S5::getOptions().scenarioStartYear);
 
             auto& options = S5::getOptions();
-            window.widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
+            window.widgets[widx::generator].text = generatorIds[enumValue(options.generator)];
 
             if ((S5::getOptions().scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
@@ -324,6 +352,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         WindowManager::closeConstructionWindows();
                         confirmResetLandscape(1);
                     }
+                    break;
+
+                case widx::change_heightmap_btn:
+                    EditorController::goToPreviousStep();
+                    ObjectSelectionWindow::openInTab(ObjectType::hillShapes);
                     break;
 
                 case widx::generate_now:
