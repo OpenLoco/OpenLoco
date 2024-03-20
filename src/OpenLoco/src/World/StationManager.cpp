@@ -644,7 +644,7 @@ namespace OpenLoco::StationManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
-                const auto newName = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh * 4), regs.dl);
+                const auto newName = generateNewStationName(stationId, TownId(regs.ebx), World::Pos3(regs.ax, regs.cx, regs.dh * World::kSmallZStep), regs.dl);
                 regs = backup;
                 regs.bx = newName;
                 return 0;
