@@ -468,7 +468,7 @@ namespace OpenLoco::World::MapGenerator
                 if (surface == nullptr)
                     continue;
 
-                auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kMicroToSmallZStep;
+                auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kSmallZStep;
 
                 auto randomRotation = getGameState().rng.randNext(0, 3);
                 auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations - 1);
@@ -492,8 +492,9 @@ namespace OpenLoco::World::MapGenerator
     static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
     {
         generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            // This kind of object (e.g. a transmitter) only occurs in mountains
             auto* surface = tile.surface();
-            return surface->baseZ() < 100;
+            return surface->baseZ() >= 100;
         });
     }
 
@@ -523,7 +524,7 @@ namespace OpenLoco::World::MapGenerator
     {
         generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
             auto* surface = tile.surface();
-            return surface->baseZ() >= 40 && surface->baseZ() < 92;
+            return surface->baseZ() >= 40 && surface->baseZ() <= 92;
         });
     }
 
