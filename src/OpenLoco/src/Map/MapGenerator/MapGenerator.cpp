@@ -457,8 +457,8 @@ namespace OpenLoco::World::MapGenerator
             for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
             {
                 // NB: coordinate selection has been simplified compared to vanilla
-                auto randomX = getGameState().rng.randNext(2, 382);
-                auto randomY = getGameState().rng.randNext(2, 382);
+                auto randomX = getGameState().rng.randNext(2, kMapRows - 2);
+                auto randomY = getGameState().rng.randNext(2, kMapColumns - 2);
 
                 auto tile = TileManager::get(TilePos2(randomX, randomY));
                 if (!predicate(tile))
