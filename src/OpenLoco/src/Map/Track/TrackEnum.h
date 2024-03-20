@@ -98,6 +98,7 @@ namespace OpenLoco::World::Track
         intersection = 1U << 4,
         oneSided = 1U << 5,
         overtake = 1U << 6,
+        unk = 1U << 7,
         streetLights = 1U << 8,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);

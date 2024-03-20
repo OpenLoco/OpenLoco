@@ -96,4 +96,5 @@ namespace OpenLoco::World::TrackData
     uint16_t getRoadCostFactor(size_t roadId);
 
     const MiscData& getTrackMiscData(size_t trackId);
+    const RoadMiscData& getRoadMiscData(size_t roadId);
 }
