@@ -2446,8 +2446,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static loco_global<uint8_t, 0x00113646A> _113646A;
-
         static Vehicles::OrderRingView getOrderTable(const Vehicles::VehicleHead* const head)
         {
             return Vehicles::OrderRingView(head->orderTableOffset);
@@ -3300,7 +3298,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(Window& self, Gfx::RenderTarget& rt, const StringId strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
+        static void drawOrderLabel(Window& self, Gfx::RenderTarget& rt, const StringId strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y, int16_t& orderNumber)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
@@ -3311,10 +3309,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if (ToolManager::isToolActive(self.type, self.number))
                 {
-                    auto imageId = kNumberCircle[_113646A - 1];
+                    auto imageId = kNumberCircle[orderNumber - 1];
                     drawingCtx.drawImage(&rt, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
                 }
-                _113646A++;
+                orderNumber++;
             }
         }
 
@@ -3340,7 +3338,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 rowNum++; // Used to move down the text
             }
 
-            _113646A = 1; // Number ?symbol? TODO: make not a global
+            int16_t orderNumber = 1;
             for (auto& order : getOrderTable(head))
             {
                 int16_t y = rowNum * lineHeight;
@@ -3381,7 +3379,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                 }
 
-                sub_4B4A58(self, rt, strFormat, args, order, y);
+                drawOrderLabel(self, rt, strFormat, args, order, y, orderNumber);
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
                     auto point = Point(1, y - 1);
