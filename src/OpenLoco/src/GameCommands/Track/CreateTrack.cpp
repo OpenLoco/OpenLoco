@@ -172,7 +172,7 @@ namespace OpenLoco::GameCommands
             // This is working out reversed elements
             if (_4F87BC[elTrack.trackId() * 8 + 0] == args.trackId)
             {
-                if (((_4F87BC[elTrack.trackId() * 8 + 2] + elTrack.unkDirection()) & 0x3) == args.rotation)
+                if (((_4F87BC[elTrack.trackId() * 8 + 1] + elTrack.unkDirection()) & 0x3) == args.rotation)
                 {
                     if (args.isLastIndex && elTrack.sequenceIndex() == 0)
                     {
