@@ -344,14 +344,6 @@ namespace OpenLoco::World::TrackData
         return _4F6F8C[trackAndDirection];
     }
 
-    static Interop::loco_global<uint16_t[44], 0x004F870C> _costFactor;
-    static Interop::loco_global<uint16_t[44], 0x004F8764> _flags;
-    static Interop::loco_global<uint8_t[44 * 8], 0x004F87BC> _variousThings;
-    static Interop::loco_global<uint16_t[44], 0x004F891C> _compatibleFlags;
-    static Interop::loco_global<uint16_t[44], 0x004F8974> _curveSpeedFraction;
-    static Interop::loco_global<uint32_t[44], 0x004F89CC> _unkWeighting;
-    static Interop::loco_global<bool[44], 0x004F8A7C> _sparkDirection;
-
     constexpr std::array<MiscData, 44> _miscData = {
         MiscData{
             .costFactor = 0x100,
@@ -844,134 +836,217 @@ namespace OpenLoco::World::TrackData
         return _miscData[trackId];
     }
 
-    // std::array<std::string, 11> _pieceFlagsToString{
-    //     "TrackPieceFlags::diagonal",
-    //     "TrackPieceFlags::largeCurve",
-    //     "TrackPieceFlags::normalCurve",
-    //     "TrackPieceFlags::smallCurve",
-    //     "TrackPieceFlags::verySmallCurve",
-    //     "TrackPieceFlags::slope",
-    //     "TrackPieceFlags::steepSlope",
-    //     "TrackPieceFlags::oneSided",
-    //     "TrackPieceFlags::slopedCurve",
-    //     "TrackPieceFlags::sBend",
-    //     "TrackPieceFlags::junction",
-    // };
-
-    // std::array<std::string, 10> _miscToString{
-    //     "MiscFlags::slope",
-    //     "MiscFlags::steepSlope",
-    //     "MiscFlags::curveSlope",
-    //     "MiscFlags::diagonal",
-    //     "MiscFlags::verySmallCurve",
-    //     "MiscFlags::smallCurve",
-    //     "MiscFlags::curve",
-    //     "MiscFlags::largeCurve",
-    //     "MiscFlags::sBendCurve",
-    //     "MiscFlags::oneSided",
-    // };
-
-    // std::string toMiscString(uint16_t val)
-    //{
-    //     std::string out;
-    //     for (auto i = 0; i < 10; ++i)
-    //     {
-    //         if (val & (1U << i))
-    //         {
-    //             if (out.empty())
-    //             {
-    //                 out = _miscToString[i];
-    //             }
-    //             else
-    //             {
-    //                 out += " | " + _miscToString[i];
-    //             }
-    //         }
-    //     }
-    //     if (out.empty())
-    //     {
-    //         out = "MiscFlags::none";
-    //     }
-    //     return out;
-    // }
-    // std::string toTrackPieceString(uint16_t val)
-    //{
-    //     std::string out;
-    //     for (auto i = 0; i < 11; ++i)
-    //     {
-    //         if (val & (1U << i))
-    //         {
-    //             if (out.empty())
-    //             {
-    //                 out = _pieceFlagsToString[i];
-    //             }
-    //             else
-    //             {
-    //                 out += " | " + _pieceFlagsToString[i];
-    //             }
-    //         }
-    //     }
-    //     if (out.empty())
-    //     {
-    //         out = "TrackPieceFlags::none";
-    //     }
-    //     return out;
-    // }
-    // for (auto i = 0; i < 44; ++i)
-    // {
-    //     MiscData data{};
-    //     data.costFactor = _costFactor[i];
-    //     data.flags = static_cast<MiscFlags>(_flags[i]);
-    //     data.reverseTrackId = _variousThings[i * 8 + 0];
-    //     data.reverseRotation = _variousThings[i * 8 + 1];
-    //     data.signalHeightOffsetLeft = _variousThings[i * 8 + 2];
-    //     data.signalHeightOffsetRight = _variousThings[i * 8 + 3];
-    //     data.compatibleFlags = static_cast<TrackPieceFlags>(_compatibleFlags[i]);
-    //     data.curveSpeedFraction = _curveSpeedFraction[i];
-    //     data.unkWeighting = _unkWeighting[i];
-    //     data.sparkDirection = _sparkDirection[i];
-    //
-    //    fmt::println("MiscData {{");
-    //    fmt::println(".costFactor = 0x{:03X},\n.flags = {},\n.reverseTrackId = {},", data.costFactor, toMiscString(enumValue(data.flags)), data.reverseTrackId);
-    //    fmt::println(".reverseRotation = {},\n.signalHeightOffsetLeft = {},\n.signalHeightOffsetRight = {},", data.reverseRotation, data.signalHeightOffsetLeft, data.signalHeightOffsetRight);
-    //    fmt::println(".compatibleFlags = {},\n.curveSpeedFraction = 0x{:04X},\n.unkWeighting = {},\n.sparkDirection = {}", toTrackPieceString(enumValue(data.compatibleFlags)), data.curveSpeedFraction, data.unkWeighting, data.sparkDirection);
-    //    fmt::println("}},");
-    //}
-
-    // 0x004F72E8
-    constexpr std::array<uint16_t, 10> kRoadCompatibleFlags = {
-        0x00,
-        0x02,
-        0x02,
-        0x01,
-        0x01,
-        0x04,
-        0x04,
-        0x08,
-        0x08,
-        0x20,
+    constexpr std::array<RoadMiscData, 10> _roadMiscData = {
+        RoadMiscData{
+            .costFactor = 0x100,
+            .flags = MiscFlags::none,
+            .reverseRoadId = 0,
+            .reverseRotation = 2,
+            .reverseLane = 1,
+            .compatibleFlags = RoadPieceFlags::none,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 32,
+        },
+        RoadMiscData{
+            .costFactor = 0x0C9,
+            .flags = MiscFlags::verySmallCurve,
+            .reverseRoadId = 2,
+            .reverseRotation = 1,
+            .reverseLane = 1,
+            .compatibleFlags = RoadPieceFlags::track,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 25,
+        },
+        RoadMiscData{
+            .costFactor = 0x0C9,
+            .flags = MiscFlags::verySmallCurve,
+            .reverseRoadId = 1,
+            .reverseRotation = 3,
+            .reverseLane = 1,
+            .compatibleFlags = RoadPieceFlags::track,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 25,
+        },
+        RoadMiscData{
+            .costFactor = 0x25B,
+            .flags = MiscFlags::smallCurve,
+            .reverseRoadId = 4,
+            .reverseRotation = 1,
+            .reverseLane = 4,
+            .compatibleFlags = RoadPieceFlags::oneWay,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 75,
+        },
+        RoadMiscData{
+            .costFactor = 0x25B,
+            .flags = MiscFlags::smallCurve,
+            .reverseRoadId = 3,
+            .reverseRotation = 3,
+            .reverseLane = 4,
+            .compatibleFlags = RoadPieceFlags::oneWay,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 75,
+        },
+        RoadMiscData{
+            .costFactor = 0x220,
+            .flags = MiscFlags::slope,
+            .reverseRoadId = 6,
+            .reverseRotation = 2,
+            .reverseLane = 2,
+            .compatibleFlags = RoadPieceFlags::slope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 66,
+        },
+        RoadMiscData{
+            .costFactor = 0x220,
+            .flags = MiscFlags::slope,
+            .reverseRoadId = 5,
+            .reverseRotation = 2,
+            .reverseLane = 2,
+            .compatibleFlags = RoadPieceFlags::slope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 66,
+        },
+        RoadMiscData{
+            .costFactor = 0x138,
+            .flags = MiscFlags::steepSlope,
+            .reverseRoadId = 8,
+            .reverseRotation = 2,
+            .reverseLane = 1,
+            .compatibleFlags = RoadPieceFlags::steepSlope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+        },
+        RoadMiscData{
+            .costFactor = 0x138,
+            .flags = MiscFlags::steepSlope,
+            .reverseRoadId = 7,
+            .reverseRotation = 2,
+            .reverseLane = 1,
+            .compatibleFlags = RoadPieceFlags::steepSlope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+        },
+        RoadMiscData{
+            .costFactor = 0x25B,
+            .flags = MiscFlags::none,
+            .reverseRoadId = 9,
+            .reverseRotation = 0,
+            .reverseLane = 1,
+            .compatibleFlags = RoadPieceFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 26,
+        },
     };
+
+    static Interop::loco_global<uint16_t[10], 0x004F7270> _costFactor;
+    static Interop::loco_global<uint16_t[10], 0x004F7284> _flags;
+    static Interop::loco_global<uint8_t[10 * 8], 0x004F7298> _variousThings;
+    static Interop::loco_global<uint16_t[10], 0x004F72E8> _compatibleFlags;
+    static Interop::loco_global<uint16_t[10], 0x004F72FC> _curveSpeedFraction;
+    static Interop::loco_global<uint32_t[10], 0x004F7310> _unkWeighting;
+
+    std::array<std::string, 9> _pieceFlagsToString{
+        "RoadPieceFlags::oneWay",
+        "RoadPieceFlags::track",
+        "RoadPieceFlags::slope",
+        "RoadPieceFlags::steepSlope",
+        "RoadPieceFlags::intersection",
+        "RoadPieceFlags::oneSided",
+        "RoadPieceFlags::overtake",
+        "RoadPieceFlags::unk",
+        "RoadPieceFlags::streetLights",
+    };
+
+    std::array<std::string, 10> _miscToString{
+        "MiscFlags::slope",
+        "MiscFlags::steepSlope",
+        "MiscFlags::curveSlope",
+        "MiscFlags::diagonal",
+        "MiscFlags::verySmallCurve",
+        "MiscFlags::smallCurve",
+        "MiscFlags::curve",
+        "MiscFlags::largeCurve",
+        "MiscFlags::sBendCurve",
+        "MiscFlags::oneSided",
+    };
+
+    std::string toMiscString(uint16_t val)
+    {
+        std::string out;
+        for (auto i = 0; i < 10; ++i)
+        {
+            if (val & (1U << i))
+            {
+                if (out.empty())
+                {
+                    out = _miscToString[i];
+                }
+                else
+                {
+                    out += " | " + _miscToString[i];
+                }
+            }
+        }
+        if (out.empty())
+        {
+            out = "MiscFlags::none";
+        }
+        return out;
+    }
+    std::string toRoadPieceString(uint16_t val)
+    {
+        std::string out;
+        for (auto i = 0; i < 9; ++i)
+        {
+            if (val & (1U << i))
+            {
+                if (out.empty())
+                {
+                    out = _pieceFlagsToString[i];
+                }
+                else
+                {
+                    out += " | " + _pieceFlagsToString[i];
+                }
+            }
+        }
+        if (out.empty())
+        {
+            out = "RoadPieceFlags::none";
+        }
+        return out;
+    }
+    const RoadMiscData& getRoadMiscData(size_t roadId)
+    {
+        for (auto i = 0; i < 10; ++i)
+        {
+            RoadMiscData data{};
+            data.costFactor = _costFactor[i];
+            data.flags = static_cast<MiscFlags>(_flags[i]);
+            data.reverseRoadId = _variousThings[i * 8 + 0];
+            data.reverseRotation = _variousThings[i * 8 + 1];
+            data.reverseLane = _variousThings[i * 8 + 4];
+            data.compatibleFlags = static_cast<RoadPieceFlags>(_compatibleFlags[i]);
+            data.curveSpeedFraction = _curveSpeedFraction[i];
+            data.unkWeighting = _unkWeighting[i];
+
+            fmt::println("RoadMiscData {{");
+            fmt::println(".costFactor = 0x{:03X},\n.flags = {},\n.reverseRoadId = {},", data.costFactor, toMiscString(enumValue(data.flags)), data.reverseRoadId);
+            fmt::println(".reverseRotation = {},\n.reverseLane = {},", data.reverseRotation, data.reverseLane);
+            fmt::println(".compatibleFlags = {},\n.curveSpeedFraction = 0x{:04X},\n.unkWeighting = {},", toRoadPieceString(enumValue(data.compatibleFlags)), data.curveSpeedFraction, data.unkWeighting);
+            fmt::println("}},");
+        }
+        return _roadMiscData[roadId];
+    }
 
     uint16_t getRoadCompatibleFlags(size_t roadId)
     {
-        return kRoadCompatibleFlags[roadId];
+        return enumValue(getRoadMiscData(roadId).compatibleFlags);
     }
-
-    constexpr std::array<uint16_t, 10> kRoadCostFactor = {
-        0x100,
-        0x0C9,
-        0x0C9,
-        0x25B,
-        0x25B,
-        0x220,
-        0x220,
-        0x138,
-        0x138,
-        0x25B,
-    };
 
     uint16_t getRoadCostFactor(size_t roadId)
     {
-        return kRoadCostFactor[roadId];
+        return getRoadMiscData(roadId).costFactor;
     }
 }
