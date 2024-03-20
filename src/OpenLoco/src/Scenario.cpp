@@ -77,7 +77,7 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00496A18, 0x00496A84 (adapted)
-    static void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj)
+    void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj)
     {
         Season season = static_cast<Season>(climateObj->firstSeason);
 
@@ -499,7 +499,7 @@ namespace OpenLoco::Scenario
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
 
-    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
+    std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
     {
         return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
     }

@@ -1,20 +1,29 @@
 #include "EditorController.h"
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Gui.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/ClimateObject.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
+#include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
+#include "SceneManager.h"
+#include "Title.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
@@ -32,7 +41,84 @@ namespace OpenLoco::EditorController
     // 0x0043D7DC
     void init()
     {
-        call(0x0043D7DC);
+        setAllScreenFlags(ScreenFlags::editor);
+        setGameSpeed(GameSpeed::Normal);
+
+        auto& options = S5::getOptions();
+        auto& gameState = getGameState();
+
+        options.editorStep = Step::null;
+        options.difficulty = 0;
+        options.madeAnyChanges = 0;
+        options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
+        gameState.lastLandOption = 0xFF;
+        gameState.lastMapWindowAttributes.flags = WindowFlags::none;
+
+        WindowManager::closeAllFloatingWindows();
+        initialiseViewports();
+        Title::sub_4284C8();
+        Audio::pauseSound();
+        Audio::unpauseSound();
+        ObjectManager::unloadAll();
+        ObjectManager::prepareSelectionList(true);
+        ObjectManager::loadSelectionListObjects(Scenario::getInUseSelectedObjectFlags());
+        ObjectManager::freeSelectionList();
+        ObjectManager::reloadAll();
+        Scenario::sub_4748D4();
+
+        options.scenarioStartYear = 1900;
+        gameState.seaLevel = 4;
+        options.minLandHeight = 2;
+        options.topographyStyle = S5::TopographyStyle::mountains;
+        options.hillDensity = 50;
+        options.numberOfForests = 100;
+        options.minForestRadius = 4;
+        options.maxForestRadius = 40;
+        options.minForestDensity = 1;
+        options.maxForestDensity = 7;
+        options.numberRandomTrees = 1000;
+        options.minAltitudeForTrees = 0;
+        options.maxAltitudeForTrees = 25;
+        options.numberOfTowns = 55;
+        options.maxTownSize = 3;
+        options.numberOfIndustries = 1;
+
+        call(0x00440297);
+        Scenario::reset();
+
+        gameState.maxCompetingCompanies = 8;
+        gameState.competitorStartDelay = 0;
+        gameState.preferredAIIntelligence = 0;
+        gameState.preferredAIAggressiveness = 0;
+        gameState.preferredAICompetitiveness = 0;
+        gameState.startingLoanSize = 1250;
+        gameState.maxLoanSize = 3750;
+        gameState.loanInterestRate = 10;
+        gameState.industryFlags = IndustryManager::Flags::none;
+        gameState.forbiddenVehiclesPlayers = 0;
+        gameState.forbiddenVehiclesCompetitors = 0;
+        gameState.scenarioObjective.type = Scenario::ObjectiveType::companyValue;
+        gameState.scenarioObjective.flags = Scenario::ObjectiveFlags::none;
+        gameState.scenarioObjective.companyValue = 1'000'000;
+        gameState.scenarioObjective.monthlyVehicleProfit = 25'000;
+        gameState.scenarioObjective.performanceIndex = 90;
+        gameState.scenarioObjective.deliveredCargoType = 0;
+        gameState.scenarioObjective.deliveredCargoAmount = 50'000;
+        gameState.scenarioObjective.timeLimitYears = 20;
+
+        Scenario::initialiseDate(options.scenarioStartYear);
+        Scenario::updateSeason(getCurrentDay(), ObjectManager::get<ClimateObject>());
+
+        StringManager::formatString(options.scenarioDetails, StringIds::no_details_yet);
+        StringManager::formatString(options.scenarioName, StringIds::unnamed);
+
+        showEditor();
+        Audio::resetMusic();
+        Gfx::loadPalette();
+        Gfx::invalidateScreen();
+
+        resetScreenAge();
+        throw GameException::Interrupt;
     }
 
     // 0x0043CB9F
