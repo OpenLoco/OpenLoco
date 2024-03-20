@@ -842,7 +842,7 @@ namespace OpenLoco::Vehicles
 
                         auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
                         const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->buildCostFactor, trackModObj->costIndex, 10);
-                        const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                        const auto cost = (baseCost * TrackData::getTrackMiscData(tad.id()).costFactor) / 256;
                         totalCost += cost;
                     }
                 }
@@ -980,7 +980,7 @@ namespace OpenLoco::Vehicles
 
                     auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
                     const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->sellCostFactor, trackModObj->costIndex, 10);
-                    const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                    const auto cost = (baseCost * TrackData::getTrackMiscData(tad.id()).costFactor) / 256;
                     totalCost += cost;
                 }
             }

@@ -344,54 +344,6 @@ namespace OpenLoco::World::TrackData
         return _4F6F8C[trackAndDirection];
     }
 
-    // 0x004F891C
-    constexpr std::array<uint16_t, 44> kTrackCompatibleFlags = {
-        0x0000,
-        0x0001,
-        0x0010,
-        0x0010,
-        0x0008,
-        0x0008,
-        0x0004,
-        0x0004,
-        0x0002,
-        0x0002,
-        0x0002,
-        0x0002,
-        0x0200,
-        0x0200,
-        0x0020,
-        0x0020,
-        0x0040,
-        0x0040,
-        0x0128,
-        0x0128,
-        0x0128,
-        0x0128,
-        0x0148,
-        0x0148,
-        0x0148,
-        0x0148,
-        0x0080,
-        0x0080,
-        0x0090,
-        0x0090,
-        0x0090,
-        0x0090,
-        0x0080,
-        0x0080,
-        0x00C0,
-        0x00C0,
-        0x00C0,
-        0x00C0,
-        0x0080,
-        0x0080,
-        0x0080,
-        0x0080,
-        0x0080,
-        0x0080,
-    };
-
     static Interop::loco_global<uint16_t[44], 0x004F870C> _costFactor;
     static Interop::loco_global<uint16_t[44], 0x004F8764> _flags;
     static Interop::loco_global<uint8_t[44 * 8], 0x004F87BC> _variousThings;
@@ -887,162 +839,104 @@ namespace OpenLoco::World::TrackData
             .sparkDirection = false },
     };
 
-    std::array<std::string, 11> _pieceFlagsToString{
-        "TrackPieceFlags::diagonal",
-        "TrackPieceFlags::largeCurve",
-        "TrackPieceFlags::normalCurve",
-        "TrackPieceFlags::smallCurve",
-        "TrackPieceFlags::verySmallCurve",
-        "TrackPieceFlags::slope",
-        "TrackPieceFlags::steepSlope",
-        "TrackPieceFlags::oneSided",
-        "TrackPieceFlags::slopedCurve",
-        "TrackPieceFlags::sBend",
-        "TrackPieceFlags::junction",
-    };
-
-    std::array<std::string, 10> _miscToString{
-        "MiscFlags::slope",
-        "MiscFlags::steepSlope",
-        "MiscFlags::curveSlope",
-        "MiscFlags::diagonal",
-        "MiscFlags::verySmallCurve",
-        "MiscFlags::smallCurve",
-        "MiscFlags::curve",
-        "MiscFlags::largeCurve",
-        "MiscFlags::sBendCurve",
-        "MiscFlags::oneSided",
-    };
-
-    std::string toMiscString(uint16_t val)
-    {
-        std::string out;
-        for (auto i = 0; i < 10; ++i)
-        {
-            if (val & (1U << i))
-            {
-                if (out.empty())
-                {
-                    out = _miscToString[i];
-                }
-                else
-                {
-                    out += " | " + _miscToString[i];
-                }
-            }
-        }
-        if (out.empty())
-        {
-            out = "MiscFlags::none";
-        }
-        return out;
-    }
-    std::string toTrackPieceString(uint16_t val)
-    {
-        std::string out;
-        for (auto i = 0; i < 11; ++i)
-        {
-            if (val & (1U << i))
-            {
-                if (out.empty())
-                {
-                    out = _pieceFlagsToString[i];
-                }
-                else
-                {
-                    out += " | " + _pieceFlagsToString[i];
-                }
-            }
-        }
-        if (out.empty())
-        {
-            out = "TrackPieceFlags::none";
-        }
-        return out;
-    }
-
     const MiscData& getTrackMiscData(size_t trackId)
     {
         return _miscData[trackId];
     }
 
-    uint16_t getTrackCompatibleFlags(size_t trackId)
-    {
-        for (auto i = 0; i < 44; ++i)
-        {
-            MiscData data{};
-            data.costFactor = _costFactor[i];
-            data.flags = static_cast<MiscFlags>(_flags[i]);
-            data.reverseTrackId = _variousThings[i * 8 + 0];
-            data.reverseRotation = _variousThings[i * 8 + 1];
-            data.signalHeightOffsetLeft = _variousThings[i * 8 + 2];
-            data.signalHeightOffsetRight = _variousThings[i * 8 + 3];
-            data.compatibleFlags = static_cast<TrackPieceFlags>(_compatibleFlags[i]);
-            data.curveSpeedFraction = _curveSpeedFraction[i];
-            data.unkWeighting = _unkWeighting[i];
-            data.sparkDirection = _sparkDirection[i];
+    // std::array<std::string, 11> _pieceFlagsToString{
+    //     "TrackPieceFlags::diagonal",
+    //     "TrackPieceFlags::largeCurve",
+    //     "TrackPieceFlags::normalCurve",
+    //     "TrackPieceFlags::smallCurve",
+    //     "TrackPieceFlags::verySmallCurve",
+    //     "TrackPieceFlags::slope",
+    //     "TrackPieceFlags::steepSlope",
+    //     "TrackPieceFlags::oneSided",
+    //     "TrackPieceFlags::slopedCurve",
+    //     "TrackPieceFlags::sBend",
+    //     "TrackPieceFlags::junction",
+    // };
 
-            fmt::println("MiscData {{");
-            fmt::println(".costFactor = 0x{:03X},\n.flags = {},\n.reverseTrackId = {},", data.costFactor, toMiscString(enumValue(data.flags)), data.reverseTrackId);
-            fmt::println(".reverseRotation = {},\n.signalHeightOffsetLeft = {},\n.signalHeightOffsetRight = {},", data.reverseRotation, data.signalHeightOffsetLeft, data.signalHeightOffsetRight);
-            fmt::println(".compatibleFlags = {},\n.curveSpeedFraction = 0x{:04X},\n.unkWeighting = {},\n.sparkDirection = {}", toTrackPieceString(enumValue(data.compatibleFlags)), data.curveSpeedFraction, data.unkWeighting, data.sparkDirection);
-            fmt::println("}},");
-        }
-        return kTrackCompatibleFlags[trackId];
-    }
+    // std::array<std::string, 10> _miscToString{
+    //     "MiscFlags::slope",
+    //     "MiscFlags::steepSlope",
+    //     "MiscFlags::curveSlope",
+    //     "MiscFlags::diagonal",
+    //     "MiscFlags::verySmallCurve",
+    //     "MiscFlags::smallCurve",
+    //     "MiscFlags::curve",
+    //     "MiscFlags::largeCurve",
+    //     "MiscFlags::sBendCurve",
+    //     "MiscFlags::oneSided",
+    // };
 
-    // 0x004F870C
-    constexpr std::array<uint16_t, 44> kTrackCostFactor = {
-        0x100,
-        0x16A,
-        0x0C9,
-        0x0C9,
-        0x25B,
-        0x25B,
-        0x3ED,
-        0x3ED,
-        0x2BF,
-        0x2BF,
-        0x2BF,
-        0x2BF,
-        0x380,
-        0x380,
-        0x220,
-        0x220,
-        0x138,
-        0x138,
-        0x350,
-        0x350,
-        0x350,
-        0x350,
-        0x41F,
-        0x41F,
-        0x41F,
-        0x41F,
-        0x100,
-        0x100,
-        0x064,
-        0x12D,
-        0x12D,
-        0x064,
-        0x126,
-        0x126,
-        0x138,
-        0x138,
-        0x138,
-        0x138,
-        0x114,
-        0x114,
-        0x114,
-        0x114,
-        0x25B,
-        0x25B,
-    };
-
-    uint16_t getTrackCostFactor(size_t trackId)
-    {
-        return kTrackCostFactor[trackId];
-    }
+    // std::string toMiscString(uint16_t val)
+    //{
+    //     std::string out;
+    //     for (auto i = 0; i < 10; ++i)
+    //     {
+    //         if (val & (1U << i))
+    //         {
+    //             if (out.empty())
+    //             {
+    //                 out = _miscToString[i];
+    //             }
+    //             else
+    //             {
+    //                 out += " | " + _miscToString[i];
+    //             }
+    //         }
+    //     }
+    //     if (out.empty())
+    //     {
+    //         out = "MiscFlags::none";
+    //     }
+    //     return out;
+    // }
+    // std::string toTrackPieceString(uint16_t val)
+    //{
+    //     std::string out;
+    //     for (auto i = 0; i < 11; ++i)
+    //     {
+    //         if (val & (1U << i))
+    //         {
+    //             if (out.empty())
+    //             {
+    //                 out = _pieceFlagsToString[i];
+    //             }
+    //             else
+    //             {
+    //                 out += " | " + _pieceFlagsToString[i];
+    //             }
+    //         }
+    //     }
+    //     if (out.empty())
+    //     {
+    //         out = "TrackPieceFlags::none";
+    //     }
+    //     return out;
+    // }
+    // for (auto i = 0; i < 44; ++i)
+    // {
+    //     MiscData data{};
+    //     data.costFactor = _costFactor[i];
+    //     data.flags = static_cast<MiscFlags>(_flags[i]);
+    //     data.reverseTrackId = _variousThings[i * 8 + 0];
+    //     data.reverseRotation = _variousThings[i * 8 + 1];
+    //     data.signalHeightOffsetLeft = _variousThings[i * 8 + 2];
+    //     data.signalHeightOffsetRight = _variousThings[i * 8 + 3];
+    //     data.compatibleFlags = static_cast<TrackPieceFlags>(_compatibleFlags[i]);
+    //     data.curveSpeedFraction = _curveSpeedFraction[i];
+    //     data.unkWeighting = _unkWeighting[i];
+    //     data.sparkDirection = _sparkDirection[i];
+    //
+    //    fmt::println("MiscData {{");
+    //    fmt::println(".costFactor = 0x{:03X},\n.flags = {},\n.reverseTrackId = {},", data.costFactor, toMiscString(enumValue(data.flags)), data.reverseTrackId);
+    //    fmt::println(".reverseRotation = {},\n.signalHeightOffsetLeft = {},\n.signalHeightOffsetRight = {},", data.reverseRotation, data.signalHeightOffsetLeft, data.signalHeightOffsetRight);
+    //    fmt::println(".compatibleFlags = {},\n.curveSpeedFraction = 0x{:04X},\n.unkWeighting = {},\n.sparkDirection = {}", toTrackPieceString(enumValue(data.compatibleFlags)), data.curveSpeedFraction, data.unkWeighting, data.sparkDirection);
+    //    fmt::println("}},");
+    //}
 
     // 0x004F72E8
     constexpr std::array<uint16_t, 10> kRoadCompatibleFlags = {
