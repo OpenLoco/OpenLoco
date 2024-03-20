@@ -168,6 +168,7 @@ namespace OpenLoco::Config
         Network network;
         std::string locoInstallPath;
         std::string lastSavePath;
+        std::string lastLandscapePath;
 
         std::string language = "en-GB";
         ObjectHeader preferredCurrency;
