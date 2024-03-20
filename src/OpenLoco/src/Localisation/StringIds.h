@@ -1951,6 +1951,9 @@ namespace OpenLoco::StringIds
     constexpr StringId disableStationSizeLimitTooltip = 2333;
     constexpr StringId title_landscape_generation_water = 2334;
     constexpr StringId tooltip_landscape_generation_water = 2335;
+    constexpr StringId landscapeOptionsGroupGeneral = 2336;
+    constexpr StringId landscapeOptionsGroupGenerator = 2336;
+    constexpr StringId landscapeOptionsCurrentHillObject = 2337;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

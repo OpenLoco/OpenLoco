@@ -160,12 +160,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            start_year = Common::widx::tab_industries + 1,
+            groupGeneral = Common::widx::tab_industries + 1,
+            start_year,
             start_year_down,
             start_year_up,
             generator,
             generator_btn,
 
+            groupGenerator,
             change_heightmap_btn,
             generate_when_game_starts,
 
@@ -188,12 +190,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             common_options_widgets(217, StringIds::title_landscape_generation_options),
 
             // General options
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::start_year_value),
-            makeDropdownWidgets({ 176, 68 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeWidget({ 4, 50 }, { 358, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
+            makeStepperWidgets({ 256, 65 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::start_year_value),
+            makeDropdownWidgets({ 176, 81 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
 
             // Generator options
-            makeWidget({ 205, 112 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
-            makeWidget({ 10, 84 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            makeWidget({ 4, 105 }, { 358, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
+            makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // Generate button
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
@@ -225,8 +229,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             if (options.generator == S5::LandGeneratorType::Original)
             {
                 auto* obj = ObjectManager::get<HillShapesObject>();
+                FormatArguments args{};
+                args.push(obj->name);
+
                 auto pos = Point(window.x + 10, window.y + window.widgets[widx::change_heightmap_btn].top);
-                drawingCtx.drawStringLeft(*rt, &pos, Colour::black, obj->name);
+                drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, &args);
             }
         }
 
