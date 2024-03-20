@@ -702,7 +702,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (roadObj->hasPieceFlags(World::Track::RoadPieceFlags::track))
+        if (roadObj->hasPieceFlags(World::Track::RoadPieceFlags::verySmallCurve))
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -717,7 +717,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             window->widgets[widx::right_hand_curve_very_small].type = WidgetType::buttonWithImage;
         }
 
-        if (roadObj->hasPieceFlags(World::Track::RoadPieceFlags::oneWay))
+        if (roadObj->hasPieceFlags(World::Track::RoadPieceFlags::smallCurve))
         {
             window->widgets[widx::left_hand_curve_small].type = WidgetType::buttonWithImage;
             window->widgets[widx::right_hand_curve_small].type = WidgetType::buttonWithImage;
@@ -726,7 +726,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->widgets[widx::s_bend_dual_track_left].type = WidgetType::none;
         window->widgets[widx::s_bend_dual_track_right].type = WidgetType::none;
 
-        if (roadObj->hasPieceFlags(World::Track::RoadPieceFlags::oneSided))
+        if (roadObj->hasPieceFlags(World::Track::RoadPieceFlags::turnaround))
         {
             window->widgets[widx::s_bend_dual_track_left].type = WidgetType::buttonWithImage;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;

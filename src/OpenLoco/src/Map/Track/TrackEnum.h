@@ -91,15 +91,11 @@ namespace OpenLoco::World::Track
     enum class RoadPieceFlags : uint16_t
     {
         none = 0U,
-        oneWay = 1U << 0,
-        track = 1U << 1,
+        smallCurve = 1U << 0,
+        verySmallCurve = 1U << 1,
         slope = 1U << 2,
         steepSlope = 1U << 3,
-        intersection = 1U << 4,
-        oneSided = 1U << 5,
-        overtake = 1U << 6,
-        unk = 1U << 7,
-        streetLights = 1U << 8,
+        turnaround = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);
 }
