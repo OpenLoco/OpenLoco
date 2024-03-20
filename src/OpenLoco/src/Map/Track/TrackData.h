@@ -12,6 +12,7 @@
 namespace OpenLoco::World::Track
 {
     enum class TrackPieceFlags : uint16_t;
+    enum class RoadPieceFlags : uint16_t;
     enum class MiscFlags : uint16_t;
 }
 
@@ -79,6 +80,17 @@ namespace OpenLoco::World::TrackData
         bool sparkDirection;                    // 0x004F8A7C true == right
     };
 
+    struct RoadMiscData
+    {
+        uint16_t costFactor;                   // 0x004F7270
+        Track::MiscFlags flags;                // 0x004F7284
+        uint8_t reverseRoadId;                 // 0x004F7298
+        uint8_t reverseRotation;               // 0x004F7299
+        uint8_t reverseLane;                   // 0x004F729C
+        Track::RoadPieceFlags compatibleFlags; // 0x004F72E8
+        uint16_t curveSpeedFraction;           // 0x004F72FC
+        uint32_t unkWeighting;                 // 0x004F7310
+    };
     // TODO: Combine these two
     uint16_t getRoadCompatibleFlags(size_t roadId);
     uint16_t getRoadCostFactor(size_t roadId);
