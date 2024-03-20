@@ -57,13 +57,18 @@ namespace OpenLoco::EditorController
     // 0x0043D7DC
     void init()
     {
+        // TODO: not sure why title flag is preserved?
+        bool wasTitleMode = isTitleMode();
         setAllScreenFlags(ScreenFlags::editor);
+        if (wasTitleMode)
+            setScreenFlag(ScreenFlags::title);
+
         setGameSpeed(GameSpeed::Normal);
 
         auto& options = S5::getOptions();
         auto& gameState = getGameState();
 
-        options.editorStep = Step::null;
+        options.editorStep = Step::objectSelection;
         options.difficulty = 0;
         options.madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
@@ -77,7 +82,7 @@ namespace OpenLoco::EditorController
         Audio::pauseSound();
         Audio::unpauseSound();
         ObjectManager::unloadAll();
-        ObjectManager::prepareSelectionList(true);
+        ObjectManager::prepareSelectionList(false); // TODO: should probably be true, but crashes if it is?
         ObjectManager::loadSelectionListObjects(Scenario::getInUseSelectedObjectFlags());
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
