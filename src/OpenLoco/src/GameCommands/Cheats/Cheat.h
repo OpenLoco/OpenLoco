@@ -59,8 +59,8 @@ namespace OpenLoco::GameCommands
 
         GenericCheatArgs() = default;
         explicit GenericCheatArgs(const registers& regs)
-            : subcommand(static_cast<CheatCommand>(regs.ax))
-            , param1(regs.ebx)
+            : subcommand(static_cast<CheatCommand>(regs.bh))
+            , param1(regs.eax)
             , param2(regs.ecx)
             , param3(regs.edx)
         {
@@ -74,8 +74,8 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.ax = enumValue(subcommand);
-            regs.ebx = param1;
+            regs.bh = enumValue(subcommand);
+            regs.eax = param1;
             regs.ecx = param2;
             regs.edx = param3;
             return regs;
