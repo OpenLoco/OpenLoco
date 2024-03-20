@@ -853,7 +853,7 @@ namespace OpenLoco::World::TrackData
             .reverseRoadId = 2,
             .reverseRotation = 1,
             .reverseLane = 1,
-            .compatibleFlags = RoadPieceFlags::track,
+            .compatibleFlags = RoadPieceFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 25,
         },
@@ -863,7 +863,7 @@ namespace OpenLoco::World::TrackData
             .reverseRoadId = 1,
             .reverseRotation = 3,
             .reverseLane = 1,
-            .compatibleFlags = RoadPieceFlags::track,
+            .compatibleFlags = RoadPieceFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 25,
         },
@@ -873,7 +873,7 @@ namespace OpenLoco::World::TrackData
             .reverseRoadId = 4,
             .reverseRotation = 1,
             .reverseLane = 4,
-            .compatibleFlags = RoadPieceFlags::oneWay,
+            .compatibleFlags = RoadPieceFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 75,
         },
@@ -883,7 +883,7 @@ namespace OpenLoco::World::TrackData
             .reverseRoadId = 3,
             .reverseRotation = 3,
             .reverseLane = 4,
-            .compatibleFlags = RoadPieceFlags::oneWay,
+            .compatibleFlags = RoadPieceFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 75,
         },
@@ -933,7 +933,7 @@ namespace OpenLoco::World::TrackData
             .reverseRoadId = 9,
             .reverseRotation = 0,
             .reverseLane = 1,
-            .compatibleFlags = RoadPieceFlags::oneSided,
+            .compatibleFlags = RoadPieceFlags::turnaround,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 26,
         },
@@ -946,16 +946,13 @@ namespace OpenLoco::World::TrackData
     static Interop::loco_global<uint16_t[10], 0x004F72FC> _curveSpeedFraction;
     static Interop::loco_global<uint32_t[10], 0x004F7310> _unkWeighting;
 
-    std::array<std::string, 9> _pieceFlagsToString{
-        "RoadPieceFlags::oneWay",
-        "RoadPieceFlags::track",
+    std::array<std::string, 6> _pieceFlagsToString{
+        "RoadPieceFlags::smallCurve",
+        "RoadPieceFlags::verySmallCurve",
         "RoadPieceFlags::slope",
         "RoadPieceFlags::steepSlope",
-        "RoadPieceFlags::intersection",
-        "RoadPieceFlags::oneSided",
-        "RoadPieceFlags::overtake",
         "RoadPieceFlags::unk",
-        "RoadPieceFlags::streetLights",
+        "RoadPieceFlags::turnaround",
     };
 
     std::array<std::string, 10> _miscToString{

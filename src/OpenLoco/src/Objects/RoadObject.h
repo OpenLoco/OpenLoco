@@ -42,22 +42,22 @@ namespace OpenLoco
 
         StringId name;
         World::Track::RoadPieceFlags roadPieces; // 0x02
-        int16_t buildCostFactor;   // 0x04
-        int16_t sellCostFactor;    // 0x06
-        int16_t tunnelCostFactor;  // 0x08
-        uint8_t costIndex;         // 0x0A
-        uint8_t tunnel;            // 0x0B
-        Speed16 maxSpeed;          // 0x0C
-        uint32_t image;            // 0x0E
-        RoadObjectFlags flags;     // 0x12
-        uint8_t numBridges;        // 0x14
-        uint8_t bridges[7];        // 0x15
-        uint8_t numStations;       // 0x1C
-        uint8_t stations[7];       // 0x1D
-        uint8_t paintStyle;        // 0x24
-        uint8_t numMods;           // 0x25
-        uint8_t mods[2];           // 0x26
-        uint8_t numCompatible;     // 0x28
+        int16_t buildCostFactor;                 // 0x04
+        int16_t sellCostFactor;                  // 0x06
+        int16_t tunnelCostFactor;                // 0x08
+        uint8_t costIndex;                       // 0x0A
+        uint8_t tunnel;                          // 0x0B
+        Speed16 maxSpeed;                        // 0x0C
+        uint32_t image;                          // 0x0E
+        RoadObjectFlags flags;                   // 0x12
+        uint8_t numBridges;                      // 0x14
+        uint8_t bridges[7];                      // 0x15
+        uint8_t numStations;                     // 0x1C
+        uint8_t stations[7];                     // 0x1D
+        uint8_t paintStyle;                      // 0x24
+        uint8_t numMods;                         // 0x25
+        uint8_t mods[2];                         // 0x26
+        uint8_t numCompatible;                   // 0x28
         uint8_t pad_29;
         uint16_t compatibleRoads;  // 0x2A
         uint16_t compatibleTracks; // 0x2C
