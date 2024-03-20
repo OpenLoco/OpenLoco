@@ -970,7 +970,7 @@ namespace OpenLoco::ObjectManager
 
         markLoadedObjects(loadedObjectFlags);
 
-        if ((addr<0x00525E28, uint32_t>() & 1) != 0)
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
         {
             loadedObjectFlags[enumValue(ObjectType::region)][0] |= (1U << 0);
             markInUseObjectsByTile(loadedObjectFlags);
