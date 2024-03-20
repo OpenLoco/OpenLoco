@@ -388,7 +388,7 @@ namespace OpenLoco::GameCommands
         _byte_1136075 = 0xFFU;
         // 0x01135C68 = unkFlags
 
-        if (flags & Flags::apply && !(flags & Flags::aiAllocated))
+        if ((flags & Flags::apply) && !(flags & Flags::aiAllocated))
         {
             companySetObservation(getUpdatingCompanyId(), ObservationStatus::buildingTrackRoad, args.pos, EntityId::null, args.trackObjectId);
         }
@@ -539,7 +539,7 @@ namespace OpenLoco::GameCommands
                 totalCost += Economy::getInflationAdjustedCost(levelCrossObj->costFactor, levelCrossObj->costIndex, 10);
             }
 
-            if (flags & Flags::apply && !(flags & (Flags::ghost | Flags::aiAllocated)))
+            if ((flags & Flags::apply) && !(flags & (Flags::ghost | Flags::aiAllocated)))
             {
                 World::TileManager::removeAllWallsOnTileBelow(World::toTileSpace(trackLoc), baseZ);
             }
@@ -633,7 +633,7 @@ namespace OpenLoco::GameCommands
             totalCost += cost;
         }
 
-        if (flags & Flags::apply && !(flags & (Flags::aiAllocated | Flags::ghost)))
+        if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
         {
             playPlacementSound(getPosition());
         }
