@@ -129,6 +129,10 @@ namespace OpenLoco::EditorController
         Gfx::loadPalette();
         Gfx::invalidateScreen();
 
+        // New in OpenLoco
+        options.generator = S5::LandGeneratorType::Original;
+        options.numTerrainSmoothingPasses = 2;
+
         resetScreenAge();
         throw GameException::Interrupt;
     }

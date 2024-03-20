@@ -1954,6 +1954,7 @@ namespace OpenLoco::StringIds
     constexpr StringId landscapeOptionsGroupGeneral = 2336;
     constexpr StringId landscapeOptionsGroupGenerator = 2337;
     constexpr StringId landscapeOptionsCurrentHillObject = 2338;
+    constexpr StringId landscapeOptionsSmoothingPasses = 2339;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
