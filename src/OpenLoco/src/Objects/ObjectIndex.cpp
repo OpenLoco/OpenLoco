@@ -1,6 +1,8 @@
 #include "ObjectIndex.h"
 #include "Environment.h"
+#include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameStateFlags.h"
 #include "Graphics/Gfx.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
