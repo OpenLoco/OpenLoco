@@ -3302,15 +3302,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            auto loc = Point(8, y - 1);
-            drawingCtx.drawStringLeft(rt, loc, Colour::black, strFormat, &args);
+            char buffer[512];
+            StringManager::formatString(buffer, std::size(buffer), strFormat, &args);
+
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.drawString(rt, Point(8, y - 1), Colour::black, buffer);
+            auto labelWidth = drawingCtx.getStringWidth(buffer);
 
             if (order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
                 if (ToolManager::isToolActive(self.type, self.number))
                 {
                     auto imageId = kNumberCircle[orderNumber - 1];
-                    drawingCtx.drawImage(&rt, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
+                    drawingCtx.drawImage(&rt, labelWidth + 8 + 3, y, Gfx::recolour(imageId, Colour::white));
                 }
                 orderNumber++;
             }
