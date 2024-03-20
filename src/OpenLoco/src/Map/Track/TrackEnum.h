@@ -95,6 +95,7 @@ namespace OpenLoco::World::Track
         verySmallCurve = 1U << 1,
         slope = 1U << 2,
         steepSlope = 1U << 3,
+
         turnaround = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);
