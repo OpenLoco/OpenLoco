@@ -13,7 +13,7 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dh & 0x3F)
-            , mods(regs.di >> 16)
+            , mods((regs.edi >> 16) & 0xFF)
             , unkFlags((regs.edx >> 20) & 0xF)
             , bridge((regs.edx >> 24) & 0xFF)
             , trackObjectId(regs.dl)
