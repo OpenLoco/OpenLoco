@@ -5,6 +5,7 @@
 #include "../TileManager.h"
 #include "../Tree.h"
 #include "../TreeElement.h"
+#include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
 #include "GameState.h"
@@ -441,16 +442,64 @@ namespace OpenLoco::World::MapGenerator
         call(0x004597FD, regs);
     }
 
+    template<typename Func>
+    static void generateMiscBuilding(const BuildingObject* buildingObj, const size_t id, Func&& predicate)
+    {
+        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->averageNumberOnMap / 2);
+        uint8_t staticComponent = buildingObj->averageNumberOnMap - (buildingObj->averageNumberOnMap / 4);
+
+        uint8_t amountToBuild = randomComponent + staticComponent;
+        if (amountToBuild == 0)
+            return;
+
+        for (auto i = 0U; i < amountToBuild; i++)
+        {
+            for (auto attemptsLeft = 200; attemptsLeft > 0; attemptsLeft--)
+            {
+                // NB: coordinate selection has been simplified compared to vanilla
+                auto randomX = getGameState().rng.randNext(2, kMapRows - 2);
+                auto randomY = getGameState().rng.randNext(2, kMapColumns - 2);
+
+                auto tile = TileManager::get(TilePos2(randomX, randomY));
+                if (!predicate(tile))
+                    continue;
+
+                auto* surface = tile.surface();
+                if (surface == nullptr)
+                    continue;
+
+                auto baseHeight = TileManager::getSurfaceCornerHeight(*surface) * kSmallZStep;
+
+                auto randomRotation = getGameState().rng.randNext(0, 3);
+                auto randomVariation = getGameState().rng.randNext(0, buildingObj->numVariations - 1);
+
+                GameCommands::BuildingPlacementArgs args{};
+                args.pos = Pos3(randomX * kTileSize, randomY * kTileSize, baseHeight);
+                args.rotation = randomRotation;
+                args.type = static_cast<uint8_t>(id);
+                args.variation = randomVariation;
+                args.colour = Colour::black;
+                args.buildImmediately = true;
+
+                if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                    break;
+            }
+        }
+    }
+
     // 0x0042E731
+    // Example: 'Transmitter' building object
     static void generateMiscBuildingType0(const BuildingObject* buildingObj, const size_t id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042E731, regs);
+        generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            // This kind of object (e.g. a transmitter) only occurs in mountains
+            auto* surface = tile.surface();
+            return surface->baseZ() >= 100;
+        });
     }
 
     // 0x0042E893
+    // Example: 'Electricity Pylon' building object
     static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
         registers regs;
@@ -460,21 +509,23 @@ namespace OpenLoco::World::MapGenerator
     }
 
     // 0x0042EA29
+    // Example: 'Lighthouse' building object
     static void generateMiscBuildingType2(const BuildingObject* buildingObj, const size_t id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042EA29, regs);
+        generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            // This kind of object (e.g. a lighthouse) needs to be around water
+            return TileManager::countSurroundingWaterTiles(toWorldSpace(tile.pos)) >= 50;
+        });
     }
 
     // 0x0042EB94
+    // Example: 'Castle Ruins' building object
     static void generateMiscBuildingType3(const BuildingObject* buildingObj, const size_t id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042EB94, regs);
+        generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
+            auto* surface = tile.surface();
+            return surface->baseZ() >= 40 && surface->baseZ() <= 92;
+        });
     }
 
     // 0x0042E6F2

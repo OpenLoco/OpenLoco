@@ -58,7 +58,7 @@ namespace OpenLoco
         uint8_t scaffoldingSegmentType;              // 0x9C
         Colour scaffoldingColour;                    // 0x9D
         uint8_t generatorFunction;                   // 0x9E
-        uint8_t var_9F;                              // 0x9F
+        uint8_t averageNumberOnMap;                  // 0x9F
         uint8_t producedQuantity[2];                 // 0xA0
         uint8_t producedCargoType[2];                // 0xA2
         uint8_t requiredCargoType[2];                // 0xA4
