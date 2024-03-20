@@ -319,7 +319,7 @@ namespace OpenLoco::GameCommands
                 if (piece.index == 0)
                 {
                     auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
-                    const auto cost = (placementCostBase * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+                    const auto cost = (placementCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
                     totalCost += cost;
                 }
 
@@ -405,14 +405,14 @@ namespace OpenLoco::GameCommands
                         {
                             auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
                             auto removeCostBase = Economy::getInflationAdjustedCost(oldStationObj->sellCostFactor, oldStationObj->costIndex, 8);
-                            const auto cost = (removeCostBase * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+                            const auto cost = (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
                             totalCost += cost;
                         }
                     }
                     if (calculateCost)
                     {
                         auto placementCostBase = Economy::getInflationAdjustedCost(stationObj->buildCostFactor, stationObj->costIndex, 8);
-                        const auto cost = (placementCostBase * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+                        const auto cost = (placementCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
                         totalCost += cost;
                     }
                 }

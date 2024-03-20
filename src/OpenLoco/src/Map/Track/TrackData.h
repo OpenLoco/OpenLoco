@@ -80,8 +80,6 @@ namespace OpenLoco::World::TrackData
     };
 
     // TODO: Combine these two
-    uint16_t getTrackCompatibleFlags(size_t trackId);
-    uint16_t getTrackCostFactor(size_t trackId);
     uint16_t getRoadCompatibleFlags(size_t roadId);
     uint16_t getRoadCostFactor(size_t roadId);
 
