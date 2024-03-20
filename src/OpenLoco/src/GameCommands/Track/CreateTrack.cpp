@@ -454,7 +454,7 @@ namespace OpenLoco::GameCommands
         {
             const auto trackLoc = args.pos + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
             const auto quarterTile = piece.subTileClearance.rotate(args.rotation);
-            const auto unk = Numerics::rotl4bit(enumValue(piece.flags) & 0xF, 1);
+            const auto unk = Numerics::rotl4bit(enumValue(piece.flags) & 0xF, args.rotation);
 
             if (trackLoc.z < 16)
             {
