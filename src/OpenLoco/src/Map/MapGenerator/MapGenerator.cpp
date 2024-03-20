@@ -493,7 +493,7 @@ namespace OpenLoco::World::MapGenerator
     {
         generateMiscBuilding(buildingObj, id, [](const Tile& tile) {
             auto* surface = tile.surface();
-            return surface->baseZ() <= 100;
+            return surface->baseZ() < 100;
         });
     }
 
