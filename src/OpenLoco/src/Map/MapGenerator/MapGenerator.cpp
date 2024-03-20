@@ -445,8 +445,8 @@ namespace OpenLoco::World::MapGenerator
     template<typename Func>
     static void generateMiscBuilding(const BuildingObject* buildingObj, const size_t id, Func&& predicate)
     {
-        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->var_9F / 2);
-        uint8_t staticComponent = buildingObj->var_9F - (buildingObj->var_9F / 4);
+        uint8_t randomComponent = getGameState().rng.randNext(0, buildingObj->averageNumberOnMap / 2);
+        uint8_t staticComponent = buildingObj->averageNumberOnMap - (buildingObj->averageNumberOnMap / 4);
 
         uint8_t amountToBuild = randomComponent + staticComponent;
         if (amountToBuild == 0)
