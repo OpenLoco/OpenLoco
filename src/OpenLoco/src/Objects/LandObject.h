@@ -44,7 +44,7 @@ namespace OpenLoco
         uint32_t var_0E;
         uint32_t cliffEdgeImage;
         uint32_t mapPixelImage; // 0x16
-        uint8_t pad_1A;
+        uint8_t distributionPattern; // 0x1A
         uint8_t numVariations;       // 0x1B
         uint8_t variationLikelihood; // 0x1C
         uint8_t pad_1D;

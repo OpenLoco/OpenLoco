@@ -14,6 +14,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
@@ -37,6 +38,22 @@ namespace OpenLoco::EditorController
     static loco_global<char[267], 0x00050B745> _activeSavePath;
     static loco_global<char[512], 0x00112CE04> _scenarioFilename;
 
+    // 0x00440297
+    // TODO: only called from editor, but move to S5 namespace?
+    static void resetLandDistributionPatterns()
+    {
+        auto& options = S5::getOptions();
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
+        {
+            options.landDistributionPatterns[i] = S5::LandDistributionPattern::everywhere;
+            auto* landObj = ObjectManager::get<LandObject>(i);
+            if (landObj == nullptr)
+                continue;
+
+            options.landDistributionPatterns[i] = S5::LandDistributionPattern(landObj->distributionPattern);
+        }
+    }
+
     // 0x0043D7DC
     void init()
     {
@@ -49,6 +66,7 @@ namespace OpenLoco::EditorController
         options.editorStep = Step::null;
         options.difficulty = 0;
         options.madeAnyChanges = 0;
+        addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
         gameState.lastLandOption = 0xFF;
         gameState.lastMapWindowAttributes.flags = WindowFlags::none;
@@ -82,7 +100,7 @@ namespace OpenLoco::EditorController
         options.maxTownSize = 3;
         options.numberOfIndustries = 1;
 
-        call(0x00440297);
+        resetLandDistributionPatterns();
         Scenario::reset();
 
         gameState.maxCompetingCompanies = 8;
