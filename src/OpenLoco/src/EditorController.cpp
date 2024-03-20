@@ -35,6 +35,20 @@ namespace OpenLoco::EditorController
         call(0x0043D7DC);
     }
 
+    // 0x0043CB9F
+    void showEditor()
+    {
+        Windows::Main::open();
+
+        Windows::Terraform::setAdjustLandToolSize(1);
+        Windows::Terraform::setAdjustWaterToolSize(1);
+        Windows::Terraform::setClearAreaToolSize(2);
+
+        Windows::ToolbarTop::Editor::open();
+        Windows::ToolbarBottom::Editor::open();
+        Gui::resize();
+    }
+
     Step getCurrentStep()
     {
         return S5::getOptions().editorStep;

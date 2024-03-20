@@ -525,7 +525,7 @@ namespace OpenLoco::S5
 
     void sub_4BAEC4() // TerraformConfig
     {
-        addr<0x001136496, uint8_t>() = 2;
+        addr<0x001136496, uint8_t>() = 2; // last tree rotation
         LastGameOptionManager::setLastTree(LastGameOptionManager::kNoLastOption);
         LastGameOptionManager::setLastWall(LastGameOptionManager::kNoLastOption);
     }

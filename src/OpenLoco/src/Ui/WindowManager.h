@@ -391,7 +391,6 @@ namespace OpenLoco::Ui::Windows
     namespace TitleMenu
     {
         Window* open();
-        void editorInit();
         void beginSendChatMessage(Window& self);
     }
 
