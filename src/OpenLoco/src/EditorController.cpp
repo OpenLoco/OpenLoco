@@ -69,7 +69,7 @@ namespace OpenLoco::EditorController
         auto& gameState = getGameState();
 
         options.editorStep = Step::objectSelection;
-        options.difficulty = 0;
+        options.difficulty = 2;
         options.madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
         options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
@@ -82,7 +82,7 @@ namespace OpenLoco::EditorController
         Audio::pauseSound();
         Audio::unpauseSound();
         ObjectManager::unloadAll();
-        ObjectManager::prepareSelectionList(false); // TODO: should probably be true, but crashes if it is?
+        ObjectManager::prepareSelectionList(false);
         ObjectManager::loadSelectionListObjects(Scenario::getInUseSelectedObjectFlags());
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
