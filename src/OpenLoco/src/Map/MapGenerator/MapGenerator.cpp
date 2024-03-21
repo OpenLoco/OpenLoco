@@ -479,6 +479,9 @@ namespace OpenLoco::World::MapGenerator
             }
         }
 
+        if (!numIndustriesAvailable)
+            return;
+
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
 
         auto progressTicksPerIndustry = (maxProgress - minProgress) / numIndustriesAvailable;
