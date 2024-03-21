@@ -15,6 +15,7 @@
 #include "Map/TileManager.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/ScenarioTextObject.h"
 #include "OpenLoco.h"
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
@@ -571,6 +572,19 @@ namespace OpenLoco::S5
                 }
             }
 #endif
+            if (hasLoadFlags(flags, LoadFlags::landscape))
+            {
+                if (file->header.type != S5Type::scenario)
+                {
+                    _loadErrorCode = 255;
+                    _loadErrorMessage = StringIds::error_file_contains_invalid_data;
+                    return false;
+                }
+                if (file->landscapeOptions->editorStep == EditorController::Step::null)
+                {
+                    file->landscapeOptions->editorStep = EditorController::Step::landscapeEditor;
+                }
+            }
             if (!file->packedObjects.empty())
             {
                 bool objectInstalled = false;
@@ -594,7 +608,7 @@ namespace OpenLoco::S5
                 // Throws!
                 Game::returnToTitle();
             }
-            if (!hasLoadFlags(flags, LoadFlags::scenario))
+            if (!hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
                 if (file->header.type == S5Type::scenario)
                 {
@@ -614,7 +628,7 @@ namespace OpenLoco::S5
                     throw LoadException("Not a two player saved game", StringIds::error_file_is_not_two_player_save);
                 }
             }
-            else if (!hasLoadFlags(flags, LoadFlags::scenario))
+            else if (!hasLoadFlags(flags, LoadFlags::scenario) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 if (file->header.type != S5Type::savedGame)
                 {
@@ -643,7 +657,7 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
 
             _gameState = file->gameState;
-            if (hasLoadFlags(flags, LoadFlags::scenario))
+            if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
                 _activeOptions = *file->landscapeOptions;
             }
@@ -656,7 +670,11 @@ namespace OpenLoco::S5
                 World::TileManager::initialise();
                 Scenario::sub_46115C();
             }
-            if (hasLoadFlags(flags, LoadFlags::scenario))
+            if (hasLoadFlags(flags, LoadFlags::landscape))
+            {
+                EntityManager::freeUserStrings();
+            }
+            if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
                 CompanyManager::reset();
                 EntityManager::reset();
@@ -667,6 +685,22 @@ namespace OpenLoco::S5
             ObjectManager::sub_4748FA();
             TileManager::resetSurfaceClearance();
             IndustryManager::createAllMapAnimations();
+            if (hasLoadFlags(flags, LoadFlags::landscape))
+            {
+                Scenario::initialiseSnowLine();
+                auto* stexObj = ObjectManager::get<ScenarioTextObject>();
+                if (stexObj != nullptr)
+                {
+                    auto header = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::scenarioText, 0 });
+                    ObjectManager::unload(header);
+                    ObjectManager::reloadAll();
+                    ObjectManager::sub_4748FA();
+                    _activeOptions->editorStep = EditorController::Step::landscapeEditor;
+                    _activeOptions->difficulty = 3;
+                    StringManager::formatString(_activeOptions->scenarioDetails, StringIds::no_details_yet);
+                    _activeOptions->scenarioName[0] = '\0';
+                }
+            }
             Audio::resetSoundObjects();
 
             // Fix saves affected by https://github.com/OpenLoco/OpenLoco/issues/2095
@@ -682,8 +716,16 @@ namespace OpenLoco::S5
             {
                 clearScreenFlag(ScreenFlags::title);
                 initialiseViewports();
-                Gui::init();
                 Audio::resetMusic();
+                if (hasLoadFlags(flags, LoadFlags::landscape))
+                {
+                    setScreenFlag(ScreenFlags::editor);
+                    Ui::Windows::TitleMenu::editorInit();
+                }
+                else
+                {
+                    Gui::init();
+                }
             }
 
             auto mainWindow = WindowManager::getMainWindow();
@@ -704,7 +746,10 @@ namespace OpenLoco::S5
             sub_4BAEC4();
             addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
             Gfx::invalidateScreen();
-            Scenario::loadPreferredCurrencyAlways();
+            if (!hasLoadFlags(flags, LoadFlags::landscape))
+            {
+                Scenario::loadPreferredCurrencyAlways();
+            }
             Gfx::loadCurrency();
             addr<0x00525F62, uint16_t>() = 0;
 
@@ -715,7 +760,7 @@ namespace OpenLoco::S5
                 addr<0x0050BF6C, uint8_t>() = 1;
             }
 
-            if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer))
+            if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 resetScreenAge();
                 throw GameException::Interrupt;

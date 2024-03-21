@@ -23,6 +23,7 @@ namespace OpenLoco::EntityManager
     };
 
     void reset();
+    void freeUserStrings();
 
     template<typename T>
     T* get(EntityId id);
