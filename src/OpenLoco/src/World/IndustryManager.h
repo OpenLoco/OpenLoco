@@ -26,6 +26,7 @@ namespace OpenLoco::IndustryManager
     void setFlags(const Flags flags);
     void update();
     void updateDaily();
+    size_t getMostCommonBuildingCargoType();
     void updateMonthly();
     int32_t capOfTypeOfIndustry(const uint8_t indObjId, const uint8_t numIndustriesFactor);
     void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts);

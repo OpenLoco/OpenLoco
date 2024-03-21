@@ -438,11 +438,33 @@ namespace OpenLoco::World::MapGenerator
     static void updateProgress(uint8_t value);
 
     // 0x004595B7
-    static bool isIndustryCargoAvailable(uint8_t cargoType)
+    static bool isCargoProducedAnywhere(uint8_t requiredCargoType)
     {
-        registers regs;
-        regs.eax = cargoType;
-        return call(0x004595B7, regs) & X86_FLAG_CARRY;
+        auto commonBuildingCargoType = IndustryManager::getMostCommonBuildingCargoType();
+        if (commonBuildingCargoType == requiredCargoType)
+            return true;
+
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(i);
+            if (industryObj == nullptr)
+            {
+                continue;
+            }
+
+            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() > industryObj->obsoleteYear)
+            {
+                continue;
+            }
+
+            for (auto producedCargoType : industryObj->producedCargoType)
+            {
+                if (producedCargoType == requiredCargoType)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     // 0x004597FD
@@ -490,7 +512,7 @@ namespace OpenLoco::World::MapGenerator
                         continue;
 
                     numCargoSpecified++;
-                    if (isIndustryCargoAvailable(cargoType))
+                    if (isCargoProducedAnywhere(cargoType))
                         numCargoAvailable++;
                 }
 

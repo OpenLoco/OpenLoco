@@ -109,7 +109,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0047EA42
-    static size_t getMostCommonBuildingCargoType()
+    size_t getMostCommonBuildingCargoType()
     {
         // First generate a count of all the different cargo based on what building could generate
         std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)> cargoCounts{};
