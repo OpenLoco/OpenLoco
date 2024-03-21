@@ -932,8 +932,15 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x004796A9
-    void updateYearly1()
+    void updateDefaultLevelCrossingType()
     {
+        // The default level crossing type could change each year so this function should be run
+        // yearly.
+        //
+        // The default level crossing type is used for any road/rail crossings that are built.
+        //
+        // NOTE: It does not update existing crossings only changes future to be built crossings.
+
         auto bestCrossingObject = 0;
         auto bestDesignYear = std::numeric_limits<int32_t>::min();
         auto currentYear = getCurrentYear();
@@ -972,7 +979,7 @@ namespace OpenLoco::ObjectManager
                 bestCrossingObject = i;
             }
         }
-        getGameState().currentLevelCrossingType = bestCrossingObject;
+        getGameState().currentDefaultLevelCrossingType = bestCrossingObject;
     }
 
     // 0x004C3A9E

@@ -429,7 +429,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("orderTableLength", 0, gameState1.orderTableLength, gameState2.orderTableLength);
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsTram", 0, gameState1.roadObjectIdIsTram, gameState2.roadObjectIdIsTram);
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsFlag7", 0, gameState1.roadObjectIdIsFlag7, gameState2.roadObjectIdIsFlag7);
-        foundDivergence |= isLoggedDivergentGameStateField("var_1AC", 0, gameState1.var_1AC, gameState2.var_1AC);
+        foundDivergence |= isLoggedDivergentGameStateField("currentDefaultLevelCrossingType", 0, gameState1.currentDefaultLevelCrossingType, gameState2.currentDefaultLevelCrossingType);
         foundDivergence |= isLoggedDivergentGameStateField("lastTrackTypeOption", 0, gameState1.lastTrackTypeOption, gameState2.lastTrackTypeOption);
         foundDivergence |= isLoggedDivergentGameStateField("loanInterestRate", 0, gameState1.loanInterestRate, gameState2.loanInterestRate);
         foundDivergence |= isLoggedDivergentGameStateField("lastIndustryOption", 0, gameState1.lastIndustryOption, gameState2.lastIndustryOption);

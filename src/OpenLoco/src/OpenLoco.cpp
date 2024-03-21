@@ -961,7 +961,7 @@ namespace OpenLoco
                     {
                         // End of every year
                         CompanyManager::updateYearly();
-                        ObjectManager::updateYearly1();
+                        ObjectManager::updateDefaultLevelCrossingType();
                         ObjectManager::updateYearly2();
                         World::TileManager::updateYearly();
                     }
