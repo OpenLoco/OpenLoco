@@ -720,7 +720,7 @@ namespace OpenLoco::S5
                 if (hasLoadFlags(flags, LoadFlags::landscape))
                 {
                     setScreenFlag(ScreenFlags::editor);
-                    Ui::Windows::TitleMenu::editorInit();
+                    EditorController::showEditor();
                 }
                 else
                 {
