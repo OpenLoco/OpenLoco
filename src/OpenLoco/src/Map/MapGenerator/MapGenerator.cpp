@@ -57,10 +57,10 @@ namespace OpenLoco::World::MapGenerator
     {
         for (auto pos : World::getDrawableTileRange())
         {
-            const uint8_t q00 = heightMap[{ pos.x + 0, pos.y + 0 }];
-            const uint8_t q01 = heightMap[{ pos.x + 0, pos.y + 1 }];
-            const uint8_t q10 = heightMap[{ pos.x + 1, pos.y + 0 }];
-            const uint8_t q11 = heightMap[{ pos.x + 1, pos.y + 1 }];
+            const MicroZ q00 = heightMap[{ pos.x - 1, pos.y - 1 }];
+            const MicroZ q01 = heightMap[{ pos.x + 0, pos.y - 1 }];
+            const MicroZ q10 = heightMap[{ pos.x - 1, pos.y + 0 }];
+            const MicroZ q11 = heightMap[{ pos.x + 0, pos.y + 0 }];
 
             const auto tile = TileManager::get(pos);
             auto* surfaceElement = tile.surface();
@@ -69,8 +69,8 @@ namespace OpenLoco::World::MapGenerator
                 continue;
             }
 
-            const uint8_t baseHeight = (q00 + q01 + q10 + q11) / 4;
-            surfaceElement->setBaseZ(std::max(2, baseHeight * kSmallZStep));
+            const MicroZ baseHeight = std::min(std::min(q00, q01), std::min(q10, q11));
+            surfaceElement->setBaseZ(baseHeight * kMicroToSmallZStep);
 
             uint8_t currentSlope = SurfaceSlope::flat;
 
@@ -78,17 +78,17 @@ namespace OpenLoco::World::MapGenerator
             if (q00 > baseHeight)
                 currentSlope |= SurfaceSlope::CornerUp::south;
             if (q01 > baseHeight)
-                currentSlope |= SurfaceSlope::CornerUp::west;
-            if (q10 > baseHeight)
                 currentSlope |= SurfaceSlope::CornerUp::east;
+            if (q10 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::west;
             if (q11 > baseHeight)
                 currentSlope |= SurfaceSlope::CornerUp::north;
 
             // Now, deduce if we should go for double height
             // clang-format off
             if ((currentSlope == SurfaceSlope::CornerDown::north && q00 - baseHeight >= 2) ||
-                (currentSlope == SurfaceSlope::CornerDown::east  && q01 - baseHeight >= 2) ||
-                (currentSlope == SurfaceSlope::CornerDown::west  && q10 - baseHeight >= 2) ||
+                (currentSlope == SurfaceSlope::CornerDown::west  && q01 - baseHeight >= 2) ||
+                (currentSlope == SurfaceSlope::CornerDown::east  && q10 - baseHeight >= 2) ||
                 (currentSlope == SurfaceSlope::CornerDown::south && q11 - baseHeight >= 2))
             {
                 currentSlope |= SurfaceSlope::doubleHeight;
