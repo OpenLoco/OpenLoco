@@ -69,7 +69,7 @@ namespace OpenLoco::World::MapGenerator
                 continue;
             }
 
-            const MicroZ baseHeight = std::min(std::min(q00, q01), std::min(q10, q11));
+            const MicroZ baseHeight = std::min({ q00, q01, q10, q11 });
             surfaceElement->setBaseZ(baseHeight * kMicroToSmallZStep);
 
             uint8_t currentSlope = SurfaceSlope::flat;
