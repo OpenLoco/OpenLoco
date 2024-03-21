@@ -38,21 +38,7 @@ namespace OpenLoco::EditorController
     static loco_global<char[267], 0x00050B745> _activeSavePath;
     static loco_global<char[512], 0x00112CE04> _scenarioFilename;
 
-    // 0x00440297
-    // TODO: only called from editor, but move to S5 namespace?
-    static void resetLandDistributionPatterns()
-    {
-        auto& options = S5::getOptions();
-        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
-        {
-            options.landDistributionPatterns[i] = S5::LandDistributionPattern::everywhere;
-            auto* landObj = ObjectManager::get<LandObject>(i);
-            if (landObj == nullptr)
-                continue;
-
-            options.landDistributionPatterns[i] = S5::LandDistributionPattern(landObj->distributionPattern);
-        }
-    }
+    static void resetLandDistributionPatterns();
 
     // 0x0043D7DC
     void init()
@@ -214,6 +200,21 @@ namespace OpenLoco::EditorController
         options.objective = Scenario::getObjective();
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objective.deliveredCargoType });
         options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, 0 });
+    }
+
+    // 0x00440297
+    static void resetLandDistributionPatterns()
+    {
+        auto& options = S5::getOptions();
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
+        {
+            options.landDistributionPatterns[i] = S5::LandDistributionPattern::everywhere;
+            auto* landObj = ObjectManager::get<LandObject>(i);
+            if (landObj == nullptr)
+                continue;
+
+            options.landDistributionPatterns[i] = S5::LandDistributionPattern(landObj->distributionPattern);
+        }
     }
 
     // 0x0043EE25
