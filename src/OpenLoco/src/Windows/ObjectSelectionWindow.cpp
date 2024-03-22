@@ -506,6 +506,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             window.var_856 = enumValue(FilterLevel::advanced);
         }
 
+        assignTabPositions(&window);
         switchTab(window, objectType);
         return window;
     }
