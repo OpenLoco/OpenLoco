@@ -52,12 +52,7 @@ namespace OpenLoco::EditorController
     // 0x0043D7DC
     void init()
     {
-        // TODO: not sure why title flag is preserved?
-        bool wasTitleMode = isTitleMode();
         setAllScreenFlags(ScreenFlags::editor);
-        if (wasTitleMode)
-            setScreenFlag(ScreenFlags::title);
-
         setGameSpeed(GameSpeed::Normal);
 
         auto& options = S5::getOptions();
