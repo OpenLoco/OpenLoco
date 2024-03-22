@@ -9,6 +9,12 @@ namespace OpenLoco
 {
     enum class MonthId : uint8_t;
     class FormatArguments;
+    struct ClimateObject;
+}
+
+namespace OpenLoco::ObjectManager
+{
+    enum class SelectedObjectsFlags : uint8_t;
 }
 
 namespace OpenLoco::Scenario
@@ -120,6 +126,7 @@ namespace OpenLoco::Scenario
     // 0x00525FB5
     Season getCurrentSeason();
     void setCurrentSeason(Season season);
+    void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj);
 
     void reset();
     void sub_4748D4();

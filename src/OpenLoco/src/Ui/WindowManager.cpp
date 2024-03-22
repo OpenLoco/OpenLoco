@@ -95,15 +95,6 @@ namespace OpenLoco::Ui::WindowManager
             });
 
         registerHook(
-            0x0043CB9F,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                Windows::TitleMenu::editorInit();
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
             0x0043EE58,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;

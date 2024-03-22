@@ -77,7 +77,7 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00496A18, 0x00496A84 (adapted)
-    static void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj)
+    void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj)
     {
         Season season = static_cast<Season>(climateObj->firstSeason);
 

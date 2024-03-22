@@ -15,6 +15,7 @@ namespace OpenLoco::EditorController
     };
 
     void init();
+    void showEditor();
 
     Step getCurrentStep();
     Step getPreviousStep();

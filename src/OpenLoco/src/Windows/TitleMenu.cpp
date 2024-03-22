@@ -387,20 +387,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         Network::joinServer(host);
     }
 
-    // 0x0043CB9F
-    void editorInit()
-    {
-        Windows::Main::open();
-
-        Windows::Terraform::setAdjustLandToolSize(1);
-        Windows::Terraform::setAdjustWaterToolSize(1);
-        Windows::Terraform::setClearAreaToolSize(2);
-
-        ToolbarTop::Editor::open();
-        ToolbarBottom::Editor::open();
-        Gui::resize();
-    }
-
     static void sub_43910A()
     {
         EditorController::init();

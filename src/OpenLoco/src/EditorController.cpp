@@ -1,38 +1,155 @@
 #include "EditorController.h"
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Date.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
+#include "GameException.hpp"
 #include "GameState.h"
 #include "GameStateFlags.h"
+#include "Gui.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Localisation/StringManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/ClimateObject.h"
+#include "Objects/LandObject.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
+#include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
 #include "ScenarioManager.h"
 #include "ScenarioObjective.h"
+#include "SceneManager.h"
+#include "Title.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <span>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
 namespace OpenLoco::EditorController
 {
-    static loco_global<uint8_t, 0x00508F17> _paused_state;
     static loco_global<char[267], 0x00050B745> _activeSavePath;
     static loco_global<char[512], 0x00112CE04> _scenarioFilename;
+
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
+    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+
+    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
+    {
+        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
+    }
+
+    static void resetLandDistributionPatterns();
 
     // 0x0043D7DC
     void init()
     {
-        call(0x0043D7DC);
+        // TODO: not sure why title flag is preserved?
+        bool wasTitleMode = isTitleMode();
+        setAllScreenFlags(ScreenFlags::editor);
+        if (wasTitleMode)
+            setScreenFlag(ScreenFlags::title);
+
+        setGameSpeed(GameSpeed::Normal);
+
+        auto& options = S5::getOptions();
+        auto& gameState = getGameState();
+
+        options.editorStep = Step::objectSelection;
+        options.difficulty = 2;
+        options.madeAnyChanges = 0;
+        addr<0x00F25374, uint8_t>() = 0; // ?? backup for madeAnyChanges?
+        options.scenarioFlags = Scenario::ScenarioFlags::landscapeGenerationDone;
+        gameState.lastLandOption = 0xFF;
+        gameState.lastMapWindowAttributes.flags = WindowFlags::none;
+
+        WindowManager::closeAllFloatingWindows();
+        initialiseViewports();
+        Title::sub_4284C8();
+        Audio::pauseSound();
+        Audio::unpauseSound();
+        ObjectManager::unloadAll();
+        ObjectManager::prepareSelectionList(false);
+        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
+        ObjectManager::freeSelectionList();
+        ObjectManager::reloadAll();
+        Scenario::sub_4748D4();
+
+        options.scenarioStartYear = 1900;
+        gameState.seaLevel = 4;
+        options.minLandHeight = 2;
+        options.topographyStyle = S5::TopographyStyle::mountains;
+        options.hillDensity = 50;
+        options.numberOfForests = 100;
+        options.minForestRadius = 4;
+        options.maxForestRadius = 40;
+        options.minForestDensity = 1;
+        options.maxForestDensity = 7;
+        options.numberRandomTrees = 1000;
+        options.minAltitudeForTrees = 0;
+        options.maxAltitudeForTrees = 25;
+        options.numberOfTowns = 55;
+        options.maxTownSize = 3;
+        options.numberOfIndustries = 1;
+
+        resetLandDistributionPatterns();
+        Scenario::reset();
+
+        gameState.maxCompetingCompanies = 8;
+        gameState.competitorStartDelay = 0;
+        gameState.preferredAIIntelligence = 0;
+        gameState.preferredAIAggressiveness = 0;
+        gameState.preferredAICompetitiveness = 0;
+        gameState.startingLoanSize = 1250;
+        gameState.maxLoanSize = 3750;
+        gameState.loanInterestRate = 10;
+        gameState.industryFlags = IndustryManager::Flags::none;
+        gameState.forbiddenVehiclesPlayers = 0;
+        gameState.forbiddenVehiclesCompetitors = 0;
+        gameState.scenarioObjective.type = Scenario::ObjectiveType::companyValue;
+        gameState.scenarioObjective.flags = Scenario::ObjectiveFlags::none;
+        gameState.scenarioObjective.companyValue = 1'000'000;
+        gameState.scenarioObjective.monthlyVehicleProfit = 25'000;
+        gameState.scenarioObjective.performanceIndex = 90;
+        gameState.scenarioObjective.deliveredCargoType = 0;
+        gameState.scenarioObjective.deliveredCargoAmount = 50'000;
+        gameState.scenarioObjective.timeLimitYears = 20;
+
+        Scenario::initialiseDate(options.scenarioStartYear);
+        Scenario::updateSeason(getCurrentDay(), ObjectManager::get<ClimateObject>());
+
+        StringManager::formatString(options.scenarioDetails, StringIds::no_details_yet);
+        StringManager::formatString(options.scenarioName, StringIds::unnamed);
+
+        showEditor();
+        Audio::resetMusic();
+        Gfx::loadPalette();
+        Gfx::invalidateScreen();
+
+        resetScreenAge();
+        throw GameException::Interrupt;
+    }
+
+    // 0x0043CB9F
+    void showEditor()
+    {
+        Windows::Main::open();
+
+        Windows::Terraform::setAdjustLandToolSize(1);
+        Windows::Terraform::setAdjustWaterToolSize(1);
+        Windows::Terraform::setClearAreaToolSize(2);
+
+        Windows::ToolbarTop::Editor::open();
+        Windows::ToolbarBottom::Editor::open();
+        Gui::resize();
     }
 
     Step getCurrentStep()
@@ -92,6 +209,21 @@ namespace OpenLoco::EditorController
         options.objective = Scenario::getObjective();
         options.objectiveDeliveredCargo = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::cargo, options.objective.deliveredCargoType });
         options.currency = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::currency, 0 });
+    }
+
+    // 0x00440297
+    static void resetLandDistributionPatterns()
+    {
+        auto& options = S5::getOptions();
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
+        {
+            options.landDistributionPatterns[i] = S5::LandDistributionPattern::everywhere;
+            auto* landObj = ObjectManager::get<LandObject>(i);
+            if (landObj == nullptr)
+                continue;
+
+            options.landDistributionPatterns[i] = S5::LandDistributionPattern(landObj->distributionPattern);
+        }
     }
 
     // 0x0043EE25
