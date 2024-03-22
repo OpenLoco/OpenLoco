@@ -499,7 +499,7 @@ namespace OpenLoco::Scenario
     static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
     static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
 
-    std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
+    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
     {
         return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
     }

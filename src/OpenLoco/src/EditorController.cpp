@@ -29,6 +29,7 @@
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <span>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -37,6 +38,14 @@ namespace OpenLoco::EditorController
 {
     static loco_global<char[267], 0x00050B745> _activeSavePath;
     static loco_global<char[512], 0x00112CE04> _scenarioFilename;
+
+    static loco_global<ObjectManager::SelectedObjectsFlags*, 0x50D144> _inUseobjectSelection;
+    static loco_global<ObjectManager::ObjectSelectionMeta, 0x0112C1C5> _objectSelectionMeta;
+
+    static std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags()
+    {
+        return std::span<ObjectManager::SelectedObjectsFlags>(*_inUseobjectSelection, ObjectManager::getNumInstalledObjects());
+    }
 
     static void resetLandDistributionPatterns();
 
@@ -69,7 +78,7 @@ namespace OpenLoco::EditorController
         Audio::unpauseSound();
         ObjectManager::unloadAll();
         ObjectManager::prepareSelectionList(false);
-        ObjectManager::loadSelectionListObjects(Scenario::getInUseSelectedObjectFlags());
+        ObjectManager::loadSelectionListObjects(getInUseSelectedObjectFlags());
         ObjectManager::freeSelectionList();
         ObjectManager::reloadAll();
         Scenario::sub_4748D4();

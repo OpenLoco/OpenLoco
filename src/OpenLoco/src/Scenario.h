@@ -4,7 +4,6 @@
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <cstdint>
-#include <span>
 
 namespace OpenLoco
 {
@@ -156,8 +155,6 @@ namespace OpenLoco::Scenario
     void registerHooks();
     void formatChallengeArguments(const Objective& objective, const ObjectiveProgress& progress, FormatArguments& args);
     void sub_46115C();
-
-    std::span<ObjectManager::SelectedObjectsFlags> getInUseSelectedObjectFlags();
 
     void loadPreferredCurrencyAlways();
     void loadPreferredCurrencyNewGame();
