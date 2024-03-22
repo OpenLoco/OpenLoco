@@ -190,7 +190,7 @@ namespace OpenLoco::World
     }
 
     // 0x0042E4D4
-    bool updateBuildingAnimation(const Animation& anim)
+    bool updateBuildingAnimation1(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
         BuildingElement* elBuilding = nullptr;
@@ -234,6 +234,61 @@ namespace OpenLoco::World
         applyToMultiTile(*elBuilding, anim.pos, isMultiTile, [](World::BuildingElement& elBuilding, const World::Pos2& pos) {
             Ui::ViewportManager::invalidate(pos, elBuilding.baseHeight(), elBuilding.clearHeight(), ZoomLevel::half);
         });
+        return false;
+    }
+
+    // 0x0042E646
+    bool updateBuildingAnimation2(const Animation& anim)
+    {
+        auto tile = TileManager::get(anim.pos);
+        BuildingElement* elBuilding = nullptr;
+        for (auto& el : tile)
+        {
+            elBuilding = el.as<BuildingElement>();
+            if (elBuilding == nullptr)
+            {
+                continue;
+            }
+            if (elBuilding->baseZ() != anim.baseZ)
+            {
+                continue;
+            }
+            break;
+        }
+
+        if (elBuilding == nullptr)
+        {
+            return true;
+        }
+
+        auto* buildingObj = elBuilding->getObject();
+        auto parts = buildingObj->getBuildingParts(elBuilding->variation());
+        uint8_t slowestSpeed = 0xFF;
+        uint8_t numFrames = 0;
+        for (auto part : parts)
+        {
+            auto& partAnim = buildingObj->partAnimations[part];
+            const uint8_t animSpeed = partAnim.animationSpeed & ~(1U << 7);
+            if (partAnim.numFrames == 0)
+            {
+                continue;
+            }
+            numFrames |= partAnim.numFrames;
+            if (partAnim.numFrames == 1)
+            {
+                continue;
+            }
+            slowestSpeed = std::min(slowestSpeed, animSpeed);
+        }
+        if (numFrames <= 1)
+        {
+            return true;
+        }
+        const auto speedMask = ((1 << slowestSpeed) - 1);
+        if (!(ScenarioManager::getScenarioTicks() & speedMask))
+        {
+            Ui::ViewportManager::invalidate(anim.pos, elBuilding->baseHeight(), elBuilding->clearHeight(), ZoomLevel::quarter);
+        }
         return false;
     }
 }
