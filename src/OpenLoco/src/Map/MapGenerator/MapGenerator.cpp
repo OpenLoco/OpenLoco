@@ -56,9 +56,59 @@ namespace OpenLoco::World::MapGenerator
     // 0x004625D0
     static void generateLand(HeightMap& heightMap)
     {
-        _heightMap = heightMap.data();
-        call(0x004625D0);
-        _heightMap = nullptr;
+        for (auto pos : World::getDrawableTileRange())
+        {
+            const MicroZ q00 = heightMap[{ pos.x - 1, pos.y - 1 }];
+            const MicroZ q01 = heightMap[{ pos.x + 0, pos.y - 1 }];
+            const MicroZ q10 = heightMap[{ pos.x - 1, pos.y + 0 }];
+            const MicroZ q11 = heightMap[{ pos.x + 0, pos.y + 0 }];
+
+            const auto tile = TileManager::get(pos);
+            auto* surfaceElement = tile.surface();
+            if (surfaceElement == nullptr)
+            {
+                continue;
+            }
+
+            const MicroZ baseHeight = std::min({ q00, q01, q10, q11 });
+            surfaceElement->setBaseZ(baseHeight * kMicroToSmallZStep);
+
+            uint8_t currentSlope = SurfaceSlope::flat;
+
+            // First, figure out basic corner style
+            if (q00 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::south;
+            if (q01 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::east;
+            if (q10 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::west;
+            if (q11 > baseHeight)
+                currentSlope |= SurfaceSlope::CornerUp::north;
+
+            // Now, deduce if we should go for double height
+            // clang-format off
+            if ((currentSlope == SurfaceSlope::CornerDown::north && q00 - baseHeight >= 2) ||
+                (currentSlope == SurfaceSlope::CornerDown::west  && q01 - baseHeight >= 2) ||
+                (currentSlope == SurfaceSlope::CornerDown::east  && q10 - baseHeight >= 2) ||
+                (currentSlope == SurfaceSlope::CornerDown::south && q11 - baseHeight >= 2))
+            {
+                currentSlope |= SurfaceSlope::doubleHeight;
+            }
+            // clang-format on
+
+            surfaceElement->setSlope(currentSlope);
+
+            auto clearZ = surfaceElement->baseZ();
+            if (surfaceElement->slopeCorners())
+            {
+                clearZ += kSmallZStep;
+            }
+            if (surfaceElement->isSlopeDoubleHeight())
+            {
+                clearZ += kSmallZStep;
+            }
+            surfaceElement->setClearZ(clearZ);
+        }
     }
 
     // 0x004C4BD7
