@@ -316,6 +316,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
                 }
             }
+
+            if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+            {
+                self.activatedWidgets |= (1 << widx::generate_when_game_starts);
+                self.disabledWidgets |= (1 << widx::generate_now);
+            }
+            else
+            {
+                self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+                self.disabledWidgets &= ~(1 << widx::generate_now);
+            }
         }
 
         static void confirmResetLandscape(int32_t promptType)
