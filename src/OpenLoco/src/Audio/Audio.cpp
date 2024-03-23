@@ -1100,7 +1100,7 @@ namespace OpenLoco::Audio
     void playBackgroundMusic()
     {
         auto& cfg = Config::get().old;
-        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
+        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode() || isPaused())
         {
             return;
         }
