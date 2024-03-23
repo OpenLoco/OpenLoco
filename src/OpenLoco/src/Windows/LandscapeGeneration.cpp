@@ -1,5 +1,6 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
+#include "Environment.h"
 #include "Game.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
@@ -216,7 +217,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
-            makeWidget({ 280, 165 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
 
             // Generate button
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
@@ -278,13 +279,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     auto pos = Point(window.x + widget.left + 1, window.y + widget.top);
                     drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::black_stringid, &args);
                 }
+
+                case S5::LandGeneratorType::PngHeightMap:
+                {
+                    // TODO: show current filename
+                }
             }
         }
 
         static const StringId generatorIds[] = {
             StringIds::generator_original,
             StringIds::generator_simplex,
-            StringIds::generator_heightmap,
+            StringIds::generator_png_heightmap,
         };
 
         // 0x0043DB76
@@ -305,11 +311,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     self.enabledWidgets |= (1 << widx::change_heightmap_btn);
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                    self.enabledWidgets &= ~(1 << widx::heightmap_poc);
 
                     self.widgets[widx::change_heightmap_btn].type = WidgetType::button;
                     self.widgets[widx::terrainSmoothingNum].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::none;
+                    self.widgets[widx::heightmap_poc].type = WidgetType::none;
                     break;
                 }
 
@@ -317,24 +325,50 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
                     self.enabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                    self.enabledWidgets &= ~(1 << widx::heightmap_poc);
 
                     self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNum].type = WidgetType::combobox;
                     self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::button;
                     self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::button;
+                    self.widgets[widx::heightmap_poc].type = WidgetType::none;
+                    break;
+                }
+
+                case S5::LandGeneratorType::PngHeightMap:
+                {
+                    self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
+                    self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
+                    self.enabledWidgets |= (1 << widx::heightmap_poc);
+
+                    self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
+                    self.widgets[widx::terrainSmoothingNum].type = WidgetType::none;
+                    self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::none;
+                    self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::none;
+                    self.widgets[widx::heightmap_poc].type = WidgetType::button;
                     break;
                 }
             }
 
-            if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
+            if (options.generator == S5::LandGeneratorType::PngHeightMap)
+            {
+                self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
+                self.disabledWidgets |= (1 << widx::generate_when_game_starts);
+                if (true)
+                    self.disabledWidgets |= (1 << widx::generate_now);
+                else
+                    self.disabledWidgets &= ~(1 << widx::generate_now);
+            }
+            else if ((options.scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) == Scenario::ScenarioFlags::none)
             {
                 self.activatedWidgets |= (1 << widx::generate_when_game_starts);
+                self.disabledWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_now);
             }
             else
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
-                self.disabledWidgets &= ~(1 << widx::generate_now);
+                self.disabledWidgets &= ~((1 << widx::generate_now) | (1 << widx::generate_when_game_starts));
             }
         }
 
@@ -451,14 +485,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::heightmap_poc:
                 {
+                    fs::path basePath = Environment::getPath(Environment::PathId::userHome);
+
+                    static loco_global<char[512], 0x0112CE04> _savePath;
+                    strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
+
                     // NB: this is a proof-of-concept
-                    // TODO: add custom title
                     // TODO: make named constant for filter
                     const auto browseType = Ui::Windows::PromptBrowse::browse_type::load;
-                    if (Game::openBrowsePrompt(StringIds::title_load_landscape, browseType, "*.png"))
+                    if (Game::openBrowsePrompt(StringIds::title_load_png_heightmap_file, browseType, "*.png"))
                     {
-                        static loco_global<char[512], 0x0112CE04> _savePath;
-                        Logging::info("Selected height map: {}", *_savePath);
+                        Logging::info("Selected height map: {}", &*_savePath);
                     }
                     else
                     {
