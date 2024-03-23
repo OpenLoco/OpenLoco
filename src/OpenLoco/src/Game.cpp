@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Audio/Audio.h"
 #include "Config.h"
+#include "Environment.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
 #include "GameException.hpp"
@@ -44,7 +45,7 @@ namespace OpenLoco::Game
 
     using Ui::Windows::PromptBrowse::browse_type;
 
-    bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
+    static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
         Audio::pauseSound();
         setPauseFlag(1 << 2);
@@ -79,6 +80,15 @@ namespace OpenLoco::Game
         strncpy(&_savePath[0], &_pathLandscapes[0], std::size(_savePath));
 
         return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
+    }
+
+    bool loadHeightmapOpen()
+    {
+        fs::path basePath = Environment::getPath(Environment::PathId::userHome);
+        strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
+
+        // TODO: make named constant for filter?
+        return openBrowsePrompt(StringIds::title_load_png_heightmap_file, browse_type::load, "*.png");
     }
 
     // 0x00441843

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Types.hpp"
 #include <cstdint>
 
 namespace OpenLoco
@@ -13,20 +12,13 @@ namespace OpenLoco
         returnToTitlePrompt,
         quitGamePrompt,
     };
-
-    namespace Ui::Windows::PromptBrowse
-    {
-        enum browse_type : uint8_t;
-    }
 }
 
 namespace OpenLoco::Game
 {
-    using Ui::Windows::PromptBrowse::browse_type;
-
-    bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter);
     bool loadSaveGameOpen();
     bool loadLandscapeOpen();
+    bool loadHeightmapOpen();
     bool saveSaveGameOpen();
     bool saveScenarioOpen();
     bool saveLandscapeOpen();

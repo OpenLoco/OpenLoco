@@ -1,6 +1,5 @@
 #include "Audio/Audio.h"
 #include "Drawing/SoftwareDrawingEngine.h"
-#include "Environment.h"
 #include "Game.h"
 #include "GameState.h"
 #include "Graphics/Colour.h"
@@ -486,16 +485,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 case widx::heightmap_poc:
                 {
-                    fs::path basePath = Environment::getPath(Environment::PathId::userHome);
-
-                    static loco_global<char[512], 0x0112CE04> _savePath;
-                    strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
-
-                    // NB: this is a proof-of-concept
-                    // TODO: make named constant for filter
-                    const auto browseType = Ui::Windows::PromptBrowse::browse_type::load;
-                    if (Game::openBrowsePrompt(StringIds::title_load_png_heightmap_file, browseType, "*.png"))
+                    if (Game::loadHeightmapOpen())
                     {
+                        static loco_global<char[512], 0x0112CE04> _savePath;
                         World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
                         Logging::info("Selected height map: {}", &*_savePath);
                     }
