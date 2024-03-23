@@ -1,6 +1,7 @@
 #pragma once
 
 #include <OpenLoco/Core/EnumFlags.hpp>
+#include <OpenLoco/Core/FileSystem.hpp>
 #include <array>
 #include <cstdint>
 #include <optional>
@@ -41,4 +42,7 @@ namespace OpenLoco::World::MapGenerator
 
     void generate(const S5::Options& options);
     std::optional<uint8_t> getRandomTerrainVariation(const SurfaceElement& surface);
+
+    void setPngHeightmapPath(const fs::path& path);
+    fs::path getPngHeightmapPath();
 }

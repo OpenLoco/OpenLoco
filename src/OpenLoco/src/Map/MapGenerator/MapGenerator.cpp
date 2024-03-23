@@ -39,6 +39,8 @@ namespace OpenLoco::World::MapGenerator
 {
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
+    static fs::path _pngHeightmapPath{};
+
     // 0x004624F0
     static void generateHeightMap(const S5::Options& options, HeightMap& heightMap)
     {
@@ -55,7 +57,7 @@ namespace OpenLoco::World::MapGenerator
         else
         {
             PngTerrainGenerator generator;
-            generator.generate(heightMap);
+            generator.generate(_pngHeightmapPath, heightMap);
         }
     }
 
@@ -682,5 +684,15 @@ namespace OpenLoco::World::MapGenerator
         Scenario::sub_4969E0(0);
         Scenario::sub_4748D4();
         Ui::ProgressBar::end();
+    }
+
+    void setPngHeightmapPath(const fs::path& path)
+    {
+        _pngHeightmapPath = path;
+    }
+
+    fs::path getPngHeightmapPath()
+    {
+        return _pngHeightmapPath;
     }
 }

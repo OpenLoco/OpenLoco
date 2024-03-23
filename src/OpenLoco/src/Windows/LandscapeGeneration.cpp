@@ -9,6 +9,7 @@
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/MapGenerator/MapGenerator.h"
 #include "Objects/HillShapesObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
@@ -354,7 +355,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_when_game_starts);
-                if (true)
+                if (!World::MapGenerator::getPngHeightmapPath().empty())
                     self.disabledWidgets |= (1 << widx::generate_now);
                 else
                     self.disabledWidgets &= ~(1 << widx::generate_now);
@@ -495,6 +496,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     const auto browseType = Ui::Windows::PromptBrowse::browse_type::load;
                     if (Game::openBrowsePrompt(StringIds::title_load_png_heightmap_file, browseType, "*.png"))
                     {
+                        World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
                         Logging::info("Selected height map: {}", &*_savePath);
                     }
                     else

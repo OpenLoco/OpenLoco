@@ -128,42 +128,19 @@ namespace OpenLoco::World::MapGenerator
         */
     };
 
-    void PngTerrainGenerator::generate(HeightMapRange heightMap)
+    void PngTerrainGenerator::generate(const fs::path& path, HeightMapRange heightMap)
     {
-        generateFromHeightmapPng(heightMap);
-    }
+        if (!fs::is_regular_file(path))
+            return;
 
-    void PngTerrainGenerator::openUiPngBrowser()
-    {
-        // TODO: add custom title
-        // TODO: make named constant for filter
-        const auto browseType = Ui::Windows::PromptBrowse::browse_type::load;
-        if (Game::openBrowsePrompt(StringIds::title_load_landscape, browseType, "*.png"))
-        {
-            Logging::info("Selected height map: {}", *_savePath);
-        }
-        else
-        {
-            Logging::info("Height map browser aborted");
-        }
-    }
-
-    int PngTerrainGenerator::generateFromHeightmapPng(HeightMapRange heightMap)
-    {
-        // openUiPngBrowser(); // seems like game commands like this cannot be run here
-
-        auto filename = fs::u8path(&_savePath[0]).replace_extension(".png");
-        auto pngImage = PngOps::loadPng(filename.string());
-
+        auto pngImage = PngOps::loadPng(path.string());
         if (pngImage == nullptr)
-        {
-            return -1;
-        }
+            return;
 
         // do stuff with the image
         png_byte red, green, blue, alpha;
-        constexpr int MaxWidth = 384;
-        constexpr int MaxHeight = 384;
+        constexpr int MaxWidth = World::kMapColumns;
+        constexpr int MaxHeight = World::kMapRows;
         constexpr int MaximumHeightmapLevels = 40;
         constexpr float ScalingFactor = MaximumHeightmapLevels / 255.f; // scaling factor from rgb to loco-height
         int width = std::min(MaxWidth, pngImage->width);
@@ -180,7 +157,5 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[{ y, x }] = (int)(imgHeight * ScalingFactor) + 1; // [1, MaximumHeightmapLevels];
             }
         }
-
-        return 0;
     }
 }
