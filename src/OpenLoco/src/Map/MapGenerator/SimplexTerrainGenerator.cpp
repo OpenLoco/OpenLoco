@@ -11,9 +11,11 @@ namespace OpenLoco::World::MapGenerator
         initialiseRng(seed);
 
         auto hillDensity = std::clamp<uint8_t>(options.hillDensity, 0, 100) / 100.0f;
+        auto smoothingPasses = std::clamp<uint8_t>(options.numTerrainSmoothingPasses, 1, 5);
 
         SimplexSettings settings;
         settings.low = options.minLandHeight;
+        settings.smooth = smoothingPasses;
 
         switch (options.topographyStyle)
         {
@@ -21,35 +23,30 @@ namespace OpenLoco::World::MapGenerator
                 settings.high = options.minLandHeight + 8;
                 settings.baseFreq = 4.0f * hillDensity;
                 settings.octaves = 5;
-                settings.smooth = 2;
                 generate(settings, heightMap);
                 break;
             case TopographyStyle::smallHills:
                 settings.high = options.minLandHeight + 14;
                 settings.baseFreq = 6.0f * hillDensity;
                 settings.octaves = 6;
-                settings.smooth = 1;
                 generate(settings, heightMap);
                 break;
             case TopographyStyle::mountains:
                 settings.high = 32;
                 settings.baseFreq = 4.0f * hillDensity;
                 settings.octaves = 6;
-                settings.smooth = 1;
                 generate(settings, heightMap);
                 break;
             case TopographyStyle::halfMountainsHills:
                 settings.high = 32;
                 settings.baseFreq = 8.0f * hillDensity;
                 settings.octaves = 6;
-                settings.smooth = 2;
                 generate(settings, heightMap);
                 break;
             case TopographyStyle::halfMountainsFlat:
                 settings.high = 32;
                 settings.baseFreq = 6.0f * hillDensity;
                 settings.octaves = 5;
-                settings.smooth = 5;
                 generate(settings, heightMap);
                 break;
         }

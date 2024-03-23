@@ -490,6 +490,27 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return window;
     }
 
+    static void switchTab(Window& self, ObjectType newTab);
+
+    Window& openInTab(ObjectType objectType)
+    {
+        auto& window = *open();
+        auto& info = _tabDisplayInfo[enumValue(objectType)];
+
+        if ((info.flags & ObjectTabFlags::alwaysHidden) != ObjectTabFlags::none)
+        {
+            window.var_856 = enumValue(FilterLevel::expert);
+        }
+        else
+        {
+            window.var_856 = enumValue(FilterLevel::advanced);
+        }
+
+        assignTabPositions(&window);
+        switchTab(window, objectType);
+        return window;
+    }
+
     // 0x004733AC
     static void prepareDraw(Ui::Window& self)
     {
@@ -1119,6 +1140,35 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    static void switchTab(Window& self, ObjectType newTab)
+    {
+        repositionTargetTab(&self, newTab);
+
+        const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
+        _filterByVehicleType = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
+        _currentVehicleType = VehicleType::train;
+
+        populateTabObjectList(newTab, FilterFlags(self.var_858));
+
+        self.rowHover = -1;
+        self.object = nullptr;
+        self.scrollAreas[0].contentWidth = 0;
+        ObjectManager::freeTemporaryObject();
+        auto objIndex = getFirstAvailableSelectedObject(&self);
+
+        if (objIndex.index != -1)
+        {
+            self.rowHover = objIndex.index;
+            self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
+
+            ObjectManager::loadTemporaryObject(*objIndex.object._header);
+        }
+
+        applyFilterToObjectList(FilterFlags(self.var_858));
+        self.initScrollWidgets();
+        self.invalidate();
+    }
+
     // 0x004737BA
     static void onMouseUp(Window& self, WidgetIndex_t w)
     {
@@ -1159,31 +1209,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 if (clickedTab != -1 && self.currentTab != clickedTab)
                 {
-                    repositionTargetTab(&self, static_cast<ObjectType>(clickedTab));
-
-                    const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;
-                    _filterByVehicleType = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
-                    _currentVehicleType = VehicleType::train;
-
-                    populateTabObjectList(static_cast<ObjectType>(clickedTab), FilterFlags(self.var_858));
-
-                    self.rowHover = -1;
-                    self.object = nullptr;
-                    self.scrollAreas[0].contentWidth = 0;
-                    ObjectManager::freeTemporaryObject();
-                    auto objIndex = getFirstAvailableSelectedObject(&self);
-
-                    if (objIndex.index != -1)
-                    {
-                        self.rowHover = objIndex.index;
-                        self.object = reinterpret_cast<std::byte*>(objIndex.object._header);
-
-                        ObjectManager::loadTemporaryObject(*objIndex.object._header);
-                    }
-
-                    applyFilterToObjectList(FilterFlags(self.var_858));
-                    self.initScrollWidgets();
-                    self.invalidate();
+                    switchTab(self, ObjectType(clickedTab));
                 }
 
                 break;

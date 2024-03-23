@@ -52,7 +52,8 @@ namespace OpenLoco::EditorController
     // 0x0043D7DC
     void init()
     {
-        setAllScreenFlags(ScreenFlags::editor);
+        clearScreenFlag(ScreenFlags::title);
+        setScreenFlag(ScreenFlags::editor);
         setGameSpeed(GameSpeed::Normal);
 
         auto& options = S5::getOptions();
@@ -128,6 +129,10 @@ namespace OpenLoco::EditorController
         Audio::resetMusic();
         Gfx::loadPalette();
         Gfx::invalidateScreen();
+
+        // New in OpenLoco
+        options.generator = S5::LandGeneratorType::Original;
+        options.numTerrainSmoothingPasses = 2;
 
         resetScreenAge();
         throw GameException::Interrupt;

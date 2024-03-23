@@ -2200,9 +2200,9 @@ strings:
   2145: "Never"
   2146: "Every month"
   2147: "Every {INT32} months"
-  2148: "{COLOUR WINDOW_2}Generator:"
-  2149: Original
-  2150: Simplex
+  2148: "{COLOUR WINDOW_2}Height map source:"
+  2149: Original generator
+  2150: Simplex generator
   2151: "Modify vehicle"
   2152: "Clone vehicle"
   2153: "Can't clone vehicle..."
@@ -2388,3 +2388,7 @@ strings:
   2333: "{SMALLFONT}{COLOUR BLACK}When enabled, the maximum length for railroad stations is no longer constrained to 16 tiles. Note that stations can still not occupy more than 80 tiles overall."
   2334: Landscape Generation - Water
   2335: "{SMALLFONT}{COLOUR BLACK}Water generation options"
+  2336: General
+  2337: Generator
+  2338: "{COLOUR WINDOW_2}Current hill object: {COLOUR BLACK}{STRINGID}"
+  2339: "{COLOUR WINDOW_2}Number of terrain smoothing passes:"
