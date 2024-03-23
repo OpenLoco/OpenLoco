@@ -52,7 +52,8 @@ namespace OpenLoco::EditorController
     // 0x0043D7DC
     void init()
     {
-        setAllScreenFlags(ScreenFlags::editor);
+        clearScreenFlag(ScreenFlags::title);
+        setScreenFlag(ScreenFlags::editor);
         setGameSpeed(GameSpeed::Normal);
 
         auto& options = S5::getOptions();
