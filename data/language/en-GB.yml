@@ -2394,3 +2394,6 @@ strings:
   2339: "{COLOUR WINDOW_2}Number of terrain smoothing passes:"
   2340: "PNG heightmap file"
   2341: "Load PNG heightmap file"
+  2342: "Browse..."
+  2343: "{COLOUR WINDOW_2}Current heightmap file: {COLOUR BLACK}{STRING}"
+  2344: "(none selected)"

@@ -137,7 +137,7 @@ namespace OpenLoco::World::MapGenerator
                 auto imgHeight = ((red + green + blue) / 3); // [0, 255]
 
                 // flipped x,y is intentional here since openloco is flipping them somewhere else down the line
-                heightMap[{ y, x }] = (int)(imgHeight * ScalingFactor) + 1; // [1, maxHeightmapLevels];
+                heightMap[{ x, y }] = (int)(imgHeight * ScalingFactor) + 1; // [1, maxHeightmapLevels];
             }
         }
     }

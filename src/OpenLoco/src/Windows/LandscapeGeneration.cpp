@@ -6,6 +6,7 @@
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
+#include "Localisation/Conversion.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/MapGenerator/MapGenerator.h"
@@ -217,7 +218,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
-            makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
+            makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_browse),
 
             // Generate button
             makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::button, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
@@ -278,11 +279,25 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     // Draw value
                     auto pos = Point(window.x + widget.left + 1, window.y + widget.top);
                     drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::black_stringid, &args);
+                    break;
                 }
 
                 case S5::LandGeneratorType::PngHeightMap:
                 {
-                    // TODO: show current filename
+                    FormatArguments args{};
+                    auto path = World::MapGenerator::getPngHeightmapPath();
+                    auto filename = path.filename().make_preferred().u8string();
+                    if (!filename.empty())
+                    {
+                        filename = Localisation::convertUnicodeToLoco(filename);
+                        args.push(filename.c_str());
+                    }
+                    else
+                        args.push(StringManager::getString(StringIds::noneSelected));
+
+                    auto pos = Point(window.x + 10, window.y + window.widgets[widx::heightmap_poc].top);
+                    drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::currentHeightmapFile, &args);
+                    break;
                 }
             }
         }
@@ -490,11 +505,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     {
                         static loco_global<char[512], 0x0112CE04> _savePath;
                         World::MapGenerator::setPngHeightmapPath(fs::u8path(&*_savePath));
-                        Logging::info("Selected height map: {}", &*_savePath);
-                    }
-                    else
-                    {
-                        Logging::info("Height map browser aborted");
+                        window.invalidate();
                     }
                     break;
                 }

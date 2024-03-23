@@ -1957,6 +1957,9 @@ namespace OpenLoco::StringIds
     constexpr StringId landscapeOptionsSmoothingPasses = 2339;
     constexpr StringId generator_png_heightmap = 2340;
     constexpr StringId title_load_png_heightmap_file = 2341;
+    constexpr StringId button_browse = 2342;
+    constexpr StringId currentHeightmapFile = 2343;
+    constexpr StringId noneSelected = 2344;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
