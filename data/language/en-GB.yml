@@ -2200,7 +2200,7 @@ strings:
   2145: "Never"
   2146: "Every month"
   2147: "Every {INT32} months"
-  2148: "{COLOUR WINDOW_2}Height map source:"
+  2148: "{COLOUR WINDOW_2}Heightmap source:"
   2149: Original generator
   2150: Simplex generator
   2151: "Modify vehicle"
