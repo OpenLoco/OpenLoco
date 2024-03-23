@@ -84,7 +84,8 @@ namespace OpenLoco::Game
 
     bool loadHeightmapOpen()
     {
-        fs::path basePath = Environment::getPath(Environment::PathId::userHome);
+        fs::path basePath = Environment::getPath(Environment::PathId::heightmap);
+        Environment::autoCreateDirectory(basePath);
         strncpy(&_savePath[0], basePath.make_preferred().u8string().c_str(), std::size(_savePath));
 
         // TODO: make named constant for filter?

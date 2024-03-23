@@ -62,7 +62,7 @@ namespace OpenLoco::Environment
         _1tmp,
         objects,
         scenarios,
-        userHome,
+        heightmap,
     };
 
     void autoCreateDirectory(const fs::path& path);

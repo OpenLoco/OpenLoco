@@ -278,7 +278,7 @@ namespace OpenLoco::Environment
             case PathId::save:
             case PathId::autosave:
             case PathId::landscape:
-            case PathId::userHome:
+            case PathId::heightmap:
                 return Platform::getUserDirectory();
             case PathId::languageFiles:
 #if defined(__APPLE__) && defined(__MACH__)
@@ -350,7 +350,7 @@ namespace OpenLoco::Environment
             "1.TMP",
             "ObjData",
             "Scenarios",
-            "",
+            "heightmap",
         };
 
         size_t index = (size_t)id;
