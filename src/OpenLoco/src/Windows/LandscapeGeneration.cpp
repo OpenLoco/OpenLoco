@@ -864,6 +864,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             auto args = FormatArguments::common();
             auto& options = S5::getOptions();
+            args.skip(2); // sea levels have moved
             args.push<uint16_t>(options.minLandHeight);
             args.push<uint16_t>(options.hillDensity);
 

@@ -57,7 +57,7 @@ namespace OpenLoco::World::MapGenerator
         else
         {
             PngTerrainGenerator generator;
-            generator.generate(_pngHeightmapPath, heightMap);
+            generator.generate(options, _pngHeightmapPath, heightMap);
         }
     }
 

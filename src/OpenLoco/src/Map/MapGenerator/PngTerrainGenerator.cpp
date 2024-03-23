@@ -1,6 +1,7 @@
 #include "PngTerrainGenerator.h"
 #include "Logging.h"
 #include "MapGenerator.h"
+#include "S5/S5.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Platform/Platform.h>
 #include <png.h>
@@ -103,15 +104,9 @@ namespace OpenLoco::World::MapGenerator
 
             return pngImage;
         }
-
-        /*
-        static void savePng()
-        {
-        }
-        */
     };
 
-    void PngTerrainGenerator::generate(const fs::path& path, HeightMapRange heightMap)
+    void PngTerrainGenerator::generate(const S5::Options& options, const fs::path& path, HeightMapRange heightMap)
     {
         if (!fs::is_regular_file(path))
         {
@@ -126,10 +121,11 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        constexpr int maxHeightmapLevels = 40;
-        constexpr float ScalingFactor = maxHeightmapLevels / 255.f; // scaling factor from rgb to loco-height
-        auto width = std::min<int16_t>(World::kMapColumns, pngImage->width);
-        auto height = std::min<int16_t>(World::kMapRows, pngImage->height);
+        const int maxHeightmapLevels = 64 - options.minLandHeight;
+        const float scalingFactor = maxHeightmapLevels / 255.f;
+
+        const auto width = std::min<int16_t>(World::kMapColumns, pngImage->width);
+        const auto height = std::min<int16_t>(World::kMapRows, pngImage->height);
 
         for (int32_t y = 0; y < height; y++)
         {
@@ -137,10 +133,9 @@ namespace OpenLoco::World::MapGenerator
             {
                 png_byte red, green, blue, alpha;
                 pngImage->getPixel(x, y, red, green, blue, alpha);
-                auto imgHeight = ((red + green + blue) / 3); // [0, 255]
 
-                // flipped x,y is intentional here since openloco is flipping them somewhere else down the line
-                heightMap[{ x, y }] = (int)(imgHeight * ScalingFactor) + 1; // [1, maxHeightmapLevels];
+                auto imgHeight = (red + green + blue) / 3;
+                heightMap[{ x, y }] = options.minLandHeight + (imgHeight * scalingFactor);
             }
         }
     }
