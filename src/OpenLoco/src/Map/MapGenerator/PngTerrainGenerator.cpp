@@ -15,27 +15,30 @@ namespace OpenLoco::World::MapGenerator
     struct PngImage
     {
     public:
-        PngImage(std::vector<png_byte> img, int w, int h)
+        PngImage(std::vector<png_byte> img, int w, int h, int c)
         {
             imageData = img;
             width = w;
             height = h;
+            channels = c;
         }
 
-        PngImage(int w, int h)
+        PngImage(int w, int h, int c)
         {
-            imageData = std::vector<png_byte>(w * h * 4);
+            imageData = std::vector<png_byte>(w * h * c);
             width = w;
             height = h;
+            channels = c;
         }
 
         std::vector<png_byte> imageData;
         int width;
         int height;
+        int channels;
 
         void getPixel(int x, int y, png_byte& red, png_byte& green, png_byte& blue, png_byte& alpha)
         {
-            int index = (y * width + x) * 4;
+            int index = (y * width + x) * channels;
             red = imageData[index];
             green = imageData[index + 1];
             blue = imageData[index + 2];
@@ -82,14 +85,14 @@ namespace OpenLoco::World::MapGenerator
 
             int width = png_get_image_width(png, info);
             int height = png_get_image_height(png, info);
-            // png_byte colorType = png_get_color_type(png, info);
+            int channels = png_get_channels(png, info);
 
-            auto pngImage = std::make_unique<PngImage>(width, height);
+            auto pngImage = std::make_unique<PngImage>(width, height, channels);
 
             png_bytep* rowPointers = new png_bytep[height];
             for (int y = 0; y < height; y++)
             {
-                rowPointers[y] = &pngImage->imageData[y * width * 4];
+                rowPointers[y] = &pngImage->imageData[y * width * channels];
             }
             png_read_image(png, rowPointers);
 
