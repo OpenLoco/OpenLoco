@@ -1,37 +1,17 @@
 #include "PngTerrainGenerator.h"
-#include "MapGenerator.h"
-
-#include "Game.h"
-#include "GameCommands/GameCommands.h"
-#include "GameCommands/General/LoadSaveQuit.h"
-#include "Localisation/StringIds.h"
 #include "Logging.h"
-#include "Ui/WindowManager.h"
-
+#include "MapGenerator.h"
+#include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Platform/Platform.h>
-#include <cassert>
-#include <cstdint>
-#include <fstream>
-#include <iostream>
 #include <png.h>
-#include <random>
-#include <string>
-#include <vector>
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
-using namespace OpenLoco::Ui;
-using namespace OpenLoco::S5;
-using namespace OpenLoco::World::MapGenerator;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
-    static loco_global<uint8_t*, 0x00F00160> _heightMap;
-    static loco_global<char[512], 0x0112CE04> _savePath;
-
     struct PngImage
     {
     public:
