@@ -354,7 +354,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             {
                 self.activatedWidgets &= ~(1 << widx::generate_when_game_starts);
                 self.disabledWidgets |= (1 << widx::generate_when_game_starts);
-                if (!World::MapGenerator::getPngHeightmapPath().empty())
+
+                if (World::MapGenerator::getPngHeightmapPath().empty())
                     self.disabledWidgets |= (1 << widx::generate_now);
                 else
                     self.disabledWidgets &= ~(1 << widx::generate_now);

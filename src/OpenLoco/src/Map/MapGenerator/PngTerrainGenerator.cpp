@@ -131,30 +131,33 @@ namespace OpenLoco::World::MapGenerator
     void PngTerrainGenerator::generate(const fs::path& path, HeightMapRange heightMap)
     {
         if (!fs::is_regular_file(path))
+        {
+            Logging::error("Can't find terrain file ({})", path);
             return;
+        }
 
         auto pngImage = PngOps::loadPng(path.string());
         if (pngImage == nullptr)
+        {
+            Logging::error("Can't load terrain file ({})", path);
             return;
+        }
 
-        // do stuff with the image
-        png_byte red, green, blue, alpha;
-        constexpr int MaxWidth = World::kMapColumns;
-        constexpr int MaxHeight = World::kMapRows;
-        constexpr int MaximumHeightmapLevels = 40;
-        constexpr float ScalingFactor = MaximumHeightmapLevels / 255.f; // scaling factor from rgb to loco-height
-        int width = std::min(MaxWidth, pngImage->width);
-        int height = std::min(MaxHeight, pngImage->height);
+        constexpr int maxHeightmapLevels = 40;
+        constexpr float ScalingFactor = maxHeightmapLevels / 255.f; // scaling factor from rgb to loco-height
+        auto width = std::min<int16_t>(World::kMapColumns, pngImage->width);
+        auto height = std::min<int16_t>(World::kMapRows, pngImage->height);
 
         for (int32_t y = 0; y < height; y++)
         {
             for (int32_t x = 0; x < width; x++)
             {
+                png_byte red, green, blue, alpha;
                 pngImage->getPixel(x, y, red, green, blue, alpha);
                 auto imgHeight = ((red + green + blue) / 3); // [0, 255]
 
                 // flipped x,y is intentional here since openloco is flipping them somewhere else down the line
-                heightMap[{ y, x }] = (int)(imgHeight * ScalingFactor) + 1; // [1, MaximumHeightmapLevels];
+                heightMap[{ y, x }] = (int)(imgHeight * ScalingFactor) + 1; // [1, maxHeightmapLevels];
             }
         }
     }
