@@ -440,13 +440,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                         drawLandscapePreview(window, *rt, x, y, width, 129);
                     }
                 }
-                else if (*_fileType == BrowseFileType::heightmap)
-                {
-                    if (_previewScenarioOptions != nullptr)
-                    {
-                        drawLandscapePreview(window, *rt, x, y, width, 129);
-                    }
-                }
             }
         }
 
@@ -947,8 +940,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             case BrowseFileType::landscape:
                 _previewScenarioOptions = S5::readScenarioOptions(path);
                 break;
-            case BrowseFileType::heightmap:
-                //_previewScenarioOptions = S5::readScenarioOptions(path);
+            default:
                 break;
         }
     }
