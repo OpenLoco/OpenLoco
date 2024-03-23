@@ -70,7 +70,7 @@ namespace OpenLoco::World::MapGenerator
         {
             std::ifstream inFile(filename, std::ios::binary);
 
-            png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+            png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
             if (!png)
             {
                 Logging::error("Failed to create PNG read struct");
@@ -81,14 +81,14 @@ namespace OpenLoco::World::MapGenerator
             if (!info)
             {
                 Logging::error("Failed to create PNG info struct");
-                png_destroy_read_struct(&png, NULL, NULL);
+                png_destroy_read_struct(&png, nullptr, nullptr);
                 return nullptr;
             }
 
             // Set error handler
             if (setjmp(png_jmpbuf(png)))
             {
-                png_destroy_read_struct(&png, &info, NULL);
+                png_destroy_read_struct(&png, &info, nullptr);
                 Logging::error("Failed to set png error handler");
                 return nullptr;
             }
@@ -115,7 +115,7 @@ namespace OpenLoco::World::MapGenerator
 
             // cleanup image
             delete[] rowPointers;
-            png_destroy_read_struct(&png, &info, NULL);
+            png_destroy_read_struct(&png, &info, nullptr);
             inFile.close();
 
             return pngImage;
