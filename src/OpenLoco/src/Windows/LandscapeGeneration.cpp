@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             terrainSmoothingNumUp,
             generate_when_game_starts,
 
-            heightmap_poc,
+            browseHeightmapFile,
 
             generate_now,
         };
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     else
                         args.push(StringManager::getString(StringIds::noneSelected));
 
-                    auto pos = Point(window.x + 10, window.y + window.widgets[widx::heightmap_poc].top);
+                    auto pos = Point(window.x + 10, window.y + window.widgets[widx::browseHeightmapFile].top);
                     drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::currentHeightmapFile, &args);
                     break;
                 }
@@ -326,13 +326,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     self.enabledWidgets |= (1 << widx::change_heightmap_btn);
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.enabledWidgets &= ~(1 << widx::heightmap_poc);
+                    self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].type = WidgetType::button;
                     self.widgets[widx::terrainSmoothingNum].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::none;
-                    self.widgets[widx::heightmap_poc].type = WidgetType::none;
+                    self.widgets[widx::browseHeightmapFile].type = WidgetType::none;
                     break;
                 }
 
@@ -340,13 +340,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
                     self.enabledWidgets |= ((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.enabledWidgets &= ~(1 << widx::heightmap_poc);
+                    self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNum].type = WidgetType::combobox;
                     self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::button;
                     self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::button;
-                    self.widgets[widx::heightmap_poc].type = WidgetType::none;
+                    self.widgets[widx::browseHeightmapFile].type = WidgetType::none;
                     break;
                 }
 
@@ -354,13 +354,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     self.enabledWidgets &= ~(1 << widx::change_heightmap_btn);
                     self.enabledWidgets &= ~((1 << widx::terrainSmoothingNum) | (1 << widx::terrainSmoothingNumUp) | (1 << widx::terrainSmoothingNumDown));
-                    self.enabledWidgets |= (1 << widx::heightmap_poc);
+                    self.enabledWidgets |= (1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNum].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::none;
                     self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::none;
-                    self.widgets[widx::heightmap_poc].type = WidgetType::button;
+                    self.widgets[widx::browseHeightmapFile].type = WidgetType::button;
                     break;
                 }
             }
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     ObjectSelectionWindow::openInTab(ObjectType::hillShapes);
                     break;
 
-                case widx::heightmap_poc:
+                case widx::browseHeightmapFile:
                 {
                     if (Game::loadHeightmapOpen())
                     {
