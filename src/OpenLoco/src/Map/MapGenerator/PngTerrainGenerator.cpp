@@ -134,7 +134,7 @@ namespace OpenLoco::World::MapGenerator
                 png_byte red, green, blue, alpha;
                 pngImage->getPixel(x, y, red, green, blue, alpha);
 
-                auto imgHeight = (red + green + blue) / 3;
+                auto imgHeight = std::max({ red, green, blue });
                 heightMap[{ x, y }] = options.minLandHeight + (imgHeight * scalingFactor);
             }
         }
