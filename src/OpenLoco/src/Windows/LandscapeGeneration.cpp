@@ -1493,16 +1493,30 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043EBF1
         static void onMouseDown(Window& window, WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex != widx::num_industries_btn)
-                return;
+            switch (widgetIndex)
+            {
+                case widx::num_industries_btn:
+                {
+                    Widget& target = window.widgets[widx::num_industries];
+                    Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
 
-            Widget& target = window.widgets[widx::num_industries];
-            Dropdown::show(window.x + target.left, window.y + target.top, target.width() - 4, target.height(), window.getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
+                    for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
+                        Dropdown::add(i, numIndustriesLabels[i]);
 
-            for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
-                Dropdown::add(i, numIndustriesLabels[i]);
+                    Dropdown::setHighlightedItem(S5::getOptions().numberOfIndustries);
+                    break;
+                }
 
-            Dropdown::setHighlightedItem(S5::getOptions().numberOfIndustries);
+                case widx::check_allow_industries_close_down:
+                    IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesCloseDown);
+                    window.invalidate();
+                    break;
+
+                case widx::check_allow_industries_start_up:
+                    IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesStartUp);
+                    window.invalidate();
+                    break;
+            }
         }
 
         // 0x0043EBCA
@@ -1521,16 +1535,6 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case Common::widx::tab_towns:
                 case Common::widx::tab_industries:
                     Common::switchTab(&window, widgetIndex);
-                    break;
-
-                case widx::check_allow_industries_close_down:
-                    IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesCloseDown);
-                    window.invalidate();
-                    break;
-
-                case widx::check_allow_industries_start_up:
-                    IndustryManager::setFlags(IndustryManager::getFlags() ^ IndustryManager::Flags::disallowIndustriesStartUp);
-                    window.invalidate();
                     break;
             }
         }
