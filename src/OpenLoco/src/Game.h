@@ -18,6 +18,7 @@ namespace OpenLoco::Game
 {
     bool loadSaveGameOpen();
     bool loadLandscapeOpen();
+    bool loadHeightmapOpen();
     bool saveSaveGameOpen();
     bool saveScenarioOpen();
     bool saveLandscapeOpen();

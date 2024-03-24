@@ -16,6 +16,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "OriginalTerrainGenerator.h"
+#include "PngTerrainGenerator.h"
 #include "Random.h"
 #include "S5/S5.h"
 #include "Scenario.h"
@@ -38,6 +39,8 @@ namespace OpenLoco::World::MapGenerator
 {
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
+    static fs::path _pngHeightmapPath{};
+
     // 0x004624F0
     static void generateHeightMap(const S5::Options& options, HeightMap& heightMap)
     {
@@ -46,10 +49,15 @@ namespace OpenLoco::World::MapGenerator
             OriginalTerrainGenerator generator;
             generator.generate(options, heightMap);
         }
-        else
+        else if (options.generator == LandGeneratorType::Simplex)
         {
             SimplexTerrainGenerator generator;
             generator.generate(options, heightMap, std::random_device{}());
+        }
+        else
+        {
+            PngTerrainGenerator generator;
+            generator.generate(options, _pngHeightmapPath, heightMap);
         }
     }
 
@@ -676,5 +684,15 @@ namespace OpenLoco::World::MapGenerator
         Scenario::sub_4969E0(0);
         Scenario::sub_4748D4();
         Ui::ProgressBar::end();
+    }
+
+    void setPngHeightmapPath(const fs::path& path)
+    {
+        _pngHeightmapPath = path;
+    }
+
+    fs::path getPngHeightmapPath()
+    {
+        return _pngHeightmapPath;
     }
 }

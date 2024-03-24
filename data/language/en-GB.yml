@@ -2200,7 +2200,7 @@ strings:
   2145: "Never"
   2146: "Every month"
   2147: "Every {INT32} months"
-  2148: "{COLOUR WINDOW_2}Height map source:"
+  2148: "{COLOUR WINDOW_2}Heightmap source:"
   2149: Original generator
   2150: Simplex generator
   2151: "Modify vehicle"
@@ -2392,3 +2392,8 @@ strings:
   2337: Generator
   2338: "{COLOUR WINDOW_2}Current hill object: {COLOUR BLACK}{STRINGID}"
   2339: "{COLOUR WINDOW_2}Number of terrain smoothing passes:"
+  2340: "PNG heightmap file"
+  2341: "Load PNG heightmap file"
+  2342: "Browse..."
+  2343: "{COLOUR WINDOW_2}Current heightmap file: {COLOUR BLACK}{STRING}"
+  2344: "(none selected)"
