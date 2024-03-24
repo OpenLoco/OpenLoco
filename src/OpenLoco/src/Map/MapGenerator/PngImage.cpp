@@ -3,8 +3,6 @@
 #include "PngImage.h"
 #include "Logging.h"
 
-// #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
-
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
@@ -66,32 +64,32 @@ namespace OpenLoco::World::MapGenerator
             });
 
             png_read_info(png, info);
+
+            int width = png_get_image_width(png, info);
+            int height = png_get_image_height(png, info);
+            int channels = png_get_channels(png, info);
+
+            auto pngImage = std::make_unique<PngImage>(width, height, channels);
+
+            png_bytep* rowPointers = new png_bytep[height];
+            for (int y = 0; y < height; y++)
+            {
+                rowPointers[y] = &pngImage->imageData[y * width * channels];
+            }
+            png_read_image(png, rowPointers);
+
+            // cleanup image
+            delete[] rowPointers;
+            png_destroy_read_struct(&png, &info, nullptr);
+            inFile.close();
+
+            return pngImage;
         }
         catch (const std::runtime_error& e)
         {
             Logging::error("{}", e.what());
+            png_destroy_read_struct(&png, nullptr, nullptr);
             return nullptr;
-            ;
         }
-
-        int width = png_get_image_width(png, info);
-        int height = png_get_image_height(png, info);
-        int channels = png_get_channels(png, info);
-
-        auto pngImage = std::make_unique<PngImage>(width, height, channels);
-
-        png_bytep* rowPointers = new png_bytep[height];
-        for (int y = 0; y < height; y++)
-        {
-            rowPointers[y] = &pngImage->imageData[y * width * channels];
-        }
-        png_read_image(png, rowPointers);
-
-        // cleanup image
-        delete[] rowPointers;
-        png_destroy_read_struct(&png, &info, nullptr);
-        inFile.close();
-
-        return pngImage;
     }
 }
