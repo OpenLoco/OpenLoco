@@ -124,18 +124,22 @@ namespace OpenLoco::World::MapGenerator
         const int maxHeightmapLevels = 64 - options.minLandHeight;
         const float scalingFactor = maxHeightmapLevels / 255.f;
 
-        const auto width = std::min<int16_t>(World::kMapColumns, pngImage->width);
-        const auto height = std::min<int16_t>(World::kMapRows, pngImage->height);
-
-        for (int32_t y = 0; y < height; y++)
+        for (int32_t y = 0; y < World::kMapRows; y++)
         {
-            for (int32_t x = 0; x < width; x++)
+            for (int32_t x = 0; x < World::kMapColumns; x++)
             {
-                png_byte red, green, blue, alpha;
-                pngImage->getPixel(x, y, red, green, blue, alpha);
+                if (y >= pngImage->height || x >= pngImage->width)
+                {
+                    heightMap[{ x, y }] = options.minLandHeight;
+                }
+                else
+                {
+                    png_byte red, green, blue, alpha;
+                    pngImage->getPixel(x, y, red, green, blue, alpha);
 
-                auto imgHeight = std::max({ red, green, blue });
-                heightMap[{ x, y }] = options.minLandHeight + (imgHeight * scalingFactor);
+                    auto imgHeight = std::max({ red, green, blue });
+                    heightMap[{ x, y }] = options.minLandHeight + (imgHeight * scalingFactor);
+                }
             }
         }
     }
