@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PngImage.h"
 #include "Logging.h"
 
