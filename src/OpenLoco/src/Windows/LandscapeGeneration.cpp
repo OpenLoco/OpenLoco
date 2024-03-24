@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     args.push(obj->name);
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::change_heightmap_btn].top);
-                    drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, &args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, &args);
                     break;
                 }
 
@@ -283,12 +283,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 {
                     // Draw label
                     auto& widget = window.widgets[widx::terrainSmoothingNum];
-                    drawingCtx.drawStringLeft(
-                        *rt,
-                        window.x + 10,
-                        window.y + widget.top,
-                        Colour::black,
-                        StringIds::landscapeOptionsSmoothingPasses);
+                    auto pos = Point(window.x + 10, window.y + widget.top);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::landscapeOptionsSmoothingPasses);
 
                     // Prepare value
                     FormatArguments args{};
@@ -296,8 +292,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     args.push<uint16_t>(options.numTerrainSmoothingPasses);
 
                     // Draw value
-                    auto pos = Point(window.x + widget.left + 1, window.y + widget.top);
-                    drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::black_stringid, &args);
+                    pos = Point(window.x + widget.left + 1, window.y + widget.top);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::black_stringid, &args);
                     break;
                 }
 
@@ -315,7 +311,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         args.push(StringManager::getString(StringIds::noneSelected));
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::browseHeightmapFile].top);
-                    drawingCtx.drawStringLeft(*rt, &pos, Colour::black, StringIds::currentHeightmapFile, &args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::currentHeightmapFile, &args);
                     break;
                 }
             }
