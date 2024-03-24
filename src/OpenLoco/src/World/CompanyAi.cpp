@@ -40,6 +40,7 @@ namespace OpenLoco
     static loco_global<StationId, 0x0112C744> _lastPlacedAirportStationId;
     static loco_global<StationId, 0x0112C748> _lastPlacedPortStationId;
 
+    // NB: also declared as kDirections in Town.cpp
     static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     // 0x004FE720
