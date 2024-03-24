@@ -30,16 +30,21 @@ namespace OpenLoco::World::MapGenerator
         alpha = imageData[index + 3];
     }
 
-    static void my_png_error_handler(png_structp, png_const_charp error_msg)
+    static void libpngErrorHandler(png_structp, png_const_charp error_msg)
     {
         throw std::runtime_error(error_msg);
+    }
+
+    static void libpngWarningHandler(png_structp, png_const_charp error_msg)
+    {
+        Logging::warn("{}", error_msg);
     }
 
     std::unique_ptr<PngImage> PngOps::loadPng(std::string filename)
     {
         std::ifstream inFile(filename, std::ios::binary);
 
-        png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, my_png_error_handler, nullptr);
+        png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, libpngErrorHandler, libpngWarningHandler);
         if (!png)
         {
             Logging::error("Failed to create PNG read struct");
