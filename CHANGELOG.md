@@ -6,6 +6,7 @@
 - Fix: [#2312] Object selection allowing deselection of in-use objects, leading to crashes.
 - Fix: [#2316, #2321] Vehicles do not rotate in announcement for their invention.
 - Fix: [#2352] Height-related station names generated incorrectly.
+- Fix: [#2364] Scroll wheel not working on stepper widgets in the Landscape Generation and Tile Inspector windows.
 - Change: [#2324] Loading and saving landscapes now defaults to the OpenLoco user folder.
 - Change: [#2328] In the landscape generation window, water options are now presented in a separate tab.
 
