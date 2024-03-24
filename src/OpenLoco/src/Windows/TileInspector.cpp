@@ -453,7 +453,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
             case widx::select:
                 activateMapSelectionTool(&self);
                 break;
+        }
+    }
 
+    static void onMouseDown(Ui::Window& self, const WidgetIndex_t widgetIndex)
+    {
+        switch (widgetIndex)
+        {
             case widx::xPosDecrease:
                 _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, World::kMapColumns);
                 self.invalidate();
@@ -528,6 +534,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static constexpr WindowEventList kEvents = {
         .onClose = onClose,
         .onMouseUp = onMouseUp,
+        .onMouseDown = onMouseDown,
         .onToolUpdate = onToolUpdate,
         .onToolDown = onToolDown,
         .getScrollSize = getScrollSize,
