@@ -227,13 +227,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // General options
             makeWidget({ 4, 50 }, { 358, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::landscapeOptionsGroupGeneral),
-            makeStepperWidgets({ 256, 65 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::start_year_value),
+            makeStepperWidgets({ 256, 65 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::start_year_value),
             makeDropdownWidgets({ 176, 81 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
 
             // Generator options
             makeWidget({ 4, 105 }, { 358, 50 }, WidgetType::groupbox, WindowColour::secondary, StringIds::landscapeOptionsGroupGenerator),
             makeWidget({ 280, 120 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
-            makeStepperWidgets({ 256, 120 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary),
+            makeStepperWidgets({ 256, 120 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary),
             makeWidget({ 10, 136 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
 
             // PNG browser
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     self.enabledWidgets &= ~(1 << widx::browseHeightmapFile);
 
                     self.widgets[widx::change_heightmap_btn].type = WidgetType::none;
-                    self.widgets[widx::terrainSmoothingNum].type = WidgetType::combobox;
+                    self.widgets[widx::terrainSmoothingNum].type = WidgetType::textbox;
                     self.widgets[widx::terrainSmoothingNumUp].type = WidgetType::button;
                     self.widgets[widx::terrainSmoothingNumDown].type = WidgetType::button;
                     self.widgets[widx::browseHeightmapFile].type = WidgetType::none;
@@ -606,8 +606,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static Widget widgets[] = {
             common_options_widgets(247, StringIds::title_landscape_generation_land),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
-            makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::min_land_height_units),
-            makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::hill_density_percent),
+            makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
+            makeStepperWidgets({ 256, 84 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::hill_density_percent),
             makeWidget({ 10, 100 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
             makeWidget({ 4, 116 }, { 358, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
@@ -929,7 +929,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(247, StringIds::title_landscape_generation_water),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::sea_level_units),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::sea_level_units),
             widgetEnd()
         };
 
@@ -1028,14 +1028,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_forests),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::number_of_forests_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::min_forest_radius_blocks),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::max_forest_radius_blocks),
-            makeStepperWidgets({ 256, 97 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::min_forest_density_percent),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::max_forest_density_percent),
-            makeStepperWidgets({ 256, 127 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::number_random_trees_value),
-            makeStepperWidgets({ 256, 142 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
-            makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_forests_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_forest_radius_blocks),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_forest_radius_blocks),
+            makeStepperWidgets({ 256, 97 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_forest_density_percent),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_forest_density_percent),
+            makeStepperWidgets({ 256, 127 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_random_trees_value),
+            makeStepperWidgets({ 256, 142 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
+            makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
             widgetEnd()
         };
 
@@ -1259,7 +1259,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::number_of_towns_value),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_towns_value),
             makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             widgetEnd()
         };
