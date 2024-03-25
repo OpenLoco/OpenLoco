@@ -435,8 +435,6 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
-    static void updateProgress(uint8_t value);
-
     // 0x004595B7
     static bool isCargoProducedAnywhere(uint8_t requiredCargoType)
     {
@@ -452,7 +450,7 @@ namespace OpenLoco::World::MapGenerator
                 continue;
             }
 
-            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() > industryObj->obsoleteYear)
+            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() >= industryObj->obsoleteYear)
             {
                 continue;
             }
@@ -467,6 +465,12 @@ namespace OpenLoco::World::MapGenerator
         return false;
     }
 
+    static void updateProgress(uint8_t value)
+    {
+        Ui::processMessagesMini();
+        Ui::ProgressBar::setProgress(value);
+    }
+
     // 0x004597FD
     static void generateIndustries(uint32_t minProgress, uint32_t maxProgress)
     {
@@ -479,7 +483,7 @@ namespace OpenLoco::World::MapGenerator
             }
         }
 
-        if (!numIndustriesAvailable)
+        if (numIndustriesAvailable == 0)
             return;
 
         CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
@@ -499,7 +503,7 @@ namespace OpenLoco::World::MapGenerator
             updateProgress(currentProgress);
 
             // Check if industry is available at present
-            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() > industryObj->obsoleteYear)
+            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() >= industryObj->obsoleteYear)
             {
                 continue;
             }
@@ -657,12 +661,6 @@ namespace OpenLoco::World::MapGenerator
 
             generatorFunctions[buildingObj->generatorFunction](buildingObj, id);
         }
-    }
-
-    static void updateProgress(uint8_t value)
-    {
-        Ui::processMessagesMini();
-        Ui::ProgressBar::setProgress(value);
     }
 
     // 0x0043C90C
