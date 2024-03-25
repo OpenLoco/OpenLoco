@@ -1262,9 +1262,9 @@ namespace OpenLoco::Drawing
             drawString(rt, point, colour, buffer);
 
             // Draw underline
-            drawRect(rt, origin.x - width, origin.y + 11, width, 1, _textColours[1], RectFlags::none);
+            drawRect(rt, point.x, point.y + 11, width, 1, _textColours[1], RectFlags::none);
             if (_textColours[2] != 0)
-                drawRect(rt, origin.x - width, origin.y + 12, width, 1, _textColours[2], RectFlags::none);
+                drawRect(rt, point.x, point.y + 12, width, 1, _textColours[2], RectFlags::none);
         }
 
         // 0x00494D78
