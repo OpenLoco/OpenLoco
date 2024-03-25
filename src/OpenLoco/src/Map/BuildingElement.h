@@ -21,7 +21,17 @@ namespace OpenLoco::World
 
     public:
         uint8_t rotation() const { return _type & 0x03; }
+        void setRotation(uint8_t rotation)
+        {
+            _type &= ~0x03;
+            _type |= rotation & 0x3;
+        }
         bool has_40() const { return (_type & 0x40) != 0; }
+        void setHas40(bool state)
+        {
+            _type &= ~0x40;
+            _type |= state ? 0x40 : 0;
+        }
         bool isConstructed() const { return (_type & 0x80) != 0; }
         void setConstructed(bool state)
         {
@@ -31,8 +41,14 @@ namespace OpenLoco::World
         Colour colour() const { return static_cast<Colour>(_6 >> 11); }
         void setColour(Colour colour) { _6 = (_6 & 0x7FF) | (enumValue(colour) << 11); }
         uint8_t objectId() const { return _4; }
+        void setObjectId(uint8_t id) { _4 = id; }
         const BuildingObject* getObject() const;
         uint8_t multiTileIndex() const { return _5 & 3; }
+        void setMultiTileIndex(uint8_t index)
+        {
+            _5 &= ~0x03;
+            _5 |= index & 0x3;
+        }
         uint8_t unk5u() const { return _5 >> 5; } // likely age related as well (higher precision)
         void setUnk5u(uint8_t value)
         {
