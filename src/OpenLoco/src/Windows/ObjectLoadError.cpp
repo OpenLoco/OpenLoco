@@ -84,7 +84,8 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
         // Draw explanatory text
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftWrapped(*rt, self.x + 3, self.y + 19, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
+        auto point = Point(self.x + 3, self.y + 19);
+        drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
 
     static StringId objectTypeToString(ObjectType type)
@@ -174,12 +175,11 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         // Acquire string buffer
         auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-        const auto namePos = 1;
-        const auto typePos = window.widgets[Widx::typeHeader].left - 4;
-        const auto typeWidth = window.widgets[Widx::typeHeader].width() - 6;
-        const auto checksumPos = window.widgets[Widx::checksumHeader].left - 4;
-
         uint16_t y = 0;
+        auto namePos = Point(1, y);
+        auto typePos = Point(window.widgets[Widx::typeHeader].left - 4, y);
+        auto typeWidth = window.widgets[Widx::typeHeader].width() - 6;
+        auto checksumPos = Point(window.widgets[Widx::checksumHeader].left - 4, y);
         for (uint16_t i = 0; i < window.rowCount; i++)
         {
             if (y + kRowHeight < rt.y)
@@ -211,7 +211,8 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             buffer[8] = '\0';
 
             // Draw object name
-            drawingCtx.drawStringLeft(rt, namePos, y, window.getColour(WindowColour::secondary), textColourId, &args);
+            namePos.y = y;
+            drawingCtx.drawStringLeft(rt, namePos, window.getColour(WindowColour::secondary), textColourId, &args);
 
             // Copy object checksum to buffer
             const auto checksum = fmt::format("{:08X}", header.checksum);
@@ -219,14 +220,16 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             buffer[8] = '\0';
 
             // Draw object checksum
-            drawingCtx.drawStringLeft(rt, checksumPos, y, window.getColour(WindowColour::secondary), textColourId, &args);
+            checksumPos.y = y;
+            drawingCtx.drawStringLeft(rt, checksumPos, window.getColour(WindowColour::secondary), textColourId, &args);
 
             // Prepare object type for drawing
             args.rewind();
             args.push(objectTypeToString(header.getType()));
 
             // Draw object type
-            drawingCtx.drawStringLeftWrapped(rt, typePos, y, typeWidth, window.getColour(WindowColour::secondary), textColourId, &args);
+            typePos.y = y;
+            drawingCtx.drawStringLeftWrapped(rt, typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, &args);
 
             y += kRowHeight;
         }

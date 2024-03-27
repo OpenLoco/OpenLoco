@@ -180,14 +180,16 @@ namespace OpenLoco::Ui::Windows::TownList
                     FormatArguments args{};
                     args.push(town->name);
 
-                    drawingCtx.drawStringLeftClipped(rt, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    auto point = Point(0, yPos);
+                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     FormatArguments args{};
                     args.push(town->getTownSizeString());
 
-                    drawingCtx.drawStringLeftClipped(rt, 200, yPos, 278, Colour::black, text_colour_id, &args);
+                    auto point = Point(200, yPos);
+                    drawingCtx.drawStringLeftClipped(rt, point, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -195,7 +197,8 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
-                    drawingCtx.drawStringLeftClipped(rt, 280, yPos, 68, Colour::black, text_colour_id, &args);
+                    auto point = Point(280, yPos);
+                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -203,7 +206,8 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->numStations);
 
-                    drawingCtx.drawStringLeftClipped(rt, 350, yPos, 68, Colour::black, text_colour_id, &args);
+                    auto point = Point(350, yPos);
+                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += kRowHeight;
             }
@@ -217,9 +221,6 @@ namespace OpenLoco::Ui::Windows::TownList
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            auto xPos = self.x + 4;
-            auto yPos = self.y + self.height - 12;
-
             FormatArguments args{};
             if (self.var_83C == 1)
                 args.push(StringIds::status_towns_singular);
@@ -227,7 +228,8 @@ namespace OpenLoco::Ui::Windows::TownList
                 args.push(StringIds::status_towns_plural);
             args.push(self.var_83C);
 
-            drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            auto point = Point(self.x + 4, self.y + self.height - 12);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -656,9 +658,11 @@ namespace OpenLoco::Ui::Windows::TownList
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
-            drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
+            auto point = Point(self.x + 3, self.y + self.widgets[widx::current_size].top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::town_size_label);
 
-            drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::select_town_size);
+            point = Point(self.x + 3, self.y + self.height - 13);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -886,8 +890,11 @@ namespace OpenLoco::Ui::Windows::TownList
             }
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
+            FormatArguments args{};
+            args.push(buildingObj->name);
 
-            drawingCtx.drawStringLeftClipped(*rt, self.x + 3, self.y + self.height - 13, self.width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
+            auto point = Point(self.x + 3, self.y + self.height - 13);
+            drawingCtx.drawStringLeftClipped(*rt, point, self.width - 19, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049AB31

@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A036
-        static void drawViewportString(Gfx::RenderTarget* rt, uint16_t x, uint16_t y, uint16_t width, MessageItemArgumentType itemType, uint16_t itemIndex)
+        static void drawViewportString(Gfx::RenderTarget* rt, Point origin, uint16_t width, MessageItemArgumentType itemType, uint16_t itemIndex)
         {
             FormatArguments args{};
 
@@ -588,7 +588,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicleTab:
                 {
                     auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-                    drawingCtx.drawStringCentredClipped(*rt, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
+                    drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::black_tiny_font, &args);
                     break;
                 }
 
@@ -635,7 +635,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             y = self->y + 1;
             origin = { x, y };
 
-            drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::news_date, &news->date);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(rt);
 
@@ -719,7 +719,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::news_date, &news->date);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(rt);
 
@@ -831,8 +831,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     x += self.x;
                     auto y = self.widgets[Common::widx::viewport1Button].bottom - 7 + self.y;
                     auto width = self.widgets[Common::widx::viewport1Button].width() - 1;
+                    auto point = Point(x, y);
 
-                    drawViewportString(rt, x, y, width, mtd.argumentTypes[0], news->itemSubjects[0]);
+                    drawViewportString(rt, point, width, mtd.argumentTypes[0], news->itemSubjects[0]);
                 }
             }
             if (mtd.hasFlag(MessageTypeFlags::hasSecondItem))
@@ -843,8 +844,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     x += self.x;
                     auto y = self.widgets[Common::widx::viewport2Button].bottom - 7 + self.y;
                     auto width = self.widgets[Common::widx::viewport2Button].width() - 1;
+                    auto point = Point(x, y);
 
-                    drawViewportString(rt, x, y, width, mtd.argumentTypes[1], news->itemSubjects[1]);
+                    drawViewportString(rt, point, width, mtd.argumentTypes[1], news->itemSubjects[1]);
                 }
             }
         }

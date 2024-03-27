@@ -224,19 +224,21 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add cash step label and value
             {
                 auto& widget = self.widgets[Widx::cash_step_value];
+                auto point = Point(self.x + 10, self.y + widget.top);
+
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + 10,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_amount);
 
                 FormatArguments args{};
                 args.push(_cashIncreaseStep);
+
+                point = Point(self.x + widget.left + 1, self.y + widget.top);
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + widget.left + 1,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_loan_value,
                     &args);
@@ -245,10 +247,11 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Loan label and value
             {
                 auto& widget = self.widgets[Widx::loan_value];
+                auto point = Point(self.x + 10, self.y + widget.top);
+
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + 10,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::company_current_loan);
 
@@ -257,10 +260,10 @@ namespace OpenLoco::Ui::Windows::Cheats
                 FormatArguments args{};
                 args.push(company->currentLoan);
 
+                point = Point(self.x + widget.left + 1, self.y + widget.top);
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + widget.left + 1,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_loan_value,
                     &args);
@@ -269,20 +272,21 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add year label and value
             {
                 auto& widget = self.widgets[Widx::year_step_value];
+                auto point = Point(self.x + 10, self.y + widget.top);
+
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + 10,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_year);
 
                 FormatArguments args{};
                 args.push(_date.year);
 
+                point = Point(self.x + widget.left + 1, self.y + widget.top);
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + widget.left + 1,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_year_value,
                     &args);
@@ -291,20 +295,21 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add month label and value
             {
                 auto& widget = self.widgets[Widx::month_step_value];
+                auto point = Point(self.x + 10, self.y + widget.top);
+
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + 10,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_month);
 
                 FormatArguments args{};
                 args.push((StringId)StringManager::monthToString(_date.month).second);
 
+                point = Point(self.x + widget.left + 1, self.y + widget.top);
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + widget.left + 1,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::black_stringid,
                     &args);
@@ -313,20 +318,21 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Add day label and value
             {
                 auto& widget = self.widgets[Widx::day_step_value];
+                auto point = Point(self.x + 10, self.y + widget.top);
+
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + 10,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_day);
 
                 FormatArguments args{};
                 args.push(_date.day + 1); // +1 since days in game are 0-based, but IRL they are 1-based
 
+                point = Point(self.x + widget.left + 1, self.y + widget.top);
                 drawingCtx.drawStringLeft(
                     *rt,
-                    self.x + widget.left + 1,
-                    self.y + widget.top,
+                    point,
                     Colour::black,
                     StringIds::cheat_day_value,
                     &args);
@@ -554,10 +560,10 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Draw current company name
             auto company = CompanyManager::get(_targetCompanyId);
             auto& widget = self.widgets[Widx::target_company_dropdown];
+            auto point = Point(self.x + widget.left, self.y + widget.top);
             drawingCtx.drawStringLeft(
                 *rt,
-                self.x + widget.left,
-                self.y + widget.top,
+                point,
                 Colour::black,
                 StringIds::black_stringid,
                 &company->name);

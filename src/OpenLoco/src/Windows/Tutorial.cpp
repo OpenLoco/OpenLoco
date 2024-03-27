@@ -73,11 +73,11 @@ namespace OpenLoco::Ui::Windows::Tutorial
         args.push(titleStringIds[tutorialNumber]);
 
         auto& widget = self.widgets[Widx::frame];
-        auto yPos = self.y + widget.top + 4;
-        drawingCtx.drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_text, &args);
+        auto point = Point(self.x + widget.midX(), self.y + widget.top + 4);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_text, &args);
 
-        yPos += 10;
-        drawingCtx.drawStringCentred(*rt, self.x + widget.midX(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+        point.y += 10;
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_control);
     }
 
     static constexpr WindowEventList kEvents = {

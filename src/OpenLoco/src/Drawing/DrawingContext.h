@@ -43,30 +43,16 @@ namespace OpenLoco::Drawing
         virtual uint16_t getStringWidth(const char* buffer) = 0;
         virtual uint16_t getMaxStringWidth(const char* buffer) = 0;
 
-        virtual Ui::Point drawString(Gfx::RenderTarget& rt, int16_t x, int16_t y, AdvancedColour colour, const char* str) = 0;
-
-        virtual int16_t drawStringLeftWrapped(
+        virtual void drawString(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            int16_t width,
+            Ui::Point origin,
             AdvancedColour colour,
-            StringId stringId,
-            const void* args = nullptr)
+            const char* str)
             = 0;
 
         virtual void drawStringLeft(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            AdvancedColour colour,
-            StringId stringId,
-            const void* args = nullptr)
-            = 0;
-
-        virtual void drawStringLeft(
-            Gfx::RenderTarget& rt,
-            Ui::Point* origin,
+            Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr)
@@ -74,36 +60,25 @@ namespace OpenLoco::Drawing
 
         virtual void drawStringLeftClipped(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            int16_t width,
+            Ui::Point origin,
+            uint16_t width,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr)
-            = 0;
-
-        virtual void drawStringRight(
-            Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            AdvancedColour colour,
-            StringId stringId,
-            const void* args = nullptr)
-            = 0;
-
-        virtual void drawStringRightUnderline(
-            Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            AdvancedColour colour,
-            StringId stringId,
-            const void* args)
             = 0;
 
         virtual void drawStringLeftUnderline(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
+            Ui::Point origin,
+            AdvancedColour colour,
+            StringId stringId,
+            const void* args = nullptr)
+            = 0;
+
+        virtual int16_t drawStringLeftWrapped(
+            Gfx::RenderTarget& rt,
+            Ui::Point origin,
+            uint16_t width,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr)
@@ -111,8 +86,7 @@ namespace OpenLoco::Drawing
 
         virtual void drawStringCentred(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
+            Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr)
@@ -120,17 +94,7 @@ namespace OpenLoco::Drawing
 
         virtual void drawStringCentredClipped(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            int16_t width,
-            AdvancedColour colour,
-            StringId stringId,
-            const void* args = nullptr)
-            = 0;
-
-        virtual uint16_t drawStringCentredWrapped(
-            Gfx::RenderTarget& rt,
-            Ui::Point& origin,
+            Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
@@ -139,16 +103,40 @@ namespace OpenLoco::Drawing
 
         virtual void drawStringCentredRaw(
             Gfx::RenderTarget& rt,
-            int16_t x,
-            int16_t y,
-            int16_t linebreakCount,
+            Ui::Point origin,
+            uint16_t linebreakCount,
             AdvancedColour colour,
             const char* wrappedStr)
             = 0;
 
-        virtual void drawStringYOffsets(Gfx::RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) = 0;
+        virtual uint16_t drawStringCentredWrapped(
+            Gfx::RenderTarget& rt,
+            Ui::Point origin,
+            uint16_t width,
+            AdvancedColour colour,
+            StringId stringId,
+            const void* args = nullptr)
+            = 0;
 
-        virtual void drawStringTicker(Gfx::RenderTarget& rt, const Ui::Point& origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
+        virtual void drawStringRight(
+            Gfx::RenderTarget& rt,
+            Ui::Point origin,
+            AdvancedColour colour,
+            StringId stringId,
+            const void* args = nullptr)
+            = 0;
+
+        virtual void drawStringRightUnderline(
+            Gfx::RenderTarget& rt,
+            Ui::Point origin,
+            AdvancedColour colour,
+            StringId stringId,
+            const void* args)
+            = 0;
+
+        virtual void drawStringYOffsets(Gfx::RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) = 0;
+
+        virtual void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
 
         virtual uint16_t getStringWidthNewLined(const char* buffer) = 0;
 

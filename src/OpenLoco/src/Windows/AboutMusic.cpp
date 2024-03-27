@@ -132,33 +132,32 @@ namespace OpenLoco::Ui::Windows::AboutMusic
             { StringIds::sandy_track_blues, StringIds::sandy_track_blues_credit },
         };
 
-        const int16_t x = 240;
-        uint16_t y = 2;
+        auto point = Point(240, 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto& songStrings : stringsToDraw)
         {
-            if (y + (kRowHeight * 3 + 4) < rt.y)
+            if (point.y + (kRowHeight * 3 + 4) < rt.y)
             {
-                y += kRowHeight * 3 + 4;
+                point.y += kRowHeight * 3 + 4;
                 continue;
             }
-            else if (y > rt.y + rt.height)
+            else if (point.y > rt.y + rt.height)
             {
                 break;
             }
 
             // Song name
-            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.first);
-            y += kRowHeight;
+            drawingCtx.drawStringCentred(rt, point, Colour::black, songStrings.first);
+            point.y += kRowHeight;
 
             // Credit line
-            drawingCtx.drawStringCentred(rt, x, y, Colour::black, songStrings.second);
-            y += kRowHeight;
+            drawingCtx.drawStringCentred(rt, point, Colour::black, songStrings.second);
+            point.y += kRowHeight;
 
             // Show CS' copyright after every two lines.
-            drawingCtx.drawStringCentred(rt, x, y, Colour::black, StringIds::music_copyright);
-            y += kRowHeight + 4;
+            drawingCtx.drawStringCentred(rt, point, Colour::black, StringIds::music_copyright);
+            point.y += kRowHeight + 4;
         }
     }
 

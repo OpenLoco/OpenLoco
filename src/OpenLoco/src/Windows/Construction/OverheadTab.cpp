@@ -517,16 +517,14 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             }
         }
 
-        auto xPos = self.x + 69;
-        auto yPos = self.widgets[widx::image].bottom + self.y + 4;
-
         if (_modCost != 0x80000000 && _modCost != 0)
         {
             FormatArguments args{};
             args.push<uint32_t>(_modCost);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
         }
     }
 

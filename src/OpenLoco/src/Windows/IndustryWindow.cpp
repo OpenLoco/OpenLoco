@@ -147,10 +147,9 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push(StringIds::buffer_1250);
 
             auto widget = &self.widgets[widx::status_bar];
-            auto x = self.x + widget->left - 1;
-            auto y = self.y + widget->top - 1;
+            auto point = Point(self.x + widget->left - 1, self.y + widget->top - 1);
             auto width = widget->width();
-            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -455,16 +454,14 @@ namespace OpenLoco::Ui::Windows::Industry
 
             auto industry = IndustryManager::get(IndustryId(self.number));
             const auto* industryObj = industry->getObject();
-            int16_t xPos = self.x + 3;
-            int16_t yPos = self.y + 45;
-            Ui::Point origin = { xPos, yPos };
+            auto origin = Point(self.x + 3, self.y + 45);
 
             // Draw Last Months received cargo stats
             if (industry->canReceiveCargo())
             {
+                drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::received_cargo);
                 origin.x += 4;
                 origin.y += 10;
-                drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->requiredCargoType)
@@ -484,7 +481,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->receivedCargoQuantityPreviousMonth[cargoNumber]);
 
-                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
+                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -495,7 +492,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                drawingCtx.drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
+                drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -518,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->producedCargoQuantityPreviousMonth[cargoNumber]);
                         args.push<uint16_t>(industry->producedCargoPercentTransportedPreviousMonth[cargoNumber]);
 
-                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
+                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
@@ -596,10 +593,8 @@ namespace OpenLoco::Ui::Windows::Industry
                 FormatArguments args{};
                 args.push(cargoObj->unitsAndCargoName);
 
-                int16_t x = self.x + 2;
-                int16_t y = self.y - 24 + 68;
-
-                drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::production_graph_label, &args);
+                auto point = Point(self.x + 2, self.y - 24 + 68);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.
@@ -612,7 +607,8 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
 
-                drawingCtx.drawStringRight(*rt, self.x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                auto point = Point(self.x + 39, yPos - 6);
+                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -637,7 +633,8 @@ namespace OpenLoco::Ui::Windows::Industry
                         FormatArguments args{};
                         args.push(year);
 
-                        drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        auto point = Point(xPos, yPos);
+                        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::population_graph_year, &args);
                     }
 
                     drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);

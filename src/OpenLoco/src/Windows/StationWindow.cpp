@@ -130,10 +130,9 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(StringIds::buffer_1250);
 
             const auto& widget = self.widgets[widx::status_bar];
-            const auto x = self.x + widget.left - 1;
-            const auto y = self.y + widget.top - 1;
             const auto width = widget.width() - 1;
-            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
+            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -398,11 +397,10 @@ namespace OpenLoco::Ui::Windows::Station
             *buffer++ = '\0';
 
             const auto& widget = self.widgets[widx::status_bar];
-            const auto x = self.x + widget.left - 1;
-            const auto y = self.y + widget.top - 1;
             const auto width = widget.width();
+            auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
 
-            drawingCtx.drawStringLeftClipped(*rt, x, y, width, Colour::black, StringIds::buffer_1250);
+            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -521,7 +519,8 @@ namespace OpenLoco::Ui::Windows::Station
                     if (cargo.origin != StationId(self.number))
                         cargoStr = StringIds::station_cargo_en_route_start;
 
-                    drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), cargoStr, &args);
+                    auto point = Point(xPos, y);
+                    drawingCtx.drawStringRight(rt, point, AdvancedColour(Colour::black).outline(), cargoStr, &args);
                     y += 10;
                 }
 
@@ -532,7 +531,8 @@ namespace OpenLoco::Ui::Windows::Station
                     args.push(originStation->name);
                     args.push(originStation->town);
 
-                    drawingCtx.drawStringRight(rt, xPos, y, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args);
+                    auto point = Point(xPos, y);
+                    drawingCtx.drawStringRight(rt, point, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, &args);
                     y += 10;
                 }
 
@@ -548,7 +548,9 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 FormatArguments args{};
                 args.push(StringIds::nothing_waiting);
-                drawingCtx.drawStringLeft(rt, 1, 0, Colour::black, StringIds::black_stringid, &args);
+
+                auto point = Point(1, 0);
+                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -690,7 +692,7 @@ namespace OpenLoco::Ui::Windows::Station
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
-            int16_t y = 0;
+            auto point = Point(0, 0);
             auto cargoId = 0;
             for (const auto& cargoStats : station->cargoStats)
             {
@@ -702,7 +704,8 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                drawingCtx.drawStringLeftClipped(rt, 1, y, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
+                point.x = 1;
+                drawingCtx.drawStringLeftClipped(rt, point, 98, Colour::black, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = Colour::green;
@@ -716,11 +719,13 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 uint8_t amount = (rating * 327) / 256;
-                drawRatingBar(&self, &rt, 100, y, amount, colour);
+                drawRatingBar(&self, &rt, 100, point.y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                drawingCtx.drawStringLeft(rt, 201, y, Colour::black, StringIds::station_cargo_rating_percent, &percent);
-                y += 10;
+                point.x = 201;
+                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::station_cargo_rating_percent, &percent);
+
+                point.y += 10;
                 cargoId++;
             }
         }

@@ -1652,7 +1652,7 @@ namespace OpenLoco::StringIds
     constexpr StringId position_13th = 2035;
     constexpr StringId position_14th = 2036;
     constexpr StringId position_15th = 2037;
-
+    constexpr StringId buffer_2038 = 2038;
     constexpr StringId buffer_2039 = 2039;
     constexpr StringId buffer_2040 = 2040;
 

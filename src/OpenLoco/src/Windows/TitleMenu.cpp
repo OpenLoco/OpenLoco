@@ -272,25 +272,26 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         if (window.widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
         {
-            int16_t y = window.widgets[Widx::multiplayer_toggle_btn].top + 3 + window.y;
-            int16_t x = window.width / 2 + window.x;
+            auto& widget = window.widgets[Widx::multiplayer_toggle_btn];
+            auto point = Point(widget.top + 3 + window.y, window.width / 2 + window.x);
 
             StringId string = StringIds::single_player_mode;
+            FormatArguments args{};
 
             if (OpenLoco::isNetworked())
             {
                 // char[512+1]
                 auto buffer = StringManager::getString(StringIds::buffer_2039);
 
+                // TODO: ?? replace this
                 char* playerName = (char*)0xF254D0;
-
                 strcpy((char*)buffer, playerName);
 
-                addr<0x112C826, StringId>() = StringIds::buffer_2039;
+                args.push(StringIds::buffer_2039);
                 string = StringIds::two_player_mode_connected;
             }
 
-            drawingCtx.drawStringCentredClipped(*rt, x, y, kWW - 4, Colour::black, string, (char*)0x112c826);
+            drawingCtx.drawStringCentredClipped(*rt, point, kWW - 4, Colour::black, string, &args);
         }
     }
 

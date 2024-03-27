@@ -734,19 +734,23 @@ namespace OpenLoco::Ui::Windows::Terraform
                 treeCost = Economy::getInflationAdjustedCost(treeObj->buildCostFactor, treeObj->costIndex, 12);
             }
 
-            FormatArguments args{};
-            args.push<uint32_t>(treeCost);
-
             if (!isEditorMode())
             {
-                auto xPos = self.x + 3 + self.width - 17;
-                auto yPos = self.y + self.height - 13;
-                drawingCtx.drawStringRight(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                FormatArguments args{};
+                args.push<uint32_t>(treeCost);
+
+                auto point = Point(self.x + 3 + self.width - 17, self.y + self.height - 13);
+                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, &args);
             }
-            auto xPos = self.x + 3;
-            auto yPos = self.y + self.height - 13;
-            auto width = self.width - 19 - xPos;
-            drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
+
+            {
+                FormatArguments args{};
+                args.push(treeObj->name);
+
+                auto point = Point(self.x + 3, self.y + self.height - 13);
+                auto width = self.width - 19 - point.x;
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &args);
+            }
         }
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::RenderTarget* clipped)
@@ -1084,13 +1088,13 @@ namespace OpenLoco::Ui::Windows::Terraform
             // Draw as a number if we can't fit a sprite
             if (_adjustToolSize > 10)
             {
-
                 auto xPos = toolArea.midX() + self.x;
                 auto yPos = toolArea.midY() + self.y - 5;
+                auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
-                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
             }
 
             if (_raiseLandCost == 0x80000000)
@@ -1099,13 +1103,16 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (_raiseLandCost == 0)
                 return;
 
-            auto xPos = toolArea.midX() + self.x;
-            auto yPos = toolArea.bottom + self.y + 5;
+            {
+                auto xPos = toolArea.midX() + self.x;
+                auto yPos = toolArea.bottom + self.y + 5;
+                auto point = Point(xPos, yPos);
 
-            FormatArguments args{};
-            args.push<uint32_t>(_raiseLandCost);
+                FormatArguments args{};
+                args.push<uint32_t>(_raiseLandCost);
 
-            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::clear_land_cost, &args);
+            }
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1702,10 +1709,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = toolArea.midX() + self.x;
                 auto yPos = toolArea.midY() + self.y - 5;
+                auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
-                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
             }
 
             auto xPos = toolArea.midX() + self.x;
@@ -1717,7 +1725,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     FormatArguments args{};
                     args.push<uint32_t>(_raiseLandCost);
-                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+
+                    auto point = Point(xPos, yPos);
+                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1729,7 +1739,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     FormatArguments args{};
                     args.push<uint32_t>(_lowerLandCost);
-                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+
+                    auto point = Point(xPos, yPos);
+                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -2012,10 +2024,11 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = toolArea.midX() + self.x;
                 auto yPos = toolArea.midY() + self.y - 5;
+                auto point = Point(xPos, yPos);
 
                 FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
-                drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::tile_inspector_coord, &args);
+                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
             }
 
             auto xPos = toolArea.midX() + self.x;
@@ -2028,7 +2041,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                     FormatArguments args{};
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    auto point = Point(xPos, yPos);
+                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -2041,7 +2055,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                     FormatArguments args{};
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    auto point = Point(xPos, yPos);
+                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -2471,8 +2486,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = self.x + 3;
             auto yPos = self.y + self.height - 13;
             auto width = self.width - 19;
+            auto point = Point(xPos, yPos);
 
-            drawingCtx.drawStringLeftClipped(*rt, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
+            FormatArguments args{};
+            args.push(wallObj->name);
+
+            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x004BC11C

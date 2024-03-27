@@ -248,14 +248,16 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(StringIds::tiny_font_date);
                     args.push(message->date);
 
-                    drawingCtx.drawStringLeft(rt, 0, height, Colour::black, stringId, &args);
+                    auto point = Point(0, height);
+                    drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_2039);
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
-                    drawingCtx.drawStringLeftWrapped(rt, 0, height + 6, width, Colour::black, stringId, &args);
+                    auto point = Point(0, height + 6);
+                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -541,7 +543,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    drawingCtx.drawStringLeft(*rt, self.x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
+                    auto point = Point(self.x + 4, yPos);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
@@ -549,7 +552,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().old.newsSettings[i])]);
 
-                    drawingCtx.drawStringLeft(*rt, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+                    auto point = Point(xPos, yPos);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
                 }
                 yPos += 15;
             }

@@ -681,28 +681,30 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::drawTabs(&w, rt);
 
-            int16_t x = w.x + 10;
-            int16_t y = w.y + Display::_widgets[Display::Widx::screen_mode].top + 1;
-            drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
+            auto point = Point(w.x + 10, w.y + Display::_widgets[Display::Widx::screen_mode].top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::options_screen_mode);
 
-            y = w.y + Display::_widgets[Display::Widx::display_resolution].top + 1;
-            drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::display_resolution, nullptr);
+            point.y = w.y + Display::_widgets[Display::Widx::display_resolution].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::display_resolution);
 
-            y = w.y + Display::_widgets[Display::Widx::construction_marker].top + 1;
-            drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::construction_marker, nullptr);
+            point.y = w.y + Display::_widgets[Display::Widx::construction_marker].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::construction_marker);
 
-            y = w.y + Display::_widgets[Display::Widx::vehicles_min_scale].top + 1;
-            drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::vehicles_min_scale, nullptr);
+            point.y = w.y + Display::_widgets[Display::Widx::vehicles_min_scale].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::vehicles_min_scale);
 
-            y = w.y + Display::_widgets[Display::Widx::station_names_min_scale].top + 1;
-            drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
+            point.y = w.y + Display::_widgets[Display::Widx::station_names_min_scale].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::station_names_min_scale);
 
-            y = w.y + Display::_widgets[Display::Widx::display_scale].top + 1;
-            drawingCtx.drawStringLeft(*rt, x, y, Colour::black, StringIds::window_scale_factor, nullptr);
+            point.y = w.y + Display::_widgets[Display::Widx::display_scale].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_scale_factor);
 
-            int scale = (int)(Config::get().scaleFactor * 100);
+            FormatArguments args{};
+            args.push<int32_t>(Config::get().scaleFactor * 100);
+
             auto& scaleWidget = w.widgets[Widx::display_scale];
-            drawingCtx.drawStringLeft(*rt, w.x + scaleWidget.left + 1, w.y + scaleWidget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
+            point = Point(w.x + scaleWidget.left + 1, w.y + scaleWidget.top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scale_formatted, &args);
         }
 
         static void applyScreenModeRestrictions(Window* w)
@@ -1039,9 +1041,15 @@ namespace OpenLoco::Ui::Windows::Options
 
             Common::drawTabs(&w, rt);
 
-            drawingCtx.drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::currently_playing_btn].top, Colour::black, StringIds::currently_playing, nullptr);
+            {
+                auto point = Point(w.x + 10, w.y + w.widgets[Widx::currently_playing_btn].top);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::currently_playing);
+            }
 
-            drawingCtx.drawStringLeft(*rt, w.x + 183, w.y + w.widgets[Widx::volume].top + 7, Colour::black, StringIds::volume, nullptr);
+            {
+                auto point = Point(w.x + 183, w.y + w.widgets[Widx::volume].top + 7);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::volume);
+            }
 
             drawingCtx.drawImage(rt, w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
@@ -1450,11 +1458,20 @@ namespace OpenLoco::Ui::Windows::Options
             w.draw(rt);
             Common::drawTabs(&w, rt);
 
-            drawingCtx.drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::language].top + 1, Colour::black, StringIds::options_language, nullptr);
-            drawingCtx.drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::distance_speed].top + 1, Colour::black, StringIds::distance_and_speed, nullptr);
-            drawingCtx.drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::heights].top + 1, Colour::black, StringIds::heights, nullptr);
-            drawingCtx.drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::currency].top + 1, Colour::black, StringIds::current_game_currency, nullptr);
-            drawingCtx.drawStringLeft(*rt, w.x + 10, w.y + w.widgets[Widx::preferred_currency].top + 1, Colour::black, StringIds::new_game_currency, nullptr);
+            auto point = Point(w.x + 10, w.y + w.widgets[Widx::language].top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::options_language);
+
+            point.y = w.y + w.widgets[Widx::distance_speed].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::distance_and_speed);
+
+            point.y = w.y + w.widgets[Widx::heights].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::heights);
+
+            point.y = w.y + w.widgets[Widx::currency].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::current_game_currency);
+
+            point.y = w.y + w.widgets[Widx::preferred_currency].top + 1;
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::new_game_currency);
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi)
@@ -2111,7 +2128,8 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(StringIds::buffer_2039);
 
                 auto width = w.widgets[Widx::changeOwnerNameBtn].left - 24;
-                drawingCtx.drawStringLeftClipped(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1, width, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+                auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
             }
 
             // Draw competitor name and face
@@ -2122,7 +2140,8 @@ namespace OpenLoco::Ui::Windows::Options
                 FormatArguments args = {};
                 args.push(competitor->name);
                 const auto width = w.widgets[Widx::changeOwnerFaceBtn].left - 24;
-                drawingCtx.drawStringLeftClipped(*rt, w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1, width, Colour::black, StringIds::currentPreferredFace, &args);
+                auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::currentPreferredFace, &args);
 
                 const auto& widget = w.widgets[Widx::ownerFacePreview];
                 auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
@@ -2414,7 +2433,9 @@ namespace OpenLoco::Ui::Windows::Options
             FormatArguments args{};
             args.push(stringId);
             args.push(value);
-            drawingCtx.drawStringLeft(*rt, w->x + widget.left + 1, w->y + widget.top + 1, Colour::black, StringIds::black_stringid, &args);
+
+            auto point = Point(w->x + widget.left + 1, w->y + widget.top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x004C1282
@@ -2426,8 +2447,8 @@ namespace OpenLoco::Ui::Windows::Options
             Common::drawTabs(&w, rt);
 
             // Label for autosave frequency
-            auto y = w.y + w.widgets[Widx::autosave_frequency].top;
-            drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
+            auto point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_frequency].top);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_frequency, nullptr);
 
             // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
@@ -2447,8 +2468,8 @@ namespace OpenLoco::Ui::Windows::Options
             drawDropdownContent(&w, rt, Widx::autosave_frequency, stringId, freq);
 
             // Label for autosave amount
-            y = w.y + w.widgets[Widx::autosave_amount].top;
-            drawingCtx.drawStringLeft(*rt, w.x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
+            point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_amount].top);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_amount);
 
             // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
