@@ -26,7 +26,7 @@
 namespace OpenLoco::IndustryManager
 {
     static auto& rawIndustries() { return getGameState().industries; }
-    static auto getTotalIndustriesCap() { return getGameState().numberOfIndustries; }
+    static auto getTotalIndustriesFactor() { return getGameState().numberOfIndustries; }
     Flags getFlags() { return getGameState().industryFlags; }
 
     constexpr int32_t kCloseIndustryDistanceMax = 480;
@@ -109,7 +109,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0047EA42
-    static size_t getMostCommonBuildingCargoType()
+    size_t getMostCommonBuildingCargoType()
     {
         // First generate a count of all the different cargo based on what building could generate
         std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)> cargoCounts{};
@@ -420,25 +420,27 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x00459722 & 0x004598F0
-    static int32_t capOfTypeOfIndustry(const uint8_t indObjId)
+    int32_t capOfTypeOfIndustry(const uint8_t indObjId, const uint8_t numIndustriesFactor)
     {
         const auto* indObj = ObjectManager::get<IndustryObject>(indObjId);
 
         // totalOfTypeInScenario is in the range of 1->32 inclusive
-        // getTotalIndustriesCap() is in the range of 0->2 (low, med, high)
-        // This formula is ultimately staticPreferredTotalOfType = 1/4 * ((getTotalIndustriesCap() + 1) * indObj->totalOfTypeInScenario)
+        // numIndustriesFactor is in the range of 0->2 (low, med, high)
+        // This formula is ultimately staticPreferredTotalOfType = 1/4 * ((numIndustriesFactor + 1) * indObj->totalOfTypeInScenario)
         // but we will do it in two steps to keep identical results.
-        const auto intermediate1 = ((getTotalIndustriesCap() + 1) * indObj->totalOfTypeInScenario) / 3;
+        const auto intermediate1 = ((numIndustriesFactor + 1) * indObj->totalOfTypeInScenario) / 3;
         const auto staticPreferredTotalOfType = intermediate1 - intermediate1 / 4;
-        // The preferred total can vary by up to a half of the static preffered total.
-        const auto randomPreferredTotalOfType = (staticPreferredTotalOfType / 2) * gPrng1().randNext(0xFF) / 256;
+
+        // The preferred total can vary by up to a half of the static preferred total.
+        const auto randomPreferredTotalOfType = (staticPreferredTotalOfType / 2) * (gPrng1().randNext(0xFF) / 256);
         return staticPreferredTotalOfType + randomPreferredTotalOfType;
     }
 
     // 0x00459722
     static bool hasReachedCapOfTypeOfIndustry(const uint8_t indObjId)
     {
-        const auto preferredTotalOfType = capOfTypeOfIndustry(indObjId);
+        const uint8_t numIndustriesFactor = getTotalIndustriesFactor();
+        const auto preferredTotalOfType = capOfTypeOfIndustry(indObjId, numIndustriesFactor);
 
         const auto totalOfThisType = std::count_if(std::begin(industries()), std::end(industries()), [indObjId](const auto& industry) {
             return (industry.objectId == indObjId);
@@ -448,7 +450,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x0045979C & 0x00459949
-    static void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts)
+    void createNewIndustry(const uint8_t indObjId, const bool buildImmediately, const int32_t numAttempts)
     {
         // Try find valid coordinates for this industry
         for (auto attempt = 0; attempt < numAttempts; ++attempt)

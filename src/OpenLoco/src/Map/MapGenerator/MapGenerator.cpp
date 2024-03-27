@@ -5,6 +5,7 @@
 #include "../TileManager.h"
 #include "../Tree.h"
 #include "../TreeElement.h"
+#include "Date.h"
 #include "GameCommands/Buildings/CreateBuilding.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/CreateTown.h"
@@ -13,6 +14,7 @@
 #include "Localisation/StringIds.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/HillShapesObject.h"
+#include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "OriginalTerrainGenerator.h"
@@ -491,13 +493,112 @@ namespace OpenLoco::World::MapGenerator
         }
     }
 
+    // 0x004595B7
+    static bool isCargoProducedAnywhere(uint8_t requiredCargoType)
+    {
+        auto commonBuildingCargoType = IndustryManager::getMostCommonBuildingCargoType();
+        if (commonBuildingCargoType == requiredCargoType)
+            return true;
+
+        for (auto i = 0U; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(i);
+            if (industryObj == nullptr)
+            {
+                continue;
+            }
+
+            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() >= industryObj->obsoleteYear)
+            {
+                continue;
+            }
+
+            for (auto producedCargoType : industryObj->producedCargoType)
+            {
+                if (producedCargoType == requiredCargoType)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    static void updateProgress(uint8_t value)
+    {
+        Ui::processMessagesMini();
+        Ui::ProgressBar::setProgress(value);
+    }
+
     // 0x004597FD
     static void generateIndustries(uint32_t minProgress, uint32_t maxProgress)
     {
-        registers regs;
-        regs.eax = minProgress;
-        regs.ebx = maxProgress;
-        call(0x004597FD, regs);
+        auto numIndustriesAvailable = 0;
+        for (auto indObjId = 0U; indObjId < ObjectManager::getMaxObjects(ObjectType::industry); indObjId++)
+        {
+            if (ObjectManager::get<IndustryObject>(indObjId) != nullptr)
+            {
+                numIndustriesAvailable++;
+            }
+        }
+
+        if (numIndustriesAvailable == 0)
+            return;
+
+        CompanyManager::setUpdatingCompanyId(CompanyId::neutral);
+
+        auto progressTicksPerIndustry = (maxProgress - minProgress) / numIndustriesAvailable;
+        auto currentProgress = minProgress;
+
+        for (auto indObjId = 0U; indObjId < ObjectManager::getMaxObjects(ObjectType::industry); indObjId++)
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(indObjId);
+            if (industryObj == nullptr)
+            {
+                continue;
+            }
+
+            currentProgress += progressTicksPerIndustry;
+            updateProgress(currentProgress);
+
+            // Check if industry is available at present
+            if (getCurrentYear() < industryObj->designedYear || getCurrentYear() >= industryObj->obsoleteYear)
+            {
+                continue;
+            }
+
+            // Check if required cargo is available
+            if (industryObj->requiredCargoType[0] != 0xFF)
+            {
+                auto numCargoSpecified = 0;
+                auto numCargoAvailable = 0;
+                for (auto cargoType : industryObj->requiredCargoType)
+                {
+                    if (cargoType == 0xFF)
+                        continue;
+
+                    numCargoSpecified++;
+                    if (isCargoProducedAnywhere(cargoType))
+                        numCargoAvailable++;
+                }
+
+                if (industryObj->hasFlags(IndustryObjectFlags::requiresAllCargo))
+                {
+                    if (numCargoSpecified != numCargoAvailable)
+                        continue;
+                }
+                else if (numCargoAvailable == 0)
+                {
+                    continue;
+                }
+            }
+
+            const uint8_t numIndustriesFactor = S5::getOptions().numberOfIndustries;
+            const auto numIndustriesToCreate = IndustryManager::capOfTypeOfIndustry(indObjId, numIndustriesFactor);
+            for (auto i = 0; i < numIndustriesToCreate; i++)
+            {
+                IndustryManager::createNewIndustry(indObjId, true, 50);
+            }
+        }
     }
 
     template<typename Func>
@@ -618,12 +719,6 @@ namespace OpenLoco::World::MapGenerator
 
             generatorFunctions[buildingObj->generatorFunction](buildingObj, id);
         }
-    }
-
-    static void updateProgress(uint8_t value)
-    {
-        Ui::processMessagesMini();
-        Ui::ProgressBar::setProgress(value);
     }
 
     // 0x0043C90C
