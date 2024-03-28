@@ -481,7 +481,7 @@ namespace OpenLoco
      * Creates a vector of all the available rail track (trains and trams) for a company
      * Tram track is marked with a (1<<7) flag within the uint8_t
      */
-    std::vector<uint8_t> Company::getAvailableRailTracks()
+    std::vector<uint8_t> Company::getAvailableRailTracks() const
     {
         std::vector<uint8_t> result;
 
@@ -539,6 +539,71 @@ namespace OpenLoco
         std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t trackIdx) {
             const auto* trackObj = ObjectManager::get<RoadObject>(trackIdx & ~(1 << 7));
             return trackObj->hasFlags(RoadObjectFlags::unk_01);
+        });
+
+        return result;
+    }
+
+    /* 0x00478265
+     * Creates a vector of all the available road track (roads {no trams} and tracks with no rails??) for a company
+     * Roads are marked with a (1<<7) flag within the uint8_t
+     */
+    std::vector<uint8_t> Company::getAvailableRoads() const
+    {
+        std::vector<uint8_t> result;
+
+        std::unordered_set<uint8_t> roads;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::road && vehObj->trackType != 0xFFU)
+            {
+                roads.insert(vehObj->trackType | (1U << 7));
+            }
+        }
+
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::road); ++i)
+        {
+            const auto* roadObj = ObjectManager::get<RoadObject>(i);
+            if (roadObj == nullptr)
+            {
+                continue;
+            }
+
+            if (roadObj->hasFlags(RoadObjectFlags::unk_03))
+            {
+                roads.insert(i | (1U << 7));
+            }
+        }
+
+        std::copy_if(std::begin(roads), std::end(roads), std::back_inserter(result), [](uint8_t roadId) {
+            const auto* roadObj = ObjectManager::get<RoadObject>(roadId & ~(1U << 7));
+            return !roadObj->hasFlags(RoadObjectFlags::unk_01);
+        });
+
+        std::unordered_set<uint8_t> tracks;
+        for (auto i = 0u; i < ObjectManager::getMaxObjects(ObjectType::vehicle); ++i)
+        {
+            const auto* vehObj = ObjectManager::get<VehicleObject>(i);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+
+            if (isVehicleIndexUnlocked(i) && vehObj->mode == TransportMode::rail)
+            {
+                tracks.insert(vehObj->trackType);
+            }
+        }
+
+        std::copy_if(std::begin(tracks), std::end(tracks), std::back_inserter(result), [](uint8_t trackIdx) {
+            const auto* trackObj = ObjectManager::get<TrackObject>(trackIdx);
+            return trackObj->hasFlags(TrackObjectFlags::unk_02);
         });
 
         return result;

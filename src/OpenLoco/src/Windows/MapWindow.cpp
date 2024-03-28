@@ -1515,14 +1515,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    // 0x00478265
-    static void sub_478265(uint8_t* buffer)
-    {
-        registers regs;
-        regs.edi = X86Pointer(buffer);
-        call(0x00478265, regs);
-    }
-
     // 0x0046CED0
     static void assignRouteColours()
     {
@@ -1568,15 +1560,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
         std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(buffer));
         buffer[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
 
-        // TODO: setting this might be unnecessary, but matching vanilla for now.
-        auto backupCompanyId = GameCommands::getUpdatingCompanyId();
-        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
-
-        auto* nextEl = &buffer[availableTracks.size()];
-        sub_478265(nextEl);
-
-        // TODO: see note above.
-        GameCommands::setUpdatingCompanyId(backupCompanyId);
+        auto availableRoads = CompanyManager::getPlayerCompany()->getAvailableRoads();
+        std::copy(std::begin(availableRoads), std::end(availableRoads), std::begin(buffer) + availableTracks.size());
+        buffer[availableTracks.size() + availableRoads.size()] = std::numeric_limits<uint8_t>::max();
 
         for (auto i = 0U; i < buffer.size(); i++)
         {
