@@ -24,7 +24,8 @@ namespace OpenLoco
 
         StringId name;
         uint8_t noRoof; // 0x02
-        uint8_t pad_03[0x06 - 0x03];
+        uint8_t pad_03;
+        uint16_t clearHeight;       // 0x4
         uint16_t var_06;            // 0x06
         uint8_t spanLength;         // 0x08
         uint8_t pillarSpacing;      // 0x09
@@ -34,7 +35,7 @@ namespace OpenLoco
         int16_t baseCostFactor;     // 0x0E
         int16_t heightCostFactor;   // 0x10
         int16_t sellCostFactor;     // 0x12
-        uint16_t disabledTrackCfg;  // 0x14
+        uint16_t disabledTrackCfg;  // 0x14 maybe just general flags
         uint32_t image;             // 0x16
         uint8_t trackNumCompatible; // 0x1A
         uint8_t trackMods[7];       // 0x1B

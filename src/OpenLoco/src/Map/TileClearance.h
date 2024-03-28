@@ -6,6 +6,11 @@
 #include <functional>
 #include <set>
 
+namespace OpenLoco::World::TileManager
+{
+    enum class ElementPositionFlags : uint8_t;
+}
+
 namespace OpenLoco::World::TileClearance
 {
     enum class ClearFuncResult
@@ -27,6 +32,9 @@ namespace OpenLoco::World::TileClearance
 
     ClearFuncResult clearWithDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost);
     ClearFuncResult clearWithoutDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost);
+
+    // These are an additional return variable from the clearWith functions
+    TileManager::ElementPositionFlags getPositionFlags();
 
     void registerHooks();
 }
