@@ -232,7 +232,8 @@ namespace OpenLoco
         void updateVehicleColours();
         void updateHeadquartersColour();
         void updateOwnerEmotion();
-        std::vector<uint8_t> getAvailableRailTracks();
+        std::vector<uint8_t> getAvailableRailTracks() const;
+        std::vector<uint8_t> getAvailableRoads() const;
         uint8_t getHeadquarterPerformanceVariation() const;
 
     private:
