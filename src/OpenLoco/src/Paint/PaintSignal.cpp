@@ -105,8 +105,6 @@ namespace OpenLoco::Paint
         ImageIds::one_way_direction_arrow_south_east,
     };
 
-    static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
-
     static uint8_t getTrackRotation(const bool isRight, const uint8_t trackId, const uint8_t rotation)
     {
         if (isRight)
@@ -123,11 +121,11 @@ namespace OpenLoco::Paint
     {
         if (isRight)
         {
-            return _4F87BC[trackId * 8 + 3];
+            return World::TrackData::getTrackMiscData(trackId).signalHeightOffsetRight;
         }
         else
         {
-            return _4F87BC[trackId * 8 + 2];
+            return World::TrackData::getTrackMiscData(trackId).signalHeightOffsetLeft;
         }
     }
 

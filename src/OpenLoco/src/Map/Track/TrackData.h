@@ -9,6 +9,13 @@
 #include <cstdlib>
 #include <span>
 
+namespace OpenLoco::World::Track
+{
+    enum class TrackPieceFlags : uint16_t;
+    enum class RoadPieceFlags : uint16_t;
+    enum class MiscFlags : uint16_t;
+}
+
 namespace OpenLoco::World::TrackData
 {
     using ConnectionsByRotation = std::array<uint8_t, 4>;
@@ -59,9 +66,32 @@ namespace OpenLoco::World::TrackData
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 
-    // TODO: Combine these two
-    uint16_t getTrackCompatibleFlags(size_t trackId);
-    uint16_t getTrackCostFactor(size_t trackId);
-    uint16_t getRoadCompatibleFlags(size_t roadId);
-    uint16_t getRoadCostFactor(size_t roadId);
+    struct MiscData
+    {
+        uint16_t costFactor;                    // 0x004F870C
+        Track::MiscFlags flags;                 // 0x004F8764
+        uint8_t reverseTrackId;                 // 0x004F87BC
+        uint8_t reverseRotation;                // 0x004F87BD
+        uint8_t signalHeightOffsetLeft;         // 0x004F87BE
+        uint8_t signalHeightOffsetRight;        // 0x004F87BF
+        Track::TrackPieceFlags compatibleFlags; // 0x004F891C
+        uint16_t curveSpeedFraction;            // 0x004F8974
+        uint32_t unkWeighting;                  // 0x004F89CC
+        bool sparkDirection;                    // 0x004F8A7C true == right
+    };
+
+    struct RoadMiscData
+    {
+        uint16_t costFactor;                   // 0x004F7270
+        Track::MiscFlags flags;                // 0x004F7284
+        uint8_t reverseRoadId;                 // 0x004F7298
+        uint8_t reverseRotation;               // 0x004F7299
+        uint8_t reverseLane;                   // 0x004F729C
+        Track::RoadPieceFlags compatibleFlags; // 0x004F72E8
+        uint16_t curveSpeedFraction;           // 0x004F72FC
+        uint32_t unkWeighting;                 // 0x004F7310
+    };
+
+    const MiscData& getTrackMiscData(size_t trackId);
+    const RoadMiscData& getRoadMiscData(size_t roadId);
 }

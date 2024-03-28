@@ -515,6 +515,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/SubpositionData.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/Track.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/TrackData.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Track/TrackEnum.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TrackElement.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tree.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/TreeElement.h"
