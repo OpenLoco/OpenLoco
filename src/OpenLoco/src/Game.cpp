@@ -47,7 +47,10 @@ namespace OpenLoco::Game
 
     static bool openBrowsePrompt(StringId titleId, browse_type type, const char* filter)
     {
-        Audio::pauseSound();
+        if (!isTitleMode())
+        {
+            Audio::pauseSound();
+        }
         setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::renderAndUpdate();
@@ -130,11 +133,6 @@ namespace OpenLoco::Game
     // 0x0043BFF8
     void loadGame()
     {
-        if (isTitleMode())
-        {
-            Title::stop();
-        }
-
         GameCommands::LoadSaveQuitGameArgs args{};
         args.option1 = GameCommands::LoadSaveQuitGameArgs::Options::closeSavePrompt;
         args.option2 = LoadOrQuitMode::loadGamePrompt;
