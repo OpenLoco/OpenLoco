@@ -1,4 +1,4 @@
-24.02.1+ (???)
+24.03 (2024-03-30)
 ------------------------------------------------------------------------
 - Feature: [#126] Station size limitations can now be disabled (though still max 80 tiles per station).
 - Feature: [#1941] Landscapes can now be generated directly from 384x384 PNG images.
