@@ -326,7 +326,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
             StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
 
-            drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, competitionStringId, &args);
+            y = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, competitionStringId, &args);
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
                 return;
