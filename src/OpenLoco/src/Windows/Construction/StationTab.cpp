@@ -979,13 +979,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_stationCost != 0x80000000 && _stationCost != 0)
         {
-            xPos = self.x + 69;
-            yPos = self.widgets[widx::image].bottom + self.y + 4;
+            auto& widget = self.widgets[widx::image];
+            auto point = Point(self.x + 69, widget.bottom + self.y + 4);
 
             FormatArguments args{};
             args.push<uint32_t>(_stationCost);
 
-            drawingCtx.drawStringCentred(*rt, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
         }
 
         xPos = self.x + 3;
@@ -1012,18 +1012,20 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         xPos = self.x + 69;
         yPos = self.widgets[widx::image].bottom + self.y + 18;
+
+        auto origin = Point(xPos, yPos);
         width = self.width - 4;
-        drawingCtx.drawStringCentredClipped(*rt, xPos, yPos, width, Colour::black, StringIds::new_station_buffer, &args);
+        drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::new_station_buffer, &args);
 
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 29;
-        Ui::Point origin = { xPos, yPos };
 
-        drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::catchment_area_accepts);
+        origin = Point(xPos, yPos);
+        drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            drawingCtx.drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -1046,13 +1048,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 49;
-        origin = { xPos, yPos };
+        origin = Point(xPos, yPos);
 
-        drawingCtx.drawStringLeft(*rt, &origin, Colour::black, StringIds::catchment_area_produces);
+        drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            drawingCtx.drawStringLeft(*rt, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {

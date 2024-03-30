@@ -1222,7 +1222,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         args.push(StringIds::buffer_2039);
 
         Ui::Point position = { inputSession.xOffset, 1 };
-        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+        drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
 
         // Draw search box cursor, blinking
         if ((inputSession.cursorFrame % 32) < 16)
@@ -1230,7 +1230,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             // We draw the string again to figure out where the cursor should go; position.x will be adjusted
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
-            drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
             drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
         }
     }
@@ -1246,8 +1246,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         drawSearchBox(window, rt);
 
         {
-            auto x = window.x + 2;
-            auto y = window.y + window.height - 13;
             auto bottomLeftMessage = StringIds::select_new_vehicle;
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
@@ -1261,7 +1259,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 }
             }
 
-            drawingCtx.drawStringLeftClipped(*rt, x, y, window.width - 186, Colour::black, bottomLeftMessage, &args);
+            auto point = Point(window.x + 2, window.y + window.height - 13);
+            drawingCtx.drawStringLeftClipped(*rt, point, window.width - 186, Colour::black, bottomLeftMessage, &args);
         }
 
         if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
@@ -1274,7 +1273,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             args.push(cargoObj->unitInlineSprite);
 
             auto& widget = window.widgets[widx::cargoLabel];
-            drawingCtx.drawStringLeftClipped(*rt, window.x + widget.left + 2, window.y + widget.top, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto point = Point(window.x + widget.left + 2, window.y + widget.top);
+            drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         if (window.rowHover == -1)
@@ -1400,7 +1400,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         auto x = window.widgets[widx::scrollview_vehicle_selection].right + window.x + 2;
         auto y = window.widgets[widx::scrollview_vehicle_preview].bottom + window.y + 2;
-        drawingCtx.drawStringLeftWrapped(*rt, x, y, 180, Colour::black, StringIds::buffer_1250);
+        drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 180, Colour::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
@@ -1431,8 +1431,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
-                    auto y = (window.rowHeight - 10) / 2;
-                    drawingCtx.drawStringLeftWrapped(rt, 3, y, width, Colour::black, defaultMessage, &args);
+                    auto point = Point(3, (window.rowHeight - 10) / 2);
+                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, defaultMessage, &args);
                 }
                 else
                 {
@@ -1492,7 +1492,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window.rowHeight - 10) / 2;
-                        drawingCtx.drawStringLeft(rt, x + 3, y + half, Colour::black, colouredString, &args);
+
+                        auto point = Point(x + 3, y + half);
+                        drawingCtx.drawStringLeft(rt, point, Colour::black, colouredString, &args);
                     }
                 }
                 break;
@@ -1531,7 +1533,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 *buffer++ = '\0';
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
-                drawingCtx.drawStringCentredClipped(rt, 89, 52, 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
+
+                drawingCtx.drawStringCentredClipped(rt, Point(89, 52), 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
                 break;
             }
         }

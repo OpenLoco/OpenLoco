@@ -38,7 +38,8 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto versionInfo = getVersionInfo();
-        drawingCtx.drawString(*rt, window.x, window.y, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
+        auto point = Point(window.x, window.y);
+        drawingCtx.drawString(*rt, point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
     }
 
     static constexpr WindowEventList kEvents = {

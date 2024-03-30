@@ -211,7 +211,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             _word_525CE0 = _word_525CE0 | (1 << 15);
         }
 
-        drawingCtx.drawStringTicker(*clipped, { 55, 0 }, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
+        auto point = Point(55, 0);
+        drawingCtx.drawStringTicker(*clipped, point, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
     }
 
     static constexpr WindowEventList kEvents = {

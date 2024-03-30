@@ -539,8 +539,9 @@ namespace OpenLoco::Ui
 
         int16_t centreX = window->x + (widget->left + widget->right + 1) / 2 - 1;
         int16_t width = widget->right - widget->left - 2;
+
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, centreX, y, width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &FormatArguments::common());
     }
 
     // 0x004CB263
@@ -556,7 +557,7 @@ namespace OpenLoco::Ui
 
         int width = widget->right - widget->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, x, y, width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &FormatArguments::common());
     }
 
     // 0x4CB2D6
@@ -576,9 +577,10 @@ namespace OpenLoco::Ui
             colour = colour.FD();
         }
 
+        auto point = Point(window->x + left + 1, window->y + top);
         int width = this->right - this->left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, window->x + left + 1, window->y + top, width, colour, text, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, text, &FormatArguments::common());
     }
 
     // 0x4CB29C
@@ -602,10 +604,9 @@ namespace OpenLoco::Ui
         drawingCtx.fillRect(*rt, l + 1, t + 1, r - 1, b - 1, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
 
         int16_t width = r - l - 4 - 10;
-        int16_t y = t + 1;
-        int16_t x = l + 2 + (width / 2);
+        auto point = Point(l + 2 + (width / 2), t + 1);
 
-        drawingCtx.drawStringCentredClipped(*rt, x, y, width, AdvancedColour(Colour::white).outline(), text, &FormatArguments::common());
+        drawingCtx.drawStringCentredClipped(*rt, point, width, AdvancedColour(Colour::white).outline(), text, &FormatArguments::common());
     }
 
     // 0x004CA750
@@ -627,7 +628,7 @@ namespace OpenLoco::Ui
 
         drawStationNameBackground(rt, window, this, x, y, colour, width);
 
-        drawingCtx.drawString(*rt, x, y, Colour::black, stringBuffer);
+        drawingCtx.drawString(*rt, Point(x, y), Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
@@ -646,7 +647,8 @@ namespace OpenLoco::Ui
         int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        drawingCtx.drawString(*rt, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
+        auto point = Point(x, window->y + top + 1);
+        drawingCtx.drawString(*rt, point, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     // 0x004CA88B
@@ -665,7 +667,8 @@ namespace OpenLoco::Ui
         int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        drawingCtx.drawString(*rt, x, window->y + top + 1, AdvancedColour(Colour::black).outline(), stringBuffer);
+        auto point = Point(x, window->y + top + 1);
+        drawingCtx.drawString(*rt, point, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     static void draw_hscroll(Gfx::RenderTarget* rt, const Window* window, Widget* widget, Drawing::RectInsetFlags flags, AdvancedColour colour, [[maybe_unused]] bool enabled, [[maybe_unused]] bool disabled, [[maybe_unused]] bool activated, [[maybe_unused]] bool hovered, int16_t scrollview_index)
@@ -696,7 +699,10 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        drawingCtx.drawString(*rt, ax + 2, cx, Colour::black, (char*)0x005045F2);
+        {
+            const char* hLeftStr = "\x90\xBE";
+            drawingCtx.drawString(*rt, Point(ax + 2, cx), Colour::black, hLeftStr);
+        }
         // popa
 
         // pusha
@@ -709,7 +715,10 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        drawingCtx.drawString(*rt, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
+        {
+            const char* hRightStr = "\x90\xAF";
+            drawingCtx.drawString(*rt, Point(bx - 7, cx), Colour::black, hRightStr);
+        }
         // popa
 
         // pusha
@@ -761,7 +770,10 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        drawingCtx.drawString(*rt, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
+        {
+            const char* vTopStr = "\x90\xA0";
+            drawingCtx.drawString(*rt, Point(ax + 1, cx - 1), Colour::black, vTopStr);
+        }
         // popa
 
         // pusha
@@ -774,7 +786,10 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        drawingCtx.drawString(*rt, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
+        {
+            const char* vBottomStr = "\x90\xAA";
+            drawingCtx.drawString(*rt, Point(ax + 1, dx - 9), Colour::black, vBottomStr);
+        }
         // popa
 
         // pusha
@@ -895,8 +910,10 @@ namespace OpenLoco::Ui
         if (activated)
         {
             static constexpr char strCheckmark[] = "\xAC";
+            auto point = Point(window->x + left, window->y + top);
+
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
-            drawingCtx.drawString(*rt, window->x + left, window->y + top, colour.opaque(), strCheckmark);
+            drawingCtx.drawString(*rt, point, colour.opaque(), strCheckmark);
         }
     }
 
@@ -916,7 +933,8 @@ namespace OpenLoco::Ui
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeft(*rt, window->x + left + 14, window->y + top, colour, text, &FormatArguments::common());
+        auto point = Point(window->x + left + 14, window->y + top);
+        drawingCtx.drawStringLeft(*rt, point, colour, text, &FormatArguments::common());
     }
 
     // 0x004CA679
@@ -946,7 +964,8 @@ namespace OpenLoco::Ui
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), text);
 
-            drawingCtx.drawString(*rt, l, t, colour, buffer);
+            auto point = Point(l, t);
+            drawingCtx.drawString(*rt, point, colour, buffer);
             textEndPos = l + drawingCtx.getStringWidth(buffer) + 1;
         }
 

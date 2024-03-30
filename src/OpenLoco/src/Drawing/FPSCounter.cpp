@@ -54,11 +54,10 @@ namespace OpenLoco::Drawing
 
         // Draw text
         const int stringWidth = drawingCtx.getStringWidth(buffer);
-        const auto x = Ui::width() / 2 - (stringWidth / 2);
-        const auto y = 2;
-        drawingCtx.drawString(rt, x, y, Colour::black, buffer);
+        auto point = Ui::Point(Ui::width() / 2 - (stringWidth / 2), 2);
+        drawingCtx.drawString(rt, point, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
-        Gfx::invalidateRegion(x - 16, y - 4, x + 16, 16);
+        Gfx::invalidateRegion(point.x - 16, point.y - 4, point.x + 16, 16);
     }
 }

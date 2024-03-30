@@ -149,13 +149,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args{};
             args.push(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
-            drawingCtx.drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, &args);
         }
         {
             FormatArguments args{};
             args.push(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
-            drawingCtx.drawStringLeft(*rt, self.x + widget.left - 15, self.y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         // Coord X/Y values
@@ -163,13 +165,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
-            drawingCtx.drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
-            drawingCtx.drawStringLeft(*rt, self.x + widget.left + 2, self.y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+            auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
         }
 
         // Selected element details
@@ -183,7 +187,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self.widgets[widx::detailsGroup];
-            drawingCtx.drawString(*rt, self.x + widget.left + 7, self.y + widget.top + 14, Colour::black, buffer);
+            auto point = Point(self.x + widget.left + 7, self.y + widget.top + 14);
+            drawingCtx.drawString(*rt, point, Colour::black, buffer);
         }
     }
 
@@ -379,35 +384,40 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             // Draw name and type
             auto* widget = &self.widgets[widx::nameTypeHeader];
-            drawingCtx.drawStringLeftClipped(rt, 0, yPos, widget->width(), Colour::black, formatString, &args);
+            auto point = Point(0, yPos);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
 
             // Draw base height
             widget = &self.widgets[widx::baseHeightHeader];
             args.rewind();
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.baseZ());
-            drawingCtx.drawStringLeftClipped(rt, widget->left - 4, yPos, widget->width(), Colour::black, formatString, &args);
+            point = Point(widget->left - 4, yPos);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
 
             // Draw clear height
             widget = &self.widgets[widx::clearHeightHeader];
             args.rewind();
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.clearZ());
-            drawingCtx.drawStringLeftClipped(rt, widget->left - 4, yPos, widget->width(), Colour::black, formatString, &args);
+            point = Point(widget->left - 4, yPos);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
 
             // Draw direction
             widget = &self.widgets[widx::directionHeader];
             args.rewind();
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.data()[0] & 0x03);
-            drawingCtx.drawStringLeftClipped(rt, widget->left - 4, yPos, widget->width(), Colour::black, formatString, &args);
+            point = Point(widget->left - 4, yPos);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
 
             // Draw ghost flag
             widget = &self.widgets[widx::ghostHeader];
             if (element.isGhost())
             {
                 static constexpr char strCheckmark[] = "\xAC";
-                drawingCtx.drawString(rt, widget->left - 4, yPos, Colour::white, strCheckmark);
+                point = Point(widget->left - 4, yPos);
+                drawingCtx.drawString(rt, point, Colour::white, strCheckmark);
             }
 
             rowNum++;

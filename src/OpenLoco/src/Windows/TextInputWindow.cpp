@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((StringId*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
-        Ui::Point position = { (int16_t)(window.x + window.width / 2), (int16_t)(window.y + 30) };
+        Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
         drawingCtx.drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
@@ -233,20 +233,26 @@ namespace OpenLoco::Ui::Windows::TextInput
         char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strcpy(drawnBuffer, inputSession.buffer.c_str());
 
-        *((StringId*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
+        {
+            FormatArguments args{};
+            args.push(StringIds::buffer_2039);
 
-        position = { inputSession.xOffset, 1 };
-        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
+            position = { inputSession.xOffset, 1 };
+            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+        }
 
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
         const uint16_t maxNumCharacters = inputSession.inputLenLimit;
 
-        FormatArguments args{};
-        args.push<uint16_t>(numCharacters);
-        args.push<uint16_t>(maxNumCharacters);
+        {
+            FormatArguments args{};
+            args.push<uint16_t>(numCharacters);
+            args.push<uint16_t>(maxNumCharacters);
 
-        widget = &_widgets[Widx::ok];
-        drawingCtx.drawStringRight(*rt, window.x + widget->left - 5, window.y + widget->top + 1, Colour::black, StringIds::num_characters_left_int_int, &args);
+            widget = &_widgets[Widx::ok];
+            auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
+            drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::num_characters_left_int_int, &args);
+        }
 
         if ((inputSession.cursorFrame % 32) >= 16)
         {
@@ -256,10 +262,14 @@ namespace OpenLoco::Ui::Windows::TextInput
         strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
         drawnBuffer[inputSession.cursorPosition] = '\0';
 
-        *((StringId*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
-        position = { inputSession.xOffset, 1 };
-        drawingCtx.drawStringLeft(*clipped, &position, Colour::black, StringIds::black_stringid, _commonFormatArgs);
-        drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+        {
+            FormatArguments args{};
+            args.push(StringIds::buffer_2039);
+
+            position = { inputSession.xOffset, 1 };
+            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+        }
     }
 
     // 0x004CE8B6

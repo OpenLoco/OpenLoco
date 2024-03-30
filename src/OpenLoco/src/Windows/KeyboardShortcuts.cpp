@@ -187,7 +187,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(baseStringId);
             formatter.push(buffer);
 
-            drawingCtx.drawStringLeft(rt, 0, yPos - 1, Colour::black, format, &formatter);
+            auto point = Point(0, yPos - 1);
+            drawingCtx.drawStringLeft(rt, point, Colour::black, format, &formatter);
             yPos += kRowHeight;
         }
     }

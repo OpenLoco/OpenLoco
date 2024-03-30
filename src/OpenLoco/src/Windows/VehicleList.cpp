@@ -636,7 +636,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             FormatArguments args{};
             args.push(footerStringId);
             args.push(self.var_83C);
-            drawingCtx.drawStringLeft(*rt, self.x + 3, self.y + self.height - 13, Colour::black, StringIds::black_stringid, &args);
+
+            auto point = Point(self.x + 3, self.y + self.height - 13);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
         }
 
         static constexpr std::array<StringId, 3> typeToFilterStringIds{
@@ -650,7 +652,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             FormatArguments args{};
             args.push(typeToFilterStringIds[self.var_88A]);
             auto* widget = &self.widgets[Widx::filter_type];
-            drawingCtx.drawStringLeftClipped(*rt, self.x + widget->left + 1, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+
+            auto point = Point(self.x + widget->left + 1, self.y + widget->top);
+            drawingCtx.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         auto* widget = &self.widgets[Widx::cargo_type];
@@ -696,7 +700,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (filterActive)
         {
             // Draw filter text as prepared
-            drawingCtx.drawStringLeftClipped(*rt, xPos, self.y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            auto point = Point(xPos, self.y + widget->top);
+            drawingCtx.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
@@ -765,7 +770,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                drawingCtx.drawStringLeftClipped(rt, 1, yPos, 308, AdvancedColour(Colour::black).outline(), format, &args);
+                auto point = Point(1, yPos);
+                drawingCtx.drawStringLeftClipped(rt, point, 308, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
@@ -781,7 +787,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                drawingCtx.drawStringLeftClipped(rt, 310, yPos, 98, AdvancedColour(Colour::black).outline(), format, &args);
+                auto point = Point(310, yPos);
+                drawingCtx.drawStringLeftClipped(rt, point, 98, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle age
@@ -792,14 +799,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
                     format = StringIds::vehicle_list_age_year;
 
                 auto args = FormatArguments::common(age);
-                drawingCtx.drawStringLeftClipped(rt, 410, yPos, 63, AdvancedColour(Colour::black).outline(), format, &args);
+                auto point = Point(410, yPos);
+                drawingCtx.drawStringLeftClipped(rt, point, 63, AdvancedColour(Colour::black).outline(), format, &args);
             }
 
             // Vehicle reliability
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                drawingCtx.drawStringLeftClipped(rt, 475, yPos, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
+                auto point = Point(475, yPos);
+                drawingCtx.drawStringLeftClipped(rt, point, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, &args);
             }
 
             yPos += self.rowHeight - 2;

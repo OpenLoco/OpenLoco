@@ -136,7 +136,8 @@ namespace OpenLoco::Ui
         StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
 
         drawingCtx.setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
-        drawingCtx.drawString(unZoomedRt, topLeft.x + borderImages.width, topLeft.y, Colour::black, buffer);
+        auto point = topLeft + Point(borderImages.width, 0);
+        drawingCtx.drawString(unZoomedRt, point, Colour::black, buffer);
     }
 
     // 0x0048DE97
@@ -192,7 +193,9 @@ namespace OpenLoco::Ui
 
             StringManager::formatString(buffer, town.name);
             drawingCtx.setCurrentFontSpriteBase(kZoomToTownFonts[rt.zoomLevel]);
-            drawingCtx.drawString(unZoomedRt, town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1, AdvancedColour(Colour::white).outline(), buffer);
+
+            auto point = Point(town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1);
+            drawingCtx.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), buffer);
         }
     }
 
@@ -235,7 +238,9 @@ namespace OpenLoco::Ui
             }
 
             drawingCtx.setCurrentFontSpriteBase(Font::medium_normal);
-            drawingCtx.drawString(unZoomedRt, orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel], AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
+
+            auto point = Point(orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel]);
+            drawingCtx.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
         }
     }
 
