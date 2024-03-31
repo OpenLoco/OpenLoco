@@ -276,7 +276,7 @@ namespace OpenLoco::World::MapGenerator
     {
         heightMap.resetMarkerFlags();
 
-        // Mark tiles below mountain level
+        // Mark tiles above mountain level
         for (auto pos : getWorldRange())
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
