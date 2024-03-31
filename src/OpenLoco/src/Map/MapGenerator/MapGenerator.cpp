@@ -319,14 +319,14 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles with sudden height changes in the next row
         for (auto pos : getWorldRange())
         {
-            auto heightA = heightMap.getHeight({ pos.x + 0, pos.y }) & 0x7F;
-            auto heightB = heightMap.getHeight({ pos.x + 1, pos.y }) & 0x7F;
+            auto heightA = heightMap.getHeight({ pos.x + 0, pos.y });
+            auto heightB = heightMap.getHeight({ pos.x + 1, pos.y });
 
             // Find no cliff between A and B?
             if (std::abs(heightB - heightA) < 4)
             {
-                auto heightC = heightMap.getHeight({ pos.x + 0, pos.y + 1 }) & 0x7F;
-                auto heightD = heightMap.getHeight({ pos.x + 1, pos.y + 1 }) & 0x7F;
+                auto heightC = heightMap.getHeight({ pos.x + 0, pos.y + 1 });
+                auto heightD = heightMap.getHeight({ pos.x + 1, pos.y + 1 });
 
                 // Find no cliff between C and D?
                 if (std::abs(heightD - heightC) < 4)
