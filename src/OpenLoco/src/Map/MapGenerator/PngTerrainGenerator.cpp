@@ -12,7 +12,7 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::MapGenerator
 {
-    void PngTerrainGenerator::generate(const S5::Options& options, const fs::path& path, HeightMapRange heightMap)
+    void PngTerrainGenerator::generate(const S5::Options& options, const fs::path& path, HeightMap& heightMap)
     {
         if (!fs::is_regular_file(path))
         {
@@ -30,22 +30,20 @@ namespace OpenLoco::World::MapGenerator
         const int maxHeightmapLevels = 64 - options.minLandHeight;
         const float scalingFactor = maxHeightmapLevels / 255.f;
 
-        for (int32_t y = 0; y < World::kMapRows; y++)
+        std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
+
+        auto width = std::min((int)World::kMapColumns, pngImage->width);
+        auto height = std::min((int)World::kMapRows, pngImage->height);
+
+        for (int32_t y = 0; y < height; y++)
         {
-            for (int32_t x = 0; x < World::kMapColumns; x++)
+            for (int32_t x = 0; x < width; x++)
             {
-                uint8_t height = options.minLandHeight;
+                png_byte red, green, blue, alpha;
+                pngImage->getPixel(x, y, red, green, blue, alpha);
 
-                if (x < pngImage->width && y < pngImage->height)
-                {
-                    png_byte red, green, blue, alpha;
-                    pngImage->getPixel(x, y, red, green, blue, alpha);
-
-                    auto imgHeight = std::max({ red, green, blue });
-                    height = options.minLandHeight + (imgHeight * scalingFactor);
-                }
-
-                heightMap[{ y, x }] = height; // this must be { y, x } otherwise the heightmap is mirrored
+                auto imgHeight = std::max({ red, green, blue });
+                heightMap[{ y, x }] += imgHeight * scalingFactor; // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
     }

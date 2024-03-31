@@ -54,5 +54,7 @@ namespace OpenLoco::World::MapGenerator
         {
             return HeightMapRange(_heightMap, _minX + l, _minY + t, w, h);
         }
+
+        HeightMap& heightMap() { return _heightMap; }
     };
 }
