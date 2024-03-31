@@ -197,27 +197,14 @@ namespace OpenLoco::World::MapGenerator
 
         // Set visited flag for tiles far from water
         auto seaLevel = getGameState().seaLevel;
-        auto hmIndex = 0;
-        for (auto yPos = 384; yPos > 0; yPos--)
+        for (auto pos : getWorldRange())
         {
-            for (auto xPos = 384; xPos > 0; xPos--)
-            {
-                auto height = heightMap.data()[hmIndex] & ~kHeightmapMarkedFlag;
-                if (height > seaLevel)
-                    continue;
+            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            if (height > seaLevel)
+                continue;
 
-                auto lookaheadIndex = hmIndex;
-                for (auto attemptsLow = 50; attemptsLow > 0; attemptsLow--)
-                {
-                    for (auto attemptsHigh = 50; attemptsHigh > 0; attemptsHigh--)
-                    {
-                        lookaheadIndex &= 0x3FFFF;
-                        heightMap.data()[lookaheadIndex] |= kHeightmapMarkedFlag;
-                        lookaheadIndex++;
-                    }
-                    lookaheadIndex += 512 - 50;
-                }
-            }
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
         }
 
         // Apply surface style to marked tiles
