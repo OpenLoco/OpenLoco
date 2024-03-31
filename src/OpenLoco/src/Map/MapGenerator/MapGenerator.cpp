@@ -227,7 +227,7 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // Apply surface style to tiles that have *not* been marked
-        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, false);
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, false);
     }
 
     // 0x0046A439
@@ -248,7 +248,7 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // Apply surface style to tiles that have been marked
-        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, true);
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, true);
     }
 
     // 0x0046A5B3
@@ -268,7 +268,7 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // Apply surface style to tiles that have been marked
-        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, true);
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, true);
     }
 
     // 0x0046A4F9
@@ -288,7 +288,7 @@ namespace OpenLoco::World::MapGenerator
         }
 
         // Apply surface style to tiles that have *not* been marked
-        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, false);
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, false);
     }
 
     // 0x0046A0D8
