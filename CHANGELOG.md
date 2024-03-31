@@ -1,6 +1,7 @@
 24.03+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2379] Text cursor is not rendering in the right position.
+- Fix: [#2380] 'Number of smoothing passes' label is displayed incorrectly.
 
 24.03 (2024-03-30)
 ------------------------------------------------------------------------

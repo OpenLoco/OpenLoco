@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     // Draw label
                     auto& widget = window.widgets[widx::terrainSmoothingNum];
                     auto pos = Point(window.x + 10, window.y + widget.top);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::landscapeOptionsSmoothingPasses);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsSmoothingPasses);
 
                     // Prepare value
                     FormatArguments args{};
