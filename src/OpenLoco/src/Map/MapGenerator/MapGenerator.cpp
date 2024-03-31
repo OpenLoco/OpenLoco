@@ -254,21 +254,41 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A5B3
     static void generateTerrainOnMountains(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A5B3, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles above mountain level
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            if (height < 27)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(24, 24)))
+                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+        }
+
+        // Apply surface style to tiles that have been marked
+        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, true);
     }
 
     // 0x0046A4F9
     static void generateTerrainFarFromMountains(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A4F9, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles below mountain level
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            if (height < 26)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+        }
+
+        // Apply surface style to tiles that have *not* been marked
+        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, false);
     }
 
     // 0x0046A0D8
