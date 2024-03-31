@@ -193,7 +193,7 @@ namespace OpenLoco::World::MapGenerator
     {
         for (auto pos : World::getDrawableTileRange())
         {
-            const bool tileIsMarked = heightMap[{ pos.x, pos.y }] & kHeightmapMarkedFlag;
+            const bool tileIsMarked = heightMap.isMarkerSet({ pos.x, pos.y });
             if ((requireMark && !tileIsMarked) || (!requireMark && tileIsMarked))
                 continue;
 
@@ -218,12 +218,12 @@ namespace OpenLoco::World::MapGenerator
         auto seaLevel = getGameState().seaLevel;
         for (auto pos : getWorldRange())
         {
-            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height > seaLevel)
                 continue;
 
             for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
-                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
         // Apply surface style to tiles that have *not* been marked
@@ -239,12 +239,12 @@ namespace OpenLoco::World::MapGenerator
         auto seaLevel = getGameState().seaLevel;
         for (auto pos : getWorldRange())
         {
-            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height < seaLevel)
                 continue;
 
             for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
-                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
         // Apply surface style to tiles that have been marked
@@ -259,12 +259,12 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles above mountain level
         for (auto pos : getWorldRange())
         {
-            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height < 27)
                 continue;
 
             for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(24, 24)))
-                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
         // Apply surface style to tiles that have been marked
@@ -279,12 +279,12 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles below mountain level
         for (auto pos : getWorldRange())
         {
-            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height < 26)
                 continue;
 
             for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
-                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
         // Apply surface style to tiles that have *not* been marked

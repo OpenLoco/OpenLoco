@@ -14,8 +14,6 @@ namespace OpenLoco::World::MapGenerator
         int32_t y{};
     };
 
-    constexpr uint8_t kHeightmapMarkedFlag = (1 << 7);
-
     class HeightMap
     {
     private:
@@ -69,9 +67,10 @@ namespace OpenLoco::World::MapGenerator
             return _height.size();
         }
 
-        void resetMarkerFlags()
-        {
-            std::for_each_n(data(), size(), [](uint8_t& value) { value &= ~kHeightmapMarkedFlag; });
-        }
+        uint8_t getHeight(Point pos) const;
+        void resetMarkerFlags();
+        bool isMarkerSet(Point pos) const;
+        void setMarker(Point pos);
+        void unsetMarker(Point pos);
     };
 }
