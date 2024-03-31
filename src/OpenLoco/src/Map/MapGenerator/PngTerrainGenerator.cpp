@@ -34,18 +34,18 @@ namespace OpenLoco::World::MapGenerator
         {
             for (int32_t x = 0; x < World::kMapColumns; x++)
             {
-                if (y >= pngImage->height || x >= pngImage->width)
-                {
-                    heightMap[{ x, y }] = options.minLandHeight;
-                }
-                else
+                uint8_t height = options.minLandHeight;
+
+                if (x < pngImage->width && y < pngImage->height)
                 {
                     png_byte red, green, blue, alpha;
                     pngImage->getPixel(x, y, red, green, blue, alpha);
 
                     auto imgHeight = std::max({ red, green, blue });
-                    heightMap[{ x, y }] = options.minLandHeight + (imgHeight * scalingFactor);
+                    height = options.minLandHeight + (imgHeight * scalingFactor);
                 }
+
+                heightMap[{ y, x }] = height; // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
     }
