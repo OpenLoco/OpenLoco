@@ -314,11 +314,32 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A66D
     static void generateTerrainAroundCliffs(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A66D, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles with sudden height changes in the next row
+        for (auto pos : getWorldRange())
+        {
+            auto heightA = heightMap.getHeight({ pos.x + 0, pos.y }) & 0x7F;
+            auto heightB = heightMap.getHeight({ pos.x + 1, pos.y }) & 0x7F;
+
+            // Find no cliff between A and B?
+            if (std::abs(heightB - heightA) < 4)
+            {
+                auto heightC = heightMap.getHeight({ pos.x + heightMap.pitch + 0, pos.y }) & 0x7F;
+                auto heightD = heightMap.getHeight({ pos.x + heightMap.pitch + 1, pos.y }) & 0x7F;
+
+                // Find no cliff between C and D?
+                if (std::abs(heightD - heightC) < 4)
+                    continue;
+            }
+
+            // Found a cliff around this point, so mark the points around it
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(12, 12)))
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+        }
+
+        // Apply surface style to tiles that have been marked
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, true);
     }
 
     static void generateTerrainNull([[maybe_unused]] HeightMap& heightMap, [[maybe_unused]] uint8_t surfaceStyle) {}
