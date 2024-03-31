@@ -189,24 +189,8 @@ namespace OpenLoco::World::MapGenerator
         return ((randVal & 0xFF) * landObj->numVariations) >> 8;
     }
 
-    // 0x0046A379
-    static void generateTerrainFarFromWater(HeightMap& heightMap, uint8_t surfaceStyle)
+    static void applySurfaceStyleToMarkedTiles(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        heightMap.resetMarkerFlags();
-
-        // Set visited flag for tiles far from water
-        auto seaLevel = getGameState().seaLevel;
-        for (auto pos : getWorldRange())
-        {
-            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
-            if (height > seaLevel)
-                continue;
-
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
-                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
-        }
-
-        // Apply surface style to marked tiles
         for (auto pos : World::getDrawableTileRange())
         {
             if (!(heightMap[{ pos.x, pos.y }] & kHeightmapMarkedFlag))
@@ -222,6 +206,26 @@ namespace OpenLoco::World::MapGenerator
             if (res)
                 surface->setVar7(*res);
         }
+    }
+
+    // 0x0046A379
+    static void generateTerrainFarFromWater(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles far from water
+        auto seaLevel = getGameState().seaLevel;
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            if (height < seaLevel)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+        }
+
+        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle);
     }
 
     // 0x0046A439
