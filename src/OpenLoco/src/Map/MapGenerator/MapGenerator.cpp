@@ -189,11 +189,12 @@ namespace OpenLoco::World::MapGenerator
         return ((randVal & 0xFF) * landObj->numVariations) >> 8;
     }
 
-    static void applySurfaceStyleToMarkedTiles(HeightMap& heightMap, uint8_t surfaceStyle)
+    static void applySurfaceStyleToMarkedTiles(HeightMap& heightMap, uint8_t surfaceStyle, bool requireMark)
     {
         for (auto pos : World::getDrawableTileRange())
         {
-            if (!(heightMap[{ pos.x, pos.y }] & kHeightmapMarkedFlag))
+            const bool tileIsMarked = heightMap[{ pos.x, pos.y }] & kHeightmapMarkedFlag;
+            if ((requireMark && !tileIsMarked) || (!requireMark && tileIsMarked))
                 continue;
 
             auto tile = TileManager::get(pos);
@@ -213,26 +214,6 @@ namespace OpenLoco::World::MapGenerator
     {
         heightMap.resetMarkerFlags();
 
-        // Mark tiles far from water
-        auto seaLevel = getGameState().seaLevel;
-        for (auto pos : getWorldRange())
-        {
-            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
-            if (height < seaLevel)
-                continue;
-
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
-                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
-        }
-
-        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle);
-    }
-
-    // 0x0046A439
-    static void generateTerrainNearWater(HeightMap& heightMap, uint8_t surfaceStyle)
-    {
-        heightMap.resetMarkerFlags();
-
         // Mark tiles near water
         auto seaLevel = getGameState().seaLevel;
         for (auto pos : getWorldRange())
@@ -245,7 +226,29 @@ namespace OpenLoco::World::MapGenerator
                 heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
         }
 
-        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle);
+        // Apply surface style to tiles that have *not* been marked
+        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, false);
+    }
+
+    // 0x0046A439
+    static void generateTerrainNearWater(HeightMap& heightMap, uint8_t surfaceStyle)
+    {
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles near water
+        auto seaLevel = getGameState().seaLevel;
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            if (height < seaLevel)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+        }
+
+        // Apply surface style to tiles that have been marked
+        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle, true);
     }
 
     // 0x0046A5B3
