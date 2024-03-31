@@ -325,8 +325,8 @@ namespace OpenLoco::World::MapGenerator
             // Find no cliff between A and B?
             if (std::abs(heightB - heightA) < 4)
             {
-                auto heightC = heightMap.getHeight({ pos.x + heightMap.pitch + 0, pos.y }) & 0x7F;
-                auto heightD = heightMap.getHeight({ pos.x + heightMap.pitch + 1, pos.y }) & 0x7F;
+                auto heightC = heightMap.getHeight({ pos.x + 0, pos.y + 1 }) & 0x7F;
+                auto heightD = heightMap.getHeight({ pos.x + 1, pos.y + 1 }) & 0x7F;
 
                 // Find no cliff between C and D?
                 if (std::abs(heightD - heightC) < 4)
