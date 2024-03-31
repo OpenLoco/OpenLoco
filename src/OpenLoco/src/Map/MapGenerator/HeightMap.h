@@ -13,6 +13,8 @@ namespace OpenLoco::World::MapGenerator
         int32_t y{};
     };
 
+    constexpr uint8_t kHeightmapMarkedFlag = (1 << 7);
+
     class HeightMap
     {
     private:

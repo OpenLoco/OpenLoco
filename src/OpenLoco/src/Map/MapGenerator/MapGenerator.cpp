@@ -192,11 +192,50 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A379
     static void generateTerrainFarFromWater(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A379, regs);
-        _heightMap = nullptr;
+        // Reset visited flag
+        std::for_each_n(heightMap.data(), heightMap.size(), [](uint8_t& data) { data &= ~kHeightmapMarkedFlag; });
+
+        // Set visited flag for tiles far from water
+        auto seaLevel = getGameState().seaLevel;
+        auto hmIndex = 0;
+        for (auto yPos = 384; yPos > 0; yPos--)
+        {
+            for (auto xPos = 384; xPos > 0; xPos--)
+            {
+                auto height = heightMap.data()[hmIndex] & ~kHeightmapMarkedFlag;
+                if (height > seaLevel)
+                    continue;
+
+                auto lookaheadIndex = hmIndex;
+                for (auto attemptsLow = 50; attemptsLow > 0; attemptsLow--)
+                {
+                    for (auto attemptsHigh = 50; attemptsHigh > 0; attemptsHigh--)
+                    {
+                        lookaheadIndex &= 0x3FFFF;
+                        heightMap.data()[lookaheadIndex] |= kHeightmapMarkedFlag;
+                        lookaheadIndex++;
+                    }
+                    lookaheadIndex += 512 - 50;
+                }
+            }
+        }
+
+        // Apply surface style to marked tiles
+        for (auto pos : World::getDrawableTileRange())
+        {
+            if (!(heightMap[{ pos.x, pos.y }] & kHeightmapMarkedFlag))
+                continue;
+
+            auto tile = TileManager::get(pos);
+            auto* surface = tile.surface();
+            if (surface == nullptr)
+                continue;
+
+            surface->setTerrain(surfaceStyle);
+            auto res = getRandomTerrainVariation(*surface);
+            if (res)
+                surface->setVar7(*res);
+        }
     }
 
     // 0x0046A439
