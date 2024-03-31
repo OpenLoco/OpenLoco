@@ -16,14 +16,14 @@ namespace OpenLoco::World::MapGenerator
     {
         if (!fs::is_regular_file(path))
         {
-            Logging::error("Can't find terrain file ({})", path);
+            Logging::error("Can't find heightmap file ({})", path);
             return;
         }
 
         auto pngImage = PngOps::loadPng(path.string());
         if (pngImage == nullptr)
         {
-            Logging::error("Can't load terrain file ({})", path);
+            Logging::error("Can't load heightmap file ({})", path);
             return;
         }
 
