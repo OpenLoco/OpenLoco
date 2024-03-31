@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -66,6 +67,11 @@ namespace OpenLoco::World::MapGenerator
         size_t size() const
         {
             return _height.size();
+        }
+
+        void resetMarkerFlags()
+        {
+            std::for_each_n(data(), size(), [](uint8_t& value) { value &= ~kHeightmapMarkedFlag; });
         }
     };
 }

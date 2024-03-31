@@ -192,8 +192,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A379
     static void generateTerrainFarFromWater(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        // Reset visited flag
-        std::for_each_n(heightMap.data(), heightMap.size(), [](uint8_t& data) { data &= ~kHeightmapMarkedFlag; });
+        heightMap.resetMarkerFlags();
 
         // Set visited flag for tiles far from water
         auto seaLevel = getGameState().seaLevel;
