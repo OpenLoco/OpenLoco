@@ -231,11 +231,21 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A439
     static void generateTerrainNearWater(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A439, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles near water
+        auto seaLevel = getGameState().seaLevel;
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap[{ pos.x, pos.y }] & ~kHeightmapMarkedFlag;
+            if (height > seaLevel)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap[{ lookaheadPos.x, lookaheadPos.y }] |= kHeightmapMarkedFlag;
+        }
+
+        applySurfaceStyleToMarkedTiles(HeightMap, surfaceStyle);
     }
 
     // 0x0046A5B3
