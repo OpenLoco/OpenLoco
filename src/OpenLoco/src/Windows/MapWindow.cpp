@@ -74,10 +74,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     };
     static loco_global<uint8_t[16], 0x00F253CE> _assignedIndustryColours;
-    static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
+    static loco_global<uint8_t[19], 0x00F253DF> _routeToObjectIdMap;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
-    static loco_global<uint8_t[8], 0x00F25404> _byte_F25404;
-    static loco_global<uint8_t[8], 0x00F2540C> _byte_F2540C;
+    static loco_global<uint8_t[8], 0x00F25404> _trackColours;
+    static loco_global<uint8_t[8], 0x00F2540C> _roadColours;
     static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         y = cursorY;
 
-                        for (; _byte_F253DF[i] != 0xFF; i++)
+                        for (; _routeToObjectIdMap[i] != 0xFF; i++)
                         {
                             y -= legendItemHeight;
 
@@ -700,9 +700,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
+        for (auto i = 0; _routeToObjectIdMap[i] != 0xFF; i++)
         {
-            auto index = _byte_F253DF[i];
+            auto index = _routeToObjectIdMap[i];
             auto colour = _routeColours[i];
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto index = Numerics::bitScanForward(_dword_F253A4);
             if (index != -1)
             {
-                if (_byte_F253DF[index] == 0xFE)
+                if (_routeToObjectIdMap[index] == 0xFE)
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
@@ -1033,7 +1033,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto index = Numerics::bitScanForward(_dword_F253A4);
             if (index != -1)
             {
-                if (_byte_F253DF[index] == 0xFD)
+                if (_routeToObjectIdMap[index] == 0xFD)
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
@@ -1520,14 +1520,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     }
 
-    // 0x00478265
-    static void sub_478265(uint8_t* buffer)
-    {
-        registers regs;
-        regs.edi = X86Pointer(buffer);
-        call(0x00478265, regs);
-    }
-
     // 0x0046CED0
     static void assignRouteColours()
     {
@@ -1566,53 +1558,48 @@ namespace OpenLoco::Ui::Windows::MapWindow
         availableColours = checkIndustryColours(PaletteIndex::index_15, availableColours);
 
         auto availableTracks = CompanyManager::getPlayerCompany()->getAvailableRailTracks();
+        auto availableRoads = CompanyManager::getPlayerCompany()->getAvailableRoads();
 
-        std::array<uint8_t, 100> buffer = {};
-        assert(std::size(buffer) >= std::size(availableTracks));
+        auto i = 0U;
+        auto assignColour = [&i, &availableColours](uint8_t id) {
+            _routeToObjectIdMap[i] = id;
+            auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
+            availableColours &= ~(1U << freeColour);
 
-        std::copy(std::begin(availableTracks), std::end(availableTracks), std::begin(buffer));
-        buffer[availableTracks.size()] = std::numeric_limits<uint8_t>::max();
+            auto colour = industryColours[freeColour];
+            _routeColours[i] = colour;
 
-        // TODO: setting this might be unnecessary, but matching vanilla for now.
-        auto backupCompanyId = GameCommands::getUpdatingCompanyId();
-        GameCommands::setUpdatingCompanyId(CompanyManager::getControllingId());
-
-        auto* nextEl = &buffer[availableTracks.size()];
-        sub_478265(nextEl);
-
-        // TODO: see note above.
-        GameCommands::setUpdatingCompanyId(backupCompanyId);
-
-        for (auto i = 0U; i < buffer.size(); i++)
-        {
-            if (buffer[i] != 0xFF)
+            if (id & (1U << 7))
             {
-                _byte_F253DF[i] = buffer[i];
-                auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
-                availableColours &= ~(1U << freeColour);
-
-                auto colour = industryColours[freeColour];
-                _routeColours[i] = colour;
-
-                if (buffer[i] & 0x80)
-                {
-                    _byte_F2540C[buffer[i] & 0x7F] = colour;
-                }
-                else
-                {
-                    _byte_F25404[buffer[i]] = colour;
-                }
+                _roadColours[id & ~(1U << 7)] = colour;
             }
             else
             {
-                _byte_F253DF[i] = 0xFE;
-                _byte_F253DF[i + 1] = 0xFD;
-                _byte_F253DF[i + 2] = 0xFF;
-                _routeColours[i] = 0xD3;
-                _routeColours[i + 1] = 0x8B;
-                break;
+                _trackColours[id] = colour;
             }
+            i++;
+        };
+
+        for (auto& track : availableTracks)
+        {
+            assignColour(track);
         }
+        for (auto& road : availableRoads)
+        {
+            assignColour(road);
+        }
+
+        // Airplanes
+        _routeToObjectIdMap[i] = 0xFE;
+        // Ships
+        _routeToObjectIdMap[i + 1] = 0xFD;
+        // End list
+        _routeToObjectIdMap[i + 2] = 0xFF;
+
+        // Airplanes
+        _routeColours[i] = 0xD3;
+        // Ships
+        _routeColours[i + 1] = 0x8B;
     }
 
     static const WindowEventList& getEvents();
