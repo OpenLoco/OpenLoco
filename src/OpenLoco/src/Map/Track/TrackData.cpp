@@ -345,6 +345,7 @@ namespace OpenLoco::World::TrackData
     }
 
     constexpr std::array<TrackMiscData, 44> _miscData = {
+        // straight
         TrackMiscData{
             .costFactor = 0x100,
             .flags = CommonTraitFlags::none,
@@ -355,7 +356,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::none,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 32,
-            .sparkDirection = true }, // straight
+            .sparkDirection = true },
+        // diagonal
         TrackMiscData{
             .costFactor = 0x16A,
             .flags = CommonTraitFlags::diagonal,
@@ -366,7 +368,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::diagonal,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 45,
-            .sparkDirection = false }, // diagonal
+            .sparkDirection = false },
+        // leftCurveVerySmall
         TrackMiscData{
             .costFactor = 0x0C9,
             .flags = CommonTraitFlags::verySmallCurve,
@@ -377,7 +380,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 25,
-            .sparkDirection = true }, // leftCurveVerySmall
+            .sparkDirection = true },
+        // rightCurveVerySmall
         TrackMiscData{
             .costFactor = 0x0C9,
             .flags = CommonTraitFlags::verySmallCurve,
@@ -388,7 +392,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 25,
-            .sparkDirection = false }, // rightCurveVerySmall
+            .sparkDirection = false },
+        // leftCurveSmall
         TrackMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::smallCurve,
@@ -399,7 +404,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 75,
-            .sparkDirection = true }, // leftCurveSmall
+            .sparkDirection = true },
+        // rightCurveSmall
         TrackMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::smallCurve,
@@ -410,7 +416,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 75,
-            .sparkDirection = false }, // rightCurveSmall
+            .sparkDirection = false },
+        // leftCurve
         TrackMiscData{
             .costFactor = 0x3ED,
             .flags = CommonTraitFlags::curve,
@@ -421,7 +428,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::normalCurve,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 126,
-            .sparkDirection = true }, // leftCurve
+            .sparkDirection = true },
+        // rightCurve
         TrackMiscData{
             .costFactor = 0x3ED,
             .flags = CommonTraitFlags::curve,
@@ -432,7 +440,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::normalCurve,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 126,
-            .sparkDirection = false }, // rightCurve
+            .sparkDirection = false },
+        // leftCurveLarge
         TrackMiscData{
             .costFactor = 0x2BF,
             .flags = CommonTraitFlags::largeCurve,
@@ -443,7 +452,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
-            .sparkDirection = true }, // leftCurveLarge
+            .sparkDirection = true },
+        // rightCurveLarge
         TrackMiscData{
             .costFactor = 0x2BF,
             .flags = CommonTraitFlags::largeCurve,
@@ -454,7 +464,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
-            .sparkDirection = false }, // rightCurveLarge
+            .sparkDirection = false },
+        // diagonalLeftCurveLarge
         TrackMiscData{
             .costFactor = 0x2BF,
             .flags = CommonTraitFlags::largeCurve,
@@ -465,7 +476,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
-            .sparkDirection = true }, // diagonalLeftCurveLarge
+            .sparkDirection = true },
+        // diagonalRightCurveLarge
         TrackMiscData{
             .costFactor = 0x2BF,
             .flags = CommonTraitFlags::largeCurve,
@@ -476,7 +488,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::largeCurve,
             .curveSpeedFraction = 0x4000,
             .unkWeighting = 88,
-            .sparkDirection = false }, // diagonalRightCurveLarge
+            .sparkDirection = false },
+        // sBendLeft
         TrackMiscData{
             .costFactor = 0x380,
             .flags = CommonTraitFlags::sBendCurve,
@@ -487,7 +500,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::sBend,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 106,
-            .sparkDirection = false }, // sBendLeft
+            .sparkDirection = false },
+        // sBendRight
         TrackMiscData{
             .costFactor = 0x380,
             .flags = CommonTraitFlags::sBendCurve,
@@ -498,7 +512,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::sBend,
             .curveSpeedFraction = 0x2666,
             .unkWeighting = 106,
-            .sparkDirection = false }, // sBendRight
+            .sparkDirection = false },
+        // straightSlopeUp
         TrackMiscData{
             .costFactor = 0x220,
             .flags = CommonTraitFlags::slope,
@@ -509,7 +524,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::slope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 66,
-            .sparkDirection = false }, // straightSlopeUp
+            .sparkDirection = false },
+        // straightSlopeDown
         TrackMiscData{
             .costFactor = 0x220,
             .flags = CommonTraitFlags::slope,
@@ -520,7 +536,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::slope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 66,
-            .sparkDirection = true }, // straightSlopeDown
+            .sparkDirection = true },
+        // straightSteepSlopeUp
         TrackMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope,
@@ -531,7 +548,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::steepSlope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
-            .sparkDirection = false }, // straightSteepSlopeUp
+            .sparkDirection = false },
+        // straightSteepSlopeDown
         TrackMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope,
@@ -542,7 +560,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::steepSlope,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
-            .sparkDirection = true }, // straightSteepSlopeDown
+            .sparkDirection = true },
+        // leftCurveSmallSlopeUp
         TrackMiscData{
             .costFactor = 0x350,
             .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -553,7 +572,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
-            .sparkDirection = true }, // leftCurveSmallSlopeUp
+            .sparkDirection = true },
+        // rightCurveSmallSlopeUp
         TrackMiscData{
             .costFactor = 0x350,
             .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -564,7 +584,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
-            .sparkDirection = false }, // rightCurveSmallSlopeUp
+            .sparkDirection = false },
+        // leftCurveSmallSlopeDown
         TrackMiscData{
             .costFactor = 0x350,
             .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -575,7 +596,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
-            .sparkDirection = true }, // leftCurveSmallSlopeDown
+            .sparkDirection = true },
+        // rightCurveSmallSlopeDown
         TrackMiscData{
             .costFactor = 0x350,
             .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -586,7 +608,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 77,
-            .sparkDirection = false }, // rightCurveSmallSlopeDown
+            .sparkDirection = false },
+        // leftCurveSmallSteepSlopeUp
         TrackMiscData{
             .costFactor = 0x41F,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -597,7 +620,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
-            .sparkDirection = true }, // leftCurveSmallSteepSlopeUp
+            .sparkDirection = true },
+        // rightCurveSmallSteepSlopeUp
         TrackMiscData{
             .costFactor = 0x41F,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -608,7 +632,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
-            .sparkDirection = false }, // rightCurveSmallSteepSlopeUp
+            .sparkDirection = false },
+        // leftCurveSmallSteepSlopeDown
         TrackMiscData{
             .costFactor = 0x41F,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -619,7 +644,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
-            .sparkDirection = true }, // leftCurveSmallSteepSlopeDown
+            .sparkDirection = true },
+        // rightCurveSmallSteepSlopeDown
         TrackMiscData{
             .costFactor = 0x41F,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
@@ -630,7 +656,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
             .curveSpeedFraction = 0x199A,
             .unkWeighting = 82,
-            .sparkDirection = false }, // rightCurveSmallSteepSlopeDown
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x100,
             .flags = CommonTraitFlags::oneSided,
@@ -641,7 +668,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 32,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x100,
             .flags = CommonTraitFlags::oneSided,
@@ -652,7 +680,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 32,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x064,
             .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
@@ -663,7 +692,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 13,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x12D,
             .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
@@ -674,7 +704,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 38,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x12D,
             .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
@@ -685,7 +716,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 38,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x064,
             .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
@@ -696,7 +728,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 13,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x126,
             .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
@@ -707,7 +740,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 36,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x126,
             .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
@@ -718,7 +752,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 36,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
@@ -729,7 +764,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
@@ -740,7 +776,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
@@ -751,7 +788,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
@@ -762,7 +800,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0xFFFF,
             .unkWeighting = 36,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x114,
             .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
@@ -773,7 +812,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x114,
             .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
@@ -784,7 +824,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x114,
             .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
@@ -795,7 +836,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x114,
             .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
@@ -806,7 +848,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 34,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
@@ -817,7 +860,8 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 26,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
+        // unused
         TrackMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
@@ -828,7 +872,7 @@ namespace OpenLoco::World::TrackData
             .compatibleFlags = TrackTraitFlags::oneSided,
             .curveSpeedFraction = 0x0CCD,
             .unkWeighting = 26,
-            .sparkDirection = false }, // unused
+            .sparkDirection = false },
     };
 
     const TrackMiscData& getTrackMiscData(size_t trackId)
@@ -837,6 +881,7 @@ namespace OpenLoco::World::TrackData
     }
 
     constexpr std::array<RoadMiscData, 10> _roadMiscData = {
+        // straight
         RoadMiscData{
             .costFactor = 0x100,
             .flags = CommonTraitFlags::none,
@@ -845,8 +890,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 1,
             .compatibleFlags = RoadTraitFlags::none,
             .curveSpeedFraction = 0xFFFF,
-            .unkWeighting = 32, // straight
+            .unkWeighting = 32,
         },
+        // leftCurveVerySmall
         RoadMiscData{
             .costFactor = 0x0C9,
             .flags = CommonTraitFlags::verySmallCurve,
@@ -855,8 +901,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 1,
             .compatibleFlags = RoadTraitFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
-            .unkWeighting = 25, // leftCurveVerySmall
+            .unkWeighting = 25,
         },
+        // rightCurveVerySmall
         RoadMiscData{
             .costFactor = 0x0C9,
             .flags = CommonTraitFlags::verySmallCurve,
@@ -865,8 +912,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 1,
             .compatibleFlags = RoadTraitFlags::verySmallCurve,
             .curveSpeedFraction = 0x0CCD,
-            .unkWeighting = 25, // rightCurveVerySmall
+            .unkWeighting = 25,
         },
+        // leftCurveSmall
         RoadMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::smallCurve,
@@ -875,8 +923,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 4,
             .compatibleFlags = RoadTraitFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
-            .unkWeighting = 75, // leftCurveSmall
+            .unkWeighting = 75,
         },
+        // rightCurveSmall
         RoadMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::smallCurve,
@@ -885,8 +934,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 4,
             .compatibleFlags = RoadTraitFlags::smallCurve,
             .curveSpeedFraction = 0x199A,
-            .unkWeighting = 75, // rightCurveSmall
+            .unkWeighting = 75,
         },
+        // straightSlopeUp
         RoadMiscData{
             .costFactor = 0x220,
             .flags = CommonTraitFlags::slope,
@@ -895,8 +945,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 2,
             .compatibleFlags = RoadTraitFlags::slope,
             .curveSpeedFraction = 0xFFFF,
-            .unkWeighting = 66, // straightSlopeUp
+            .unkWeighting = 66,
         },
+        // straightSlopeDown
         RoadMiscData{
             .costFactor = 0x220,
             .flags = CommonTraitFlags::slope,
@@ -905,8 +956,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 2,
             .compatibleFlags = RoadTraitFlags::slope,
             .curveSpeedFraction = 0xFFFF,
-            .unkWeighting = 66, // straightSlopeDown
+            .unkWeighting = 66,
         },
+        // straightSteepSlopeUp
         RoadMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope,
@@ -915,8 +967,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 1,
             .compatibleFlags = RoadTraitFlags::steepSlope,
             .curveSpeedFraction = 0xFFFF,
-            .unkWeighting = 36, // straightSteepSlopeUp
+            .unkWeighting = 36,
         },
+        // straightSteepSlopeDown
         RoadMiscData{
             .costFactor = 0x138,
             .flags = CommonTraitFlags::steepSlope,
@@ -925,8 +978,9 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 1,
             .compatibleFlags = RoadTraitFlags::steepSlope,
             .curveSpeedFraction = 0xFFFF,
-            .unkWeighting = 36, // straightSteepSlopeDown
+            .unkWeighting = 36,
         },
+        // turnaround
         RoadMiscData{
             .costFactor = 0x25B,
             .flags = CommonTraitFlags::none,
@@ -935,7 +989,7 @@ namespace OpenLoco::World::TrackData
             .reverseLane = 1,
             .compatibleFlags = RoadTraitFlags::turnaround,
             .curveSpeedFraction = 0x0CCD,
-            .unkWeighting = 26, // turnaround
+            .unkWeighting = 26,
         },
     };
 
