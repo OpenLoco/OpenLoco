@@ -41,7 +41,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::road;
 
         StringId name;
-        World::Track::RoadPieceFlags roadPieces; // 0x02
+        World::Track::RoadTraitFlags roadPieces; // 0x02
         int16_t buildCostFactor;                 // 0x04
         int16_t sellCostFactor;                  // 0x06
         int16_t tunnelCostFactor;                // 0x08
@@ -74,9 +74,9 @@ namespace OpenLoco
             return (flags & flagsToTest) != RoadObjectFlags::none;
         }
 
-        constexpr bool hasPieceFlags(World::Track::RoadPieceFlags flagsToTest) const
+        constexpr bool hasTraitFlags(World::Track::RoadTraitFlags flagsToTest) const
         {
-            return (roadPieces & flagsToTest) != World::Track::RoadPieceFlags::none;
+            return (roadPieces & flagsToTest) != World::Track::RoadTraitFlags::none;
         }
     };
 #pragma pack(pop)

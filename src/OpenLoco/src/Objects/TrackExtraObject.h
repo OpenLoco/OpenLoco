@@ -22,7 +22,7 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::trackExtra;
 
         StringId name;
-        World::Track::TrackPieceFlags trackPieces; // 0x02
+        World::Track::TrackTraitFlags trackPieces; // 0x02
         uint8_t paintStyle;                        // 0x04
         uint8_t costIndex;                         // 0x05
         int16_t buildCostFactor;                   // 0x06

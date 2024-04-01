@@ -33,8 +33,8 @@ namespace OpenLoco
         static constexpr auto kObjectType = ObjectType::track;
 
         StringId name;
-        World::Track::TrackPieceFlags trackPieces;        // 0x02
-        World::Track::TrackPieceFlags stationTrackPieces; // 0x04
+        World::Track::TrackTraitFlags trackPieces;        // 0x02
+        World::Track::TrackTraitFlags stationTrackPieces; // 0x04
         uint8_t var_06;
         uint8_t numCompatible;     // 0x07
         uint8_t numMods;           // 0x08
@@ -68,9 +68,9 @@ namespace OpenLoco
             return (flags & flagsToTest) != TrackObjectFlags::none;
         }
 
-        constexpr bool hasPieceFlags(World::Track::TrackPieceFlags flagsToTest) const
+        constexpr bool hasTraitFlags(World::Track::TrackTraitFlags flagsToTest) const
         {
-            return (trackPieces & flagsToTest) != World::Track::TrackPieceFlags::none;
+            return (trackPieces & flagsToTest) != World::Track::TrackTraitFlags::none;
         }
     };
 #pragma pack(pop)

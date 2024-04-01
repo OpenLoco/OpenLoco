@@ -11,9 +11,9 @@
 
 namespace OpenLoco::World::Track
 {
-    enum class TrackPieceFlags : uint16_t;
-    enum class RoadPieceFlags : uint16_t;
-    enum class MiscFlags : uint16_t;
+    enum class TrackTraitFlags : uint16_t;
+    enum class RoadTraitFlags : uint16_t;
+    enum class CommonTraitFlags : uint16_t;
 }
 
 namespace OpenLoco::World::TrackData
@@ -66,15 +66,15 @@ namespace OpenLoco::World::TrackData
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 
-    struct MiscData
+    struct TrackMiscData
     {
         uint16_t costFactor;                    // 0x004F870C
-        Track::MiscFlags flags;                 // 0x004F8764
+        Track::CommonTraitFlags flags;                 // 0x004F8764
         uint8_t reverseTrackId;                 // 0x004F87BC
         uint8_t reverseRotation;                // 0x004F87BD
         uint8_t signalHeightOffsetLeft;         // 0x004F87BE
         uint8_t signalHeightOffsetRight;        // 0x004F87BF
-        Track::TrackPieceFlags compatibleFlags; // 0x004F891C
+        Track::TrackTraitFlags compatibleFlags; // 0x004F891C
         uint16_t curveSpeedFraction;            // 0x004F8974
         uint32_t unkWeighting;                  // 0x004F89CC
         bool sparkDirection;                    // 0x004F8A7C true == right
@@ -83,15 +83,15 @@ namespace OpenLoco::World::TrackData
     struct RoadMiscData
     {
         uint16_t costFactor;                   // 0x004F7270
-        Track::MiscFlags flags;                // 0x004F7284
+        Track::CommonTraitFlags flags;                // 0x004F7284
         uint8_t reverseRoadId;                 // 0x004F7298
         uint8_t reverseRotation;               // 0x004F7299
         uint8_t reverseLane;                   // 0x004F729C
-        Track::RoadPieceFlags compatibleFlags; // 0x004F72E8
+        Track::RoadTraitFlags compatibleFlags; // 0x004F72E8
         uint16_t curveSpeedFraction;           // 0x004F72FC
         uint32_t unkWeighting;                 // 0x004F7310
     };
 
-    const MiscData& getTrackMiscData(size_t trackId);
+    const TrackMiscData& getTrackMiscData(size_t trackId);
     const RoadMiscData& getRoadMiscData(size_t roadId);
 }

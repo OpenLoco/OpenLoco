@@ -38,7 +38,7 @@ namespace OpenLoco
         StringId name;
         uint8_t drawStyle;                         // 0x02
         uint8_t height;                            // 0x03 despite being uint8_t this is bigZ not smallZ
-        World::Track::TrackPieceFlags trackPieces; // 0x04
+        World::Track::TrackTraitFlags trackPieces; // 0x04
         int16_t buildCostFactor;                   // 0x06
         int16_t sellCostFactor;                    // 0x08
         uint8_t costIndex;                         // 0x0A

@@ -53,7 +53,11 @@ namespace OpenLoco::World::Track
         unkTurnaround,
     };
 
-    enum class MiscFlags : uint16_t
+    // For some reason we have Common, Track and Road Trait flags
+    // but they are all pretty much the same thing. One day we should
+    // look into amalgamating them into one.
+
+    enum class CommonTraitFlags : uint16_t
     {
         none = 0U,
         slope = 1U << 0,
@@ -69,9 +73,9 @@ namespace OpenLoco::World::Track
         startsAtHalfHeight = 1U << 10, // Not used. From RCT2
         junction = 1U << 11,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(MiscFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(CommonTraitFlags);
 
-    enum class TrackPieceFlags : uint16_t
+    enum class TrackTraitFlags : uint16_t
     {
         none = 0U,
         diagonal = 1U << 0,
@@ -86,9 +90,9 @@ namespace OpenLoco::World::Track
         sBend = 1U << 9,
         junction = 1U << 10,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackPieceFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackTraitFlags);
 
-    enum class RoadPieceFlags : uint16_t
+    enum class RoadTraitFlags : uint16_t
     {
         none = 0U,
         smallCurve = 1U << 0,
@@ -98,5 +102,5 @@ namespace OpenLoco::World::Track
 
         turnaround = 1U << 5,
     };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadPieceFlags);
+    OPENLOCO_ENABLE_ENUM_OPERATORS(RoadTraitFlags);
 }
