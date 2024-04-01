@@ -53,6 +53,20 @@ namespace OpenLoco::World::Track
         unkTurnaround,
     };
 
+    enum class RoadId : uint8_t
+    {
+        straight,
+        leftCurveVerySmall,
+        rightCurveVerySmall,
+        leftCurveSmall,
+        rightCurveSmall,
+        straightSlopeUp,
+        straightSlopeDown,
+        straightSteepSlopeUp,
+        straightSteepSlopeDown,
+        turnaround,
+    };
+
     // For some reason we have Common, Track and Road Trait flags
     // but they are all pretty much the same thing. One day we should
     // look into amalgamating them into one.
