@@ -69,7 +69,7 @@ namespace OpenLoco::World::TrackData
     struct TrackMiscData
     {
         uint16_t costFactor;                    // 0x004F870C
-        Track::CommonTraitFlags flags;                 // 0x004F8764
+        Track::CommonTraitFlags flags;          // 0x004F8764
         uint8_t reverseTrackId;                 // 0x004F87BC
         uint8_t reverseRotation;                // 0x004F87BD
         uint8_t signalHeightOffsetLeft;         // 0x004F87BE
@@ -83,7 +83,7 @@ namespace OpenLoco::World::TrackData
     struct RoadMiscData
     {
         uint16_t costFactor;                   // 0x004F7270
-        Track::CommonTraitFlags flags;                // 0x004F7284
+        Track::CommonTraitFlags flags;         // 0x004F7284
         uint8_t reverseRoadId;                 // 0x004F7298
         uint8_t reverseRotation;               // 0x004F7299
         uint8_t reverseLane;                   // 0x004F729C
