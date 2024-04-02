@@ -757,7 +757,7 @@ namespace OpenLoco::Vehicles
 
             auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
 
-            const auto pieceFlags = TrackData::getTrackCompatibleFlags(interest.tad().id());
+            const auto pieceFlags = TrackData::getTrackMiscData(interest.tad().id()).compatibleFlags;
             if ((trackModObj->trackPieces & pieceFlags) != pieceFlags)
             {
                 //_1135F64 |= (1 << 0); placement failed at least once
@@ -842,7 +842,7 @@ namespace OpenLoco::Vehicles
 
                         auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
                         const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->buildCostFactor, trackModObj->costIndex, 10);
-                        const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                        const auto cost = (baseCost * TrackData::getTrackMiscData(tad.id()).costFactor) / 256;
                         totalCost += cost;
                     }
                 }
@@ -980,7 +980,7 @@ namespace OpenLoco::Vehicles
 
                     auto* trackModObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
                     const auto baseCost = Economy::getInflationAdjustedCost(trackModObj->sellCostFactor, trackModObj->costIndex, 10);
-                    const auto cost = (baseCost * TrackData::getTrackCostFactor(tad.id())) / 256;
+                    const auto cost = (baseCost * TrackData::getTrackMiscData(tad.id()).costFactor) / 256;
                     totalCost += cost;
                 }
             }
