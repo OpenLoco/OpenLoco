@@ -45,7 +45,7 @@ namespace OpenLoco::World::TileClearance
     // Removes a tree as per normal clear function setup
     ClearFuncResult clearTreeCollision(World::TreeElement& elTree, const World::Pos2 pos, const uint8_t flags, currency32_t& cost);
 
-    // These are an additional return variable from the clearWith functions
+    // These are an additional return variable from the applyClear functions
     TileManager::ElementPositionFlags getPositionFlags();
 
     void registerHooks();
