@@ -832,7 +832,19 @@ namespace OpenLoco::ObjectManager
     // 0x00472031
     void unloadAll()
     {
-        call(0x00472031);
+        for (auto type = ObjectType::interfaceSkin; enumValue(type) <= enumValue(ObjectType::scenarioText); type = static_cast<ObjectType>(enumValue(type) + 1))
+        {
+            for (LoadedObjectId id = 0; id < getMaxObjects(type); id++)
+            {
+                LoadedObjectHandle handle{ type, id };
+                auto* obj = getAny(handle);
+                if (obj != nullptr)
+                {
+                    unload(getHeader(handle));
+                }
+            }
+        }
+        reloadAll();
     }
 
     void unload(const LoadedObjectHandle& handle)
