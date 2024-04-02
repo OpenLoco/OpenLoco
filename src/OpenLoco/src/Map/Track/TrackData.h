@@ -23,7 +23,7 @@ namespace OpenLoco::World::TrackData
     enum class PreviewTrackFlags : uint8_t
     {
         none = 0U,
-        unk0 = 1U << 0,
+        unk0 = 1U << 0, // unk0 - unk3 are a group and depend on rotation
         unk1 = 1U << 1,
         unk2 = 1U << 2,
         unk3 = 1U << 3,
@@ -39,7 +39,7 @@ namespace OpenLoco::World::TrackData
         int16_t x;                          // 0x01
         int16_t y;                          // 0x03
         int16_t z;                          // 0x05
-        uint8_t clearZ;                     // 0x07
+        uint8_t clearZ;                     // 0x07 despite being a uint8_t this is in bigZ
         QuarterTile subTileClearance;       // 0x08
         PreviewTrackFlags flags;            // 0x09
         ConnectionsByRotation connectFlags; // From 0x004F78F8 & 0x004F6F1C

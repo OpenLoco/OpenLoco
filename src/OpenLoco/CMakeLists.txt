@@ -113,6 +113,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Town/RemoveTown.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Town/RenameTown.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateSignal.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateTrack.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateTrackMod.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/CreateTrainStation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Track/RemoveSignal.cpp"

@@ -12,6 +12,11 @@ namespace OpenLoco::World
     struct TreeElement;
 }
 
+namespace OpenLoco::World::TileManager
+{
+    enum class ElementPositionFlags : uint8_t;
+}
+
 namespace OpenLoco::World::TileClearance
 {
     enum class ClearFuncResult
@@ -39,6 +44,9 @@ namespace OpenLoco::World::TileClearance
     ClearFuncResult clearBuildingCollision(World::BuildingElement& elBuilding, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost);
     // Removes a tree as per normal clear function setup
     ClearFuncResult clearTreeCollision(World::TreeElement& elTree, const World::Pos2 pos, const uint8_t flags, currency32_t& cost);
+
+    // These are an additional return variable from the applyClear functions
+    TileManager::ElementPositionFlags getPositionFlags();
 
     void registerHooks();
 }

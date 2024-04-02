@@ -128,7 +128,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehiclePassSignal,            vehiclePassSignal,         0x004B0B50, true  },
         { GameCommand::vehicleCreate,                createVehicle,             0x004AE5E4, true  },
         { GameCommand::vehicleSell,                  sellVehicle,               0x004AED34, true  },
-        { GameCommand::createTrack,                  nullptr,                   0x0049BB98, true  },
+        { GameCommand::createTrack,                  createTrack,               0x0049BB98, true  },
         { GameCommand::removeTrack,                  nullptr,                   0x0049C7F2, true  },
         { GameCommand::changeLoan,                   changeLoan,                0x0046DE88, false },
         { GameCommand::vehicleRename,                renameVehicle,             0x004B6572, false },
@@ -234,6 +234,15 @@ namespace OpenLoco::GameCommands
         registerHook(0x0048BB20, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             createTrainStation(backup);
+
+            regs = backup;
+            return 0;
+        });
+
+        // Used by a gc_unk_51 and sub_4854B2 ai function instead of going via doCommand
+        registerHook(0x0049BB98, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createTrack(backup);
 
             regs = backup;
             return 0;
