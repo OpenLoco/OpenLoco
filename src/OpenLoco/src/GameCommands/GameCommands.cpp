@@ -239,14 +239,14 @@ namespace OpenLoco::GameCommands
             return 0;
         });
 
-        //// Used by a gc_unk_51 and sub_4854B2 ai function instead of going via doCommand
-        //registerHook(0x0049BB98, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-        //    registers backup = regs;
-        //    createTrack(backup);
+        // Used by a gc_unk_51 and sub_4854B2 ai function instead of going via doCommand
+        registerHook(0x0049BB98, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+            registers backup = regs;
+            createTrack(backup);
 
-        //    regs = backup;
-        //    return 0;
-        //});
+            regs = backup;
+            return 0;
+        });
 
         // Used by a gc_unk_53 instead of going via doCommand
         registerHook(0x0048C708, [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
