@@ -25,13 +25,12 @@
 namespace OpenLoco::GameCommands
 {
     using namespace World::TileManager;
+    using namespace World::Track;
 
     static loco_global<ElementPositionFlags, 0x01136072> _byte_1136072;
     static loco_global<uint8_t, 0x01136073> _byte_1136073;
     static loco_global<World::MicroZ, 0x01136074> _byte_1136074;
     static loco_global<uint8_t, 0x01136075> _byte_1136075; // bridgeType of any overlapping track
-    static loco_global<uint16_t[44], 0x004F8764> _4F8764;
-    static loco_global<uint8_t[8 * 44], 0x004F87BC> _4F87BC;
 
     // TODO: Move this somewhere else used by multiple game commands
     // 0x0048B013
@@ -103,8 +102,8 @@ namespace OpenLoco::GameCommands
             return World::TileClearance::ClearFuncResult::collisionErrorSet;
         }
 
-        if ((_4F8764[elTrack.trackId()] & ((1U << 0) | (1U << 1)))
-            || (_4F8764[args.trackId] & ((1U << 0) | (1U << 1))))
+        if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none)
+            || ((World::TrackData::getTrackMiscData(args.trackId).flags & (CommonTraitFlags::slope | CommonTraitFlags::steepSlope)) != CommonTraitFlags::none))
         {
             setErrorText(StringIds::junction_must_be_entirely_level);
             return World::TileClearance::ClearFuncResult::collisionErrorSet;
@@ -133,7 +132,7 @@ namespace OpenLoco::GameCommands
 
         if (!((args.rotation ^ elTrack.unkDirection()) & 0b1))
         {
-            if ((_4F8764[elTrack.trackId()] ^ _4F8764[args.trackId]) & (1U << 9))
+            if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags ^ World::TrackData::getTrackMiscData(args.trackId).flags) & CommonTraitFlags::oneSided) != CommonTraitFlags::none)
             {
                 setErrorText(StringIds::track_combination_not_possible);
                 return World::TileClearance::ClearFuncResult::collisionErrorSet;
@@ -149,7 +148,7 @@ namespace OpenLoco::GameCommands
             }
 
             auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridgeId);
-            if (bridgeObj->disabledTrackCfg & (1U << 11))
+            if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
             {
                 setErrorText(StringIds::bridge_not_suitable_for_junction);
                 return World::TileClearance::ClearFuncResult::collisionErrorSet;
@@ -170,9 +169,9 @@ namespace OpenLoco::GameCommands
                 }
             }
             // This is working out reversed elements
-            if (_4F87BC[elTrack.trackId() * 8 + 0] == args.trackId)
+            if (World::TrackData::getTrackMiscData(elTrack.trackId()).reverseTrackId == args.trackId)
             {
-                if (((_4F87BC[elTrack.trackId() * 8 + 1] + elTrack.unkDirection()) & 0x3) == args.rotation)
+                if (((World::TrackData::getTrackMiscData(elTrack.trackId()).reverseRotation + elTrack.unkDirection()) & 0x3) == args.rotation)
                 {
                     if (args.isLastIndex && elTrack.sequenceIndex() == 0)
                     {
@@ -185,7 +184,7 @@ namespace OpenLoco::GameCommands
 
         if (elTrack.trackObjectId() == args.trackObjectId)
         {
-            if (!targetTrackObj->hasPieceFlags(TrackObjectPieceFlags::junction))
+            if (!targetTrackObj->hasTraitFlags(TrackTraitFlags::junction))
             {
                 setErrorText(StringIds::junctions_not_possible);
                 return World::TileClearance::ClearFuncResult::collisionErrorSet;
@@ -213,7 +212,7 @@ namespace OpenLoco::GameCommands
         {
             _byte_1136075 = elRoad.bridge();
             auto* bridgeObj = ObjectManager::get<BridgeObject>(elRoad.bridge());
-            if (bridgeObj->disabledTrackCfg & (1U << 11))
+            if ((bridgeObj->disabledTrackCfg & CommonTraitFlags::junction) != CommonTraitFlags::none)
             {
                 setErrorText(StringIds::bridge_not_suitable_for_junction);
                 return World::TileClearance::ClearFuncResult::collisionErrorSet;
@@ -268,7 +267,7 @@ namespace OpenLoco::GameCommands
             && (args.flags & Flags::apply))
         {
             elRoad.setHasLevelCrossing(true);
-            elRoad.setLevelCrossingObjectId(getGameState().var_1AC);
+            elRoad.setLevelCrossingObjectId(getGameState().currentDefaultLevelCrossingType);
             elRoad.setUnk7_10(false);
             elRoad.setUnk6l(0);
         }
@@ -399,7 +398,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjectId);
-        const auto compatFlags = World::TrackData::getTrackCompatibleFlags(args.trackId);
+        const auto compatFlags = World::TrackData::getTrackMiscData(args.trackId).compatibleFlags;
         uint8_t validMods = args.mods;
 
         for (auto i = 0U; i < 4; ++i)
@@ -415,7 +414,7 @@ namespace OpenLoco::GameCommands
         }
 
         // This is a check from RCT2 and is not used in loco TRACK_ELEM_FLAG_STARTS_AT_HALF_HEIGHT
-        if (_4F8764[args.trackId] & (1U << 10))
+        if ((World::TrackData::getTrackMiscData(args.trackId).flags & CommonTraitFlags::startsAtHalfHeight) != CommonTraitFlags::none)
         {
             if ((args.pos.z & 0xF) != 8)
             {
@@ -434,7 +433,7 @@ namespace OpenLoco::GameCommands
 
         {
             const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->buildCostFactor, trackObj->costIndex, 10);
-            const auto cost = (trackBaseCost * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+            const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
             totalCost += cost;
         }
         for (auto i = 0U; i < 4; ++i)
@@ -443,7 +442,7 @@ namespace OpenLoco::GameCommands
             {
                 auto* extraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
                 const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(extraObj->buildCostFactor, extraObj->costIndex, 10);
-                const auto cost = (trackExtraBaseCost * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+                const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
                 totalCost += cost;
             }
         }
@@ -495,7 +494,7 @@ namespace OpenLoco::GameCommands
                         return FAILURE;
                     }
                     _byte_1136074 = std::max(heightDiff, *_byte_1136074);
-                    if (bridgeObj->disabledTrackCfg & _4F8764[args.trackId])
+                    if ((bridgeObj->disabledTrackCfg & World::TrackData::getTrackMiscData(args.trackId).flags) != CommonTraitFlags::none)
                     {
                         setErrorText(StringIds::bridge_type_unsuitable_for_this_configuration);
                         return FAILURE;
@@ -535,7 +534,7 @@ namespace OpenLoco::GameCommands
 
             if (hasLevelCrossing)
             {
-                auto* levelCrossObj = ObjectManager::get<LevelCrossingObject>(getGameState().var_1AC);
+                auto* levelCrossObj = ObjectManager::get<LevelCrossingObject>(getGameState().currentDefaultLevelCrossingType);
                 totalCost += Economy::getInflationAdjustedCost(levelCrossObj->costFactor, levelCrossObj->costIndex, 10);
             }
 
@@ -617,7 +616,7 @@ namespace OpenLoco::GameCommands
             auto* bridgeObj = ObjectManager::get<BridgeObject>(args.bridge);
             const auto heightCost = _byte_1136074 * bridgeObj->heightCostFactor;
             const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->baseCostFactor + heightCost, bridgeObj->costIndex, 10);
-            auto cost = (bridgeBaseCost * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+            auto cost = (bridgeBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
             if (_byte_1136073 & (1U << 7))
             {
                 cost *= 2;
@@ -628,7 +627,7 @@ namespace OpenLoco::GameCommands
         if ((_byte_1136072 & ElementPositionFlags::underground) != ElementPositionFlags::none)
         {
             const auto tunnelBaseCost = Economy::getInflationAdjustedCost(trackObj->tunnelCostFactor, 2, 8);
-            auto cost = (tunnelBaseCost * World::TrackData::getTrackCostFactor(args.trackId)) / 256;
+            auto cost = (tunnelBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
 
             totalCost += cost;
         }
