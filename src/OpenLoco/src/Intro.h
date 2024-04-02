@@ -10,6 +10,7 @@ namespace OpenLoco::Intro
         state_8 = 8,
         state_9 = 9,
         end = 254,
+        end2 = 255,
     };
 
     bool isActive();

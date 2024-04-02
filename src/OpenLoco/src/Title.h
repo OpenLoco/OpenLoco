@@ -7,4 +7,5 @@ namespace OpenLoco::Title
     void sub_4284C8();
     void update();
     void stop();
+    void reset();
 }

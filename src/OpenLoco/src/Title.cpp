@@ -143,7 +143,7 @@ namespace OpenLoco::Title
     }
 
     // 0x00444357
-    static void reset()
+    void reset()
     {
         _sequenceIterator = _titleSequence.begin();
         _waitCounter = 0;
