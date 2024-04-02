@@ -98,7 +98,7 @@ namespace OpenLoco::GameCommands
                 }
 
                 const auto baseZ = std::min<World::SmallZ>(surface->baseZ(), (args.pos.z / World::kSmallZStep));
-                const auto clearZ = baseZ + clearHeight / World::kSmallZStep;
+                const auto clearZ = (args.pos.z + clearHeight) / World::kSmallZStep;
 
                 World::QuarterTile qt(0xF, 0xF);
                 auto clearFunc = [tilePos, &removedBuildings, flags, &totalCost](World::TileElement& el) {
@@ -144,12 +144,12 @@ namespace OpenLoco::GameCommands
                                 auto* elBuilding = el.as<World::BuildingElement>();
                                 auto* elIndustry = el.as<World::IndustryElement>();
                                 auto* elTree = el.as<World::TreeElement>();
-                                if (elTrack != nullptr && !elTrack->isGhost() && elTrack->hasBridge())
+                                if (elTrack != nullptr && !elTrack->isGhost() && !elTrack->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
                                 }
-                                else if (elRoad != nullptr && !elRoad->isGhost() && elRoad->hasBridge())
+                                else if (elRoad != nullptr && !elRoad->isGhost() && !elRoad->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
@@ -205,7 +205,7 @@ namespace OpenLoco::GameCommands
                 elBuilding->setClearZ((clearHeight / World::kSmallZStep) + elBuilding->baseZ());
                 elBuilding->setRotation(args.rotation);
                 elBuilding->setConstructed(args.buildImmediately);
-                if (offset.index == 0 && buildingObj->numElevatorSequences != 0)
+                if (args.buildImmediately && offset.index == 0 && buildingObj->numElevatorSequences != 0)
                 {
                     World::AnimationManager::createAnimation(5, World::toWorldSpace(tilePos), elBuilding->baseZ());
                 }

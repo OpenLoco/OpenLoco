@@ -277,12 +277,12 @@ namespace OpenLoco::GameCommands
                                 auto* elBuilding = el.as<World::BuildingElement>();
                                 auto* elIndustry = el.as<World::IndustryElement>();
                                 auto* elTree = el.as<World::TreeElement>();
-                                if (elTrack != nullptr && !elTrack->isGhost() && elTrack->hasBridge())
+                                if (elTrack != nullptr && !elTrack->isGhost() && !elTrack->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
                                 }
-                                else if (elRoad != nullptr && !elRoad->isGhost() && elRoad->hasBridge())
+                                else if (elRoad != nullptr && !elRoad->isGhost() && !elRoad->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
