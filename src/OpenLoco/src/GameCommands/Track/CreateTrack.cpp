@@ -278,40 +278,6 @@ namespace OpenLoco::GameCommands
     // 0x0049C275
     static World::TileClearance::ClearFuncResult clearFunction(World::TileElement& el, currency32_t& totalCost, bool& hasLevelCrossing, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const ClearFunctionArgs& args)
     {
-        // static loco_global<World::TileElement*, 0x00F0015C> _F0015C;
-        // static loco_global<const World::TrackData::PreviewTrack*, 0x01135F5E> _1135F5E;
-        // static loco_global<std::array<uint32_t, 6>*, 0x01135F5A> _1135F5A;
-        // static loco_global<World::Pos2, 0x01135FE0> _1135FE0;
-        // static loco_global<uint8_t, 0x0113601C> _113601C;
-        // static loco_global<bool, 0x0113607C> _113607C;
-        // static loco_global<uint32_t, 0x01135C68> _1135C68;
-        // auto& piece = World::TrackData::getTrackPiece(args.trackId)[args.index];
-        //_1135F5E = &piece; // NOTE: This does not work as vanilla expects piece ptr + 1 to work
-        //_113607C = hasLevelCrossing;
-        //_1135FE0 = args.pos;
-        //_113601C = args.pos.z / World::kSmallZStep;
-
-        // std::array<uint32_t, 6> _stack{
-        //     static_cast<uint32_t>(totalCost),                                                        // 0x00
-        //     0,                                                                                       // 0x04
-        //     0,                                                                                       // 0x08
-        //     static_cast<uint32_t>(args.trackObjectId) | (args.trackId << 8) | (args.bridgeId << 24), // 0x0C
-        //     0,                                                                                       // 0x10
-        //     static_cast<uint32_t>(args.flags) | (args.rotation << 8),                                // 0x14
-        // };
-        //_1135F5A = &_stack;
-        //_1135C68 = args.unkFlags << 20;
-
-        // 0x0113607C hasLevelCrossing
-        // 0x01135F5E pieceIndex
-        // 0x01135F5E isLastPiece as well
-        // ebp+14h flags
-        // ebp+0h cost
-        // ebp+Ch trackObjectId
-        // ebp+Fh bridge
-        // ebp+Dh trackId
-        // ebp+15h rotation
-
         switch (el.type())
         {
             case World::ElementType::track:
