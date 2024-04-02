@@ -4,6 +4,7 @@
 #include "GameState.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/BuildingElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -11,6 +12,7 @@
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Map/TreeElement.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
@@ -301,10 +303,24 @@ namespace OpenLoco::GameCommands
             case World::ElementType::signal:
                 return World::TileClearance::ClearFuncResult::noCollision;
             case World::ElementType::building:
+            {
+                auto* elBuilding = el.as<World::BuildingElement>();
+                if (elBuilding == nullptr)
+                {
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
                 _byte_1136073 = _byte_1136073 | (1U << 4);
-                return World::TileClearance::clearWithDefaultCollision(el, args.pos, removedBuildings, args.flags, totalCost);
+                return World::TileClearance::clearBuildingCollision(*elBuilding, args.pos, removedBuildings, args.flags, totalCost);
+            }
             case World::ElementType::tree:
-                return World::TileClearance::clearWithDefaultCollision(el, args.pos, removedBuildings, args.flags, totalCost);
+            {
+                auto* elTree = el.as<World::TreeElement>();
+                if (elTree == nullptr)
+                {
+                    return World::TileClearance::ClearFuncResult::noCollision;
+                }
+                return World::TileClearance::clearTreeCollision(*elTree, args.pos, args.flags, totalCost);
+            }
             case World::ElementType::road:
             {
                 auto* elRoad = el.as<World::RoadElement>();
