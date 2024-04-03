@@ -132,7 +132,7 @@ namespace OpenLoco::Audio
     void resetMusic();
     void playBackgroundMusic();
     void stopMusic();
-    bool playMusic(Environment::PathId sample, int32_t volume, bool loop);
+    void playMusic(Environment::PathId sample, int32_t volume, bool loop);
 
     void resetSoundObjects();
 
