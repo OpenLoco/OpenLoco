@@ -141,7 +141,8 @@ namespace OpenLoco::Gfx
     Drawing::SoftwareDrawingEngine& getDrawingEngine();
 
     void loadCurrency();
-    void loadPalette();
+    void loadDefaultPalette();
+    void loadPalette(uint32_t imageIndex, uint8_t modifier);
 
     ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages);
 }

@@ -398,7 +398,7 @@ namespace OpenLoco::Scenario
 
         TownManager::updateLabels();
         StationManager::updateLabels();
-        Gfx::loadPalette();
+        Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
         resetScreenAge();
         _50C19A = 62000;

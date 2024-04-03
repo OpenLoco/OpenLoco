@@ -1446,7 +1446,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             ObjectManager::updateYearly2();
             ObjectManager::sub_4748FA();
             Gfx::loadCurrency();
-            Gfx::loadPalette();
+            Gfx::loadDefaultPalette();
             Gfx::invalidateScreen();
         }
         ObjectManager::freeSelectionList();

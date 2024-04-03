@@ -7,8 +7,15 @@ namespace OpenLoco::Intro
     {
         none,
         begin,
-        state_8 = 8,
-        state_9 = 9,
+        state2,
+        state3,
+        state4,
+        state5,
+        state6,
+        state7,
+        state8,
+        state9,
+        state10,
         end = 254,
         end2 = 255,
     };
