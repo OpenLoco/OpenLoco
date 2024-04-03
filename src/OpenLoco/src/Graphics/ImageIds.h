@@ -2207,10 +2207,9 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t chris_sawyer_logo_intro_left = 3617;
     constexpr uint32_t chris_sawyer_logo_intro_right = 3618;
     constexpr uint32_t chris_sawyer_intro_palette = 3619;
-
     constexpr uint32_t atari_logo_intro_left = 3620;
     constexpr uint32_t atari_logo_intro_right = 3621;
-    constexpr uint32_t intro_palette = 3622;
+    constexpr uint32_t atari_intro_palette = 3622;
     constexpr uint32_t atari_logo_small = UNUSED_IMG(3623);
     constexpr uint32_t locomotion_logo = 3624;
     constexpr uint32_t wide_tab = 3625;

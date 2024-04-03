@@ -75,7 +75,7 @@ namespace OpenLoco::Intro
             return;
         }
 
-        Gfx::loadPalette(ImageIds::intro_palette, 0);
+        Gfx::loadPalette(ImageIds::atari_intro_palette, 0);
 
         auto& rt = Gfx::getScreenRT();
         auto& drawContext = Gfx::getDrawingEngine().getDrawingContext();
@@ -104,7 +104,7 @@ namespace OpenLoco::Intro
         }
         modifier = std::min(255, modifier * 8);
 
-        Gfx::loadPalette(ImageIds::intro_palette, modifier);
+        Gfx::loadPalette(ImageIds::atari_intro_palette, modifier);
 
         if (_50C190 >= 110)
         {
