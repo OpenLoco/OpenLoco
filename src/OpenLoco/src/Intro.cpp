@@ -17,9 +17,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Intro
 {
-    loco_global<int32_t, 0x0050C190> _50C190;
-    loco_global<State, 0x0050C195> _state;
-    loco_global<bool, 0x0050C196> _50C196;
+    static loco_global<int32_t, 0x0050C190> _50C190;
+    static loco_global<State, 0x0050C195> _state;
+    static loco_global<bool, 0x0050C196> _50C196;
 
     bool isActive()
     {
@@ -190,14 +190,14 @@ namespace OpenLoco::Intro
             if (_50C190 >= 160)
             {
                 _state = State::end;
-            } 
+            }
         }
         else
         {
             if (_50C190 >= 1440)
             {
                 _state = State::end;
-            } 
+            }
         }
     }
     static void updateState10()
