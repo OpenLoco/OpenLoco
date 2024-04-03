@@ -884,14 +884,14 @@ namespace OpenLoco::Ui
             {
                 if (isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
-                    if (Intro::state() == Intro::State::state9)
+                    if (Intro::state() == Intro::State::displayNotice)
                     {
                         Intro::state(Intro::State::end);
                         continue;
                     }
                     else
                     {
-                        Intro::state(Intro::State::state8);
+                        Intro::state(Intro::State::displayNoticeBegin);
                     }
                 }
                 Input::handleMouse(x, y, state);

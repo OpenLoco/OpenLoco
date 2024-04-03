@@ -61,17 +61,17 @@ namespace OpenLoco::Intro
 
     static void updateNone() {}
 
-    static void updateState8()
+    static void updateDisplayNoticeBegin()
     {
         Gfx::loadPalette(ImageIds::default_palette, 0);
-        _state = State::state10;
+        _state = State::displayNoticeBeginReset;
     }
 
     static void updateBegin()
     {
         if (MultiPlayer::hasFlag(MultiPlayer::flag_8) || MultiPlayer::hasFlag(MultiPlayer::flag_9))
         {
-            updateState8();
+            updateDisplayNoticeBegin();
             return;
         }
 
@@ -87,10 +87,10 @@ namespace OpenLoco::Intro
         drawContext.drawImage(rt, pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
         _50C190 = -24;
         _50C196 = false;
-        _state = State::state2;
+        _state = State::displayAtari;
     }
 
-    static void updateState2()
+    static void updateDisplayAtari()
     {
         _50C190++;
         uint8_t modifier = 0;
@@ -119,10 +119,10 @@ namespace OpenLoco::Intro
             drawContext.drawImage(rt, pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
 
             _50C190 = 0;
-            _state = State::state3;
+            _state = State::displayCS;
         }
     }
-    static void updateState3()
+    static void updateDisplayCS()
     {
         _50C190++;
         uint8_t modifier = 0;
@@ -144,7 +144,7 @@ namespace OpenLoco::Intro
 
             drawContext.clearSingle(rt, PaletteIndex::index_0A);
 
-            _state = State::state8;
+            _state = State::displayNoticeBegin;
         }
     }
     static void updateState4() {}
@@ -160,7 +160,7 @@ namespace OpenLoco::Intro
         StringIds::intro_vehicle_notice_4,
     };
 
-    static void updateState9()
+    static void updateDisplayNotice()
     {
         auto& rt = Gfx::getScreenRT();
         auto& drawContext = Gfx::getDrawingEngine().getDrawingContext();
@@ -200,25 +200,25 @@ namespace OpenLoco::Intro
             }
         }
     }
-    static void updateState10()
+    static void updateDisplayNoticeBeginReset()
     {
         _50C190 = 0;
-        _state = State::state9;
-        updateState9();
+        _state = State::displayNotice;
+        updateDisplayNotice();
     }
 
     constexpr std::array<void (*)(), 11> kUpdateFunctions = {
         updateNone,
         updateBegin,
-        updateState2,
-        updateState3,
+        updateDisplayAtari,
+        updateDisplayCS,
         updateState4,
         updateState5,
         updateState6,
         updateState7,
-        updateState8,
-        updateState9,
-        updateState10,
+        updateDisplayNoticeBegin,
+        updateDisplayNotice,
+        updateDisplayNoticeBeginReset,
     };
 
     // 0x0046AE0C

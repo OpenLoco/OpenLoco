@@ -7,15 +7,15 @@ namespace OpenLoco::Intro
     {
         none,
         begin,
-        state2,
-        state3,
-        state4,
-        state5,
-        state6,
-        state7,
-        state8,
-        state9,
-        state10,
+        displayAtari,
+        displayCS,
+        state4, // unused
+        state5, // unused
+        state6, // unused
+        state7, // unused
+        displayNoticeBegin,
+        displayNotice,
+        displayNoticeBeginReset,
         end = 254,
         end2 = 255,
     };
