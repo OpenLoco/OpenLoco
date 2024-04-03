@@ -102,7 +102,37 @@ namespace OpenLoco::GameCommands
 
                 World::QuarterTile qt(0xF, 0xF);
                 auto clearFunc = [tilePos, &removedBuildings, flags, &totalCost](World::TileElement& el) {
-                    return World::TileClearance::clearWithDefaultCollision(el, World::toWorldSpace(tilePos), removedBuildings, flags, totalCost);
+                    switch (el.type())
+                    {
+                        case World::ElementType::tree:
+                        {
+                            auto* elTree = el.as<World::TreeElement>();
+                            if (elTree == nullptr)
+                            {
+                                return World::TileClearance::ClearFuncResult::noCollision;
+                            }
+                            return World::TileClearance::clearTreeCollision(*elTree, World::toWorldSpace(tilePos), flags, totalCost);
+                        }
+                        case World::ElementType::building:
+                        {
+                            auto* elBuilding = el.as<World::BuildingElement>();
+                            if (elBuilding == nullptr)
+                            {
+                                return World::TileClearance::ClearFuncResult::noCollision;
+                            }
+                            // This is used to stop creating a building ghost
+                            // even if a clear could succeed here. This is
+                            // because if it did place a ghost the ghost cleanup
+                            // function might remove the wrong building!
+                            if (flags & Flags::flag_1)
+                            {
+                                return World::TileClearance::ClearFuncResult::collision;
+                            }
+                            return World::TileClearance::clearBuildingCollision(*elBuilding, World::toWorldSpace(tilePos), removedBuildings, flags, totalCost);
+                        }
+                        default:
+                            return World::TileClearance::ClearFuncResult::collision;
+                    }
                 };
                 if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
                 {
