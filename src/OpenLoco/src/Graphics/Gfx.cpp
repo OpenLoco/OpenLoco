@@ -340,7 +340,7 @@ namespace OpenLoco::Gfx
     {
         auto* g1Palette = getG1Element(imageIndex);
         uint8_t* colourData = g1Palette->offset;
-        for (auto i = g1Palette->xOffset; i < g1Palette->width; ++i)
+        for (auto i = g1Palette->xOffset; i < g1Palette->width + g1Palette->xOffset; ++i)
         {
             _113ED20[i].b = (*colourData++ * modifier) / 256;
             _113ED20[i].g = (*colourData++ * modifier) / 256;
@@ -354,7 +354,7 @@ namespace OpenLoco::Gfx
     {
         auto* g1Palette = getG1Element(ImageIds::default_palette);
         uint8_t* colourData = g1Palette->offset;
-        for (auto i = g1Palette->xOffset; i < g1Palette->width; ++i)
+        for (auto i = g1Palette->xOffset; i < g1Palette->width + g1Palette->xOffset; ++i)
         {
             _113ED20[i].b = *colourData++;
             _113ED20[i].g = *colourData++;
