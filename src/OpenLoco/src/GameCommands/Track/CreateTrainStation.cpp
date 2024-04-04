@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
 
         // _lastPlacedTrackStationId = nearbyStation.id; set in callers
         auto* station = StationManager::get(nearbyStation.id);
-        if (station->stationTileSize > 80)
+        if (station->stationTileSize >= std::size(station->stationTiles))
         {
             if (nearbyStation.isPhysicallyAttached)
             {
