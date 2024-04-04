@@ -516,7 +516,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 }
             }
 
-            auto point = Point(x, y);
             drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, stringId, &progress);
         }
     }
