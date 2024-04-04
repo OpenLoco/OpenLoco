@@ -1021,11 +1021,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self.widgets[widx::image].bottom + self.y + 29;
 
         origin = Point(xPos, yPos);
-        drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_accepts);
+        origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
+            origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -1050,11 +1050,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = Point(xPos, yPos);
 
-        drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_produces);
+        origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
+            origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
