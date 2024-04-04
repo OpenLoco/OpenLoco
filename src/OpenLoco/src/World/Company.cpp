@@ -63,6 +63,16 @@ namespace OpenLoco
         Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(companyId));
     }
 
+    void Company::clearOwnerStatusForDeletedVehicle(EntityId vehicleId)
+    {
+        // Prevent any possible owner status with a dangling reference to a deleted vehicle
+
+        if (ownerStatus.isEntity() && ownerStatus.getEntity() == vehicleId)
+        {
+            ownerStatus = OwnerStatus();
+        }
+    }
+
     // 0x00437FC5
     void Company::updateDaily()
     {
@@ -109,6 +119,12 @@ namespace OpenLoco
             }
             if (ownerStatus.isEntity())
             {
+                if (EntityManager::get<Vehicles::VehicleBase>(ownerStatus.getEntity()) == nullptr)
+                {
+                    assert(EntityManager::get<Vehicles::VehicleBase>(ownerStatus.getEntity()) != nullptr);
+                    return;
+                }
+
                 Vehicles::Vehicle train(ownerStatus.getEntity());
                 if (train.veh2->position.x != Location::null)
                 {
