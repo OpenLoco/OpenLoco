@@ -2457,7 +2457,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto point = Point(self.x + 5, self.y + 47);
 
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
-            point.y = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::buffer_2039);
+            point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::buffer_2039);
             point.y += 5;
 
             drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_label);
@@ -2467,7 +2467,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
 
-                point.y = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::challenge_value, &args);
+                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::challenge_value, &args);
                 point.y += 5;
             }
 
@@ -2509,7 +2509,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 FormatArguments args{};
                 args.push<uint16_t>(playerCompany->challengeProgress);
-                point.y = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
+                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)

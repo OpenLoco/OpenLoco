@@ -19,35 +19,20 @@ namespace OpenLoco::Drawing
         uint16_t getStringWidth(const char* buffer) override;
         uint16_t getMaxStringWidth(const char* buffer) override;
 
-        void drawString(
+        Ui::Point drawString(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             const char* str) override;
 
-        void drawStringLeft(
+        Ui::Point drawStringLeft(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr) override;
 
-        void drawStringLeftClipped(
-            Gfx::RenderTarget& rt,
-            Ui::Point origin,
-            uint16_t width,
-            AdvancedColour colour,
-            StringId stringId,
-            const void* args = nullptr) override;
-
-        void drawStringLeftUnderline(
-            Gfx::RenderTarget& rt,
-            Ui::Point origin,
-            AdvancedColour colour,
-            StringId stringId,
-            const void* args = nullptr) override;
-
-        int16_t drawStringLeftWrapped(
+        Ui::Point drawStringLeftClipped(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
@@ -55,14 +40,14 @@ namespace OpenLoco::Drawing
             StringId stringId,
             const void* args = nullptr) override;
 
-        void drawStringCentred(
+        Ui::Point drawStringLeftUnderline(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr) override;
 
-        void drawStringCentredClipped(
+        Ui::Point drawStringLeftWrapped(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
@@ -70,14 +55,29 @@ namespace OpenLoco::Drawing
             StringId stringId,
             const void* args = nullptr) override;
 
-        void drawStringCentredRaw(
+        Ui::Point drawStringCentred(
+            Gfx::RenderTarget& rt,
+            Ui::Point origin,
+            AdvancedColour colour,
+            StringId stringId,
+            const void* args = nullptr) override;
+
+        Ui::Point drawStringCentredClipped(
+            Gfx::RenderTarget& rt,
+            Ui::Point origin,
+            uint16_t width,
+            AdvancedColour colour,
+            StringId stringId,
+            const void* args = nullptr) override;
+
+        Ui::Point drawStringCentredRaw(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t linebreakCount,
             AdvancedColour colour,
             const char* wrappedStr) override;
 
-        uint16_t drawStringCentredWrapped(
+        Ui::Point drawStringCentredWrapped(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
@@ -85,14 +85,14 @@ namespace OpenLoco::Drawing
             StringId stringId,
             const void* args = nullptr) override;
 
-        void drawStringRight(
+        Ui::Point drawStringRight(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             const void* args = nullptr) override;
 
-        void drawStringRightUnderline(
+        Ui::Point drawStringRightUnderline(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,

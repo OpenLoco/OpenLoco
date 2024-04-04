@@ -481,25 +481,23 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         y += 207;
 
         uint16_t maxWidth = window.width - window.widgets[widx::scrollview].right;
+        auto point = Point(x, y);
 
         // Company
         {
             auto args = getStringPtrFormatArgs(saveInfo.company);
-            auto point = Point(x, y);
-            y = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_company, &args);
+            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_company, &args);
         }
 
         // Owner
         {
             auto args = getStringPtrFormatArgs(saveInfo.owner);
-            auto point = Point(x, y);
-            y = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::owner_label, &args);
+            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::owner_label, &args);
         }
 
         // Date
         {
-            auto point = Point(x, y);
-            y = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
+            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
         }
 
         // Challenge progress
