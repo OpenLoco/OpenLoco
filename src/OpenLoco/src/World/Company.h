@@ -221,6 +221,7 @@ namespace OpenLoco
         bool empty() const;
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
+        void clearOwnerStatusForDeletedVehicle(EntityId vehicleId);
         void updateDaily();
         void updateDailyLogic();
         void updateDailyPlayer();

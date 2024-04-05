@@ -249,6 +249,7 @@ namespace OpenLoco::VehicleManager
         Vehicles::OrderManager::freeOrders(&head);
         MessageManager::removeAllSubjectRefs(enumValue(head.id), MessageItemArgumentType::vehicle);
         const auto companyId = head.owner;
+        CompanyManager::get(companyId)->clearOwnerStatusForDeletedVehicle(head.id);
         EntityManager::freeEntity(train.tail);
         EntityManager::freeEntity(train.veh2);
         EntityManager::freeEntity(train.veh1);
