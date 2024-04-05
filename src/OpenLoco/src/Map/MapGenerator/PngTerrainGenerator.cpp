@@ -27,7 +27,7 @@ namespace OpenLoco::World::MapGenerator
             return;
         }
 
-        const int maxHeightmapLevels = 64 - options.minLandHeight;
+        const int maxHeightmapLevels = 40 - options.minLandHeight;
         const float scalingFactor = maxHeightmapLevels / 255.f;
 
         std::fill_n(heightMap.data(), heightMap.size(), options.minLandHeight);
