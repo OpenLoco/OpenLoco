@@ -3683,7 +3683,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
             const auto& movementNode = airportObj->movementNodes[node];
             auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
-            auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.y } + World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
+            auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.z } + World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
             if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))
             {
                 nodeLoc.z = station->unk_tile_z + 255;

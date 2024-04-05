@@ -85,7 +85,7 @@ namespace OpenLoco
         uint8_t numMovementEdges;          // 0xAD
         const MovementNode* movementNodes; // 0xAE
         const MovementEdge* movementEdges; // 0xB2
-        uint8_t pad_B6[0xBA - 0xB6];
+        uint32_t var_B6;
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
