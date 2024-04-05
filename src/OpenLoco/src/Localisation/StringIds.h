@@ -115,6 +115,7 @@ namespace OpenLoco::StringIds
     constexpr StringId screenshot_saved_as = 109;
     constexpr StringId screenshot_failed = 110;
 
+    constexpr StringId cant_build_partly_above_partly_below_ground = 112;
     constexpr StringId stringid_2 = 113;
     constexpr StringId tooltip_left_hand_curve = 114;
     constexpr StringId tooltip_right_hand_curve = 115;
@@ -155,9 +156,13 @@ namespace OpenLoco::StringIds
     constexpr StringId wrong_type_of_station_for_string_id = 148;
     constexpr StringId station_not_compatible_with_string_id = 149;
     constexpr StringId level_crossing_in_the_way = 150;
+    constexpr StringId level_crossing_only_possible_with_straight_road_and_track_at_same_level = 151;
 
+    constexpr StringId junction_must_be_entirely_level = 153;
+    constexpr StringId string_id_in_the_way_wrong_height_for_junction = 154;
+    constexpr StringId already_built_here = 155;
     constexpr StringId unable_to_cross_or_create_junction_with_string = 156;
-
+    constexpr StringId junctions_not_possible = 157;
     constexpr StringId capt_signal = 158;
     constexpr StringId capt_station = 159;
     constexpr StringId capt_airport = 160;
@@ -168,7 +173,9 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_remove_ship_port = 165;
     constexpr StringId cant_remove_station = 166;
     constexpr StringId wrong_type_of_track_road = 167;
-
+    constexpr StringId bridge_types_must_match = 168;
+    constexpr StringId bridge_not_suitable_for_junction = 169;
+    constexpr StringId track_combination_not_possible = 170;
     constexpr StringId too_many_objects_in_game = 171;
     constexpr StringId menu_rotate_clockwise = 172;
     constexpr StringId menu_rotate_anti_clockwise = 173;
@@ -355,7 +362,7 @@ namespace OpenLoco::StringIds
     constexpr StringId move_main_view_to_show_this = 355;
     constexpr StringId off_edge_of_map = 356;
     constexpr StringId cannot_build_partly_above_below_water = 357;
-
+    constexpr StringId too_close_to_water_surface = 358;
     constexpr StringId cant_build_this_underwater = 359;
     constexpr StringId error_can_only_build_above_ground = 360;
     constexpr StringId can_only_build_this_on_level_land = 361;
@@ -376,7 +383,8 @@ namespace OpenLoco::StringIds
     constexpr StringId title_name_vehicle = 375;
     constexpr StringId prompt_enter_new_vehicle_name = 376;
     constexpr StringId cant_rename_this_vehicle = 377;
-
+    constexpr StringId bridge_needed = 378;
+    constexpr StringId too_far_above_ground_for_bridge_type = 379;
     constexpr StringId bridge_already_at_maximum_height = 380;
     constexpr StringId stringid_requires_a_bridge = 381;
     constexpr StringId bridge_type_unsuitable_for_this_configuration = 382;
@@ -886,7 +894,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cargo_capacity_plus = 1174;
     constexpr StringId too_many_stations_in_game = 1175;
     constexpr StringId station_too_large = 1176;
-    constexpr StringId town_must_be_built_first = 1176;
+    constexpr StringId town_must_be_built_first = 1177;
     constexpr StringId tab_map_overall = 1178;
     constexpr StringId tab_map_vehicles = 1179;
     constexpr StringId tab_map_industries = 1180;

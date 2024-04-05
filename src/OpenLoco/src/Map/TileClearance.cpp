@@ -491,7 +491,7 @@ namespace OpenLoco::World::TileClearance
         return canConstructAtWithClear(pos, baseZ, clearZ, qt, BuildingCollisionType::standard, {});
     }
 
-    // 0x00469E07, 0x00468949, 0x004C4DAD
+    // 0x00469E07, 0x00468949, 0x004C4DAD, 0x0042D5E5
     static ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost, bool defaultCollision)
     {
         switch (el.type())
@@ -505,22 +505,7 @@ namespace OpenLoco::World::TileClearance
                 {
                     return ClearFuncResult::noCollision;
                 }
-                auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
-                cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
-
-                if (flags & GameCommands::Flags::ghost || !(flags & GameCommands::Flags::apply))
-                {
-                    return ClearFuncResult::noCollision;
-                }
-
-                World::TileManager::setRemoveElementPointerChecker(el);
-                World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
-                S5::getOptions().madeAnyChanges = 1;
-                if (World::TileManager::wasRemoveOnLastElement())
-                {
-                    return ClearFuncResult::allCollisionsRemoved;
-                }
-                return ClearFuncResult::collisionRemoved;
+                return clearTreeCollision(*elTree, pos, flags, cost);
             }
             case ElementType::building:
             {
@@ -529,58 +514,7 @@ namespace OpenLoco::World::TileClearance
                 {
                     return ClearFuncResult::noCollision;
                 }
-                auto* buildingObj = elBuilding->getObject();
-                if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
-                {
-                    return ClearFuncResult::collision;
-                }
-
-                const auto buildingStart = World::Pos3{
-                    pos - World::kOffsets[elBuilding->multiTileIndex()], elBuilding->baseHeight()
-                };
-                if (removedBuildings.count(buildingStart) != 0)
-                {
-                    return ClearFuncResult::noCollision;
-                }
-                removedBuildings.insert(buildingStart);
-
-                World::TileManager::setRemoveElementPointerChecker(el);
-                uint8_t removeBuildingFlags = flags;
-                if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
-                {
-                    removeBuildingFlags |= GameCommands::Flags::flag_7;
-                }
-                if (flags & GameCommands::Flags::ghost)
-                {
-                    removeBuildingFlags &= ~(GameCommands::Flags::ghost | GameCommands::Flags::apply);
-                }
-                GameCommands::BuildingRemovalArgs args{};
-                args.pos = buildingStart;
-                Interop::registers regs = static_cast<Interop::registers>(args);
-                regs.bl = removeBuildingFlags;
-                // We should probably call doCommand here but then it gets messy with the costs
-                // look into changing this in the future.
-                GameCommands::removeBuilding(regs);
-                const auto buildingCost = static_cast<currency32_t>(regs.ebx);
-                if (static_cast<uint32_t>(buildingCost) == GameCommands::FAILURE)
-                {
-                    return ClearFuncResult::collisionErrorSet;
-                }
-                if (flags & GameCommands::Flags::apply)
-                {
-                    S5::getOptions().madeAnyChanges = 1;
-                }
-                cost += buildingCost;
-
-                if (!(flags & GameCommands::Flags::apply) || flags & GameCommands::Flags::ghost)
-                {
-                    return ClearFuncResult::noCollision;
-                }
-                if (World::TileManager::wasRemoveOnLastElement())
-                {
-                    return ClearFuncResult::allCollisionsRemoved;
-                }
-                return ClearFuncResult::collisionRemoved;
+                return clearBuildingCollision(*elBuilding, pos, removedBuildings, flags, cost);
             }
             default:
                 return defaultCollision ? ClearFuncResult::collision : ClearFuncResult::noCollision;
@@ -595,6 +529,87 @@ namespace OpenLoco::World::TileClearance
     ClearFuncResult clearWithoutDefaultCollision(World::TileElement& el, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
     {
         return tileClearFunction(el, pos, removedBuildings, flags, cost, false);
+    }
+
+    ClearFuncResult clearBuildingCollision(World::BuildingElement& elBuilding, const World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags, currency32_t& cost)
+    {
+        auto* buildingObj = elBuilding.getObject();
+        if (buildingObj->hasFlags(BuildingObjectFlags::isHeadquarters))
+        {
+            return ClearFuncResult::collision;
+        }
+
+        const auto buildingStart = World::Pos3{
+            pos - World::kOffsets[elBuilding.multiTileIndex()], elBuilding.baseHeight()
+        };
+        if (removedBuildings.count(buildingStart) != 0)
+        {
+            return ClearFuncResult::noCollision;
+        }
+        removedBuildings.insert(buildingStart);
+
+        World::TileManager::setRemoveElementPointerChecker(reinterpret_cast<TileElement&>(elBuilding));
+        uint8_t removeBuildingFlags = flags;
+        if ((flags & GameCommands::Flags::apply) || removedBuildings.size() != 1)
+        {
+            removeBuildingFlags |= GameCommands::Flags::flag_7;
+        }
+        if (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated))
+        {
+            removeBuildingFlags &= ~(GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated | GameCommands::Flags::apply);
+        }
+        GameCommands::BuildingRemovalArgs args{};
+        args.pos = buildingStart;
+        Interop::registers regs = static_cast<Interop::registers>(args);
+        regs.bl = removeBuildingFlags;
+        // We should probably call doCommand here but then it gets messy with the costs
+        // look into changing this in the future.
+        GameCommands::removeBuilding(regs);
+        const auto buildingCost = static_cast<currency32_t>(regs.ebx);
+        if (static_cast<uint32_t>(buildingCost) == GameCommands::FAILURE)
+        {
+            return ClearFuncResult::collisionErrorSet;
+        }
+        if (flags & GameCommands::Flags::apply)
+        {
+            S5::getOptions().madeAnyChanges = 1;
+        }
+        cost += buildingCost;
+
+        if (!(flags & GameCommands::Flags::apply) || (flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)))
+        {
+            return ClearFuncResult::noCollision;
+        }
+        if (World::TileManager::wasRemoveOnLastElement())
+        {
+            return ClearFuncResult::allCollisionsRemoved;
+        }
+        return ClearFuncResult::collisionRemoved;
+    }
+
+    ClearFuncResult clearTreeCollision(World::TreeElement& elTree, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
+    {
+        auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
+        cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
+
+        if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::aiAllocated)) || !(flags & GameCommands::Flags::apply))
+        {
+            return ClearFuncResult::noCollision;
+        }
+
+        World::TileManager::setRemoveElementPointerChecker(reinterpret_cast<TileElement&>(elTree));
+        World::TileManager::removeTree(elTree, GameCommands::Flags::apply, pos);
+        S5::getOptions().madeAnyChanges = 1;
+        if (World::TileManager::wasRemoveOnLastElement())
+        {
+            return ClearFuncResult::allCollisionsRemoved;
+        }
+        return ClearFuncResult::collisionRemoved;
+    }
+
+    ElementPositionFlags getPositionFlags()
+    {
+        return *_constructAtElementPositionFlags;
     }
 
     void registerHooks()

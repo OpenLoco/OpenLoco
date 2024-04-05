@@ -1,9 +1,12 @@
 #include "TrackData.h"
+#include "TrackEnum.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 #include <bit>
 #include <cassert>
+
+using namespace OpenLoco::World::Track;
 
 namespace OpenLoco::World::TrackData
 {
@@ -341,146 +344,657 @@ namespace OpenLoco::World::TrackData
         return _4F6F8C[trackAndDirection];
     }
 
-    // 0x004F891C
-    constexpr std::array<uint16_t, 44> kTrackCompatibleFlags = {
-        0x0000,
-        0x0001,
-        0x0010,
-        0x0010,
-        0x0008,
-        0x0008,
-        0x0004,
-        0x0004,
-        0x0002,
-        0x0002,
-        0x0002,
-        0x0002,
-        0x0200,
-        0x0200,
-        0x0020,
-        0x0020,
-        0x0040,
-        0x0040,
-        0x0128,
-        0x0128,
-        0x0128,
-        0x0128,
-        0x0148,
-        0x0148,
-        0x0148,
-        0x0148,
-        0x0080,
-        0x0080,
-        0x0090,
-        0x0090,
-        0x0090,
-        0x0090,
-        0x0080,
-        0x0080,
-        0x00C0,
-        0x00C0,
-        0x00C0,
-        0x00C0,
-        0x0080,
-        0x0080,
-        0x0080,
-        0x0080,
-        0x0080,
-        0x0080,
+    constexpr std::array<TrackMiscData, 44> _miscData = {
+        // straight
+        TrackMiscData{
+            .costFactor = 0x100,
+            .flags = CommonTraitFlags::none,
+            .reverseTrackId = 0,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::none,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 32,
+            .sparkDirection = true },
+        // diagonal
+        TrackMiscData{
+            .costFactor = 0x16A,
+            .flags = CommonTraitFlags::diagonal,
+            .reverseTrackId = 1,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::diagonal,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 45,
+            .sparkDirection = false },
+        // leftCurveVerySmall
+        TrackMiscData{
+            .costFactor = 0x0C9,
+            .flags = CommonTraitFlags::verySmallCurve,
+            .reverseTrackId = 3,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::verySmallCurve,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 25,
+            .sparkDirection = true },
+        // rightCurveVerySmall
+        TrackMiscData{
+            .costFactor = 0x0C9,
+            .flags = CommonTraitFlags::verySmallCurve,
+            .reverseTrackId = 2,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::verySmallCurve,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 25,
+            .sparkDirection = false },
+        // leftCurveSmall
+        TrackMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::smallCurve,
+            .reverseTrackId = 5,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::smallCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 75,
+            .sparkDirection = true },
+        // rightCurveSmall
+        TrackMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::smallCurve,
+            .reverseTrackId = 4,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::smallCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 75,
+            .sparkDirection = false },
+        // leftCurve
+        TrackMiscData{
+            .costFactor = 0x3ED,
+            .flags = CommonTraitFlags::curve,
+            .reverseTrackId = 7,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::normalCurve,
+            .curveSpeedFraction = 0x2666,
+            .unkWeighting = 126,
+            .sparkDirection = true },
+        // rightCurve
+        TrackMiscData{
+            .costFactor = 0x3ED,
+            .flags = CommonTraitFlags::curve,
+            .reverseTrackId = 6,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::normalCurve,
+            .curveSpeedFraction = 0x2666,
+            .unkWeighting = 126,
+            .sparkDirection = false },
+        // leftCurveLarge
+        TrackMiscData{
+            .costFactor = 0x2BF,
+            .flags = CommonTraitFlags::largeCurve,
+            .reverseTrackId = 11,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::largeCurve,
+            .curveSpeedFraction = 0x4000,
+            .unkWeighting = 88,
+            .sparkDirection = true },
+        // rightCurveLarge
+        TrackMiscData{
+            .costFactor = 0x2BF,
+            .flags = CommonTraitFlags::largeCurve,
+            .reverseTrackId = 10,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::largeCurve,
+            .curveSpeedFraction = 0x4000,
+            .unkWeighting = 88,
+            .sparkDirection = false },
+        // diagonalLeftCurveLarge
+        TrackMiscData{
+            .costFactor = 0x2BF,
+            .flags = CommonTraitFlags::largeCurve,
+            .reverseTrackId = 9,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::largeCurve,
+            .curveSpeedFraction = 0x4000,
+            .unkWeighting = 88,
+            .sparkDirection = true },
+        // diagonalRightCurveLarge
+        TrackMiscData{
+            .costFactor = 0x2BF,
+            .flags = CommonTraitFlags::largeCurve,
+            .reverseTrackId = 8,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::largeCurve,
+            .curveSpeedFraction = 0x4000,
+            .unkWeighting = 88,
+            .sparkDirection = false },
+        // sBendLeft
+        TrackMiscData{
+            .costFactor = 0x380,
+            .flags = CommonTraitFlags::sBendCurve,
+            .reverseTrackId = 12,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::sBend,
+            .curveSpeedFraction = 0x2666,
+            .unkWeighting = 106,
+            .sparkDirection = false },
+        // sBendRight
+        TrackMiscData{
+            .costFactor = 0x380,
+            .flags = CommonTraitFlags::sBendCurve,
+            .reverseTrackId = 13,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::sBend,
+            .curveSpeedFraction = 0x2666,
+            .unkWeighting = 106,
+            .sparkDirection = false },
+        // straightSlopeUp
+        TrackMiscData{
+            .costFactor = 0x220,
+            .flags = CommonTraitFlags::slope,
+            .reverseTrackId = 15,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 1,
+            .signalHeightOffsetRight = 15,
+            .compatibleFlags = TrackTraitFlags::slope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 66,
+            .sparkDirection = false },
+        // straightSlopeDown
+        TrackMiscData{
+            .costFactor = 0x220,
+            .flags = CommonTraitFlags::slope,
+            .reverseTrackId = 14,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 15,
+            .signalHeightOffsetRight = 1,
+            .compatibleFlags = TrackTraitFlags::slope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 66,
+            .sparkDirection = true },
+        // straightSteepSlopeUp
+        TrackMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope,
+            .reverseTrackId = 17,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 2,
+            .signalHeightOffsetRight = 14,
+            .compatibleFlags = TrackTraitFlags::steepSlope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // straightSteepSlopeDown
+        TrackMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope,
+            .reverseTrackId = 16,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 14,
+            .signalHeightOffsetRight = 2,
+            .compatibleFlags = TrackTraitFlags::steepSlope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+            .sparkDirection = true },
+        // leftCurveSmallSlopeUp
+        TrackMiscData{
+            .costFactor = 0x350,
+            .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 21,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 1,
+            .signalHeightOffsetRight = 15,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 77,
+            .sparkDirection = true },
+        // rightCurveSmallSlopeUp
+        TrackMiscData{
+            .costFactor = 0x350,
+            .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 20,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 1,
+            .signalHeightOffsetRight = 15,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 77,
+            .sparkDirection = false },
+        // leftCurveSmallSlopeDown
+        TrackMiscData{
+            .costFactor = 0x350,
+            .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 19,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 15,
+            .signalHeightOffsetRight = 1,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 77,
+            .sparkDirection = true },
+        // rightCurveSmallSlopeDown
+        TrackMiscData{
+            .costFactor = 0x350,
+            .flags = CommonTraitFlags::slope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 18,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 15,
+            .signalHeightOffsetRight = 1,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::slope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 77,
+            .sparkDirection = false },
+        // leftCurveSmallSteepSlopeUp
+        TrackMiscData{
+            .costFactor = 0x41F,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 25,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 2,
+            .signalHeightOffsetRight = 14,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 82,
+            .sparkDirection = true },
+        // rightCurveSmallSteepSlopeUp
+        TrackMiscData{
+            .costFactor = 0x41F,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 24,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 2,
+            .signalHeightOffsetRight = 14,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 82,
+            .sparkDirection = false },
+        // leftCurveSmallSteepSlopeDown
+        TrackMiscData{
+            .costFactor = 0x41F,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 23,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 14,
+            .signalHeightOffsetRight = 2,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 82,
+            .sparkDirection = true },
+        // rightCurveSmallSteepSlopeDown
+        TrackMiscData{
+            .costFactor = 0x41F,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::curveSlope | CommonTraitFlags::smallCurve,
+            .reverseTrackId = 22,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 14,
+            .signalHeightOffsetRight = 2,
+            .compatibleFlags = TrackTraitFlags::smallCurve | TrackTraitFlags::steepSlope | TrackTraitFlags::slopedCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 82,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x100,
+            .flags = CommonTraitFlags::oneSided,
+            .reverseTrackId = 27,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 32,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x100,
+            .flags = CommonTraitFlags::oneSided,
+            .reverseTrackId = 26,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 32,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x064,
+            .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 31,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 13,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x12D,
+            .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 30,
+            .reverseRotation = 1,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 38,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x12D,
+            .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 29,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 38,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x064,
+            .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 28,
+            .reverseRotation = 3,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::verySmallCurve | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 13,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x126,
+            .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 32,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x126,
+            .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 33,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
+            .reverseTrackId = 37,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 2,
+            .signalHeightOffsetRight = 14,
+            .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
+            .reverseTrackId = 36,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 2,
+            .signalHeightOffsetRight = 14,
+            .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
+            .reverseTrackId = 35,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 14,
+            .signalHeightOffsetRight = 2,
+            .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope | CommonTraitFlags::oneSided,
+            .reverseTrackId = 34,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 14,
+            .signalHeightOffsetRight = 2,
+            .compatibleFlags = TrackTraitFlags::steepSlope | TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x114,
+            .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 41,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 34,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x114,
+            .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 40,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 34,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x114,
+            .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 39,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 34,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x114,
+            .flags = CommonTraitFlags::sBendCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 38,
+            .reverseRotation = 2,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 34,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 43,
+            .reverseRotation = 0,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 26,
+            .sparkDirection = false },
+        // unused
+        TrackMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::verySmallCurve | CommonTraitFlags::oneSided,
+            .reverseTrackId = 42,
+            .reverseRotation = 0,
+            .signalHeightOffsetLeft = 0,
+            .signalHeightOffsetRight = 0,
+            .compatibleFlags = TrackTraitFlags::oneSided,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 26,
+            .sparkDirection = false },
     };
 
-    uint16_t getTrackCompatibleFlags(size_t trackId)
+    const TrackMiscData& getTrackMiscData(size_t trackId)
     {
-        return kTrackCompatibleFlags[trackId];
+        return _miscData[trackId];
     }
 
-    // 0x004F870C
-    constexpr std::array<uint16_t, 44> kTrackCostFactor = {
-        0x100,
-        0x16A,
-        0x0C9,
-        0x0C9,
-        0x25B,
-        0x25B,
-        0x3ED,
-        0x3ED,
-        0x2BF,
-        0x2BF,
-        0x2BF,
-        0x2BF,
-        0x380,
-        0x380,
-        0x220,
-        0x220,
-        0x138,
-        0x138,
-        0x350,
-        0x350,
-        0x350,
-        0x350,
-        0x41F,
-        0x41F,
-        0x41F,
-        0x41F,
-        0x100,
-        0x100,
-        0x064,
-        0x12D,
-        0x12D,
-        0x064,
-        0x126,
-        0x126,
-        0x138,
-        0x138,
-        0x138,
-        0x138,
-        0x114,
-        0x114,
-        0x114,
-        0x114,
-        0x25B,
-        0x25B,
+    constexpr std::array<RoadMiscData, 10> _roadMiscData = {
+        // straight
+        RoadMiscData{
+            .costFactor = 0x100,
+            .flags = CommonTraitFlags::none,
+            .reverseRoadId = 0,
+            .reverseRotation = 2,
+            .reverseLane = 1,
+            .compatibleFlags = RoadTraitFlags::none,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 32,
+        },
+        // leftCurveVerySmall
+        RoadMiscData{
+            .costFactor = 0x0C9,
+            .flags = CommonTraitFlags::verySmallCurve,
+            .reverseRoadId = 2,
+            .reverseRotation = 1,
+            .reverseLane = 1,
+            .compatibleFlags = RoadTraitFlags::verySmallCurve,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 25,
+        },
+        // rightCurveVerySmall
+        RoadMiscData{
+            .costFactor = 0x0C9,
+            .flags = CommonTraitFlags::verySmallCurve,
+            .reverseRoadId = 1,
+            .reverseRotation = 3,
+            .reverseLane = 1,
+            .compatibleFlags = RoadTraitFlags::verySmallCurve,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 25,
+        },
+        // leftCurveSmall
+        RoadMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::smallCurve,
+            .reverseRoadId = 4,
+            .reverseRotation = 1,
+            .reverseLane = 4,
+            .compatibleFlags = RoadTraitFlags::smallCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 75,
+        },
+        // rightCurveSmall
+        RoadMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::smallCurve,
+            .reverseRoadId = 3,
+            .reverseRotation = 3,
+            .reverseLane = 4,
+            .compatibleFlags = RoadTraitFlags::smallCurve,
+            .curveSpeedFraction = 0x199A,
+            .unkWeighting = 75,
+        },
+        // straightSlopeUp
+        RoadMiscData{
+            .costFactor = 0x220,
+            .flags = CommonTraitFlags::slope,
+            .reverseRoadId = 6,
+            .reverseRotation = 2,
+            .reverseLane = 2,
+            .compatibleFlags = RoadTraitFlags::slope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 66,
+        },
+        // straightSlopeDown
+        RoadMiscData{
+            .costFactor = 0x220,
+            .flags = CommonTraitFlags::slope,
+            .reverseRoadId = 5,
+            .reverseRotation = 2,
+            .reverseLane = 2,
+            .compatibleFlags = RoadTraitFlags::slope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 66,
+        },
+        // straightSteepSlopeUp
+        RoadMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope,
+            .reverseRoadId = 8,
+            .reverseRotation = 2,
+            .reverseLane = 1,
+            .compatibleFlags = RoadTraitFlags::steepSlope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+        },
+        // straightSteepSlopeDown
+        RoadMiscData{
+            .costFactor = 0x138,
+            .flags = CommonTraitFlags::steepSlope,
+            .reverseRoadId = 7,
+            .reverseRotation = 2,
+            .reverseLane = 1,
+            .compatibleFlags = RoadTraitFlags::steepSlope,
+            .curveSpeedFraction = 0xFFFF,
+            .unkWeighting = 36,
+        },
+        // turnaround
+        RoadMiscData{
+            .costFactor = 0x25B,
+            .flags = CommonTraitFlags::none,
+            .reverseRoadId = 9,
+            .reverseRotation = 0,
+            .reverseLane = 1,
+            .compatibleFlags = RoadTraitFlags::turnaround,
+            .curveSpeedFraction = 0x0CCD,
+            .unkWeighting = 26,
+        },
     };
 
-    uint16_t getTrackCostFactor(size_t trackId)
+    const RoadMiscData& getRoadMiscData(size_t roadId)
     {
-        return kTrackCostFactor[trackId];
-    }
-
-    // 0x004F72E8
-    constexpr std::array<uint16_t, 10> kRoadCompatibleFlags = {
-        0x00,
-        0x02,
-        0x02,
-        0x01,
-        0x01,
-        0x04,
-        0x04,
-        0x08,
-        0x08,
-        0x20,
-    };
-
-    uint16_t getRoadCompatibleFlags(size_t roadId)
-    {
-        return kRoadCompatibleFlags[roadId];
-    }
-
-    constexpr std::array<uint16_t, 10> kRoadCostFactor = {
-        0x100,
-        0x0C9,
-        0x0C9,
-        0x25B,
-        0x25B,
-        0x220,
-        0x220,
-        0x138,
-        0x138,
-        0x25B,
-    };
-
-    uint16_t getRoadCostFactor(size_t roadId)
-    {
-        return kRoadCostFactor[roadId];
+        return _roadMiscData[roadId];
     }
 }

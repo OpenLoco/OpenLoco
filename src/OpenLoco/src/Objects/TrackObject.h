@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Map/Track/TrackEnum.h"
 #include "Object.h"
 #include "Speed.hpp"
 #include "Types.hpp"
@@ -26,31 +27,14 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrackObjectFlags);
 
-    enum class TrackObjectPieceFlags : uint16_t
-    {
-        none = 0U,
-        diagonal = 1U << 0,
-        largeCurve = 1U << 1,
-        normalCurve = 1U << 2,
-        smallCurve = 1U << 3,
-        verySmallCurve = 1U << 4,
-        slope = 1U << 5,
-        steepSlope = 1U << 6,
-        oneSided = 1U << 7,
-        slopedCurve = 1U << 8,
-        sBend = 1U << 9,
-        junction = 1U << 10,
-    };
-    OPENLOCO_ENABLE_ENUM_OPERATORS(TrackObjectPieceFlags);
-
 #pragma pack(push, 1)
     struct TrackObject
     {
         static constexpr auto kObjectType = ObjectType::track;
 
         StringId name;
-        TrackObjectPieceFlags trackPieces; // 0x02
-        uint16_t stationTrackPieces;       // 0x04
+        World::Track::TrackTraitFlags trackPieces;        // 0x02
+        World::Track::TrackTraitFlags stationTrackPieces; // 0x04
         uint8_t var_06;
         uint8_t numCompatible;     // 0x07
         uint8_t numMods;           // 0x08
@@ -84,9 +68,9 @@ namespace OpenLoco
             return (flags & flagsToTest) != TrackObjectFlags::none;
         }
 
-        constexpr bool hasPieceFlags(TrackObjectPieceFlags flagsToTest) const
+        constexpr bool hasTraitFlags(World::Track::TrackTraitFlags flagsToTest) const
         {
-            return (trackPieces & flagsToTest) != TrackObjectPieceFlags::none;
+            return (trackPieces & flagsToTest) != World::Track::TrackTraitFlags::none;
         }
     };
 #pragma pack(pop)

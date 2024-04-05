@@ -111,28 +111,12 @@ namespace OpenLoco::GameCommands
     // 0x0045572D
     static World::TileClearance::ClearFuncResult tileClearFunction(World::TileElement& el, const World::Pos2 pos, const uint8_t flags, currency32_t& cost)
     {
-        // TODO: This is a copy of parts of TileClearance.cpp
         auto* elTree = el.as<World::TreeElement>();
         if (elTree == nullptr)
         {
             return World::TileClearance::ClearFuncResult::collision;
         }
-        auto* treeObj = ObjectManager::get<TreeObject>(elTree->treeObjectId());
-        cost += Economy::getInflationAdjustedCost(treeObj->clearCostFactor, treeObj->costIndex, 12);
-
-        if ((flags & GameCommands::Flags::ghost) || !(flags & GameCommands::Flags::apply))
-        {
-            return World::TileClearance::ClearFuncResult::noCollision;
-        }
-
-        World::TileManager::setRemoveElementPointerChecker(el);
-        World::TileManager::removeTree(*elTree, GameCommands::Flags::apply, pos);
-        S5::getOptions().madeAnyChanges = 1;
-        if (World::TileManager::wasRemoveOnLastElement())
-        {
-            return World::TileClearance::ClearFuncResult::allCollisionsRemoved;
-        }
-        return World::TileClearance::ClearFuncResult::collisionRemoved;
+        return World::TileClearance::clearTreeCollision(*elTree, pos, flags, cost);
     }
 
     /* 0x004551CC
@@ -293,12 +277,12 @@ namespace OpenLoco::GameCommands
                                 auto* elBuilding = el.as<World::BuildingElement>();
                                 auto* elIndustry = el.as<World::IndustryElement>();
                                 auto* elTree = el.as<World::TreeElement>();
-                                if (elTrack != nullptr && !elTrack->isGhost() && elTrack->hasBridge())
+                                if (elTrack != nullptr && !elTrack->isGhost() && !elTrack->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;
                                 }
-                                else if (elRoad != nullptr && !elRoad->isGhost() && elRoad->hasBridge())
+                                else if (elRoad != nullptr && !elRoad->isGhost() && !elRoad->hasBridge())
                                 {
                                     setErrorText(StringIds::empty);
                                     return FAILURE;

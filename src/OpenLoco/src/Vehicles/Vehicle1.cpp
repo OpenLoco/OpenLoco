@@ -1,4 +1,5 @@
 #include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
@@ -45,21 +46,6 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004F72FC
-    // TODO: Move to track data
-    std::array<uint16_t, 10> _roadIdToCurveSpeedFraction = {
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-    };
-
     // 0x004A9969
     bool Vehicle1::updateRoad()
     {
@@ -72,7 +58,7 @@ namespace OpenLoco::Vehicles
             auto res = RoutingManager::getRouting(*iter);
             isOnRackRail |= (res & (1 << 13)) != 0; // rackrail
             uint8_t roadId = (res >> 3) & 0xF;
-            curveSpeedFraction = std::min(curveSpeedFraction, _roadIdToCurveSpeedFraction[roadId]);
+            curveSpeedFraction = std::min(curveSpeedFraction, World::TrackData::getRoadMiscData(roadId).curveSpeedFraction);
             if (res & (1 << 12))
             {
                 const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);
@@ -143,55 +129,6 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    // 0x004F8974
-    // TODO: Move to track data
-    std::array<uint16_t, 44> _trackIdToCurveSpeedFraction = {
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x2666, // 0.15
-        0x2666, // 0.15
-        0x4000, // 0.25
-        0x4000, // 0.25
-        0x4000, // 0.25
-        0x4000, // 0.25
-        0x2666, // 0.15
-        0x2666, // 0.15
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0x199A, // 0.10
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0xFFFF, // 1.00
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-        0x0CCD, // 0.05
-    };
-
     // 0x004B98DA
     static void railProduceCrossingWhistle(const Vehicle2& veh2)
     {
@@ -229,7 +166,7 @@ namespace OpenLoco::Vehicles
                 auto res = RoutingManager::getRouting(*iter);
                 isOnRackRail |= (res & (1U << 13)) != 0; // rackrail
                 uint8_t trackId = (res >> 3) & 0x3F;
-                curveSpeedFraction = std::min(curveSpeedFraction, _trackIdToCurveSpeedFraction[trackId]);
+                curveSpeedFraction = std::min(curveSpeedFraction, World::TrackData::getTrackMiscData(trackId).curveSpeedFraction);
                 if (res & (1U << 12))
                 {
                     const auto* bridgeObj = ObjectManager::get<BridgeObject>((res & 0xE00) >> 9);

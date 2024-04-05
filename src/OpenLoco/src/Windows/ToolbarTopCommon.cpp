@@ -207,28 +207,24 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A19F
     void roadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        // Load objects.
-        registers regs;
-        regs.edi = X86Pointer(&_availableObjects[0]);
-        call(0x00478265, regs);
+        const auto availableObjects = CompanyManager::getPlayerCompany()->getAvailableRoads();
+        // Copy to global as its used in the dropdown event
+        std::copy(availableObjects.begin(), availableObjects.end(), _availableObjects.begin());
 
         // Sanity check: any objects available?
-        uint32_t i = 0;
-        while (_availableObjects[i] != 0xFF && i < std::size(_availableObjects))
-            i++;
-        if (i == 0)
+        if (availableObjects.empty())
             return;
 
         auto companyColour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
         uint16_t highlightedItem = 0;
-        for (i = 0; _availableObjects[i] != 0xFF && i < std::size(_availableObjects); i++)
+        for (auto i = 0U; i < std::size(availableObjects); i++)
         {
             uint32_t objImage;
             StringId objStringId;
 
-            auto objIndex = _availableObjects[i];
+            auto objIndex = availableObjects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
@@ -248,7 +244,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 highlightedItem = i;
         }
 
-        Dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
+        Dropdown::showBelow(window, widgetIndex, std::size(availableObjects), 25, (1 << 6));
         Dropdown::setHighlightedItem(highlightedItem);
     }
 

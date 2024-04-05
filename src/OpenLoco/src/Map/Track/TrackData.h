@@ -9,6 +9,13 @@
 #include <cstdlib>
 #include <span>
 
+namespace OpenLoco::World::Track
+{
+    enum class TrackTraitFlags : uint16_t;
+    enum class RoadTraitFlags : uint16_t;
+    enum class CommonTraitFlags : uint16_t;
+}
+
 namespace OpenLoco::World::TrackData
 {
     using ConnectionsByRotation = std::array<uint8_t, 4>;
@@ -16,7 +23,7 @@ namespace OpenLoco::World::TrackData
     enum class PreviewTrackFlags : uint8_t
     {
         none = 0U,
-        unk0 = 1U << 0,
+        unk0 = 1U << 0, // unk0 - unk3 are a group and depend on rotation
         unk1 = 1U << 1,
         unk2 = 1U << 2,
         unk3 = 1U << 3,
@@ -32,7 +39,7 @@ namespace OpenLoco::World::TrackData
         int16_t x;                          // 0x01
         int16_t y;                          // 0x03
         int16_t z;                          // 0x05
-        uint8_t clearZ;                     // 0x07
+        uint8_t clearZ;                     // 0x07 despite being a uint8_t this is in bigZ
         QuarterTile subTileClearance;       // 0x08
         PreviewTrackFlags flags;            // 0x09
         ConnectionsByRotation connectFlags; // From 0x004F78F8 & 0x004F6F1C
@@ -59,9 +66,32 @@ namespace OpenLoco::World::TrackData
     const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
     const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 
-    // TODO: Combine these two
-    uint16_t getTrackCompatibleFlags(size_t trackId);
-    uint16_t getTrackCostFactor(size_t trackId);
-    uint16_t getRoadCompatibleFlags(size_t roadId);
-    uint16_t getRoadCostFactor(size_t roadId);
+    struct TrackMiscData
+    {
+        uint16_t costFactor;                    // 0x004F870C
+        Track::CommonTraitFlags flags;          // 0x004F8764
+        uint8_t reverseTrackId;                 // 0x004F87BC
+        uint8_t reverseRotation;                // 0x004F87BD
+        uint8_t signalHeightOffsetLeft;         // 0x004F87BE
+        uint8_t signalHeightOffsetRight;        // 0x004F87BF
+        Track::TrackTraitFlags compatibleFlags; // 0x004F891C
+        uint16_t curveSpeedFraction;            // 0x004F8974
+        uint32_t unkWeighting;                  // 0x004F89CC
+        bool sparkDirection;                    // 0x004F8A7C true == right
+    };
+
+    struct RoadMiscData
+    {
+        uint16_t costFactor;                   // 0x004F7270
+        Track::CommonTraitFlags flags;         // 0x004F7284
+        uint8_t reverseRoadId;                 // 0x004F7298
+        uint8_t reverseRotation;               // 0x004F7299
+        uint8_t reverseLane;                   // 0x004F729C
+        Track::RoadTraitFlags compatibleFlags; // 0x004F72E8
+        uint16_t curveSpeedFraction;           // 0x004F72FC
+        uint32_t unkWeighting;                 // 0x004F7310
+    };
+
+    const TrackMiscData& getTrackMiscData(size_t trackId);
+    const RoadMiscData& getRoadMiscData(size_t roadId);
 }

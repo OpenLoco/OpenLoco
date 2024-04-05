@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Map/Track/TrackEnum.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -31,21 +32,21 @@ namespace OpenLoco
     {
         static constexpr auto kObjectType = ObjectType::roadStation;
 
-        StringId name;           // 0x00
-        uint8_t paintStyle;      // 0x02
-        uint8_t height;          // 0x03 despite being uint8_t this is bigZ not smallZ
-        uint16_t roadPieces;     // 0x04
-        int16_t buildCostFactor; // 0x06
-        int16_t sellCostFactor;  // 0x08
-        uint8_t costIndex;       // 0x0A
-        RoadStationFlags flags;  // 0x0B
-        uint32_t image;          // 0x0C
-        uint32_t var_10[4];      // 0x10
-        uint8_t numCompatible;   // 0x20
-        uint8_t mods[7];         // 0x21
-        uint16_t designedYear;   // 0x28
-        uint16_t obsoleteYear;   // 0x2A
-        uint8_t cargoType;       // 0x2C
+        StringId name;                           // 0x00
+        uint8_t paintStyle;                      // 0x02
+        uint8_t height;                          // 0x03 despite being uint8_t this is bigZ not smallZ
+        World::Track::RoadTraitFlags roadPieces; // 0x04
+        int16_t buildCostFactor;                 // 0x06
+        int16_t sellCostFactor;                  // 0x08
+        uint8_t costIndex;                       // 0x0A
+        RoadStationFlags flags;                  // 0x0B
+        uint32_t image;                          // 0x0C
+        uint32_t var_10[4];                      // 0x10
+        uint8_t numCompatible;                   // 0x20
+        uint8_t mods[7];                         // 0x21
+        uint16_t designedYear;                   // 0x28
+        uint16_t obsoleteYear;                   // 0x2A
+        uint8_t cargoType;                       // 0x2C
         uint8_t pad_2D;
         const std::byte* cargoOffsetBytes[4][4]; // 0x2E
 
