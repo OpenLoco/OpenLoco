@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto pos = World::Pos3{ station->x, station->y, station->z };
+        const auto pos = World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
         setPosition(pos);
 
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
