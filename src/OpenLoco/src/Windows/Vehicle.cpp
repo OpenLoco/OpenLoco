@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::VehicleCloneArgs args{};
             args.vehicleHeadId = head->head;
 
-            if (GameCommands::doCommand(args, GameCommands::Flags::apply))
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
                 auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVehicle != nullptr)

@@ -1,5 +1,6 @@
 24.03+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2377] When cloning vehicle without having sufficient funds the error message appears below the window
 - Fix: [#2379] Text cursor is not rendering in the right position.
 - Fix: [#2380] 'Number of smoothing passes' label is displayed incorrectly.
 - Fix: [#2396] Crash when creating a station of greater than 80 tiles.
