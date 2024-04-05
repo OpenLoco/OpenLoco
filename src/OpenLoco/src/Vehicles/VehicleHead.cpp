@@ -1577,11 +1577,7 @@ namespace OpenLoco::Vehicles
 
         auto station = StationManager::get(stationId);
 
-        Pos3 loc = {
-            station->unk_tile_x,
-            station->unk_tile_y,
-            station->unk_tile_z
-        };
+        Pos3 loc = station->airportStartPos;
 
         auto tile = World::TileManager::get(loc);
         for (auto& el : tile)
@@ -1806,11 +1802,7 @@ namespace OpenLoco::Vehicles
                 return airplaneApproachTarget(targetZ);
             }
 
-            Pos3 loc = {
-                station->unk_tile_x,
-                station->unk_tile_y,
-                station->unk_tile_z
-            };
+            Pos3 loc = station->airportStartPos;
 
             auto tile = World::TileManager::get(loc);
             for (auto& el : tile)
@@ -2018,7 +2010,7 @@ namespace OpenLoco::Vehicles
                 targetPos = Pos3{ station->x, station->y, 960 };
                 if ((station->flags & StationFlags::flag_6) != StationFlags::none)
                 {
-                    targetPos = Pos3{ station->unk_tile_x, station->unk_tile_y, 960 };
+                    targetPos = Pos3{ station->airportStartPos.x, station->airportStartPos.y, 960 };
                 }
             }
         }
@@ -2040,11 +2032,7 @@ namespace OpenLoco::Vehicles
     {
         auto station = StationManager::get(stationId);
 
-        Pos3 loc = {
-            station->unk_tile_x,
-            station->unk_tile_y,
-            station->unk_tile_z
-        };
+        Pos3 loc = station->airportStartPos;
 
         auto tile = TileManager::get(loc);
 
@@ -2183,13 +2171,9 @@ namespace OpenLoco::Vehicles
     {
         auto station = StationManager::get(targetStation);
 
-        Pos3 staionLoc = {
-            station->unk_tile_x,
-            station->unk_tile_y,
-            station->unk_tile_z
-        };
+        Pos3 stationLoc = station->airportStartPos;
 
-        auto tile = TileManager::get(staionLoc);
+        auto tile = TileManager::get(stationLoc);
 
         for (auto& el : tile)
         {
@@ -2197,7 +2181,7 @@ namespace OpenLoco::Vehicles
             if (elStation == nullptr)
                 continue;
 
-            if (elStation->baseZ() != staionLoc.z / 4)
+            if (elStation->baseZ() != stationLoc.z / 4)
                 continue;
 
             auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
@@ -2211,14 +2195,14 @@ namespace OpenLoco::Vehicles
             loc2 = Math::Vector::rotate(loc2, elStation->rotation());
             auto airportMovement = airportObject->movementNodes[destinationNode];
 
-            loc2.x += 16 + staionLoc.x;
-            loc2.y += 16 + staionLoc.y;
+            loc2.x += 16 + stationLoc.x;
+            loc2.y += 16 + stationLoc.y;
 
-            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + staionLoc.z) };
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + stationLoc.z) };
 
             if (!airportMovement.hasFlags(AirportMovementNodeFlags::taxiing))
             {
-                loc.z = staionLoc.z + 255;
+                loc.z = stationLoc.z + 255;
                 if (!airportMovement.hasFlags(AirportMovementNodeFlags::inFlight))
                 {
                     loc.z = 960;

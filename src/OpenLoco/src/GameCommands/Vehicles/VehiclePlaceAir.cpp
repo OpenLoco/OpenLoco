@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
     static std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node)
     {
         auto* station = StationManager::get(stationId);
-        auto tile = World::TileManager::get(World::Pos2{ station->unk_tile_x, station->unk_tile_y });
+        auto tile = World::TileManager::get(station->airportStartPos);
         World::StationElement* elStation = nullptr;
         for (auto& el : tile)
         {
@@ -42,7 +42,7 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            if (elStation->baseZ() != station->unk_tile_z / 4)
+            if (elStation->baseZ() != station->airportStartPos.z / 4)
             {
                 elStation = nullptr;
                 continue;
@@ -58,10 +58,10 @@ namespace OpenLoco::GameCommands
         auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
         const auto& movementNode = airportObj->movementNodes[node];
         auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
-        auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.z } + World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
+        auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.z } + station->airportStartPos;
         if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))
         {
-            nodeLoc.z = station->unk_tile_z + 255;
+            nodeLoc.z = station->airportStartPos.z + 255;
             if (!movementNode.hasFlags(AirportMovementNodeFlags::inFlight))
             {
                 nodeLoc.z = 30 * 32;
@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        const auto pos = World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
+        const auto pos = station->airportStartPos;
         setPosition(pos);
 
         auto* head = EntityManager::get<Vehicles::VehicleHead>(args.head);
