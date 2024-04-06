@@ -194,4 +194,22 @@ namespace OpenLoco::ObjectManager
     void sub_4748FA();
 
     void registerHooks();
+
+    // Calls function with the handle (LoadedObjectHandle) of each loaded object
+    template<typename Function>
+    void forAllLoadedObjects(Function&& func)
+    {
+        for (uint8_t objectTypeU = 0; objectTypeU < kMaxObjectTypes; ++objectTypeU)
+        {
+            const auto objectType = static_cast<ObjectType>(objectTypeU);
+            for (LoadedObjectId i = 0U; i < getMaxObjects(objectType); ++i)
+            {
+                LoadedObjectHandle handle{ objectType, i };
+                if (getAny(handle) != nullptr)
+                {
+                    func(handle);
+                }
+            }
+        }
+    }
 }
