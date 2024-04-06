@@ -481,7 +481,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->receivedCargoQuantityPreviousMonth[cargoNumber]);
 
-                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::black_stringid, &args);
+                        origin = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->producedCargoQuantityPreviousMonth[cargoNumber]);
                         args.push<uint16_t>(industry->producedCargoPercentTransportedPreviousMonth[cargoNumber]);
 
-                        origin.y = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::transported_cargo, &args);
+                        origin = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }

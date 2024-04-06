@@ -297,7 +297,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             FormatArguments args{};
             args.push(StringIds::buffer_2039);
 
-            y = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::black_stringid, &args);
+            auto point = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::black_stringid, &args);
+            y = point.y;
 
             // Challenge header
             y += 5;
@@ -311,7 +312,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push(StringIds::buffer_1250);
 
-            y = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::challenge_value, &args);
+            point = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::challenge_value, &args);
+            y = point.y;
 
             // Start year
             y += 5;
@@ -326,7 +328,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
             StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
 
-            y = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, competitionStringId, &args);
+            point = drawingCtx.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, competitionStringId, &args);
+            y = point.y;
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
                 return;

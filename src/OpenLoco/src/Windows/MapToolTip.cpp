@@ -131,9 +131,9 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         else
         {
             Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
-            auto width = drawingCtx.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
+            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
 
-            auto left = self.width / 2 + self.x + 13 - width / 2 - 28;
+            auto left = self.width / 2 + self.x + 13 - self.width / 2 - 28;
             auto top = self.height / 2 - 13 + self.y;
             auto right = left + 25;
             auto bottom = top + 25;
