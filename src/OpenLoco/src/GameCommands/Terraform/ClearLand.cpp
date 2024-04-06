@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
     // 0x00469D76
     static uint32_t clearTile(World::Pos2 pos, std::set<World::Pos3, LessThanPos3>& removedBuildings, const uint8_t flags)
     {
-        // This shoudn't happen due to using TilePosRangeView
+        // This shouldn't happen due to using TilePosRangeView
         if (!World::validCoords(pos))
         {
             GameCommands::setErrorText(StringIds::off_edge_of_map);

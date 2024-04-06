@@ -602,7 +602,7 @@ namespace OpenLoco
         catch (std::exception& e)
         {
             Logging::error("Unable to compare gamestates: {} to {}", file1, file2);
-            Logging::error("Execption reason {}", e.what());
+            Logging::error("Exception reason {}", e.what());
         }
 
         return 0;

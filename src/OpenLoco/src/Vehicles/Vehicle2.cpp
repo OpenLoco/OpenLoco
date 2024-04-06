@@ -50,7 +50,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
 
-        // This code seems dead as no aircrafts reach this code so its never a helicopter
+        // This code seems dead as no aircraft reach this code so its never a helicopter
         if (vehObject->power == 0 || !vehObject->hasFlags(VehicleObjectFlags::isHelicopter))
         {
             return false;

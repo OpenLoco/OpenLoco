@@ -220,7 +220,7 @@ namespace OpenLoco
     // input:
     // ax = performanceIndex
     // output:
-    // ax = return value, coprorate rating
+    // ax = return value, corporate rating
     constexpr CorporateRating performanceToRating(int16_t performanceIndex)
     {
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));

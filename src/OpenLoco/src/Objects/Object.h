@@ -94,7 +94,7 @@ namespace OpenLoco
         {
             // Some vanilla objects reference other vanilla objects using a
             // ObjectHeader that is set as custom. To handle those we need
-            // to check both the lhs and the rhs and only if both are Custom
+            // to check both the LHS and the RHS and only if both are Custom
             // do the full check.
             if (isCustom() && rhs.isCustom())
             {

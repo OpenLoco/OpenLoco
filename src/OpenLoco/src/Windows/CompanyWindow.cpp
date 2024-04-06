@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self.disabledWidgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
 
-            // No centering on a viewport that doesn't exist.
+            // No centring on a viewport that doesn't exist.
             if (self.viewports[0] == nullptr)
                 self.disabledWidgets |= (1 << widx::centre_on_viewport);
 
@@ -357,7 +357,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 success = GameCommands::doCommand(args, GameCommands::Flags::apply);
             }
 
-            // No need to propate the name if it could not be set.
+            // No need to propagate the name if it could not be set.
             if (!success)
                 return;
 
@@ -984,7 +984,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.cx = tileX (tile coordinate)
         // regs.ax = tileY (tile coordinate)
         // regs.di = tileZ (height)
-        // regs.bh = rotaion and buildImmediately
+        // regs.bh = rotation and buildImmediately
         // regs.dx = dx - company index (value 1 in testing case)
         static std::optional<GameCommands::HeadquarterPlacementArgs> getHeadquarterPlacementArgsFromCursor(const int16_t mouseX, const int16_t mouseY)
         {

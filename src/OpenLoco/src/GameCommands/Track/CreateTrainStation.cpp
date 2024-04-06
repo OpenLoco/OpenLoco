@@ -290,7 +290,7 @@ namespace OpenLoco::GameCommands
                             return FAILURE;
                         }
                         StationManager::deallocateStation(newStationId);
-                        // _lastPlacedTrackStationId not set but thats fine since this is the no apply side
+                        // _lastPlacedTrackStationId not set but that's fine since this is the no apply side
                     }
                     break;
                     case NearbyStationValidation::okay:

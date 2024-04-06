@@ -603,7 +603,7 @@ namespace OpenLoco::GameCommands
                     // buildingWallEntranceMask |= 1ULL << ((randWallVal >> 8) & 0xF); CS meant to do this but made a mistake
                 }
 
-                // Claim surrounding surfaces and place perimiter fences
+                // Claim surrounding surfaces and place perimeter fences
                 for (auto i = 0; i < newIndustry->numTiles; ++i)
                 {
                     const auto& tile = newIndustry->tiles[i];

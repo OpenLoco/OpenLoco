@@ -293,7 +293,7 @@ namespace OpenLoco::Gfx
             SDL_UnlockSurface(_screenSurface);
         }
 
-        // Convert colors via palette mapping onto the RGBA surface.
+        // Convert colours via palette mapping onto the RGBA surface.
         if (SDL_BlitSurface(_screenSurface, nullptr, _screenRGBASurface, nullptr))
         {
             Logging::error("SDL_BlitSurface {}", SDL_GetError());

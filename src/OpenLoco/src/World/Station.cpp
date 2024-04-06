@@ -627,7 +627,7 @@ namespace OpenLoco
                 else
                 {
                     // Change from vanilla to deal with the cargo transfer bug:
-                    // Reset enroute age once the station cargo gets cleared
+                    // Reset en-route age once the station cargo gets cleared
                     // or else the age keeps increasing
                     stationCargo.enrouteAge = 0;
                 }

@@ -40,7 +40,7 @@ namespace OpenLoco::Gfx
             // Copy raw bitmap data to target but exclude transparent pixels
             op = DrawBlendOp::transparent;
         }
-        // Vanilla did not handle noise image for rle compressed images
+        // Vanilla did not handle noise image for RLE compressed images
         if (args.noiseImage != nullptr && (!args.sourceImage.hasFlags(G1ElementFlags::isRLECompressed)))
         {
             op |= DrawBlendOp::noiseMask;
@@ -58,57 +58,57 @@ namespace OpenLoco::Gfx
         {
             switch (op)
             {
-                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
-                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent | DrawBlendOp::src:
-                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent | DrawBlendOp::dst:
-                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::dst, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::none:
-                    drawBMPSprite<DrawBlendOp::none, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent:
-                    drawBMPSprite<DrawBlendOp::transparent, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask:
-                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::none | DrawBlendOp::noiseMask:
-                    drawBMPSprite<DrawBlendOp::none | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent | DrawBlendOp::noiseMask:
-                    drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
-                    break;
-                default:
-                    assert(false);
-                    break;
+            case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
+                drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent | DrawBlendOp::src:
+                drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent | DrawBlendOp::dst:
+                drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::dst, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::none:
+                drawBMPSprite<DrawBlendOp::none, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent:
+                drawBMPSprite<DrawBlendOp::transparent, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask:
+                drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::none | DrawBlendOp::noiseMask:
+                drawBMPSprite<DrawBlendOp::none | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent | DrawBlendOp::noiseMask:
+                drawBMPSprite<DrawBlendOp::transparent | DrawBlendOp::noiseMask, TZoomLevel>(rt, args);
+                break;
+            default:
+                assert(false);
+                break;
             }
         }
         else
         {
             switch (op)
             {
-                case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
-                    drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent | DrawBlendOp::src:
-                    drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::src, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent | DrawBlendOp::dst:
-                    drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::dst, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::none:
-                    drawRLESprite<DrawBlendOp::none, TZoomLevel>(rt, args);
-                    break;
-                case DrawBlendOp::transparent:
-                    drawRLESprite<DrawBlendOp::transparent, TZoomLevel>(rt, args);
-                    break;
-                default:
-                    assert(false);
-                    break;
+            case DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst:
+                drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::src | DrawBlendOp::dst, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent | DrawBlendOp::src:
+                drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::src, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent | DrawBlendOp::dst:
+                drawRLESprite<DrawBlendOp::transparent | DrawBlendOp::dst, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::none:
+                drawRLESprite<DrawBlendOp::none, TZoomLevel>(rt, args);
+                break;
+            case DrawBlendOp::transparent:
+                drawRLESprite<DrawBlendOp::transparent, TZoomLevel>(rt, args);
+                break;
+            default:
+                assert(false);
+                break;
             }
         }
     }

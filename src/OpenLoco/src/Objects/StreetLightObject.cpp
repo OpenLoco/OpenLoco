@@ -9,7 +9,7 @@
 
 namespace OpenLoco
 {
-    // TODO: This should only be definined in the ObjectSelectionWindow header
+    // TODO: This should only be defined in the ObjectSelectionWindow header
     static constexpr uint8_t kDescriptionRowHeight = 10;
 
     // 0x00477F69

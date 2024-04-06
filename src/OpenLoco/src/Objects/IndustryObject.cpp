@@ -215,7 +215,7 @@ namespace OpenLoco
             remainingData = remainingData.subspan(*animSeq * sizeof(uint8_t) + 1);
         }
 
-        // Load Unk Animation Related Structure
+        // Load unk Animation Related Structure
         var_38 = reinterpret_cast<const IndustryObjectUnk38*>(remainingData.data());
         while (*remainingData.data() != static_cast<std::byte>(0xFF))
         {
@@ -236,7 +236,7 @@ namespace OpenLoco
         }
         // LOAD BUILDING PARTS End
 
-        // Load Unk?
+        // Load unk?
         buildings = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(maxNumBuildings * sizeof(uint8_t));
 

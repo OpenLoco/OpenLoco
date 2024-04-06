@@ -151,7 +151,7 @@ namespace OpenLoco::World::TileManager
         }
         else
         {
-            // Move all of the elments up one until last for the tile
+            // Move all of the elements up one until last for the tile
             auto* next = element.next();
             auto* cur = &element;
             do
@@ -387,14 +387,14 @@ namespace OpenLoco::World::TileManager
 
         const auto slope = surfaceEl->slopeCorners();
 
-        // Subtile coords
+        // Sub-tile coords
         const auto xl = pos.x & 0x1f;
         const auto yl = pos.y & 0x1f;
 
         // Slope logic:
         // Each of the four bits in slope represents that corner being raised
         // slope == 15 (all four bits) is not used and slope == 0 is flat
-        // If the extra_height bit is set, then the slope goes up two z-levels (this happens with one corner down with oppisite corner up)
+        // If the extra_height bit is set, then the slope goes up two z-levels (this happens with one corner down with opposite corner up)
 
         // We arbitrarily take the SW corner to be closest to the viewer
 
@@ -641,7 +641,7 @@ namespace OpenLoco::World::TileManager
     int16_t mountainHeight(const World::Pos2& loc)
     {
         // Works out roughly the height of a mountain of area 11 * 11
-        // (Its just the heighest point - the lowest point)
+        // (Its just the highest point - the lowest point)
         int16_t lowest = std::numeric_limits<int16_t>::max();
         int16_t highest = 0;
         const auto initialTilePos = toTileSpace(loc);

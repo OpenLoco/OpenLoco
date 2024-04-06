@@ -201,7 +201,7 @@ namespace OpenLoco::ScenarioManager
     {
         if ((options.scenarioText.flags & 0xFF) == 0xFF)
         {
-            // Details are not loaded they are prepopulated
+            // Details are not loaded they are pre-populated
             strncpy(entry.scenarioName, options.scenarioName, sizeof(entry.scenarioName));
             strncpy(entry.description, options.scenarioDetails, sizeof(entry.description));
             return true;
@@ -326,7 +326,7 @@ namespace OpenLoco::ScenarioManager
                 // Its possible to have more scenarios than files in the scenario folder
                 // this is because even deleted scenarios need to keep their scores entry
                 // due to this we will realloc if we get to this point. Also when adding
-                // a scenario to the folder you will need to realloc as it has alloced only,
+                // a scenario to the folder you will need to realloc as it has alloc'd only,
                 // enough space for the previous amount of scenarios.
                 // TODO: Use a vector after all free/mallocs of _scenarioList implemented
                 if (_scenarioHeader->numScenarios >= indexAllocSize)

@@ -359,7 +359,7 @@ namespace OpenLoco::Paint
                 paintTrainStationStyle0StraightTrack(session, elStation, imageBase, imageGlassBase);
                 break;
             case 1:
-                // Vanllia had hard to reach code for diagonal train stations
+                // Vanilla had hard to reach code for diagonal train stations
                 paintTrainStationStyle0DiagonalTrack(session, elStation, imageBase, imageGlassBase);
                 break;
             default:

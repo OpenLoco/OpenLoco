@@ -101,7 +101,7 @@ namespace OpenLoco
         // Assumes rotational symmetry
         // k{TrackId}{sequenceIndex}[type]{direction}
         // type = Ballast, Sleeper, Rail
-        // type only used for mergable track ids
+        // type only used for Mergeable track ids
         namespace Style0
         {
             constexpr uint32_t kStraight0BallastNE = 18;

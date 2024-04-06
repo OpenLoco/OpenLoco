@@ -651,7 +651,7 @@ namespace OpenLoco::Audio
             if (fmtMarker != 0x20746d66 && fmtMarker != 0x00746d66)
                 throw Exception::RuntimeError("Invalid format marker.");
 
-            fs.readValue<uint32_t>(); // headersize
+            fs.readValue<uint32_t>(); // header size
 
             const auto typeFormat = fs.readValue<uint16_t>();
             if (typeFormat != 1)

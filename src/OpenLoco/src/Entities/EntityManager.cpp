@@ -223,7 +223,7 @@ namespace OpenLoco::EntityManager
         {
             if (!removeFromSpatialIndex(entity, oldIndex))
             {
-                Logging::info("Invalid quadrant ids... Reseting spatial index.");
+                Logging::info("Invalid quadrant ids... Resetting spatial index.");
                 resetSpatialIndex();
                 moveSpatialEntry(entity, loc);
                 return;
@@ -308,7 +308,7 @@ namespace OpenLoco::EntityManager
 
         if (!removeFromSpatialIndex(*entity))
         {
-            Logging::info("Invalid quadrant ids... Reseting spatial index.");
+            Logging::info("Invalid quadrant ids... Resetting spatial index.");
             resetSpatialIndex();
         }
     }

@@ -21,7 +21,7 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CargoObjectFlags);
 
-    // TODO: Eventually perhaps make this a seperate object type
+    // TODO: Eventually perhaps make this a separate object type
     enum class CargoCategory : uint16_t
     {
         grain = 1,
