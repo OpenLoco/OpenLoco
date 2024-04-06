@@ -30,7 +30,7 @@ namespace OpenLoco::Drawing
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringLeftClipped(
             Gfx::RenderTarget& rt,
@@ -38,14 +38,14 @@ namespace OpenLoco::Drawing
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringLeftUnderline(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         int16_t drawStringLeftWrapped(
             Gfx::RenderTarget& rt,
@@ -53,14 +53,14 @@ namespace OpenLoco::Drawing
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringCentred(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringCentredClipped(
             Gfx::RenderTarget& rt,
@@ -68,7 +68,7 @@ namespace OpenLoco::Drawing
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringCentredRaw(
             Gfx::RenderTarget& rt,
@@ -83,23 +83,23 @@ namespace OpenLoco::Drawing
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringRight(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            const FormatArguments& args = {}) override;
 
         void drawStringRightUnderline(
             Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args) override;
+            const FormatArguments& args = {}) override;
 
-        void drawStringYOffsets(Gfx::RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) override;
+        void drawStringYOffsets(Gfx::RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const FormatArguments& args, const int8_t* yOffsets) override;
         void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) override;
         uint16_t getStringWidthNewLined(const char* buffer) override;
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) override;
