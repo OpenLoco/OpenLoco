@@ -1,4 +1,4 @@
-24.03+ (???)
+24.04 (2024-04-07)
 ------------------------------------------------------------------------
 - Fix: [#2375] PNG heightmaps are mirrored when generating terrain.
 - Fix: [#2377] When cloning vehicle without having sufficient funds, the error message appears below the window.
