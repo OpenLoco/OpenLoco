@@ -29,7 +29,7 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Vehicles
 {
     // 0x004FE070
-    static constexpr uint8_t kOrderSizes[] = {
+    static constexpr std::array<uint8_t, 6> kOrderSizes = {
         sizeof(OrderEnd),
         sizeof(OrderStopAt),
         sizeof(OrderRouteThrough),
@@ -67,6 +67,10 @@ namespace OpenLoco::Vehicles
 
     OrderRingView::Iterator& OrderRingView::Iterator::operator++()
     {
+        if (enumValue(_currentOrder->getType()) >= std::size(kOrderSizes))
+        {
+            throw Exception::RuntimeError("Invalid order type!");
+        }
         auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + kOrderSizes[static_cast<uint8_t>(_currentOrder->getType())];
         _currentOrder = reinterpret_cast<Order*>(newOrders);
         if (_currentOrder->getType() == OrderType::End)
@@ -121,7 +125,10 @@ namespace OpenLoco::Vehicles::OrderManager
 
         for (auto& frame : _displayFrames)
         {
-            frame.orderOffset += sizeOfRemovedOrderTable;
+            if (frame.orderOffset >= removeOrderTableOffset)
+            {
+                frame.orderOffset += sizeOfRemovedOrderTable;
+            }
         }
     }
 
