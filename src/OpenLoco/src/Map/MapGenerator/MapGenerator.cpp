@@ -262,6 +262,7 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles above mountain level
         for (auto pos : getWorldRange())
         {
+            // NB: this is an inclusive check to match vanilla
             auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height <= kMountainTerrainHeight)
                 continue;
@@ -282,6 +283,7 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles above mountain level
         for (auto pos : getWorldRange())
         {
+            // NB: this is an exclusive check to match vanilla
             auto height = heightMap.getHeight({ pos.x, pos.y });
             if (height < kMountainTerrainHeight)
                 continue;
