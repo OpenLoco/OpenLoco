@@ -65,5 +65,11 @@ namespace OpenLoco::World::MapGenerator
         {
             return _height.size();
         }
+
+        uint8_t getHeight(Point pos) const;
+        void resetMarkerFlags();
+        bool isMarkerSet(Point pos) const;
+        void setMarker(Point pos);
+        void unsetMarker(Point pos);
     };
 }

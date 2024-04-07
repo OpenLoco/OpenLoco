@@ -39,6 +39,9 @@ using namespace OpenLoco::World::MapGenerator;
 
 namespace OpenLoco::World::MapGenerator
 {
+    static constexpr auto kCliffTerrainHeightDiff = 4;
+    static constexpr auto kMountainTerrainHeight = 26;
+
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
     static fs::path _pngHeightmapPath{};
@@ -66,7 +69,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x004625D0
     static void generateLand(HeightMap& heightMap)
     {
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             const MicroZ q00 = heightMap[{ pos.x - 1, pos.y - 1 }];
             const MicroZ q01 = heightMap[{ pos.x + 0, pos.y - 1 }];
@@ -126,7 +129,7 @@ namespace OpenLoco::World::MapGenerator
     {
         auto seaLevel = getGameState().seaLevel;
 
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
@@ -189,44 +192,108 @@ namespace OpenLoco::World::MapGenerator
         return ((randVal & 0xFF) * landObj->numVariations) >> 8;
     }
 
+    static void applySurfaceStyleToMarkedTiles(HeightMap& heightMap, uint8_t surfaceStyle, bool requireMark)
+    {
+        for (auto& pos : World::getDrawableTileRange())
+        {
+            const bool tileIsMarked = heightMap.isMarkerSet({ pos.x, pos.y });
+            if (requireMark != tileIsMarked)
+                continue;
+
+            auto tile = TileManager::get(pos);
+            auto* surface = tile.surface();
+            if (surface == nullptr)
+                continue;
+
+            surface->setTerrain(surfaceStyle);
+            auto res = getRandomTerrainVariation(*surface);
+            if (res)
+                surface->setVariation(*res);
+        }
+    }
+
     // 0x0046A379
     static void generateTerrainFarFromWater(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A379, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles near water
+        auto seaLevel = getGameState().seaLevel;
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap.getHeight({ pos.x, pos.y });
+            if (height > seaLevel)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+        }
+
+        // Apply surface style to tiles that have *not* been marked
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, false);
     }
 
     // 0x0046A439
     static void generateTerrainNearWater(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A439, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles near water
+        auto seaLevel = getGameState().seaLevel;
+        for (auto pos : getWorldRange())
+        {
+            auto height = heightMap.getHeight({ pos.x, pos.y });
+            if (height < seaLevel)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+        }
+
+        // Apply surface style to tiles that have been marked
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, true);
     }
 
     // 0x0046A5B3
     static void generateTerrainOnMountains(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A5B3, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles above mountain level
+        for (auto pos : getWorldRange())
+        {
+            // NB: this is an inclusive check to match vanilla
+            auto height = heightMap.getHeight({ pos.x, pos.y });
+            if (height <= kMountainTerrainHeight)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(24, 24)))
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+        }
+
+        // Apply surface style to tiles that have been marked
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, true);
     }
 
     // 0x0046A4F9
     static void generateTerrainFarFromMountains(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A4F9, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles above mountain level
+        for (auto pos : getWorldRange())
+        {
+            // NB: this is an exclusive check to match vanilla
+            auto height = heightMap.getHeight({ pos.x, pos.y });
+            if (height < kMountainTerrainHeight)
+                continue;
+
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+        }
+
+        // Apply surface style to tiles that have *not* been marked
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, false);
     }
 
     // 0x0046A0D8
@@ -252,11 +319,32 @@ namespace OpenLoco::World::MapGenerator
     // 0x0046A66D
     static void generateTerrainAroundCliffs(HeightMap& heightMap, uint8_t surfaceStyle)
     {
-        _heightMap = heightMap.data();
-        registers regs;
-        regs.ebx = surfaceStyle;
-        call(0x0046A66D, regs);
-        _heightMap = nullptr;
+        heightMap.resetMarkerFlags();
+
+        // Mark tiles with sudden height changes in the next row
+        for (auto pos : getWorldRange())
+        {
+            auto heightA = heightMap.getHeight({ pos.x + 0, pos.y });
+            auto heightB = heightMap.getHeight({ pos.x + 1, pos.y });
+
+            // Find no cliff between A and B?
+            if (std::abs(heightB - heightA) < kCliffTerrainHeightDiff)
+            {
+                auto heightC = heightMap.getHeight({ pos.x + 0, pos.y + 1 });
+                auto heightD = heightMap.getHeight({ pos.x + 1, pos.y + 1 });
+
+                // Find no cliff between C and D?
+                if (std::abs(heightD - heightC) < kCliffTerrainHeightDiff)
+                    continue;
+            }
+
+            // Found a cliff around this point, so mark the points around it
+            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(12, 12)))
+                heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
+        }
+
+        // Apply surface style to tiles that have been marked
+        applySurfaceStyleToMarkedTiles(heightMap, surfaceStyle, true);
     }
 
     static void generateTerrainNull([[maybe_unused]] HeightMap& heightMap, [[maybe_unused]] uint8_t surfaceStyle) {}
@@ -331,7 +419,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x004611DF
     static void generateSurfaceVariation()
     {
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
@@ -380,7 +468,7 @@ namespace OpenLoco::World::MapGenerator
     {
         auto currentSeason = getGameState().currentSeason;
 
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             for (auto el : tile)

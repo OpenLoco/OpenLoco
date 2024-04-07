@@ -164,6 +164,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/AnimationManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/BuildingElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/IndustryElement.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator/HeightMap.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator/MapGenerator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator/OriginalTerrainGenerator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator/PngImage.cpp"
