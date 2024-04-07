@@ -337,15 +337,15 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (Intro::state() == Intro::State::state_9)
+            if (Intro::state() == Intro::State::displayNotice)
             {
                 Intro::state(Intro::State::end);
                 continue;
             }
 
-            if (Intro::state() != Intro::State::none)
+            if (Intro::isActive())
             {
-                Intro::state(Intro::State::state_8);
+                Intro::state(Intro::State::displayNoticeBegin);
             }
 
             if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))

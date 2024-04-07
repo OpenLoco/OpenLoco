@@ -7,9 +7,17 @@ namespace OpenLoco::Intro
     {
         none,
         begin,
-        state_8 = 8,
-        state_9 = 9,
+        displayAtari,
+        displayCS,
+        state4, // unused
+        state5, // unused
+        state6, // unused
+        state7, // unused
+        displayNoticeBegin,
+        displayNotice,
+        displayNoticeBeginReset,
         end = 254,
+        end2 = 255,
     };
 
     bool isActive();

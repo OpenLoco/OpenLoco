@@ -335,12 +335,30 @@ namespace OpenLoco::Gfx
         call(0x0046E07B);
     }
 
+    // 0x00452457
+    void loadPalette(uint32_t imageIndex, uint8_t modifier)
+    {
+        auto* g1Palette = getG1Element(imageIndex);
+        if (g1Palette == nullptr)
+        {
+            return;
+        }
+        uint8_t* colourData = g1Palette->offset;
+        for (auto i = g1Palette->xOffset; i < g1Palette->width + g1Palette->xOffset; ++i)
+        {
+            _113ED20[i].b = (*colourData++ * modifier) / 256;
+            _113ED20[i].g = (*colourData++ * modifier) / 256;
+            _113ED20[i].r = (*colourData++ * modifier) / 256;
+        }
+        getDrawingEngine().updatePalette(_113ED20, 10, 236);
+    }
+
     // 0x004523F4
-    void loadPalette()
+    void loadDefaultPalette()
     {
         auto* g1Palette = getG1Element(ImageIds::default_palette);
         uint8_t* colourData = g1Palette->offset;
-        for (auto i = g1Palette->xOffset; i < g1Palette->width; ++i)
+        for (auto i = g1Palette->xOffset; i < g1Palette->width + g1Palette->xOffset; ++i)
         {
             _113ED20[i].b = *colourData++;
             _113ED20[i].g = *colourData++;

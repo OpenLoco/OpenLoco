@@ -1605,6 +1605,13 @@ namespace OpenLoco::StringIds
     constexpr StringId title_menu_chat_tooltip = 1933;
     constexpr StringId the_other_player = 1934;
     constexpr StringId error_the_other_player_has_exited_the_game = 1935;
+    constexpr StringId intro_notice_0 = 1936;
+    constexpr StringId intro_notice_1 = 1937;
+    constexpr StringId intro_vehicle_notice_0 = 1938;
+    constexpr StringId intro_vehicle_notice_1 = 1939;
+    constexpr StringId intro_vehicle_notice_2 = 1940;
+    constexpr StringId intro_vehicle_notice_3 = 1941;
+    constexpr StringId intro_vehicle_notice_4 = 1942;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
     constexpr StringId title_cargo_distance_graphs = 1983;

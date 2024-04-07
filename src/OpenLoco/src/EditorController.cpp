@@ -127,7 +127,7 @@ namespace OpenLoco::EditorController
 
         showEditor();
         Audio::resetMusic();
-        Gfx::loadPalette();
+        Gfx::loadDefaultPalette();
         Gfx::invalidateScreen();
 
         // New in OpenLoco
