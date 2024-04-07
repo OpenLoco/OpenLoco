@@ -69,7 +69,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x004625D0
     static void generateLand(HeightMap& heightMap)
     {
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             const MicroZ q00 = heightMap[{ pos.x - 1, pos.y - 1 }];
             const MicroZ q01 = heightMap[{ pos.x + 0, pos.y - 1 }];
@@ -129,7 +129,7 @@ namespace OpenLoco::World::MapGenerator
     {
         auto seaLevel = getGameState().seaLevel;
 
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
@@ -194,7 +194,7 @@ namespace OpenLoco::World::MapGenerator
 
     static void applySurfaceStyleToMarkedTiles(HeightMap& heightMap, uint8_t surfaceStyle, bool requireMark)
     {
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             const bool tileIsMarked = heightMap.isMarkerSet({ pos.x, pos.y });
             if ((requireMark && !tileIsMarked) || (!requireMark && tileIsMarked))
@@ -417,7 +417,7 @@ namespace OpenLoco::World::MapGenerator
     // 0x004611DF
     static void generateSurfaceVariation()
     {
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             auto* surface = tile.surface();
@@ -466,7 +466,7 @@ namespace OpenLoco::World::MapGenerator
     {
         auto currentSeason = getGameState().currentSeason;
 
-        for (auto pos : World::getDrawableTileRange())
+        for (auto& pos : World::getDrawableTileRange())
         {
             auto tile = TileManager::get(pos);
             for (auto el : tile)
