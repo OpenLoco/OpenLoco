@@ -208,7 +208,7 @@ namespace OpenLoco::World::MapGenerator
             surface->setTerrain(surfaceStyle);
             auto res = getRandomTerrainVariation(*surface);
             if (res)
-                surface->setVar7(*res);
+                surface->setVariation(*res);
         }
     }
 

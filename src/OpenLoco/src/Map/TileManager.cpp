@@ -1269,7 +1269,7 @@ namespace OpenLoco::World::TileManager
                 surface->setWater(targetHeight / kMicroToSmallZStep);
             }
             surface->setType6Flag(false);
-            surface->setVar7(0);
+            surface->setVariation(0);
 
             mapInvalidateTileFull(pos);
         }
