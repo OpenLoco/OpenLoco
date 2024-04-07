@@ -197,7 +197,7 @@ namespace OpenLoco::ObjectManager
 
     // Calls function with the handle (LoadedObjectHandle) of each loaded object
     template<typename Function>
-    void forAllLoadedObjects(Function&& func)
+    void forEachLoadedObject(Function&& func)
     {
         for (uint8_t objectTypeU = 0; objectTypeU < kMaxObjectTypes; ++objectTypeU)
         {

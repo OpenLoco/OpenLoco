@@ -321,7 +321,7 @@ namespace OpenLoco::ObjectManager
 
         setTotalNumImages(0x201A); // TODO: Why this value?
 
-        forAllLoadedObjects([&loadedObjects](const LoadedObjectHandle& handle) {
+        forEachLoadedObject([&loadedObjects](const LoadedObjectHandle& handle) {
             auto* obj = getAny(handle);
             auto& extHdr = getRepositoryItem(handle.type).objectEntryExtendeds[handle.id];
             callObjectLoad(handle, *obj, std::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
@@ -825,7 +825,7 @@ namespace OpenLoco::ObjectManager
     // 0x00472031
     void unloadAll()
     {
-        forAllLoadedObjects([](const LoadedObjectHandle& handle) { unload(getHeader(handle)); });
+        forEachLoadedObject([](const LoadedObjectHandle& handle) { unload(getHeader(handle)); });
         reloadAll();
     }
 

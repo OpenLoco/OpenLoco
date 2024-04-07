@@ -944,7 +944,7 @@ namespace OpenLoco::ObjectManager
     // 0x00472D70
     static void markLoadedObjects(std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
     {
-        forAllLoadedObjects([&loadedObjectFlags](const LoadedObjectHandle& handle) {
+        forEachLoadedObject([&loadedObjectFlags](const LoadedObjectHandle& handle) {
             loadedObjectFlags[enumValue(handle.type)][handle.id] |= (1U << 1);
         });
     }
