@@ -197,7 +197,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto& pos : World::getDrawableTileRange())
         {
             const bool tileIsMarked = heightMap.isMarkerSet({ pos.x, pos.y });
-            if ((requireMark && !tileIsMarked) || (!requireMark && tileIsMarked))
+            if (requireMark != tileIsMarked)
                 continue;
 
             auto tile = TileManager::get(pos);
