@@ -39,6 +39,9 @@ using namespace OpenLoco::World::MapGenerator;
 
 namespace OpenLoco::World::MapGenerator
 {
+    static constexpr auto kCliffTerrainHeightDiff = 4;
+    static constexpr auto kMountainTerrainHeight = 26;
+
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
     static fs::path _pngHeightmapPath{};
@@ -260,7 +263,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto pos : getWorldRange())
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
-            if (height < 27)
+            if (height <= kMountainTerrainHeight)
                 continue;
 
             for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(24, 24)))
@@ -280,7 +283,7 @@ namespace OpenLoco::World::MapGenerator
         for (auto pos : getWorldRange())
         {
             auto height = heightMap.getHeight({ pos.x, pos.y });
-            if (height < 26)
+            if (height < kMountainTerrainHeight)
                 continue;
 
             for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
@@ -323,13 +326,13 @@ namespace OpenLoco::World::MapGenerator
             auto heightB = heightMap.getHeight({ pos.x + 1, pos.y });
 
             // Find no cliff between A and B?
-            if (std::abs(heightB - heightA) < 4)
+            if (std::abs(heightB - heightA) < kCliffTerrainHeightDiff)
             {
                 auto heightC = heightMap.getHeight({ pos.x + 0, pos.y + 1 });
                 auto heightD = heightMap.getHeight({ pos.x + 1, pos.y + 1 });
 
                 // Find no cliff between C and D?
-                if (std::abs(heightD - heightC) < 4)
+                if (std::abs(heightD - heightC) < kCliffTerrainHeightDiff)
                     continue;
             }
 
