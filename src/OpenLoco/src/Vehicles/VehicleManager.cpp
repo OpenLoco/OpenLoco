@@ -135,9 +135,36 @@ namespace OpenLoco::VehicleManager
     // 0x004B93DC
     void resetIfHeadingForStation(const StationId stationId)
     {
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x004B93DC, regs);
+        for (auto* v : VehicleList())
+        {
+            Vehicles::Vehicle train(*v);
+            // Stop train from heading to the station
+            if (train.head->stationId == stationId)
+            {
+                train.head->stationId = StationId::null;
+            }
+
+            // Remove any station references from cargo
+            // NOTE: Deletes the cargo!
+            for (auto& car : train.cars)
+            {
+                for (auto& carComponent : car)
+                {
+                    if (carComponent.front->secondaryCargo.townFrom == stationId)
+                    {
+                        carComponent.front->secondaryCargo.qty = 0;
+                    }
+                    if (carComponent.back->secondaryCargo.townFrom == stationId)
+                    {
+                        carComponent.back->secondaryCargo.qty = 0;
+                    }
+                    if (carComponent.body->primaryCargo.townFrom == stationId)
+                    {
+                        carComponent.body->primaryCargo.qty = 0;
+                    }
+                }
+            }
+        }
     }
 
     // 0x004AEFB5
