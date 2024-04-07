@@ -225,7 +225,7 @@ namespace OpenLoco::World::MapGenerator
             if (height > seaLevel)
                 continue;
 
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+            for (auto lookaheadPos : getClampedRange(pos - TilePos2(25, 25), pos + TilePos2(25, 25)))
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
@@ -246,7 +246,7 @@ namespace OpenLoco::World::MapGenerator
             if (height < seaLevel)
                 continue;
 
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+            for (auto lookaheadPos : getClampedRange(pos - TilePos2(25, 25), pos + TilePos2(25, 25)))
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
@@ -267,7 +267,7 @@ namespace OpenLoco::World::MapGenerator
             if (height <= kMountainTerrainHeight)
                 continue;
 
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(24, 24)))
+            for (auto lookaheadPos : getClampedRange(pos - TilePos2(12, 12), pos + TilePos2(12, 12)))
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
@@ -288,7 +288,7 @@ namespace OpenLoco::World::MapGenerator
             if (height < kMountainTerrainHeight)
                 continue;
 
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(50, 50)))
+            for (auto lookaheadPos : getClampedRange(pos - TilePos2(25, 25), pos + TilePos2(25, 25)))
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
@@ -339,7 +339,7 @@ namespace OpenLoco::World::MapGenerator
             }
 
             // Found a cliff around this point, so mark the points around it
-            for (auto lookaheadPos : getClampedRange(pos, pos + TilePos2(12, 12)))
+            for (auto lookaheadPos : getClampedRange(pos - TilePos2(6, 6), pos + TilePos2(6, 6)))
                 heightMap.setMarker({ lookaheadPos.x, lookaheadPos.y });
         }
 
