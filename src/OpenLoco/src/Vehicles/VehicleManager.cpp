@@ -150,15 +150,15 @@ namespace OpenLoco::VehicleManager
             {
                 for (auto& carComponent : car)
                 {
-                    if (carComponent.front->secondaryCargo.qty != 0 && carComponent.front->secondaryCargo.townFrom == stationId)
+                    if (carComponent.front->secondaryCargo.townFrom == stationId)
                     {
                         carComponent.front->secondaryCargo.qty = 0;
                     }
-                    if (carComponent.back->secondaryCargo.qty != 0 && carComponent.back->secondaryCargo.townFrom == stationId)
+                    if (carComponent.back->secondaryCargo.townFrom == stationId)
                     {
                         carComponent.back->secondaryCargo.qty = 0;
                     }
-                    if (carComponent.body->primaryCargo.qty != 0 && carComponent.body->primaryCargo.townFrom == stationId)
+                    if (carComponent.body->primaryCargo.townFrom == stationId)
                     {
                         carComponent.body->primaryCargo.qty = 0;
                     }
