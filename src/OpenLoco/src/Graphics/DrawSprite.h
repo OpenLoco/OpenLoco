@@ -9,26 +9,24 @@ namespace OpenLoco::Gfx
 {
     struct G1Element;
     struct RenderTarget;
-}
 
-namespace OpenLoco::Gfx
-{
     struct DrawSpritePosArgs
     {
         Ui::Point32 srcPos;
         Ui::Point32 dstPos;
         Ui::Size size;
     };
+
     struct DrawSpriteArgs
     {
-        const Gfx::PaletteMap::View palMap;
-        const Gfx::G1Element& sourceImage;
+        const PaletteMap::View palMap;
+        const G1Element& sourceImage;
         Ui::Point32 srcPos;
         Ui::Point32 dstPos;
         Ui::Size size;
-        const Gfx::G1Element* noiseImage;
+        const G1Element* noiseImage;
         DrawSpriteArgs(
-            const Gfx::PaletteMap::View _palMap, const Gfx::G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const Gfx::G1Element* _noiseImage)
+            const PaletteMap::View _palMap, const G1Element& _sourceImage, const Ui::Point32& _srcPos, const Ui::Point32& _dstPos, const Ui::Size& _size, const G1Element* _noiseImage)
             : palMap(_palMap)
             , sourceImage(_sourceImage)
             , srcPos(_srcPos)
@@ -71,5 +69,5 @@ namespace OpenLoco::Gfx
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args);
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    void drawSpriteToBuffer(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op);
+    void drawSpriteToBuffer(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op);
 }

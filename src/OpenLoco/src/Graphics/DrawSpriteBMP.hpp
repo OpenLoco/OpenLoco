@@ -8,7 +8,7 @@
 namespace OpenLoco::Gfx
 {
     template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
-    inline void drawBMPSprite(Gfx::RenderTarget& rt, const DrawSpriteArgs& args)
+    inline void drawBMPSprite(RenderTarget& rt, const DrawSpriteArgs& args)
     {
         const auto& g1 = args.sourceImage;
         const auto* src = g1.offset + ((static_cast<size_t>(g1.width) * args.srcPos.y) + args.srcPos.x);
