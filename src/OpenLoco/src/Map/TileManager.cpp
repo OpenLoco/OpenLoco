@@ -863,8 +863,11 @@ namespace OpenLoco::World::TileManager
         switch (el.type())
         {
             case ElementType::surface:
-                call(0x004691FA, regs);
+            {
+                auto& elSurface = el.get<SurfaceElement>();
+                updateSurface(elSurface, loc);
                 break;
+            }
             case ElementType::building:
             {
                 auto& elBuilding = el.get<BuildingElement>();
