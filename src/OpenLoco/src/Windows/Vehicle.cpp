@@ -1621,7 +1621,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         top = pos.y - 1;
                         carStr = StringIds::black_stringid;
                     }
-                    drawingCtx.fillRect(rt, 0, top, self.width, bottom, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                    drawingCtx.fillRect(rt, 0, top, self.width, bottom, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 }
 
                 int16_t y = pos.y + (self.rowHeight - 22) / 2;
@@ -1650,7 +1650,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (EntityId(self.rowHover) == train.tail->id && _dragCarComponent != nullptr)
             {
-                drawingCtx.fillRect(rt, 0, pos.y - 1, self.width, pos.y, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.fillRect(rt, 0, pos.y - 1, self.width, pos.y, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
         }
 
@@ -1958,7 +1958,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto body = car.body;
                 if (front->id == EntityId(self.rowHover))
                 {
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + self.rowHeight - 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + self.rowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
@@ -3349,13 +3349,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + 9, PaletteIndex::index_0A, Drawing::RectFlags::none);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + 9, PaletteIndex::index_0A, Gfx::RectFlags::none);
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.rowHover == rowNum)
                 {
                     strFormat = StringIds::wcolour2_stringid;
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + 9, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + 9, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 }
 
                 FormatArguments args{};
@@ -3398,13 +3398,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                drawingCtx.fillRect(rt, 0, loc.y, self.width, loc.y + lineHeight, PaletteIndex::index_0A, Drawing::RectFlags::none);
+                drawingCtx.fillRect(rt, 0, loc.y, self.width, loc.y + lineHeight, PaletteIndex::index_0A, Gfx::RectFlags::none);
                 strFormat = StringIds::white_stringid;
             }
             if (self.rowHover == rowNum)
             {
                 strFormat = StringIds::wcolour2_stringid;
-                drawingCtx.fillRect(rt, 0, loc.y, self.width, loc.y + lineHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.fillRect(rt, 0, loc.y, self.width, loc.y + lineHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
 
             loc.y -= 1;

@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
             drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
-            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
     }
 
@@ -1469,11 +1469,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         {
                             if (rowIsALockedVehicle)
                             {
-                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour, Drawing::RectFlags::crossHatching);
+                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedHoverRowColour, Gfx::RectFlags::crossHatching);
                             }
                             else
                             {
-                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour, Drawing::RectFlags::transparent);
+                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, normalHoverRowColour, Gfx::RectFlags::transparent);
                             }
                             colouredString = StringIds::wcolour2_stringid;
                         }
@@ -1481,7 +1481,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         {
                             if (rowIsALockedVehicle)
                             {
-                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour, Drawing::RectFlags::crossHatching);
+                                drawingCtx.fillRect(rt, 0, y, window.width, y + window.rowHeight - 1, lockedRowColour, Gfx::RectFlags::crossHatching);
                             }
                         }
 
@@ -1716,13 +1716,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto top = window->y + 69;
         auto right = left + window->width - 187;
         auto bottom = top;
-        drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
         left = window->x + window->width - 187;
         top = window->y + 41;
         right = left;
         bottom = top + 27;
-        drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 7), Gfx::RectFlags::none);
 
         for (uint32_t tab = 0; tab < _numTrackTypeTabs; ++tab)
         {
@@ -1733,7 +1733,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 top = widget.top + window->y + 26;
                 right = left + 29;
                 bottom = top;
-                drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 5), Drawing::RectFlags::none);
+                drawingCtx.fillRect(*rt, left, top, right, bottom, Colours::getShade(window->getColour(WindowColour::secondary).c(), 5), Gfx::RectFlags::none);
             }
 
             auto img = 0;

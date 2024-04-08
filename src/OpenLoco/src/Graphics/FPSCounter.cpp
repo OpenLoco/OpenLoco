@@ -8,7 +8,7 @@
 #include <chrono>
 #include <stdio.h>
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     using Clock_t = std::chrono::high_resolution_clock;
     using TimePoint_t = Clock_t::time_point;

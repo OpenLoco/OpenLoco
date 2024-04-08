@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawRectInset(*rt, self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Drawing::RectInsetFlags::none);
+        drawingCtx.drawRectInset(*rt, self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
 
         // Draw widgets.
         self.draw(rt);
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            drawingCtx.drawRectInset(*rt, x, y, 130, 130, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
+            drawingCtx.drawRectInset(*rt, x, y, 130, 130, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
             x += 1;
             y += 1;
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto formatStringId = StringIds::black_stringid;
             if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self.info))
             {
-                drawingCtx.drawRect(rt, 0, y, self.width, kRowHeight - 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, y, self.width, kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 

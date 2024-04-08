@@ -13,7 +13,7 @@ using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 

@@ -414,7 +414,7 @@ namespace OpenLoco::Ui
         // Draw FPS counter?
         if (Config::get().showFPS)
         {
-            Drawing::drawFPS();
+            Gfx::drawFPS();
         }
 
         drawingEngine.present();

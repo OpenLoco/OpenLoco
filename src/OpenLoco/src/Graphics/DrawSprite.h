@@ -11,7 +11,7 @@ namespace OpenLoco::Gfx
     struct RenderTarget;
 }
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     struct DrawSpritePosArgs
     {

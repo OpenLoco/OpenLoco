@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     namespace Impl
     {
@@ -634,8 +634,8 @@ namespace OpenLoco::Drawing
             if (args.has_value())
             {
                 const DrawSpriteArgs fullArgs{ palette, element, args->srcPos, args->dstPos, args->size, noiseImage };
-                const auto op = Drawing::getDrawBlendOp(image, fullArgs);
-                Drawing::drawSpriteToBuffer<TZoomLevel, TIsRLE>(rt, fullArgs, op);
+                const auto op = Gfx::getDrawBlendOp(image, fullArgs);
+                Gfx::drawSpriteToBuffer<TZoomLevel, TIsRLE>(rt, fullArgs, op);
             }
         }
 

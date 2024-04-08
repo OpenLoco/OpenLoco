@@ -676,12 +676,12 @@ namespace OpenLoco::Ui::Windows::Station
         static void drawRatingBar(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, uint8_t amount, Colour colour)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
+            drawingCtx.fillRectInset(*rt, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                drawingCtx.fillRectInset(*rt, x + 2, y + 2, x + 1 + rating, y + 8, colour, Drawing::RectInsetFlags::none);
+                drawingCtx.fillRectInset(*rt, x + 2, y + 2, x + 1 + rating, y + 8, colour, Gfx::RectInsetFlags::none);
             }
         }
 
@@ -989,7 +989,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset + 22, yOffset + 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
 
                         auto ratingColour = Colour::green;
                         if (cargo.rating < 100)
@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6), Drawing::RectFlags::none);
+                        drawingCtx.fillRect(*rt, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colours::getShade(ratingColour, 6), Gfx::RectFlags::none);
 
                         yOffset += 3;
                         totalRatingBars++;

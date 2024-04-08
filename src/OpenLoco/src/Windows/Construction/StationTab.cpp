@@ -991,7 +991,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self.x + 3;
         yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
-        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset);
+        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) == GhostVisibilityFlags::none)
             return;

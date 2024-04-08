@@ -4,7 +4,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args)
     {

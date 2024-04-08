@@ -3,7 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     inline uint8_t blend(const Gfx::PaletteMap::View paletteMap, uint8_t src, uint8_t dst)
     {

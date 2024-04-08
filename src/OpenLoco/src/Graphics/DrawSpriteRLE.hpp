@@ -5,7 +5,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     template<DrawBlendOp TBlendOp, uint8_t TZoomLevel>
     inline void drawRLESprite(Gfx::RenderTarget& rt, const DrawSpriteArgs& args)

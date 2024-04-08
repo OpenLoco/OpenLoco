@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             // Draw hover rectangle
             if (i == window.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 textColourId = StringIds::wcolour2_stringid;
             }
 

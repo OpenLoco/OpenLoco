@@ -15,7 +15,7 @@ namespace OpenLoco
     enum class ExtColour : uint8_t;
 }
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     class SoftwareDrawingEngine;
 }
@@ -138,7 +138,7 @@ namespace OpenLoco::Gfx
 
     G1Element* getG1Element(uint32_t id);
 
-    Drawing::SoftwareDrawingEngine& getDrawingEngine();
+    Gfx::SoftwareDrawingEngine& getDrawingEngine();
 
     void loadCurrency();
     void loadDefaultPalette();

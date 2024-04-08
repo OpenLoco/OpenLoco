@@ -1083,7 +1083,7 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    static void drawStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
+    static void drawStruct(Gfx::RenderTarget& rt, Gfx::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
     {
         auto imageId = ps.imageId;
 
@@ -1122,7 +1122,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    static void drawAttachStruct(Gfx::RenderTarget& rt, Drawing::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
+    static void drawAttachStruct(Gfx::RenderTarget& rt, Gfx::SoftwareDrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
     {
         auto imageId = attachPs.imageId;
 

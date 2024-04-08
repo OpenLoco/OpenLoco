@@ -7,7 +7,7 @@
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <cstdint>
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     class SoftwareDrawingContext final : DrawingContext
     {
