@@ -1,7 +1,7 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"

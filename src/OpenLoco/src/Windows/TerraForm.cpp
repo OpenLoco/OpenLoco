@@ -1,5 +1,4 @@
 #include "Audio/Audio.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Terraform/ChangeLandMaterial.h"
@@ -15,6 +14,7 @@
 #include "GameCommands/Terraform/RemoveWall.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"

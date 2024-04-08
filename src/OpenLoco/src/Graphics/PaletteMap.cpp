@@ -1,6 +1,6 @@
 #include "PaletteMap.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>

@@ -1,7 +1,7 @@
 #include "FPSCounter.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/Formatting.h"
 #include "Ui.h"
 

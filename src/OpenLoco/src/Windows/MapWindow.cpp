@@ -1,4 +1,3 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
@@ -8,6 +7,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"

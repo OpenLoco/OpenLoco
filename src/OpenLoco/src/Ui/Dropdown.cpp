@@ -1,7 +1,7 @@
 #include "Dropdown.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"

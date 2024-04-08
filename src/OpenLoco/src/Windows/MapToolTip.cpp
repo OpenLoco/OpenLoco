@@ -1,5 +1,5 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/ArgsWrapper.hpp"
 #include "Localisation/FormatArguments.hpp"

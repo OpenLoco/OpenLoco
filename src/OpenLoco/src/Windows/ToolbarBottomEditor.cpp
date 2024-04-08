@@ -1,7 +1,7 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "EditorController.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Widget.h"
