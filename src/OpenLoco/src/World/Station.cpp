@@ -1055,6 +1055,8 @@ namespace OpenLoco
         }
     }
 
+#pragma warning(push)
+#pragma warning(disable : 4858)
     // 0x0048F482
     void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
     {
@@ -1066,11 +1068,12 @@ namespace OpenLoco
         station->stationTileSize = std::clamp<uint16_t>(station->stationTileSize, 0, static_cast<uint16_t>(std::size(station->stationTiles)));
 
         // Find tile to remove
-        auto tileIndex = std::find(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
-        if (tileIndex == std::end(station->stationTiles))
+        auto foundTilePos = std::find(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
+        if (foundTilePos == std::end(station->stationTiles))
             return;
 
         // Remove tile by moving the remaining tiles over the one to remove
+        // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
         std::remove(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
         station->stationTileSize--;
 
@@ -1088,6 +1091,7 @@ namespace OpenLoco
             stats.isAccepted(isAccepted);
         }
     }
+#pragma warning(pop)
 
     // 0x00491C6F
     void sub_491C6F(const uint8_t type, const Pos2& pos, const uint8_t rotation, const CatchmentFlags flag)
