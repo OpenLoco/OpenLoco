@@ -126,8 +126,6 @@ namespace OpenLoco::GameCommands
                     elTrack->setHasStationElement(false);
                     World::TileManager::removeElement(*nextEl);
                 }
-
-                // ebp += 0x10 ??
             }
         }
 
