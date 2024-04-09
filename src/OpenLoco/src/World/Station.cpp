@@ -1063,7 +1063,7 @@ namespace OpenLoco
         findPos.z |= rotation;
 
         // Bug mitigation: ensure stationTileSize does not exceed the actual array length
-        station->stationTileSize = std::clamp<uint16_t>(station->stationTileSize, 0, std::size(station->stationTiles));
+        station->stationTileSize = std::clamp<uint16_t>(station->stationTileSize, 0, static_cast<uint16_t>(std::size(station->stationTiles)));
 
         // Find tile to remove
         auto tileIndex = std::find(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
