@@ -1,7 +1,9 @@
 24.04+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2411] Progress bar windows are not actually rendered.
 - Fix: [#2413] Gridlines are hidden when closing construction windows.
 - Fix: [#2416] Cursors in embedded text fiels are not rendering in the right position.
+- Change: [#2411] Internal progress bars can now be used during the object indexing process.
 - Change: [#2416] Most text input fields are no longer focused by default, allowing shortcuts to be used.
 
 24.04 (2024-04-07)
