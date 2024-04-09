@@ -1,4 +1,3 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Entities/Entity.h"
 #include "Entities/EntityManager.h"
@@ -8,6 +7,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Drawing::RectFlags::none);
+                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
 
             FormatArguments args{};
@@ -625,7 +625,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = vehicleTypeColours[i];
 
-                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Drawing::RectFlags::none);
+                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
 
             FormatArguments args{};
@@ -675,7 +675,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = industryColours[_assignedIndustryColours[i]];
 
-                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Drawing::RectFlags::none);
+                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
 
             FormatArguments args{};
@@ -707,7 +707,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Drawing::RectFlags::none);
+                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
 
             auto routeType = StringIds::map_routes_aircraft;
@@ -760,7 +760,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << enumValue(index))) || !(mapFrameNumber & (1 << 2)))
             {
-                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Drawing::RectFlags::none);
+                drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
 
             FormatArguments args{};
@@ -984,7 +984,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour, Drawing::RectFlags::none);
+        drawingCtx.fillRect(*rt, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour, Gfx::RectFlags::none);
     }
 
     // 0x0046C294
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE51, 0x0046BE34
-    static void drawRectOnMap(Gfx::RenderTarget* rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, Drawing::RectFlags flags)
+    static void drawRectOnMap(Gfx::RenderTarget* rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, Gfx::RectFlags flags)
     {
         if (left > right)
         {
@@ -1190,7 +1190,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         const auto colour = PaletteIndex::index_0A;
 
-        drawRectOnMap(rt, left, top, right, bottom, colour, Drawing::RectFlags::crossHatching);
+        drawRectOnMap(rt, left, top, right, bottom, colour, Gfx::RectFlags::crossHatching);
     }
 
     // 0x0046BE34
@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         const auto colour = PaletteIndex::index_0A;
 
-        drawRectOnMap(rt, left, top, right, bottom, colour, Drawing::RectFlags::none);
+        drawRectOnMap(rt, left, top, right, bottom, colour, Gfx::RectFlags::none);
     }
 
     // 0x0046BAD5

@@ -28,6 +28,6 @@ namespace OpenLoco::Gfx
 
     RenderTarget& getScreenRT();
 
-    std::optional<Gfx::RenderTarget> clipRenderTarget(const Gfx::RenderTarget& src, const Ui::Rect& newRect);
+    std::optional<RenderTarget> clipRenderTarget(const RenderTarget& src, const Ui::Rect& newRect);
 
 }

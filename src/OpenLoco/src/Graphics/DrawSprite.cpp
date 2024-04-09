@@ -4,7 +4,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/RenderTarget.h"
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args)
     {
@@ -30,7 +30,7 @@ namespace OpenLoco::Drawing
             // Used for glass.
             op = DrawBlendOp::transparent | DrawBlendOp::dst;
         }
-        else if (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::hasTransparency))
+        else if (!args.sourceImage.hasFlags(G1ElementFlags::hasTransparency))
         {
             // Copy raw bitmap data to target
             op = DrawBlendOp::none;
@@ -41,7 +41,7 @@ namespace OpenLoco::Drawing
             op = DrawBlendOp::transparent;
         }
         // Vanilla did not handle noise image for rle compressed images
-        if (args.noiseImage != nullptr && (!args.sourceImage.hasFlags(Gfx::G1ElementFlags::isRLECompressed)))
+        if (args.noiseImage != nullptr && (!args.sourceImage.hasFlags(G1ElementFlags::isRLECompressed)))
         {
             op |= DrawBlendOp::noiseMask;
         }
@@ -52,7 +52,7 @@ namespace OpenLoco::Drawing
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch" // not a valid value for a switch of this enum
     template<uint8_t TZoomLevel, bool TIsRLE>
-    inline void drawSpriteToBufferHelper(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    inline void drawSpriteToBufferHelper(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         if constexpr (!TIsRLE)
         {
@@ -116,42 +116,42 @@ namespace OpenLoco::Drawing
 #pragma warning(pop)
 
     template<>
-    void drawSpriteToBuffer<0, false>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<0, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<0, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<1, false>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<1, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<1, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<2, false>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<2, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<2, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<3, false>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<3, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<3, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<0, true>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<0, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<0, true>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<1, true>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<1, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<1, true>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<2, true>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<2, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<2, true>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<3, true>(Gfx::RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<3, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<3, true>(rt, args, op);
     }

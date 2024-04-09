@@ -1,8 +1,8 @@
 #include "Window.h"
 #include "Config.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -1185,7 +1185,7 @@ namespace OpenLoco::Ui
 
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
+            drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1232,7 +1232,7 @@ namespace OpenLoco::Ui
                 this->x + this->width - 1,
                 this->y + this->height - 1,
                 Colour::white,
-                Drawing::RectInsetFlags::fillNone);
+                Gfx::RectInsetFlags::fillNone);
         }
     }
 

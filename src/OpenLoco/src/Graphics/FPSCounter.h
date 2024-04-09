@@ -1,6 +1,6 @@
 #pragma once
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     void drawFPS();
 }

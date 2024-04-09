@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     uint32_t InvalidationGrid::getRowCount() const noexcept
     {

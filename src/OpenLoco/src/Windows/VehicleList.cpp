@@ -1,8 +1,8 @@
 #include "Date.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -747,7 +747,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             }
             // Highlight selection.
             if (head->id == EntityId(self.rowHover))
-                drawingCtx.drawRect(rt, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0), Drawing::RectFlags::none);
+                drawingCtx.drawRect(rt, 0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0), Gfx::RectFlags::none);
 
             // Draw vehicle at the bottom of the row.
             drawVehicle(head, &rt, yPos + (self.rowHeight - 28) / 2 + 6);

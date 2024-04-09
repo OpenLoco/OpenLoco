@@ -1,6 +1,5 @@
 #include "Config.h"
 #include "Date.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Expenditures.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/BuildCompanyHeadquarters.h"
@@ -12,6 +11,7 @@
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -1811,7 +1811,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 if (i % 2 == 0)
                 {
                     auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6);
-                    drawingCtx.fillRect(*rt, self.x + 4, y, self.x + 129, y + 9, colour, Drawing::RectFlags::crossHatching);
+                    drawingCtx.fillRect(*rt, self.x + 4, y, self.x + 129, y + 9, colour, Gfx::RectFlags::crossHatching);
                 }
 
                 FormatArguments args{};
@@ -1979,7 +1979,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto point = Point(x, y);
             drawingCtx.drawStringRight(*rt, point, Colour::black, mainFormat, &args);
 
-            drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::index_0A, Drawing::RectFlags::none);
+            drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::index_0A, Gfx::RectFlags::none);
         }
 
         // 0x0043361E
@@ -1995,7 +1995,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 if (i % 2 == 0)
                 {
                     auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 6);
-                    drawingCtx.fillRect(rt, 0, y, expenditureColumnWidth * 17, y + 9, colour, Drawing::RectFlags::crossHatching);
+                    drawingCtx.fillRect(rt, 0, y, expenditureColumnWidth * 17, y + 9, colour, Gfx::RectFlags::crossHatching);
                 }
 
                 y += 10;

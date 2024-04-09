@@ -1,7 +1,7 @@
 #include "CompetitorObject.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
@@ -23,7 +23,7 @@ namespace OpenLoco
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        drawingCtx.drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Drawing::RectFlags::none);
+        drawingCtx.drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Gfx::RectFlags::none);
 
         auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);
         drawingCtx.drawImage(&rt, x - 32, y - 32, image);

@@ -1,6 +1,6 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         {
             auto width = drawingCtx.getStringWidth(drawnBuffer);
             auto cursorPos = Point(inputSession.xOffset + width, 1);
-            drawingCtx.fillRect(*clipped, cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+            drawingCtx.fillRect(*clipped, cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
     }
 

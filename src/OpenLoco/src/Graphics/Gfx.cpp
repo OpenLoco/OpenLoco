@@ -1,9 +1,9 @@
 #include "Gfx.h"
 #include "Colour.h"
 #include "Config.h"
-#include "Drawing/DrawSprite.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Environment.h"
+#include "Graphics/DrawSprite.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
 #include "Input.h"
 #include "Localisation/Formatting.h"
@@ -25,7 +25,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
-using namespace OpenLoco::Drawing;
+using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
 
@@ -203,13 +203,13 @@ namespace OpenLoco::Gfx
         invalidateRegion(0, 0, Ui::width(), Ui::height());
     }
 
-    static std::unique_ptr<Drawing::SoftwareDrawingEngine> engine;
+    static std::unique_ptr<Gfx::SoftwareDrawingEngine> engine;
 
-    Drawing::SoftwareDrawingEngine& getDrawingEngine()
+    Gfx::SoftwareDrawingEngine& getDrawingEngine()
     {
         if (!engine)
         {
-            engine = std::make_unique<Drawing::SoftwareDrawingEngine>();
+            engine = std::make_unique<Gfx::SoftwareDrawingEngine>();
         }
         return *engine;
     }
@@ -327,7 +327,7 @@ namespace OpenLoco::Gfx
         return nullptr;
     }
 
-    static loco_global<Drawing::PaletteEntry[256], 0x0113ED20> _113ED20;
+    static loco_global<Gfx::PaletteEntry[256], 0x0113ED20> _113ED20;
 
     // 0x0046E07B
     void loadCurrency()

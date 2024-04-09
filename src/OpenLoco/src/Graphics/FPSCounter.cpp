@@ -1,14 +1,14 @@
 #include "FPSCounter.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/Formatting.h"
 #include "Ui.h"
 
 #include <chrono>
 #include <stdio.h>
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     using Clock_t = std::chrono::high_resolution_clock;
     using TimePoint_t = Clock_t::time_point;
@@ -36,7 +36,7 @@ namespace OpenLoco::Drawing
 
     void drawFPS()
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = getDrawingEngine().getDrawingContext();
 
         // Measure FPS
         const float fps = measureFPS();
@@ -50,7 +50,7 @@ namespace OpenLoco::Drawing
         const char* formatString = (_currentFPS >= 10.0f ? "%.0f" : "%.1f");
         snprintf(&buffer[3], std::size(buffer) - 3, formatString, fps);
 
-        auto& rt = Gfx::getScreenRT();
+        auto& rt = getScreenRT();
 
         // Draw text
         const int stringWidth = drawingCtx.getStringWidth(buffer);
@@ -58,6 +58,6 @@ namespace OpenLoco::Drawing
         drawingCtx.drawString(rt, point, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
-        Gfx::invalidateRegion(point.x - 16, point.y - 4, point.x + 16, 16);
+        invalidateRegion(point.x - 16, point.y - 4, point.x + 16, 16);
     }
 }

@@ -1,5 +1,5 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/ArgsWrapper.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             auto right = left + 25;
             auto bottom = top + 25;
 
-            drawingCtx.fillRect(*rt, left, top, right, bottom, PaletteIndex::index_0A, Drawing::RectFlags::none);
+            drawingCtx.fillRect(*rt, left, top, right, bottom, PaletteIndex::index_0A, Gfx::RectFlags::none);
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);

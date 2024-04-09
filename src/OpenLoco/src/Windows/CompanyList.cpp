@@ -1,8 +1,8 @@
 #include "Date.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Economy/Economy.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (rowItem == self.rowHover)
                 {
-                    drawingCtx.drawRect(rt, 0, yBottom, self.width, 24, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                    drawingCtx.drawRect(rt, 0, yBottom, self.width, 24, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
 
                     stringId = StringIds::wcolour2_stringid;
                 }
@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, palette, Drawing::RectFlags::none);
+                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, palette, Gfx::RectFlags::none);
                 }
 
                 auto args = FormatArguments();
@@ -1683,7 +1683,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << companyCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, colour, Drawing::RectFlags::none);
+                    drawingCtx.fillRect(*rt, x, y + 3, x + 4, y + 7, colour, Gfx::RectFlags::none);
                 }
 
                 FormatArguments args{};

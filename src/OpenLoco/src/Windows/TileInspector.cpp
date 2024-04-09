@@ -1,7 +1,7 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -348,12 +348,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             StringId formatString;
             if (self.var_842 == rowNum)
             {
-                drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::index_0A, Drawing::RectFlags::none);
+                drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, PaletteIndex::index_0A, Gfx::RectFlags::none);
                 formatString = StringIds::white_stringid;
             }
             else if (self.rowHover == rowNum)
             {
-                drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.fillRect(rt, 0, yPos, self.width, yPos + self.rowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 formatString = StringIds::wcolour2_stringid;
             }
             else

@@ -14,7 +14,7 @@ struct SDL_Renderer;
 struct SDL_Texture;
 struct SDL_PixelFormat;
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
 #pragma pack(push, 1)
     struct PaletteEntry

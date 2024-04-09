@@ -1,7 +1,7 @@
 #include "Dropdown.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Drawing::RectFlags::transparent);
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
                     }
 
                     auto args = FormatArguments();
@@ -279,16 +279,16 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (!self.getColour(WindowColour::primary).isTranslucent())
                     {
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3), Drawing::RectFlags::none);
-                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7), Drawing::RectFlags::none);
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3), Gfx::RectFlags::none);
+                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7), Gfx::RectFlags::none);
                     }
                     else
                     {
                         uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::primary).c()));
                         colour++; // Gets ExtColour::translucentXXX2 highlight
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, colour, Drawing::RectFlags::transparent);
+                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, colour, Gfx::RectFlags::transparent);
                         colour++; // Gets ExtColour::translucentXXX0 shadow
-                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, colour, Drawing::RectFlags::transparent);
+                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, colour, Gfx::RectFlags::transparent);
                     }
                 }
 

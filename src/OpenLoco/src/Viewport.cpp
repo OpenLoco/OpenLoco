@@ -1,8 +1,8 @@
 #include "Viewport.hpp"
 #include "Config.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -122,8 +122,8 @@ namespace OpenLoco::Ui
         drawingCtx.drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
         drawingCtx.drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
 
-        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
-        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(colour), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(colour), Gfx::RectFlags::transparent);
 
         char buffer[512]{};
 

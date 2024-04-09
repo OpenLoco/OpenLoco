@@ -1,7 +1,7 @@
 #include "Config.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             // Draw hover rectangle
             if (i == window.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 textColourId = StringIds::wcolour2_stringid;
             }
 

@@ -13,7 +13,7 @@ using namespace OpenLoco::Gfx;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Diagnostics;
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
     using SetPaletteFunc = void (*)(const PaletteEntry* palette, int32_t index, int32_t count);
 
@@ -166,7 +166,7 @@ namespace OpenLoco::Drawing
 
         int32_t pitch = _screenSurface->pitch;
 
-        auto& rt = Gfx::getScreenRT();
+        auto& rt = getScreenRT();
         if (rt.bits != nullptr)
         {
             delete[] rt.bits;
@@ -207,7 +207,7 @@ namespace OpenLoco::Drawing
     // Helper function until all users of set_palette_callback are implemented
     static void updatePaletteStatic(const PaletteEntry* entries, int32_t index, int32_t count)
     {
-        Gfx::getDrawingEngine().updatePalette(entries, index, count);
+        getDrawingEngine().updatePalette(entries, index, count);
     }
 
     void SoftwareDrawingEngine::createPalette()
@@ -281,7 +281,7 @@ namespace OpenLoco::Drawing
         }
 
         // Copy pixels from the virtual screen buffer to the surface
-        auto& rt = Gfx::getScreenRT();
+        auto& rt = getScreenRT();
         if (rt.bits != nullptr)
         {
             std::memcpy(_screenSurface->pixels, rt.bits, _screenSurface->pitch * _screenSurface->h);

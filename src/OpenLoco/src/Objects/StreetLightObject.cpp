@@ -1,6 +1,6 @@
 #include "StreetLightObject.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "ObjectImageTable.h"
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"

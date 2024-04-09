@@ -1,6 +1,5 @@
 #include "Audio/Audio.h"
 #include "Construction.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/Airports/CreateAirport.h"
 #include "GameCommands/Airports/RemoveAirport.h"
 #include "GameCommands/Docks/CreatePort.h"
@@ -11,6 +10,7 @@
 #include "GameCommands/Track/CreateTrainStation.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -991,7 +991,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self.x + 3;
         yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
-        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset);
+        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) == GhostVisibilityFlags::none)
             return;

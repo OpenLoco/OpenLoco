@@ -1,5 +1,5 @@
 #include "Ui/TextInput.h"
-#include "Drawing/SoftwareDrawingEngine.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include <OpenLoco/Interop/Interop.hpp>

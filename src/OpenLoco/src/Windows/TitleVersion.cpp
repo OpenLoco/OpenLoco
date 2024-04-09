@@ -1,5 +1,5 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"

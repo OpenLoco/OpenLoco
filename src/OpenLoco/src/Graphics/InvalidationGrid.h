@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 
-namespace OpenLoco::Drawing
+namespace OpenLoco::Gfx
 {
 #pragma pack(push, 1)
     struct ScreenInvalidationData

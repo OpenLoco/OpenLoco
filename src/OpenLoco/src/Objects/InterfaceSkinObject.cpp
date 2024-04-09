@@ -1,7 +1,7 @@
 #include "InterfaceSkinObject.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "ObjectImageTable.h"
 #include "ObjectStringTable.h"
 #include <OpenLoco/Interop/Interop.hpp>

@@ -1,11 +1,11 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Intro.h"
 #include "Localisation/FormatArguments.hpp"
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 if (self.rowHover == i)
                 {
-                    drawingCtx.drawRect(rt, 0, height, self.width, 38, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                    drawingCtx.drawRect(rt, 0, height, self.width, 38, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

@@ -1,9 +1,9 @@
 #include "Audio/Audio.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     if (row < 1)
                     {
                         auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 7);
-                        drawingCtx.drawRect(*rt, xPos, yPos + 26, 31, 1, colour, Drawing::RectFlags::none);
+                        drawingCtx.drawRect(*rt, xPos, yPos + 26, 31, 1, colour, Gfx::RectFlags::none);
                     }
                 }
                 xPos += 31;
@@ -896,7 +896,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
             drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
-            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
     }
 
@@ -905,7 +905,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Drawing::RectInsetFlags::none);
+        drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         self.draw(rt);
 
         drawTabs(&self, rt);
@@ -944,13 +944,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
-            drawingCtx.drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Drawing::RectFlags::none);
+            drawingCtx.drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            drawingCtx.drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Drawing::RectFlags::none);
+            drawingCtx.drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
 
         auto type = self.currentTab;
@@ -1050,7 +1050,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
             }
 
-            Drawing::RectInsetFlags flags = Drawing::RectInsetFlags::colourLight | Drawing::RectInsetFlags::fillDarker | Drawing::RectInsetFlags::borderInset;
+            Gfx::RectInsetFlags flags = Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset;
             drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
             uint8_t textColour = ControlCodes::Colour::black;
@@ -1061,7 +1061,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (entry.object._name == windowObjectName)
                 {
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;
                 }
             }

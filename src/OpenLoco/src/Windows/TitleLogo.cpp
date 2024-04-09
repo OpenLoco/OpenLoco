@@ -1,6 +1,6 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Widget.h"

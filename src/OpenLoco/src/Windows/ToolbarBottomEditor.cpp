@@ -1,7 +1,7 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "EditorController.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Widget.h"
@@ -68,17 +68,17 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
+            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
-        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Drawing::RectFlags::transparent);
+        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         self.draw(rt);
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
+            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
         }
-        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
         drawingCtx.drawStringCentred(*rt, point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);

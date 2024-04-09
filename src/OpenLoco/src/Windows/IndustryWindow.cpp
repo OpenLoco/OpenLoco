@@ -1,13 +1,13 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Industries/RemoveIndustry.h"
 #include "GameCommands/Industries/RenameIndustry.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -605,7 +605,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 FormatArguments args{};
                 args.push(yTick);
 
-                drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
+                drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
                 auto point = Point(self.x + 39, yPos - 6);
                 drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::population_graph_people, &args);
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
+                    drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->producedCargoMonthlyHistory1 : industry->producedCargoMonthlyHistory2;

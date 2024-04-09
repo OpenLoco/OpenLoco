@@ -1,13 +1,13 @@
 #include "Audio/Audio.h"
 #include "Config.h"
 #include "Date.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/Town/RemoveTown.h"
 #include "GameCommands/Town/RenameTown.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
+                drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
                 auto point = Point(xPos, yPos - 6);
                 drawingCtx.drawStringRight(*clipped, point, Colour::black, StringIds::population_graph_people, &args);
@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::Town
                         drawingCtx.drawStringCentred(*clipped, point, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Drawing::RectFlags::none);
+                    drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
                 }
 
                 // Draw population graph

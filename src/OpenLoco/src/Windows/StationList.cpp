@@ -1,7 +1,7 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // Highlight selection.
             if (stationId == StationId(window.rowHover))
             {
-                drawingCtx.drawRect(rt, 0, yPos, window.width, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, yPos, window.width, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 

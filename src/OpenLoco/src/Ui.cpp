@@ -1,5 +1,5 @@
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "GameStateFlags.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Ui/Cursor.h"
 #include <algorithm>
 #include <cmath>
@@ -30,10 +30,10 @@
 #pragma warning(default : 4121) // alignment of a member was sensitive to packing
 
 #include "Config.h"
-#include "Drawing/FPSCounter.h"
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
+#include "Graphics/FPSCounter.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui
         // Draw FPS counter?
         if (Config::get().showFPS)
         {
-            Drawing::drawFPS();
+            Gfx::drawFPS();
         }
 
         drawingEngine.present();

@@ -1,7 +1,7 @@
 #include "Config.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             StringId format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 format = StringIds::wcolour2_stringid;
             }
 

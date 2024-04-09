@@ -1,9 +1,9 @@
 #include "Audio/Audio.h"
 #include "Config.h"
-#include "Drawing/SoftwareDrawingEngine.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/Conversion.h"
 #include "Localisation/FormatArguments.hpp"
@@ -463,7 +463,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawSavePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
+        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto imageId = 0;
         auto g1 = Gfx::getG1Element(imageId);
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawLandscapePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Drawing::RectInsetFlags::borderInset | Drawing::RectInsetFlags::fillNone);
+        drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         if ((_previewScenarioOptions->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
         {
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
-                drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Drawing::RectFlags::none);
+                drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
             }
         }
     }
@@ -621,7 +621,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto stringId = StringIds::black_stringid;
             if (i == window.var_85A)
             {
-                drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, enumValue(ExtColour::unk30), Drawing::RectFlags::transparent);
+                drawingCtx.drawRect(rt, 0, y, window.width, lineHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 stringId = StringIds::wcolour2_stringid;
             }
 
