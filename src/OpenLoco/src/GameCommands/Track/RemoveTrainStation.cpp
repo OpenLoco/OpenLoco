@@ -13,8 +13,6 @@
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<bool, 0x0112C7A9> _112C7A9;
-
     // TODO: based on CreateTrainStation.cpp
     static World::TrackElement* getElTrack(World::Pos3 pos, uint8_t rotation, uint8_t trackObjectId, uint8_t trackId, uint8_t index)
     {
@@ -55,7 +53,7 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
-        _112C7A9 = true;
+        bool updateStationTileRegistration = true;
 
         auto* initialElTrack = getElTrack(args.pos, args.rotation, args.type, args.trackId, args.index);
         if (initialElTrack == nullptr)
@@ -87,7 +85,7 @@ namespace OpenLoco::GameCommands
 
             if (elTrack == nullptr)
             {
-                if (_112C7A9 && (flags & Flags::apply) != 0)
+                if (updateStationTileRegistration && (flags & Flags::apply) != 0)
                 {
                     auto* station = StationManager::get(foundStationId);
                     removeTileFromStation(foundStationId, trackStart, args.rotation);
@@ -110,7 +108,7 @@ namespace OpenLoco::GameCommands
                     return FAILURE;
 
                 if (stationEl->isAiAllocated())
-                    _112C7A9 = false;
+                    updateStationTileRegistration = false;
 
                 foundStationId = stationEl->stationId();
 

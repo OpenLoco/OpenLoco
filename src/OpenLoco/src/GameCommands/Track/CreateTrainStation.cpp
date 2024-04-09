@@ -16,7 +16,6 @@
 namespace OpenLoco::GameCommands
 {
     static loco_global<StationId, 0x0112C730> _lastPlacedTrackStationId;
-    static loco_global<bool, 0x0112C7A9> _112C7A9;
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
@@ -175,6 +174,7 @@ namespace OpenLoco::GameCommands
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3(16, 16, 0));
+        bool updateStationTileRegistration = false;
 
         _lastPlacedTrackStationId = StationId::null;
         _lastConstructedAdjoiningStationCentrePos = World::Pos2(-1, -1);
@@ -263,7 +263,7 @@ namespace OpenLoco::GameCommands
                         _lastPlacedTrackStationId = nearbyStationId;
                         break;
                 }
-                _112C7A9 = true;
+                updateStationTileRegistration = true;
             }
             else
             {
@@ -453,7 +453,7 @@ namespace OpenLoco::GameCommands
                     auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
                     elTrack->setClearZ(elTrack->clearZ() - oldStationObj->height / World::kSmallZStep);
                     elStation->setMultiTileIndex(0);
-                    _112C7A9 = false;
+                    updateStationTileRegistration = false;
                     Ui::ViewportManager::invalidate(trackLoc, elStation->baseHeight(), elStation->clearHeight());
                     newStationElement = elStation;
                 }
@@ -500,7 +500,7 @@ namespace OpenLoco::GameCommands
         }
         if (!(flags & Flags::ghost) && (flags & Flags::apply))
         {
-            if (_112C7A9)
+            if (updateStationTileRegistration)
             {
                 addTileToStation(_lastPlacedTrackStationId, trackStart, args.rotation);
             }
