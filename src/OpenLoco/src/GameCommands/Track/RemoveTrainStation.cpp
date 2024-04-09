@@ -1,8 +1,13 @@
 #include "RemoveTrainStation.h"
+#include "Economy/Economy.h"
+#include "Map/StationElement.h"
 #include "Map/TileElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
+#include "Objects/ObjectManager.h"
+#include "Objects/TrainStationObject.h"
+#include "ViewportManager.h"
 #include "World/Station.h"
 #include "World/StationManager.h"
 
@@ -78,6 +83,8 @@ namespace OpenLoco::GameCommands
 
             auto* elTrack = getElTrack(trackLoc, args.rotation, args.type, args.trackId, piece.index);
 
+            // add dx, [ebp+edi+5] ???
+
             if (elTrack == nullptr)
             {
                 if (_112C7A9 && (flags & Flags::apply) != 0)
@@ -97,10 +104,30 @@ namespace OpenLoco::GameCommands
             }
             else
             {
-                // loc_48C572
+                auto* nextEl = elTrack->next();
+                auto* stationEl = nextEl->as<World::StationElement>();
+                if (stationEl == nullptr)
+                    return FAILURE;
 
-                // add dx, [ebp+edi+5] ???
+                if (stationEl->isAiAllocated())
+                    _112C7A9 = false;
 
+                foundStationId = stationEl->stationId();
+
+                auto* stationObj = ObjectManager::get<TrainStationObject>(stationEl->objectId());
+                auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
+                const auto cost = (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
+                totalCost += cost;
+
+                if ((flags & Flags::apply) != 0)
+                {
+                    elTrack->setClearZ(elTrack->clearZ() - stationObj->height);
+                    Ui::ViewportManager::invalidate(World::Pos2(args.pos), stationEl->baseZ(), stationEl->clearZ(), ZoomLevel::eighth);
+                    elTrack->setHasStationElement(false);
+                    World::TileManager::removeElement(*nextEl);
+                }
+
+                // ebp += 0x10 ??
             }
         }
 
