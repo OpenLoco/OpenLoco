@@ -140,15 +140,6 @@ namespace OpenLoco::GameCommands
         return nullptr;
     }
 
-    // 0x0048D794
-    static void sub_48D794(Station& station)
-    {
-        // ?? Probably work out station multi tile index's
-        registers regs;
-        regs.esi = X86Pointer(&station);
-        call(0x0048D794, regs);
-    }
-
     // 0x0048BAC2
     static World::TileClearance::ClearFuncResult clearFuncAiReservation(World::TileElement& el, World::TrackElement& elReferenceTrack)
     {

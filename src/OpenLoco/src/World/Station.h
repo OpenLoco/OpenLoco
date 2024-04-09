@@ -155,8 +155,11 @@ namespace OpenLoco
     void recalculateStationCenter(const StationId stationId);
     void recalculateStationModes(const StationId stationId);
     void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
+    void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 
     World::StationElement* getStationElement(const World::Pos3& pos);
 
     std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node);
+
+    void sub_48D794(const Station& station);
 }

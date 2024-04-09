@@ -1055,6 +1055,40 @@ namespace OpenLoco
         }
     }
 
+    // 0x0048F482
+    void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
+    {
+        auto* station = StationManager::get(stationId);
+        auto findPos = pos;
+        findPos.z |= rotation;
+
+        // Bug mitigation: ensure stationTileSize does not exceed the actual array length
+        station->stationTileSize = std::clamp<uint16_t>(station->stationTileSize, 0, std::size(station->stationTiles));
+
+        // Find tile to remove
+        auto tileIndex = std::find(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
+        if (tileIndex == std::end(station->stationTiles))
+            return;
+
+        // Remove tile by moving the remaining tiles over the one to remove
+        std::remove(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
+        station->stationTileSize--;
+
+        // Recalculate accepted cargo
+        CargoSearchState cargoSearchState;
+        const auto acceptedCargos = station->calcAcceptedCargo(cargoSearchState);
+
+        // Reset cargo acceptance stats for this station
+        for (auto cargoId = 0U; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
+        {
+            auto& stats = station->cargoStats[cargoId];
+            stats.industryId = cargoSearchState.getIndustry(cargoId);
+
+            bool isAccepted = (acceptedCargos & (1 << cargoId)) != 0;
+            stats.isAccepted(isAccepted);
+        }
+    }
+
     // 0x00491C6F
     void sub_491C6F(const uint8_t type, const Pos2& pos, const uint8_t rotation, const CatchmentFlags flag)
     {
@@ -1153,5 +1187,14 @@ namespace OpenLoco
             }
         }
         return { nodeLoc };
+    }
+
+    // 0x0048D794
+    void sub_48D794(const Station& station)
+    {
+        // ?? Probably work out station multi tile indexes
+        registers regs;
+        regs.esi = X86Pointer(&station);
+        call(0x0048D794, regs);
     }
 }
