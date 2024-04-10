@@ -6,8 +6,8 @@
 #include "Localisation/StringIds.h"
 #include "SceneManager.h"
 #include "Ui/Widget.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <array>

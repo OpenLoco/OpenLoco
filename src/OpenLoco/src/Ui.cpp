@@ -44,8 +44,8 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>

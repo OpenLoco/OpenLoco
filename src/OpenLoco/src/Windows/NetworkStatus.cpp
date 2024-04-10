@@ -5,8 +5,8 @@
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 
 #include <string>
 #include <string_view>

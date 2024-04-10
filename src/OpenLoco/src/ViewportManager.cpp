@@ -6,8 +6,8 @@
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 #include "World/Station.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
