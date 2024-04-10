@@ -46,7 +46,7 @@ namespace OpenLoco
         const ImageAndHeight* frameInfoType0; // 0x16
         const ImageAndHeight* frameInfoType1; // 0x1A
         uint8_t numSoundEffects;              // 0x1E
-        SoundObjectId_t soundEffects[9];      // 0x1F
+        SoundObjectId_t soundEffects[9];      // 0x1F, size tbc, see https://github.com/OpenLoco/OpenLoco/pull/2405#discussion_r1555206249
 
         // 0x00440DDE
         bool validate() const { return true; }
