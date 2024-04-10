@@ -13,6 +13,7 @@
 #include "S5/S5.h"
 #include "SceneManager.h"
 #include "Ui.h"
+#include "Ui/ProgressBar.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Stream.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
@@ -274,6 +275,9 @@ namespace OpenLoco::ScenarioManager
     // 0x004447DF
     static void createIndex(const ScenarioFolderState& currentState)
     {
+        Ui::processMessagesMini();
+        Ui::ProgressBar::begin(StringIds::checkingScenarioFiles);
+
         auto indexAllocSize = _scenarioHeader->numScenarios;
         if (_scenarioList == reinterpret_cast<ScenarioIndexEntry*>(-1) || _scenarioList == nullptr)
         {
@@ -297,6 +301,7 @@ namespace OpenLoco::ScenarioManager
         }
 
         const auto scenarioPath = Environment::getPathNoWarning(Environment::PathId::scenarios);
+        auto numScenariosDetected = 0;
         for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
         {
             if (!file.is_regular_file())
@@ -307,7 +312,27 @@ namespace OpenLoco::ScenarioManager
             {
                 continue;
             }
+
+            numScenariosDetected++;
+        }
+
+        auto currentScenarioOffset = 0;
+        for (const auto& file : fs::directory_iterator(scenarioPath, fs::directory_options::skip_permission_denied))
+        {
+            if (!file.is_regular_file())
+            {
+                continue;
+            }
+            if (!Utility::iequals(file.path().extension().u8string(), ".sc5"))
+            {
+                continue;
+            }
+
             Ui::processMessagesMini();
+
+            currentScenarioOffset++;
+            auto currentScenarioProgress = currentScenarioOffset * 225 / numScenariosDetected;
+            Ui::ProgressBar::setProgress(currentScenarioProgress);
 
             const auto u8FileName = file.path().filename().u8string();
             auto foundId = findScenario(u8FileName);
@@ -365,7 +390,10 @@ namespace OpenLoco::ScenarioManager
         std::sort(*_scenarioList, *_scenarioList + _scenarioHeader->numScenarios, [](const ScenarioIndexEntry& lhs, const ScenarioIndexEntry& rhs) {
             return strcmp(lhs.scenarioName, rhs.scenarioName) < 0;
         });
+
+        Ui::ProgressBar::setProgress(240);
         saveIndex();
+        Ui::ProgressBar::end();
     }
 
     // 0x0044452F

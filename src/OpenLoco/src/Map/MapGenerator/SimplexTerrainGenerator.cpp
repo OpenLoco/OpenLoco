@@ -1,5 +1,6 @@
 #include "SimplexTerrainGenerator.h"
 #include "S5/S5.h"
+#include "Ui/ProgressBar.h"
 #include <algorithm>
 
 using namespace OpenLoco::S5;
@@ -60,6 +61,8 @@ namespace OpenLoco::World::MapGenerator
     void SimplexTerrainGenerator::generate(const SimplexSettings& settings, HeightMapRange heightMap)
     {
         generateSimplex(settings, heightMap);
+        Ui::ProgressBar::setProgress(15);
+
         smooth(settings.smooth, heightMap);
     }
 
@@ -82,6 +85,12 @@ namespace OpenLoco::World::MapGenerator
 
     void SimplexTerrainGenerator::smooth(int32_t iterations, HeightMapRange heightMap)
     {
+        if (iterations == 0)
+            return;
+
+        const auto progressSteps = (25 - 15) / iterations;
+        auto currentProgress = 15;
+
         for (int32_t i = 0; i < iterations; i++)
         {
             auto copyHeight = heightMap;
@@ -100,6 +109,9 @@ namespace OpenLoco::World::MapGenerator
                     heightMap[{ x, y }] = total / 9;
                 }
             }
+
+            currentProgress += progressSteps;
+            Ui::ProgressBar::setProgress(currentProgress);
         }
     }
 

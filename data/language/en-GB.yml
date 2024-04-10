@@ -185,8 +185,8 @@ strings:
   171: Too many objects in game
   172: Rotate Clockwise
   173: Rotate Anti-Clockwise
-  174: "OpenLoco: Starting for the first time..."
-  175: "OpenLoco: Checking object files..."
+  174: "Starting for the first time..."
+  175: "Checking object files..."
   176: Load Game
   177: Quit Game
   178: Quit Game
@@ -2397,3 +2397,4 @@ strings:
   2342: "Browse..."
   2343: "{COLOUR WINDOW_2}Current heightmap file: {COLOUR BLACK}{STRING}"
   2344: "(none selected)"
+  2345: "Checking scenario files..."

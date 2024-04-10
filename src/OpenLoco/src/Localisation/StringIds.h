@@ -1975,6 +1975,7 @@ namespace OpenLoco::StringIds
     constexpr StringId button_browse = 2342;
     constexpr StringId currentHeightmapFile = 2343;
     constexpr StringId noneSelected = 2344;
+    constexpr StringId checkingScenarioFiles = 2345;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

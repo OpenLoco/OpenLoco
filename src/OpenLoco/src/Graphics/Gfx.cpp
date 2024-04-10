@@ -248,7 +248,9 @@ namespace OpenLoco::Gfx
 
         if (Ui::dirtyBlocksInitialised())
         {
-            getDrawingEngine().render();
+            auto& drawingEngine = Gfx::getDrawingEngine();
+            drawingEngine.render();
+            drawingEngine.present();
         }
 
         if (Input::hasFlag(Input::Flags::rightMousePressed))

@@ -281,33 +281,35 @@ namespace OpenLoco
         std::srand(std::time(nullptr));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE); // getSystemTime unused dead code?
+
         World::TileManager::allocateMapElements();
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
-        Ui::ProgressBar::begin(StringIds::loading);
-        Ui::ProgressBar::setProgress(30);
         startupChecks();
-        Ui::ProgressBar::setProgress(40);
-        Ui::ProgressBar::end();
-        ObjectManager::loadIndex();
-        ScenarioManager::loadIndex();
-        Ui::ProgressBar::begin(StringIds::loading);
-        Ui::ProgressBar::setProgress(60);
+
         Gfx::loadG1();
-        Ui::ProgressBar::setProgress(220);
         Gfx::initialiseCharacterWidths();
         Gfx::initialiseNoiseMaskMap();
-        Ui::ProgressBar::setProgress(235);
-        Ui::ProgressBar::setProgress(250);
-        Ui::initialiseCursors();
-        Ui::ProgressBar::end();
+
         Ui::initialise();
+        Ui::initialiseCursors();
         initialiseViewports();
+        Gui::init();
+
         Title::sub_4284C8();
         call(0x004969DA); // getLocalTime not used (dead code?)
         Scenario::reset();
+
+        Gfx::loadDefaultPalette();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.clearSingle(Gfx::getScreenRT(), PaletteIndex::index_0A);
+
         setScreenFlag(ScreenFlags::initialised);
+
+        ObjectManager::loadIndex();
+        ScenarioManager::loadIndex();
+
         const auto& cmdLineOptions = getCommandLineOptions();
         if (cmdLineOptions.action == CommandLineAction::intro)
         {
@@ -317,10 +319,8 @@ namespace OpenLoco
         {
             Intro::state(Intro::State::end);
         }
+
         Title::start();
-        Gui::init();
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.clear(Gfx::getScreenRT(), 0x0A0A0A0A);
     }
 
     static void loadFile(const fs::path& path)
