@@ -173,7 +173,6 @@ namespace OpenLoco::World::TileManager
         return *_F00158 == kInvalidTile;
     }
 
-
     TileElement** getElementIndex()
     {
         return _tiles.get();
