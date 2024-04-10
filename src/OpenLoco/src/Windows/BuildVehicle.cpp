@@ -1225,12 +1225,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
 
         // Draw search box cursor, blinking
-        if ((inputSession.cursorFrame % 32) < 16)
+        if (Input::isFocused(self.type, self.number, widx::searchBox) && (inputSession.cursorFrame % 32) < 16)
         {
             // We draw the string again to figure out where the cursor should go; position.x will be adjusted
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
-            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+            position = drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
             drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
     }
@@ -1809,6 +1809,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
     {
+        if (!Input::isFocused(w.type, w.number, widx::searchBox))
+            return false;
+
         if (!inputSession.handleInput(charCode, keyCode))
             return false;
 

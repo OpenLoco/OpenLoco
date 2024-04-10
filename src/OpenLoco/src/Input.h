@@ -41,6 +41,7 @@ namespace OpenLoco::Input
         rightMousePressed = 1U << 5,
         flag6 = 1U << 6,
         viewportScrolling = 1U << 7,
+        widgetFocused = 1U << 8,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(Flags);
 
@@ -76,6 +77,11 @@ namespace OpenLoco::Input
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index);
     Ui::WidgetIndex_t getPressedWidgetIndex();
     void setPressedWidgetIndex(Ui::WidgetIndex_t index);
+
+    bool isFocused(Ui::WindowType type, Ui::WindowNumber_t number);
+    bool isFocused(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index);
+    void setFocus(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index);
+    void resetFocus();
 
     void updateCursorPosition();
 

@@ -104,6 +104,10 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x005233AE> _5233AE;
     static loco_global<uint32_t, 0x005233B2> _5233B2;
 
+    static Ui::WindowType _focusedWindowType;
+    static Ui::WindowNumber_t _focusedWindowNumber;
+    static Ui::WidgetIndex_t _focusedWidgetIndex;
+
     static loco_global<uint32_t, 0x005251C8> _rightMouseButtonStatus;
 
     static loco_global<StationId, 0x00F252A4> _hoveredStationId;
@@ -145,6 +149,7 @@ namespace OpenLoco::Input
 
         _tooltipNotShownTicks = 0xFFFFU;
         _hoverWindowType = Ui::WindowType::undefined;
+        _focusedWindowType = Ui::WindowType::undefined;
 
         _5233AE = 0;
         _5233B2 = 0;
@@ -229,6 +234,40 @@ namespace OpenLoco::Input
     void setPressedWidgetIndex(Ui::WidgetIndex_t index)
     {
         _pressedWidgetIndex = index;
+    }
+
+    bool isFocused(Ui::WindowType type, Ui::WindowNumber_t number)
+    {
+        if (!hasFlag(Flags::widgetFocused))
+            return false;
+
+        if (_focusedWindowType != type)
+            return false;
+
+        if (_focusedWindowNumber != number)
+            return false;
+
+        return true;
+    }
+
+    bool isFocused(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index)
+    {
+        return isFocused(type, number) && _focusedWidgetIndex == index;
+    }
+
+    void setFocus(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index)
+    {
+        _focusedWindowType = type;
+        _focusedWindowNumber = number;
+        _focusedWidgetIndex = index;
+
+        setFlag(Flags::widgetFocused);
+    }
+
+    void resetFocus()
+    {
+        _focusedWindowType = WindowType::undefined;
+        resetFlag(Flags::widgetFocused);
     }
 
     // 0x004C6E65
@@ -1245,6 +1284,16 @@ namespace OpenLoco::Input
             return;
         }
 
+        // Handle text input focus
+        if (widget->type == WidgetType::textbox)
+        {
+            setFocus(window->type, window->number, widgetIndex);
+            WindowManager::invalidateWidget(_focusedWindowType, _focusedWindowNumber, _focusedWidgetIndex);
+        }
+        else
+            resetFocus();
+
+        // Regular widget handling
         switch (widget->type)
         {
             case Ui::WidgetType::caption_22:
