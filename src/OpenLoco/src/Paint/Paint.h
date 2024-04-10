@@ -483,10 +483,10 @@ namespace OpenLoco::Paint
 
         // Different globals that don't really belong to PaintSession.
         inline static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C077> _tunnels0; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0BB> _tunnels1; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
-        inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C077> _tunnels0; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0BB> _tunnels1; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C0FF> _tunnels2; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
+        inline static Interop::loco_global<TunnelEntry[33], 0x0050C143> _tunnels3; // There are only 32 entries but 33 and -1 are also writeable for marking the end/start
         inline static Interop::loco_global<BridgeEntry, 0x00525CE4> _bridgeEntry;
         inline static Interop::loco_global<SegmentFlags, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;

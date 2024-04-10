@@ -55,7 +55,7 @@ namespace OpenLoco::Paint
             const std::array<uint8_t, 4>& _bridgeType,
             const std::array<int16_t, 4>& _tunnelHeights,
             const std::array<SegmentFlags, 4>& _segments,
-            bool _isMergable)
+            bool _isMergeable)
             : imageIndexOffsets(_imageIndexOffsets)
             , boundingBoxOffsets(_boundingBoxOffsets)
             , boundingBoxSizes(_boundingBoxSizes)
@@ -63,7 +63,7 @@ namespace OpenLoco::Paint
             , bridgeQuarters(_bridgeQuarters)
             , bridgeType(_bridgeType)
             , segments(_segments)
-            , isMergable(_isMergable)
+            , isMergeable(_isMergeable)
         {
             tunnelHeights = {};
             tunnelHeights[0] = _tunnelHeights;
@@ -86,7 +86,7 @@ namespace OpenLoco::Paint
             , bridgeType(_bridgeType)
             , tunnelHeights()
             , segments()
-            , isMergable(true)
+            , isMergeable(true)
         {
             tunnelHeights[0] = _tunnelHeights;
             bridgeEdges[0] = _bridgeEdges;
@@ -113,7 +113,7 @@ namespace OpenLoco::Paint
             , bridgeType(_bridgeType)
             , tunnelHeights()
             , segments()
-            , isMergable(false)
+            , isMergeable(false)
         {
             imageIndexOffsets[0][0] = _imageIndexOffsets[0];
             imageIndexOffsets[1][0] = _imageIndexOffsets[1];
@@ -136,7 +136,7 @@ namespace OpenLoco::Paint
         std::array<uint8_t, 4> bridgeType;
         std::array<std::array<int16_t, 4>, 4> tunnelHeights;
         std::array<SegmentFlags, 4> segments;
-        bool isMergable;
+        bool isMergeable;
     };
 
     constexpr int16_t kNoTunnel = -1;
@@ -197,7 +197,7 @@ namespace OpenLoco::Paint
                 reference.segments[rotationTable[2]],
                 reference.segments[rotationTable[3]],
             },
-            reference.isMergable
+            reference.isMergeable
         };
     }
 

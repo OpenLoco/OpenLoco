@@ -823,7 +823,7 @@ namespace OpenLoco::Ui::WindowManager
         }
 
         const auto right = window->x + window->width;
-        // If window is almost offscreen to the left
+        // If window is almost off-screen to the left
         if (right < 20)
         {
             const auto shiftRight = 20 - window->x;

@@ -1337,7 +1337,7 @@ namespace OpenLoco
 
         auto& prng = gPrng1();
         const auto randPick = prng.randNext();
-        // Random tile position 32x32 tiles centered on 0,0 i.e. +-16 tiles
+        // Random tile position 32x32 tiles centred on 0,0 i.e. +-16 tiles
         const auto randPos = World::Pos2{
             static_cast<coord_t>(randPick & 0x3E0),
             static_cast<coord_t>(std::rotr<uint32_t>(randPick, 5) & 0x3E0)

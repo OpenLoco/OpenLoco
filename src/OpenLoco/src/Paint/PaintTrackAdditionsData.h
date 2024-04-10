@@ -15,7 +15,7 @@ namespace OpenLoco::Paint
             std::array<uint32_t, 4> imageIds;
             std::array<World::Pos3, 4> boundingBoxOffsets;
             std::array<World::Pos3, 4> boundingBoxSizes;
-            bool isIsMergable;
+            bool isIsMergeable;
         };
         constexpr std::array<uint8_t, 4> kRotationTable1230 = { 1, 2, 3, 0 };
         constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
@@ -42,7 +42,7 @@ namespace OpenLoco::Paint
                     reference.boundingBoxSizes[rotationTable[2]],
                     reference.boundingBoxSizes[rotationTable[3]],
                 },
-                reference.isIsMergable
+                reference.isIsMergeable
             };
         }
 
@@ -68,7 +68,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 22, 1 },
                 World::Pos3{ 22, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 1> kStraightTPPA = {
@@ -95,7 +95,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420F17, 0x0042101F, 0x00421127, 0x0042122F
@@ -118,7 +118,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420F59, 0x00421061, 0x00421169, 0x00421271
@@ -141,7 +141,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420F9B, 0x004210A3, 0x004211AB, 0x004212B3
@@ -164,7 +164,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kDiagonalTPPA = {
@@ -194,7 +194,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 1> kRightCurveVerySmallTPPA = {
@@ -227,7 +227,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0041E888, 0x0041E984, 0x0041EA80, 0x0041EB7C
@@ -250,7 +250,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0041E8C7, 0x0041E9C3, 0x0041EABF, 0x0041EBBB
@@ -273,7 +273,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0041E906, 0x0041EA02, 0x0041EAFE, 0x0041EBFA
@@ -296,7 +296,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallTPPA = {
@@ -341,7 +341,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0041FF4C, 0x00420087, 0x004201C2, 0x004202FD
@@ -364,7 +364,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0041FF8B, 0x004200C6, 0x00420201, 0x0042033C
@@ -387,7 +387,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0041FFCA, 0x00420105, 0x00420240, 0x0042037B
@@ -410,7 +410,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 28, 1 },
                 World::Pos3{ 28, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420009, 0x00420144, 0x0042027F, 0x004203BA
@@ -433,7 +433,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveTPPA = {
@@ -482,7 +482,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x004209D3, 0x00420B1D, 0x00420C67, 0x00420DB1
@@ -505,7 +505,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420A15, 0x00420B5F, 0x00420CA9, 0x00420DF3
@@ -528,7 +528,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420A57, 0x00420BA1, 0x00420CEB, 0x00420E35
@@ -551,7 +551,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420A99, 0x00420BE3, 0x00420D2D, 0x00420E77
@@ -574,7 +574,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 5> kRightCurveLargeTPPA = {
@@ -605,7 +605,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x004204AB, 0x004205F5, 0x0042073F, 0x00420889
@@ -628,7 +628,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x004204ED, 0x00420637, 0x00420781, 0x004208CB
@@ -651,7 +651,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0042052F, 0x00420679, 0x004207C3, 0x0042090D
@@ -674,7 +674,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00420571, 0x004206BB, 0x00420805, 0x0042094F
@@ -697,7 +697,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 5> kLeftCurveLargeTPPA = {
@@ -764,7 +764,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x004216EC, 0x004217E8, 0x00421923, 0x00421A1F
@@ -787,7 +787,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0042172B, 0x00421827, 0x004218E4, 0x004219E0
@@ -810,7 +810,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 24, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x0042176A, 0x00421866, 0x004218A5, 0x004219A1
@@ -833,7 +833,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kSBendLeftTPPA = {
@@ -863,7 +863,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00421ADC, 0x00421BD8, 0x00421D13, 0x00421E0F
@@ -886,7 +886,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00421B1B, 0x00421C17, 0x00421CD4, 0x00421DD0
@@ -909,7 +909,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         // 0x00421B5A, 0x00421C56, 0x00421C95, 0x00421D91
@@ -932,7 +932,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kSBendRightTPPA = {
@@ -962,7 +962,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x00421373, 0x004213FF, 0x0042148B, 0x00421517
@@ -985,7 +985,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 2> kStraightSlopeUpTPPA = {
@@ -1022,7 +1022,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 1> kStraightSteepSlopeUpTPPA = {
@@ -1055,7 +1055,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041ECEF, 0x0041EE07, 0x0041EF1F, 0x0041F037
@@ -1078,7 +1078,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041ED35, 0x0041EE4D, 0x0041EF65, 0x0041F07D
@@ -1101,7 +1101,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041ED7B, 0x0041EE93, 0x0041EFAB, 0x0041F0C3
@@ -1124,7 +1124,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeUpTPPA = {
@@ -1154,7 +1154,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041F14F, 0x0041F267, 0x0041F37F, 0x0041F497
@@ -1177,7 +1177,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041F195, 0x0041F2AD, 0x0041F3C5, 0x0041F4DD
@@ -1200,7 +1200,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041F1DB, 0x0041F2F3, 0x0041F40B, 0x0041F523
@@ -1223,7 +1223,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSlopeDownTPPA = {
@@ -1283,7 +1283,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041F61F, 0x0041F737, 0x0041F84F, 0x0041F96A
@@ -1306,7 +1306,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041F665, 0x0041F77D, 0x0041F895, 0x0041F9B3
@@ -1329,7 +1329,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041F6AB, 0x0041F7C3, 0x0041F8DB, 0x0041F9FC
@@ -1352,7 +1352,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeUpTPPA = {
@@ -1382,7 +1382,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041FA8E, 0x0041FBB2, 0x0041FCD6, 0x0041FDFA
@@ -1405,7 +1405,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041FAD7, 0x0041FBFB, 0x0041FD1F, 0x0041FE43
@@ -1428,7 +1428,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         // 0x0041FB20, 0x0041FC44, 0x0041FD68, 0x0041FE8C
@@ -1451,7 +1451,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
         };
 
         constexpr std::array<TrackPaintAdditionPiece, 4> kRightCurveSmallSteepSlopeDownTPPA = {
@@ -1569,7 +1569,7 @@ namespace OpenLoco::Paint
             std::array<uint32_t, 4> imageIds;
             std::array<World::Pos3, 4> boundingBoxOffsets;
             std::array<World::Pos3, 4> boundingBoxSizes;
-            bool isIsMergable;
+            bool isIsMergeable;
             std::optional<TrackAdditionSupport> supports;
         };
         constexpr std::array<uint8_t, 4> kRotationTable1230 = { 1, 2, 3, 0 };
@@ -1629,7 +1629,7 @@ namespace OpenLoco::Paint
                     reference.boundingBoxSizes[rotationTable[2]],
                     reference.boundingBoxSizes[rotationTable[3]],
                 },
-                reference.isIsMergable,
+                reference.isIsMergeable,
                 rotateTrackPPASupport(reference.supports, rotationTable)
             };
         }
@@ -1656,7 +1656,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 22, 1 },
                 World::Pos3{ 22, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -1694,7 +1694,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1722,7 +1722,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1753,7 +1753,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1787,7 +1787,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -1825,7 +1825,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
@@ -1881,7 +1881,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1905,7 +1905,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportRightCurve1NE, kSupportConnectorRightCurve1NE },
@@ -1939,7 +1939,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 14, 1 },
                 World::Pos3{ 14, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -1963,7 +1963,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 14, 28, 1 },
                 World::Pos3{ 28, 14, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportRightCurve3NE, kSupportConnectorRightCurve3NE },
@@ -1997,7 +1997,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2047,7 +2047,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2071,7 +2071,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2109,7 +2109,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2141,7 +2141,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2165,7 +2165,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 14, 1 },
                 World::Pos3{ 14, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0SW, kSupportConnectorStraight0SW },
@@ -2203,7 +2203,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 28, 1 },
                 World::Pos3{ 28, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2271,7 +2271,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2295,7 +2295,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportRightCurve3SE, kSupportConnectorRightCurve3SE },
@@ -2329,7 +2329,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 24, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportRightCurve3NW, kSupportConnectorRightCurve3NW },
@@ -2363,7 +2363,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2394,7 +2394,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2418,7 +2418,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 24, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportRightCurve1NE, kSupportConnectorRightCurve1NE },
@@ -2452,7 +2452,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 26, 1 },
                 World::Pos3{ 26, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportRightCurve1SW, kSupportConnectorRightCurve1SW },
@@ -2486,7 +2486,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 27, 1 },
                 World::Pos3{ 27, 28, 1 },
             },
-            /* Mergable */ true,
+            /* Mergeable */ true,
             /* Supports */ kNoSupports,
         };
 
@@ -2517,7 +2517,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2551,7 +2551,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2599,7 +2599,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2643,7 +2643,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2681,7 +2681,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
@@ -2722,7 +2722,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2760,7 +2760,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
@@ -2831,7 +2831,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2869,7 +2869,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },
@@ -2910,7 +2910,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 28, 20, 1 },
                 World::Pos3{ 20, 28, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0NE, kSupportConnectorStraight0NE },
@@ -2948,7 +2948,7 @@ namespace OpenLoco::Paint
                 World::Pos3{ 20, 28, 1 },
                 World::Pos3{ 28, 20, 1 },
             },
-            /* Mergable */ false,
+            /* Mergeable */ false,
             /* Supports */ TrackAdditionSupport{
                 /* ImageIds */ std::array<std::array<uint32_t, 2>, 4>{
                     std::array<uint32_t, 2>{ kSupportStraight0SE, kSupportConnectorStraight0SE },

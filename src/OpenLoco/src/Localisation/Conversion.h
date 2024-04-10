@@ -12,7 +12,7 @@ namespace OpenLoco::Localisation
 
     namespace LocoChar
     {
-        // Polish characters (uppercase)
+        // Polish characters (upper-case)
         constexpr uint8_t a_ogonek_uc = 159; // 0x9F
         constexpr uint8_t c_acute_uc = 162;  // 0xA2
         constexpr uint8_t e_ogonek_uc = 166; // 0xA6
@@ -41,7 +41,7 @@ namespace OpenLoco::Localisation
         constexpr uint8_t air = 183;
         constexpr uint8_t water = 184;
 
-        // Polish characters (lowercase)
+        // Polish characters (lower-case)
         constexpr uint8_t a_ogonek = 221; // 0xDD
         constexpr uint8_t c_acute = 222;  // 0xDE
         constexpr uint8_t e_ogonek = 230; // 0xE6

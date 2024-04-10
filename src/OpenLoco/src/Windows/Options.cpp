@@ -2733,7 +2733,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     static void sub_4BF935()
     {
-        // TODO: implement simiplified ObjectManager::markInUseObjects that doesn't do the inUse part only the loaded part
+        // TODO: implement simplified ObjectManager::markInUseObjects that doesn't do the inUse part only the loaded part
         call(0x004BF935);
     }
 

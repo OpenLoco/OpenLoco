@@ -60,7 +60,7 @@ namespace OpenLoco::GameCommands
         }
 
         // Any other company also using the same competitor?
-        // (This shouldn't happen, but might've been hacked in)
+        // (This shouldn't happen, but might have been hacked in)
         bool otherCompanyUsingOldCompetitor = false;
         for (auto& company : CompanyManager::companies())
         {

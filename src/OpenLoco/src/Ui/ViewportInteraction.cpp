@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         buffer = station->getStatusString(buffer);
 
         buffer = StringManager::formatString(buffer, StringIds::station_accepts);
-        bool seperator = false; // First cargo item does not need a seperator
+        bool seperator = false; // First cargo item does not need a separator
         for (uint32_t cargoId = 0; cargoId < kMaxCargoStats; cargoId++)
         {
             auto& stats = station->cargoStats[cargoId];
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = res.first;
         }
 
-        // TODO: Rework so that getting the interaction arguments and getting the map tooltip format arguments are seperated
+        // TODO: Rework so that getting the interaction arguments and getting the map tooltip format arguments are separated
         bool success = false;
         switch (interaction.type)
         {

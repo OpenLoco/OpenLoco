@@ -754,7 +754,7 @@ namespace OpenLoco::Gfx
             Ui::Point pos = origin;
             while (true)
             {
-                // When offscreen in y dimension don't draw text
+                // When off-screen in y dimension don't draw text
                 // In original this check only performed if pos.y updated instead of every loop
                 bool offscreen = true;
                 if (pos.y + 19 > rt->y)
@@ -955,7 +955,7 @@ namespace OpenLoco::Gfx
                     default:
                         if (!offscreen)
                         {
-                            // When offscreen in the y dimension there is no requirement to keep pos.x correct
+                            // When off-screen in the y dimension there is no requirement to keep pos.x correct
                             if (chr >= 32)
                             {
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
@@ -1480,7 +1480,7 @@ namespace OpenLoco::Gfx
                 {
                     break;
                 }
-                // When offscreen in y dimension don't draw text
+                // When off-screen in y dimension don't draw text
                 // In original this check only performed if pos.y updated instead of every loop
                 bool offscreen = true;
                 if (pos.y + 19 > rt.y)
@@ -1678,7 +1678,7 @@ namespace OpenLoco::Gfx
                         }
                         if (!offscreen)
                         {
-                            // When offscreen in the y dimension there is no requirement to keep pos.x correct
+                            // When off-screen in the y dimension there is no requirement to keep pos.x correct
                             if (chr >= 32)
                             {
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
@@ -2154,7 +2154,7 @@ namespace OpenLoco::Gfx
             assert(!colour.isInset());
             if (colour.isTranslucent())
             {
-                // Must pass RectFlags::transparent to drawRectImpl for this codepath
+                // Must pass RectFlags::transparent to drawRectImpl for this code path
                 if ((flags & RectInsetFlags::borderNone) != RectInsetFlags::none)
                 {
                     drawRectImpl(rt, rect, enumValue(Colours::getTranslucent(baseColour, 1)), RectFlags::transparent);
@@ -2366,7 +2366,7 @@ namespace OpenLoco::Gfx
                 }
             }
         }
-    } // Impl
+    }
 
     void SoftwareDrawingContext::clear(RenderTarget& rt, uint32_t fill)
     {

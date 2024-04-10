@@ -114,7 +114,7 @@ namespace OpenLoco::Paint
             case 0:
                 return x + y;
             case 1:
-                // Because one component may be the maximum we add the center to be a positive value.
+                // Because one component may be the maximum we add the centre to be a positive value.
                 return (y - x) + mapRangeCenter;
             case 2:
                 // If both components would be the maximum it would be the negative xy, to be positive add max.

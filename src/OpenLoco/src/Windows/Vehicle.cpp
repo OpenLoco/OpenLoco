@@ -539,7 +539,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            // If vehicle not placed put into pickup mode if window in focus
+            // If vehicle not placed put into pick-up mode if window in focus
             if (head->isPlaced())
             {
                 return;
@@ -2475,7 +2475,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4F6D
         static void onOrderDelete(Vehicles::VehicleHead* const head, const int16_t orderId)
         {
-            // No deleteable orders
+            // No deletable orders
             if (head->sizeOfOrderTable <= 1)
             {
                 return;
@@ -3555,7 +3555,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return {};
             }
 
-            // Search 8x8 area centerd on mouse pos
+            // Search 8x8 area centred on mouse pos
             const auto centerPos = *pos + World::Pos2(16, 16);
             World::Pos2 initialPos = *pos - World::toWorldSpace(World::TilePos2(4, 4));
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
@@ -3617,7 +3617,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void removeBoatGhost(const Vehicles::VehicleHead& head)
         {
-            // Note: dont use isPlaced as we need to know if its a ghost
+            // Note: don't use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
@@ -3806,7 +3806,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void removeAirplaneGhost(const Vehicles::VehicleHead& head)
         {
-            // Note: dont use isPlaced as we need to know if its a ghost
+            // Note: don't use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {
@@ -3844,7 +3844,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004A43E4
         static uint16_t getRoadProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const World::Pos3& loc)
         {
-            // Get the coordinates of the first tile of the possibly multitile road
+            // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement.roadId());
             const auto& roadData = roadDataArr[roadElement.sequenceIndex()];
             auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
@@ -3888,7 +3888,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             World::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseHeight());
             auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
 
-            // Get the coordinates of the first tile of the possibly multitile road
+            // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement->roadId());
             const auto& roadData = roadDataArr[roadElement->sequenceIndex()];
             auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
@@ -3944,7 +3944,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004A43E4
         static uint16_t getTrackProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const World::Pos3& loc)
         {
-            // Get the coordinates of the first tile of the possibly multitile track
+            // Get the coordinates of the first tile of the possibly multi-tile track
             const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement.trackId());
             const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
             auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
@@ -3988,7 +3988,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             World::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseHeight());
             auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
 
-            // Get the coordinates of the first tile of the possibly multitile road
+            // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement->trackId());
             const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
             auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
@@ -4042,7 +4042,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static void removeLandGhost(const Vehicles::VehicleHead& head)
         {
-            // Note: dont use isPlaced as we need to know if its a ghost
+            // Note: don't use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
             if (head.tileX != -1 && head.has38Flags(Vehicles::Flags38::isGhost))
             {

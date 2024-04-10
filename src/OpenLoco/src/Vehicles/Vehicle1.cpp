@@ -17,7 +17,7 @@ namespace OpenLoco::Vehicles
     static loco_global<Speed32, 0x01136134> _vehicleUpdate_var_1136134; // Speed
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
 
-    // If distance traveled in one tick this is the speed
+    // If distance travelled in one tick this is the speed
     constexpr Speed32 speedFromDistanceInATick(int32_t distance)
     {
         return Speed32(distance * 2);

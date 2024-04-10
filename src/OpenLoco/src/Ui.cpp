@@ -640,7 +640,7 @@ namespace OpenLoco::Ui
             flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
         // *HACK* Set window to non fullscreen before switching resolution.
-        // This fixes issues with high dpi and Windows scaling affecting the gui size.
+        // This fixes issues with high dpi and Windows scaling affecting the GUI size.
         SDL_SetWindowFullscreen(window, 0);
 
         // Set the new dimensions of the screen.

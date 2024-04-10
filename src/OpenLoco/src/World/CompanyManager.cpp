@@ -337,7 +337,7 @@ namespace OpenLoco::CompanyManager
 
         // Integer maths for updating payment factor percentage
         // the percentage is 0 - 65535
-        // Ultimate identical to floating point paymentfactor * (1-(percentage/65535))
+        // Ultimate identical to floating point paymentFactor * (1-(percentage/65535))
         const auto updatePaymentFactorPercent = [&](int32_t percentage) {
             paymentFactorPercent = std::max(0, paymentFactorPercent - cargoObj->paymentFactor * percentage);
         };
@@ -526,7 +526,7 @@ namespace OpenLoco::CompanyManager
         World::Pos2 mapPosition{};
         if (!res || res->second != viewport)
         {
-            // Happens if center of viewport is obstructed. Probably estimates the centre location
+            // Happens if centre of viewport is obstructed. Probably estimates the centre location
             mapPosition = viewport->getCentreMapPosition();
         }
         else

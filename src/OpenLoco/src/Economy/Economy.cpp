@@ -53,7 +53,7 @@ namespace OpenLoco::Economy
         return getGameState().currencyMultiplicationFactor;
     }
     // NB: This is not used for anything due to a mistake in original inflation calculation
-    // looks as if it was meant to be extra precesion for the currencyMultiplicationFactor
+    // looks as if it was meant to be extra precision for the currencyMultiplicationFactor
     // Always 0.
     static auto& unusedCurrencyMultiplicationFactors()
     {

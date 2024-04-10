@@ -216,7 +216,7 @@ namespace OpenLoco::TownManager
             return std::nullopt;
         }
         const int32_t realDistance = Math::Vector::distance2D(World::Pos2(town->x, town->y), loc);
-        // Works out a proxiy for how likely there is to be buildings at the location
+        // Works out a proxy for how likely there is to be buildings at the location
         // i.e. how dense the area is.
         const auto unk = std::clamp((realDistance - town->numBuildings * 4 + 512) / 128, 0, 4);
         const uint8_t density = std::min(4 - unk, 3); // edx

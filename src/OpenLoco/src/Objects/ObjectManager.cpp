@@ -355,7 +355,7 @@ namespace OpenLoco::ObjectManager
         const auto headerName = std::span(reinterpret_cast<const std::byte*>(&object.name), sizeof(ObjectHeader::name));
         checksum = computeChecksum(headerName, checksum);
 
-        // Finally compute the datas checksum
+        // Finally compute the data's checksum
         checksum = computeChecksum(data, checksum);
 
         return checksum == object.checksum;
@@ -675,7 +675,7 @@ namespace OpenLoco::ObjectManager
 
     // All object files are based on their internal object header name but
     // there is a chance of a name collision this function works out if the name
-    // is possible and if not permutates the name until it is valid.
+    // is possible and if not permutes the name until it is valid.
     static fs::path findObjectPath(std::string& filename)
     {
         auto objPath = Environment::getPath(Environment::PathId::objects) / (filename + ".DAT");

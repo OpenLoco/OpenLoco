@@ -308,7 +308,7 @@ namespace OpenLoco::World
             const auto* indObj = industry->getObject();
             const auto type = elIndustry->buildingType();
             auto buildingParts = indObj->getBuildingParts(type);
-            // Gauranteed power of 2
+            // Guaranteed power of 2
             auto animLength = indObj->getAnimationSequence(elIndustry->var_6_003F() & 0x3).size();
             const auto isMultiTile = indObj->buildingSizeFlags & (1 << type);
 

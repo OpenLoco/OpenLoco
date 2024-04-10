@@ -883,7 +883,7 @@ namespace OpenLoco::Vehicles
     {
         Vehicle2* vehType2 = _vehicleUpdate_2;
 
-        // If dont have any running issue and is aproaching
+        // If don't have any running issue and is approaching
         if ((!vehType2->has73Flags(Flags73::isBrokenDown) || vehType2->has73Flags(Flags73::isStillPowered)) && status == Status::approaching)
         {
             if (mode == TransportMode::road)
@@ -1100,7 +1100,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8FAC
-    // Checks if at the desiered station and then begins unloading if at it
+    // Checks if at the desired station and then begins unloading if at it
     bool VehicleHead::landTryBeginUnloading()
     {
         Vehicle train(head);
@@ -2028,10 +2028,10 @@ namespace OpenLoco::Vehicles
 
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
-        // manhattan distance to target
+        // Manhattan distance to target
         auto manhattanDistance = Math::Vector::manhattanDistance2D(World::Pos2{ position }, World::Pos2{ *targetPos });
 
-        // Manhatten distance, targetZ, targetYaw
+        // Manhattan distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
     }
 

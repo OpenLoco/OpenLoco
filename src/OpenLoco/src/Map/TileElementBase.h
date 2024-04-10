@@ -46,7 +46,7 @@ namespace OpenLoco::World
         ElementType type() const;
         void setType(ElementType t)
         {
-            // Purposely clobers any other data in _type
+            // Purposely clobbers any other data in _type
             _type = enumValue(t) << 2;
         }
         uint8_t flags() const { return _flags; }

@@ -531,7 +531,7 @@ namespace OpenLoco
             {
                 isInitialised = true;
 
-                // This address is where those routines jump back to to end the tick prematurely
+                // This address is where those routines jump back to end the tick prematurely
                 registerHook(
                     0x0046AD71,
                     [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {

@@ -17,7 +17,7 @@ namespace OpenLoco::World::MapGenerator
         const auto hillShapesObj = ObjectManager::get<HillShapesObject>();
         const uint8_t hillShapeCount = hillShapesObj->hillHeightMapCount + hillShapesObj->mountainHeightMapCount;
 
-        // The hill index calculation is a minor simpliciation compared to vanilla
+        // The hill index calculation is a minor simplification compared to vanilla
         const uint8_t randomHillIndex = (randomVal & 0xFF) % hillShapeCount;
 
         const auto hillImage = hillShapesObj->image + randomHillIndex;

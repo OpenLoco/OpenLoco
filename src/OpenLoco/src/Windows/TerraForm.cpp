@@ -1203,7 +1203,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                // CHANGE: Resizes window to allow Dropdown and cost string to be drawn seperately
+                // CHANGE: Resizes window to allow Dropdown and cost string to be drawn separately
                 Common::onResize(self, 140);
             }
         }

@@ -55,7 +55,7 @@ namespace OpenLoco::Vehicles
         template<typename T>
         const T* as() const { return is<T>() ? reinterpret_cast<const T*>(this) : nullptr; }
     };
-    static_assert(sizeof(Order) == 1, "Size of order must be 1 for pointer arithmatic to work in OrderTableView");
+    static_assert(sizeof(Order) == 1, "Size of order must be 1 for pointer arithmetic to work in OrderTableView");
 
     struct OrderEnd : Order
     {

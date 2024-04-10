@@ -36,7 +36,7 @@ namespace OpenLoco::GameCommands
 {
     constexpr auto kMaxAiVehicles = 500;
     constexpr auto kMaxNumCarComponentsInCar = 4;           // TODO: Move to VehicleObject
-    constexpr auto kNumVehicleComponentsInCarComponent = 3; // Bogie bogie body
+    constexpr auto kNumVehicleComponentsInCarComponent = 3; // Bogie body
     constexpr auto kNumVehicleComponentsInBase = 4;         // head unk_1 unk_2 tail
     constexpr auto kMaxNumVehicleComponentsInCar = kNumVehicleComponentsInCarComponent * kMaxNumCarComponentsInCar;
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;

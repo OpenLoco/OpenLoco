@@ -32,7 +32,7 @@ namespace OpenLoco::Paint
 
     namespace Style0
     {
-        static void paintTrackAdditionPPMergable(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
+        static void paintTrackAdditionPPMergeable(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
         {
             const auto height = elTrack.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -63,9 +63,9 @@ namespace OpenLoco::Paint
 
         static void paintTrackAdditionPP(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
         {
-            if (tppa.isIsMergable)
+            if (tppa.isIsMergeable)
             {
-                paintTrackAdditionPPMergable(session, elTrack, rotation, baseImageId, tppa);
+                paintTrackAdditionPPMergeable(session, elTrack, rotation, baseImageId, tppa);
             }
             else
             {
@@ -89,7 +89,7 @@ namespace OpenLoco::Paint
             session.setAdditionSupport(support);
         }
 
-        static void paintTrackAdditionPPMergable(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
+        static void paintTrackAdditionPPMergeable(PaintSession& session, const World::TrackElement& elTrack, const uint8_t rotation, const ImageId baseImageId, const TrackPaintAdditionPiece& tppa)
         {
             const auto height = elTrack.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -131,9 +131,9 @@ namespace OpenLoco::Paint
             // TODO: Better way to detect kNullTrackPaintAdditionPiece
             if (tppa.imageIds[3] != 0)
             {
-                if (tppa.isIsMergable)
+                if (tppa.isIsMergeable)
                 {
-                    paintTrackAdditionPPMergable(session, elTrack, rotation, baseImageId, tppa);
+                    paintTrackAdditionPPMergeable(session, elTrack, rotation, baseImageId, tppa);
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace OpenLoco::Paint
         uint8_t tunnelType;               // 0x0113605E
     };
 
-    static void paintTrackPPMergable(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation, const TrackPaintPiece& tpp)
+    static void paintTrackPPMergeable(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation, const TrackPaintPiece& tpp)
     {
         const auto height = elTrack.baseHeight();
         const auto heightOffset = World::Pos3{ 0,
@@ -233,9 +233,9 @@ namespace OpenLoco::Paint
 
     static void paintTrackPP(PaintSession& session, const World::TrackElement& elTrack, const TrackPaintCommon& trackSession, const uint8_t rotation, const TrackPaintPiece& tpp)
     {
-        if (tpp.isMergable)
+        if (tpp.isMergeable)
         {
-            paintTrackPPMergable(session, elTrack, trackSession, rotation, tpp);
+            paintTrackPPMergeable(session, elTrack, trackSession, rotation, tpp);
         }
         else
         {

@@ -570,7 +570,7 @@ namespace OpenLoco::Network
             if (protocol == Protocol::any)
             {
                 // Turn off IPV6_V6ONLY so we can accept both v4 and v6 connections
-                // Incomming IPv4 addresses will be mapped to IPv6 addresses
+                // Incoming IPv4 addresses will be mapped to IPv6 addresses
                 if (!setOption(sock, IPPROTO_IPV6, IPV6_V6ONLY, false))
                 {
                     Logging::warn("setsockopt(socket, IPV6_V6ONLY) failed: {}", LAST_SOCKET_ERROR());

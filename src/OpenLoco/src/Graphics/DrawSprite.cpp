@@ -40,7 +40,7 @@ namespace OpenLoco::Gfx
             // Copy raw bitmap data to target but exclude transparent pixels
             op = DrawBlendOp::transparent;
         }
-        // Vanilla did not handle noise image for rle compressed images
+        // Vanilla did not handle noise image for RLE compressed images
         if (args.noiseImage != nullptr && (!args.sourceImage.hasFlags(G1ElementFlags::isRLECompressed)))
         {
             op |= DrawBlendOp::noiseMask;
