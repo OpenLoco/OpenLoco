@@ -17,10 +17,10 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
-#include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 #include <bitset>

@@ -8,8 +8,8 @@
 #include "Routing.h"
 #include "Speed.hpp"
 #include "Types.hpp"
+#include "Ui/Window.h"
 #include "Ui/WindowType.h"
-#include "Window.h"
 #include "World/Company.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Point.hpp>
 

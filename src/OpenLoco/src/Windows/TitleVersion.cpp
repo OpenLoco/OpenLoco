@@ -3,8 +3,8 @@
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

@@ -44,8 +44,8 @@
 #include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
 #include "Ui/Widget.h"
+#include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Diagnostics/Logging.h>
