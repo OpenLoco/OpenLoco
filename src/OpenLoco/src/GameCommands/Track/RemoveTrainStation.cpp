@@ -49,6 +49,7 @@ namespace OpenLoco::GameCommands
         return nullptr;
     }
 
+    // 0x0048C402
     static currency32_t removeTrainStation(const TrainStationRemovalArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
@@ -70,8 +71,6 @@ namespace OpenLoco::GameCommands
         const auto& argPiece = trackPieces[args.index];
         const auto trackStart = args.pos - World::Pos3(Math::Vector::rotate(World::Pos2(argPiece.x, argPiece.y), args.rotation), argPiece.z);
 
-        // sub dx, [ebp+edi+5] ???
-
         StationId foundStationId = StationId::null;
         currency32_t totalCost = 0;
 
@@ -81,26 +80,7 @@ namespace OpenLoco::GameCommands
 
             auto* elTrack = getElTrack(trackLoc, args.rotation, args.type, args.trackId, piece.index);
 
-            // add dx, [ebp+edi+5] ???
-
-            if (elTrack == nullptr)
-            {
-                if (updateStationTileRegistration && (flags & Flags::apply) != 0)
-                {
-                    auto* station = StationManager::get(foundStationId);
-                    removeTileFromStation(foundStationId, trackStart, args.rotation);
-                    station->invalidate();
-
-                    recalculateStationCenter(foundStationId);
-                    recalculateStationModes(foundStationId);
-                    station->updateLabel();
-                    station->invalidate();
-
-                    sub_48D794(*station);
-                }
-                break;
-            }
-            else
+            if (elTrack != nullptr)
             {
                 auto* nextEl = elTrack->next();
                 auto* stationEl = nextEl->as<World::StationElement>();
@@ -120,11 +100,25 @@ namespace OpenLoco::GameCommands
                 if ((flags & Flags::apply) != 0)
                 {
                     elTrack->setClearZ(elTrack->clearZ() - stationObj->height);
-                    Ui::ViewportManager::invalidate(World::Pos2(args.pos), stationEl->baseZ(), stationEl->clearZ(), ZoomLevel::eighth);
+                    Ui::ViewportManager::invalidate(World::Pos2(trackLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
                     elTrack->setHasStationElement(false);
                     World::TileManager::removeElement(*nextEl);
                 }
             }
+        }
+
+        if (updateStationTileRegistration && (flags & Flags::apply) != 0)
+        {
+            auto* station = StationManager::get(foundStationId);
+            removeTileFromStation(foundStationId, trackStart, args.rotation);
+            station->invalidate();
+
+            recalculateStationModes(foundStationId);
+            recalculateStationCenter(foundStationId);
+            station->updateLabel();
+            station->invalidate();
+
+            sub_48D794(*station);
         }
 
         return totalCost;

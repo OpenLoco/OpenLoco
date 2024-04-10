@@ -1064,13 +1064,14 @@ namespace OpenLoco
         auto findPos = pos;
         findPos.z |= rotation;
 
-        // Bug mitigation: ensure stationTileSize does not exceed the actual array length
-        station->stationTileSize = std::clamp<uint16_t>(station->stationTileSize, 0, static_cast<uint16_t>(std::size(station->stationTiles)));
-
         // Find tile to remove
         auto foundTilePos = std::find(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
         if (foundTilePos == std::end(station->stationTiles))
+        {
+            // Bug mitigation: ensure stationTileSize does not exceed the actual array length
+            station->stationTileSize = std::clamp<int16_t>(station->stationTileSize - 1, 0, static_cast<uint16_t>(std::size(station->stationTiles)));
             return;
+        }
 
         // Remove tile by moving the remaining tiles over the one to remove
         // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
