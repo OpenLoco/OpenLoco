@@ -583,7 +583,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const std::string gbuffer = std::string(text, caret);
                 auto args = getStringPtrFormatArgs(gbuffer.c_str());
                 origin = { 0, 1 };
-                drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, &args);
+                origin = drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
                 drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
