@@ -223,7 +223,6 @@ namespace OpenLoco::World::TileManager
     {
         checkFreeElementsAndReorganise();
 
-        const auto tilePos = World::toTileSpace(pos);
         const auto index = getTileIndex(World::toTileSpace(pos));
         if (index >= _tiles.size())
         {
