@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             w.callOnMouseUp(Widx::close);
             return true;
         }
-        else if (Input::isFocused(w.type, w.number, Widx::input) && !inputSession.handleInput(charCode, keyCode))
+        else if (!Input::isFocused(w.type, w.number, Widx::input) || !inputSession.handleInput(charCode, keyCode))
         {
             return false;
         }

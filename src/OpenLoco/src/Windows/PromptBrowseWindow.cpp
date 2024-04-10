@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             w.callOnMouseUp(widx::close_button);
             return true;
         }
-        else if (Input::isFocused(w.type, w.number, widx::text_filename) && !inputSession.handleInput(charCode, keyCode))
+        else if (!Input::isFocused(w.type, w.number, widx::text_filename) || !inputSession.handleInput(charCode, keyCode))
         {
             return false;
         }
