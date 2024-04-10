@@ -286,25 +286,14 @@ namespace OpenLoco
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
-
-        Ui::ProgressBar::begin(StringIds::loading);
-        Ui::ProgressBar::setProgress(30);
         startupChecks();
-        Ui::ProgressBar::setProgress(40);
-        Ui::ProgressBar::end();
 
-        Ui::ProgressBar::begin(StringIds::loading);
-        Ui::ProgressBar::setProgress(60);
         Gfx::loadG1();
-        Ui::ProgressBar::setProgress(220);
         Gfx::initialiseCharacterWidths();
         Gfx::initialiseNoiseMaskMap();
-        Ui::ProgressBar::setProgress(235);
-        Ui::ProgressBar::setProgress(250);
-        Ui::initialiseCursors();
-        Ui::ProgressBar::end();
 
         Ui::initialise();
+        Ui::initialiseCursors();
         initialiseViewports();
         Gui::init();
 
