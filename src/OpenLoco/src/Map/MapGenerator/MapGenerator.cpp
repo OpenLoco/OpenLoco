@@ -834,23 +834,23 @@ namespace OpenLoco::World::MapGenerator
             HeightMap heightMap(512, 512, 512);
 
             generateHeightMap(options, heightMap);
-            updateProgress(17);
-
-            generateLand(heightMap);
-            updateProgress(17);
-
-            generateWater(heightMap);
             updateProgress(25);
 
-            generateTerrain(heightMap);
+            generateLand(heightMap);
             updateProgress(35);
+
+            generateWater(heightMap);
+            updateProgress(45);
+
+            generateTerrain(heightMap);
+            updateProgress(55);
         }
 
         generateSurfaceVariation();
-        updateProgress(40);
+        updateProgress(65);
 
         generateTrees();
-        updateProgress(45);
+        updateProgress(75);
 
         generateTowns();
         updateProgress(225);
