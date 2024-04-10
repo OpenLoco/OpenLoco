@@ -66,7 +66,8 @@ namespace OpenLoco::World
         }
     }
 
-    WallElement* sub_4C49E9(const World::Pos2 loc, SmallZ baseZ, SmallZ clearZ, uint8_t direction)
+    // 0x004C49E9
+    static WallElement* getWallElement(const World::Pos2 loc, SmallZ baseZ, SmallZ clearZ, uint8_t direction)
     {
         auto tile = TileManager::get(loc);
         for (auto& el : tile)
@@ -126,7 +127,7 @@ namespace OpenLoco::World
         bool tileAddedRemoved = false;
         for (auto i = 0; i < 4; ++i)
         {
-            auto* elWall = sub_4C49E9(loc, surf->baseZ(), surf->baseZ() + 16, i);
+            auto* elWall = getWallElement(loc, surf->baseZ(), surf->baseZ() + 16, i);
             if (elWall)
             {
                 if (surf->var_6_SLR5() != industryObj->var_EA)
@@ -165,7 +166,7 @@ namespace OpenLoco::World
                     continue;
                 }
 
-                auto* elWall2 = sub_4C49E9(nextLoc, surf->baseZ(), surf->baseZ() + 16, i);
+                auto* elWall2 = getWallElement(nextLoc, surf->baseZ(), surf->baseZ() + 16, i);
                 if (elWall2)
                 {
                     continue;
