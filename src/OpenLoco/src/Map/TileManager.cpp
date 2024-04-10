@@ -865,8 +865,7 @@ namespace OpenLoco::World::TileManager
             case ElementType::surface:
             {
                 auto& elSurface = el.get<SurfaceElement>();
-                updateSurface(elSurface, loc);
-                break;
+                return updateSurface(elSurface, loc);
             }
             case ElementType::building:
             {

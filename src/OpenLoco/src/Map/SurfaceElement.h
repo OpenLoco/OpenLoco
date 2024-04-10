@@ -127,5 +127,5 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(SurfaceElement) == kTileElementSize);
 
-    void updateSurface(SurfaceElement& elSurface, const World::Pos2 loc);
+    bool updateSurface(SurfaceElement& elSurface, const World::Pos2 loc);
 }

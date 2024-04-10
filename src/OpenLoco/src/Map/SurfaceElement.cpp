@@ -97,14 +97,14 @@ namespace OpenLoco::World
         return nullptr;
     }
 
-    static void updateIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
+    static bool updateIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* industry = IndustryManager::get(elSurface.industryId());
         auto* industryObj = industry->getObject();
         if (industryObj->hasFlags(IndustryObjectFlags::builtOnSnow) && elSurface.snowCoverage() < 4)
         {
             TileManager::removeSurfaceIndustry(loc);
-            return;
+            return false;
         }
 
         if (elSurface.var_6_SLR5() != industryObj->var_EA || elSurface.var_6_SLR5() == 0)
@@ -122,12 +122,14 @@ namespace OpenLoco::World
             }
         }
 
+        SurfaceElement* surf = &elSurface;
+        bool tileAddedRemoved = false;
         for (auto i = 0; i < 4; ++i)
         {
-            auto* elWall = sub_4C49E9(loc, elSurface.baseZ(), elSurface.baseZ() + 16, i);
+            auto* elWall = sub_4C49E9(loc, surf->baseZ(), surf->baseZ() + 16, i);
             if (elWall)
             {
-                if (elSurface.var_6_SLR5() != industryObj->var_EA)
+                if (surf->var_6_SLR5() != industryObj->var_EA)
                 {
                     continue;
                 }
@@ -138,7 +140,7 @@ namespace OpenLoco::World
                 }
 
                 auto* nextSurface = TileManager::get(nextLoc).surface();
-                if (!nextSurface->isIndustrial() || nextSurface->industryId() != elSurface.industryId())
+                if (!nextSurface->isIndustrial() || nextSurface->industryId() != surf->industryId())
                 {
                     continue;
                 }
@@ -150,6 +152,9 @@ namespace OpenLoco::World
                 args.pos = Pos3(loc, elWall->baseHeight());
                 args.rotation = i;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
+                tileAddedRemoved = true;
+                // surf might be invalid! Re-get it just to be safe.
+                surf = TileManager::get(loc).surface();
                 continue;
             }
             else
@@ -160,7 +165,7 @@ namespace OpenLoco::World
                     continue;
                 }
 
-                auto* elWall2 = sub_4C49E9(nextLoc, elSurface.baseZ(), elSurface.baseZ() + 16, i);
+                auto* elWall2 = sub_4C49E9(nextLoc, surf->baseZ(), surf->baseZ() + 16, i);
                 if (elWall2)
                 {
                     continue;
@@ -168,7 +173,7 @@ namespace OpenLoco::World
                 auto* nextSurface = TileManager::get(nextLoc).surface();
                 if (nextSurface->isIndustrial())
                 {
-                    if (nextSurface->industryId() == elSurface.industryId())
+                    if (nextSurface->industryId() == surf->industryId())
                     {
                         continue;
                     }
@@ -211,9 +216,9 @@ namespace OpenLoco::World
                 {
                     continue;
                 }
-                if (elSurface.var_6_SLR5() != industryObj->var_EA || industryObj->buildingWall != 0xFFU)
+                if (surf->var_6_SLR5() != industryObj->var_EA || industryObj->buildingWall != 0xFFU)
                 {
-                    if (elSurface.var_6_SLR5() == industryObj->var_EA)
+                    if (surf->var_6_SLR5() == industryObj->var_EA)
                     {
                         wallType = industryObj->buildingWall;
                     }
@@ -226,56 +231,63 @@ namespace OpenLoco::World
                     args.rotation = i;
                     GameCommands::doCommand(args, GameCommands::Flags::apply);
 
-                    // elSurface is invalid! Need to get it again!
+                    tileAddedRemoved = true;
+                    // surf is invalid! Need to re-get it.
+                    surf = TileManager::get(loc).surface();
                 }
             }
         }
+        return tileAddedRemoved;
     }
 
     // 0x004691FA
-    void updateSurface(SurfaceElement& elSurface, const World::Pos2 loc)
+    bool updateSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
+        bool elSurfaceValid = true;
         if (elSurface.isIndustrial())
         {
-            updateIndustrialSurface(elSurface, loc);
+            elSurfaceValid = !updateIndustrialSurface(elSurface, loc);
         }
         else
         {
             updateNonIndustrialSurface(elSurface, loc);
         }
 
+        auto* surf = elSurfaceValid ? &elSurface : TileManager::get(loc).surface();
+
         const MicroZ snow = Scenario::getCurrentSnowLine() / kMicroToSmallZStep;
-        uint8_t targetCoverage = std::clamp(((elSurface.baseZ() / kMicroToSmallZStep) + 1) - snow, 0, 5);
-        if (elSurface.snowCoverage() != targetCoverage)
+        uint8_t targetCoverage = std::clamp(((surf->baseZ() / kMicroToSmallZStep) + 1) - snow, 0, 5);
+        if (surf->snowCoverage() != targetCoverage)
         {
-            if (elSurface.snowCoverage() > targetCoverage)
+            if (surf->snowCoverage() > targetCoverage)
             {
-                elSurface.setSnowCoverage(elSurface.snowCoverage() - 1);
+                surf->setSnowCoverage(surf->snowCoverage() - 1);
             }
             else
             {
-                elSurface.setSnowCoverage(elSurface.snowCoverage() + 1);
+                surf->setSnowCoverage(surf->snowCoverage() + 1);
             }
-            Ui::ViewportManager::invalidate(loc, elSurface.baseHeight(), elSurface.baseHeight());
+            Ui::ViewportManager::invalidate(loc, surf->baseHeight(), surf->baseHeight());
         }
 
-        if (!elSurface.water())
+        if (!surf->water())
         {
-            return;
+            return elSurfaceValid;
         }
-        if (elSurface.hasType6Flag())
+        if (surf->hasType6Flag())
         {
-            elSurface.setVariation(elSurface.variation() + 1);
-            if (elSurface.variation() >= 64)
+            surf->setVariation(surf->variation() + 1);
+            if (surf->variation() >= 64)
             {
-                elSurface.setVariation(0);
-                elSurface.setType6Flag(false);
+                surf->setVariation(0);
+                surf->setType6Flag(false);
             }
         }
-        if (elSurface.isFlag6())
+        if (surf->isFlag6())
         {
-            return;
+            return elSurfaceValid;
         }
-        WaveManager::createWave(elSurface, loc);
+        WaveManager::createWave(*surf, loc);
+        return elSurfaceValid;
     }
 }
