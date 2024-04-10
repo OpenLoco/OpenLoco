@@ -4,8 +4,8 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "Window.h"
 
 #include <string>

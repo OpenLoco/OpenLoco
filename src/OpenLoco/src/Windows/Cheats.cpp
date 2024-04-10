@@ -15,8 +15,8 @@
 #include "Objects/ObjectManager.h"
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Math/Bound.hpp>
 

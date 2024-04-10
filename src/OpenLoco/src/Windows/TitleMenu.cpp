@@ -23,9 +23,9 @@
 #include "Tutorial.h"
 #include "Ui.h"
 #include "Ui/Dropdown.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <string_view>

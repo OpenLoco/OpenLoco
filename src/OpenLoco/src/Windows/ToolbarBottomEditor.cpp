@@ -4,7 +4,7 @@
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
-#include "Widget.h"
+#include "Ui/Widget.h"
 #include <map>
 
 namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor

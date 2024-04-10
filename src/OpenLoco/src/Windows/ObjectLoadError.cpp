@@ -7,8 +7,8 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include <fmt/format.h>
 
 namespace OpenLoco::Ui::Windows::ObjectLoadError

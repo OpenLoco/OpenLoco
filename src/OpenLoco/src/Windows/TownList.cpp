@@ -23,8 +23,8 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "World/Town.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>

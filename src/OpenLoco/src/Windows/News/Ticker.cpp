@@ -7,7 +7,7 @@
 #include "MessageManager.h"
 #include "News.h"
 #include "SceneManager.h"
-#include "Widget.h"
+#include "Ui/Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

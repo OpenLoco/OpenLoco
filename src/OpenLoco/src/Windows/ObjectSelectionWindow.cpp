@@ -43,8 +43,8 @@
 #include "SceneManager.h"
 #include "Ui/Dropdown.h"
 #include "Ui/TextInput.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "Window.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>

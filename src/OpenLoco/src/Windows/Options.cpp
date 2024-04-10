@@ -22,8 +22,8 @@
 #include "Ui.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 
