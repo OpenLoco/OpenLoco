@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -150,6 +151,9 @@ namespace OpenLoco::Ui::Windows::TextInput
             window->flags |= WindowFlags::flag_11;
             _widgets[Widx::title].type = WidgetType::caption_24;
         }
+
+        // Focus the textbox element
+        Input::setFocus(window->type, window->number, Widx::input);
     }
 
     /**
@@ -262,6 +266,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
         drawnBuffer[inputSession.cursorPosition] = '\0';
 
+        if (Input::isFocused(window.type, window.number, Widx::input))
         {
             auto width = drawingCtx.getStringWidth(drawnBuffer);
             auto cursorPos = Point(inputSession.xOffset + width, 1);
@@ -312,7 +317,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             w.callOnMouseUp(Widx::close);
             return true;
         }
-        else if (!inputSession.handleInput(charCode, keyCode))
+        else if (Input::isFocused(w.type, w.number, Widx::input) && !inputSession.handleInput(charCode, keyCode))
         {
             return false;
         }

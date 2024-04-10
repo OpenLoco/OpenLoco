@@ -148,6 +148,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto& widget = window->widgets[widx::text_filename];
             inputSession.calculateTextOffset(widget.width());
 
+            // Focus the textbox element
+            Input::setFocus(window->type, window->number, widx::text_filename);
+
             window->setColour(WindowColour::primary, Colour::black);
             window->setColour(WindowColour::secondary, Colour::mutedSeaGreen);
 
@@ -455,7 +458,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto context2 = Gfx::clipRenderTarget(*rt, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
             if (context2)
             {
-                drawTextInput(&window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
+                bool showCaret = Input::isFocused(window.type, window.number, widx::text_filename) && (inputSession.cursorFrame & 0x10) == 0;
+                drawTextInput(&window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, showCaret);
             }
         }
     }
@@ -660,7 +664,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             w.callOnMouseUp(widx::close_button);
             return true;
         }
-        else if (!inputSession.handleInput(charCode, keyCode))
+        else if (Input::isFocused(w.type, w.number, widx::text_filename) && !inputSession.handleInput(charCode, keyCode))
         {
             return false;
         }
