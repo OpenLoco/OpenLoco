@@ -31,10 +31,10 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "ViewportManager.h"
-#include "Widget.h"
 #include "World/Company.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>

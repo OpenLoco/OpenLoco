@@ -55,12 +55,12 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>

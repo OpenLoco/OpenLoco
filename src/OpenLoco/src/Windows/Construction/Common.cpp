@@ -24,7 +24,7 @@
 #include "Objects/TrainStationObject.h"
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
-#include "Widget.h"
+#include "Ui/Widget.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 

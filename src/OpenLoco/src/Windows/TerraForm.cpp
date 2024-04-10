@@ -36,8 +36,8 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>

@@ -8,8 +8,8 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/TextInput.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>

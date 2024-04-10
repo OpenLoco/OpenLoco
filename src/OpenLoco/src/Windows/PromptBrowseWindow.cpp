@@ -15,8 +15,8 @@
 #include "Scenario.h"
 #include "Ui.h"
 #include "Ui/TextInput.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include <OpenLoco/Core/FileSystem.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Platform/Platform.h>

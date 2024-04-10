@@ -9,8 +9,8 @@
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "Ui.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;

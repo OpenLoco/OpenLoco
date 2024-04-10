@@ -24,8 +24,8 @@
 #include "Ui/ScrollView.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>

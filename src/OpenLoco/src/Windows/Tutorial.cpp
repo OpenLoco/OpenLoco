@@ -8,8 +8,8 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Ui.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 
 namespace OpenLoco::Ui::Windows::Tutorial
 {

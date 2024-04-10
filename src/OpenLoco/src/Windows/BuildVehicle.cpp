@@ -25,9 +25,9 @@
 #include "Ui/ScrollView.h"
 #include "Ui/TextInput.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>

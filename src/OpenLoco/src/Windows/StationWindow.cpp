@@ -17,9 +17,9 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Interop/Interop.hpp>

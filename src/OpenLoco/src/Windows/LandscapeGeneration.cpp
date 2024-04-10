@@ -19,8 +19,8 @@
 #include "Scenario.h"
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include "World/IndustryManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Diagnostics/Logging.h>

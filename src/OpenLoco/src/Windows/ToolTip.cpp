@@ -8,8 +8,8 @@
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include "Widget.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cstring>

@@ -27,7 +27,7 @@
 #include "Ui/Dropdown.h"
 #include "Ui/ToolManager.h"
 #include "Ui/ViewportInteraction.h"
-#include "Widget.h"
+#include "Ui/Widget.h"
 #include "World/CompanyManager.h"
 #include "World/Station.h"
 

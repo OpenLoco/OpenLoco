@@ -17,9 +17,9 @@
 #include "Objects/ObjectManager.h"
 #include "SceneManager.h"
 #include "Ui/ToolManager.h"
+#include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include "Widget.h"
 #include "World/CompanyManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Engine/World.hpp>
