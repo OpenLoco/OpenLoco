@@ -723,4 +723,14 @@ namespace OpenLoco
         }
         var_E1.reset();
     }
+
+    void Industry::offsetProductionRate(int16_t offset)
+    {
+        auto offset_production = [&](size_t index) {
+            productionRate[index] = static_cast<uint16_t>(std::min<int16_t>(std::max<int16_t>(static_cast<int16_t>(productionRate[index]) + offset, 0), 100));
+        };
+
+        offset_production(0);
+        offset_production(1);
+    }
 }
