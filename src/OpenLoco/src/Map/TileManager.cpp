@@ -221,7 +221,6 @@ namespace OpenLoco::World::TileManager
     TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
     {
         checkFreeElementsAndReorganise();
-
         const auto index = getTileIndex(World::toTileSpace(pos));
         if (index >= _tiles.size())
         {
