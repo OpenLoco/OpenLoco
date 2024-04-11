@@ -116,7 +116,6 @@ namespace OpenLoco
     static void tickLogic(int32_t count);
     static void tickLogic();
     static void dateTick();
-    static void sub_46FFCA();
 
     std::string getVersionInfo()
     {
@@ -680,8 +679,6 @@ namespace OpenLoco
                         }
                     }
 
-                    sub_46FFCA();
-
                     // Catch up to server (usually after we have just joined the game)
                     auto numTicksBehind = Network::getServerTick() - ScenarioManager::getScenarioTicks();
                     if (numTicksBehind > 4)
@@ -710,7 +707,7 @@ namespace OpenLoco
 
                     sub_431695(var_F253A0);
                     call(0x00452B5F); // nop was updateRainAnimation
-                    sub_46FFCA();
+
                     if (Config::get().old.countdown != 0xFF)
                     {
                         Config::get().old.countdown++;
@@ -746,21 +743,6 @@ namespace OpenLoco
         }
     }
 
-    static void sub_46FFCA()
-    {
-        addr<0x010E7D3C, uint32_t>() = 0x2A0015;
-        addr<0x010E7D40, uint32_t>() = 0x210026;
-        addr<0x010E7D44, uint32_t>() = 0x5C2001F;
-        addr<0x010E7D48, uint32_t>() = 0xFFFF0019;
-        addr<0x010E7D4C, uint32_t>() = 0xFFFFFFFF;
-        addr<0x010E7D50, uint32_t>() = 0x1AFFFF;
-        addr<0x010E7D54, uint32_t>() = 0xFFFFFFFF;
-        addr<0x010E7D58, uint32_t>() = 0xFFFF001B;
-        addr<0x010E7D5C, uint32_t>() = 0x64700A3;
-        addr<0x010E7D60, uint32_t>() = 0xCE0481;
-        addr<0x010E7D64, uint32_t>() = 0xD900BF;
-    }
-
     static loco_global<int8_t, 0x0050C197> _loadErrorCode;
     static loco_global<StringId, 0x0050C198> _loadErrorMessage;
 
@@ -783,10 +765,8 @@ namespace OpenLoco
         TownManager::update();
         IndustryManager::update();
         VehicleManager::update();
-        sub_46FFCA();
         StationManager::update();
         EffectsManager::update();
-        sub_46FFCA();
         CompanyManager::update();
         World::AnimationManager::update();
         Audio::updateVehicleNoise();
