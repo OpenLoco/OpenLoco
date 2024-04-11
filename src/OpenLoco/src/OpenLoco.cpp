@@ -393,26 +393,6 @@ namespace OpenLoco
     {
         static bool isInitialised = false;
 
-        // Locomotion has several routines that will prematurely end the current tick.
-        // This usually happens when switching game mode. It does this by jumping to
-        // the end of the original routine and resetting esp back to an initial value
-        // stored at the beginning of tick. Until those routines are re-written, we
-        // must simulate it using 'setjmp'.
-        static jmp_buf tickJump;
-
-        // When Locomotion wants to jump to the end of a tick, it sets ESP
-        // to some static memory that we define
-        static loco_global<void*, 0x0050C1A6> _tickJumpESP;
-        static uint8_t spareStackMemory[2048];
-        _tickJumpESP = spareStackMemory + sizeof(spareStackMemory);
-
-        if (setjmp(tickJump))
-        {
-            // Premature end of current tick
-            tickInterrupted();
-            return;
-        }
-
         try
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
@@ -422,14 +402,6 @@ namespace OpenLoco
             if (!isInitialised)
             {
                 isInitialised = true;
-
-                // This address is where those routines jump back to end the tick prematurely
-                registerHook(
-                    0x0046AD71,
-                    [](registers&) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                        longjmp(tickJump, 1);
-                    });
-
                 initialise();
                 _last_tick_time = Platform::getTime();
             }
@@ -494,7 +466,7 @@ namespace OpenLoco
                 }
 
                 call(0x00452D1A); // nop redrawPeepAndRain
-                call(0x00440DEC);
+                call(0x00440DEC); // install scenario from 0x0050C18C ptr??
 
                 if (addr<0x00525340, int32_t>() == 1)
                 {
