@@ -399,12 +399,12 @@ strings:
   382: Brugtype ongeschikt voor deze configuratie
   383: Stationsnaam
   384: "Type een nieuwe naam voor {STRINGID}-station:"
-  385: Can't rename station...
-  386: Invalid name for station
-  387: Can't move vehicle...
-  388: Can't reverse train...
-  389: Can't sell vehicle...
-  390: Can't sell {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  385: Kan station niet hernoemen...
+  386: Ongeldige naam voor station
+  387: Kan voertuig niet verplaatsen...
+  388: Kan trein niet omkeren...
+  389: Kan voertuig niet verkopen...
+  390: "Kan niet verkopen: {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}..."
   391: "{STRINGID}"
   392: "{STRINGID}"
   393: "Perron van {STRINGID}"
@@ -413,19 +413,19 @@ strings:
   396: Dempen
   397: Muziek afspelen
   398: "{COLOUR RED}Failliet!"
-  399: "{STRINGID} not allowed to wait for a full load at {STRINGID}"
-  400: "{STRINGID} has slipped to a halt on an incline"
+  399: "{STRINGID} mag niet op volledige lading wachten bij {STRINGID}"
+  400: "{STRINGID} is vastgelopen op een helling"
   401: "{STRINGID} accepteert nu {STRINGID}"
   402: "{STRINGID} accepteert geen {STRINGID} meer"
   403: New Transport Company!{NEWLINE}{STRINGID} starts construction near {STRINGID}!
   404: "{STRINGID} is not able to land at {STRINGID} due to the airport being unsuitable"
-  405: Citizens Celebrate!{NEWLINE}First {STRINGID} arrive in {STRINGID}!
-  406: Citizens Celebrate!{NEWLINE}First {STRINGID} delivery arrives in {STRINGID}!
-  407: Workers Celebrate!{NEWLINE}First {STRINGID} delivered to {STRINGID}!
-  408: New Vehicle Invented -{NEWLINE}“{STRINGID}”!
-  409: "{STRINGID} is promoted from “{STRINGID}” to “{STRINGID}”!"
+  405: Bewoners vieren feest!{NEWLINE}Eerste {STRINGID} komt aan in {STRINGID}!
+  406: Bewoners vieren feest!{NEWLINE}Eerste {STRINGID} levering komt aan in {STRINGID}!
+  407: Werknemers vieren feest!{NEWLINE}Eerste {STRINGID} bezorgd bij {STRINGID}!
+  408: Nieuw voertuig uitgevonden -{NEWLINE}“{STRINGID}”!
+  409: "{STRINGID} is gepromoveerd van “{STRINGID}” naar “{STRINGID}”!"
   410: Nieuwe {STRINGID} in aanbouw in de buurt van {STRINGID}!
-  411: Congratulations!{NEWLINE}You have successfully completed your challenge!
+  411: Gefeliciteerd!{NEWLINE}Je hebt je uitdaging succesvol voltooid!
   412: Failure!{NEWLINE}You have failed your challenge!
   413: Beaten!{NEWLINE}{STRINGID} has completed the challenge!
   414: Bankruptcy Warning!{NEWLINE}{STRINGID} will be closed down in 6 months unless performance improves!
@@ -584,8 +584,8 @@ strings:
   563: "{INT16} industrieën"
   564: Industrie {INT16}
   565: "{SMALLFONT}{COLOUR BLACK}Objecten 90° draaien"
-  566: Level land required
-  567: Can't change land type...
+  566: Vlakke grond benodigd
+  567: Je kan het grondtype niet veranderen...
   568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
   569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
   570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
@@ -1184,19 +1184,19 @@ strings:
   1154: "{SMALLFONT}{COLOUR BLACK}Sort list by profit"
   1155: "{SMALLFONT}{COLOUR BLACK}Sort list by age"
   1156: "{SMALLFONT}{COLOUR BLACK}Sort list by reliability"
-  1157: Vehicle must be stopped first!
-  1158: Vehicle has crashed!
-  1159: Vehicle has broken down!
-  1160: Vehicle is stuck!
-  1161: Not enough space, or vehicle in the way
-  1162: Vehicle approaching, or in the way
-  1163: Can't place {POP16}{POP16}{POP16}{STRINGID} here...
-  1164: Can't remove {POP16}{POP16}{POP16}{STRINGID}...
+  1157: Voertuig moet eerst worden gestopt!
+  1158: Voertuig is gecrasht!
+  1159: Voertuig heeft een storing!
+  1160: Voertuig zit vast!
+  1161: Niet genoeg ruimte, of voertuig in de weg
+  1162: Voertuig komt aan, of zit in de weg
+  1163: Kan {POP16}{POP16}{POP16}{STRINGID} niet hier plaatsen...
+  1164: Kan {POP16}{POP16}{POP16}{STRINGID} niet verwijderen...
   1165: Can't pass signal at danger...
   1166: This vehicle requires {STRINGID}
-  1167: Train has no vehicles!
-  1168: Train has no driving cab
-  1169: Train needs a locomotive or power car
+  1167: Trein heeft geen rijtuigen!
+  1168: Trein heeft geen bestuurderscabine
+  1169: Train heeft een locomotief of stroomwagen nodig
   1170: "{STRINGID} van {STRINGID}"
   1171: Leeg
   1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
@@ -1215,12 +1215,12 @@ strings:
   1185: Can't build {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
   1186: "{COLOUR BLACK}Selecteer een nieuw voertuig"
   1187: "{COLOUR BLACK}Selecteer een nieuw voertuig voor {STRINGID}"
-  1188: "{SMALLFONT}{COLOUR BLACK}Build new train vehicles"
-  1189: "{SMALLFONT}{COLOUR BLACK}Build new buses"
-  1190: "{SMALLFONT}{COLOUR BLACK}Build new trucks"
-  1191: "{SMALLFONT}{COLOUR BLACK}Build new trams"
-  1192: "{SMALLFONT}{COLOUR BLACK}Build new aircraft"
-  1193: "{SMALLFONT}{COLOUR BLACK}Build new ships"
+  1188: "{SMALLFONT}{COLOUR BLACK}Bouw nieuwe treinen"
+  1189: "{SMALLFONT}{COLOUR BLACK}Bouw nieuwe bussen"
+  1190: "{SMALLFONT}{COLOUR BLACK}Bouw nieuwe trucks"
+  1191: "{SMALLFONT}{COLOUR BLACK}Bouw nieuwe trams"
+  1192: "{SMALLFONT}{COLOUR BLACK}Bouw nieuwe vliegtuigen"
+  1193: "{SMALLFONT}{COLOUR BLACK}Bouw nieuwe ships"
   1194: "{SMALLFONT}{COLOUR BLACK}Treinen"
   1195: "{SMALLFONT}{COLOUR BLACK}Bussen"
   1196: "{SMALLFONT}{COLOUR BLACK}Vrachtwagens"
@@ -1228,16 +1228,16 @@ strings:
   1198: "{SMALLFONT}{COLOUR BLACK}Vliegtuigen"
   1199: "{SMALLFONT}{COLOUR BLACK}Schepen"
   1200: "{SMALLFONT}{COLOUR BLACK}All stations"
-  1201: "{SMALLFONT}{COLOUR BLACK}Rail stations"
-  1202: "{SMALLFONT}{COLOUR BLACK}Road stations"
+  1201: "{SMALLFONT}{COLOUR BLACK}Treinstations"
+  1202: "{SMALLFONT}{COLOUR BLACK}Wegstations"
   1203: "{SMALLFONT}{COLOUR BLACK}Vliegvelden"
   1204: "{SMALLFONT}{COLOUR BLACK}Havens"
   1205: "{SMALLFONT}{COLOUR BLACK}Clear an area of land"
   1206: "{SMALLFONT}{COLOUR BLACK}Bomen"
   1207: "{SMALLFONT}{COLOUR BLACK}Adjust or create land"
   1208: "{SMALLFONT}{COLOUR BLACK}Adjust or create water"
-  1209: "{SMALLFONT}{COLOUR BLACK}Walls and fences"
-  1210: "{SMALLFONT}{COLOUR BLACK}Select object colour"
+  1209: "{SMALLFONT}{COLOUR BLACK}Muren en hekken"
+  1210: "{SMALLFONT}{COLOUR BLACK}Selecteer objectkleur"
   1211: "{COLOUR WINDOW_2}{STRINGID}"
   1212: "{COLOUR WINDOW_2}{STRINGID} (en-route from"
   1213: "{COLOUR WINDOW_2}{STRINGID})"
@@ -1276,7 +1276,7 @@ strings:
   1246: Kan alleen op {STRINGID} worden geplaatst...
   1247: Weg
   1248: "{COLOUR BLACK}Geen voertuigen beschikbaar"
-  1249: "{COLOUR BLACK}No compatible vehicles available to add to {STRINGID}"
+  1249: "{COLOUR BLACK}Geen compatible voertuigen beschikbaar om toe te voegen aan {STRINGID}"
   1250: ""
   1251: "{COLOUR WINDOW_2} Kosten: {COLOUR BLACK}{CURRENCY32}"
   1252: "{NEWLINE}{COLOUR WINDOW_2} Vereist: {COLOUR BLACK}"
@@ -1338,13 +1338,13 @@ strings:
   1308: Stadsnaam
   1309: "Type new name for {STRINGID}:"
   1310: "{COLOUR BLACK}Populatie {STRINGID}: {INT32}"
-  1311: Can't rename town...
+  1311: Kan stad niet hernoemen...
   1312: Nieuw station
   1313: "{COLOUR BLACK}({STRINGID})"
   1314: "{COLOUR WINDOW_2}Verzorgingsgebied{NEWLINE}  Accepteert: "
   1315: "{COLOUR WINDOW_2}  Produceert: "
   1316: "{COLOUR BLACK}Niets"
-  1317: Too many industries
+  1317: Te veel industrieën
   1318: Industrieën
   1319: Nieuwe industrieën bekostigen
   1320: Industrieën plaatsen
@@ -1403,21 +1403,21 @@ strings:
   1373: " en "
   1374: " of "
   1375: ", "
-  1376: "{SMALLFONT}{COLOUR BLACK}Sort list by industry status"
-  1377: "{SMALLFONT}{COLOUR BLACK}Sort list by production percentage transported"
+  1376: "{SMALLFONT}{COLOUR BLACK}Sorteer lijst op industriestatus"
+  1377: "{SMALLFONT}{COLOUR BLACK}Sorteer lijst op productiepercentage getransporteerd"
   1378: "{COLOUR BLACK}Status"
   1379: "{COLOUR BLACK}Status ▼"
-  1380: "{COLOUR BLACK}Production Transported"
-  1381: "{COLOUR BLACK}Production Transported ▼"
-  1382: "{SMALLFONT}{COLOUR BLACK}Sort list by industry name"
+  1380: "{COLOUR BLACK}Productie getransporteerd"
+  1381: "{COLOUR BLACK}Productie getransporteerd ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}Sorteer lijst op industrienaam"
   1383: "{COLOUR BLACK}Industrie"
   1384: "{COLOUR BLACK}Industrie ▼"
-  1385: "{COLOUR BLACK}No industries available"
-  1386: "{SMALLFONT}{COLOUR BLACK}Town"
-  1387: "{SMALLFONT}{COLOUR BLACK}Population graph"
+  1385: "{COLOUR BLACK}Geen industrieën beschikbaar"
+  1386: "{SMALLFONT}{COLOUR BLACK}Stad"
+  1387: "{SMALLFONT}{COLOUR BLACK}Bevolkingsgrafiek"
   1388: "{SMALLFONT}{COLOUR BLACK}Town's ratings of each company"
   1389: "{SMALLFONT}{COLOUR BLACK}Industrie"
-  1390: "{SMALLFONT}{COLOUR BLACK}Production graph"
+  1390: "{SMALLFONT}{COLOUR BLACK}Productiegrafiek"
   1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
   1392: "{SMALLFONT}{COLOUR BLACK}Completely demolish this town (and any nearby industries)"
   1393: Kan deze stad niet verwijderen...
@@ -1446,7 +1446,7 @@ strings:
   1416: "{COLOUR WINDOW_2}Geproduceerd in vorige maand:"
   1417: "{COLOUR BLACK}{STRINGID} ({INT16}% vervoerd)"
   1418: "{COLOUR BLACK}{INT16}%"
-  1419: Closing down
+  1419: Bedrijf opgeheven
   1420: Eigendom van {STRINGID}
   1421: "{STRINGID} is eigendom van {STRINGID}"
   1422: Dit sein is van {STRINGID}
