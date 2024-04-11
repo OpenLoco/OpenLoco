@@ -1057,7 +1057,7 @@ namespace OpenLoco
 
 #pragma warning(push)
 #pragma warning(disable : 4858)
-    // 0x0048F482
+    // 0x0048F43A
     void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
     {
         auto* station = StationManager::get(stationId);
@@ -1077,6 +1077,15 @@ namespace OpenLoco
         // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
         std::remove(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
         station->stationTileSize--;
+    }
+#pragma warning(pop)
+
+    // 0x0048F482
+    void removeTileFromStationAndRecalcCargo(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
+    {
+        removeTileFromStation(stationId, pos, rotation);
+
+        auto* station = StationManager::get(stationId);
 
         // Recalculate accepted cargo
         CargoSearchState cargoSearchState;
@@ -1092,7 +1101,6 @@ namespace OpenLoco
             stats.isAccepted(isAccepted);
         }
     }
-#pragma warning(pop)
 
     // 0x00491C6F
     void sub_491C6F(const uint8_t type, const Pos2& pos, const uint8_t rotation, const CatchmentFlags flag)

@@ -156,6 +156,7 @@ namespace OpenLoco
     void recalculateStationModes(const StationId stationId);
     void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
     void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
+    void removeTileFromStationAndRecalcCargo(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 
     World::StationElement* getStationElement(const World::Pos3& pos);
 

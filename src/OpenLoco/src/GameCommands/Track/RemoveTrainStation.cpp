@@ -110,7 +110,7 @@ namespace OpenLoco::GameCommands
         if (updateStationTileRegistration && (flags & Flags::apply) != 0)
         {
             auto* station = StationManager::get(foundStationId);
-            removeTileFromStation(foundStationId, trackStart, args.rotation);
+            removeTileFromStationAndRecalcCargo(foundStationId, trackStart, args.rotation);
             station->invalidate();
 
             recalculateStationModes(foundStationId);
