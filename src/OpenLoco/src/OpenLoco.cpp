@@ -340,7 +340,7 @@ namespace OpenLoco
         loadFile(fs::u8path(path));
     }
 
-    static void launchGame()
+    static void launchGameFromCmdLineOptions()
     {
         const auto& cmdLineOptions = getCommandLineOptions();
         if (cmdLineOptions.action == CommandLineAction::host)
@@ -350,7 +350,6 @@ namespace OpenLoco
         }
         else if (cmdLineOptions.action == CommandLineAction::join)
         {
-            Title::start();
             if (cmdLineOptions.port)
             {
                 Network::joinServer(cmdLineOptions.address, *cmdLineOptions.port);
@@ -363,10 +362,6 @@ namespace OpenLoco
         else if (!cmdLineOptions.path.empty())
         {
             loadFile(cmdLineOptions.path);
-        }
-        else
-        {
-            Title::start();
         }
     }
 
@@ -620,7 +615,7 @@ namespace OpenLoco
                     Intro::update();
                     if (!Intro::isActive())
                     {
-                        launchGame();
+                        launchGameFromCmdLineOptions();
                     }
                 }
                 else
