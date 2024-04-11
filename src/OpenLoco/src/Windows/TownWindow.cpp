@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::Windows::Town
             commonWidgets(223, 161, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 104 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 139 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
             makeWidget({ 198, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town),
             widgetEnd(),
@@ -133,8 +133,6 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
-            self.drawViewports(rt);
-            Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
 
             auto town = TownManager::get(TownId(self.number));
 

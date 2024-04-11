@@ -637,8 +637,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, &news->date);
 
-            self->drawViewports(rt);
-
             drawNewsSubjectImages(self, rt, news);
         }
 
@@ -721,8 +719,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, &news->date);
 
-            self->drawViewports(rt);
-
             drawNewsSubjectImages(self, rt, news);
 
             x = self->x + 3;
@@ -761,7 +757,6 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             drawingCtx.drawStringCentredWrapped(*rt, origin, 338, Colour::black, StringIds::buffer_2039);
 
-            self->drawViewports(rt);
             const auto& mtd = getMessageTypeDescriptor(news->type);
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
             {

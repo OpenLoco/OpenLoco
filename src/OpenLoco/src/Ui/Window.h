@@ -60,7 +60,8 @@ namespace OpenLoco::Ui
         checkbox = 27,
         wt_28,
         wt_29,
-        end = 30,
+        viewportCentreButton, // TODO: Make a better generic button so we get the same result.
+        end,
     };
 
     enum class WindowColour : uint8_t
@@ -356,7 +357,6 @@ namespace OpenLoco::Ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(WidgetIndex_t index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabledWidgets);
-        void drawViewports(Gfx::RenderTarget* rt);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* mapX, int16_t* mapY, int16_t* offsetX, int16_t* offsetY);
