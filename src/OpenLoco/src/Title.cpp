@@ -51,17 +51,6 @@ namespace OpenLoco::Title
     using TitleStep = std::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
     using TitleSequence = std::vector<TitleStep>;
 
-    // Helper type for using stdx::visit on TitleStep
-    template<class... Ts>
-    struct overloaded : Ts...
-    {
-        using Ts::operator()...;
-    };
-
-    // Explicit deduction guide (not needed as of C++20)
-    template<class... Ts>
-    overloaded(Ts...) -> overloaded<Ts...>;
-
     static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },
         WaitStep{ 368 },
@@ -187,6 +176,51 @@ namespace OpenLoco::Title
         Audio::stopMusic();
     }
 
+    static void handleStep(const WaitStep& step)
+    {
+        // This loop slightly deviates from the original, so we subtract 1 tick to make up for it.
+        _waitCounter = step.duration - 1;
+    }
+
+    static void handleStep([[maybe_unused]] const ReloadStep step)
+    {
+        reload();
+    }
+
+    static void handleStep(const MoveStep step)
+    {
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
+            auto pos = World::toWorldSpace(step) + World::Pos2(16, 16);
+            auto height = World::TileManager::getHeight(pos);
+            auto main = Ui::WindowManager::getMainWindow();
+            if (main != nullptr)
+            {
+                auto pos3d = World::Pos3(pos.x, pos.y, height.landHeight);
+                main->viewportCentreOnTile(pos3d);
+                main->flags &= ~Ui::WindowFlags::scrollingToLocation;
+                main->viewportsUpdatePosition();
+            }
+        }
+    }
+
+    static void handleStep([[maybe_unused]] const RotateStep step)
+    {
+        if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
+            auto main = Ui::WindowManager::getMainWindow();
+            if (main != nullptr)
+            {
+                main->viewportRotateRight();
+            }
+        }
+    }
+
+    static void handleStep([[maybe_unused]] const ResetStep step)
+    {
+        _sequenceIterator = _titleSequence.begin();
+    }
+
     // 0x00444387
     void update()
     {
@@ -207,44 +241,7 @@ namespace OpenLoco::Title
                 return;
 
             auto& command = *_sequenceIterator++;
-            std::visit(overloaded{
-                           []([[maybe_unused]] WaitStep step) {
-                               // This loop slightly deviates from the original, subtract 1 tick to make up for it.
-                               _waitCounter = step.duration - 1;
-                           },
-                           []([[maybe_unused]] ReloadStep step) {
-                               reload();
-                           },
-                           [](MoveStep step) {
-                               if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
-                               {
-                                   auto pos = World::toWorldSpace(step) + World::Pos2(16, 16);
-                                   auto height = World::TileManager::getHeight(pos);
-                                   auto main = Ui::WindowManager::getMainWindow();
-                                   if (main != nullptr)
-                                   {
-                                       auto pos3d = World::Pos3(pos.x, pos.y, height.landHeight);
-                                       main->viewportCentreOnTile(pos3d);
-                                       main->flags &= ~Ui::WindowFlags::scrollingToLocation;
-                                       main->viewportsUpdatePosition();
-                                   }
-                               }
-                           },
-                           []([[maybe_unused]] RotateStep step) {
-                               if (Game::hasFlags(GameStateFlags::tileManagerLoaded))
-                               {
-                                   auto main = Ui::WindowManager::getMainWindow();
-                                   if (main != nullptr)
-                                   {
-                                       main->viewportRotateRight();
-                                   }
-                               }
-                           },
-                           []([[maybe_unused]] ResetStep step) {
-                               _sequenceIterator = _titleSequence.begin();
-                           },
-                       },
-                       command);
+            std::visit([](auto&& step) { handleStep(step); }, command);
         } while (_waitCounter == 0);
     }
 
