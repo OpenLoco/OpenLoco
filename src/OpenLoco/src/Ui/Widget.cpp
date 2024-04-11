@@ -83,6 +83,7 @@ namespace OpenLoco::Ui
         WidgetState widgetState{};
 
         widgetState.window = window;
+        widgetState.flags = widgetFlags;
         widgetState.colour = window->getColour(windowColour);
         widgetState.enabled = (window->enabledWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.disabled = (window->disabledWidgets & (1ULL << widgetIndex)) != 0;
