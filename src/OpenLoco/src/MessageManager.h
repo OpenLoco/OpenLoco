@@ -27,4 +27,5 @@ namespace OpenLoco::MessageManager
     void removeAllSubjectRefs(const uint16_t subject, MessageItemArgumentType type);
     void sub_428E47();
     void clearActiveMessage();
+    void reset();
 }

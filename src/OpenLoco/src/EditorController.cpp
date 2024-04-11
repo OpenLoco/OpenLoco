@@ -11,6 +11,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
+#include "MessageManager.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
@@ -69,7 +70,7 @@ namespace OpenLoco::EditorController
 
         WindowManager::closeAllFloatingWindows();
         initialiseViewports();
-        Title::sub_4284C8();
+        MessageManager::reset();
         Audio::pauseSound();
         Audio::unpauseSound();
         ObjectManager::unloadAll();

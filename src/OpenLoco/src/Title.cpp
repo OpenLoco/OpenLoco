@@ -10,6 +10,7 @@
 #include "Gui.h"
 #include "Intro.h"
 #include "Map/TileManager.h"
+#include "MessageManager.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
@@ -101,12 +102,6 @@ namespace OpenLoco::Title
         return std::span<ObjectManager::SelectedObjectsFlags>(*_objectSelection, ObjectManager::getNumInstalledObjects());
     }
 
-    // 0x004284C8
-    void sub_4284C8()
-    {
-        call(0x004284C8);
-    }
-
     // 0x004442C4
     static void loadTitle()
     {
@@ -175,7 +170,7 @@ namespace OpenLoco::Title
         Scenario::sub_4748D4();
         Scenario::reset();
         initialiseViewports();
-        sub_4284C8();
+        MessageManager::reset();
         Gui::init();
         reset();
         Gfx::invalidateScreen();
