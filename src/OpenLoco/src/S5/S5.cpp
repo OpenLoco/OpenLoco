@@ -263,6 +263,9 @@ namespace OpenLoco::S5
 
     bool exportGameStateToFile(Stream& stream, SaveFlags flags)
     {
+        Ui::ProgressBar::begin(StringIds::please_wait);
+        Ui::ProgressBar::setProgress(20);
+
         if ((flags & SaveFlags::noWindowClose) == SaveFlags::none
             && (flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none)
@@ -279,6 +282,8 @@ namespace OpenLoco::S5
             Vehicles::OrderManager::zeroUnusedOrderTable();
         }
 
+        Ui::ProgressBar::setProgress(40);
+
         bool saveResult;
         {
             auto requiredObjects = ObjectManager::getHeaders();
@@ -294,11 +299,15 @@ namespace OpenLoco::S5
             saveResult = exportGameState(stream, *file, packedObjects);
         }
 
+        Ui::ProgressBar::setProgress(230);
+
         if ((flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none)
         {
             ObjectManager::reloadAll();
         }
+
+        Ui::ProgressBar::end();
 
         if (saveResult)
         {

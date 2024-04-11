@@ -808,7 +808,8 @@ namespace OpenLoco::StringIds
     constexpr StringId error_file_contains_invalid_data = 1083;
     constexpr StringId error_file_is_not_single_player_save = 1084;
     constexpr StringId error_file_is_not_two_player_save = 1085;
-
+    constexpr StringId please_wait = 1086;
+    constexpr StringId initialising = 1087;
     constexpr StringId loading = 1088;
     constexpr StringId installing_new_data = 1089;
     constexpr StringId white = 1090;
