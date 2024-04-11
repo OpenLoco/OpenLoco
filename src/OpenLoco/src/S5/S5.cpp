@@ -20,6 +20,7 @@
 #include "SawyerStream.h"
 #include "ScenarioManager.h"
 #include "SceneManager.h"
+#include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "ViewportManager.h"
@@ -262,6 +263,9 @@ namespace OpenLoco::S5
 
     bool exportGameStateToFile(Stream& stream, SaveFlags flags)
     {
+        Ui::ProgressBar::begin(StringIds::please_wait);
+        Ui::ProgressBar::setProgress(20);
+
         if ((flags & SaveFlags::noWindowClose) == SaveFlags::none
             && (flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none)
@@ -278,6 +282,8 @@ namespace OpenLoco::S5
             Vehicles::OrderManager::zeroUnusedOrderTable();
         }
 
+        Ui::ProgressBar::setProgress(40);
+
         bool saveResult;
         {
             auto requiredObjects = ObjectManager::getHeaders();
@@ -293,11 +299,15 @@ namespace OpenLoco::S5
             saveResult = exportGameState(stream, *file, packedObjects);
         }
 
+        Ui::ProgressBar::setProgress(230);
+
         if ((flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none)
         {
             ObjectManager::reloadAll();
         }
+
+        Ui::ProgressBar::end();
 
         if (saveResult)
         {
@@ -549,7 +559,12 @@ namespace OpenLoco::S5
 
         try
         {
+            Ui::ProgressBar::begin(StringIds::loading);
+            Ui::ProgressBar::setProgress(10);
+
             auto file = importSave(stream);
+
+            Ui::ProgressBar::setProgress(90);
 
             if (file->header.version != kCurrentVersion)
             {
@@ -578,6 +593,7 @@ namespace OpenLoco::S5
                 {
                     _loadErrorCode = 255;
                     _loadErrorMessage = StringIds::error_file_contains_invalid_data;
+                    Ui::ProgressBar::end();
                     return false;
                 }
                 if (file->landscapeOptions->editorStep == EditorController::Step::null)
@@ -585,29 +601,45 @@ namespace OpenLoco::S5
                     file->landscapeOptions->editorStep = EditorController::Step::landscapeEditor;
                 }
             }
+
+            Ui::ProgressBar::setProgress(100);
+
+            // Any packed objects to install?
             if (!file->packedObjects.empty())
             {
+                const auto progressStep = 50 / file->packedObjects.size();
+                auto currentProgress = 100;
                 bool objectInstalled = false;
+
                 for (auto [object, data] : file->packedObjects)
                 {
                     if (ObjectManager::tryInstallObject(object, data))
                     {
                         objectInstalled = true;
                     }
+
+                    currentProgress += progressStep;
+                    Ui::ProgressBar::setProgress(currentProgress);
                 }
+
                 if (objectInstalled)
                 {
                     ObjectManager::loadIndex();
                 }
             }
+
+            Ui::ProgressBar::setProgress(150);
+
             if (file->header.type == S5Type::objects)
             {
                 addr<0x00525F62, uint16_t>() = 0;
                 _loadErrorCode = 254;
                 _loadErrorMessage = StringIds::new_objects_installed_successfully;
+                Ui::ProgressBar::end();
                 // Throws!
                 Game::returnToTitle();
             }
+
             if (!hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
             {
                 if (file->header.type == S5Type::scenario)
@@ -636,6 +668,7 @@ namespace OpenLoco::S5
                 }
             }
 
+            // Load required objects
             auto loadObjectResult = ObjectManager::loadAll(file->requiredObjects);
             if (!loadObjectResult.success)
             {
@@ -645,16 +678,19 @@ namespace OpenLoco::S5
                 {
                     CompanyManager::reset();
                     addr<0x00525F62, uint16_t>() = 0;
+                    Ui::ProgressBar::end();
                     return false;
                 }
                 else
                 {
+                    Ui::ProgressBar::end();
                     Game::returnToTitle();
                     return false;
                 }
             }
 
             ObjectManager::reloadAll();
+            Ui::ProgressBar::setProgress(200);
 
             _gameState = file->gameState;
             if (hasLoadFlags(flags, LoadFlags::scenario | LoadFlags::landscape))
@@ -685,6 +721,9 @@ namespace OpenLoco::S5
             ObjectManager::sub_4748FA();
             TileManager::resetSurfaceClearance();
             IndustryManager::createAllMapAnimations();
+
+            Ui::ProgressBar::setProgress(225);
+
             if (hasLoadFlags(flags, LoadFlags::landscape))
             {
                 Scenario::initialiseSnowLine();
@@ -710,6 +749,7 @@ namespace OpenLoco::S5
             if (hasLoadFlags(flags, LoadFlags::scenario))
             {
                 _gameState->var_014A = 0;
+                Ui::ProgressBar::end();
                 return true;
             }
             if (!hasLoadFlags(flags, LoadFlags::titleSequence))
@@ -727,6 +767,8 @@ namespace OpenLoco::S5
                     Gui::init();
                 }
             }
+
+            Ui::ProgressBar::setProgress(245);
 
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
@@ -760,6 +802,8 @@ namespace OpenLoco::S5
                 addr<0x0050BF6C, uint8_t>() = 1;
             }
 
+            Ui::ProgressBar::end();
+
             if (!hasLoadFlags(flags, LoadFlags::titleSequence) && !hasLoadFlags(flags, LoadFlags::twoPlayer) && !hasLoadFlags(flags, LoadFlags::landscape))
             {
                 resetScreenAge();
@@ -773,6 +817,7 @@ namespace OpenLoco::S5
             Logging::error("Unable to load S5: {}", e.what());
             _loadErrorCode = 255;
             _loadErrorMessage = e.getLocalisedMessage();
+            Ui::ProgressBar::end();
             return false;
         }
         catch (const std::exception& e)
@@ -780,6 +825,7 @@ namespace OpenLoco::S5
             Logging::error("Unable to load S5: {}", e.what());
             _loadErrorCode = 255;
             _loadErrorMessage = StringIds::null;
+            Ui::ProgressBar::end();
             return false;
         }
     }
