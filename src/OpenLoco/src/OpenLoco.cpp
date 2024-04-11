@@ -1046,19 +1046,6 @@ namespace OpenLoco
         sub_4062D1();
         sub_406417(nullptr);
 
-#ifdef _READ_REGISTRY_
-        constexpr auto INSTALL_REG_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{77F45E76-E897-42CA-A9FE-5F56817D875C}";
-
-        HKEY key;
-        if (RegOpenKeyA(HKEY_LOCAL_MACHINE, INSTALL_REG_KEY, &key) == ERROR_SUCCESS)
-        {
-            DWORD type;
-            DWORD dataSize = gCDKey.size();
-            RegQueryValueExA(key, "CDKey", nullptr, &type, (LPBYTE)gCDKey.get(), &dataSize);
-            RegCloseKey(key);
-        }
-#endif
-
         // Call tick before Ui::processMessages to ensure initialise is called
         // otherwise window events can end up using an uninitialised window manager.
         // This can be removed when initialise is moved out of tick().
