@@ -365,27 +365,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x0046E388
-    static void sub_46E388()
-    {
-        call(0x0046E388);
-    }
-
-    // 0x004317BD
-    static uint32_t sub_4317BD()
-    {
-        registers regs;
-        call(0x004317BD, regs);
-
-        return regs.eax;
-    }
-
-    // 0x0046E4E3
-    static void sub_46E4E3()
-    {
-        call(0x0046E4E3);
-    }
-
     void sub_431695(uint16_t var_F253A0)
     {
         _updatingCompanyId = CompanyManager::getControllingId();
@@ -399,87 +378,6 @@ namespace OpenLoco
         WindowManager::update();
         Ui::handleInput();
         CompanyManager::updateOwnerStatus();
-    }
-
-    [[maybe_unused]] static void old_sub_431695(uint16_t var_F253A0)
-    {
-        if (!isNetworked())
-        {
-            _updatingCompanyId = CompanyManager::getControllingId();
-            for (auto i = 0; i < var_F253A0; i++)
-            {
-                MessageManager::sub_428E47();
-                WindowManager::dispatchUpdateAll();
-            }
-
-            Input::processKeyboardInput();
-            WindowManager::update();
-            Ui::handleInput();
-            CompanyManager::updateOwnerStatus();
-            return;
-        }
-
-        // Only run every other tick?
-        if (getGameState().var_014A % 2 != 0)
-        {
-            return;
-        }
-
-        // Host/client?
-        if (isNetworkHost())
-        {
-            _updatingCompanyId = CompanyManager::getControllingId();
-
-            // run twice as often as var_F253A0
-            for (auto i = 0; i < var_F253A0 * 2; i++)
-            {
-                MessageManager::sub_428E47();
-                WindowManager::dispatchUpdateAll();
-            }
-
-            Input::processKeyboardInput();
-            WindowManager::update();
-            WindowManager::update();
-            Ui::handleInput();
-            CompanyManager::updateOwnerStatus();
-            sub_46E388();
-
-            _updatingCompanyId = CompanyManager::getSecondaryPlayerId();
-            sub_4317BD();
-        }
-        else
-        {
-            _updatingCompanyId = CompanyManager::getSecondaryPlayerId();
-            auto eax = sub_4317BD();
-
-            _updatingCompanyId = CompanyManager::getControllingId();
-            if (!isTitleMode())
-            {
-                auto edx = gPrng1().srand_0();
-                edx ^= CompanyManager::get(CompanyId(0))->cash.var_00;
-                edx ^= CompanyManager::get(CompanyId(1))->cash.var_00;
-                if (edx != eax)
-                {
-                    // disconnect?
-                    sub_46E4E3();
-                    return;
-                }
-            }
-
-            // run twice as often as var_F253A0
-            for (auto i = 0; i < var_F253A0 * 2; i++)
-            {
-                MessageManager::sub_428E47();
-                WindowManager::dispatchUpdateAll();
-            }
-
-            Input::processKeyboardInput();
-            WindowManager::update();
-            WindowManager::update();
-            Ui::handleInput();
-            CompanyManager::updateOwnerStatus();
-            sub_46E388();
-        }
     }
 
     // This is called when the game requested to end the current tick early.
