@@ -217,16 +217,13 @@ namespace OpenLoco::World::TileManager
         _tiles[index] = elements;
     }
 
-    // 0x004616D6
-    TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    static std::pair<TileElement*, TileElement*> insertElementPrepareDest(const TilePos2 pos)
     {
-        checkFreeElementsAndReorganise();
-
-        const auto index = getTileIndex(World::toTileSpace(pos));
+        const auto index = getTileIndex(pos);
         if (index >= _tiles.size())
         {
             Logging::error("Attempted to get tile out of bounds! ({0}, {1})", pos.x, pos.y);
-            return nullptr;
+            return std::make_pair(nullptr, nullptr);
         }
 
         auto* source = _tiles[index];
@@ -234,26 +231,12 @@ namespace OpenLoco::World::TileManager
         // tile elements. You must always check there is space (checkFreeElementsAndReorganise)
         // prior to calling this function!
         auto* dest = *_elementsEnd;
-        set(World::toTileSpace(pos), dest);
+        set(pos, dest);
+        return std::make_pair(source, dest);
+    }
 
-        bool lastFound = false;
-        // Copy all of the elements that are underneath the new tile (or till end)
-        while (baseZ < source->baseZ())
-        {
-            *dest = *source++;
-            source->setBaseZ(0xFFU);
-            if (dest->isLast())
-            {
-                // The new element will become the last
-                // so we are clearing the flag
-                dest->setLastFlag(false);
-                dest++;
-                lastFound = true;
-                break;
-            }
-            dest++;
-        }
-
+    static TileElement* insertElementEnd(ElementType type, uint8_t baseZ, uint8_t occupiedQuads, TileElement* source, TileElement* dest, bool lastFound)
+    {
         auto* newElement = dest++;
         // Clear the element
         *newElement = TileElement{};
@@ -273,7 +256,8 @@ namespace OpenLoco::World::TileManager
             do
             {
                 *dest = *source;
-                source++->setBaseZ(0xFFU);
+                source->setBaseZ(0xFFU);
+                source++;
             } while (!dest++->isLast());
         }
         _elementsEnd = dest;
@@ -281,19 +265,68 @@ namespace OpenLoco::World::TileManager
         return newElement;
     }
 
+    // 0x004616D6
+    TileElement* insertElement(ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
+    {
+        checkFreeElementsAndReorganise();
+
+        auto [source, dest] = insertElementPrepareDest(toTileSpace(pos));
+        if (source == nullptr)
+        {
+            return nullptr;
+        }
+
+        bool lastFound = false;
+        // Copy all of the elements that are underneath the new tile (or till end)
+        while (baseZ >= source->baseZ())
+        {
+            *dest = *source;
+            source->setBaseZ(0xFFU);
+            source++;
+            if (dest->isLast())
+            {
+                // The new element will become the last
+                // so we are clearing the flag
+                dest->setLastFlag(false);
+                dest++;
+                lastFound = true;
+                break;
+            }
+            dest++;
+        }
+
+        return insertElementEnd(type, baseZ, occupiedQuads, source, dest, lastFound);
+    }
+
     // 0x00461578
     TileElement* insertElementAfterNoReorg(TileElement* after, ElementType type, const Pos2& pos, uint8_t baseZ, uint8_t occupiedQuads)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.bl = baseZ;
-        regs.bh = occupiedQuads;
-        regs.esi = X86Pointer(after);
-        call(0x00461578, regs);
-        TileElement* el = X86Pointer<TileElement>(regs.esi);
-        el->setType(type);
-        return el;
+        auto [source, dest] = insertElementPrepareDest(toTileSpace(pos));
+        if (source == nullptr)
+        {
+            return nullptr;
+        }
+
+        bool lastFound = false;
+        // Copy all of the elements that are underneath the new tile (or till end)
+        while (source <= after)
+        {
+            *dest = *source;
+            source->setBaseZ(0xFFU);
+            source++;
+            if (dest->isLast())
+            {
+                // The new element will become the last
+                // so we are clearing the flag
+                dest->setLastFlag(false);
+                dest++;
+                lastFound = true;
+                break;
+            }
+            dest++;
+        }
+
+        return insertElementEnd(type, baseZ, occupiedQuads, source, dest, lastFound);
     }
 
     constexpr uint8_t kTileSize = 31;
