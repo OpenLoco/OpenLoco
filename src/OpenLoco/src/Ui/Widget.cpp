@@ -36,6 +36,7 @@ namespace OpenLoco::Ui
     static void draw_27_label(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState);
     static void draw_29(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState);
     static void drawGroupbox(Gfx::RenderTarget* const rt, const Widget& widget, const WidgetState& widgetState);
+    static void drawViewports(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState);
 
     int16_t Widget::midX() const
     {
@@ -152,11 +153,14 @@ namespace OpenLoco::Ui
 
             case WidgetType::textbox:
             case WidgetType::combobox:
-            case WidgetType::viewport:
                 drawTextBox(rt, *this, widgetState);
                 draw_15(rt, *this, widgetState);
                 break;
-
+            case WidgetType::viewport:
+                drawTextBox(rt, *this, widgetState);
+                draw_15(rt, *this, widgetState);
+                drawViewports(rt, *this, widgetState);
+                break;
             case WidgetType::wt_20:
             case WidgetType::wt_21:
                 assert(false); // Unused
@@ -1091,6 +1095,21 @@ namespace OpenLoco::Ui
         // Border left
         drawingCtx.fillRect(*rt, l, t + 1, l, b - 2, Colours::getShade(colour.c(), 4), Gfx::RectFlags::none);
         drawingCtx.fillRect(*rt, l + 1, t + 2, l + 1, b - 2, Colours::getShade(colour.c(), 7), Gfx::RectFlags::none);
+    }
+
+    // 0x0045A0B3
+    static void drawViewports(Gfx::RenderTarget* rt, [[maybe_unused]] const Widget& widget, const WidgetState& widgetState)
+    {
+        auto* window = widgetState.window;
+
+        // TODO: Move viewports into the Widget
+        auto& viewports = window->viewports;
+
+        if (viewports[0] != nullptr)
+            viewports[0]->render(rt);
+
+        if (viewports[1] != nullptr)
+            viewports[1]->render(rt);
     }
 
     // 0x004CF194

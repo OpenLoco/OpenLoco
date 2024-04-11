@@ -1011,7 +1011,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (self.viewports[0] != nullptr)
             {
-                self.drawViewports(rt);
                 Widget::drawViewportCentreButton(rt, &self, widx::centreViewport);
             }
             else if (ToolManager::isToolActive(self.type, self.number))

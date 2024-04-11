@@ -272,7 +272,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (self.viewports[0] != nullptr)
             {
-                self.drawViewports(rt);
                 Widget::drawViewportCentreButton(rt, &self, (WidgetIndex_t)widx::centre_on_viewport);
             }
         }
@@ -874,7 +873,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if (self.viewports[0] != nullptr)
             {
-                self.drawViewports(rt);
                 Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
             }
         }

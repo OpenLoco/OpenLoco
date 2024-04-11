@@ -119,7 +119,6 @@ namespace OpenLoco::Ui::Windows::Station
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
-            self.drawViewports(rt);
             Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
 
             auto station = StationManager::get(StationId(self.number));

@@ -133,7 +133,6 @@ namespace OpenLoco::Ui::Windows::Town
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
-            self.drawViewports(rt);
             Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
 
             auto town = TownManager::get(TownId(self.number));

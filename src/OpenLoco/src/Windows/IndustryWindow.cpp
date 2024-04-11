@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
-            self.drawViewports(rt);
+
             Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
 
             const char* buffer = StringManager::getString(StringIds::buffer_1250);

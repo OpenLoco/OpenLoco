@@ -106,16 +106,6 @@ namespace OpenLoco::Ui
         return (this->holdableWidgets & (1ULL << index)) != 0;
     }
 
-    // 0x0045A0B3
-    void Window::drawViewports(Gfx::RenderTarget* rt)
-    {
-        if (viewports[0] != nullptr)
-            viewports[0]->render(rt);
-
-        if (viewports[1] != nullptr)
-            viewports[1]->render(rt);
-    }
-
     // 0x0045FCE6
     // Input:
     // regs.ax:  x
