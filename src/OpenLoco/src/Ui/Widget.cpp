@@ -37,6 +37,7 @@ namespace OpenLoco::Ui
     static void draw_29(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState);
     static void drawGroupbox(Gfx::RenderTarget* const rt, const Widget& widget, const WidgetState& widgetState);
     static void drawViewports(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState);
+    static void drawViewportCentreButton(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState);
 
     int16_t Widget::midX() const
     {
@@ -201,21 +202,26 @@ namespace OpenLoco::Ui
                 assert(false); // Unused
                 draw_29(rt, *this, widgetState);
                 break;
+            case WidgetType::viewportCentreButton:
+                drawViewportCentreButton(rt, *this, widgetState);
+                break;
         }
     }
 
     // 0x004CF487
-    void Widget::drawViewportCentreButton(Gfx::RenderTarget* rt, const Window* window, const WidgetIndex_t widgetIndex)
+    static void drawViewportCentreButton(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState)
     {
+        auto* window = widgetState.window;
+
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        auto& widget = window->widgets[widgetIndex];
-        if (Input::isHovering(window->type, window->number, widgetIndex))
+
+        if (widgetState.hovered)
         {
             drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), enumValue(ExtColour::translucentGrey2), Gfx::RectFlags::transparent);
             drawingCtx.drawRect(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
             Gfx::RectInsetFlags flags = Gfx::RectInsetFlags::none;
-            if (Input::isPressed(window->type, window->number, widgetIndex))
+            if (widgetState.activated)
                 flags = Gfx::RectInsetFlags::borderInset;
 
             drawingCtx.drawRectInset(*rt, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), window->getColour(WindowColour::secondary).translucent(), flags);

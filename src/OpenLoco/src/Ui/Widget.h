@@ -54,9 +54,6 @@ namespace OpenLoco::Ui
         uint16_t width() const;
         uint16_t height() const;
 
-        // TODO: Use also widgets to do viewport centre buttons.
-        static void drawViewportCentreButton(Gfx::RenderTarget* rt, const Window* window, const WidgetIndex_t widgetIndex);
-
         // TODO: Make tabs actual widgets.
         static void drawTab(Window* w, Gfx::RenderTarget* ctx, uint32_t imageId, WidgetIndex_t index);
 

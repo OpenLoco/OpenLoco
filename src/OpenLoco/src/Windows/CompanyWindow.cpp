@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             commonWidgets(270, 182, StringIds::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             makeWidget({ 178, 57 }, { 66, 66 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull),
             makeWidget({ 154, 124 }, { 112, 22 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_change_owner_name),
             widgetEnd(),
@@ -268,11 +268,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     Colour::black,
                     StringIds::black_stringid,
                     &args);
-            }
-
-            if (self.viewports[0] != nullptr)
-            {
-                Widget::drawViewportCentreButton(rt, &self, (WidgetIndex_t)widx::centre_on_viewport);
             }
         }
 
@@ -684,7 +679,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             commonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::viewportCentreButton, WindowColour::secondary, Widget::kContentNull, StringIds::move_main_view_to_show_this),
             widgetEnd(),
         };
 
@@ -869,11 +864,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto loc = Point(self.x + widget.midX(), self.y + widget.midY() - 5);
                 auto width = widget.width() - 2;
                 drawingCtx.drawStringCentredWrapped(*rt, loc, width, Colour::black, StringIds::not_yet_constructed);
-            }
-
-            if (self.viewports[0] != nullptr)
-            {
-                Widget::drawViewportCentreButton(rt, &self, widx::centre_on_viewport);
             }
         }
 

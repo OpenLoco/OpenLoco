@@ -60,7 +60,8 @@ namespace OpenLoco::Ui
         checkbox = 27,
         wt_28,
         wt_29,
-        end = 30,
+        viewportCentreButton,
+        end,
     };
 
     enum class WindowColour : uint8_t
