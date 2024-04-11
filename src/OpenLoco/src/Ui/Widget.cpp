@@ -91,6 +91,7 @@ namespace OpenLoco::Ui
         widgetState.activated |= (pressedWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.activated |= (toolWidgets & (1ULL << widgetIndex)) != 0;
         widgetState.hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
+        widgetState.scrollviewIndex = scrollviewIndex;
 
         switch (type)
         {
