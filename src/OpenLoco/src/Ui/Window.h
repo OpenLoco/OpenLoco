@@ -60,7 +60,7 @@ namespace OpenLoco::Ui
         checkbox = 27,
         wt_28,
         wt_29,
-        viewportCentreButton,
+        viewportCentreButton, // TODO: Make a better generic button so we get the same result.
         end,
     };
 
