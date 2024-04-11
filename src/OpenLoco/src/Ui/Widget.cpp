@@ -57,15 +57,6 @@ namespace OpenLoco::Ui
         return (this->bottom - this->top) + 1;
     }
 
-    // 0x004CF3EB
-    static void drawStationNameBackground(Gfx::RenderTarget* rt, [[maybe_unused]] const Window* window, [[maybe_unused]] const Widget* widget, int16_t x, int16_t y, AdvancedColour colour, int16_t width)
-    {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
-        drawingCtx.drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
-        drawingCtx.fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
-    }
-
     void Widget::draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
     {
         if (!window->hasFlags(WindowFlags::noBackground))
@@ -208,6 +199,7 @@ namespace OpenLoco::Ui
                 break;
         }
     }
+
     // 0x004CF487
     void Widget::drawViewportCentreButton(Gfx::RenderTarget* rt, const Window* window, const WidgetIndex_t widgetIndex)
     {
@@ -687,6 +679,15 @@ namespace OpenLoco::Ui
             AdvancedColour(Colour::white).outline(),
             widget.text,
             &FormatArguments::common());
+    }
+
+    // 0x004CF3EB
+    static void drawStationNameBackground(Gfx::RenderTarget* rt, [[maybe_unused]] const Window* window, [[maybe_unused]] const Widget* widget, int16_t x, int16_t y, AdvancedColour colour, int16_t width)
+    {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.drawImage(rt, x - 4, y, Gfx::recolour(ImageIds::curved_border_left_medium, colour.c()));
+        drawingCtx.drawImage(rt, x + width, y, Gfx::recolour(ImageIds::curved_border_right_medium, colour.c()));
+        drawingCtx.fillRect(*rt, x, y, x + width - 1, y + 11, Colours::getShade(colour.c(), 5), Gfx::RectFlags::none);
     }
 
     // 0x004CA750
