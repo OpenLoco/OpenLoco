@@ -297,7 +297,7 @@ namespace OpenLoco
         initialiseViewports();
         Gui::init();
 
-        Title::sub_4284C8();
+        MessageManager::reset();
         call(0x004969DA); // getLocalTime not used (dead code?)
         Scenario::reset();
 

@@ -19,6 +19,7 @@
 #include "Map/MapGenerator/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Map/WaveManager.h"
+#include "MessageManager.h"
 #include "MultiPlayer.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
@@ -223,7 +224,7 @@ namespace OpenLoco::Scenario
         Vehicles::OrderManager::reset();
         sub_4BAEC4();
         sub_43C8FD();
-        Title::sub_4284C8();
+        MessageManager::reset();
     }
 
     // 0x004748D4
@@ -365,7 +366,7 @@ namespace OpenLoco::Scenario
         EntityManager::updateSpatialIndex();
         addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
         sub_4BAEC4();
-        Title::sub_4284C8();
+        MessageManager::reset();
 
         std::memcpy(gameState.scenarioDetails, S5::getOptions().scenarioDetails, sizeof(gameState.scenarioDetails));
         std::memcpy(gameState.scenarioName, S5::getOptions().scenarioName, sizeof(gameState.scenarioName));

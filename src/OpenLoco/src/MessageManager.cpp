@@ -617,4 +617,12 @@ namespace OpenLoco::MessageManager
             clearActiveMessage();
         }
     }
+
+    // 0x004284C8
+    void reset()
+    {
+        auto& gameState = getGameState();
+        gameState.numMessages = 0;
+        gameState.activeMessageIndex = MessageId::null;
+    }
 }
