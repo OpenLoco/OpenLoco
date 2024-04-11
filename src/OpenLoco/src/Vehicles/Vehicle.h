@@ -195,6 +195,7 @@ namespace OpenLoco::Vehicles
     currency32_t removeTrackModsToTrackNetwork(const World::Pos3& pos, Vehicles::TrackAndDirection::_TrackAndDirection trackAndDirection, CompanyId company, uint8_t trackType, uint8_t flags, uint8_t modSelection, uint8_t trackModObjIds);
 
     void playPickupSound(Vehicles::Vehicle2* veh2);
+    void playPlacedownSound(const World::Pos3 pos);
 
     struct VehicleBase : EntityBase
     {
@@ -377,6 +378,7 @@ namespace OpenLoco::Vehicles
         {
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
+        void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
 
     private:
         void updateDrivingSounds();
@@ -412,7 +414,6 @@ namespace OpenLoco::Vehicles
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
         void beginLoading();
-        void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         WaterMotionFlags updateWaterMotion(WaterMotionFlags flags);
         void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         uint8_t getLoadingModifier(const VehicleBogie* bogie);
@@ -599,6 +600,7 @@ namespace OpenLoco::Vehicles
     static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
 
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
+    uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw4FromVector(int16_t xOffset, int16_t yOffset);
 
     struct VehicleBogie : VehicleBase

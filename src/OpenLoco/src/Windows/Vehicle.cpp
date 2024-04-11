@@ -3652,49 +3652,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        // 0x00426D52
-        // used to return NodeMovementFlags on ebx
-        static std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node)
-        {
-            auto* station = StationManager::get(stationId);
-            auto tile = TileManager::get(World::Pos2{ station->unk_tile_x, station->unk_tile_y });
-            World::StationElement* elStation = nullptr;
-            for (auto& el : tile)
-            {
-                elStation = el.as<StationElement>();
-                if (elStation == nullptr)
-                {
-                    continue;
-                }
-
-                if (elStation->baseZ() != station->unk_tile_z / 4)
-                {
-                    elStation = nullptr;
-                    continue;
-                }
-                break;
-            }
-
-            if (elStation == nullptr)
-            {
-                return {};
-            }
-
-            auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
-            const auto& movementNode = airportObj->movementNodes[node];
-            auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
-            auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.y } + World::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
-            if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))
-            {
-                nodeLoc.z = station->unk_tile_z + 255;
-                if (!movementNode.hasFlags(AirportMovementNodeFlags::inFlight))
-                {
-                    nodeLoc.z = 30 * 32;
-                }
-            }
-            return { nodeLoc };
-        }
-
         // 0x00426F0B
         static std::optional<GameCommands::VehicleAirPlacementArgs> getVehicleAirPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
@@ -3721,16 +3678,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         continue;
                     }
 
-                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * World::kTileSize)
+                    if (std::abs(interaction.pos.x - station.airportStartPos.x) > 5 * World::kTileSize)
                     {
                         continue;
                     }
-                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * World::kTileSize)
+                    if (std::abs(interaction.pos.y - station.airportStartPos.y) > 5 * World::kTileSize)
                     {
                         continue;
                     }
 
-                    auto tile = TileManager::get(World::Pos2{ station.unk_tile_x, station.unk_tile_y });
+                    auto tile = TileManager::get(station.airportStartPos);
                     for (auto& el : tile)
                     {
                         elStation = el.as<StationElement>();

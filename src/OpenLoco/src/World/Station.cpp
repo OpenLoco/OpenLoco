@@ -1111,4 +1111,47 @@ namespace OpenLoco
         const auto label = enumValue(flags & StationFlags::allModes);
         return label_icons[label];
     }
+
+    // 0x00426D52
+    // used to return NodeMovementFlags on ebx
+    std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node)
+    {
+        auto* station = StationManager::get(stationId);
+        auto tile = World::TileManager::get(station->airportStartPos);
+        World::StationElement* elStation = nullptr;
+        for (auto& el : tile)
+        {
+            elStation = el.as<World::StationElement>();
+            if (elStation == nullptr)
+            {
+                continue;
+            }
+
+            if (elStation->baseZ() != station->airportStartPos.z / 4)
+            {
+                elStation = nullptr;
+                continue;
+            }
+            break;
+        }
+
+        if (elStation == nullptr)
+        {
+            return {};
+        }
+
+        auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+        const auto& movementNode = airportObj->movementNodes[node];
+        auto nodeOffset = Math::Vector::rotate(World::Pos2(movementNode.x, movementNode.y) - World::Pos2(16, 16), elStation->rotation()) + World::Pos2(16, 16);
+        auto nodeLoc = World::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.z } + station->airportStartPos;
+        if (!movementNode.hasFlags(AirportMovementNodeFlags::taxiing))
+        {
+            nodeLoc.z = station->airportStartPos.z + 255;
+            if (!movementNode.hasFlags(AirportMovementNodeFlags::inFlight))
+            {
+                nodeLoc.z = 30 * 32;
+            }
+        }
+        return { nodeLoc };
+    }
 }

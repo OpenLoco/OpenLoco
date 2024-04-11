@@ -13,7 +13,7 @@ namespace OpenLoco::GameCommands
             : stationId(StationId(regs.bp))
             , airportNode(regs.dl)
             , head(EntityId(regs.di))
-            , convertGhost((regs.ebx >> 16) == 0xFFFF)
+            , convertGhost((regs.ebx & 0xFFFF0000) == 0xFFFF0000)
         {
         }
 
@@ -32,4 +32,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void vehiclePlaceAir(registers& regs);
 }

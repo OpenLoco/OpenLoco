@@ -9,6 +9,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <cstdint>
 #include <limits>
+#include <optional>
 
 namespace OpenLoco
 {
@@ -112,9 +113,7 @@ namespace OpenLoco
         uint8_t var_3B0{};
         uint8_t var_3B1{};
         uint16_t var_3B2{};
-        coord_t unk_tile_x{};                    // 0x3B4
-        coord_t unk_tile_y{};                    // 0x3B6
-        coord_t unk_tile_z{};                    // 0x3B8
+        World::Pos3 airportStartPos{};           // 0x3B4
         uint32_t airportMovementOccupiedEdges{}; // 0x3BA
         uint8_t pad_3BE[0x3D2 - 0x3BE]{};
 
@@ -158,4 +157,6 @@ namespace OpenLoco
     void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 
     World::StationElement* getStationElement(const World::Pos3& pos);
+
+    std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node);
 }

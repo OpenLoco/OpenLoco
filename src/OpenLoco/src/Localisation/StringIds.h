@@ -883,6 +883,7 @@ namespace OpenLoco::StringIds
     constexpr StringId vehicle_has_broken_down = 1159;
     constexpr StringId vehicle_is_stuck = 1160;
 
+    constexpr StringId vehicle_approaching_or_in_the_way = 1162;
     constexpr StringId cant_place_string_id_here = 1163;
     constexpr StringId cant_remove_string_id = 1164;
     constexpr StringId cant_pass_signal_at_danger = 1165;
@@ -1464,6 +1465,7 @@ namespace OpenLoco::StringIds
     constexpr StringId small_company_value_currency = 1791;
     constexpr StringId small_black_string = 1792;
     constexpr StringId small_white_string = 1793;
+    constexpr StringId airport_type_not_suitable_for_aircraft = 1794;
 
     constexpr StringId currency_symbol = 1795;
     constexpr StringId cargo_delivered_days = 1796;
