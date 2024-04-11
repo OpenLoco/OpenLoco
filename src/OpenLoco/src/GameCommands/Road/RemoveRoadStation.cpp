@@ -70,26 +70,28 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        // Try to find the station element, if actually present
-        World::StationElement* stationEl = nullptr;
-        while (auto* nextElement = initialElRoad->next())
+        // Find the station element for an ownership check
         {
-            stationEl = nextElement->as<World::StationElement>();
-            if (stationEl != nullptr)
+            World::StationElement* stationEl = nullptr;
+            while (auto* nextElement = initialElRoad->next())
             {
-                break;
+                stationEl = nextElement->as<World::StationElement>();
+                if (stationEl != nullptr)
+                {
+                    break;
+                }
+
+                if (nextElement->isLast())
+                {
+                    return FAILURE;
+                }
             }
 
-            if (nextElement->isLast())
+            // NB: vanilla would query owner from station object, not the station element
+            if (!sub_431E6A(stationEl->owner(), reinterpret_cast<const World::TileElement*>(stationEl)))
             {
                 return FAILURE;
             }
-        }
-
-        // NB: vanilla would query owner from station object, not the station element
-        if (!sub_431E6A(stationEl->owner(), reinterpret_cast<const World::TileElement*>(stationEl)))
-        {
-            return FAILURE;
         }
 
         const auto& roadPieces = World::TrackData::getRoadPiece(args.roadId);
