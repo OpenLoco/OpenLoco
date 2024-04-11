@@ -327,16 +327,6 @@ namespace OpenLoco::World::TileManager
         }
 
         return insertElementEnd(type, baseZ, occupiedQuads, source, dest, lastFound);
-        //registers regs;
-        //regs.ax = pos.x;
-        //regs.cx = pos.y;
-        //regs.bl = baseZ;
-        //regs.bh = occupiedQuads;
-        //regs.esi = X86Pointer(after);
-        //call(0x00461578, regs);
-        //TileElement* el = X86Pointer<TileElement>(regs.esi);
-        //el->setType(type);
-        //return el;
     }
 
     constexpr uint8_t kTileSize = 31;
