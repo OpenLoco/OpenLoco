@@ -2398,3 +2398,6 @@ strings:
   2343: "{COLOUR WINDOW_2}Current heightmap file: {COLOUR BLACK}{STRING}"
   2344: "(none selected)"
   2345: "Checking scenario files..."
+  2346: "{COLOUR BLACK}Production Last Month"
+  2347: "{COLOUR BLACK}Production Last Month ▼"
+  2348: "{SMALLFONT}{COLOUR BLACK}Sort list by production last month"

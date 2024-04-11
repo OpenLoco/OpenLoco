@@ -73,8 +73,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static constexpr Ui::Size kWindowSize = { 600, 197 };
-        static constexpr Ui::Size kMaxDimensions = { 600, 900 };
+        static constexpr Ui::Size kWindowSize = { 759, 197 };
+        static constexpr Ui::Size kMaxDimensions = { 759, 900 };
         static constexpr Ui::Size kMinDimensions = { 192, 100 };
 
         static constexpr uint8_t kRowHeight = 10;
@@ -84,16 +84,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
             sort_industry_name = 6,
             sort_industry_status,
             sort_industry_production_transported,
+            sort_industry_production_last_month,
             scrollview,
         };
 
-        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << scrollview);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << sort_industry_production_last_month) | (1 << scrollview);
 
         static constexpr Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_industries),
             makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_name),
             makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_status),
             makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_transported),
+            makeWidget({ 603, 44 }, { 159, 11 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::sort_industry_production_last_month),
             makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
@@ -103,6 +105,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             Name,
             Status,
             ProductionTransported,
+            ProductionLastMonth,
         };
 
         // 0x00457B94
@@ -122,10 +125,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self.widgets[widx::sort_industry_production_transported].left = std::min(self.width - 4, 444);
             self.widgets[widx::sort_industry_production_transported].right = std::min(self.width - 4, 603);
 
+            self.widgets[widx::sort_industry_production_last_month].left = std::min(self.width - 4, 603);
+            self.widgets[widx::sort_industry_production_last_month].right = std::min(self.width - 4, 762);
+
             // Set header button captions.
             self.widgets[widx::sort_industry_name].text = self.sortMode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
             self.widgets[widx::sort_industry_status].text = self.sortMode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
             self.widgets[widx::sort_industry_production_transported].text = self.sortMode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
+            self.widgets[widx::sort_industry_production_last_month].text = self.sortMode == SortMode::ProductionLastMonth ? StringIds::industry_table_header_production_last_month_desc : StringIds::industry_table_header_production_last_month;
 
             if (isEditorMode() || isSandboxMode())
                 self.widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
@@ -169,6 +176,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 case widx::sort_industry_name:
                 case widx::sort_industry_status:
                 case widx::sort_industry_production_transported:
+                case widx::sort_industry_production_last_month:
                 {
                     auto sortMode = widgetIndex - widx::sort_industry_name;
                     if (self.sortMode == sortMode)
@@ -275,6 +283,38 @@ namespace OpenLoco::Ui::Windows::IndustryList
             return rhsVar < lhsVar;
         }
 
+        static std::pair<uint32_t, StringId> getProductionLastMonth(const OpenLoco::Industry& industry)
+        {
+            auto industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
+            auto cargoProduction = std::numeric_limits<uint32_t>::max();
+            StringId unitType = StringIds::empty;
+
+            if (industryObj->producesCargo())
+            {
+                auto cargoNumber = 0;
+                for (const auto& producedCargoType : industryObj->producedCargoType)
+                {
+                    if (producedCargoType != kCargoTypeNull)
+                    {
+                        cargoProduction = industry.producedCargoQuantityPreviousMonth[cargoNumber];
+
+                        auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
+                        unitType = cargoProduction > 1 ? cargoObj->unitNamePlural : cargoObj->unitNameSingular;
+                        break; // Only support one cargo type for now - it seems most (all?) industries only have a single cargo type
+                    }
+
+                    cargoNumber++;
+                }
+            }
+
+            return std::make_pair(cargoProduction, unitType);
+        }
+
+        static bool orderByProductionLastMonth(const OpenLoco::Industry& lhs, const OpenLoco::Industry& rhs)
+        {
+            return getProductionLastMonth(rhs).first < getProductionLastMonth(lhs).first;
+        }
+
         // 0x00457A52, 0x00457A9F, 0x00457AF3
         static bool getOrder(const SortMode mode, OpenLoco::Industry& lhs, OpenLoco::Industry& rhs)
         {
@@ -288,6 +328,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 case SortMode::ProductionTransported:
                     return orderByProductionTransported(lhs, rhs);
+
+                case SortMode::ProductionLastMonth:
+                    return orderByProductionLastMonth(lhs, rhs);
             }
 
             return false;
@@ -433,22 +476,31 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto point = Point(200, yPos);
                     drawingCtx.drawStringLeftClipped(rt, point, 238, Colour::black, text_colour_id, &args);
                 }
-                // Industry Production Delivered
+                if (industry->canProduceCargo())
                 {
-                    if (!industry->canProduceCargo())
+                    // Industry Production Delivered
                     {
-                        yPos += kRowHeight;
-                        continue;
+                        auto productionTransported = getAverageTransportedCargo(*industry);
+
+                        FormatArguments args{};
+                        args.push<uint16_t>(productionTransported);
+
+                        auto point = Point(440, yPos);
+                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::production_transported_percent, &args);
                     }
+                    // Industry Production Last Month
+                    {
+                        auto productionTransported = getProductionLastMonth(*industry);
 
-                    auto productionTransported = getAverageTransportedCargo(*industry);
+                        FormatArguments args{};
+                        args.push(productionTransported.second);
+                        args.push<uint32_t>(productionTransported.first);
 
-                    FormatArguments args{};
-                    args.push<uint16_t>(productionTransported);
-
-                    auto point = Point(440, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::production_transported_percent, &args);
+                        auto point = Point(600, yPos);
+                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::black_stringid, &args);
+                    }
                 }
+
                 yPos += kRowHeight;
             }
         }
