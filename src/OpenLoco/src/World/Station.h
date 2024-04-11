@@ -9,6 +9,7 @@
 #include <OpenLoco/Core/Numerics.hpp>
 #include <cstdint>
 #include <limits>
+#include <optional>
 
 namespace OpenLoco
 {
@@ -156,4 +157,6 @@ namespace OpenLoco
     void addTileToStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation);
 
     World::StationElement* getStationElement(const World::Pos3& pos);
+
+    std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node);
 }
