@@ -374,9 +374,39 @@ namespace OpenLoco::Ui
     // 0x004C99B9
     void Window::invalidatePressedImageButtons()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004C99B9, regs);
+        WidgetIndex_t pressedWidgetIndex = -1;
+        if (Input::isPressed(type, number) || Input::isDropdownActive(type, number))
+        {
+            pressedWidgetIndex = Input::getPressedWidgetIndex();
+        }
+
+        int16_t toolWidgetIndex = -1;
+        if (ToolManager::isToolActive(type, number))
+        {
+            toolWidgetIndex = ToolManager::getToolWidgetIndex();
+        }
+
+        for (WidgetIndex_t widx = 0;; widx++)
+        {
+            auto& widget = widgets[widx];
+            if (widget.type == WidgetType::end)
+                break;
+
+            const bool activated = isActivated(widx);
+            // This might be the remap flag, not entirely sure.
+            const bool hasBit31 = (widget.content & (1U << 31)) != 0;
+            if ((widget.type == WidgetType::slider || widget.type == WidgetType::wt_3) && hasBit31)
+            {
+                if (activated || pressedWidgetIndex == widx || toolWidgetIndex == widx)
+                {
+                    Gfx::invalidateRegion(
+                        x + widget.left,
+                        y + widget.top,
+                        x + widget.right + 1,
+                        y + widget.bottom + 1);
+                }
+            }
+        }
     }
 
     // 0x004CA4BD

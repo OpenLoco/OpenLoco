@@ -71,7 +71,8 @@ namespace OpenLoco::Input
     bool isHovering(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t widgetIndex);
     Ui::WidgetIndex_t getHoveredWidgetIndex();
 
-    bool isDropdownActive(Ui::WindowType type, Ui::WidgetIndex_t index);
+    bool isDropdownActive(Ui::WindowType type, Ui::WindowNumber_t number);
+    bool isDropdownActive(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index);
 
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number);
     bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index);
