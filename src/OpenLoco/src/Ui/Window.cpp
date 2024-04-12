@@ -374,9 +374,37 @@ namespace OpenLoco::Ui
     // 0x004C99B9
     void Window::invalidatePressedImageButtons()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x004C99B9, regs);
+        WidgetIndex_t pressedWidgetIndex = -1;
+        if (Input::isPressed(type, number) || Input::isDropdownActive(type, number))
+        {
+            pressedWidgetIndex = Input::getPressedWidgetIndex();
+        }
+
+        int16_t toolWidgetIndex = -1;
+        if (ToolManager::isToolActive(type, number))
+        {
+            toolWidgetIndex = ToolManager::getToolWidgetIndex();
+        }
+
+        for (WidgetIndex_t i = 0;; i++)
+        {
+            auto& widget = widgets[i];
+            if (widget.type == WidgetType::end)
+                break;
+
+            const bool isActivated = (this->activatedWidgets & (1ULL << i)) != 0;
+            if ((widget.type == WidgetType::slider || widget.type == WidgetType::wt_3) && widget.content < 0)
+            {
+                if (isActivated || pressedWidgetIndex == i || toolWidgetIndex == i)
+                {
+                    Gfx::invalidateRegion(
+                        x + widget.left,
+                        y + widget.top,
+                        x + widget.right + 1,
+                        y + widget.bottom + 1);
+                }
+            }
+        }
     }
 
     // 0x004CA4BD
