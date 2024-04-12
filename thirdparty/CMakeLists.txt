@@ -77,3 +77,18 @@ if ( NOT fmt_FOUND )
     # Group all the ThirdParty items under a ThirdParty folder in IDEs
     set_target_properties(fmt PROPERTIES FOLDER "ThirdParty")
 endif()
+
+find_package(sfl QUIET)
+if ( NOT sfl_FOUND )
+    ## sfl
+    FetchContent_Declare(
+        sfl
+        GIT_REPOSITORY      https://github.com/slavenf/sfl-library
+        GIT_TAG             0004b9a88eb3ccc27adf7aee82559b235d94dbd7
+        GIT_SHALLOW         ON
+    )
+    FetchContent_MakeAvailable(sfl)
+    
+    # Group all the ThirdParty items under a ThirdParty folder in IDEs
+    set_target_properties(sfl PROPERTIES FOLDER "ThirdParty")
+endif()
