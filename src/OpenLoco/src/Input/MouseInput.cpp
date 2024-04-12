@@ -190,7 +190,7 @@ namespace OpenLoco::Input
         return _hoverWidgetIdx;
     }
 
-    bool isDropdownActive(Ui::WindowType type, Ui::WidgetIndex_t index)
+    bool isDropdownActive(Ui::WindowType type, Ui::WindowNumber_t number)
     {
         if (state() != State::dropdownActive)
             return false;
@@ -199,6 +199,17 @@ namespace OpenLoco::Input
             return false;
 
         if (!hasFlag(Flags::widgetPressed))
+            return false;
+
+        if (_pressedWindowNumber != number)
+            return false;
+
+        return true;
+    }
+
+    bool isDropdownActive(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index)
+    {
+        if (!isDropdownActive(type, number))
             return false;
 
         return _pressedWidgetIndex == index;
