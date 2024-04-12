@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::WindowManager
         constexpr uint16_t byType = 1 << 7;
     }
 
-    static constexpr size_t kMaxWindows = 50;
+    static constexpr size_t kMaxWindows = 64;
 
     static loco_global<uint16_t, 0x0050C19C> _timeSinceLastTick;
     static loco_global<uint16_t, 0x0052334E> _thousandthTickCounter;
