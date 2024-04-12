@@ -393,7 +393,9 @@ namespace OpenLoco::Ui
                 break;
 
             const bool activated = isActivated(widx);
-            if ((widget.type == WidgetType::slider || widget.type == WidgetType::wt_3) && widget.content < 0)
+            // This might be the remap flag, not entirely sure.
+            const bool hasBit31 = (widget.content & (1U << 31)) != 0;
+            if ((widget.type == WidgetType::slider || widget.type == WidgetType::wt_3) && hasBit31)
             {
                 if (activated || pressedWidgetIndex == widx || toolWidgetIndex == widx)
                 {
