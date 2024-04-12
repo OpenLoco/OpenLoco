@@ -1,5 +1,6 @@
 24.04+ (???)
 ------------------------------------------------------------------------
+- Feature: [#2] The window limit has been increased from 12 to 50.
 - Fix: [#2411] Progress bar windows are not actually rendered.
 - Fix: [#2413] Gridlines are hidden when closing construction windows.
 - Fix: [#2416] Cursors in embedded text fiels are not rendering in the right position.
