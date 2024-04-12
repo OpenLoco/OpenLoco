@@ -386,16 +386,16 @@ namespace OpenLoco::Ui
             toolWidgetIndex = ToolManager::getToolWidgetIndex();
         }
 
-        for (WidgetIndex_t i = 0;; i++)
+        for (WidgetIndex_t widx = 0;; widx++)
         {
-            auto& widget = widgets[i];
+            auto& widget = widgets[widx];
             if (widget.type == WidgetType::end)
                 break;
 
-            const bool isActivated = (this->activatedWidgets & (1ULL << i)) != 0;
+            const bool activated = isActivated(widx);
             if ((widget.type == WidgetType::slider || widget.type == WidgetType::wt_3) && widget.content < 0)
             {
-                if (isActivated || pressedWidgetIndex == i || toolWidgetIndex == i)
+                if (activated || pressedWidgetIndex == widx || toolWidgetIndex == widx)
                 {
                     Gfx::invalidateRegion(
                         x + widget.left,
