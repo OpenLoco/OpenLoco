@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <cinttypes>
 #include <memory>
+#include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Interop;
 
@@ -50,15 +51,16 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<uint32_t, 0x00523508> _523508;
     static loco_global<uint32_t, 0x009DA3D4> _9DA3D4;
     static loco_global<int32_t, 0x00E3F0B8> _gCurrentRotation;
-    static loco_global<Window[kMaxWindows], 0x011370AC> _windows;
-    static loco_global<Window*, 0x0113D754> _windowsEnd;
+
+    static sfl::static_vector<Window, kMaxWindows> _windows;
+
     loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
     static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y);
 
     void init()
     {
-        _windowsEnd = &_windows[0];
+        _windows.clear();
         _523508 = 0;
     }
 
@@ -488,22 +490,12 @@ namespace OpenLoco::Ui::WindowManager
 
     size_t indexOf(const Window& pWindow)
     {
-        int i = 0;
-
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
-        {
-            if (w == &pWindow)
-                return i;
-
-            i++;
-        }
-
-        return 0;
+        return &pWindow - _windows.data();
     }
 
     size_t count()
     {
-        return ((uintptr_t)*_windowsEnd - (uintptr_t)_windows.get()) / sizeof(Window);
+        return _windows.size();
     }
 
     void setWindowColours(uint8_t i, AdvancedColour colour)
@@ -524,9 +516,9 @@ namespace OpenLoco::Ui::WindowManager
 
     void updateViewports()
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto&& w : _windows)
         {
-            w->viewportsUpdatePosition();
+            w.viewportsUpdatePosition();
         }
     }
 
@@ -540,30 +532,28 @@ namespace OpenLoco::Ui::WindowManager
         if (_thousandthTickCounter >= 1000)
         {
             _thousandthTickCounter = 0;
-            for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
-            {
-                w->callOnPeriodicUpdate();
-            }
+            std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
+                w.callOnPeriodicUpdate();
+            });
         }
 
         // Border flash invalidation
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
-        {
-            if (w->hasFlags(WindowFlags::whiteBorderMask))
+        std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
+            if (w.hasFlags(WindowFlags::whiteBorderMask))
             {
                 // TODO: Replace with countdown
                 // Countdown is stuffed into WindowFlags extract it out and decrement by 1
-                const auto newCount = enumValue(w->flags & WindowFlags::whiteBorderMask) - enumValue(WindowFlags::whiteBorderOne);
+                const auto newCount = enumValue(w.flags & WindowFlags::whiteBorderMask) - enumValue(WindowFlags::whiteBorderOne);
                 // Stuff the new count back into the WindowFlags
-                w->flags &= ~WindowFlags::whiteBorderMask;
-                w->flags |= static_cast<WindowFlags>(newCount);
+                w.flags &= ~WindowFlags::whiteBorderMask;
+                w.flags |= static_cast<WindowFlags>(newCount);
 
-                if (!w->hasFlags(WindowFlags::whiteBorderMask))
+                if (!w.hasFlags(WindowFlags::whiteBorderMask))
                 {
-                    w->invalidate();
+                    w.invalidate();
                 }
             }
-        }
+        });
     }
 
     // 0x00439BA5
@@ -591,70 +581,69 @@ namespace OpenLoco::Ui::WindowManager
         return nullptr;
     }
 
+    template<typename TPred>
+    static Window* findImpl(TPred pred)
+    {
+        auto it = std::find_if(_windows.begin(), _windows.end(), pred);
+        if (it != _windows.end())
+        {
+            return &(*it);
+        }
+        return nullptr;
+    }
+
     // 0x004C9B56
     Window* find(WindowType type)
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
-        {
-            if (w->type == type)
-            {
-                return w;
-            }
-        }
-
-        return nullptr;
+        return findImpl([type](auto&& w) {
+            return w.type == type;
+        });
     }
 
     // 0x004C9B56
     Window* find(WindowType type, WindowNumber_t number)
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
-        {
-            if (w->type == type && w->number == number)
-            {
-                return w;
-            }
-        }
-
-        return nullptr;
+        return findImpl([type, number](auto&& w) {
+            return w.type == type && w.number == number;
+        });
     }
 
     // 0x004C9A95
     Window* findAt(int16_t x, int16_t y)
     {
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        for (auto it = _windows.rbegin(); it != _windows.rend(); ++it)
         {
-            if (x < w->x)
+            auto& w = *it;
+            if (x < w.x)
                 continue;
 
-            if (x >= (w->x + w->width))
+            if (x >= (w.x + w.width))
                 continue;
 
-            if (y < w->y)
+            if (y < w.y)
                 continue;
-            if (y >= (w->y + w->height))
-                continue;
-
-            if (w->hasFlags(WindowFlags::flag_7))
+            if (y >= (w.y + w.height))
                 continue;
 
-            if (w->hasFlags(WindowFlags::noBackground))
+            if (w.hasFlags(WindowFlags::flag_7))
+                continue;
+
+            if (w.hasFlags(WindowFlags::noBackground))
             {
-                auto index = w->findWidgetAt(x, y);
+                auto index = w.findWidgetAt(x, y);
                 if (index == -1)
                 {
                     continue;
                 }
             }
 
-            if (w->callOnResize() == nullptr)
+            if (w.callOnResize() == nullptr)
             {
                 return findAt(x, y);
             }
 
-            return w;
+            return &w;
         }
-
         return nullptr;
     }
 
@@ -666,86 +655,86 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9AFA
     Window* findAtAlt(int16_t x, int16_t y)
     {
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        for (auto it = _windows.rbegin(); it != _windows.rend(); ++it)
         {
-            if (x < w->x)
+            auto& w = *it;
+            if (x < w.x)
                 continue;
 
-            if (x >= (w->x + w->width))
+            if (x >= (w.x + w.width))
                 continue;
 
-            if (y < w->y)
+            if (y < w.y)
                 continue;
-            if (y >= (w->y + w->height))
+            if (y >= (w.y + w.height))
                 continue;
 
-            if (w->hasFlags(WindowFlags::noBackground))
+            if (w.hasFlags(WindowFlags::noBackground))
             {
-                auto index = w->findWidgetAt(x, y);
+                auto index = w.findWidgetAt(x, y);
                 if (index == -1)
                 {
                     continue;
                 }
             }
 
-            if (w->callOnResize() == nullptr)
+            if (w.callOnResize() == nullptr)
             {
-                return findAtAlt(x, y);
+                return findAt(x, y);
             }
 
-            return w;
+            return &w;
         }
-
         return nullptr;
     }
 
     // 0x004CB966
     void invalidate(WindowType type)
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto& w : _windows)
         {
-            if (w->type != type)
+            if (w.type != type)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
         }
     }
 
     // 0x004CB966
     void invalidate(WindowType type, WindowNumber_t number)
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto& w : _windows)
         {
-            if (w->type != type)
+            if (w.type != type)
                 continue;
 
-            if (w->number != number)
+            if (w.number != number)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
         }
     }
 
     // 0x004CB966
     void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widgetIndex)
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto&& w : _windows)
         {
-            if (w->type != type)
+            if (w.type != type)
                 continue;
 
-            if (w->number != number)
+            if (w.number != number)
                 continue;
 
-            auto widget = w->widgets[widgetIndex];
+            auto widget = w.widgets[widgetIndex];
 
             if (widget.left != -2)
             {
                 Gfx::invalidateRegion(
-                    w->x + widget.left,
-                    w->y + widget.top,
-                    w->x + widget.right + 1,
-                    w->y + widget.bottom + 1);
+                    w.x + widget.left,
+                    w.y + widget.top,
+                    w.x + widget.right + 1,
+                    w.y + widget.bottom + 1);
             }
         }
     }
@@ -758,12 +747,11 @@ namespace OpenLoco::Ui::WindowManager
             _523508++;
         }
 
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
-        {
-            w->updateScrollWidgets();
-            w->invalidatePressedImageButtons();
-            w->callOnResize();
-        }
+        std::for_each(_windows.rbegin(), _windows.rend(), [](Ui::Window& w) {
+            w.updateScrollWidgets();
+            w.invalidatePressedImageButtons();
+            w.callOnResize();
+        });
     }
 
     // 0x004CC692
@@ -773,12 +761,12 @@ namespace OpenLoco::Ui::WindowManager
         while (repeat)
         {
             repeat = false;
-            for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+            for (auto&& w : _windows)
             {
-                if (w->type != type)
+                if (w.type != type)
                     continue;
 
-                close(w);
+                close(&w);
                 repeat = true;
                 break;
             }
@@ -876,17 +864,17 @@ namespace OpenLoco::Ui::WindowManager
         if (position.y + size.height > Ui::width())
             return false;
 
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (const auto& w : _windows)
         {
-            if (w->hasFlags(WindowFlags::stickToBack))
+            if (w.hasFlags(WindowFlags::stickToBack))
                 continue;
-            if (position.x + size.width <= w->x)
+            if (position.x + size.width <= w.x)
                 continue;
-            if (position.x > w->x + w->width)
+            if (position.x > w.x + w.width)
                 continue;
-            if (position.y + size.height <= w->y)
+            if (position.y + size.height <= w.y)
                 continue;
-            if (position.y >= w->y + w->height)
+            if (position.y >= w.y + w.height)
                 continue;
 
             return false;
@@ -963,69 +951,69 @@ namespace OpenLoco::Ui::WindowManager
         if (windowFitsWithinSpace(position, size))
             return createWindowOnScreen(type, position, size, flags, events);
 
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (const auto& w : _windows)
         {
-            if (w->hasFlags(WindowFlags::stickToBack))
+            if (w.hasFlags(WindowFlags::stickToBack))
                 continue;
 
-            position.x = w->x + w->width + 2;
-            position.y = w->y;
+            position.x = w.x + w.width + 2;
+            position.y = w.y;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x - size.width - 2;
-            position.y = w->y;
+            position.x = w.x - size.width - 2;
+            position.y = w.y;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x;
-            position.y = w->y + w->height + 2;
+            position.x = w.x;
+            position.y = w.y + w.height + 2;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x;
-            position.y = w->y - size.height - 2;
+            position.x = w.x;
+            position.y = w.y - size.height - 2;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x + w->width + 2;
-            position.y = w->y + w->height - size.height;
+            position.x = w.x + w.width + 2;
+            position.y = w.y + w.height - size.height;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x - size.width - 2;
-            position.y = w->y + w->height - size.height;
+            position.x = w.x - size.width - 2;
+            position.y = w.y + w.height - size.height;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x + w->width - size.width;
-            position.y = w->y - size.height - 2;
+            position.x = w.x + w.width - size.width;
+            position.y = w.y - size.height - 2;
             if (windowFitsWithinSpace(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
         }
 
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (const auto& w : _windows)
         {
-            if (w->hasFlags(WindowFlags::stickToBack))
+            if (w.hasFlags(WindowFlags::stickToBack))
                 continue;
 
-            position.x = w->x + w->width + 2;
-            position.y = w->y;
+            position.x = w.x + w.width + 2;
+            position.y = w.y;
             if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x - size.width - 2;
-            position.y = w->y;
+            position.x = w.x - size.width - 2;
+            position.y = w.y;
             if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x;
-            position.y = w->y + w->height + 2;
+            position.x = w.x;
+            position.y = w.y + w.height + 2;
             if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
 
-            position.x = w->x;
-            position.y = w->y - size.height - 2;
+            position.x = w.x;
+            position.y = w.y - size.height - 2;
             if (windowFitsOnScreen(position, size))
                 return createWindowOnScreen(type, position, size, flags, events);
         }
@@ -1037,9 +1025,9 @@ namespace OpenLoco::Ui::WindowManager
         do
         {
             loop = false;
-            for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+            for (const auto& w : _windows)
             {
-                if (w->x == position.x && w->y == position.y)
+                if (w.x == position.x && w.y == position.y)
                 {
                     position.x += 5;
                     position.y += 5;
@@ -1072,18 +1060,18 @@ namespace OpenLoco::Ui::WindowManager
     {
         if (count() == kMaxWindows)
         {
-            for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+            for (auto& w : _windows)
             {
-                if (w->hasFlags(WindowFlags::stickToBack))
+                if (w.hasFlags(WindowFlags::stickToBack))
                     continue;
 
-                if (w->hasFlags(WindowFlags::stickToFront))
+                if (w.hasFlags(WindowFlags::stickToFront))
                     continue;
 
-                if (w->hasFlags(WindowFlags::noAutoClose))
+                if (w.hasFlags(WindowFlags::noAutoClose))
                     continue;
 
-                close(w);
+                close(&w);
                 return createWindow(type, origin, size, flags, events);
             }
         }
@@ -1132,14 +1120,12 @@ namespace OpenLoco::Ui::WindowManager
 
         window.eventHandlers = &events;
 
-        size_t length = _windowsEnd - (_windows + dstIndex);
-        memmove(_windows + dstIndex + 1, _windows + dstIndex, length * sizeof(Ui::Window));
-        _windowsEnd = _windowsEnd + 1;
-        _windows[dstIndex] = window;
+        _windows.insert(_windows.begin() + dstIndex, window);
 
-        _windows[dstIndex].invalidate();
+        auto* newWindow = &_windows[dstIndex];
+        newWindow->invalidate();
 
-        return &_windows[dstIndex];
+        return newWindow;
     }
 
     Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events)
@@ -1227,10 +1213,9 @@ namespace OpenLoco::Ui::WindowManager
         _523508++;
         CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
 
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
-        {
-            w->callUpdate();
-        }
+        std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
+            w.callUpdate();
+        });
 
         Ui::Windows::TextInput::sub_4CE6FF();
         Ui::Windows::MapToolTip::open();
@@ -1251,6 +1236,7 @@ namespace OpenLoco::Ui::WindowManager
 
         window->callClose();
 
+        // Lookup the actual window again as it may have been changed.
         window = find(type, number);
         if (window == nullptr)
             return;
@@ -1260,47 +1246,40 @@ namespace OpenLoco::Ui::WindowManager
 
         window->invalidate();
 
-        // Remove window from list and reshift all windows
-        _windowsEnd--;
-        int windowCount = *_windowsEnd - window;
-        if (windowCount > 0)
-        {
-            memmove(window, window + 1, windowCount * sizeof(Ui::Window));
-        }
+        const auto index = indexOf(*window);
+        _windows.erase(_windows.begin() + index);
 
         ViewportManager::collectGarbage();
     }
 
     void callEvent8OnAllWindows()
     {
-        for (Window* window = _windowsEnd - 1; window >= _windows; window--)
-        {
-            window->call_8();
-        }
+        std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
+            w.call_8();
+        });
     }
 
     void callEvent9OnAllWindows()
     {
-        for (Window* window = _windowsEnd - 1; window >= _windows; window--)
-        {
-            window->call_9();
-        }
+        std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
+            w.call_9();
+        });
     }
 
     // 0x0045F18B
     void callViewportRotateEventOnAllWindows()
     {
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
-        {
-            w->callViewportRotate();
-        }
+        std::for_each(_windows.rbegin(), _windows.rend(), [](auto& w) {
+            w.callViewportRotate();
+        });
     }
 
     bool callKeyUpEventBackToFront(uint32_t charCode, uint32_t keyCode)
     {
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        for (auto it = _windows.rbegin(); it != _windows.rend(); it++)
         {
-            if (w->callKeyUp(charCode, keyCode))
+            auto& w = *it;
+            if (w.callKeyUp(charCode, keyCode))
                 return true;
         }
         return false;
@@ -1310,39 +1289,39 @@ namespace OpenLoco::Ui::WindowManager
     void relocateWindows()
     {
         int16_t newLocation = 8;
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto& w : _windows)
         {
             // Work out if the window requires moving
-            bool extendsX = (w->x + 10) >= Ui::width();
-            bool extendsY = (w->y + 10) >= Ui::height();
-            if (w->hasFlags(WindowFlags::stickToBack) || w->hasFlags(WindowFlags::stickToFront))
+            bool extendsX = (w.x + 10) >= Ui::width();
+            bool extendsY = (w.y + 10) >= Ui::height();
+            if (w.hasFlags(WindowFlags::stickToBack) || w.hasFlags(WindowFlags::stickToFront))
             {
                 // toolbars are 27px high
-                extendsY = (w->y + 10 - 27) >= Ui::height();
+                extendsY = (w.y + 10 - 27) >= Ui::height();
             }
 
             if (extendsX || extendsY)
             {
                 // Calculate the new locations
-                int16_t oldX = w->x;
-                int16_t oldY = w->y;
-                w->x = newLocation;
-                w->y = newLocation + 28;
+                int16_t oldX = w.x;
+                int16_t oldY = w.y;
+                w.x = newLocation;
+                w.y = newLocation + 28;
 
                 // Move the next new location so windows are not directly on top
                 newLocation += 8;
 
                 // Adjust the viewports if required.
-                if (w->viewports[0] != nullptr)
+                if (w.viewports[0] != nullptr)
                 {
-                    w->viewports[0]->x -= oldX - w->x;
-                    w->viewports[0]->y -= oldY - w->y;
+                    w.viewports[0]->x -= oldX - w.x;
+                    w.viewports[0]->y -= oldY - w.y;
                 }
 
-                if (w->viewports[1] != nullptr)
+                if (w.viewports[1] != nullptr)
                 {
-                    w->viewports[1]->x -= oldX - w->x;
-                    w->viewports[1]->y -= oldY - w->y;
+                    w.viewports[1]->x -= oldX - w.x;
+                    w.viewports[1]->y -= oldY - w.y;
                 }
             }
         }
@@ -1356,45 +1335,45 @@ namespace OpenLoco::Ui::WindowManager
         int top = self.y;
         int bottom = self.y + self.height;
 
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto& w : _windows)
         {
-            if (w == &self)
+            if (&w == &self)
                 continue;
 
-            if (w->hasFlags(WindowFlags::stickToBack))
+            if (w.hasFlags(WindowFlags::stickToBack))
                 continue;
 
-            if (w->hasFlags(WindowFlags::stickToFront))
+            if (w.hasFlags(WindowFlags::stickToFront))
                 continue;
 
-            if (w->x >= right)
+            if (w.x >= right)
                 continue;
 
-            if (w->x + w->width <= left)
+            if (w.x + w.width <= left)
                 continue;
 
-            if (w->y >= bottom)
+            if (w.y >= bottom)
                 continue;
 
-            if (w->y + w->height <= top)
+            if (w.y + w.height <= top)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
 
             if (bottom < Ui::height() - 80)
             {
-                int dY = bottom + 3 - w->y;
-                w->y += dY;
-                w->invalidate();
+                int dY = bottom + 3 - w.y;
+                w.y += dY;
+                w.invalidate();
 
-                if (w->viewports[0] != nullptr)
+                if (w.viewports[0] != nullptr)
                 {
-                    w->viewports[0]->y += dY;
+                    w.viewports[0]->y += dY;
                 }
 
-                if (w->viewports[1] != nullptr)
+                if (w.viewports[1] != nullptr)
                 {
-                    w->viewports[1]->y += dY;
+                    w.viewports[1]->y += dY;
                 }
             }
         }
@@ -1403,18 +1382,18 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004B93A5
     void sub_4B93A5(WindowNumber_t number)
     {
-        for (Ui::Window* w = &_windows[0]; w != _windowsEnd; w++)
+        for (auto& w : _windows)
         {
-            if (w->type != WindowType::vehicle)
+            if (w.type != WindowType::vehicle)
                 continue;
 
-            if (w->number != number)
+            if (w.number != number)
                 continue;
 
-            if (w->currentTab != 4)
+            if (w.currentTab != 4)
                 continue;
 
-            w->invalidate();
+            w.invalidate();
         }
     }
 
@@ -1432,15 +1411,16 @@ namespace OpenLoco::Ui::WindowManager
     {
         close(WindowType::dropdown, 0);
 
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        for (auto it = _windows.rbegin(); it != _windows.rend(); it++)
         {
-            if (w->hasFlags(WindowFlags::stickToBack))
+            auto& w = *it;
+            if (w.hasFlags(WindowFlags::stickToBack))
                 continue;
 
-            if (w->hasFlags(WindowFlags::stickToFront))
+            if (w.hasFlags(WindowFlags::stickToFront))
                 continue;
 
-            close(w);
+            close(&w);
             break;
         }
     }
@@ -1634,9 +1614,10 @@ namespace OpenLoco::Ui::WindowManager
             }
         }
 
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        for (auto it = _windows.rbegin(); it != _windows.rend(); it++)
         {
-            if (windowWheelInput(*w, wheel))
+            auto& w = *it;
+            if (windowWheelInput(w, wheel))
             {
                 return;
             }
@@ -1645,9 +1626,11 @@ namespace OpenLoco::Ui::WindowManager
 
     bool isInFront(Ui::Window* window)
     {
-        for (Ui::Window* w = window + 1; w != _windowsEnd; w++)
+        const auto index = indexOf(*window) + 1;
+        for (auto it = _windows.begin() + index; it != _windows.end(); it++)
         {
-            if (w->hasFlags(WindowFlags::stickToFront))
+            auto& w = *it;
+            if (w.hasFlags(WindowFlags::stickToFront))
                 continue;
 
             return false;
@@ -1658,12 +1641,14 @@ namespace OpenLoco::Ui::WindowManager
 
     bool isInFrontAlt(Ui::Window* window)
     {
-        for (Ui::Window* w = window + 1; w != _windowsEnd; w++)
+        const auto index = indexOf(*window) + 1;
+        for (auto it = _windows.begin() + index; it != _windows.end(); it++)
         {
-            if (w->hasFlags(WindowFlags::stickToFront))
+            auto& w = *it;
+            if (w.hasFlags(WindowFlags::stickToFront))
                 continue;
 
-            if (w->type == WindowType::buildVehicle)
+            if (w.type == WindowType::buildVehicle)
                 continue;
 
             return false;
@@ -1675,19 +1660,20 @@ namespace OpenLoco::Ui::WindowManager
     // 0x0046960C
     Ui::Window* findWindowShowing(const viewport_pos& position)
     {
-        for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+        for (auto it = _windows.rbegin(); it != _windows.rend(); it++)
         {
-            if (w->viewports[0] == nullptr)
+            auto& w = *it;
+            if (w.viewports[0] == nullptr)
                 continue;
 
-            auto viewport = w->viewports[0];
+            auto viewport = w.viewports[0];
             if (viewport->zoom != 0)
                 continue;
 
             if (!viewport->contains(position))
                 continue;
 
-            return w;
+            return &w;
         }
 
         return nullptr;
@@ -1701,35 +1687,37 @@ namespace OpenLoco::Ui::WindowManager
      */
     void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY)
     {
-        for (auto w = window; w < _windowsEnd; w++)
+        const auto index = indexOf(*window);
+        for (auto it = _windows.begin() + index; it != _windows.end(); it++)
         {
-            if (!w->isTranslucent())
+            auto& w = *it;
+            if (!w.isTranslucent())
                 continue;
 
-            if (viewport == w->viewports[0])
+            if (viewport == w.viewports[0])
                 continue;
 
-            if (viewport == w->viewports[1])
+            if (viewport == w.viewports[1])
                 continue;
 
-            if (viewport->x + viewport->width <= w->x)
+            if (viewport->x + viewport->width <= w.x)
                 continue;
 
-            if (w->x + w->width <= viewport->x)
+            if (w.x + w.width <= viewport->x)
                 continue;
 
-            if (viewport->y + viewport->height <= w->y)
+            if (viewport->y + viewport->height <= w.y)
                 continue;
 
-            if (w->y + w->height <= viewport->y)
+            if (w.y + w.height <= viewport->y)
                 continue;
 
             int16_t left, top, right, bottom, cx;
 
-            left = w->x;
-            top = w->y;
-            right = w->x + w->width;
-            bottom = w->y + w->height;
+            left = w.x;
+            top = w.y;
+            right = w.x + w.width;
+            bottom = w.y + w.height;
 
             // TODO: replace these with min/max
             cx = viewport->x;
@@ -2051,15 +2039,16 @@ namespace OpenLoco::Ui::WindowManager
         while (changed)
         {
             changed = false;
-            for (Ui::Window* w = _windowsEnd - 1; w >= _windows; w--)
+            for (auto it = _windows.rbegin(); it != _windows.rend(); it++)
             {
-                if (w->hasFlags(WindowFlags::stickToBack))
+                auto& w = *it;
+                if (w.hasFlags(WindowFlags::stickToBack))
                     continue;
 
-                if (w->hasFlags(WindowFlags::stickToFront))
+                if (w.hasFlags(WindowFlags::stickToFront))
                     continue;
 
-                close(w);
+                close(&w);
 
                 // restart loop
                 changed = true;
@@ -2134,7 +2123,7 @@ namespace OpenLoco::Ui::WindowManager
 
         for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
-            auto v = get(index);
+            auto* v = get(index);
 
             // Don't draw overlapping opaque windows, they won't have changed
             if (!v->hasFlags(WindowFlags::transparent))
@@ -2163,7 +2152,7 @@ namespace OpenLoco::Ui::WindowManager
     static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
-        for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
+        for (size_t index = indexOf(*w) + 1; index < count(); index++)
         {
             auto topwindow = get(index);
 
@@ -2211,20 +2200,18 @@ namespace OpenLoco::Ui::WindowManager
 
     void render(Gfx::RenderTarget& rt, const Rect& rect)
     {
-        for (size_t i = 0; i < count(); i++)
+        for (auto& w : _windows)
         {
-            auto w = get(i);
-
-            if (w->isTranslucent())
+            if (w.isTranslucent())
                 continue;
 
-            if (rect.right() <= w->x || rect.bottom() <= w->y)
+            if (rect.right() <= w.x || rect.bottom() <= w.y)
                 continue;
 
-            if (rect.left() >= w->x + w->width || rect.top() >= w->y + w->height)
+            if (rect.left() >= w.x + w.width || rect.top() >= w.y + w.height)
                 continue;
 
-            windowDraw(&rt, w, rect);
+            windowDraw(&rt, &w, rect);
         }
     }
 }

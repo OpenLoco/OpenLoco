@@ -44,5 +44,6 @@ loco_add_library(Core STATIC
 target_link_libraries(Core
     PUBLIC
         fmt::fmt
+        sfl::sfl
 )
 
