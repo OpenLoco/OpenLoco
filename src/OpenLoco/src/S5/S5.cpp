@@ -107,65 +107,39 @@ namespace OpenLoco::S5
         return result;
     }
 
-    // 0x0045A0B3
-    static void previewWindowDraw(Window& w, Gfx::RenderTarget* rt)
-    {
-        for (auto viewport : w.viewports)
-        {
-            if (viewport != nullptr)
-            {
-                viewport->render(rt);
-            }
-        }
-    }
-
     static void drawPreviewImage(void* pixels, Ui::Size size)
     {
         auto mainViewport = WindowManager::getMainViewport();
-        if (mainViewport != nullptr)
-        {
-            auto mapPosXY = mainViewport->getCentreMapPosition();
-            auto mapPosXYZ = Pos3(mapPosXY.x, mapPosXY.y, coord_t{ TileManager::getHeight(mapPosXY) });
+        if (mainViewport == nullptr)
+            return;
 
-            static WindowEventList eventList; // 0x4FB3F0
-            eventList.draw = previewWindowDraw;
+        const auto mapPosXY = mainViewport->getCentreMapPosition();
+        const auto mapPosXYZ = Pos3(mapPosXY.x, mapPosXY.y, coord_t{ TileManager::getHeight(mapPosXY) });
 
-            auto tempWindow = WindowManager::createWindow(
-                WindowType::previewImage,
-                { 0, 0 },
-                size,
-                WindowFlags::stickToFront,
-                eventList);
-            if (tempWindow != nullptr)
-            {
-                auto tempViewport = ViewportManager::create(
-                    tempWindow,
-                    0,
-                    { tempWindow->x, tempWindow->y },
-                    { tempWindow->width, tempWindow->height },
-                    ZoomLevel::half,
-                    mapPosXYZ);
-                if (tempViewport != nullptr)
-                {
-                    tempViewport->flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
+        Viewport saveVp{};
+        saveVp.x = 0;
+        saveVp.y = 0;
+        saveVp.width = size.width;
+        saveVp.height = size.height;
+        saveVp.flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
+        saveVp.zoom = ZoomLevel::half;
+        saveVp.viewWidth = size.width << saveVp.zoom;
+        saveVp.viewHeight = size.height << saveVp.zoom;
 
-                    // Swap screen Context with our temporary one to draw the window then revert it back
-                    auto& rt = Gfx::getScreenRT();
-                    auto backupContext = rt;
-                    rt.bits = reinterpret_cast<uint8_t*>(pixels);
-                    rt.x = 0;
-                    rt.y = 0;
-                    rt.width = size.width;
-                    rt.height = size.height;
-                    rt.pitch = 0;
-                    rt.zoomLevel = 0;
-                    Gfx::render(0, 0, size.width, size.height);
-                    rt = backupContext;
-                }
+        const auto viewPos = saveVp.centre2dCoordinates(mapPosXYZ);
+        saveVp.viewX = viewPos.x;
+        saveVp.viewY = viewPos.y;
 
-                WindowManager::close(WindowType::previewImage);
-            }
-        }
+        Gfx::RenderTarget rt{};
+        rt.bits = static_cast<uint8_t*>(pixels);
+        rt.x = 0;
+        rt.y = 0;
+        rt.width = size.width;
+        rt.height = size.height;
+        rt.pitch = 0;
+        rt.zoomLevel = saveVp.zoom;
+
+        saveVp.render(&rt);
     }
 
     // 0x004471A4
