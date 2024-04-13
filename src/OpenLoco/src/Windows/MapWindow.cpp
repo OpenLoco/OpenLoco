@@ -61,6 +61,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
     static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
     static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
+    static loco_global<uint32_t, 0x00F253AC> _dword_F253AC; // current row?
     static std::array<uint16_t, 6> _vehicleTypeCounts = {
         {
             0,
@@ -217,11 +218,55 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C544
-    static void sub_46C544(Window* self)
+    static void setMapPixels(const Window& self)
     {
+        _dword_F253A4 = self.var_854;
+        auto esi = _dword_F253AC * 0x2FF + _dword_F253A8 + (kMapRows - 1);
+
+        int32_t x = 0, y = 0, dx = 0, dy = 0;
+        switch (WindowManager::getCurrentRotation())
+        {
+            case 0:
+                x = _dword_F253AC * kTileSize;
+                y = 0;
+                dx = 0;
+                dy = kTileSize;
+                break;
+            case 1:
+                x = kMapWidth - kTileSize;
+                y = _dword_F253AC * kTileSize;
+                dx = -kTileSize;
+                dy = 0;
+                break;
+            case 2:
+                x = (kMapWidth - 1 - _dword_F253AC) * kTileSize;
+                y = kMapWidth - kTileSize;
+                dx = 0;
+                dy = -kTileSize;
+                break;
+            case 3:
+                x = 0;
+                y = (kMapWidth - 1 - _dword_F253AC) * kTileSize;
+                dx = kTileSize;
+                dy = 0;
+                break;
+        }
+
         registers regs;
-        regs.esi = X86Pointer(self);
-        call(0x0046C544, regs);
+        regs.eax = x;
+        regs.ecx = y;
+        regs.ebx = dx;
+        regs.ebp = dy;
+        regs.esi = X86Pointer(esi);
+
+        switch (self.currentTab)
+        {
+            case 0: call(0x0046C5E5, regs); return; // overall
+            case 1: call(0x0046C873, regs); return; // vehicles
+            case 2: call(0x0046C9A8, regs); return; // industries
+            case 3: call(0x0046CB68, regs); return; // routes
+            case 4: call(0x0046C5E5, regs); return; // ownership
+        }
     }
 
     // 0x0046D34D based on
@@ -363,7 +408,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         while (i > 0)
         {
-            sub_46C544(&self);
+            setMapPixels(self);
             i--;
         }
 
