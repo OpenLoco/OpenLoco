@@ -107,18 +107,6 @@ namespace OpenLoco::S5
         return result;
     }
 
-    // 0x0045A0B3
-    static void previewWindowDraw(Window& w, Gfx::RenderTarget* rt)
-    {
-        for (auto viewport : w.viewports)
-        {
-            if (viewport != nullptr)
-            {
-                viewport->render(rt);
-            }
-        }
-    }
-
     static void drawPreviewImage(void* pixels, Ui::Size size)
     {
         auto mainViewport = WindowManager::getMainViewport();
