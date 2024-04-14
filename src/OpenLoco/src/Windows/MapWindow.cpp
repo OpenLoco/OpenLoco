@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
 
                             colourAh = colourAl;
-                            colourDh = colourDh;
+                            colourDh = colourDl;
                         }
                         break;
 
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colourAl = _byte_4FDC5C[colourAl];
                             }
                             colourAh = colourAl;
-                            colourDh = colourDh;
+                            colourDh = colourDl;
                         }
                         break;
 
@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colourAl = _byte_4FDC5C[colourAl];
                             }
                             colourAh = colourAl;
-                            colourDh = colourDh;
+                            colourDh = colourDl;
                         }
                         break;
 
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
 
                             colourAh = colourAl;
-                            colourDh = colourDh;
+                            colourDh = colourDl;
                         }
                         break;
 
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colourAl = _byte_4FDC5C[colourAl];
                             }
                             colourAh = colourAl;
-                            colourDh = colourDh;
+                            colourDh = colourDl;
                         }
                         break;
                 };
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
                             colourAh = colourAl;
-                            colourDh = colourDh;
+                            colourDh = colourDl;
                         }
                         break;
 
