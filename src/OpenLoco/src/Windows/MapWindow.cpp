@@ -220,6 +220,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.setSize(kMinWindowSize, kMaxWindowSize);
     }
 
+    // 0x0046C5E5
     static void setMapPixelsOverall(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
     {
         for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
@@ -392,6 +393,86 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
     }
 
+    // 0x0046C873
+    static void setMapPixelsVehicles(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    {
+        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        {
+            // Coords shouldn't be at map edge
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            {
+                pos += delta;
+                mapPtr += 769; // scrollview width?
+                continue;
+            }
+
+            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            auto tile = TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                switch (el.type())
+                {
+                    case ElementType::surface: // 0x00
+                    {
+                        auto* surfaceEl = el.as<SurfaceElement>();
+                        if (surfaceEl == nullptr)
+                            continue;
+
+                        if (surfaceEl->water() == 0)
+                        {
+                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                            colourAl = colourAh = landImage->offset[0];
+                        }
+                        else
+                        {
+                            const auto* waterObj = ObjectManager::get<WaterObject>();
+                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                            colourAl = colourAh = waterImage->offset[0];
+                        }
+
+                        colourDl = colourDh = colourAl;
+                        break;
+                    }
+
+                    case ElementType::track:   // 0x04
+                    case ElementType::station: // 0x08
+                    case ElementType::road:    // 0x1C
+                        if (!el.isGhost() && !el.isAiAllocated())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_0C; // ax, dx
+                            colourAh = colourAl;
+                            colourDh = colourDl;
+                        }
+                        break;
+
+                    case ElementType::building: // 0x10
+                    case ElementType::industry: // 0x20
+                        if (!el.isGhost())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
+                            colourAh = colourAl;
+                            colourDh = colourDh;
+                        }
+                        break;
+
+                    default:
+                        break;
+                };
+            }
+
+            mapPtr[0] = colourDl;
+            mapPtr[1] = colourDh;
+            mapPtr[0x90000] = colourAl;
+            mapPtr[0x90001] = colourAh;
+
+            pos += delta;
+            mapPtr += 769; // scrollview width?
+        }
+
+        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+    }
+
     // 0x0046C544
     static void setMapPixels(const Window& self)
     {
@@ -429,11 +510,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         switch (self.currentTab)
         {
-            case 0: setMapPixelsOverall(mapPtr, pos, delta); return; // call(0x0046C5E5, regs); return; // overall
-            case 1: call(0x0046C873, regs); return;                  // vehicles
-            case 2: call(0x0046C9A8, regs); return;                  // industries
-            case 3: call(0x0046CB68, regs); return;                  // routes
-            case 4: call(0x0046C5E5, regs); return;                  // ownership
+            case 0: setMapPixelsOverall(mapPtr, pos, delta); return;
+            case 1: setMapPixelsVehicles(mapPtr, pos, delta); return;
+            case 2: call(0x0046C9A8, regs); return; // industries
+            case 3: call(0x0046CB68, regs); return; // routes
+            case 4: call(0x0046C5E5, regs); return; // ownership
         }
     }
 
