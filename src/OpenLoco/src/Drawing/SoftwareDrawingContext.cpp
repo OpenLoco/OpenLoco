@@ -2395,32 +2395,32 @@ namespace OpenLoco::Drawing
         return Impl::drawString(rt, origin, colour, str);
     }
 
-    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeft(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringLeft(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeftClipped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeftClipped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringLeftClipped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringLeftUnderline(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringLeftUnderline(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringLeftUnderline(rt, origin, colour, stringId, args);
     }
 
-    int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    int16_t SoftwareDrawingContext::drawStringLeftWrapped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringLeftWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentred(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringCentred(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringCentredClipped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringCentredClipped(rt, origin, width, colour, stringId, args);
     }
@@ -2430,17 +2430,17 @@ namespace OpenLoco::Drawing
         return Impl::drawStringCentredRaw(rt, origin, linebreakCount, colour, wrappedStr);
     }
 
-    uint16_t SoftwareDrawingContext::drawStringCentredWrapped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    uint16_t SoftwareDrawingContext::drawStringCentredWrapped(Gfx::RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringCentredWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringRight(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    void SoftwareDrawingContext::drawStringRight(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const FormatArguments& args  /*= nullptr*/)
     {
         return Impl::drawStringRight(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringRightUnderline(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args)
+    void SoftwareDrawingContext::drawStringRightUnderline(Gfx::RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const FormatArguments& args)
     {
         return Impl::drawStringRightUnderline(rt, origin, colour, stringId, args);
     }
