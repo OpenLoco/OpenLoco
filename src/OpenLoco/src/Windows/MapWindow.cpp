@@ -12,7 +12,10 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/RoadElement.h"
+#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/TrackElement.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
@@ -217,55 +220,220 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.setSize(kMinWindowSize, kMaxWindowSize);
     }
 
+    static void setMapPixelsOverall(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    {
+        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        {
+            // Coords shouldn't be at map edge
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            {
+                pos += delta;
+                mapPtr += 769; // scrollview width?
+                continue;
+            }
+
+            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            auto tile = TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                switch (el.type())
+                {
+                    case ElementType::surface: // 0x00
+                    {
+                        auto* surfaceEl = el.as<SurfaceElement>();
+                        if (surfaceEl == nullptr)
+                            continue;
+
+                        if (surfaceEl->water() == 0)
+                        {
+                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                            colourAl = colourAh = landImage->offset[0];
+                        }
+                        else
+                        {
+                            const auto* waterObj = ObjectManager::get<WaterObject>();
+                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                            auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
+                            colourAl = colourAh = waterImage->offset[offset];
+                        }
+
+                        colourDl = colourDh = colourAl;
+                        break;
+                    }
+
+                    case ElementType::track: // 0x04
+                        if (!el.isGhost() && !el.isAiAllocated())
+                        {
+                            auto* trackEl = el.as<TrackElement>();
+                            if (trackEl == nullptr)
+                                continue;
+
+                            auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
+                            if (trackObj->hasFlags(TrackObjectFlags::unk_01))
+                            {
+                                colourDl = colourAl = PaletteIndex::index_0C; // ax, dx
+                                if (_dword_F253A4 & (1 << 2))
+                                {
+                                    colourAl = _byte_4FDC5C[colourAl];
+                                }
+                            }
+                            else
+                            {
+                                colourDl = colourAl = PaletteIndex::index_11; // ax, dx
+                                if (_dword_F253A4 & (1 << 3))
+                                {
+                                    colourAl = _byte_4FDC5C[colourAl];
+                                }
+                            }
+
+                            colourAh = colourAl;
+                            colourDh = colourDh;
+                        }
+                        break;
+
+                    case ElementType::station: // 0x08
+                        if (!el.isGhost() && !el.isAiAllocated())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_BA; // ax, dx
+                            if (_dword_F253A4 & (1 << 4))
+                            {
+                                colourAl = _byte_4FDC5C[colourAl];
+                            }
+                            colourAh = colourAl;
+                            colourDh = colourDh;
+                        }
+                        break;
+
+                    case ElementType::signal: // 0x0C
+                        break;
+
+                    case ElementType::building: // 0x10
+                        if (!el.isGhost())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_41; // ax, dx
+                            if (_dword_F253A4 & (1 << 0))
+                            {
+                                colourAl = _byte_4FDC5C[colourAl];
+                            }
+                            colourAh = colourAl;
+                            colourDh = colourDh;
+                        }
+                        break;
+
+                    case ElementType::tree: // 0x14
+                        if (!el.isGhost())
+                        {
+                            colourDh = colourAh = PaletteIndex::index_64; // ax, dx
+                            if (_dword_F253A4 & (1 << 5))
+                            {
+                                colourAh = PaletteIndex::index_0A;
+                            }
+                        }
+                        break;
+
+                    case ElementType::wall: // 0x18
+                        continue;
+
+                    case ElementType::road: // 0x1C
+                        if (!el.isGhost() && !el.isAiAllocated())
+                        {
+                            auto* roadEl = el.as<RoadElement>();
+                            if (roadEl == nullptr)
+                                continue;
+
+                            auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
+                            if (roadObj->hasFlags(RoadObjectFlags::unk_01))
+                            {
+                                colourDl = colourAl = PaletteIndex::index_11; // ax, dx
+                                if (_dword_F253A4 & (1 << 3))
+                                {
+                                    colourAl = _byte_4FDC5C[colourAl];
+                                }
+                            }
+                            else
+                            {
+                                colourDl = colourAl = PaletteIndex::index_0C; // ax, dx
+                                if (_dword_F253A4 & (1 << 2))
+                                {
+                                    colourAl = _byte_4FDC5C[colourAl];
+                                }
+                            }
+
+                            colourAh = colourAl;
+                            colourDh = colourDh;
+                        }
+                        break;
+
+                    case ElementType::industry: // 0x20
+                        if (!el.isGhost())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_7D; // ax, dx
+                            if (_dword_F253A4 & (1 << 0))
+                            {
+                                colourAl = _byte_4FDC5C[colourAl];
+                            }
+                            colourAh = colourAl;
+                            colourDh = colourDh;
+                        }
+                        break;
+                };
+            }
+
+            mapPtr[0] = colourDl;
+            mapPtr[1] = colourDh;
+            mapPtr[0x90000] = colourAl;
+            mapPtr[0x90001] = colourAh;
+
+            pos += delta;
+            mapPtr += 769; // scrollview width?
+        }
+
+        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+    }
+
     // 0x0046C544
     static void setMapPixels(const Window& self)
     {
         _dword_F253A4 = self.var_854;
-        auto esi = _dword_F253AC * 0x2FF + _dword_F253A8 + (kMapRows - 1);
+        auto* mapPtr = reinterpret_cast<PaletteIndex_t*>(_dword_F253AC * 0x2FF + _dword_F253A8 + (kMapRows - 1));
 
-        int32_t x = 0, y = 0, dx = 0, dy = 0;
+        Pos2 pos{};
+        Pos2 delta{};
         switch (WindowManager::getCurrentRotation())
         {
             case 0:
-                x = _dword_F253AC * kTileSize;
-                y = 0;
-                dx = 0;
-                dy = kTileSize;
+                pos = Pos2(_dword_F253AC * kTileSize, 0);
+                delta = { 0, kTileSize };
                 break;
             case 1:
-                x = kMapWidth - kTileSize;
-                y = _dword_F253AC * kTileSize;
-                dx = -kTileSize;
-                dy = 0;
+                pos = Pos2(kMapWidth - kTileSize, _dword_F253AC * kTileSize);
+                delta = { -kTileSize, 0 };
                 break;
             case 2:
-                x = (kMapWidth - 1 - _dword_F253AC) * kTileSize;
-                y = kMapWidth - kTileSize;
-                dx = 0;
-                dy = -kTileSize;
+                pos = Pos2((kMapWidth - 1 - _dword_F253AC) * kTileSize, kMapWidth - kTileSize);
+                delta = { 0, -kTileSize };
                 break;
             case 3:
-                x = 0;
-                y = (kMapWidth - 1 - _dword_F253AC) * kTileSize;
-                dx = kTileSize;
-                dy = 0;
+                pos = Pos2(0, (kMapWidth - 1 - _dword_F253AC) * kTileSize);
+                delta = { kTileSize, 0 };
                 break;
         }
 
         registers regs;
-        regs.eax = x;
-        regs.ecx = y;
-        regs.ebx = dx;
-        regs.ebp = dy;
-        regs.esi = X86Pointer(esi);
+        regs.eax = pos.x;
+        regs.ecx = pos.y;
+        regs.ebx = delta.x;
+        regs.ebp = delta.y;
+        regs.esi = X86Pointer(mapPtr);
 
         switch (self.currentTab)
         {
-            case 0: call(0x0046C5E5, regs); return; // overall
-            case 1: call(0x0046C873, regs); return; // vehicles
-            case 2: call(0x0046C9A8, regs); return; // industries
-            case 3: call(0x0046CB68, regs); return; // routes
-            case 4: call(0x0046C5E5, regs); return; // ownership
+            case 0: setMapPixelsOverall(mapPtr, pos, delta); return; // call(0x0046C5E5, regs); return; // overall
+            case 1: call(0x0046C873, regs); return;                  // vehicles
+            case 2: call(0x0046C9A8, regs); return;                  // industries
+            case 3: call(0x0046CB68, regs); return;                  // routes
+            case 4: call(0x0046C5E5, regs); return;                  // ownership
         }
     }
 
