@@ -514,7 +514,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             case 1: setMapPixelsVehicles(mapPtr, pos, delta); return;
             case 2: call(0x0046C9A8, regs); return; // industries
             case 3: call(0x0046CB68, regs); return; // routes
-            case 4: call(0x0046C5E5, regs); return; // ownership
+            case 4: call(0x0046CD31, regs); return; // ownership
         }
     }
 
