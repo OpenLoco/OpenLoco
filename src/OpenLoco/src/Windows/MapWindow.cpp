@@ -13,6 +13,7 @@
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Map/RoadElement.h"
+#include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Map/TrackElement.h"
@@ -473,6 +474,110 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
     }
 
+    // 0x0046CD31
+    static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    {
+        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        {
+            // Coords shouldn't be at map edge
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            {
+                pos += delta;
+                mapPtr += 769; // scrollview width?
+                continue;
+            }
+
+            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            auto tile = TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                switch (el.type())
+                {
+                    case ElementType::surface: // 0x00
+                    {
+                        auto* surfaceEl = el.as<SurfaceElement>();
+                        if (surfaceEl == nullptr)
+                            continue;
+
+                        if (surfaceEl->water() == 0)
+                        {
+                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                            colourAl = colourAh = landImage->offset[0];
+                        }
+                        else
+                        {
+                            const auto* waterObj = ObjectManager::get<WaterObject>();
+                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                            colourAl = colourAh = waterImage->offset[0];
+                        }
+
+                        colourDl = colourDh = colourAl;
+                        break;
+                    }
+
+                    case ElementType::building: // 0x10
+                    case ElementType::industry: // 0x20
+                        // Vanilla omits the ghost check, but I think it should be here anyway.
+                        if (!el.isGhost())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_0B; // ax, dx
+                            colourAh = colourAl;
+                            colourDh = colourDl;
+                        }
+                        break;
+
+                    case ElementType::track:   // 0x04
+                    case ElementType::station: // 0x08
+                    case ElementType::road:    // 0x1C
+                    {
+                        if (el.isGhost() || el.isAiAllocated())
+                            continue;
+
+                        auto owner = CompanyId::null;
+
+                        if (auto* stationEl = el.as<StationElement>())
+                        {
+                            auto station = StationManager::get(stationEl->stationId());
+                            owner = station->owner;
+                        }
+                        else if (auto* trackEl = el.as<TrackElement>())
+                        {
+                            owner = trackEl->owner();
+                        }
+                        else if (auto* roadEl = el.as<RoadElement>())
+                        {
+                            owner = roadEl->owner();
+                        }
+
+                        auto companyColour = CompanyManager::getCompanyColour(owner);
+                        colourDl = Colours::getShade(companyColour, 5);
+                        if (_dword_F253A4 & (1 << enumValue(owner)))
+                        {
+                            colourDl = _byte_4FDC5C[colourDl];
+                        }
+
+                        colourDh = colourAh = colourAl = colourDl;
+                        break;
+                    }
+
+                    default:
+                        break;
+                };
+            }
+
+            mapPtr[0] = colourDl;
+            mapPtr[1] = colourDh;
+            mapPtr[0x90000] = colourAl;
+            mapPtr[0x90001] = colourAh;
+
+            pos += delta;
+            mapPtr += 769; // scrollview width?
+        }
+
+        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+    }
+
     // 0x0046C544
     static void setMapPixels(const Window& self)
     {
@@ -514,7 +619,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             case 1: setMapPixelsVehicles(mapPtr, pos, delta); return;
             case 2: call(0x0046C9A8, regs); return; // industries
             case 3: call(0x0046CB68, regs); return; // routes
-            case 4: call(0x0046CD31, regs); return; // ownership
+            case 4: setMapPixelsOwnership(mapPtr, pos, delta); return;
         }
     }
 
