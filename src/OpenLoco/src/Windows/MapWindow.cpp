@@ -12,6 +12,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
+#include "Map/IndustryElement.h"
 #include "Map/RoadElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
@@ -474,6 +475,136 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
     }
 
+    // 0x004FB464
+    // clang-format off
+    static constexpr std::array<PaletteIndex_t, 31> industryColours = {
+        PaletteIndex::index_0A, PaletteIndex::index_0E, PaletteIndex::index_15, PaletteIndex::index_1F,
+        PaletteIndex::index_29, PaletteIndex::index_35, PaletteIndex::index_38, PaletteIndex::index_3F,
+        PaletteIndex::index_43, PaletteIndex::index_4B, PaletteIndex::index_50, PaletteIndex::index_58,
+        PaletteIndex::index_66, PaletteIndex::index_71, PaletteIndex::index_7D, PaletteIndex::index_85,
+        PaletteIndex::index_89, PaletteIndex::index_9D, PaletteIndex::index_A1, PaletteIndex::index_A3,
+        PaletteIndex::index_AC, PaletteIndex::index_B8, PaletteIndex::index_BB, PaletteIndex::index_C3,
+        PaletteIndex::index_C6, PaletteIndex::index_D0, PaletteIndex::index_D3, PaletteIndex::index_DB,
+        PaletteIndex::index_DE, PaletteIndex::index_24, PaletteIndex::index_12,
+    };
+    // clang-format on
+
+    // 0x0046C9A8
+    static void setMapPixelsIndustries(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    {
+        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        {
+            // Coords shouldn't be at map edge
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            {
+                pos += delta;
+                mapPtr += 769; // scrollview width?
+                continue;
+            }
+
+            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            auto tile = TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                switch (el.type())
+                {
+                    case ElementType::surface: // 0x00
+                    {
+                        auto* surfaceEl = el.as<SurfaceElement>();
+                        if (surfaceEl == nullptr)
+                            continue;
+
+                        if (surfaceEl->water() > 0)
+                        {
+                            const auto* waterObj = ObjectManager::get<WaterObject>();
+                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                            colourAl = colourAh = waterImage->offset[0];
+                        }
+                        else if (!surfaceEl->isIndustrial())
+                        {
+                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                            colourAl = colourAh = landImage->offset[0];
+                        }
+                        else
+                        {
+                            const auto* industry = IndustryManager::get(surfaceEl->industryId());
+                            if ((_dword_F253A4 & (1 << industry->objectId)) == 0)
+                            {
+                                const auto colourIndex = _assignedIndustryColours[industry->objectId];
+                                colourAl = colourAh = industryColours[colourIndex];
+                            }
+                            else
+                            {
+                                colourAl = colourAh = PaletteIndex::index_0A;
+                            }
+                        }
+
+                        colourDl = colourDh = colourAl;
+                        break;
+                    }
+
+                    case ElementType::building: // 0x10
+                        // Vanilla omits the ghost check, but I think it should be here anyway.
+                        if (!el.isGhost())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
+                            colourAh = colourAl;
+                            colourDh = colourDl;
+                        }
+                        break;
+
+                    case ElementType::industry: // 0x20
+                    {
+                        if (el.isGhost())
+                            continue;
+
+                        auto* industryEl = el.as<IndustryElement>();
+                        if (industryEl == nullptr)
+                            continue;
+
+                        const auto* industry = IndustryManager::get(industryEl->industryId());
+                        if ((_dword_F253A4 & (1 << industry->objectId)) == 0)
+                        {
+                            const auto colourIndex = _assignedIndustryColours[industry->objectId];
+                            colourAl = colourAh = industryColours[colourIndex];
+                        }
+                        else
+                        {
+                            colourAl = colourAh = PaletteIndex::index_0A;
+                        }
+                        colourDl = colourDh = colourAl;
+                        break;
+                    }
+
+                    case ElementType::track:   // 0x04
+                    case ElementType::station: // 0x08
+                    case ElementType::road:    // 0x1C
+                    {
+                        if (el.isGhost() || el.isAiAllocated())
+                            continue;
+
+                        colourDh = colourAh = colourAl = PaletteIndex::index_0C;
+                        break;
+                    }
+
+                    default:
+                        break;
+                };
+            }
+
+            mapPtr[0] = colourDl;
+            mapPtr[1] = colourDh;
+            mapPtr[0x90000] = colourAl;
+            mapPtr[0x90001] = colourAh;
+
+            pos += delta;
+            mapPtr += 769; // scrollview width?
+        }
+
+        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+    }
+
     // 0x0046CD31
     static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
     {
@@ -617,7 +748,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             case 0: setMapPixelsOverall(mapPtr, pos, delta); return;
             case 1: setMapPixelsVehicles(mapPtr, pos, delta); return;
-            case 2: call(0x0046C9A8, regs); return; // industries
+            case 2: setMapPixelsIndustries(mapPtr, pos, delta); return;
             case 3: call(0x0046CB68, regs); return; // routes
             case 4: setMapPixelsOwnership(mapPtr, pos, delta); return;
         }
@@ -1042,20 +1173,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
             y += 10;
         }
     }
-
-    // 0x004FB464
-    // clang-format off
-    static constexpr std::array<PaletteIndex_t, 31> industryColours = {
-        PaletteIndex::index_0A, PaletteIndex::index_0E, PaletteIndex::index_15, PaletteIndex::index_1F,
-        PaletteIndex::index_29, PaletteIndex::index_35, PaletteIndex::index_38, PaletteIndex::index_3F,
-        PaletteIndex::index_43, PaletteIndex::index_4B, PaletteIndex::index_50, PaletteIndex::index_58,
-        PaletteIndex::index_66, PaletteIndex::index_71, PaletteIndex::index_7D, PaletteIndex::index_85,
-        PaletteIndex::index_89, PaletteIndex::index_9D, PaletteIndex::index_A1, PaletteIndex::index_A3,
-        PaletteIndex::index_AC, PaletteIndex::index_B8, PaletteIndex::index_BB, PaletteIndex::index_C3,
-        PaletteIndex::index_C6, PaletteIndex::index_D0, PaletteIndex::index_D3, PaletteIndex::index_DB,
-        PaletteIndex::index_DE, PaletteIndex::index_24, PaletteIndex::index_12,
-    };
-    // clang-format on
 
     // 0x0046D47F
     static void drawGraphKeyIndustries(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t& y)
