@@ -52,7 +52,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<int32_t, 0x0052333C> _cursorY2;
 
     static constexpr int16_t kRenderedMapWidth = 512 * 1.5;
-    static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapWidth;
+    static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
+    static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
 
     // 0x004FDC4C
     static std::array<Point, 4> _viewFrameOffsetsByRotation = { {
@@ -1041,8 +1042,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         self.callPrepareDraw();
-        *scrollWidth = kMapColumns * 2;
-        *scrollHeight = kMapRows * 2;
+        *scrollWidth = kRenderedMapWidth;
+        *scrollHeight = kRenderedMapHeight;
     }
 
     // 0x0046B9D4
