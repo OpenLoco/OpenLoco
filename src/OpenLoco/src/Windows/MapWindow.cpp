@@ -64,10 +64,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
             384,
         }
     };
-    static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
-    static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
-    static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
-    static loco_global<uint32_t, 0x00F253AC> _dword_F253AC; // current row?
+    static loco_global<uint8_t[256], 0x004FDC5C> _flashColours; // can be integrated (all 0x0A, except 0x15 at indices (11-14))
+    static loco_global<uint32_t, 0x00F253A4> _flashingItems;
+    static loco_global<PaletteIndex_t*, 0x00F253A8> _mapPixels;
+    static loco_global<uint32_t, 0x00F253AC> _drawMapRowIndex; // current row?
     static std::array<uint16_t, 6> _vehicleTypeCounts = {
         {
             0,
@@ -178,7 +178,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Ui::getLastMapWindowAttributes().var88C = self.var_88C;
         Ui::getLastMapWindowAttributes().flags = self.flags | WindowFlags::flag_31;
 
-        free(_dword_F253A8);
+        free(_mapPixels);
     }
 
     // 0x0046B8CF
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -252,17 +252,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourAl = colourAh = landImage->offset[0];
+                            colourFlash0 = colourFlash1 = landImage->offset[0];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
                             auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
-                            colourAl = colourAh = waterImage->offset[offset];
+                            colourFlash0 = colourFlash1 = waterImage->offset[offset];
                         }
 
-                        colourDl = colourDh = colourAl;
+                        colour0 = colour1 = colourFlash0;
                         break;
                     }
 
@@ -276,36 +276,36 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
                             if (trackObj->hasFlags(TrackObjectFlags::unk_01))
                             {
-                                colourDl = colourAl = PaletteIndex::index_0C; // ax, dx
-                                if (_dword_F253A4 & (1 << 2))
+                                colour0 = colourFlash0 = PaletteIndex::index_0C; // ax, dx
+                                if (_flashingItems & (1 << 2))
                                 {
-                                    colourAl = _byte_4FDC5C[colourAl];
+                                    colourFlash0 = _flashColours[colourFlash0];
                                 }
                             }
                             else
                             {
-                                colourDl = colourAl = PaletteIndex::index_11; // ax, dx
-                                if (_dword_F253A4 & (1 << 3))
+                                colour0 = colourFlash0 = PaletteIndex::index_11; // ax, dx
+                                if (_flashingItems & (1 << 3))
                                 {
-                                    colourAl = _byte_4FDC5C[colourAl];
+                                    colourFlash0 = _flashColours[colourFlash0];
                                 }
                             }
 
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
                     case ElementType::station: // 0x08
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
-                            colourDl = colourAl = PaletteIndex::index_BA; // ax, dx
-                            if (_dword_F253A4 & (1 << 4))
+                            colour0 = colourFlash0 = PaletteIndex::index_BA; // ax, dx
+                            if (_flashingItems & (1 << 4))
                             {
-                                colourAl = _byte_4FDC5C[colourAl];
+                                colourFlash0 = _flashColours[colourFlash0];
                             }
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
@@ -315,23 +315,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::building: // 0x10
                         if (!el.isGhost())
                         {
-                            colourDl = colourAl = PaletteIndex::index_41; // ax, dx
-                            if (_dword_F253A4 & (1 << 0))
+                            colour0 = colourFlash0 = PaletteIndex::index_41; // ax, dx
+                            if (_flashingItems & (1 << 0))
                             {
-                                colourAl = _byte_4FDC5C[colourAl];
+                                colourFlash0 = _flashColours[colourFlash0];
                             }
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
                     case ElementType::tree: // 0x14
                         if (!el.isGhost())
                         {
-                            colourDh = colourAh = PaletteIndex::index_64; // ax, dx
-                            if (_dword_F253A4 & (1 << 5))
+                            colour1 = colourFlash1 = PaletteIndex::index_64; // ax, dx
+                            if (_flashingItems & (1 << 5))
                             {
-                                colourAh = PaletteIndex::index_0A;
+                                colourFlash1 = PaletteIndex::index_0A;
                             }
                         }
                         break;
@@ -349,53 +349,53 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
                             if (roadObj->hasFlags(RoadObjectFlags::unk_01))
                             {
-                                colourDl = colourAl = PaletteIndex::index_11; // ax, dx
-                                if (_dword_F253A4 & (1 << 3))
+                                colour0 = colourFlash0 = PaletteIndex::index_11; // ax, dx
+                                if (_flashingItems & (1 << 3))
                                 {
-                                    colourAl = _byte_4FDC5C[colourAl];
+                                    colourFlash0 = _flashColours[colourFlash0];
                                 }
                             }
                             else
                             {
-                                colourDl = colourAl = PaletteIndex::index_0C; // ax, dx
-                                if (_dword_F253A4 & (1 << 2))
+                                colour0 = colourFlash0 = PaletteIndex::index_0C; // ax, dx
+                                if (_flashingItems & (1 << 2))
                                 {
-                                    colourAl = _byte_4FDC5C[colourAl];
+                                    colourFlash0 = _flashColours[colourFlash0];
                                 }
                             }
 
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
                     case ElementType::industry: // 0x20
                         if (!el.isGhost())
                         {
-                            colourDl = colourAl = PaletteIndex::index_7D; // ax, dx
-                            if (_dword_F253A4 & (1 << 0))
+                            colour0 = colourFlash0 = PaletteIndex::index_7D; // ax, dx
+                            if (_flashingItems & (1 << 0))
                             {
-                                colourAl = _byte_4FDC5C[colourAl];
+                                colourFlash0 = _flashColours[colourFlash0];
                             }
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
                 };
             }
 
-            mapPtr[0] = colourDl;
-            mapPtr[1] = colourDh;
-            mapPtr[0x90000] = colourAl;
-            mapPtr[0x90001] = colourAh;
+            mapPtr[0] = colour0;
+            mapPtr[1] = colour1;
+            mapPtr[0x90000] = colourFlash0;
+            mapPtr[0x90001] = colourFlash1;
 
             pos += delta;
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC++;
-        if (_dword_F253AC > kMapColumns)
-            _dword_F253AC = 0;
+        _drawMapRowIndex++;
+        if (_drawMapRowIndex > kMapColumns)
+            _drawMapRowIndex = 0;
     }
 
     // 0x0046C873
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -427,16 +427,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourAl = colourAh = landImage->offset[0];
+                            colourFlash0 = colourFlash1 = landImage->offset[0];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourAl = colourAh = waterImage->offset[0];
+                            colourFlash0 = colourFlash1 = waterImage->offset[0];
                         }
 
-                        colourDl = colourDh = colourAl;
+                        colour0 = colour1 = colourFlash0;
                         break;
                     }
 
@@ -445,9 +445,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::road:    // 0x1C
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
-                            colourDl = colourAl = PaletteIndex::index_0C; // ax, dx
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colour0 = colourFlash0 = PaletteIndex::index_0C; // ax, dx
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
@@ -455,9 +455,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::industry: // 0x20
                         if (!el.isGhost())
                         {
-                            colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colour0 = colourFlash0 = PaletteIndex::index_3C; // ax, dx
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
@@ -466,18 +466,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
             }
 
-            mapPtr[0] = colourDl;
-            mapPtr[1] = colourDh;
-            mapPtr[0x90000] = colourAl;
-            mapPtr[0x90001] = colourAh;
+            mapPtr[0] = colour0;
+            mapPtr[1] = colour1;
+            mapPtr[0x90000] = colourFlash0;
+            mapPtr[0x90001] = colourFlash1;
 
             pos += delta;
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC++;
-        if (_dword_F253AC > kMapColumns)
-            _dword_F253AC = 0;
+        _drawMapRowIndex++;
+        if (_drawMapRowIndex > kMapColumns)
+            _drawMapRowIndex = 0;
     }
 
     // 0x004FB464
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -523,23 +523,23 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourDl = colourDh = colourAl = colourAh = waterImage->offset[0];
+                            colour0 = colour1 = colourFlash0 = colourFlash1 = waterImage->offset[0];
                         }
                         else
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourDl = colourDh = colourAl = colourAh = landImage->offset[0];
+                            colour0 = colour1 = colourFlash0 = colourFlash1 = landImage->offset[0];
                         }
 
                         if (surfaceEl->isIndustrial())
                         {
                             const auto* industry = IndustryManager::get(surfaceEl->industryId());
                             const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                            colourDl = colourAl = industryColours[colourIndex];
-                            if (_dword_F253A4 & (1 << industry->objectId))
+                            colour0 = colourFlash0 = industryColours[colourIndex];
+                            if (_flashingItems & (1 << industry->objectId))
                             {
-                                colourAl = PaletteIndex::index_0A;
+                                colourFlash0 = PaletteIndex::index_0A;
                             }
                         }
                         break;
@@ -549,9 +549,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         // Vanilla omits the ghost check, but I think it should be here anyway.
                         if (!el.isGhost())
                         {
-                            colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colour0 = colourFlash0 = PaletteIndex::index_3C; // ax, dx
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
@@ -566,10 +566,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                         const auto* industry = IndustryManager::get(industryEl->industryId());
                         const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                        colourAl = colourAh = colourDl = colourDh = industryColours[colourIndex];
-                        if (_dword_F253A4 & (1 << industry->objectId))
+                        colourFlash0 = colourFlash1 = colour0 = colour1 = industryColours[colourIndex];
+                        if (_flashingItems & (1 << industry->objectId))
                         {
-                            colourAl = colourAh = PaletteIndex::index_0A;
+                            colourFlash0 = colourFlash1 = PaletteIndex::index_0A;
                         }
                         break;
                     }
@@ -581,7 +581,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (el.isGhost() || el.isAiAllocated())
                             continue;
 
-                        colourDl = colourDh = colourAh = colourAl = PaletteIndex::index_0C;
+                        colour0 = colour1 = colourFlash1 = colourFlash0 = PaletteIndex::index_0C;
                         break;
                     }
 
@@ -590,18 +590,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
             }
 
-            mapPtr[0] = colourDl;
-            mapPtr[1] = colourDh;
-            mapPtr[0x90000] = colourAl;
-            mapPtr[0x90001] = colourAh;
+            mapPtr[0] = colour0;
+            mapPtr[1] = colour1;
+            mapPtr[0x90000] = colourFlash0;
+            mapPtr[0x90001] = colourFlash1;
 
             pos += delta;
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC++;
-        if (_dword_F253AC > kMapColumns)
-            _dword_F253AC = 0;
+        _drawMapRowIndex++;
+        if (_drawMapRowIndex > kMapColumns)
+            _drawMapRowIndex = 0;
     }
 
     // 0x0046CB68
@@ -617,7 +617,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -633,16 +633,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourAl = colourAh = landImage->offset[0];
+                            colourFlash0 = colourFlash1 = landImage->offset[0];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourAl = colourAh = waterImage->offset[0];
+                            colourFlash0 = colourFlash1 = waterImage->offset[0];
                         }
 
-                        colourDl = colourDh = colourAl;
+                        colour0 = colour1 = colourFlash0;
                         break;
                     }
 
@@ -650,9 +650,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     case ElementType::industry: // 0x20
                         if (!el.isGhost())
                         {
-                            colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colour0 = colourFlash0 = PaletteIndex::index_3C; // ax, dx
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
@@ -665,18 +665,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (trackEl == nullptr)
                             continue;
 
-                        colourAl = _trackColours[trackEl->trackObjectId()];
+                        colourFlash0 = _trackColours[trackEl->trackObjectId()];
 
-                        auto firstFlashable = Numerics::bitScanForward(_dword_F253A4);
+                        auto firstFlashable = Numerics::bitScanForward(_flashingItems);
                         if (firstFlashable != -1)
                         {
-                            if (_routeToObjectIdMap[firstFlashable] == colourAl)
+                            if (_routeToObjectIdMap[firstFlashable] == colourFlash0)
                             {
-                                colourAl = _byte_4FDC5C[colourAl];
+                                colourFlash0 = _flashColours[colourFlash0];
                             }
                         }
 
-                        colourDh = colourAh = colourDl = colourAl;
+                        colour1 = colourFlash1 = colour0 = colourFlash0;
                         break;
                     }
 
@@ -684,7 +684,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     {
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
-                            colourDh = colourAh = colourDl = colourAl = PaletteIndex::index_BA;
+                            colour1 = colourFlash1 = colour0 = colourFlash0 = PaletteIndex::index_BA;
                         }
                         break;
                     }
@@ -698,19 +698,19 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (roadEl == nullptr)
                             continue;
 
-                        colourAl = colourDl = _roadColours[roadEl->roadObjectId()];
+                        colourFlash0 = colour0 = _roadColours[roadEl->roadObjectId()];
 
-                        auto firstFlashable = Numerics::bitScanForward(_dword_F253A4);
+                        auto firstFlashable = Numerics::bitScanForward(_flashingItems);
                         if (firstFlashable != -1)
                         {
                             if (_routeToObjectIdMap[firstFlashable] == (roadEl->roadObjectId() | (1 << 7)))
                             {
-                                colourAl = _byte_4FDC5C[colourAl];
+                                colourFlash0 = _flashColours[colourFlash0];
                             }
                         }
 
-                        colourDh = colourDl;
-                        colourAh = colourAl;
+                        colour1 = colour0;
+                        colourFlash1 = colourFlash0;
                         break;
                     }
 
@@ -719,18 +719,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
             }
 
-            mapPtr[0] = colourDl;
-            mapPtr[1] = colourDh;
-            mapPtr[0x90000] = colourAl;
-            mapPtr[0x90001] = colourAh;
+            mapPtr[0] = colour0;
+            mapPtr[1] = colour1;
+            mapPtr[0x90000] = colourFlash0;
+            mapPtr[0x90001] = colourFlash1;
 
             pos += delta;
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC++;
-        if (_dword_F253AC > kMapColumns)
-            _dword_F253AC = 0;
+        _drawMapRowIndex++;
+        if (_drawMapRowIndex > kMapColumns)
+            _drawMapRowIndex = 0;
     }
 
     // 0x0046CD31
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 continue;
             }
 
-            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
             auto tile = TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -762,16 +762,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourAl = colourAh = landImage->offset[0];
+                            colourFlash0 = colourFlash1 = landImage->offset[0];
                         }
                         else
                         {
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourAl = colourAh = waterImage->offset[0];
+                            colourFlash0 = colourFlash1 = waterImage->offset[0];
                         }
 
-                        colourDl = colourDh = colourAl;
+                        colour0 = colour1 = colourFlash0;
                         break;
                     }
 
@@ -780,9 +780,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         // Vanilla omits the ghost check, but I think it should be here anyway.
                         if (!el.isGhost())
                         {
-                            colourDl = colourAl = PaletteIndex::index_0B; // ax, dx
-                            colourAh = colourAl;
-                            colourDh = colourDl;
+                            colour0 = colourFlash0 = PaletteIndex::index_0B; // ax, dx
+                            colourFlash1 = colourFlash0;
+                            colour1 = colour0;
                         }
                         break;
 
@@ -810,10 +810,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
 
                         auto companyColour = CompanyManager::getCompanyColour(owner);
-                        colourAh = colourAl = colourDh = colourDl = Colours::getShade(companyColour, 5);
-                        if (_dword_F253A4 & (1 << enumValue(owner)))
+                        colourFlash1 = colourFlash0 = colour1 = colour0 = Colours::getShade(companyColour, 5);
+                        if (_flashingItems & (1 << enumValue(owner)))
                         {
-                            colourAh = colourAl = _byte_4FDC5C[colourDl];
+                            colourFlash1 = colourFlash0 = _flashColours[colour0];
                         }
                         break;
                     }
@@ -823,44 +823,44 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 };
             }
 
-            mapPtr[0] = colourDl;
-            mapPtr[1] = colourDh;
-            mapPtr[0x90000] = colourAl;
-            mapPtr[0x90001] = colourAh;
+            mapPtr[0] = colour0;
+            mapPtr[1] = colour1;
+            mapPtr[0x90000] = colourFlash0;
+            mapPtr[0x90001] = colourFlash1;
 
             pos += delta;
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC++;
-        if (_dword_F253AC > kMapColumns)
-            _dword_F253AC = 0;
+        _drawMapRowIndex++;
+        if (_drawMapRowIndex > kMapColumns)
+            _drawMapRowIndex = 0;
     }
 
     // 0x0046C544
     static void setMapPixels(const Window& self)
     {
-        _dword_F253A4 = self.var_854;
-        auto* mapPtr = reinterpret_cast<PaletteIndex_t*>(_dword_F253AC * 0x2FF + _dword_F253A8 + (kMapRows - 1));
+        _flashingItems = self.var_854;
+        auto* mapPtr = &_mapPixels[_drawMapRowIndex * 0x2FF + (kMapRows - 1)];
 
         Pos2 pos{};
         Pos2 delta{};
         switch (WindowManager::getCurrentRotation())
         {
             case 0:
-                pos = Pos2(_dword_F253AC * kTileSize, 0);
+                pos = Pos2(_drawMapRowIndex * kTileSize, 0);
                 delta = { 0, kTileSize };
                 break;
             case 1:
-                pos = Pos2(kMapWidth - kTileSize, _dword_F253AC * kTileSize);
+                pos = Pos2(kMapWidth - kTileSize, _drawMapRowIndex * kTileSize);
                 delta = { -kTileSize, 0 };
                 break;
             case 2:
-                pos = Pos2((kMapColumns - 1 - _dword_F253AC) * kTileSize, kMapWidth - kTileSize);
+                pos = Pos2((kMapColumns - 1 - _drawMapRowIndex) * kTileSize, kMapWidth - kTileSize);
                 delta = { 0, -kTileSize };
                 break;
             case 3:
-                pos = Pos2(0, (kMapColumns - 1 - _dword_F253AC) * kTileSize);
+                pos = Pos2(0, (kMapColumns - 1 - _drawMapRowIndex) * kTileSize);
                 delta = { kTileSize, 0 };
                 break;
         }
@@ -988,7 +988,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B69C
     static void clearMap()
     {
-        std::fill(static_cast<uint8_t*>(_dword_F253A8), _dword_F253A8 + 0x120000, PaletteIndex::index_0A);
+        std::fill(static_cast<PaletteIndex_t*>(_mapPixels), _mapPixels + 0x120000, PaletteIndex::index_0A);
     }
 
     // 0x00F2541D
@@ -1651,14 +1651,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (train.head->vehicleType == VehicleType::aircraft)
         {
             colour = 211;
-            auto index = Numerics::bitScanForward(_dword_F253A4);
+            auto index = Numerics::bitScanForward(_flashingItems);
             if (index != -1)
             {
                 if (_routeToObjectIdMap[index] == 0xFE)
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
-                        colour = _byte_4FDC5C[colour];
+                        colour = _flashColours[colour];
                     }
                 }
             }
@@ -1666,14 +1666,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         else if (train.head->vehicleType == VehicleType::ship)
         {
             colour = 139;
-            auto index = Numerics::bitScanForward(_dword_F253A4);
+            auto index = Numerics::bitScanForward(_flashingItems);
             if (index != -1)
             {
                 if (_routeToObjectIdMap[index] == 0xFD)
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
-                        colour = _byte_4FDC5C[colour];
+                        colour = _flashColours[colour];
                     }
                 }
             }
@@ -1734,11 +1734,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 colour = vehicleTypeColours[index];
             }
 
-            if (_dword_F253A4 & (1 << index))
+            if (_flashingItems & (1 << index))
             {
                 if (!(mapFrameNumber & (1 << 2)))
                 {
-                    colour = _byte_4FDC5C[colour];
+                    colour = _flashColours[colour];
                 }
             }
         }
@@ -1908,7 +1908,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!(mapFrameNumber & (1 << 2)))
             return;
 
-        if (_dword_F253A4 != 0)
+        if (_flashingItems != 0)
             return;
 
         uint8_t cornerSize = 5;
@@ -2013,7 +2013,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto element = Gfx::getG1Element(0);
         auto backupElement = *element;
-        auto offset = *_dword_F253A8;
+        auto offset = *_mapPixels;
 
         if (mapFrameNumber & (1 << 2))
             offset += 0x90000;
@@ -2253,7 +2253,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (ptr == nullptr)
             return;
 
-        _dword_F253A8 = static_cast<uint8_t*>(ptr);
+        _mapPixels = static_cast<PaletteIndex_t*>(ptr);
         Ui::Size size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
