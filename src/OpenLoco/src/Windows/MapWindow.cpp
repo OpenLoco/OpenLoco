@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (el.isGhost() || el.isAiAllocated())
                             continue;
 
-                        colourDh = colourAh = colourAl = PaletteIndex::index_0C;
+                        colourDl = colourDh = colourAh = colourAl = PaletteIndex::index_0C;
                         break;
                     }
 
@@ -706,12 +706,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (roadEl == nullptr)
                             continue;
 
-                        colourAl = _roadColours[roadEl->roadObjectId()];
+                        colourDl = _roadColours[roadEl->roadObjectId()];
 
                         auto firstFlashable = Numerics::bitScanForward(_dword_F253A4);
                         if (firstFlashable != -1)
                         {
-                            if (_routeToObjectIdMap[firstFlashable] == (colourAl | (1 << 7)))
+                            if (_routeToObjectIdMap[firstFlashable] == (roadEl->roadObjectId() | (1 << 7)))
                             {
                                 colourAl = _byte_4FDC5C[colourAl];
                             }
