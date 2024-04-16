@@ -83,7 +83,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint8_t[8], 0x00F25404> _trackColours;
     static loco_global<uint8_t[8], 0x00F2540C> _roadColours;
-    static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
     enum widx
@@ -1725,16 +1724,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
-            uint8_t index = enumValue(car.front->owner);
-            colour = Colours::getShade(_companyColours[index], 7);
+            auto companyId = car.front->owner;
+            colour = Colours::getShade(CompanyManager::getCompanyColour(companyId), 7);
 
             if (widgetIndex == widx::tabVehicles)
             {
-                index = enumValue(train.head->vehicleType);
+                auto index = enumValue(train.head->vehicleType);
                 colour = vehicleTypeColours[index];
             }
 
-            if (_flashingItems & (1 << index))
+            if (_flashingItems & (1 << enumValue(companyId)))
             {
                 if (!(mapFrameNumber & (1 << 2)))
                 {
