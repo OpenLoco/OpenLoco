@@ -373,7 +373,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (!el.isGhost())
                         {
                             colour0 = colourFlash0 = PaletteIndex::index_7D; // ax, dx
-                            if (_flashingItems & (1 << 0))
+                            if (_flashingItems & (1 << 1))
                             {
                                 colourFlash0 = _flashColours[colourFlash0];
                             }
