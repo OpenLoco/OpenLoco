@@ -393,7 +393,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+        _dword_F253AC++;
+        if (_dword_F253AC > kMapColumns)
+            _dword_F253AC = 0;
     }
 
     // 0x0046C873
@@ -473,7 +475,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+        _dword_F253AC++;
+        if (_dword_F253AC > kMapColumns)
+            _dword_F253AC = 0;
     }
 
     // 0x004FB464
@@ -603,7 +607,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+        _dword_F253AC++;
+        if (_dword_F253AC > kMapColumns)
+            _dword_F253AC = 0;
     }
 
     // 0x0046CB68
@@ -729,7 +735,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+        _dword_F253AC++;
+        if (_dword_F253AC > kMapColumns)
+            _dword_F253AC = 0;
     }
 
     // 0x0046CD31
@@ -833,7 +841,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
             mapPtr += 769; // scrollview width?
         }
 
-        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+        _dword_F253AC++;
+        if (_dword_F253AC > kMapColumns)
+            _dword_F253AC = 0;
     }
 
     // 0x0046C544
