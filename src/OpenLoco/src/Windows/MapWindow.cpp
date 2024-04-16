@@ -83,7 +83,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint8_t[8], 0x00F25404> _trackColours;
     static loco_global<uint8_t[8], 0x00F2540C> _roadColours;
-    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
     enum widx
     {
@@ -1986,10 +1985,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
-            StringManager::formatString(_stringFormatBuffer, town.name);
+            char townNameBuffer[512]{};
+            StringManager::formatString(townNameBuffer, town.name);
             drawingCtx.setCurrentFontSpriteBase(Font::small);
 
-            auto strWidth = drawingCtx.getStringWidth(_stringFormatBuffer);
+            auto strWidth = drawingCtx.getStringWidth(townNameBuffer);
 
             strWidth /= 2;
 
@@ -1997,7 +1997,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             townPos.y -= 3;
 
             drawingCtx.setCurrentFontSpriteBase(Font::small);
-            drawingCtx.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), _stringFormatBuffer);
+            drawingCtx.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), townNameBuffer);
         }
     }
 
