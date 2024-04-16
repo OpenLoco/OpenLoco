@@ -525,17 +525,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
                             colourDl = colourDh = colourAl = colourAh = waterImage->offset[0];
                         }
-                        else if (!surfaceEl->isIndustrial())
+                        else
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
                             colourDl = colourDh = colourAl = colourAh = landImage->offset[0];
                         }
-                        else
+
+                        if (surfaceEl->isIndustrial())
                         {
                             const auto* industry = IndustryManager::get(surfaceEl->industryId());
                             const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                            colourDl = colourDh = colourAl = colourAh = industryColours[colourIndex];
+                            colourDl = colourAl = industryColours[colourIndex];
                             if (_dword_F253A4 & (1 << industry->objectId))
                             {
                                 colourAl = PaletteIndex::index_0A;
