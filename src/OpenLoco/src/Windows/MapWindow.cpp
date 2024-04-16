@@ -865,11 +865,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 delta = { -kTileSize, 0 };
                 break;
             case 2:
-                pos = Pos2((kMapWidth - 1 - _dword_F253AC) * kTileSize, kMapWidth - kTileSize);
+                pos = Pos2((kMapColumns - 1 - _dword_F253AC) * kTileSize, kMapWidth - kTileSize);
                 delta = { 0, -kTileSize };
                 break;
             case 3:
-                pos = Pos2(0, (kMapWidth - 1 - _dword_F253AC) * kTileSize);
+                pos = Pos2(0, (kMapColumns - 1 - _dword_F253AC) * kTileSize);
                 delta = { kTileSize, 0 };
                 break;
         }
