@@ -39,6 +39,7 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -605,6 +606,132 @@ namespace OpenLoco::Ui::Windows::MapWindow
         _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
     }
 
+    // 0x0046CB68
+    static void setMapPixelsRoutes(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    {
+        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
+        {
+            // Coords shouldn't be at map edge
+            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
+            {
+                pos += delta;
+                mapPtr += 769; // scrollview width?
+                continue;
+            }
+
+            PaletteIndex_t colourAl{}, colourAh{}, colourDl{}, colourDh{};
+            auto tile = TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                switch (el.type())
+                {
+                    case ElementType::surface: // 0x00
+                    {
+                        auto* surfaceEl = el.as<SurfaceElement>();
+                        if (surfaceEl == nullptr)
+                            continue;
+
+                        if (surfaceEl->water() == 0)
+                        {
+                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
+                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
+                            colourAl = colourAh = landImage->offset[0];
+                        }
+                        else
+                        {
+                            const auto* waterObj = ObjectManager::get<WaterObject>();
+                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
+                            colourAl = colourAh = waterImage->offset[0];
+                        }
+
+                        colourDl = colourDh = colourAl;
+                        break;
+                    }
+
+                    case ElementType::building: // 0x10
+                    case ElementType::industry: // 0x20
+                        if (!el.isGhost())
+                        {
+                            colourDl = colourAl = PaletteIndex::index_3C; // ax, dx
+                            colourAh = colourAl;
+                            colourDh = colourDl;
+                        }
+                        break;
+
+                    case ElementType::track: // 0x04
+                    {
+                        if (el.isGhost() || el.isAiAllocated())
+                            continue;
+
+                        auto* trackEl = el.as<TrackElement>();
+                        if (trackEl == nullptr)
+                            continue;
+
+                        colourAl = _trackColours[trackEl->trackObjectId()];
+
+                        auto firstFlashable = Numerics::bitScanForward(_dword_F253A4);
+                        if (firstFlashable != -1)
+                        {
+                            if (_routeToObjectIdMap[firstFlashable] == colourAl)
+                            {
+                                colourAl = _byte_4FDC5C[colourAl];
+                            }
+                        }
+
+                        colourDh = colourAh = colourDl = colourAl;
+                        break;
+                    }
+
+                    case ElementType::station: // 0x08
+                    {
+                        if (!el.isGhost() && !el.isAiAllocated())
+                        {
+                            colourDh = colourAh = colourDl = colourAl = PaletteIndex::index_BA;
+                        }
+                        break;
+                    }
+
+                    case ElementType::road: // 0x1C
+                    {
+                        if (el.isGhost() || el.isAiAllocated())
+                            continue;
+
+                        auto* roadEl = el.as<RoadElement>();
+                        if (roadEl == nullptr)
+                            continue;
+
+                        colourAl = _roadColours[roadEl->roadObjectId()];
+
+                        auto firstFlashable = Numerics::bitScanForward(_dword_F253A4);
+                        if (firstFlashable != -1)
+                        {
+                            if (_routeToObjectIdMap[firstFlashable] == (colourAl | (1 << 7)))
+                            {
+                                colourAl = _byte_4FDC5C[colourAl];
+                            }
+                        }
+
+                        colourDh = colourAh = colourDl = colourAl;
+                        break;
+                    }
+
+                    default:
+                        break;
+                };
+            }
+
+            mapPtr[0] = colourDl;
+            mapPtr[1] = colourDh;
+            mapPtr[0x90000] = colourAl;
+            mapPtr[0x90001] = colourAh;
+
+            pos += delta;
+            mapPtr += 769; // scrollview width?
+        }
+
+        _dword_F253AC = std::clamp<coord_t>(_dword_F253AC + 1, 0, kMapColumns);
+    }
+
     // 0x0046CD31
     static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
     {
@@ -737,19 +864,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 break;
         }
 
-        registers regs;
-        regs.eax = pos.x;
-        regs.ecx = pos.y;
-        regs.ebx = delta.x;
-        regs.ebp = delta.y;
-        regs.esi = X86Pointer(mapPtr);
-
         switch (self.currentTab)
         {
             case 0: setMapPixelsOverall(mapPtr, pos, delta); return;
             case 1: setMapPixelsVehicles(mapPtr, pos, delta); return;
             case 2: setMapPixelsIndustries(mapPtr, pos, delta); return;
-            case 3: call(0x0046CB68, regs); return; // routes
+            case 3: setMapPixelsRoutes(mapPtr, pos, delta); return;
             case 4: setMapPixelsOwnership(mapPtr, pos, delta); return;
         }
     }
