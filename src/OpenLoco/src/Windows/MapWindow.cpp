@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         if (roadEl == nullptr)
                             continue;
 
-                        colourDl = _roadColours[roadEl->roadObjectId()];
+                        colourAl = colourDl = _roadColours[roadEl->roadObjectId()];
 
                         auto firstFlashable = Numerics::bitScanForward(_dword_F253A4);
                         if (firstFlashable != -1)
@@ -708,7 +708,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
                         }
 
-                        colourDh = colourAh = colourDl = colourAl;
+                        colourDh = colourDl;
+                        colourAh = colourAl;
                         break;
                     }
 
@@ -808,13 +809,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
 
                         auto companyColour = CompanyManager::getCompanyColour(owner);
-                        colourDl = Colours::getShade(companyColour, 5);
+                        colourAh = colourAl = colourDh = colourDl = Colours::getShade(companyColour, 5);
                         if (_dword_F253A4 & (1 << enumValue(owner)))
                         {
-                            colourDl = _byte_4FDC5C[colourDl];
+                            colourAh = colourAl = _byte_4FDC5C[colourDl];
                         }
-
-                        colourDh = colourAh = colourAl = colourDl;
                         break;
                     }
 
