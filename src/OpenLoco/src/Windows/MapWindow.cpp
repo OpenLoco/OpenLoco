@@ -48,6 +48,13 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
+    static loco_global<int32_t, 0x00523338> _cursorX2;
+    static loco_global<int32_t, 0x0052333C> _cursorY2;
+
+    static constexpr int16_t kRenderedMapWidth = 512 * 1.5;
+    static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapWidth;
+
+    // 0x004FDC4C
     static std::array<Point, 4> _viewFrameOffsetsByRotation = { {
         { 376, 0 },
         { 760, 384 },
@@ -57,7 +64,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static loco_global<uint8_t[256], 0x004FDC5C> _flashColours; // can be integrated (all 0x0A, except 0x15 at indices (11-14))
     static loco_global<uint32_t, 0x00F253A4> _flashingItems;
-    static loco_global<PaletteIndex_t*, 0x00F253A8> _mapPixels;
+
+    static PaletteIndex_t* _mapPixels; // 0x00F253A8
+    static PaletteIndex_t* _mapAltPixels;
+
     static loco_global<uint32_t, 0x00F253AC> _drawMapRowIndex; // current row?
     static std::array<uint16_t, 6> _vehicleTypeCounts = {
         {
@@ -213,7 +223,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C5E5
-    static void setMapPixelsOverall(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    static void setMapPixelsOverall(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
         for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
         {
@@ -221,7 +231,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
             {
                 pos += delta;
-                mapPtr += 769; // scrollview width?
+                mapPtr += kRenderedMapWidth + 1;
+                mapAltPtr += kRenderedMapWidth + 1;
                 continue;
             }
 
@@ -375,11 +386,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             mapPtr[0] = colour0;
             mapPtr[1] = colour1;
-            mapPtr[0x90000] = colourFlash0;
-            mapPtr[0x90001] = colourFlash1;
+            mapAltPtr[0] = colourFlash0;
+            mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += 769; // scrollview width?
+            mapPtr += kRenderedMapWidth + 1;
+            mapAltPtr += kRenderedMapWidth + 1;
         }
 
         _drawMapRowIndex++;
@@ -388,7 +400,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C873
-    static void setMapPixelsVehicles(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    static void setMapPixelsVehicles(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
         for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
         {
@@ -396,7 +408,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
             {
                 pos += delta;
-                mapPtr += 769; // scrollview width?
+                mapPtr += kRenderedMapWidth + 1;
+                mapAltPtr += kRenderedMapWidth + 1;
                 continue;
             }
 
@@ -457,11 +470,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             mapPtr[0] = colour0;
             mapPtr[1] = colour1;
-            mapPtr[0x90000] = colourFlash0;
-            mapPtr[0x90001] = colourFlash1;
+            mapAltPtr[0] = colourFlash0;
+            mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += 769; // scrollview width?
+            mapPtr += kRenderedMapWidth + 1;
+            mapAltPtr += kRenderedMapWidth + 1;
         }
 
         _drawMapRowIndex++;
@@ -484,7 +498,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // clang-format on
 
     // 0x0046C9A8
-    static void setMapPixelsIndustries(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    static void setMapPixelsIndustries(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
         for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
         {
@@ -492,7 +506,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
             {
                 pos += delta;
-                mapPtr += 769; // scrollview width?
+                mapPtr += kRenderedMapWidth + 1;
+                mapAltPtr += kRenderedMapWidth + 1;
                 continue;
             }
 
@@ -581,11 +596,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             mapPtr[0] = colour0;
             mapPtr[1] = colour1;
-            mapPtr[0x90000] = colourFlash0;
-            mapPtr[0x90001] = colourFlash1;
+            mapAltPtr[0] = colourFlash0;
+            mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += 769; // scrollview width?
+            mapPtr += kRenderedMapWidth + 1;
+            mapAltPtr += kRenderedMapWidth + 1;
         }
 
         _drawMapRowIndex++;
@@ -594,7 +610,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046CB68
-    static void setMapPixelsRoutes(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    static void setMapPixelsRoutes(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
         for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
         {
@@ -602,7 +618,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
             {
                 pos += delta;
-                mapPtr += 769; // scrollview width?
+                mapPtr += kRenderedMapWidth + 1;
+                mapAltPtr += kRenderedMapWidth + 1;
                 continue;
             }
 
@@ -710,11 +727,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             mapPtr[0] = colour0;
             mapPtr[1] = colour1;
-            mapPtr[0x90000] = colourFlash0;
-            mapPtr[0x90001] = colourFlash1;
+            mapAltPtr[0] = colourFlash0;
+            mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += 769; // scrollview width?
+            mapPtr += kRenderedMapWidth + 1;
+            mapAltPtr += kRenderedMapWidth + 1;
         }
 
         _drawMapRowIndex++;
@@ -723,7 +741,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046CD31
-    static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, Pos2 pos, Pos2 delta)
+    static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
     {
         for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
         {
@@ -731,7 +749,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
             if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
             {
                 pos += delta;
-                mapPtr += 769; // scrollview width?
+                mapPtr += kRenderedMapWidth + 1;
+                mapAltPtr += kRenderedMapWidth + 1;
                 continue;
             }
 
@@ -814,11 +833,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             mapPtr[0] = colour0;
             mapPtr[1] = colour1;
-            mapPtr[0x90000] = colourFlash0;
-            mapPtr[0x90001] = colourFlash1;
+            mapAltPtr[0] = colourFlash0;
+            mapAltPtr[1] = colourFlash1;
 
             pos += delta;
-            mapPtr += 769; // scrollview width?
+            mapPtr += kRenderedMapWidth + 1;
+            mapAltPtr += kRenderedMapWidth + 1;
         }
 
         _drawMapRowIndex++;
@@ -830,7 +850,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void setMapPixels(const Window& self)
     {
         _flashingItems = self.var_854;
-        auto* mapPtr = &_mapPixels[_drawMapRowIndex * 0x2FF + (kMapRows - 1)];
+        auto offset = _drawMapRowIndex * (kRenderedMapWidth - 1) + (kMapRows - 1);
+        auto* mapPtr = &_mapPixels[offset];
+        auto* mapAltPtr = &_mapAltPixels[offset];
 
         Pos2 pos{};
         Pos2 delta{};
@@ -856,11 +878,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         switch (self.currentTab)
         {
-            case 0: setMapPixelsOverall(mapPtr, pos, delta); return;
-            case 1: setMapPixelsVehicles(mapPtr, pos, delta); return;
-            case 2: setMapPixelsIndustries(mapPtr, pos, delta); return;
-            case 3: setMapPixelsRoutes(mapPtr, pos, delta); return;
-            case 4: setMapPixelsOwnership(mapPtr, pos, delta); return;
+            case 0: setMapPixelsOverall(mapPtr, mapAltPtr, pos, delta); return;
+            case 1: setMapPixelsVehicles(mapPtr, mapAltPtr, pos, delta); return;
+            case 2: setMapPixelsIndustries(mapPtr, mapAltPtr, pos, delta); return;
+            case 3: setMapPixelsRoutes(mapPtr, mapAltPtr, pos, delta); return;
+            case 4: setMapPixelsOwnership(mapPtr, mapAltPtr, pos, delta); return;
         }
     }
 
@@ -977,7 +999,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B69C
     static void clearMap()
     {
-        std::fill(static_cast<PaletteIndex_t*>(_mapPixels), _mapPixels + 0x120000, PaletteIndex::index_0A);
+        std::fill(static_cast<PaletteIndex_t*>(_mapPixels), _mapPixels + kRenderedMapSize * 2, PaletteIndex::index_0A);
     }
 
     // 0x00F2541D
@@ -2001,12 +2023,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(rt, PaletteIndex::index_0A);
 
-        auto element = Gfx::getG1Element(0);
+        auto* element = Gfx::getG1Element(0);
         auto backupElement = *element;
-        auto offset = *_mapPixels;
 
+        auto* offset = _mapPixels;
         if (mapFrameNumber & (1 << 2))
-            offset += 0x90000;
+            offset = _mapAltPixels;
 
         Gfx::getG1Element(0)->offset = offset;
         Gfx::getG1Element(0)->width = kMapColumns * 2;
@@ -2238,12 +2260,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (window != nullptr)
             return;
 
-        auto ptr = malloc(kMapSize * 8);
-
+        auto ptr = malloc(kRenderedMapSize * 2);
         if (ptr == nullptr)
             return;
 
         _mapPixels = static_cast<PaletteIndex_t*>(ptr);
+        _mapAltPixels = &_mapPixels[kRenderedMapSize];
+
         Ui::Size size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
