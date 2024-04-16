@@ -48,22 +48,13 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static std::array<int16_t, 4> _4FDC4C = {
-        {
-            376,
-            760,
-            376,
-            -8,
-        }
-    };
-    static std::array<int16_t, 4> _4FDC4E = {
-        {
-            0,
-            384,
-            768,
-            384,
-        }
-    };
+    static std::array<Point, 4> _viewFrameOffsetsByRotation = { {
+        { 376, 0 },
+        { 760, 384 },
+        { 376, 768 },
+        { -8, 384 },
+    } };
+
     static loco_global<uint8_t[256], 0x004FDC5C> _flashColours; // can be integrated (all 0x0A, except 0x15 at indices (11-14))
     static loco_global<uint32_t, 0x00F253A4> _flashingItems;
     static loco_global<PaletteIndex_t*, 0x00F253A8> _mapPixels;
@@ -1817,10 +1808,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
         top /= 16;
         right /= 32;
         bottom /= 16;
-        left += _4FDC4C[getCurrentRotation()];
-        top += _4FDC4E[getCurrentRotation()];
-        right += _4FDC4C[getCurrentRotation()];
-        bottom += _4FDC4E[getCurrentRotation()];
+        left += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
+        top += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
+        right += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
+        bottom += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
 
         const auto colour = PaletteIndex::index_0A;
 
@@ -1832,8 +1823,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         left /= 32;
         top /= 16;
-        left += _4FDC4C[getCurrentRotation()];
-        top += _4FDC4E[getCurrentRotation()];
+        left += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
+        top += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
         auto right = left;
         auto bottom = top;
         left += leftOffset;
@@ -2321,8 +2312,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         y += viewport->viewY;
         x /= 32;
         y /= 16;
-        x += _4FDC4C[getCurrentRotation()];
-        y += _4FDC4E[getCurrentRotation()];
+        x += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
+        y += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
 
         auto width = widgets[widx::scrollview].width() - 10;
         auto height = widgets[widx::scrollview].height() - 10;
