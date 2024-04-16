@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static PaletteIndex_t* _mapPixels; // 0x00F253A8
     static PaletteIndex_t* _mapAltPixels;
 
-    static loco_global<uint32_t, 0x00F253AC> _drawMapRowIndex; // current row?
+    static loco_global<uint32_t, 0x00F253AC> _drawMapRowIndex;
     static std::array<uint16_t, 6> _vehicleTypeCounts = {
         {
             0,
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 switch (el.type())
                 {
-                    case ElementType::surface: // 0x00
+                    case ElementType::surface:
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::track: // 0x04
+                    case ElementType::track:
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
                             auto* trackEl = el.as<TrackElement>();
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
                             if (trackObj->hasFlags(TrackObjectFlags::unk_01))
                             {
-                                colour0 = colourFlash0 = PaletteIndex::index_0C; // ax, dx
+                                colour0 = colourFlash0 = PaletteIndex::index_0C;
                                 if (_flashingItems & (1 << 2))
                                 {
                                     colourFlash0 = _flashColours[colourFlash0];
@@ -285,7 +285,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
                             else
                             {
-                                colour0 = colourFlash0 = PaletteIndex::index_11; // ax, dx
+                                colour0 = colourFlash0 = PaletteIndex::index_11;
                                 if (_flashingItems & (1 << 3))
                                 {
                                     colourFlash0 = _flashColours[colourFlash0];
@@ -297,10 +297,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
                         break;
 
-                    case ElementType::station: // 0x08
+                    case ElementType::station:
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_BA; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_BA;
                             if (_flashingItems & (1 << 4))
                             {
                                 colourFlash0 = _flashColours[colourFlash0];
@@ -310,13 +310,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
                         break;
 
-                    case ElementType::signal: // 0x0C
+                    case ElementType::signal:
                         break;
 
-                    case ElementType::building: // 0x10
+                    case ElementType::building:
                         if (!el.isGhost())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_41; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_41;
                             if (_flashingItems & (1 << 0))
                             {
                                 colourFlash0 = _flashColours[colourFlash0];
@@ -326,10 +326,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
                         break;
 
-                    case ElementType::tree: // 0x14
+                    case ElementType::tree:
                         if (!el.isGhost())
                         {
-                            colour1 = colourFlash1 = PaletteIndex::index_64; // ax, dx
+                            colour1 = colourFlash1 = PaletteIndex::index_64;
                             if (_flashingItems & (1 << 5))
                             {
                                 colourFlash1 = PaletteIndex::index_0A;
@@ -337,10 +337,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
                         break;
 
-                    case ElementType::wall: // 0x18
+                    case ElementType::wall:
                         continue;
 
-                    case ElementType::road: // 0x1C
+                    case ElementType::road:
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
                             auto* roadEl = el.as<RoadElement>();
@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
                             if (roadObj->hasFlags(RoadObjectFlags::unk_01))
                             {
-                                colour0 = colourFlash0 = PaletteIndex::index_11; // ax, dx
+                                colour0 = colourFlash0 = PaletteIndex::index_11;
                                 if (_flashingItems & (1 << 3))
                                 {
                                     colourFlash0 = _flashColours[colourFlash0];
@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             }
                             else
                             {
-                                colour0 = colourFlash0 = PaletteIndex::index_0C; // ax, dx
+                                colour0 = colourFlash0 = PaletteIndex::index_0C;
                                 if (_flashingItems & (1 << 2))
                                 {
                                     colourFlash0 = _flashColours[colourFlash0];
@@ -370,10 +370,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         }
                         break;
 
-                    case ElementType::industry: // 0x20
+                    case ElementType::industry:
                         if (!el.isGhost())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_7D; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_7D;
                             if (_flashingItems & (1 << 1))
                             {
                                 colourFlash0 = _flashColours[colourFlash0];
@@ -420,7 +420,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 switch (el.type())
                 {
-                    case ElementType::surface: // 0x00
+                    case ElementType::surface:
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
@@ -443,22 +443,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::track:   // 0x04
-                    case ElementType::station: // 0x08
-                    case ElementType::road:    // 0x1C
+                    case ElementType::track:
+                    case ElementType::station:
+                    case ElementType::road:
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_0C; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_0C;
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
                         }
                         break;
 
-                    case ElementType::building: // 0x10
-                    case ElementType::industry: // 0x20
+                    case ElementType::building:
+                    case ElementType::industry:
                         if (!el.isGhost())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_3C; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_3C;
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
                         }
@@ -518,7 +518,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 switch (el.type())
                 {
-                    case ElementType::surface: // 0x00
+                    case ElementType::surface:
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
@@ -550,17 +550,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::building: // 0x10
+                    case ElementType::building:
                         // Vanilla omits the ghost check, but I think it should be here anyway.
                         if (!el.isGhost())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_3C; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_3C;
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
                         }
                         break;
 
-                    case ElementType::industry: // 0x20
+                    case ElementType::industry:
                     {
                         if (el.isGhost())
                             continue;
@@ -579,9 +579,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::track:   // 0x04
-                    case ElementType::station: // 0x08
-                    case ElementType::road:    // 0x1C
+                    case ElementType::track:
+                    case ElementType::station:
+                    case ElementType::road:
                     {
                         if (el.isGhost() || el.isAiAllocated())
                             continue;
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 switch (el.type())
                 {
-                    case ElementType::surface: // 0x00
+                    case ElementType::surface:
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
@@ -653,17 +653,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::building: // 0x10
-                    case ElementType::industry: // 0x20
+                    case ElementType::building:
+                    case ElementType::industry:
                         if (!el.isGhost())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_3C; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_3C;
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
                         }
                         break;
 
-                    case ElementType::track: // 0x04
+                    case ElementType::track:
                     {
                         if (el.isGhost() || el.isAiAllocated())
                             continue;
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::station: // 0x08
+                    case ElementType::station:
                     {
                         if (!el.isGhost() && !el.isAiAllocated())
                         {
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::road: // 0x1C
+                    case ElementType::road:
                     {
                         if (el.isGhost() || el.isAiAllocated())
                             continue;
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 switch (el.type())
                 {
-                    case ElementType::surface: // 0x00
+                    case ElementType::surface:
                     {
                         auto* surfaceEl = el.as<SurfaceElement>();
                         if (surfaceEl == nullptr)
@@ -784,20 +784,20 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::building: // 0x10
-                    case ElementType::industry: // 0x20
+                    case ElementType::building:
+                    case ElementType::industry:
                         // Vanilla omits the ghost check, but I think it should be here anyway.
                         if (!el.isGhost())
                         {
-                            colour0 = colourFlash0 = PaletteIndex::index_0B; // ax, dx
+                            colour0 = colourFlash0 = PaletteIndex::index_0B;
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
                         }
                         break;
 
-                    case ElementType::track:   // 0x04
-                    case ElementType::station: // 0x08
-                    case ElementType::road:    // 0x1C
+                    case ElementType::track:
+                    case ElementType::station:
+                    case ElementType::road:
                     {
                         if (el.isGhost() || el.isAiAllocated())
                             continue;
