@@ -825,7 +825,7 @@ namespace OpenLoco::Ui::Windows::Station
             // Put station and town name in place.
             auto* station = StationManager::get(StationId(self.number));
 
-            auto args = FormatArguments();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(station->name);
             args.push(station->town);
             args.push(getTransportIconsFromStationFlags(station->flags));
