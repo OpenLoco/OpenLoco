@@ -684,13 +684,14 @@ namespace OpenLoco::Ui
         int16_t width = r - l - 4 - 10;
         auto point = Point(l + 2 + (width / 2), t + 1);
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         drawingCtx.drawStringCentredClipped(
             *rt,
             point,
             width,
             AdvancedColour(Colour::white).outline(),
             widget.text,
-            &FormatArguments::common());
+            &formatArgs);
     }
 
     // 0x004CF3EB

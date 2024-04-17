@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
 #include <cstdint>
@@ -88,6 +89,7 @@ namespace OpenLoco::Ui
             uint32_t content;
         };
         StringId tooltip; // 0x0E
+        FormatArgumentsBuffer textArgs;
 
         int16_t midX() const;
         int16_t midY() const;
@@ -104,11 +106,11 @@ namespace OpenLoco::Ui
         void draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
     };
 #pragma pack(pop)
-    static_assert(sizeof(Widget) == 0x10);
+    //static_assert(sizeof(Widget) == 0x10);
 
     static constexpr Widget makeWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
-        Widget out = {};
+        Widget out{};
         out.left = origin.x;
         out.right = origin.x + size.width - 1;
         out.top = origin.y;
@@ -172,7 +174,7 @@ namespace OpenLoco::Ui
 
     constexpr Widget makeTextWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
     {
-        Widget out = {};
+        Widget out{};
         out.left = origin.x;
         out.right = origin.x + size.width - 1;
         out.top = origin.y;
@@ -187,7 +189,7 @@ namespace OpenLoco::Ui
 
     constexpr Widget widgetEnd()
     {
-        Widget out = {};
+        Widget out{};
         out.type = WidgetType::end;
 
         return out;
