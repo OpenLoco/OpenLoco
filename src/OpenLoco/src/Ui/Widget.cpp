@@ -590,8 +590,9 @@ namespace OpenLoco::Ui
         int16_t centreX = window->x + (widget.left + widget.right + 1) / 2 - 1;
         int16_t width = widget.right - widget.left - 2;
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &formatArgs);
     }
 
     // 0x004CB263
@@ -605,9 +606,10 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &formatArgs);
     }
 
     // 0x4CB2D6
@@ -628,11 +630,12 @@ namespace OpenLoco::Ui
             colour = colour.FD();
         }
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         auto* window = widgetStated.window;
         auto point = Point(window->x + widget.left + 1, window->y + widget.top);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, &formatArgs);
     }
 
     // 0x4CB29C
@@ -1043,10 +1046,11 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         auto* window = widgetState.window;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto point = Point(window->x + widget.left + 14, window->y + widget.top);
-        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, &FormatArguments::common());
+        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, &formatArgs);
     }
 
     // 0x004CA679
