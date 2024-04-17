@@ -169,14 +169,46 @@ namespace OpenLoco::StringManager
         return buffer + number.size();
     }
 
-    static char* formatShortWithDecimals(int16_t value, char* buffer)
+    // 0x004963FC
+    static char* formatShortWithSingleDecimal(int16_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
+        if (value < 0)
+        {
+            value = -value;
+            *buffer++ = '-';
+        }
 
-        call(0x4963FC, regs);
-        return X86Pointer<char>(regs.edi);
+        // Build up the formatted number in reverse
+        std::string number{};
+        bool passedDecimals = false;
+        auto groupLength = 0;
+        while (value > 0)
+        {
+            if (!passedDecimals && groupLength == 1)
+            {
+                number += '.';
+                passedDecimals = true;
+                groupLength = 0;
+            }
+
+            if (groupLength == 3)
+            {
+                number += ',';
+                groupLength = 0;
+            }
+
+            number += '0' + (value % 10);
+            value /= 10;
+            groupLength++;
+        }
+
+        // Reverse the number buffer
+        std::reverse(number.begin(), number.end());
+
+        // Copy number buffer to dest buffer
+        std::strncpy(buffer, number.c_str(), number.size());
+
+        return buffer + number.size();
     }
 
     static char* formatIntWithDecimals(int32_t value, char* buffer)
@@ -459,7 +491,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::int16_decimals:
                     {
                         int16_t value = args.pop<int16_t>();
-                        buffer = formatShortWithDecimals(value, buffer);
+                        buffer = formatShortWithSingleDecimal(value, buffer);
                         break;
                     }
 
