@@ -7,6 +7,7 @@
 #include "Types.hpp"
 #include "Ui.h"
 #include "Ui/ScrollFlags.hpp"
+#include "Ui/Widget.h"
 #include "Ui/WindowType.h"
 #include "Viewport.hpp"
 #include "World/Company.h"
@@ -18,52 +19,12 @@
 
 namespace OpenLoco::Ui
 {
-    using WidgetIndex_t = int8_t;
     using WindowNumber_t = uint16_t;
-    enum class WidgetType : uint8_t;
+
     struct Window;
-    struct Widget;
-
-#pragma pack(push, 1)
-
     struct Viewport;
 
-    enum class WidgetType : uint8_t
-    {
-        none = 0,
-        panel = 1,
-        frame = 2,
-        wt_3,
-        wt_4,
-        slider,
-        wt_6,
-        toolbarTab = 7,
-        tab = 8,
-        buttonWithImage = 9,
-        buttonWithColour = 10,
-        button = 11,
-        wt_12,
-        wt_13,
-        buttonTableHeader = 14,
-        wt_15,
-        groupbox = 16,
-        textbox = 17,
-        combobox = 18,
-        viewport = 19,
-        wt_20,
-        wt_21,
-        caption_22,
-        caption_23,
-        caption_24,
-        caption_25,
-        scrollview = 26,
-        checkbox = 27,
-        wt_28,
-        wt_29,
-        viewportCentreButton, // TODO: Make a better generic button so we get the same result.
-        end,
-    };
-
+#pragma pack(push, 1)
     enum class WindowColour : uint8_t
     {
         primary,

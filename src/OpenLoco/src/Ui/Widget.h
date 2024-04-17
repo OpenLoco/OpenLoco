@@ -3,7 +3,6 @@
 #include "Graphics/Gfx.h"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
-#include "Window.h"
 #include <cstdint>
 
 namespace OpenLoco::Gfx
@@ -13,6 +12,47 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Ui
 {
+    using WidgetIndex_t = int8_t;
+
+    struct Window;
+    enum class WindowColour : uint8_t;
+
+    enum class WidgetType : uint8_t
+    {
+        none = 0,
+        panel = 1,
+        frame = 2,
+        wt_3,
+        wt_4,
+        slider,
+        wt_6,
+        toolbarTab = 7,
+        tab = 8,
+        buttonWithImage = 9,
+        buttonWithColour = 10,
+        button = 11,
+        wt_12,
+        wt_13,
+        buttonTableHeader = 14,
+        wt_15,
+        groupbox = 16,
+        textbox = 17,
+        combobox = 18,
+        viewport = 19,
+        wt_20,
+        wt_21,
+        caption_22,
+        caption_23,
+        caption_24,
+        caption_25,
+        scrollview = 26,
+        checkbox = 27,
+        wt_28,
+        wt_29,
+        viewportCentreButton, // TODO: Make a better generic button so we get the same result.
+        end,
+    };
+
     struct WidgetState
     {
         Window* window;
