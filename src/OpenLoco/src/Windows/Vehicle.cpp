@@ -847,7 +847,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto company = CompanyManager::get(head->owner);
-            FormatArguments args{};
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             if (CompanyManager::isPlayerCompany(head->owner))
             {
                 args.push(StringIds::company_vehicle);

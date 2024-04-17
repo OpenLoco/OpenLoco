@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name in title.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.disabledWidgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
@@ -1330,7 +1330,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;

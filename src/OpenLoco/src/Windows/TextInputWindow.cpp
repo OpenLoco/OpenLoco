@@ -206,7 +206,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static void prepareDraw(Ui::Window& window)
     {
         window.widgets[Widx::title].text = _title;
-        memcpy(_commonFormatArgs, _formatArgs, 16);
+        memcpy(window.widgets[Widx::title].textArgs.data(), _formatArgs, 16);
     }
 
     /**

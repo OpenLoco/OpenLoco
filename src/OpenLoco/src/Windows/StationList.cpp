@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Set company name.
         auto company = CompanyManager::get(CompanyId(window.number));
-        auto args = FormatArguments::common();
+        auto args = FormatArguments(window.widgets[widx::caption].textArgs);
         args.push(company->name);
 
         // Set window title.
