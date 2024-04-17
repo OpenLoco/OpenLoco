@@ -1895,7 +1895,7 @@ strings:
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
-  1860: "{POP16}{POP16}{POP16}{INT16} years"
+  1860: "{INT16} years"
   1861: "{SMALLFONT}(Completed by {STRINGID} in {INT16} years {INT16} months)"
   1862: "{COLOUR WINDOW_2}Success!{NEWLINE}{COLOUR BLACK}  You completed the challenge in {INT16} years {INT16} months"
   1863: "{COLOUR WINDOW_2}Failed!{NEWLINE}{COLOUR BLACK}  You failed to complete the challenge"

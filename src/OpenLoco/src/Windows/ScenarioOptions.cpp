@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.widgets[widx::time_limit_value_down].type = WidgetType::none;
             self.widgets[widx::time_limit_value_up].type = WidgetType::none;
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[widx::objective_value].textArgs);
 
             switch (Scenario::getObjective().type)
             {
@@ -440,7 +440,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case Scenario::ObjectiveType::performanceIndex:
                     args.push<int16_t>(Scenario::getObjective().performanceIndex * 10);
-                    args.skip(2);
                     self.widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
@@ -469,8 +468,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 self.widgets[widx::time_limit_value].type = WidgetType::textbox;
                 self.widgets[widx::time_limit_value_down].type = WidgetType::button;
                 self.widgets[widx::time_limit_value_up].type = WidgetType::button;
-                args.skip(2);
-                args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
+
+                auto args2 = FormatArguments(self.widgets[widx::time_limit_value].textArgs);
+                args2.push<uint16_t>(Scenario::getObjective().timeLimitYears);
             }
         }
 
