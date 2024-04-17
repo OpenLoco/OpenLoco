@@ -211,14 +211,46 @@ namespace OpenLoco::StringManager
         return buffer + number.size();
     }
 
-    static char* formatIntWithDecimals(int32_t value, char* buffer)
+    // 0x004962F1
+    static char* formatIntWithTwoDecimals(int32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
+        if (value < 0)
+        {
+            value = -value;
+            *buffer++ = '-';
+        }
 
-        call(0x4962F1, regs);
-        return X86Pointer<char>(regs.edi);
+        // Build up the formatted number in reverse
+        std::string number{};
+        bool passedDecimals = false;
+        auto groupLength = 0;
+        while (value > 0)
+        {
+            if (!passedDecimals && groupLength == 2)
+            {
+                number += '.';
+                passedDecimals = true;
+                groupLength = 0;
+            }
+
+            if (groupLength == 3)
+            {
+                number += ',';
+                groupLength = 0;
+            }
+
+            number += '0' + (value % 10);
+            value /= 10;
+            groupLength++;
+        }
+
+        // Reverse the number buffer
+        std::reverse(number.begin(), number.end());
+
+        // Copy number buffer to dest buffer
+        std::strncpy(buffer, number.c_str(), number.size());
+
+        return buffer + number.size();
     }
 
     // 0x00495D09
@@ -498,7 +530,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::int32_decimals:
                     {
                         int32_t value = args.pop<int32_t>();
-                        buffer = formatIntWithDecimals(value, buffer);
+                        buffer = formatIntWithTwoDecimals(value, buffer);
                         break;
                     }
 
