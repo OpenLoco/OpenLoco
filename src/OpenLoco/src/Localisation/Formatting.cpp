@@ -78,8 +78,8 @@ namespace OpenLoco::StringManager
         return kMonthToStringMap.find(month)->second;
     }
 
-    // 0x00495F35
-    static char* formatInt32Grouped(int32_t value, char* buffer)
+    template<typename T>
+    static char* formatNumberToString(T value, char* buffer, uint8_t numDecimals, bool useGroupedNumbers)
     {
         if (value < 0)
         {
@@ -89,10 +89,18 @@ namespace OpenLoco::StringManager
 
         // Build up the formatted number in reverse
         std::string number{};
+        bool passedDecimals = numDecimals == 0;
         auto groupLength = 0;
         while (value > 0)
         {
-            if (groupLength == 3)
+            if (!passedDecimals && groupLength == numDecimals)
+            {
+                number += '.';
+                passedDecimals = true;
+                groupLength = 0;
+            }
+
+            if (useGroupedNumbers && groupLength == 3)
             {
                 number += ',';
                 groupLength = 0;
@@ -110,150 +118,36 @@ namespace OpenLoco::StringManager
         std::strncpy(buffer, number.c_str(), number.size());
 
         return buffer + number.size();
+    }
+
+    // 0x00495F35
+    static char* formatInt32Grouped(int32_t value, char* buffer)
+    {
+        return formatNumberToString(value, buffer, 0, true);
     }
 
     // 0x00495E2A
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
-        if (value < 0)
-        {
-            value = -value;
-            *buffer++ = '-';
-        }
-
-        // Build up the formatted number in reverse
-        std::string number{};
-        while (value > 0)
-        {
-            number += '0' + (value % 10);
-            value /= 10;
-        }
-
-        // Reverse the number buffer
-        std::reverse(number.begin(), number.end());
-
-        // Copy number buffer to dest buffer
-        std::strncpy(buffer, number.c_str(), number.size());
-
-        return buffer + number.size();
+        return formatNumberToString(value, buffer, 0, false);
     }
 
     // 0x00496052
     static char* formatInt48Grouped(int64_t value, char* buffer)
     {
-        if (value < 0)
-        {
-            value = -value;
-            *buffer++ = '-';
-        }
-
-        // Build up the formatted number in reverse
-        std::string number{};
-        auto groupLength = 0;
-        while (value > 0)
-        {
-            if (groupLength == 3)
-            {
-                number += ',';
-                groupLength = 0;
-            }
-
-            number += '0' + (value % 10);
-            value /= 10;
-            groupLength++;
-        }
-
-        // Reverse the number buffer
-        std::reverse(number.begin(), number.end());
-
-        // Copy number buffer to dest buffer
-        std::strncpy(buffer, number.c_str(), number.size());
-
-        return buffer + number.size();
+        return formatNumberToString(value, buffer, 0, true);
     }
 
     // 0x004963FC
     static char* formatShortWithSingleDecimal(int16_t value, char* buffer)
     {
-        if (value < 0)
-        {
-            value = -value;
-            *buffer++ = '-';
-        }
-
-        // Build up the formatted number in reverse
-        std::string number{};
-        bool passedDecimals = false;
-        auto groupLength = 0;
-        while (value > 0)
-        {
-            if (!passedDecimals && groupLength == 1)
-            {
-                number += '.';
-                passedDecimals = true;
-                groupLength = 0;
-            }
-
-            if (groupLength == 3)
-            {
-                number += ',';
-                groupLength = 0;
-            }
-
-            number += '0' + (value % 10);
-            value /= 10;
-            groupLength++;
-        }
-
-        // Reverse the number buffer
-        std::reverse(number.begin(), number.end());
-
-        // Copy number buffer to dest buffer
-        std::strncpy(buffer, number.c_str(), number.size());
-
-        return buffer + number.size();
+        return formatNumberToString(value, buffer, 1, true);
     }
 
     // 0x004962F1
     static char* formatIntWithTwoDecimals(int32_t value, char* buffer)
     {
-        if (value < 0)
-        {
-            value = -value;
-            *buffer++ = '-';
-        }
-
-        // Build up the formatted number in reverse
-        std::string number{};
-        bool passedDecimals = false;
-        auto groupLength = 0;
-        while (value > 0)
-        {
-            if (!passedDecimals && groupLength == 2)
-            {
-                number += '.';
-                passedDecimals = true;
-                groupLength = 0;
-            }
-
-            if (groupLength == 3)
-            {
-                number += ',';
-                groupLength = 0;
-            }
-
-            number += '0' + (value % 10);
-            value /= 10;
-            groupLength++;
-        }
-
-        // Reverse the number buffer
-        std::reverse(number.begin(), number.end());
-
-        // Copy number buffer to dest buffer
-        std::strncpy(buffer, number.c_str(), number.size());
-
-        return buffer + number.size();
+        return formatNumberToString(value, buffer, 2, true);
     }
 
     // 0x00495D09
