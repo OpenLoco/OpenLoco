@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         cancelButton,
     };
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, WindowColour::primary),
         makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary),
         makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),

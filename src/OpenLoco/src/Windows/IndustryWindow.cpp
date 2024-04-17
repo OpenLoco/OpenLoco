@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::Industry
             demolish_industry,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(223, 137, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
             widgetEnd(),
         };
@@ -429,7 +429,7 @@ namespace OpenLoco::Ui::Windows::Industry
     {
         static constexpr Ui::Size kWindowSize = { 300, 127 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(300, 126, StringIds::title_statistics),
             widgetEnd(),
         };

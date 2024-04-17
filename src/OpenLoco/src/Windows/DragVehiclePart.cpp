@@ -15,7 +15,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     };
 
     // 0x00522504
-    static Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary),
         widgetEnd()
     };

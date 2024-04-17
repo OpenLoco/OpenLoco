@@ -326,7 +326,7 @@ namespace OpenLoco::Ui::Windows::Station
             station_catchment,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, WindowColour::secondary),
@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::Station
             status_bar,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(249, 136),
             makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary),

@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void formatChallenge(FormatArguments& args);
     static void sendChatMessage(const char* str);
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 0,
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                                   // 1,
         makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),                                                                                       // 2,
@@ -90,52 +90,52 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x004396A4
     static void prepareDraw([[maybe_unused]] Window& window)
     {
-        _widgets[Widx::inner_frame].type = WidgetType::none;
-        _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
-        _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
-        _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
-        _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
+        window.widgets[Widx::inner_frame].type = WidgetType::none;
+        window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
+        window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
+        window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
+        window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
 
         if (isPaused())
         {
-            _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
+            window.widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
         else if (getGameSpeed() == GameSpeed::Normal)
         {
-            _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
+            window.widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
         else if (getGameSpeed() == GameSpeed::FastForward)
         {
-            _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
+            window.widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
         else if (getGameSpeed() == GameSpeed::ExtraFastForward)
         {
-            _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
+            window.widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
 
         if (isNetworked())
         {
-            _widgets[Widx::fast_forward_btn].type = WidgetType::none;
-            _widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
+            window.widgets[Widx::fast_forward_btn].type = WidgetType::none;
+            window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
 
-            _widgets[Widx::pause_btn].left = 38;
-            _widgets[Widx::pause_btn].right = 57;
-            _widgets[Widx::normal_speed_btn].left = 58;
-            _widgets[Widx::normal_speed_btn].right = 77;
+            window.widgets[Widx::pause_btn].left = 38;
+            window.widgets[Widx::pause_btn].right = 57;
+            window.widgets[Widx::normal_speed_btn].left = 58;
+            window.widgets[Widx::normal_speed_btn].right = 77;
         }
         else
         {
-            _widgets[Widx::fast_forward_btn].type = WidgetType::buttonWithImage;
-            _widgets[Widx::extra_fast_forward_btn].type = WidgetType::buttonWithImage;
+            window.widgets[Widx::fast_forward_btn].type = WidgetType::buttonWithImage;
+            window.widgets[Widx::extra_fast_forward_btn].type = WidgetType::buttonWithImage;
 
-            _widgets[Widx::pause_btn].left = 18;
-            _widgets[Widx::pause_btn].right = 37;
-            _widgets[Widx::normal_speed_btn].left = 38;
-            _widgets[Widx::normal_speed_btn].right = 57;
-            _widgets[Widx::fast_forward_btn].left = 58;
-            _widgets[Widx::fast_forward_btn].right = 77;
-            _widgets[Widx::extra_fast_forward_btn].left = 78;
-            _widgets[Widx::extra_fast_forward_btn].right = 97;
+            window.widgets[Widx::pause_btn].left = 18;
+            window.widgets[Widx::pause_btn].right = 37;
+            window.widgets[Widx::normal_speed_btn].left = 38;
+            window.widgets[Widx::normal_speed_btn].right = 57;
+            window.widgets[Widx::fast_forward_btn].left = 58;
+            window.widgets[Widx::fast_forward_btn].right = 77;
+            window.widgets[Widx::extra_fast_forward_btn].left = 78;
+            window.widgets[Widx::extra_fast_forward_btn].right = 97;
         }
     }
 
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        Widget& frame = _widgets[Widx::outer_frame];
+        Widget& frame = self.widgets[Widx::outer_frame];
         drawingCtx.drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.

@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary),  // 0
         makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary), // 1
         makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::toolbarTab, WindowColour::primary), // 2

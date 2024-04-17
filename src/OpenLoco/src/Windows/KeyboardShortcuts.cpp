@@ -21,7 +21,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
     static const int kRowHeight = 10; // CJK: 13
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),

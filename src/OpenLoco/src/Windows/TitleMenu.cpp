@@ -122,7 +122,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_new_game),
         makeWidget({ kBtnMainSize, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_load_game),
         makeWidget({ kBtnMainSize * 2, 0 }, { kBtnMainSize, kBtnMainSize }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_show_tutorial),

@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::objective_type) | (1 << widx::objective_type_btn) | (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::objective_cargo) | (1 << widx::objective_cargo_btn) | (1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(197, StringIds::title_scenario_challenge),
             makeDropdownWidgets({ 10, 52 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::textbox, WindowColour::secondary),
@@ -417,12 +417,12 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            widgets[widx::objective_type].text = objectiveTypeLabelIds[enumValue(Scenario::getObjective().type)];
-            widgets[widx::objective_cargo].type = WidgetType::none;
-            widgets[widx::objective_cargo_btn].type = WidgetType::none;
-            widgets[widx::time_limit_value].type = WidgetType::none;
-            widgets[widx::time_limit_value_down].type = WidgetType::none;
-            widgets[widx::time_limit_value_up].type = WidgetType::none;
+            self.widgets[widx::objective_type].text = objectiveTypeLabelIds[enumValue(Scenario::getObjective().type)];
+            self.widgets[widx::objective_cargo].type = WidgetType::none;
+            self.widgets[widx::objective_cargo_btn].type = WidgetType::none;
+            self.widgets[widx::time_limit_value].type = WidgetType::none;
+            self.widgets[widx::time_limit_value_down].type = WidgetType::none;
+            self.widgets[widx::time_limit_value_up].type = WidgetType::none;
 
             auto args = FormatArguments::common();
 
@@ -430,28 +430,28 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             {
                 case Scenario::ObjectiveType::companyValue:
                     args.push<int32_t>(Scenario::getObjective().companyValue);
-                    widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
+                    self.widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case Scenario::ObjectiveType::vehicleProfit:
                     args.push<int32_t>(Scenario::getObjective().monthlyVehicleProfit);
-                    widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
+                    self.widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case Scenario::ObjectiveType::performanceIndex:
                     args.push<int16_t>(Scenario::getObjective().performanceIndex * 10);
                     args.skip(2);
-                    widgets[widx::objective_value].text = StringIds::challenge_performance_index;
+                    self.widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
                 case Scenario::ObjectiveType::cargoDelivery:
                     args.push<int32_t>(Scenario::getObjective().deliveredCargoAmount);
-                    widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
+                    self.widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
                     auto cargo = ObjectManager::get<CargoObject>(Scenario::getObjective().deliveredCargoType);
-                    widgets[widx::objective_cargo].text = cargo->name;
-                    widgets[widx::objective_cargo].type = WidgetType::combobox;
-                    widgets[widx::objective_cargo_btn].type = WidgetType::button;
+                    self.widgets[widx::objective_cargo].text = cargo->name;
+                    self.widgets[widx::objective_cargo].type = WidgetType::combobox;
+                    self.widgets[widx::objective_cargo_btn].type = WidgetType::button;
                     break;
             }
 
@@ -466,9 +466,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
             {
                 self.activatedWidgets |= 1 << widx::check_time_limit;
-                widgets[widx::time_limit_value].type = WidgetType::textbox;
-                widgets[widx::time_limit_value_down].type = WidgetType::button;
-                widgets[widx::time_limit_value_up].type = WidgetType::button;
+                self.widgets[widx::time_limit_value].type = WidgetType::textbox;
+                self.widgets[widx::time_limit_value_down].type = WidgetType::button;
+                self.widgets[widx::time_limit_value_up].type = WidgetType::button;
                 args.skip(2);
                 args.push<uint16_t>(Scenario::getObjective().timeLimitYears);
             }
@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             player_forbid_ships,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(327, StringIds::title_company_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_competing_companies_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::delay_before_competing_companies_start_months),
@@ -840,7 +840,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             loan_interest_rate_up,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(217, StringIds::title_financial_options),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::starting_loan_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::max_loan_size_value),
@@ -971,7 +971,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             change_details_btn,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(217, StringIds::title_scenario_options),
             makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::button, WindowColour::secondary, StringIds::change),
             makeDropdownWidgets({ 196, 67 }, { 160, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
@@ -1125,7 +1125,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            widgets[widx::scenario_group].text = scenarioGroupLabelIds[S5::getOptions().difficulty];
+            self.widgets[widx::scenario_group].text = scenarioGroupLabelIds[S5::getOptions().difficulty];
         }
 
         // 0x0043F156

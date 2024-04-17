@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         scrollview,
     };
 
-    static Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
         makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),

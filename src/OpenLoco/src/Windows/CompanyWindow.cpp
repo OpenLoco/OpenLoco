@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             change_owner_name,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(270, 182, StringIds::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
@@ -675,7 +675,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             centre_on_viewport,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
@@ -1284,7 +1284,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
         // clang-format on
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(265, 252, StringIds::title_company_colour_scheme),
             makeWidget({ 15, 81 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 98 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
@@ -1683,7 +1683,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         constexpr uint16_t expenditureColumnWidth = 128;
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::company_current_loan_value),
@@ -2217,7 +2217,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 240, 382 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
             widgetEnd(),
         };
@@ -2394,7 +2394,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 320, 182 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(320, 182, StringIds::title_company_challenge),
             widgetEnd(),
         };

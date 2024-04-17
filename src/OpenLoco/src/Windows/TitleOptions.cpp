@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary),
         widgetEnd(),
     };

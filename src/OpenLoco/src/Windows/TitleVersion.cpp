@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleVersion
 {
-    static Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         widgetEnd()
     };
 

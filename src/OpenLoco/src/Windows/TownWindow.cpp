@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::Town
             demolish_town,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(223, 161, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 104 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 139 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace Population
     {
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(223, 161, StringIds::title_town_population),
             widgetEnd(),
         };
@@ -511,7 +511,7 @@ namespace OpenLoco::Ui::Windows::Town
 
     namespace CompanyRatings
     {
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(340, 208, StringIds::title_town_local_authority),
             widgetEnd(),
         };

@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     };
 
     // 0x509680
-    static Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::company_face_selection_title),
         makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),

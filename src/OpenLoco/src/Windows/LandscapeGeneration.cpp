@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             (1 << widx::generate_now);
         // clang-format on
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_options),
 
             // General options
@@ -599,7 +599,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hillsEdgeOfMap);
         const uint64_t holdable_widgets = (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             common_options_widgets(247, StringIds::title_landscape_generation_land),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeStepperWidgets({ 256, 68 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_land_height_units),
@@ -928,7 +928,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down);
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down);
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             common_options_widgets(247, StringIds::title_landscape_generation_water),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::sea_level_units),
             widgetEnd()
@@ -1027,7 +1027,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1ULL << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
         const uint64_t holdable_widgets = (1ULL << widx::number_of_forests_up) | (1ULL << widx::number_of_forests_down) | (1ULL << widx::min_forest_radius_up) | (1ULL << widx::min_forest_radius_down) | (1ULL << widx::max_forest_radius_up) | (1ULL << widx::max_forest_radius_down) | (1ULL << widx::min_forest_density_up) | (1ULL << widx::min_forest_density_down) | (1ULL << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1ULL << widx::number_random_trees_up) | (1ULL << widx::number_random_trees_down) | (1ULL << widx::min_altitude_for_trees_up) | (1ULL << widx::min_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_down) | (1ULL << widx::max_altitude_for_trees_up);
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_forests),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_forests_value),
             makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::min_forest_radius_blocks),
@@ -1258,7 +1258,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
         const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
             makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::number_of_towns_value),
             makeDropdownWidgets({ 176, 67 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
@@ -1360,7 +1360,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             auto args = FormatArguments::common();
             args.push<uint16_t>(S5::getOptions().numberOfTowns);
 
-            widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
+            window.widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1391,7 +1391,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
         const uint64_t holdable_widgets = 0;
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_industries),
             makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::combobox, WindowColour::secondary),
             makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
@@ -1464,7 +1464,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
+            window.widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
             window.activatedWidgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!IndustryManager::hasFlags(IndustryManager::Flags::disallowIndustriesCloseDown))
                 window.activatedWidgets |= 1 << widx::check_allow_industries_close_down;

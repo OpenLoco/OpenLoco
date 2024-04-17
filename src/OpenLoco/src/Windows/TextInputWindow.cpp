@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, WindowColour::primary),
         makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -145,11 +145,11 @@ namespace OpenLoco::Ui::Windows::TextInput
             window->owner = CompanyManager::getControllingId();
         }
 
-        _widgets[Widx::title].type = WidgetType::caption_25;
+        window->widgets[Widx::title].type = WidgetType::caption_25;
         if (window->owner != CompanyId::null)
         {
             window->flags |= WindowFlags::flag_11;
-            _widgets[Widx::title].type = WidgetType::caption_24;
+            window->widgets[Widx::title].type = WidgetType::caption_24;
         }
 
         // Focus the textbox element
@@ -203,9 +203,9 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw([[maybe_unused]] Ui::Window& window)
+    static void prepareDraw(Ui::Window& window)
     {
-        _widgets[Widx::title].text = _title;
+        window.widgets[Widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
     }
 

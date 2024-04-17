@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Options
             };
         }
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_display),
             makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_hardware),
             makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
@@ -751,7 +751,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Sound::Widx::audio_device) | (1 << Sound::Widx::audio_device_btn) | (1 << Sound::Widx::play_title_music);
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_sound),
             makeDropdownWidgets({ 10, 49 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::play_title_music),
@@ -954,7 +954,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::Widx::currently_playing) | (1 << Music::Widx::currently_playing_btn) | (1 << Music::Widx::music_controls_stop) | (1 << Music::Widx::music_controls_play) | (1 << Music::Widx::music_controls_next) | (1 << Music::Widx::volume) | (1 << Music::Widx::music_playlist) | (1 << Music::Widx::music_playlist_btn) | (1 << Music::Widx::edit_selection);
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_music),
             makeDropdownWidgets({ 160, 49 }, { 196, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
@@ -1347,7 +1347,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Regional::Widx::language) | (1 << Regional::Widx::language_btn) | (1 << Regional::Widx::distance_speed) | (1 << Regional::Widx::distance_speed_btn) | (1 << Regional::Widx::heights) | (1 << Regional::Widx::heights_btn) | (1 << Regional::Widx::currency) | (1 << Regional::Widx::currency_btn) | (1 << Regional::Widx::preferred_currency) | (1 << Regional::Widx::preferred_currency_btn) | (1 << Regional::Widx::preferred_currency_for_new_games) | (1 << Regional::Widx::preferred_currency_always);
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_regional),
             makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
             makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg12_stringid),
@@ -1831,7 +1831,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr Ui::Size kWindowSize = { 366, 114 };
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_controls),
             makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
             makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
@@ -2006,7 +2006,7 @@ namespace OpenLoco::Ui::Windows::Options
             (1 << Widx::ownerFacePreview);
         // clang-format on
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_company),
 
             // Preferred owner group
@@ -2318,7 +2318,7 @@ namespace OpenLoco::Ui::Windows::Options
             (1 << Widx::export_plugin_objects);
         // clang-format on
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_miscellaneous),
 
             // Gameplay tweaks group

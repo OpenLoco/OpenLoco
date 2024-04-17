@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game),
         widgetEnd(),
     };
