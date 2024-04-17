@@ -237,7 +237,7 @@ namespace OpenLoco::Ui::Windows::Options
             common_options_widgets(kWindowSize, StringIds::options_title_display),
             makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, WindowColour::secondary, StringIds::frame_hardware),
             makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::empty),
-            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::display_resolution_label_format),
+            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::display_resolution_dropdown_format),
             makeStepperWidgets({ 235, 95 }, { 154, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
             makeWidget({ 10, 111 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
             makeWidget({ 10, 127 }, { 174, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
@@ -602,8 +602,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
             w.widgets[Widx::screen_mode].text = screenModeStringId;
 
-            auto args = FormatArguments::common();
-            args.skip(0x10);
+            auto args = FormatArguments(w.widgets[Widx::display_resolution].textArgs);
             auto& resolution = Config::get().display.fullscreenResolution;
             args.push<uint16_t>(resolution.width);
             args.push<uint16_t>(resolution.height);
@@ -778,7 +777,7 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(w.widgets[Widx::audio_device].textArgs);
 
             auto audioDeviceName = Audio::getCurrentDeviceName();
             if (audioDeviceName != nullptr)
@@ -961,7 +960,7 @@ namespace OpenLoco::Ui::Windows::Options
             makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
             makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::slider, WindowColour::secondary, Widget::kContentNull, StringIds::set_volume_tip),
-            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg2_stringid),
+            makeDropdownWidgets({ 10, 93 }, { 346, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
             makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::button, WindowColour::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
             widgetEnd(),
         };
@@ -990,23 +989,29 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            StringId songName = StringIds::music_none;
-            if (_currentSong != -1)
             {
-                songName = Audio::getMusicInfo(_currentSong)->titleId;
+                StringId songName = StringIds::music_none;
+                if (_currentSong != -1)
+                {
+                    songName = Audio::getMusicInfo(_currentSong)->titleId;
+                }
+
+                auto args = FormatArguments(w.widgets[Widx::currently_playing].textArgs);
+                args.push(songName);
             }
 
-            auto args = FormatArguments::common();
-            args.push(songName);
+            {
+                static const StringId playlist_string_ids[] = {
+                    StringIds::play_only_music_from_current_era,
+                    StringIds::play_all_music,
+                    StringIds::play_custom_music_selection,
+                };
 
-            static const StringId playlist_string_ids[] = {
-                StringIds::play_only_music_from_current_era,
-                StringIds::play_all_music,
-                StringIds::play_custom_music_selection,
-            };
+                auto args = FormatArguments(w.widgets[Widx::music_playlist].textArgs);
 
-            StringId currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
-            args.push(currentSongStringId);
+                StringId currentSongStringId = playlist_string_ids[(uint8_t)Config::get().old.musicPlaylist];
+                args.push(currentSongStringId);
+            }
 
             w.activatedWidgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
             w.activatedWidgets |= (1 << Widx::music_controls_stop);
@@ -1350,9 +1355,9 @@ namespace OpenLoco::Ui::Windows::Options
         static constexpr Widget _widgets[] = {
             common_options_widgets(kWindowSize, StringIds::options_title_regional),
             makeDropdownWidgets({ 183, 49 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringptr),
-            makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg12_stringid),
-            makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg6_stringid),
-            makeDropdownWidgets({ 183, 104 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
+            makeDropdownWidgets({ 183, 69 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidgets({ 183, 84 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid),
+            makeDropdownWidgets({ 183, 104 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::stringid, StringIds::current_game_currency_tip),
             makeDropdownWidgets({ 183, 119 }, { 173, 12 }, WidgetType::combobox, WindowColour::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
             makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
             makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
@@ -1388,30 +1393,42 @@ namespace OpenLoco::Ui::Windows::Options
             w.widgets[Common::Widx::close_button].left = w.width - 15;
             w.widgets[Common::Widx::close_button].right = w.width - 15 + 12;
 
-            auto args = FormatArguments::common();
-
-            auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
-            _chosenLanguage = language.nativeName;
-            args.push(_chosenLanguage.c_str());
-
-            StringId current_height_units = StringIds::height_units;
-            if (!OpenLoco::Config::get().hasFlags(Config::Flags::showHeightAsUnits))
             {
-                current_height_units = StringIds::height_real_values;
+                auto args = FormatArguments(w.widgets[Widx::language].textArgs);
+
+                auto& language = Localisation::getDescriptorForLanguage(Config::get().language);
+                _chosenLanguage = language.nativeName;
+                args.push(_chosenLanguage.c_str());
             }
 
-            args.skip(0x2);
-            args.push(current_height_units);
-
-            StringId current_measurement_format = StringIds::imperial;
-            if (OpenLoco::Config::get().old.measurementFormat == Config::MeasurementFormat::metric)
             {
-                current_measurement_format = StringIds::metric;
+                auto args = FormatArguments(w.widgets[Widx::distance_speed].textArgs);
+
+                StringId current_measurement_format = StringIds::imperial;
+                if (OpenLoco::Config::get().old.measurementFormat == Config::MeasurementFormat::metric)
+                {
+                    current_measurement_format = StringIds::metric;
+                }
+
+                args.push(current_measurement_format);
             }
 
-            args.skip(0x2);
-            args.push(ObjectManager::get<CurrencyObject>()->name);
-            args.push(current_measurement_format);
+            {
+                auto args = FormatArguments(w.widgets[Widx::currency].textArgs);
+                args.push(ObjectManager::get<CurrencyObject>()->name);
+            }
+
+            {
+                auto args = FormatArguments(w.widgets[Widx::heights].textArgs);
+
+                StringId current_height_units = StringIds::height_units;
+                if (!OpenLoco::Config::get().hasFlags(Config::Flags::showHeightAsUnits))
+                {
+                    current_height_units = StringIds::height_real_values;
+                }
+
+                args.push(current_height_units);
+            }
 
             if (Config::get().usePreferredCurrencyForNewGames)
             {
