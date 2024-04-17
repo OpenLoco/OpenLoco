@@ -702,7 +702,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Put industry name in place.
             auto industry = IndustryManager::get(IndustryId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(industry->name);
             args.push(industry->town);
 

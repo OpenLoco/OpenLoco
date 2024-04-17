@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::Town
             self.activatedWidgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            FormatArguments args{};
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(TownManager::get(TownId(self.number))->name);
 
             // Resize common widgets.

@@ -754,9 +754,11 @@ namespace OpenLoco::Ui
     // 0x004CA88B
     static void draw_25_caption(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState)
     {
+        auto formatArgs = FormatArguments(widget.textArgs);
+
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::white;
-        StringManager::formatString(&stringBuffer[1], widget.text, &FormatArguments::common());
+        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
 
         auto* window = widgetState.window;
         int16_t x = widget.left + window->x + 2;

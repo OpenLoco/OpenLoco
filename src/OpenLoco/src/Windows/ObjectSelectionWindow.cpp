@@ -522,7 +522,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             widgets[widx::closeButton].type = WidgetType::none;
         }
 
-        auto args = FormatArguments::common();
+        // Update the title.
+        auto args = FormatArguments(self.widgets[widx::caption].textArgs);
         args.push(_tabDisplayInfo[self.currentTab].name);
 
         const auto& tabFlags = _tabDisplayInfo[self.currentTab].flags;

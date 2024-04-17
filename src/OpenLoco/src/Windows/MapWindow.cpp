@@ -424,6 +424,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         };
 
         widgets[widx::caption].text = captionText[self.currentTab];
+
         auto activatedWidgets = self.activatedWidgets;
         activatedWidgets &= ~((1ULL << widx::statusBar) | (1ULL << widx::scrollview) | (1ULL << widx::tabOwnership) | (1ULL << widx::tabRoutes) | (1ULL << widx::tabIndustries) | (1ULL << widx::tabVehicles) | (1ULL << widx::tabOverall));
 
