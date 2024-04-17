@@ -330,7 +330,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             auto& options = S5::getOptions();
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[widx::start_year].textArgs);
             args.push<uint16_t>(options.scenarioStartYear);
 
             self.widgets[widx::heightMapBox].text = generatorIds[enumValue(options.generator)];
@@ -862,11 +862,17 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            auto args = FormatArguments::common();
             auto& options = S5::getOptions();
-            args.skip(2); // sea levels have moved
-            args.push<uint16_t>(options.minLandHeight);
-            args.push<uint16_t>(options.hillDensity);
+
+            {
+                auto args = FormatArguments(window.widgets[widx::hill_density].textArgs);
+                args.push<uint16_t>(options.hillDensity);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::min_land_height].textArgs);
+                args.push<uint16_t>(options.minLandHeight);
+            }
 
             window.widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
@@ -976,7 +982,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(window.widgets[widx::sea_level].textArgs);
             args.push(getGameState().seaLevel);
         }
 
@@ -1218,16 +1224,55 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Common::prepareDraw(window);
 
             auto& options = S5::getOptions();
-            auto args = FormatArguments::common();
+            {
+                auto args = FormatArguments(window.widgets[widx::number_of_forests].textArgs);
+                args.push<uint16_t>(options.numberOfForests);
+            }
 
-            args.push<uint16_t>(options.numberOfForests);
-            args.push<uint16_t>(options.minForestRadius);
-            args.push<uint16_t>(options.maxForestRadius);
-            args.push<uint16_t>(options.minForestDensity * 14);
-            args.push<uint16_t>(options.maxForestDensity * 14);
-            args.push<uint16_t>(options.numberRandomTrees);
-            args.push<uint16_t>(options.minAltitudeForTrees);
-            args.push<uint16_t>(options.maxAltitudeForTrees);
+            {
+                auto args = FormatArguments(window.widgets[widx::maxForestDensity].textArgs);
+                args.push<uint16_t>(options.maxForestDensity);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::minForestDensity].textArgs);
+                args.push<uint16_t>(options.minForestDensity);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::minForestRadius].textArgs);
+                args.push<uint16_t>(options.minForestRadius);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::maxForestRadius].textArgs);
+                args.push<uint16_t>(options.maxForestRadius);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::minForestDensity].textArgs);
+                args.push<uint16_t>(options.minForestDensity * 14);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::maxForestDensity].textArgs);
+                args.push<uint16_t>(options.maxForestDensity * 14);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::number_random_trees].textArgs);
+                args.push<uint16_t>(options.numberRandomTrees);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::min_altitude_for_trees].textArgs);
+                args.push<uint16_t>(options.minAltitudeForTrees);
+            }
+
+            {
+                auto args = FormatArguments(window.widgets[widx::max_altitude_for_trees].textArgs);
+                args.push<uint16_t>(options.maxAltitudeForTrees);
+            }
         }
 
         static constexpr WindowEventList kEvents = {
@@ -1357,7 +1402,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             Common::prepareDraw(window);
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(window.widgets[widx::number_of_towns].textArgs);
             args.push<uint16_t>(S5::getOptions().numberOfTowns);
 
             window.widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize - 1];
