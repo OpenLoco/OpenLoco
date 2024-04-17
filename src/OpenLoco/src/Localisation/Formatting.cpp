@@ -136,16 +136,37 @@ namespace OpenLoco::StringManager
         return buffer + number.size();
     }
 
-    static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
+    static char* formatInt48Grouped(int64_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
-        regs.edi = X86Pointer(buffer);
-        regs.ebx = (uint32_t)separator;
+        if (value < 0)
+        {
+            value = -value;
+            *buffer++ = '-';
+        }
 
-        call(0x496052, regs);
-        return X86Pointer<char>(regs.edi);
+        // Build up the formatted number in reverse
+        std::string number{};
+        auto groupLength = 0;
+        while (value > 0)
+        {
+            if (groupLength == 3)
+            {
+                number += ',';
+                groupLength = 0;
+            }
+
+            number += '0' + (value % 10);
+            value /= 10;
+            groupLength++;
+        }
+
+        // Reverse the number buffer
+        std::reverse(number.begin(), number.end());
+
+        // Copy number buffer to dest buffer
+        std::strncpy(buffer, number.c_str(), number.size());
+
+        return buffer + number.size();
     }
 
     static char* formatShortWithDecimals(int16_t value, char* buffer)
@@ -255,7 +276,7 @@ namespace OpenLoco::StringManager
         const char* prefixSymbol = getString(currency->prefixSymbol);
         buffer = formatStringPart(buffer, prefixSymbol, nullptr);
 
-        buffer = formatInt48Grouped(localisedValue, buffer, currency->separator);
+        buffer = formatInt48Grouped(localisedValue, buffer);
 
         const char* suffixSymbol = getString(currency->suffixSymbol);
         buffer = formatStringPart(buffer, suffixSymbol, nullptr);
