@@ -51,16 +51,16 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;
 
-    static constexpr int16_t kRenderedMapWidth = 512 * 1.5;
+    static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
     static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
 
     // 0x004FDC4C
     static std::array<Point, 4> _viewFrameOffsetsByRotation = { {
-        { 376, 0 },
-        { 760, 384 },
-        { 376, 768 },
-        { -8, 384 },
+        { kMapColumns - 2, 0 },
+        { kRenderedMapWidth - 6, kMapRows },
+        { kMapColumns - 2, kRenderedMapHeight },
+        { -8, kMapRows },
     } };
 
     static loco_global<uint8_t[256], 0x004FDC5C> _flashColours; // can be integrated (all 0x0A, except 0x15 at indices (11-14))
