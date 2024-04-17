@@ -78,6 +78,7 @@ namespace OpenLoco::StringManager
         return kMonthToStringMap.find(month)->second;
     }
 
+    // 0x00495F35
     static char* formatInt32Grouped(int32_t value, char* buffer)
     {
         if (value < 0)
@@ -111,6 +112,7 @@ namespace OpenLoco::StringManager
         return buffer + number.size();
     }
 
+    // 0x00495E2A
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
         if (value < 0)
@@ -136,6 +138,7 @@ namespace OpenLoco::StringManager
         return buffer + number.size();
     }
 
+    // 0x00496052
     static char* formatInt48Grouped(int64_t value, char* buffer)
     {
         if (value < 0)
