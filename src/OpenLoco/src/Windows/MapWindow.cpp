@@ -42,8 +42,6 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static loco_global<int32_t, 0x00523338> _cursorX2;
-    static loco_global<int32_t, 0x0052333C> _cursorY2;
     static std::array<int16_t, 4> _4FDC4C = {
         {
             376,
@@ -268,66 +266,67 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static void setHoverItemTab(Window* self, int16_t legendLeft, int16_t legendBottom)
     {
+        if (Input::hasFlag(Input::Flags::rightMousePressed))
+            return;
+
+        auto cursorPos = Input::getMouseLocation2();
+        auto window = WindowManager::findAt(cursorPos);
+
+        if (window != self)
+            return;
+
+        cursorPos.x -= legendLeft;
+        if (cursorPos.x < 0 || cursorPos.x > legendWidth)
+        {
+            setHoverItem(self, 0, 0);
+            return;
+        }
+
+        cursorPos.y -= legendBottom;
+
         uint8_t i = 0;
         int16_t y = 0;
-        if (!Input::hasFlag(Input::Flags::rightMousePressed))
+
+        if (self->currentTab == (widx::tabRoutes - widx::tabOverall))
         {
-            uint32_t cursorX = _cursorX2;
-            uint32_t cursorY = _cursorY2;
-            auto window = WindowManager::findAt(cursorX, cursorY);
+            y = cursorPos.y;
 
-            if (window == self)
+            for (; _routeToObjectIdMap[i] != 0xFF; i++)
             {
-                cursorX -= legendLeft;
-                if (cursorX <= legendWidth)
+                y -= legendItemHeight;
+
+                if (y < 0)
                 {
-                    cursorY -= legendBottom;
-                    if (self->currentTab == (widx::tabRoutes - widx::tabOverall))
-                    {
-                        y = cursorY;
+                    break;
+                }
+            }
+        }
+        else if (cursorPos.y < static_cast<int16_t>(legendLengths[self->currentTab] * legendItemHeight))
+        {
+            y = cursorPos.y;
 
-                        for (; _routeToObjectIdMap[i] != 0xFF; i++)
-                        {
-                            y -= legendItemHeight;
+            for (; i < legendLengths[self->currentTab]; i++)
+            {
+                if (self->currentTab == (widx::tabIndustries - widx::tabOverall))
+                {
+                    auto industryObj = ObjectManager::get<IndustryObject>(i);
 
-                            if (y < 0)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (cursorY < legendLengths[self->currentTab] * legendItemHeight)
-                        {
-                            y = cursorY;
+                    if (industryObj == nullptr)
+                        continue;
+                }
+                else if (self->currentTab == (widx::tabOwnership - widx::tabOverall))
+                {
+                    auto company = CompanyManager::get(CompanyId(i));
 
-                            for (; i < legendLengths[self->currentTab]; i++)
-                            {
-                                if (self->currentTab == (widx::tabIndustries - widx::tabOverall))
-                                {
-                                    auto industryObj = ObjectManager::get<IndustryObject>(i);
+                    if (company->empty())
+                        continue;
+                }
 
-                                    if (industryObj == nullptr)
-                                        continue;
-                                }
-                                else if (self->currentTab == (widx::tabOwnership - widx::tabOverall))
-                                {
-                                    auto company = CompanyManager::get(CompanyId(i));
+                y -= legendItemHeight;
 
-                                    if (company->empty())
-                                        continue;
-                                }
-
-                                y -= legendItemHeight;
-
-                                if (y < 0)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                if (y < 0)
+                {
+                    break;
                 }
             }
         }
