@@ -253,7 +253,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
                             const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
+                            auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
+                            colourFlash0 = colourFlash1 = landImage->offset[offset];
                         }
                         else
                         {
