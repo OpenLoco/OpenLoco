@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B69C
     static void clearMap()
     {
-        std::fill(static_cast<PaletteIndex_t*>(_mapPixels), _mapPixels + kRenderedMapSize * 2, PaletteIndex::index_0A);
+        std::fill(_mapPixels, _mapPixels + kRenderedMapSize * 2, PaletteIndex::index_0A);
     }
 
     // 0x00F2541D
