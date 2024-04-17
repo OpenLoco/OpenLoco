@@ -90,12 +90,27 @@ namespace OpenLoco::StringManager
 
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
+        if (value < 0)
+        {
+            value = -value;
+            *buffer++ = '-';
+        }
 
-        call(0x495E2A, regs);
-        return X86Pointer<char>(regs.edi);
+        // Build up the formatted number in reverse
+        std::string number{};
+        while (value > 0)
+        {
+            number += '0' + (value % 10);
+            value /= 10;
+        }
+
+        // Reverse the number buffer
+        std::reverse(number.begin(), number.end());
+
+        // Copy number buffer to dest buffer
+        std::strncpy(buffer, number.c_str(), number.size());
+
+        return buffer + number.size();
     }
 
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
