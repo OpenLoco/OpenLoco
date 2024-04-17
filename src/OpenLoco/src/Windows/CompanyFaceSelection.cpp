@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         else
         {
             self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
-            self->widgets = widgets;
+            self->setWidgets(widgets);
             self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
             _9C68F2 = id;

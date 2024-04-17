@@ -59,7 +59,7 @@ namespace OpenLoco::Gui
         {
             window->width = uiWidth;
             window->height = uiHeight;
-            if (window->widgets)
+            if (!window->widgets.empty())
             {
                 window->widgets[0].right = uiWidth;
                 window->widgets[0].bottom = uiHeight;

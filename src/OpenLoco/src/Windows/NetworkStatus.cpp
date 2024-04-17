@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
             WindowFlags::flag_11 | WindowFlags::stickToFront,
             getEvents());
 
-        window->widgets = widgets;
+        window->setWidgets(widgets);
         window->enabledWidgets = (1 << Widx::closeBtn);
 
         window->initScrollWidgets();

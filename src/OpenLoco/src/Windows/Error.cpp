@@ -148,11 +148,11 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId != CompanyId::null)
             {
-                error->widgets = ErrorCompetitor::widgets;
+                error->setWidgets(ErrorCompetitor::widgets);
             }
             else
             {
-                error->widgets = Error::widgets;
+                error->setWidgets(Error::widgets);
             }
 
             error->widgets[Error::widx::frame].right = frameWidth;

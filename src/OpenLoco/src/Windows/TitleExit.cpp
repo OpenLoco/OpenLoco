@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = (1 << Widx::exit_button);
 
         window->initScrollWidgets();

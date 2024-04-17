@@ -552,7 +552,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         if (window == nullptr)
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, kWindowSize, WindowFlags::none, Options::getEvents());
-            window->widgets = Options::widgets;
+            window->setWidgets(Options::widgets);
             window->enabledWidgets = Options::enabled_widgets;
             window->number = 0;
             window->currentTab = 0;
@@ -1493,7 +1493,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             window->activatedWidgets = 0;
 
-            static Widget* widgetCollectionsByTabId[] = {
+            static std::span<const Widget> widgetCollectionsByTabId[] = {
                 Options::widgets,
                 Land::widgets,
                 Water::widgets,
@@ -1502,12 +1502,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Industries::widgets,
             };
 
-            Widget* newWidgets = widgetCollectionsByTabId[window->currentTab];
-            if (window->widgets != newWidgets)
-            {
-                window->widgets = newWidgets;
-                window->initScrollWidgets();
-            }
+            auto newWidgets = widgetCollectionsByTabId[window->currentTab];
+
+            window->setWidgets(newWidgets);
+            window->initScrollWidgets();
 
             static const widx tabWidgetIdxByTabId[] = {
                 tab_options,

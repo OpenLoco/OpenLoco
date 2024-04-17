@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             WindowFlags::flag_11,
             getEvents());
 
-        self->widgets = _widgets;
+        self->setWidgets(_widgets);
         self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;

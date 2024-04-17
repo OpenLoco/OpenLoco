@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
             WindowFlags::flag_11 | WindowFlags::stickToFront,
             getEvents());
 
-        window->widgets = widgets;
+        window->setWidgets(widgets);
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, Colour::black);
         window->setColour(WindowColour::secondary, Colour::black);

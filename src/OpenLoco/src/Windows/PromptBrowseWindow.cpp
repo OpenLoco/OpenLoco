@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         if (window != nullptr)
         {
-            window->widgets = widgets;
+            window->setWidgets(widgets);
             window->widgets[widx::caption].text = titleId;
 
             window->enabledWidgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);

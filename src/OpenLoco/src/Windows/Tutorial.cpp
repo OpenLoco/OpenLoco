@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
 
-        window->widgets = widgets;
+        window->setWidgets(widgets);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();

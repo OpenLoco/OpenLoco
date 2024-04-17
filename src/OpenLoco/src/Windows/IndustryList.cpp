@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             window->invalidate();
 
-            window->widgets = IndustryList::widgets;
+            window->setWidgets(IndustryList::widgets);
             window->enabledWidgets = IndustryList::enabledWidgets;
 
             window->activatedWidgets = 0;
@@ -1237,7 +1237,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -1251,14 +1251,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457B94
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab..
             self.activatedWidgets &= ~((1ULL << tab_industry_list) | (1ULL << tab_new_industry));
             self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -1293,7 +1285,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             if (self->currentTab == widx::tab_industry_list - widx::tab_industry_list)
                 IndustryList::tabReset(self);

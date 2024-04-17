@@ -349,7 +349,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         window->currentTab = 0;
         window->invalidate();
 
-        window->widgets = Messages::widgets;
+        window->setWidgets(Messages::widgets);
         window->enabledWidgets = Messages::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Messages::getEvents();
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -602,14 +602,6 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab..
             self.activatedWidgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
             self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -644,7 +636,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
 
             self->invalidate();

@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
             Ui::Size(width, height),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
             getEvents());
-        tooltip->widgets = _widgets;
+        tooltip->setWidgets(_widgets);
         _tooltipNotShownTicks = 0;
     }
 

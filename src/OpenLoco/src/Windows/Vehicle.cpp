@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static Window* create(const EntityId head)
         {
             auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
-            self->widgets = widgets;
+            self->setWidgets(widgets);
             self->enabledWidgets = enabledWidgets;
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(self);
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             self->currentTab = 0;
             self->invalidate();
-            self->widgets = widgets;
+            self->setWidgets(widgets);
             self->enabledWidgets = enabledWidgets;
             self->holdableWidgets = holdableWidgets;
             self->eventHandlers = &getEvents();
@@ -788,12 +788,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B1EB5
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -1448,12 +1442,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3300
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
 
             auto head = Common::getVehicle(&self);
@@ -1831,12 +1819,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3DDE
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
 
             auto* headVehicle = Common::getVehicle(&self);
@@ -2247,12 +2229,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B56CE
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
 
             auto vehicle = Common::getVehicle(&self);
@@ -3103,12 +3079,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B468C
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -3443,7 +3413,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         struct TabInformation
         {
             const widx widgetIndex;
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
@@ -4292,7 +4262,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
             Main::resetDisabledWidgets(self);
             self->invalidate();

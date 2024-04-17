@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::Town
         window->currentTab = 0;
         window->invalidate();
 
-        window->widgets = Town::widgets;
+        window->setWidgets(Town::widgets);
         window->enabledWidgets = Town::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Town::getEvents();
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::Town
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -630,14 +630,6 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab.
             self.activatedWidgets &= ~((1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
@@ -728,7 +720,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
 
             self->invalidate();

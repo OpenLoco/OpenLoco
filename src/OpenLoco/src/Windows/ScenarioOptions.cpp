@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             // 0x0043EEFF start
             window = WindowManager::createWindowCentred(WindowType::scenarioOptions, kOtherWindowSize, WindowFlags::none, Challenge::getEvents());
-            window->widgets = Challenge::widgets;
+            window->setWidgets(Challenge::widgets);
             window->enabledWidgets = Challenge::enabledWidgets;
             window->number = 0;
             window->currentTab = 0;
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         window->currentTab = 0;
         window->invalidate();
 
-        window->widgets = Challenge::widgets;
+        window->setWidgets(Challenge::widgets);
         window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = Challenge::holdableWidgets;
         window->eventHandlers = &Challenge::getEvents();
@@ -1171,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -1189,14 +1189,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab.
             self.activatedWidgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
@@ -1244,7 +1236,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->holdableWidgets = *tabInfo.holdableWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             self->invalidate();
 

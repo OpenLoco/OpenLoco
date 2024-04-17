@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::Main
             Ui::WindowFlags::stickToBack,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         WindowManager::setCurrentRotation(0);
         ViewportManager::create(
             window,

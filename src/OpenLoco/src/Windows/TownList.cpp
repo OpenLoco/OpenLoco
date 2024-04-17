@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->height = TownList::kWindowSize.height;
             window->invalidate();
 
-            window->widgets = TownList::widgets;
+            window->setWidgets(TownList::widgets);
             window->enabledWidgets = TownList::enabledWidgets;
 
             if (isEditorMode() || isSandboxMode())
@@ -1495,7 +1495,7 @@ namespace OpenLoco::Ui::Windows::TownList
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -1512,14 +1512,6 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab
             self.activatedWidgets &= ~((1ULL << tab_town_list) | (1ULL << tab_build_town) | (1ULL << tab_build_buildings) | (1ULL << tab_build_misc_buildings));
             self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -1655,7 +1647,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             if (isEditorMode() || isSandboxMode())
                 self->disabledWidgets = 0;

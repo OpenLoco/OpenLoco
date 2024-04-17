@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         window->invalidate();
 
-        window->widgets = CompanyList::widgets;
+        window->setWidgets(CompanyList::widgets);
         window->enabledWidgets = CompanyList::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &CompanyList::getEvents();
@@ -1315,7 +1315,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -1424,14 +1424,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436419
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab
             self.activatedWidgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
             self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -1466,7 +1458,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             self->invalidate();
 

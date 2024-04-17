@@ -891,7 +891,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             window->invalidate();
 
-            window->widgets = PlantTrees::widgets;
+            window->setWidgets(PlantTrees::widgets);
             window->enabledWidgets = PlantTrees::enabledWidgets;
             window->holdableWidgets = 0;
             window->activatedWidgets = 0;
@@ -2561,7 +2561,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -2627,14 +2627,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab..
             self.activatedWidgets &= ~((1ULL << tab_adjust_land) | (1ULL << tab_adjust_water) | (1ULL << tab_build_walls) | (1ULL << tab_clear_area) | (1ULL << tab_plant_trees));
             self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -2712,7 +2704,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->holdableWidgets = tabInfo.holdableWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             auto disabledWidgets = 0;
 

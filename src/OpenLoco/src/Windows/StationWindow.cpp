@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->currentTab = Common::widx::tab_station - Common::widx::tab_station;
         window->invalidate();
 
-        window->widgets = Station::widgets;
+        window->setWidgets(Station::widgets);
         window->enabledWidgets = Station::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Station::getEvents();
@@ -800,7 +800,7 @@ namespace OpenLoco::Ui::Windows::Station
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -817,14 +817,6 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab.
             self.activatedWidgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
@@ -925,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
 
             self->invalidate();

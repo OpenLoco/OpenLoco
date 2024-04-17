@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows::About
             WindowFlags::none,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = (1 << widx::close) | (1 << widx::music_acknowledgements_btn);
         window->initScrollWidgets();
 

@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             WindowFlags::stickToFront,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 

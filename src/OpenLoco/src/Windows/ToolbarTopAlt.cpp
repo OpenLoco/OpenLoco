@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             Ui::Size(Ui::width(), 28),
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground,
             getEvents());
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
         window->setColour(WindowColour::primary, Colour::grey);

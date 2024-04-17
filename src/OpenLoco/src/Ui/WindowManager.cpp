@@ -1541,11 +1541,11 @@ namespace OpenLoco::Ui::WindowManager
     {
         int widgetIndex = -1;
         int scrollIndex = -1;
-        for (Widget* widget = window.widgets; widget->type != WidgetType::end; widget++)
+        for (auto& widget : window.widgets)
         {
             widgetIndex++;
 
-            if (widget->type != WidgetType::scrollview)
+            if (widget.type != WidgetType::scrollview)
                 continue;
 
             scrollIndex++;

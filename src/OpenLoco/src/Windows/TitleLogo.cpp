@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             WindowFlags::openQuietly | WindowFlags::transparent,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = 1 << Widx::logo;
 
         window->initScrollWidgets();

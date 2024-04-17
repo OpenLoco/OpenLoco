@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             WindowFlags::stickToFront | WindowFlags::flag_12,
             getEvents());
 
-        self->widgets = _widgets;
+        self->setWidgets(_widgets);
         self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 

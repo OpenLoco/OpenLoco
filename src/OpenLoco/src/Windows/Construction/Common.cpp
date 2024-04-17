@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -593,14 +593,6 @@ namespace OpenLoco::Ui::Windows::Construction
 
         void prepareDraw(Window* self)
         {
-            // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self->currentTab].widgets;
-            if (self->widgets != tabWidgets)
-            {
-                self->widgets = tabWidgets;
-                self->initScrollWidgets();
-            }
-
             // Activate the current tab
             self->activatedWidgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
             self->activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self->currentTab].widgetIndex);
@@ -616,7 +608,7 @@ namespace OpenLoco::Ui::Windows::Construction
             self.enabledWidgets = tabInfo.enabledWidgets;
             self.eventHandlers = &tabInfo.events;
             self.activatedWidgets = 0;
-            self.widgets = tabInfo.widgets;
+            self.setWidgets(tabInfo.widgets);
 
             setDisabledWidgets(&self);
 
@@ -723,7 +715,7 @@ namespace OpenLoco::Ui::Windows::Construction
             self->enabledWidgets = tabInfo.enabledWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->holdableWidgets = 0;
 
             setDisabledWidgets(self);
@@ -1094,7 +1086,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 WindowFlags::flag_11 | WindowFlags::noAutoClose,
                 Construction::getEvents());
 
-            window->widgets = Construction::widgets;
+            window->setWidgets(Construction::widgets);
             window->currentTab = 0;
             window->enabledWidgets = Construction::enabledWidgets;
             window->activatedWidgets = 0;

@@ -16,6 +16,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <optional>
+#include <sfl/small_vector.hpp>
 
 namespace OpenLoco::Ui
 {
@@ -180,7 +181,7 @@ namespace OpenLoco::Ui
         uint64_t disabledWidgets = 0;                      // 0x14
         uint64_t activatedWidgets = 0;                     // 0x1C
         uint64_t holdableWidgets = 0;                      // 0x24
-        Widget* widgets;                                   // 0x2C
+        Widget* _widgets;                                  // 0x2C
         int16_t x;                                         // 0x30
         int16_t y;                                         // 0x32
         uint16_t width;                                    // 0x34
@@ -228,8 +229,15 @@ namespace OpenLoco::Ui
         AdvancedColour colours[enumValue(WindowColour::count)]; // 0x886
         int16_t var_88A;
         int16_t var_88C;
+        sfl::small_vector<Widget, 16> widgets;
 
         Window(Ui::Point position, Ui::Size size);
+
+        void setWidgets(std::span<const Widget> newWidgets)
+        {
+            widgets.clear();
+            widgets.insert(widgets.end(), newWidgets.begin(), newWidgets.end());
+        }
 
         constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
         {
@@ -376,7 +384,6 @@ namespace OpenLoco::Ui
         WidgetIndex_t prevAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
         WidgetIndex_t nextAvailableWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);
     };
-    assert_struct_size(Window, 0x88E);
 
     World::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
     std::optional<World::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z);

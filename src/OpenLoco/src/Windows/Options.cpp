@@ -575,7 +575,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::display);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -767,7 +766,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::sound);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -980,7 +978,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::music);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -1379,7 +1376,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::regional);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -1852,7 +1848,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::controls);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -2071,7 +2066,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::company);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -2362,7 +2356,6 @@ namespace OpenLoco::Ui::Windows::Options
         static void prepareDraw(Window& w)
         {
             assert(w.currentTab == Common::tab::miscellaneous);
-            assert(w.widgets == _widgets);
 
             w.activatedWidgets &= ~Common::tabWidgets;
             w.activatedWidgets |= 1ULL << (w.currentTab + 4);
@@ -2780,7 +2773,7 @@ namespace OpenLoco::Ui::Windows::Options
             WindowFlags::none,
             Display::getEvents());
 
-        window->widgets = Display::_widgets;
+        window->setWidgets(Display::_widgets);
         window->number = 0;
         window->currentTab = 0;
         window->frameNo = 0;
@@ -2819,7 +2812,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     struct TabInformation
     {
-        Widget* widgets;
+        std::span<const Widget> widgets;
         const WindowEventList& events;
         Ui::Size kWindowSize;
         const uint64_t* enabledWidgets;
@@ -2855,7 +2848,7 @@ namespace OpenLoco::Ui::Windows::Options
         auto& tabInfo = tabInformationByTabOffset[w->currentTab];
         w->enabledWidgets = *tabInfo.enabledWidgets;
         w->eventHandlers = &tabInfo.events;
-        w->widgets = tabInfo.widgets;
+        w->setWidgets(tabInfo.widgets);
         w->invalidate();
         w->setSize(tabInfo.kWindowSize);
 

@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         if (window == nullptr)
             return false;
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->widgets[widx::caption].text = captionId;
         window->widgets[widx::okButton].text = okButtonStringId;
 

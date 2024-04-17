@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stickToFront, common::events);
 
-            window->widgets = common::widgets;
+            window->setWidgets(common::widgets);
 
             if (colour.isTranslucent())
             {

@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->height = Status::kWindowSize.height;
         window->invalidate();
 
-        window->widgets = Status::widgets;
+        window->setWidgets(Status::widgets);
         window->enabledWidgets = Status::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Status::getEvents();
@@ -2199,7 +2199,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->height = Finances::kWindowSize.height;
         window->invalidate();
 
-        window->widgets = Finances::widgets;
+        window->setWidgets(Finances::widgets);
         window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
         window->eventHandlers = &Finances::getEvents();
@@ -2601,7 +2601,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->height = Challenge::kWindowSize.height;
         window->invalidate();
 
-        window->widgets = Challenge::widgets;
+        window->setWidgets(Challenge::widgets);
         window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Challenge::getEvents();
@@ -2618,7 +2618,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -2664,7 +2664,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             self->activatedWidgets = 0;
 
-            static Widget* widgetCollectionsByTabId[] = {
+            static std::span<const Widget> widgetCollectionsByTabId[] = {
                 Status::widgets,
                 Details::widgets,
                 ColourScheme::widgets,
@@ -2673,12 +2673,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Challenge::widgets,
             };
 
-            Widget* newWidgets = widgetCollectionsByTabId[self->currentTab];
-            if (self->widgets != newWidgets)
-            {
-                self->widgets = newWidgets;
-                // self->initScrollWidgets();
-            }
+            auto newWidgets = widgetCollectionsByTabId[self->currentTab];
+            self->setWidgets(newWidgets);
+            // self->initScrollWidgets();
 
             static const widx tabWidgetIdxByTabId[] = {
                 tab_status,
@@ -2714,7 +2711,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             if (tabInfo.widgetIndex == widx::tab_finances)
                 self->holdableWidgets = Finances::holdableWidgets;

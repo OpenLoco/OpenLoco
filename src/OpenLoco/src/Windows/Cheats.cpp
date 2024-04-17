@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         Finances::initDate();
 
-        window->widgets = Finances::_widgets;
+        window->setWidgets(Finances::_widgets);
         window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;
         window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
@@ -992,7 +992,7 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             WidgetIndex_t widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
 
             self->invalidate();
