@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self.widgets[widx::caption].text = StringIds::company_face_selection_title;
 
             const auto company = CompanyManager::get(self.owner);
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[widx::caption].textArgs);
             args.push(company->name);
         }
         else
