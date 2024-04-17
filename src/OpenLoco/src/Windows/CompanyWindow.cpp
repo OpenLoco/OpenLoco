@@ -692,7 +692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
@@ -1702,7 +1702,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
             args.push<uint32_t>(0);
             args.push<uint16_t>(0);
@@ -2231,7 +2231,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -2408,7 +2408,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
