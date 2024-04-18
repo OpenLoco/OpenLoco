@@ -37,6 +37,12 @@ namespace OpenLoco::World
             _5 &= ~0x1F;
             _5 |= objectId & 0x1F;
         }
+        uint8_t unk5SHR5() const { return _5 >> 5; }
+        void setUnk5SHR5(uint8_t value)
+        {
+            _5 &= 0x1F;
+            _5 |= value << 5;
+        }
         StationType stationType() const;
         void setStationType(StationType type);
         uint8_t rotation() const { return _type & 0x3; }
