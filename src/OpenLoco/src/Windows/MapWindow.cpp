@@ -262,8 +262,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             const auto* waterObj = ObjectManager::get<WaterObject>();
                             const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
                             auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
-                            colourFlash0 = waterImage->offset[offset - 1];
-                            colourFlash1 = waterImage->offset[offset];
+                            colourFlash0 = waterImage->offset[offset - 2];
+                            colourFlash1 = waterImage->offset[offset - 1];
                         }
 
                         colour0 = colourFlash0;
