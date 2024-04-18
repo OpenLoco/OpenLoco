@@ -105,7 +105,7 @@ namespace OpenLoco::GameCommands
         const auto rotation = stationEl->rotation();
 
         // Do we need to remove the port from a station?
-        if ((flags & Flags::ghost) != 0)
+        if ((flags & Flags::ghost) == 0)
         {
             stationId = stationEl->stationId();
         }
