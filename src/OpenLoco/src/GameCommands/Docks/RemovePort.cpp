@@ -132,7 +132,6 @@ namespace OpenLoco::GameCommands
         {
             auto* station = StationManager::get(stationId);
 
-            // TODO: seems to crash here??
             removeTileFromStationAndRecalcCargo(stationId, args.pos, rotation);
             station->invalidate();
 
