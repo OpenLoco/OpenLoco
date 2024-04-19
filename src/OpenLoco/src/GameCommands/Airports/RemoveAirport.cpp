@@ -108,8 +108,6 @@ namespace OpenLoco::GameCommands
         }
 
         StationId stationId = StationId::null;
-        const auto rotation = stationEl->rotation();
-
         if ((flags & Flags::ghost) != 0)
         {
             return loc_49372F(*stationEl, args, flags);
@@ -124,7 +122,7 @@ namespace OpenLoco::GameCommands
         World::Pos3* foundPos = nullptr;
         for (auto i = 0U; i < station->stationTileSize; i++)
         {
-            auto& tilePos = stationTiles[i];
+            auto& tilePos = station->stationTiles[i];
             if (World::heightFloor(tilePos.z) != args.pos.z)
             {
                 continue;
@@ -141,7 +139,7 @@ namespace OpenLoco::GameCommands
             if (stationEl->unk5SHR5() == 2) // airport type?
             {
                 foundStationEl = stationEl;
-                foundPos = tilePos;
+                foundPos = &tilePos;
                 break;
             }
         }
@@ -152,14 +150,33 @@ namespace OpenLoco::GameCommands
         }
 
         // 0x0049365A
-        auto rotation = foundPos.z & 3; // dx
-        auto airportObj = ObjectManager::get<AirportObject>(stationEl->objectId);
-        auto minX = foundPos.x + (airportObj->minX / kTileSize); // ax
-        auto minY = foundPos.y + (airportObj->minY / kTileSize); // cx
-        auto maxX = foundPos.x + (airportObj->maxX / kTileSize); // bp
-        auto maxY = foundPos.y + (airportObj->maxY / kTileSize); // bx
+        auto rotation = foundPos->z & 3; // dx
+        auto* airportObj = ObjectManager::get<AirportObject>(stationEl->objectId());
 
-        //
+        auto minPos = World::toWorldSpace(World::TilePos2(airportObj->minX, airportObj->minY));
+        auto maxPos = World::toWorldSpace(World::TilePos2(airportObj->maxX, airportObj->maxY));
+
+        minPos = Math::Vector::rotate(minPos, rotation);
+        maxPos = Math::Vector::rotate(maxPos, rotation);
+
+        // 0x004936CD
+        minPos += World::Pos2{foundPos->x, foundPos->y};
+        maxPos += World::Pos2{foundPos->x, foundPos->y};
+
+        if (minPos.x > maxPos.x)
+            std::swap(minPos.x, maxPos.x);
+
+        if (minPos.y > maxPos.y)
+            std::swap(minPos.y, maxPos.y);
+
+        // Ensure that current airport tile fits within these min/max bounds
+        if (args.pos.x < minPos.x || args.pos.y < minPos.y || args.pos.x > maxPos.x || args.pos.y > maxPos.y)
+        {
+            // We must've targetted a neighbouring airport -- look further
+            continue;
+        }
+
+        // !!!
 
         // Calculate base removal cost
         currency32_t totalCost = Economy::getInflationAdjustedCost(airportObj->sellCostFactor, airportObj->costIndex, 7);
