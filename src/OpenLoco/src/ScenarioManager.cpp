@@ -238,7 +238,6 @@ namespace OpenLoco::ScenarioManager
             ObjectManager::unload(*previousCurrency);
         }
         ObjectManager::load(options.currency);
-        ObjectManager::reloadAll();
         Gfx::loadCurrency();
 
         FormatArguments args{};
@@ -252,7 +251,6 @@ namespace OpenLoco::ScenarioManager
         {
             ObjectManager::unload(options.currency);
             ObjectManager::load(*previousCurrency);
-            ObjectManager::reloadAll();
             Gfx::loadCurrency();
         }
     }
