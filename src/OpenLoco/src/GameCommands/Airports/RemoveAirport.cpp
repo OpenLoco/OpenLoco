@@ -25,12 +25,21 @@ namespace OpenLoco::GameCommands
     };
 
     // TODO: Copied from Industry.cpp
+    static const std::array<Unk4F9274, 1> word_4F9274 = {
+        Unk4F9274{ { 0, 0 }, 0 },
+    };
     static const std::array<Unk4F9274, 4> word_4F927C = {
         Unk4F9274{ { 0, 0 }, 0 },
         Unk4F9274{ { 0, 32 }, 1 },
         Unk4F9274{ { 32, 32 }, 2 },
         Unk4F9274{ { 32, 0 }, 3 },
     };
+    static const std::span<const Unk4F9274> getBuildingTileOffsets(bool type)
+    {
+        if (type)
+            return word_4F927C;
+        return word_4F9274;
+    }
 
     static World::StationElement* getStationEl(const World::Pos3& pos)
     {
@@ -53,13 +62,13 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004938D9
-    static bool removeAirportTileElement(const World::Pos3& pos, const uint8_t bh, const uint8_t bl)
+    static bool removeAirportTileElement(const World::Pos3& pos, const AirportObject* airportObj, const uint8_t bh, const uint8_t bl, const uint8_t flags)
     {
-        for (auto& searchTile : word_4F927C)
+        for (auto& searchTile : getBuildingTileOffsets(airportObj->largeTiles & bh))
         {
             const auto portPos = World::Pos3(searchTile.pos + pos, pos.z);
 
-            if ((flags & (Flags::aiAllocated | Flags::apply)) != 0)
+            if ((flags & Flags::aiAllocated) == 0 && (flags & Flags::apply) != 0)
             {
                 auto tile = World::TileManager::get(portPos);
                 auto* surfaceEl = tile.surface();
@@ -158,7 +167,7 @@ namespace OpenLoco::GameCommands
                 worldPos.y += addr<0x004FEB72, coord_t*>()[rotation];
             }
 
-            if (!removeAirportTileElement(worldPos, var_9C[0], var_9C[1] & 3))
+            if (!removeAirportTileElement(worldPos, airportObj, var_9C[0], (var_9C[1] & 3), flags))
             {
                 return FAILURE;
             }
