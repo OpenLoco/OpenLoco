@@ -62,7 +62,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004938D9
-    static bool removeAirportTileElement(const World::Pos3& pos, const AirportObject* airportObj, const uint8_t bh, const uint8_t bl, const uint8_t flags)
+    static bool removeAirportTileElement(const World::Pos3& pos, const AirportObject* airportObj, const uint8_t bh, const uint8_t flags)
     {
         for (auto& searchTile : getBuildingTileOffsets(airportObj->largeTiles & bh))
         {
@@ -167,7 +167,7 @@ namespace OpenLoco::GameCommands
                 worldPos.y += addr<0x004FEB72, coord_t*>()[rotation];
             }
 
-            if (!removeAirportTileElement(worldPos, airportObj, var_9C[0], (var_9C[1] & 3), flags))
+            if (!removeAirportTileElement(worldPos, airportObj, var_9C[0], flags))
             {
                 return FAILURE;
             }
