@@ -1055,8 +1055,6 @@ namespace OpenLoco
         }
     }
 
-#pragma warning(push)
-#pragma warning(disable : 4858)
     // 0x0048F43A
     void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
     {
@@ -1075,10 +1073,9 @@ namespace OpenLoco
 
         // Remove tile by moving the remaining tiles over the one to remove
         // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
-        std::remove(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
+        std::rotate(foundTilePos, foundTilePos + 1, std::end(station->stationTiles));
         station->stationTileSize--;
     }
-#pragma warning(pop)
 
     // 0x0048F482
     void removeTileFromStationAndRecalcCargo(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
