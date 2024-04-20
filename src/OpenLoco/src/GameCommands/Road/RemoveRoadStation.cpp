@@ -106,7 +106,6 @@ namespace OpenLoco::GameCommands
             const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
             auto* elRoad = getElRoad(roadLoc, args.rotation, args.type, args.roadId, piece.index);
-
             if (elRoad == nullptr)
                 return FAILURE;
 
@@ -119,11 +118,13 @@ namespace OpenLoco::GameCommands
                 updateStationTileRegistration = false;
 
             foundStationId = stationEl->stationId();
-
             auto* stationObj = ObjectManager::get<RoadStationObject>(stationEl->objectId());
-            auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
-            const auto cost = (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
-            totalCost += cost;
+
+            if (piece.index == 0)
+            {
+                auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
+                totalCost += (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
+            }
 
             if ((flags & Flags::apply) != 0)
             {
