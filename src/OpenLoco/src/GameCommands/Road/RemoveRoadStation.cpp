@@ -107,30 +107,30 @@ namespace OpenLoco::GameCommands
 
             auto* elRoad = getElRoad(roadLoc, args.rotation, args.type, args.roadId, piece.index);
 
-            if (elRoad != nullptr)
+            if (elRoad == nullptr)
+                return FAILURE;
+
+            auto* nextEl = elRoad->next();
+            auto* stationEl = nextEl->as<World::StationElement>();
+            if (stationEl == nullptr)
+                return FAILURE;
+
+            if (stationEl->isGhost())
+                updateStationTileRegistration = false;
+
+            foundStationId = stationEl->stationId();
+
+            auto* stationObj = ObjectManager::get<RoadStationObject>(stationEl->objectId());
+            auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
+            const auto cost = (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
+            totalCost += cost;
+
+            if ((flags & Flags::apply) != 0)
             {
-                auto* nextEl = elRoad->next();
-                auto* stationEl = nextEl->as<World::StationElement>();
-                if (stationEl == nullptr)
-                    return FAILURE;
-
-                if (stationEl->isGhost())
-                    updateStationTileRegistration = false;
-
-                foundStationId = stationEl->stationId();
-
-                auto* stationObj = ObjectManager::get<RoadStationObject>(stationEl->objectId());
-                auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
-                const auto cost = (removeCostBase * World::TrackData::getRoadMiscData(args.roadId).costFactor) / 256;
-                totalCost += cost;
-
-                if ((flags & Flags::apply) != 0)
-                {
-                    elRoad->setClearZ(elRoad->clearZ() - stationObj->height);
-                    Ui::ViewportManager::invalidate(World::Pos2(roadLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
-                    elRoad->setHasStationElement(false);
-                    World::TileManager::removeElement(*nextEl);
-                }
+                elRoad->setClearZ(elRoad->clearZ() - stationObj->height);
+                Ui::ViewportManager::invalidate(World::Pos2(roadLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
+                elRoad->setHasStationElement(false);
+                World::TileManager::removeElement(*nextEl);
             }
         }
 
