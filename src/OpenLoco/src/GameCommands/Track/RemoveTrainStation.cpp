@@ -79,33 +79,32 @@ namespace OpenLoco::GameCommands
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
             auto* elTrack = getElTrack(trackLoc, args.rotation, args.type, args.trackId, piece.index);
+            if (elTrack == nullptr)
+                return FAILURE;
 
-            if (elTrack != nullptr)
+            auto* nextEl = elTrack->next();
+            auto* stationEl = nextEl->as<World::StationElement>();
+            if (stationEl == nullptr)
+                return FAILURE;
+
+            if (stationEl->isGhost())
+                updateStationTileRegistration = false;
+
+            foundStationId = stationEl->stationId();
+            auto* stationObj = ObjectManager::get<TrainStationObject>(stationEl->objectId());
+
+            if (piece.index == 0)
             {
-                auto* nextEl = elTrack->next();
-                auto* stationEl = nextEl->as<World::StationElement>();
-                if (stationEl == nullptr)
-                    return FAILURE;
+                auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
+                totalCost += (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
+            }
 
-                if (stationEl->isGhost())
-                    updateStationTileRegistration = false;
-
-                foundStationId = stationEl->stationId();
-                auto* stationObj = ObjectManager::get<TrainStationObject>(stationEl->objectId());
-
-                if (piece.index == 0)
-                {
-                    auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
-                    totalCost += (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
-                }
-
-                if ((flags & Flags::apply) != 0)
-                {
-                    elTrack->setClearZ(elTrack->clearZ() - stationObj->height);
-                    Ui::ViewportManager::invalidate(World::Pos2(trackLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
-                    elTrack->setHasStationElement(false);
-                    World::TileManager::removeElement(*nextEl);
-                }
+            if ((flags & Flags::apply) != 0)
+            {
+                elTrack->setClearZ(elTrack->clearZ() - stationObj->height);
+                Ui::ViewportManager::invalidate(World::Pos2(trackLoc), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
+                elTrack->setHasStationElement(false);
+                World::TileManager::removeElement(*nextEl);
             }
         }
 
