@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            // NB: vanilla would query owner from station object, not the station element
+            // NB: vanilla would query owner from station struct, not the station element
             if (!sub_431E6A(stationEl->owner(), reinterpret_cast<const World::TileElement*>(stationEl)))
             {
                 return FAILURE;
