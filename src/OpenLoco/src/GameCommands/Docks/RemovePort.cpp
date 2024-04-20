@@ -66,15 +66,15 @@ namespace OpenLoco::GameCommands
                 }
             }
 
-            if ((flags & Flags::apply) == 0)
-            {
-                continue;
-            }
-
             auto* stationEl = getStationEl(portPos);
             if (stationEl == nullptr)
             {
                 return false;
+            }
+
+            if ((flags & Flags::apply) == 0)
+            {
+                continue;
             }
 
             if ((flags & (Flags::aiAllocated)) == 0)
