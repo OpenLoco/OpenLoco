@@ -91,11 +91,13 @@ namespace OpenLoco::GameCommands
                     updateStationTileRegistration = false;
 
                 foundStationId = stationEl->stationId();
-
                 auto* stationObj = ObjectManager::get<TrainStationObject>(stationEl->objectId());
-                auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
-                const auto cost = (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
-                totalCost += cost;
+
+                if (piece.index == 0)
+                {
+                    auto removeCostBase = Economy::getInflationAdjustedCost(stationObj->sellCostFactor, stationObj->costIndex, 8);
+                    totalCost += (removeCostBase * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
+                }
 
                 if ((flags & Flags::apply) != 0)
                 {
