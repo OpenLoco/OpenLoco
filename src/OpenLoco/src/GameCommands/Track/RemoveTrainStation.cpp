@@ -87,7 +87,7 @@ namespace OpenLoco::GameCommands
                 if (stationEl == nullptr)
                     return FAILURE;
 
-                if (stationEl->isAiAllocated())
+                if (stationEl->isGhost())
                     updateStationTileRegistration = false;
 
                 foundStationId = stationEl->stationId();
