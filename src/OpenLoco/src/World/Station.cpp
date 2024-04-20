@@ -1055,6 +1055,50 @@ namespace OpenLoco
         }
     }
 
+    // 0x0048F43A
+    void removeTileFromStation(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
+    {
+        auto* station = StationManager::get(stationId);
+        auto findPos = pos;
+        findPos.z |= rotation;
+
+        // Find tile to remove
+        auto foundTilePos = std::find(std::begin(station->stationTiles), std::end(station->stationTiles), findPos);
+        if (foundTilePos == std::end(station->stationTiles))
+        {
+            // Bug mitigation: ensure stationTileSize does not exceed the actual array length
+            station->stationTileSize = std::clamp<int16_t>(station->stationTileSize - 1, 0, static_cast<uint16_t>(std::size(station->stationTiles)));
+            return;
+        }
+
+        // Remove tile by moving the remaining tiles over the one to remove
+        // NB: erasing is handled by StationManager::zeroUnused; not calling std::erase due to type mismatches
+        std::rotate(foundTilePos, foundTilePos + 1, std::end(station->stationTiles));
+        station->stationTileSize--;
+    }
+
+    // 0x0048F482
+    void removeTileFromStationAndRecalcCargo(const StationId stationId, const World::Pos3& pos, uint8_t rotation)
+    {
+        removeTileFromStation(stationId, pos, rotation);
+
+        auto* station = StationManager::get(stationId);
+
+        // Recalculate accepted cargo
+        CargoSearchState cargoSearchState;
+        const auto acceptedCargos = station->calcAcceptedCargo(cargoSearchState);
+
+        // Reset cargo acceptance stats for this station
+        for (auto cargoId = 0U; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
+        {
+            auto& stats = station->cargoStats[cargoId];
+            stats.industryId = cargoSearchState.getIndustry(cargoId);
+
+            bool isAccepted = (acceptedCargos & (1 << cargoId)) != 0;
+            stats.isAccepted(isAccepted);
+        }
+    }
+
     // 0x00491C6F
     void sub_491C6F(const uint8_t type, const Pos2& pos, const uint8_t rotation, const CatchmentFlags flag)
     {
@@ -1153,5 +1197,14 @@ namespace OpenLoco
             }
         }
         return { nodeLoc };
+    }
+
+    // 0x0048D794
+    void sub_48D794(const Station& station)
+    {
+        // ?? Probably work out station multi tile indexes
+        registers regs;
+        regs.esi = X86Pointer(&station);
+        call(0x0048D794, regs);
     }
 }
