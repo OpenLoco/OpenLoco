@@ -847,6 +847,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto company = CompanyManager::get(head->owner);
+
+            // Set title.
             auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             if (CompanyManager::isPlayerCompany(head->owner))
             {
@@ -1450,9 +1452,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto args = FormatArguments::common();
-            args.push(head->name);
-            args.push(head->ordinalNumber);
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(head->name);
+                args.push(head->ordinalNumber);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -1826,9 +1831,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            FormatArguments args = {};
-            args.push(headVehicle->name);
-            args.push(headVehicle->ordinalNumber);
+
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(headVehicle->name);
+                args.push(headVehicle->ordinalNumber);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -2237,9 +2246,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto args = FormatArguments::common();
-            args.push(vehicle->name);
-            args.push(vehicle->ordinalNumber);
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(vehicle->name);
+                args.push(vehicle->ordinalNumber);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -3085,9 +3097,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            FormatArguments args{};
-            args.push(head->name);
-            args.push(head->ordinalNumber);
+
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(head->name);
+                args.push(head->ordinalNumber);
+            }
 
             self.widgets[widx::routeList].tooltip = ToolManager::isToolActive(self.type, self.number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
 
