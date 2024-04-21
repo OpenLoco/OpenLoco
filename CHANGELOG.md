@@ -7,6 +7,7 @@
 - Change: [#1014] Loading and saving save files and scenarios uses progress bars again.
 - Change: [#2411] Internal progress bars can now be used during the object and scenario indexing processes.
 - Change: [#2416] Most text input fields are no longer focused by default, allowing shortcuts to be used.
+- Technical: [#2456] Changing the in-game language has been sped up considerably.
 
 24.04 (2024-04-07)
 ------------------------------------------------------------------------

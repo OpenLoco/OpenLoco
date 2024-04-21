@@ -238,7 +238,6 @@ namespace OpenLoco::ScenarioManager
             ObjectManager::unload(*previousCurrency);
         }
         ObjectManager::load(options.currency);
-        ObjectManager::reloadAll();
         Gfx::loadCurrency();
 
         FormatArguments args{};
@@ -252,7 +251,6 @@ namespace OpenLoco::ScenarioManager
         {
             ObjectManager::unload(options.currency);
             ObjectManager::load(*previousCurrency);
-            ObjectManager::reloadAll();
             Gfx::loadCurrency();
         }
     }
@@ -391,8 +389,10 @@ namespace OpenLoco::ScenarioManager
             return strcmp(lhs.scenarioName, rhs.scenarioName) < 0;
         });
 
-        Ui::ProgressBar::setProgress(240);
+        Ui::ProgressBar::setProgress(230);
         saveIndex();
+        Ui::ProgressBar::setProgress(240);
+        ObjectManager::reloadAll();
         Ui::ProgressBar::end();
     }
 
