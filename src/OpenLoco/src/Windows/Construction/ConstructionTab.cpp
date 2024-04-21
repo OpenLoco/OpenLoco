@@ -2492,7 +2492,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void prepareDraw(Window& self)
     {
         Common::prepareDraw(&self);
-        auto args = FormatArguments();
+
+        auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         if (_trackType & (1 << 7))
         {
             auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));

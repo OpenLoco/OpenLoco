@@ -873,7 +873,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         self.widgets[widx::rotate].type = WidgetType::none;
 
-        auto args = FormatArguments::common();
+        auto captionArgs = FormatArguments(self.widgets[Common::widx::caption].textArgs);
 
         if (_byte_1136063 & (1 << 7))
         {
@@ -883,7 +883,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             self.widgets[widx::station].text = airportObj->name;
 
-            args.push(StringIds::title_airport);
+            captionArgs.push(StringIds::title_airport);
         }
         else if (_byte_1136063 & (1 << 6))
         {
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             self.widgets[widx::station].text = dockObj->name;
 
-            args.push(StringIds::title_ship_port);
+            captionArgs.push(StringIds::title_ship_port);
         }
         else if (_trackType & (1 << 7))
         {
@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-            args.push(roadObj->name);
+            captionArgs.push(roadObj->name);
 
             auto roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-            args.push(trackObj->name);
+            captionArgs.push(trackObj->name);
 
             auto trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 

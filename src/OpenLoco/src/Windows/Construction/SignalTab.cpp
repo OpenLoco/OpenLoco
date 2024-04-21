@@ -288,7 +288,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-        auto args = FormatArguments::common();
+        auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         args.push(trackObj->name);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
