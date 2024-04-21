@@ -1700,14 +1700,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::switchTabWidgets(&self);
 
-            // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
-            args.push(company->name);
-            args.push<uint32_t>(0);
-            args.push<uint16_t>(0);
-            // Used for the loan stepper current value at offset 4
-            args.push(company->currentLoan);
+
+            // Set company name.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(company->name);
+            }
+
+            // Set current loan value.
+            {
+                auto args = FormatArguments(self.widgets[widx::currentLoan].textArgs);
+                args.push(company->currentLoan);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
