@@ -793,9 +793,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            auto args = FormatArguments::common();
-            args.push<uint16_t>(CompanyManager::getMaxCompetingCompanies());
-            args.push<uint16_t>(CompanyManager::getCompetitorStartDelay());
+            {
+                auto args = FormatArguments(self.widgets[widx::max_competing_companies].textArgs);
+                args.push<uint16_t>(CompanyManager::getMaxCompetingCompanies());
+            }
+
+            {
+                auto args = FormatArguments(self.widgets[widx::delay_before_competing_companies_start].textArgs);
+                args.push<uint16_t>(CompanyManager::getCompetitorStartDelay());
+            }
 
             auto& state = getGameState();
 
@@ -935,16 +941,27 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Common::prepareDraw(self);
 
-            auto args = FormatArguments::common();
+            {
 
-            uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
-            args.push<uint32_t>(loanSizeInCurrency);
+                auto args = FormatArguments(self.widgets[widx::starting_loan].textArgs);
 
-            uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
-            args.push(static_cast<uint32_t>(maxLoanSizeInCurrency));
+                uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
+                args.push<uint32_t>(loanSizeInCurrency);
+            }
 
-            auto& state = getGameState();
-            args.push<uint32_t>(state.loanInterestRate);
+            {
+                auto args = FormatArguments(self.widgets[widx::max_loan_size].textArgs);
+
+                uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8) / 100 * 100;
+                args.push(static_cast<uint32_t>(maxLoanSizeInCurrency));
+            }
+
+            {
+                auto args = FormatArguments(self.widgets[widx::loan_interest_rate].textArgs);
+
+                auto& state = getGameState();
+                args.push<uint32_t>(state.loanInterestRate);
+            }
         }
 
         static constexpr WindowEventList kEvents = {
