@@ -32,7 +32,7 @@ namespace OpenLoco::World
     static void updateNonIndustrialSurface(SurfaceElement& elSurface, const World::Pos2 loc)
     {
         auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
-        if (landObj->hasFlags(LandObjectFlags::unk0))
+        if (!landObj->hasFlags(LandObjectFlags::unk0))
         {
             return;
         }
@@ -114,7 +114,7 @@ namespace OpenLoco::World
             if (elSurface.getVar5SLR5() == 0)
             {
                 uint8_t newVar6SLR5 = elSurface.var_6_SLR5() + 1;
-                if (newVar6SLR5 > industryObj->var_EC)
+                if (newVar6SLR5 >= industryObj->var_EC)
                 {
                     newVar6SLR5 = 0;
                 }
