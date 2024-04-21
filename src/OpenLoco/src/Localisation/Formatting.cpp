@@ -94,7 +94,7 @@ namespace OpenLoco::StringManager
             return _sep;
         }
 
-        [[nodiscard]] std::string do_grouping() const { return "\3"; }
+        [[nodiscard]] std::string do_grouping() const override { return "\3"; }
     };
 
     // 0x00495F35
