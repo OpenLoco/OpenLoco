@@ -127,9 +127,29 @@ namespace OpenLoco::World
         bool tileAddedRemoved = false;
         for (auto i = 0; i < 4; ++i)
         {
+            // This loop looks for walls on either sides of the surface tile being updated
+            //
+            //     |   N   |
+            //     |   2   |
+            // --- | ----- | ---
+            //     |   1   |
+            // N 2 | 1 X 1 | 2 N
+            //     |   1   |
+            // --- | ----- | ---
+            //     |   2   |
+            //     |   N   |
+            //
+            // N == Neighbour tile (this loop)
+            // X == Surface being updated
+            // 1 == Potential wall on surface being updated
+            // 2 == Potential wall on Neighbour tile (this loop)
+
             auto* elWall = getWallElement(loc, surf->baseZ(), surf->baseZ() + 16, i);
             if (elWall)
             {
+                // Wall has been found on this surface tile.
+                // Validate if it should be here and if not
+                // remove it
                 if (surf->var_6_SLR5() != industryObj->var_EA)
                 {
                     continue;
@@ -166,11 +186,16 @@ namespace OpenLoco::World
                     continue;
                 }
 
-                auto* elWall2 = getWallElement(nextLoc, surf->baseZ(), surf->baseZ() + 16, i);
+                // ^ (1U << 1) as we need to look at reverse direction for the neighbours wall
+                auto* elWall2 = getWallElement(nextLoc, surf->baseZ(), surf->baseZ() + 16, i ^ (1U << 1));
                 if (elWall2)
                 {
                     continue;
                 }
+
+                // Wall has *NOT* been found on neighbour surface tile.
+                // Validate if it should exist and if it should create
+                // it.
                 auto* nextSurface = TileManager::get(nextLoc).surface();
                 if (nextSurface->isIndustrial())
                 {
