@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
     static constexpr Ui::Size kWindowSize = { 140, 29 };
 
-    Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
