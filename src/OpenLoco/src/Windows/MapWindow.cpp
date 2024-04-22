@@ -98,9 +98,9 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
 
-    Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 350, 272 }, WidgetType::frame, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_map),
         makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 350, 230 }, WidgetType::panel, WindowColour::secondary),
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::title_map_companies,
         };
 
-        widgets[widx::caption].text = captionText[self.currentTab];
+        self.widgets[widx::caption].text = captionText[self.currentTab];
 
         auto activatedWidgets = self.activatedWidgets;
         activatedWidgets &= ~((1ULL << widx::statusBar) | (1ULL << widx::scrollview) | (1ULL << widx::tabOwnership) | (1ULL << widx::tabRoutes) | (1ULL << widx::tabIndustries) | (1ULL << widx::tabVehicles) | (1ULL << widx::tabOverall));
