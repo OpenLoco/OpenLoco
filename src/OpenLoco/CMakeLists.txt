@@ -602,6 +602,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Paint/PaintWall.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Random.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/Limits.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/Objects.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/S5.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/S5/SawyerStream.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Scenario.h"
