@@ -256,7 +256,7 @@ namespace OpenLoco
         DrivingSoundType drivingSoundType; // 0x119
         union
         {
-            VehicleObjectFrictionSound friction;
+            VehicleObjectFrictionSound friction = VehicleObjectFrictionSound{};
             VehicleObjectEngine1Sound engine1;
             VehicleObjectEngine2Sound engine2;
         } sound;
