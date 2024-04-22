@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::Station
             centre_on_viewport,
         };
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             // commonWidgets(kWindowSize.width, kWindowSize.height),
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
