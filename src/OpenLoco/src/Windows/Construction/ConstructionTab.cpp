@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint8_t rotation;
     };
 
-    Widget widgets[] = {
+    constexpr Widget widgets[] = {
         commonWidgets(138, 276, StringIds::stringid_2),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),

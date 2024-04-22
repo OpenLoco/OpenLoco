@@ -215,7 +215,7 @@ namespace OpenLoco::Ui::Windows::Construction
         };
         //clang-format on
 
-        extern Widget widgets[32];
+        extern const Widget widgets[32];
 
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
 
@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::Construction
             rotate,
         };
 
-        extern Widget widgets[13];
+        extern const Widget widgets[13];
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::Construction
             single_direction,
         };
 
-        extern Widget widgets[13];
+        extern const Widget widgets[13];
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::Construction
             track_dropdown,
         };
 
-        extern Widget widgets[16];
+        extern const Widget widgets[16];
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
