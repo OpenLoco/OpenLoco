@@ -23,7 +23,7 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
 
     static constexpr Ui::Size kWindowSize = { 441, 91 };
 
-    Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 441, 91 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 439, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
         makeWidget({ 426, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
