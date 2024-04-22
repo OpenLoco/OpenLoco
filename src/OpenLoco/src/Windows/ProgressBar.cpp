@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
     static constexpr Ui::Size kWindowSize = { 350, 47 };
 
-    Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_1250),
         makeWidget({ 0, 15 }, { 350, 32 }, WidgetType::panel, WindowColour::secondary),
