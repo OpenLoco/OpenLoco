@@ -306,6 +306,7 @@ namespace OpenLoco::Paint
         std::span<TunnelEntry> getTunnels(uint8_t edge);
         void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
         void insertTunnels(const std::array<int16_t, 4>& tunnelHeights, coord_t height, uint8_t tunnelType);
+        void setDidPassSurface(bool value) { _didPassSurface = value; }
 
         /*
          * @param amount    @<eax>
