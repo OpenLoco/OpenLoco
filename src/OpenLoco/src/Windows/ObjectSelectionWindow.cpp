@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         objectImage,
     };
 
-    Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 600, 398 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::title_object_selection),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -515,11 +515,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void prepareDraw(Ui::Window& self)
     {
         self.activatedWidgets |= (1 << widx::objectImage);
-        widgets[widx::closeButton].type = WidgetType::buttonWithImage;
+        self.widgets[widx::closeButton].type = WidgetType::buttonWithImage;
 
         if (isEditorMode())
         {
-            widgets[widx::closeButton].type = WidgetType::none;
+            self.widgets[widx::closeButton].type = WidgetType::none;
         }
 
         // Update the title.
