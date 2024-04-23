@@ -627,7 +627,7 @@ strings:
   606: +{CURRENCY48}
   607: "{CURRENCY48}"
   608: "{COLOUR WINDOW_2}Emprunt :"
-  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  609: "{CURRENCY32}"
   610: Impossible d'emprunter plus d'argent !
   611: Pas assez d'argent disponible !
   612: Impossible de rembourser l'emprunt !
@@ -1676,21 +1676,21 @@ strings:
   1638: "{COLOUR WINDOW_2}Nombre de forêts :"
   1639: "{INT16}"
   1640: "{COLOUR WINDOW_2}Rayon forêt minimum :"
-  1641: "{POP16}{INT16} blocs"
+  1641: "{INT16} blocs"
   1642: "{COLOUR WINDOW_2}Rayon forêt maximum :"
-  1643: "{POP16}{POP16}{INT16} blocs"
+  1643: "{INT16} blocs"
   1644: "{COLOUR WINDOW_2}Densité forêt minimum :"
-  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1645: "{INT16}%"
   1646: "{COLOUR WINDOW_2}Densité forêt maximum :"
-  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1647: "{INT16}%"
   1648: "{COLOUR WINDOW_2}Nombre d'arbres aléatoires :"
-  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1649: "{INT16}"
   1650: "{COLOUR WINDOW_2}Hauteur minimum des arbres :"
-  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1651: "{HEIGHT}"
   1652: "{COLOUR WINDOW_2}Hauteur maximum des arbres :"
-  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1653: "{HEIGHT}"
   1654: "{COLOUR WINDOW_2}Hauteur minimum du terrain :"
-  1655: "{POP16}{INT16} unités"
+  1655: "{INT16} unités"
   1656: "{COLOUR WINDOW_2}Style topographique :"
   1657: Terrain plat
   1658: Petites collines
@@ -1698,7 +1698,7 @@ strings:
   1660: Moitié montagnes, moitié collines
   1661: Moitié montagnes, moitié plat
   1662: "{COLOUR WINDOW_2}Densité colline :"
-  1663: "{POP16}{POP16}{INT16}%"
+  1663: "{INT16}%"
   1664: "{COLOUR WINDOW_2}Nombre de villes :"
   1665: "{INT16}"
   1666: "{COLOUR WINDOW_2}Taille maximum des villes :"
@@ -1720,7 +1720,7 @@ strings:
   1682: "{COLOUR WINDOW_2}Compagnies concurrentes max. :"
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Délai avant entrée des concurrents :"
-  1685: "{POP16}{INT16} mois"
+  1685: "{INT16} mois"
   1686: "{COLOUR WINDOW_2}Sélection des compagnies concurrentes"
   1687: "{COLOUR WINDOW_2}Intelligence favorite :"
   1688: "{COLOUR WINDOW_2}Agressivité favorite :"
@@ -1732,9 +1732,9 @@ strings:
   1694: "{COLOUR WINDOW_2}Emprunt de départ :"
   1695: "{CURRENCY32}"
   1696: "{COLOUR WINDOW_2}Emprunt maximum :"
-  1697: "{POP16}{POP16}{CURRENCY32}"
+  1697: "{CURRENCY32}"
   1698: "{COLOUR WINDOW_2}Taux d'intérêt de l'emprunt :"
-  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1699: "{INT16}%"
   1700: Modifier...
   1701: "{COLOUR WINDOW_2}Nom scénario : {COLOUR BLACK}{STRINGID}"
   1702: "{COLOUR WINDOW_2}Groupe scénario :"
@@ -1895,7 +1895,7 @@ strings:
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
-  1860: "{POP16}{POP16}{POP16}{INT16} ans"
+  1860: "{INT16} ans"
   1861: "{SMALLFONT}(réussi par {STRINGID} en {INT16} ans {INT16} mois)"
   1862: "{COLOUR WINDOW_2}Bravo !{NEWLINE}{COLOUR BLACK}  Vous avez réussi le défi en {INT16} ans {INT16} mois"
   1863: "{COLOUR WINDOW_2}Désolé !{NEWLINE}{COLOUR BLACK}  Vous avez raté le défi."

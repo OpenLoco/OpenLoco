@@ -628,7 +628,7 @@ strings:
   606: +{CURRENCY48}
   607: "{CURRENCY48}"
   608: "{COLOUR WINDOW_2}´Úver:"
-  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  609: "{CURRENCY32}"
   610: Nemôžete si požičať viac peňazí!
   611: Nie je k dispozícii dostatok hotovosti!
   612: Nemôžete splatiť úver!
@@ -1677,21 +1677,21 @@ strings:
   1638: "{COLOUR WINDOW_2}Počet lesov:"
   1639: "{INT16}"
   1640: "{COLOUR WINDOW_2}Minimálny polomer lesa:"
-  1641: "{POP16}{INT16} blokov"
+  1641: "{INT16} blokov"
   1642: "{COLOUR WINDOW_2}Maximálny polomer lesa:"
-  1643: "{POP16}{POP16}{INT16} blokov"
+  1643: "{INT16} blokov"
   1644: "{COLOUR WINDOW_2}Minimálna hustota lesa:"
-  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1645: "{INT16}%"
   1646: "{COLOUR WINDOW_2}Maximálna hustota lesa:"
-  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1647: "{INT16}%"
   1648: "{COLOUR WINDOW_2}Počet náhodných jednotlivých stromov:"
-  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1649: "{INT16}"
   1650: "{COLOUR WINDOW_2}Minimálna nadmorská výška pre stromy:"
-  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1651: "{HEIGHT}"
   1652: "{COLOUR WINDOW_2}Maximálna nadmorská výška pre stromy:"
-  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1653: "{HEIGHT}"
   1654: "{COLOUR WINDOW_2}Minimálna výška terénu (pôdy):"
-  1655: "{POP16}{INT16} jednotiek"
+  1655: "{INT16} jednotiek"
   1656: "{COLOUR WINDOW_2}Štýl topografie:"
   1657: Rovina
   1658: Malé kopce
@@ -1699,7 +1699,7 @@ strings:
   1660: Polovica hory, polovica kopce
   1661: Polovica hory, polovica rovina
   1662: "{COLOUR WINDOW_2}Hustota kopca:"
-  1663: "{POP16}{POP16}{INT16}%"
+  1663: "{INT16}%"
   1664: "{COLOUR WINDOW_2}Počet miest:"
   1665: "{INT16}"
   1666: "{COLOUR WINDOW_2}Maximálna veľkosť mesta:"
@@ -1721,7 +1721,7 @@ strings:
   1682: "{COLOUR WINDOW_2}Maximálny počet konkurenčných spoločností:"
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Oneskorenie, pokiaľ začnú konkurenčné spoločnosti:"
-  1685: "{POP16}{INT16} mesiace"
+  1685: "{INT16} mesiace"
   1686: "{COLOUR WINDOW_2}Výber konkurenčných spoločností"
   1687: "{COLOUR WINDOW_2}Preferovaná inteligencia:"
   1688: "{COLOUR WINDOW_2}Preferovaná agresivita:"
@@ -1733,9 +1733,9 @@ strings:
   1694: "{COLOUR WINDOW_2}Počiatočný úver:"
   1695: "{CURRENCY32}"
   1696: "{COLOUR WINDOW_2}Maximálna veľkosť úveru:"
-  1697: "{POP16}{POP16}{CURRENCY32}"
+  1697: "{CURRENCY32}"
   1698: "{COLOUR WINDOW_2}Úroková sadzba úveru:"
-  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1699: "{INT16}%"
   1700: Zmeniť...
   1701: "{COLOUR WINDOW_2}Názov scenára: {COLOUR BLACK}{STRINGID}"
   1702: "{COLOUR WINDOW_2}Skupina scenára:"
@@ -1896,7 +1896,7 @@ strings:
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
-  1860: "{POP16}{POP16}{POP16}{INT16} roky"
+  1860: "{INT16} roky"
   1861: "{SMALLFONT}(Dokončila spoločnosť {STRINGID} za {INT16} roky {INT16} mesiace)"
   1862: "{COLOUR WINDOW_2}Úspech!{NEWLINE}{COLOUR BLACK}  Dokončili ste výzvu za {INT16} roky {INT16} mesiace"
   1863: "{COLOUR WINDOW_2}Zlyhanie!{NEWLINE}{COLOUR BLACK}  Nepodarilo sa vám dokončiť výzvu"

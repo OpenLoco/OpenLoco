@@ -407,8 +407,8 @@ strings:
   390: Impossível vender {POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
   391: "{STRINGID}"
   392: "{STRINGID}"
-  393: "{STRINGID}{STRINGID}"
-  394: "{STRINGID}{STRINGID}"
+  393: "{STRINGID}"
+  394: "{STRINGID}"
   395: "{SMALLFONT}{COLOUR BLACK}Ressaltar área de captação desta estação"
   396: Silenciar
   397: Tocar Música
@@ -627,7 +627,7 @@ strings:
   606: +{CURRENCY48}
   607: "{CURRENCY48}"
   608: "{COLOUR WINDOW_2}Empréstimo:"
-  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  609: "{CURRENCY32}"
   610: Impossível receber mais dinheiro emprestado!
   611: Sem dinheiro o suficiente!
   612: Impossível retornar empréstimo!
@@ -1676,21 +1676,21 @@ strings:
   1638: "{COLOUR WINDOW_2}N° de Florestas:"
   1639: "{INT16}"
   1640: "{COLOUR WINDOW_2}Raio mínimo de uma floresta:"
-  1641: "{POP16}{INT16} blocos"
+  1641: "{INT16} blocos"
   1642: "{COLOUR WINDOW_2}Raio máximo de uma floresta:"
-  1643: "{POP16}{POP16}{INT16} blocos"
+  1643: "{INT16} blocos"
   1644: "{COLOUR WINDOW_2}Densidade mínima de uma floresta:"
-  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1645: "{INT16}%"
   1646: "{COLOUR WINDOW_2}Densidade máxima de uma floresta:"
-  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1647: "{INT16}%"
   1648: "{COLOUR WINDOW_2}N° de árvores individuais aleatórias:"
-  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1649: "{INT16}"
   1650: "{COLOUR WINDOW_2}Altitude ínima das árvores:"
-  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1651: "{HEIGHT}"
   1652: "{COLOUR WINDOW_2}Altitude máxima das árvores:"
-  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1653: "{HEIGHT}"
   1654: "{COLOUR WINDOW_2}Altura mínima do terreno:"
-  1655: "{POP16}{INT16} unidades"
+  1655: "{INT16} unidades"
   1656: "{COLOUR WINDOW_2}Estilo topográfico:"
   1657: Terreno Plano
   1658: Colinas
@@ -1698,7 +1698,7 @@ strings:
   1660: Metade Montanhas, Metade Colinas
   1661: Metade Montanhas, Metade Plano
   1662: "{COLOUR WINDOW_2}Densidade das colinas:"
-  1663: "{POP16}{POP16}{INT16}%"
+  1663: "{INT16}%"
   1664: "{COLOUR WINDOW_2}N° de municípios:"
   1665: "{INT16}"
   1666: "{COLOUR WINDOW_2}Tamanho máximo de município:"
@@ -1720,7 +1720,7 @@ strings:
   1682: "{COLOUR WINDOW_2}Número máximo de competidores:"
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}Atraso antes da criação dos competidores:"
-  1685: "{POP16}{INT16} meses"
+  1685: "{INT16} meses"
   1686: "{COLOUR WINDOW_2}Seleção de competidores"
   1687: "{COLOUR WINDOW_2}Inteligência Preferida:"
   1688: "{COLOUR WINDOW_2}Agressividade Preferida:"
@@ -1732,9 +1732,9 @@ strings:
   1694: "{COLOUR WINDOW_2}Empréstimo inicial:"
   1695: "{CURRENCY32}"
   1696: "{COLOUR WINDOW_2}Tamanho máximo do empréstimo:"
-  1697: "{POP16}{POP16}{CURRENCY32}"
+  1697: "{CURRENCY32}"
   1698: "{COLOUR WINDOW_2}Taxa de juros do empréstimo:"
-  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1699: "{INT16}%"
   1700: Trocar...
   1701: "{COLOUR WINDOW_2}Nome do Cenário: {COLOUR BLACK}{STRINGID}"
   1702: "{COLOUR WINDOW_2}Grupo do Cenário:"
@@ -1895,7 +1895,7 @@ strings:
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
-  1860: "{POP16}{POP16}{POP16}{INT16} anos"
+  1860: "{INT16} anos"
   1861: "{SMALLFONT}(Completado por {STRINGID} em {INT16} anos {INT16} meses)"
   1862: "{COLOUR WINDOW_2}Successo!{NEWLINE}{COLOUR BLACK} Você completou o desafio em {INT16} anos {INT16} meses"
   1863: "{COLOUR WINDOW_2}Fracasso!{NEWLINE}{COLOUR BLACK} Você falhou em completar o desafio"
