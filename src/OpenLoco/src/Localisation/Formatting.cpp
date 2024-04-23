@@ -133,8 +133,9 @@ namespace OpenLoco::StringManager
     }
 
     // 0x00496052
-    static char* formatInt48Grouped(int64_t value, char* buffer)
+    static char* formatInt48Grouped(int64_t value, char* buffer, uint8_t separator)
     {
+        value *= static_cast<uint64_t>(std::pow(10, separator));
         return formatNumberToString(value, buffer, 0, true);
     }
 
@@ -237,7 +238,7 @@ namespace OpenLoco::StringManager
         const char* prefixSymbol = getString(currency->prefixSymbol);
         buffer = formatStringPart(buffer, prefixSymbol, nullptr);
 
-        buffer = formatInt48Grouped(localisedValue, buffer);
+        buffer = formatInt48Grouped(localisedValue, buffer, currency->separator);
 
         const char* suffixSymbol = getString(currency->suffixSymbol);
         buffer = formatStringPart(buffer, suffixSymbol, nullptr);
