@@ -18,6 +18,7 @@
 #include "PaintIndustry.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
+#include "PaintSurface.h"
 #include "PaintTrack.h"
 #include "PaintTree.h"
 #include "PaintWall.h"
@@ -113,15 +114,6 @@ namespace OpenLoco::Paint
         registers regs;
         call(0x0042AC9C, regs);
         return regs.al != 0;
-    }
-
-    // 0x004656BF
-    static void paintSurface([[maybe_unused]] PaintSession& session, World::SurfaceElement& elSurface)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elSurface);
-        regs.dx = elSurface.baseHeight();
-        call(0x004656BF, regs);
     }
 
     // 0x004759A6

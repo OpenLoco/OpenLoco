@@ -44,6 +44,7 @@ namespace OpenLoco
         unk23 = 1U << 23,
         builtInDesert = 1U << 24,
         builtNearDesert = 1U << 25,
+        unk26 = 1U << 26,
         unk27 = 1U << 27,
         flag_28 = 1U << 28,
     };
