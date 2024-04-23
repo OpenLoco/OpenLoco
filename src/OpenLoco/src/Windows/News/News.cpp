@@ -29,7 +29,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 {
     namespace News1
     {
-        Widget widgets[] = {
+        constexpr Widget widgets[] = {
             commonWidgets(360, 117, WidgetType::wt_3),
             widgetEnd(),
         };
@@ -862,7 +862,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News2
     {
-        Widget widgets[] = {
+        constexpr Widget widgets[] = {
             commonWidgets(360, 159, WidgetType::wt_6),
             widgetEnd(),
         };

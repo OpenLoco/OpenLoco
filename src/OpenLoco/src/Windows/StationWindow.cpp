@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::Station
             centre_on_viewport,
         };
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             // commonWidgets(kWindowSize.width, kWindowSize.height),
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->currentTab = Common::widx::tab_station - Common::widx::tab_station;
         window->invalidate();
 
-        window->widgets = Station::widgets;
+        window->setWidgets(Station::widgets);
         window->enabledWidgets = Station::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Station::getEvents();
@@ -326,7 +326,7 @@ namespace OpenLoco::Ui::Windows::Station
             station_catchment,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, WindowColour::secondary),
@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::Station
             status_bar,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(249, 136),
             makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary),
@@ -800,7 +800,7 @@ namespace OpenLoco::Ui::Windows::Station
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -817,14 +817,6 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab.
             self.activatedWidgets &= ~((1ULL << widx::tab_station) | (1ULL << widx::tab_cargo) | (1ULL << widx::tab_cargo_ratings));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
@@ -833,7 +825,7 @@ namespace OpenLoco::Ui::Windows::Station
             // Put station and town name in place.
             auto* station = StationManager::get(StationId(self.number));
 
-            auto args = FormatArguments();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(station->name);
             args.push(station->town);
             args.push(getTransportIconsFromStationFlags(station->flags));
@@ -925,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
 
             self->invalidate();

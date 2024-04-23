@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour) | (1 << plant_cluster_selected) | (1 << plant_cluster_random);
         const uint64_t holdableWidgets = 0;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(634, 162, StringIds::title_plant_trees),
             makeWidget({ 3, 45 }, { 605, 101 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             makeWidget({ 609, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             window->invalidate();
 
-            window->widgets = PlantTrees::widgets;
+            window->setWidgets(PlantTrees::widgets);
             window->enabledWidgets = PlantTrees::enabledWidgets;
             window->holdableWidgets = 0;
             window->activatedWidgets = 0;
@@ -926,7 +926,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(130, 105, StringIds::clear_area),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static bool isMountainMode = false;
         static bool isPaintMode = false;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
             makeWidget({ 49, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_adjust_land_tool),
             makeWidget({ 50, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
@@ -1779,7 +1779,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
         const uint64_t holdableWidgets = (1 << decrease_area) | (1 << increase_area);
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_water),
             makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
             makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::toolbarTab, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
@@ -2095,7 +2095,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
         const uint64_t holdableWidgets = 0;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(418, 108, StringIds::title_build_walls),
             makeWidget({ 2, 45 }, { 391, 48 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
@@ -2561,7 +2561,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -2627,14 +2627,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab..
             self.activatedWidgets &= ~((1ULL << tab_adjust_land) | (1ULL << tab_adjust_water) | (1ULL << tab_build_walls) | (1ULL << tab_clear_area) | (1ULL << tab_plant_trees));
             self.activatedWidgets |= (1ULL << tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -2712,7 +2704,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->holdableWidgets = tabInfo.holdableWidgets;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             auto disabledWidgets = 0;
 

@@ -627,7 +627,7 @@ strings:
   606: +{CURRENCY48}
   607: "{CURRENCY48}"
   608: "{COLOUR WINDOW_2}贷款:"
-  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  609: "{CURRENCY32}"
   610: 无法继续贷款!
   611: 没有足够现金!
   612: 无法还贷!
@@ -1676,21 +1676,21 @@ strings:
   1638: "{COLOUR WINDOW_2}森林数量:"
   1639: "{INT16}"
   1640: "{COLOUR WINDOW_2}最小森林半径:"
-  1641: "{POP16}{INT16} 格"
+  1641: "{INT16} 格"
   1642: "{COLOUR WINDOW_2}最大森林半径:"
-  1643: "{POP16}{POP16}{INT16} 格"
+  1643: "{INT16} 格"
   1644: "{COLOUR WINDOW_2}最小森林密度:"
-  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1645: "{INT16}%"
   1646: "{COLOUR WINDOW_2}最大森林密度:"
-  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1647: "{INT16}%"
   1648: "{COLOUR WINDOW_2}随机单棵树数量:"
-  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1649: "{INT16}"
   1650: "{COLOUR WINDOW_2}树的最低高度:"
-  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1651: "{HEIGHT}"
   1652: "{COLOUR WINDOW_2}树的最高高度:"
-  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1653: "{HEIGHT}"
   1654: "{COLOUR WINDOW_2}最低地面高度:"
-  1655: "{POP16}{INT16} 单位"
+  1655: "{INT16} 单位"
   1656: "{COLOUR WINDOW_2}地形风格:"
   1657: 平地
   1658: 丘陵
@@ -1698,7 +1698,7 @@ strings:
   1660: 半山地, 半丘陵
   1661: 半山地, 半平地
   1662: "{COLOUR WINDOW_2}丘陵密度:"
-  1663: "{POP16}{POP16}{INT16}%"
+  1663: "{INT16}%"
   1664: "{COLOUR WINDOW_2}城镇数量:"
   1665: "{INT16}"
   1666: "{COLOUR WINDOW_2}最大城镇大小:"
@@ -1720,7 +1720,7 @@ strings:
   1682: "{COLOUR WINDOW_2}最大竞争对手数量:"
   1683: "{INT16}"
   1684: "{COLOUR WINDOW_2}竞争对手启动前延迟:"
-  1685: "{POP16}{INT16} 月"
+  1685: "{INT16} 月"
   1686: "{COLOUR WINDOW_2}选择竞争对手"
   1687: "{COLOUR WINDOW_2}首选智能:"
   1688: "{COLOUR WINDOW_2}首选攻击性:"
@@ -1732,9 +1732,9 @@ strings:
   1694: "{COLOUR WINDOW_2}初始贷款:"
   1695: "{CURRENCY32}"
   1696: "{COLOUR WINDOW_2}最大贷款数量:"
-  1697: "{POP16}{POP16}{CURRENCY32}"
+  1697: "{CURRENCY32}"
   1698: "{COLOUR WINDOW_2}贷款利率:"
-  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1699: "{INT16}%"
   1700: 修改...
   1701: "{COLOUR WINDOW_2}场景名称: {COLOUR BLACK}{STRINGID}"
   1702: "{COLOUR WINDOW_2}场景组别:"
@@ -1895,7 +1895,7 @@ strings:
   1857: "{CURRENCY32}"
   1858: "{INT16_1DP}%"
   1859: "{INT32}"
-  1860: "{POP16}{POP16}{POP16}{INT16} 年"
+  1860: "{INT16} 年"
   1861: "{SMALLFONT}(为{STRINGID}完成, 耗时{INT16}年{INT16}月)"
   1862: "{COLOUR WINDOW_2}成功!{NEWLINE}{COLOUR BLACK}  你在{INT16}年{INT16}月内完成挑战目标"
   1863: "{COLOUR WINDOW_2}失败!{NEWLINE}{COLOUR BLACK}  你未能完成挑战目标"

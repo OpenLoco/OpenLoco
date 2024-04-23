@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
             WindowFlags::openQuietly | WindowFlags::transparent,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = 1 << Widx::logo;
 
         window->initScrollWidgets();

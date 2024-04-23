@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             WindowFlags::flag_11,
             getEvents());
 
-        self->widgets = _widgets;
+        self->setWidgets(_widgets);
         self->enabledWidgets = _enabledWidgets;
         self->number = enumValue(companyId);
         self->owner = companyId;
@@ -526,7 +526,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self.activatedWidgets |= 1ULL << (self.currentTab + Widx::tab_trains);
 
         auto company = CompanyManager::get(CompanyId(self.number));
-        [[maybe_unused]] auto args = FormatArguments::common(company->name);
+
+        // Set company in title.
+        auto args = FormatArguments(self.widgets[Widx::caption].textArgs);
+        args.push(company->name);
 
         static constexpr StringId typeToCaption[] = {
             StringIds::stringid_trains,

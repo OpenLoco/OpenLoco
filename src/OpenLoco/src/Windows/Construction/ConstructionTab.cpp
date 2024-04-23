@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint8_t rotation;
     };
 
-    Widget widgets[] = {
+    constexpr Widget widgets[] = {
         commonWidgets(138, 276, StringIds::stringid_2),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
@@ -2492,7 +2492,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void prepareDraw(Window& self)
     {
         Common::prepareDraw(&self);
-        auto args = FormatArguments();
+
+        auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         if (_trackType & (1 << 7))
         {
             auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));

@@ -15,7 +15,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     };
 
     // 0x00522504
-    static Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, WindowColour::primary),
         widgetEnd()
     };
@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         Ui::Size size = { width, 60 };
 
         auto self = WindowManager::createWindow(WindowType::dragVehiclePart, pos, size, WindowFlags::transparent | WindowFlags::stickToFront, getEvents());
-        self->widgets = widgets;
+        self->setWidgets(widgets);
         self->widgets[widx::frame].right = width - 1;
 
         Input::windowPositionBegin(Input::getTooltipMouseLocation().x, Input::getTooltipMouseLocation().y, self, widx::frame);

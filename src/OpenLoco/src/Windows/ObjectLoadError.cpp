@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         scrollview,
     };
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::objectErrorWindowTitle),
         makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             WindowFlags::stickToFront,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 

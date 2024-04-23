@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::title_menu_exit_from_game),
         widgetEnd(),
     };
@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
             WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground | WindowFlags::flag_6,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = (1 << Widx::exit_button);
 
         window->initScrollWidgets();

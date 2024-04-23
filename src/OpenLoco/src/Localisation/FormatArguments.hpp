@@ -1,11 +1,33 @@
 #pragma once
 
 #include <OpenLoco/Interop/Interop.hpp>
+#include <array>
+#include <sfl/small_vector.hpp>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    class FormatArgumentsBuffer
+    {
+        std::array<std::byte, 16> _buffer{};
+
+    public:
+        std::byte* data()
+        {
+            return _buffer.data();
+        }
+
+        const std::byte* data() const
+        {
+            return _buffer.data();
+        }
+
+        size_t capacity() const
+        {
+            return _buffer.size();
+        }
+    };
 
     class FormatArguments
     {
@@ -20,6 +42,21 @@ namespace OpenLoco
             _bufferStart = buffer;
             _buffer = _bufferStart;
             _length = length;
+        }
+
+        FormatArguments(FormatArgumentsBuffer& buffer)
+        {
+            _buffer = buffer.data();
+            _bufferStart = _buffer;
+            _length = buffer.capacity();
+        }
+
+        FormatArguments(const FormatArgumentsBuffer& buffer)
+        {
+            // FIXME: Create a view type for FormatArgumentsBuffer.
+            _buffer = const_cast<std::byte*>(buffer.data());
+            _bufferStart = _buffer;
+            _length = buffer.capacity();
         }
 
         FormatArguments()

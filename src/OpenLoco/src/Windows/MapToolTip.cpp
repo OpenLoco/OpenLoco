@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         else
         {
             window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::noBackground, getEvents());
-            window->widgets = _widgets;
+            window->setWidgets(_widgets);
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_06);
             window->setColour(WindowColour::tertiary, skin->colour_07);

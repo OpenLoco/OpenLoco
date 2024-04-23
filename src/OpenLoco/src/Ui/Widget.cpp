@@ -590,8 +590,9 @@ namespace OpenLoco::Ui
         int16_t centreX = window->x + (widget.left + widget.right + 1) / 2 - 1;
         int16_t width = widget.right - widget.left - 2;
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &formatArgs);
     }
 
     // 0x004CB263
@@ -605,9 +606,10 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &formatArgs);
     }
 
     // 0x4CB2D6
@@ -628,11 +630,12 @@ namespace OpenLoco::Ui
             colour = colour.FD();
         }
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         auto* window = widgetStated.window;
         auto point = Point(window->x + widget.left + 1, window->y + widget.top);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, &FormatArguments::common());
+        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, &formatArgs);
     }
 
     // 0x4CB29C
@@ -684,13 +687,14 @@ namespace OpenLoco::Ui
         int16_t width = r - l - 4 - 10;
         auto point = Point(l + 2 + (width / 2), t + 1);
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         drawingCtx.drawStringCentredClipped(
             *rt,
             point,
             width,
             AdvancedColour(Colour::white).outline(),
             widget.text,
-            &FormatArguments::common());
+            &formatArgs);
     }
 
     // 0x004CF3EB
@@ -705,9 +709,11 @@ namespace OpenLoco::Ui
     // 0x004CA750
     static void draw_23_caption(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState)
     {
+        auto formatArgs = FormatArguments(widget.textArgs);
+
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::black;
-        StringManager::formatString(&stringBuffer[1], widget.text, &FormatArguments::common());
+        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
 
         auto* window = widgetState.window;
         int16_t width = widget.right - widget.left - 4 - 14;
@@ -728,9 +734,11 @@ namespace OpenLoco::Ui
     // 0x004CA7F6
     static void draw_24_caption(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState)
     {
+        auto formatArgs = FormatArguments(widget.textArgs);
+
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::windowColour1;
-        StringManager::formatString(&stringBuffer[1], widget.text, &FormatArguments::common());
+        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
 
         auto* window = widgetState.window;
         int16_t x = widget.left + window->x + 2;
@@ -749,9 +757,11 @@ namespace OpenLoco::Ui
     // 0x004CA88B
     static void draw_25_caption(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState)
     {
+        auto formatArgs = FormatArguments(widget.textArgs);
+
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::white;
-        StringManager::formatString(&stringBuffer[1], widget.text, &FormatArguments::common());
+        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
 
         auto* window = widgetState.window;
         int16_t x = widget.left + window->x + 2;
@@ -1036,10 +1046,11 @@ namespace OpenLoco::Ui
             colour = colour.inset();
         }
 
+        auto formatArgs = FormatArguments(widget.textArgs);
         auto* window = widgetState.window;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto point = Point(window->x + widget.left + 14, window->y + widget.top);
-        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, &FormatArguments::common());
+        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, &formatArgs);
     }
 
     // 0x004CA679

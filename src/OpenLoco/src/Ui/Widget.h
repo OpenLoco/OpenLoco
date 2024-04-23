@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Localisation/StringManager.h"
-#include "Window.h"
 #include <cstdint>
 
 namespace OpenLoco::Gfx
@@ -13,6 +13,47 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Ui
 {
+    using WidgetIndex_t = int8_t;
+
+    struct Window;
+    enum class WindowColour : uint8_t;
+
+    enum class WidgetType : uint8_t
+    {
+        none = 0,
+        panel = 1,
+        frame = 2,
+        wt_3,
+        wt_4,
+        slider,
+        wt_6,
+        toolbarTab = 7,
+        tab = 8,
+        buttonWithImage = 9,
+        buttonWithColour = 10,
+        button = 11,
+        wt_12,
+        wt_13,
+        buttonTableHeader = 14,
+        wt_15,
+        groupbox = 16,
+        textbox = 17,
+        combobox = 18,
+        viewport = 19,
+        wt_20,
+        wt_21,
+        caption_22,
+        caption_23,
+        caption_24,
+        caption_25,
+        scrollview = 26,
+        checkbox = 27,
+        wt_28,
+        wt_29,
+        viewportCentreButton, // TODO: Make a better generic button so we get the same result.
+        end,
+    };
+
     struct WidgetState
     {
         Window* window;
@@ -48,6 +89,7 @@ namespace OpenLoco::Ui
             uint32_t content;
         };
         StringId tooltip; // 0x0E
+        FormatArgumentsBuffer textArgs;
 
         int16_t midX() const;
         int16_t midY() const;
@@ -64,11 +106,11 @@ namespace OpenLoco::Ui
         void draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
     };
 #pragma pack(pop)
-    static_assert(sizeof(Widget) == 0x10);
+    //static_assert(sizeof(Widget) == 0x10);
 
     static constexpr Widget makeWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, uint32_t content = Widget::kContentNull, StringId tooltip = StringIds::null)
     {
-        Widget out = {};
+        Widget out{};
         out.left = origin.x;
         out.right = origin.x + size.width - 1;
         out.top = origin.y;
@@ -132,7 +174,7 @@ namespace OpenLoco::Ui
 
     constexpr Widget makeTextWidget(Ui::Point origin, Ui::Size size, WidgetType type, WindowColour colour, StringId content, StringId tooltip = StringIds::null)
     {
-        Widget out = {};
+        Widget out{};
         out.left = origin.x;
         out.right = origin.x + size.width - 1;
         out.top = origin.y;
@@ -147,7 +189,7 @@ namespace OpenLoco::Ui
 
     constexpr Widget widgetEnd()
     {
-        Widget out = {};
+        Widget out{};
         out.type = WidgetType::end;
 
         return out;

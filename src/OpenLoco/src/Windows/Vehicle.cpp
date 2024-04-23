@@ -149,7 +149,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t enabledWidgets = (1 << widx::buildNew) | (1 << widx::pickup) | (1 << widx::remove) | (1 << widx::carList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_details),
             makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_new_vehicle_for),
             makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_remove_from_track),
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t enabledWidgets = (1 << widx::refit) | (1 << widx::cargoList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
             makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
             makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t holdableWidgets = 0;
 
         // 0x00522470
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(636, 319, StringIds::title_company_finances),
             widgetEnd(),
         };
@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(265, 189, StringIds::title_vehicle_route),
             makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),
             makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::button, WindowColour::secondary, StringIds::local_mode_button),
@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             centreViewport = 16,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(265, 177, StringIds::stringid),
             makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
             makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, WindowColour::secondary),
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static Window* create(const EntityId head)
         {
             auto* const self = WindowManager::createWindow(WindowType::vehicle, kWindowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, Main::getEvents());
-            self->widgets = widgets;
+            self->setWidgets(widgets);
             self->enabledWidgets = enabledWidgets;
             self->number = enumValue(head);
             const auto* vehicle = Common::getVehicle(self);
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             self->currentTab = 0;
             self->invalidate();
-            self->widgets = widgets;
+            self->setWidgets(widgets);
             self->enabledWidgets = enabledWidgets;
             self->holdableWidgets = holdableWidgets;
             self->eventHandlers = &getEvents();
@@ -788,12 +788,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B1EB5
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -853,7 +847,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto company = CompanyManager::get(head->owner);
-            FormatArguments args{};
+
+            // Set title.
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             if (CompanyManager::isPlayerCompany(head->owner))
             {
                 args.push(StringIds::company_vehicle);
@@ -1448,12 +1444,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3300
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
 
             auto head = Common::getVehicle(&self);
@@ -1462,9 +1452,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto args = FormatArguments::common();
-            args.push(head->name);
-            args.push(head->ordinalNumber);
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(head->name);
+                args.push(head->ordinalNumber);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -1831,12 +1824,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3DDE
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
 
             auto* headVehicle = Common::getVehicle(&self);
@@ -1844,26 +1831,30 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return;
             }
-            FormatArguments args = {};
-            args.push(headVehicle->name);
-            args.push(headVehicle->ordinalNumber);
 
-            widgets[Common::widx::frame].right = self.width - 1;
-            widgets[Common::widx::frame].bottom = self.height - 1;
-            widgets[Common::widx::panel].right = self.width - 1;
-            widgets[Common::widx::panel].bottom = self.height - 1;
-            widgets[Common::widx::caption].right = self.width - 2;
-            widgets[Common::widx::closeButton].left = self.width - 15;
-            widgets[Common::widx::closeButton].right = self.width - 3;
-            widgets[widx::cargoList].right = self.width - 26;
-            widgets[widx::cargoList].bottom = self.height - 27;
-            widgets[widx::refit].right = self.width - 2;
-            widgets[widx::refit].left = self.width - 25;
-            widgets[widx::refit].type = WidgetType::buttonWithImage;
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(headVehicle->name);
+                args.push(headVehicle->ordinalNumber);
+            }
+
+            self.widgets[Common::widx::frame].right = self.width - 1;
+            self.widgets[Common::widx::frame].bottom = self.height - 1;
+            self.widgets[Common::widx::panel].right = self.width - 1;
+            self.widgets[Common::widx::panel].bottom = self.height - 1;
+            self.widgets[Common::widx::caption].right = self.width - 2;
+            self.widgets[Common::widx::closeButton].left = self.width - 15;
+            self.widgets[Common::widx::closeButton].right = self.width - 3;
+            self.widgets[widx::cargoList].right = self.width - 26;
+            self.widgets[widx::cargoList].bottom = self.height - 27;
+            self.widgets[widx::refit].right = self.width - 2;
+            self.widgets[widx::refit].left = self.width - 25;
+            self.widgets[widx::refit].type = WidgetType::buttonWithImage;
             if (!canRefit(headVehicle))
             {
-                widgets[widx::refit].type = WidgetType::none;
-                widgets[widx::cargoList].right = self.width - 26 + 22;
+                self.widgets[widx::refit].type = WidgetType::none;
+                self.widgets[widx::cargoList].right = self.width - 26 + 22;
             }
 
             Widget::leftAlignTabs(self, Common::widx::tabMain, Common::widx::tabRoute);
@@ -2247,12 +2238,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B56CE
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
 
             auto vehicle = Common::getVehicle(&self);
@@ -2261,9 +2246,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            auto args = FormatArguments::common();
-            args.push(vehicle->name);
-            args.push(vehicle->ordinalNumber);
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(vehicle->name);
+                args.push(vehicle->ordinalNumber);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -3103,21 +3091,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B468C
         static void prepareDraw(Window& self)
         {
-            if (self.widgets != widgets)
-            {
-                self.widgets = widgets;
-                self.initScrollWidgets();
-            }
-
             Common::setActiveTabs(&self);
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
             {
                 return;
             }
-            FormatArguments args{};
-            args.push(head->name);
-            args.push(head->ordinalNumber);
+
+            // Set title.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(head->name);
+                args.push(head->ordinalNumber);
+            }
 
             self.widgets[widx::routeList].tooltip = ToolManager::isToolActive(self.type, self.number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
 
@@ -3443,7 +3429,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         struct TabInformation
         {
             const widx widgetIndex;
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
@@ -4292,7 +4278,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
             Main::resetDisabledWidgets(self);
             self->invalidate();

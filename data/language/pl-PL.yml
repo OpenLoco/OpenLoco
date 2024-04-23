@@ -623,7 +623,7 @@ strings:
   606: +{CURRENCY48}
   607: '{CURRENCY48}'
   608: '{COLOUR WINDOW_2}Pożyczka:'
-  609: '{POP16}{POP16}{POP16}{POP16}{CURRENCY32}'
+  609: '{CURRENCY32}'
   610: Nie można pożyczyć więcej pieniędzy!
   611: Brak wystarczającej ilości gotówki!
   612: Nie można spłacić pożyczki!
@@ -1668,21 +1668,21 @@ strings:
   1638: '{COLOUR WINDOW_2}Liczba lasów:'
   1639: '{INT16}'
   1640: '{COLOUR WINDOW_2}Minimalny promień lasu:'
-  1641: '{POP16}{INT16} kratek'
+  1641: '{INT16} kratek'
   1642: '{COLOUR WINDOW_2}Maksymalny promień lasu:'
-  1643: '{POP16}{POP16}{INT16} kratek'
+  1643: '{INT16} kratek'
   1644: '{COLOUR WINDOW_2}Minimalna gęstość zalesienia:'
-  1645: '{POP16}{POP16}{POP16}{INT16}%'
+  1645: '{INT16}%'
   1646: '{COLOUR WINDOW_2}Maksymalna gęstość zalesienia:'
-  1647: '{POP16}{POP16}{POP16}{POP16}{INT16}%'
+  1647: '{INT16}%'
   1648: '{COLOUR WINDOW_2}Liczba losowych pojedynczych drzew:'
-  1649: '{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}'
+  1649: '{INT16}'
   1650: '{COLOUR WINDOW_2}Minimalna wysokość dla drzew:'
-  1651: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}'
+  1651: '{HEIGHT}'
   1652: '{COLOUR WINDOW_2}Maksymalna wysokość dla drzew:'
-  1653: '{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}'
+  1653: '{HEIGHT}'
   1654: '{COLOUR WINDOW_2}Minimalna wysokość terenu:'
-  1655: '{POP16}{INT16} jednostek'
+  1655: '{INT16} jednostek'
   1656: '{COLOUR WINDOW_2}Styl topografii:'
   1657: Płaski Teren
   1658: Małe Wzgórza
@@ -1690,7 +1690,7 @@ strings:
   1660: Góry/Płaski Teren
   1661: Góry/Wzgórza
   1662: '{COLOUR WINDOW_2}Gęstość wzniesień:'
-  1663: '{POP16}{POP16}{INT16}%'
+  1663: '{INT16}%'
   1664: '{COLOUR WINDOW_2}Liczba miast:'
   1665: '{INT16}'
   1666: '{COLOUR WINDOW_2}Maksymalna wielkość miasta:'
@@ -1712,7 +1712,7 @@ strings:
   1682: '{COLOUR WINDOW_2}Maksymalna ilość konkurencyjnych firm:'
   1683: '{INT16}'
   1684: '{COLOUR WINDOW_2}Opóźnienie działalności konkurencyjnych firm:'
-  1685: '{POP16}{INT16} mies.'
+  1685: '{INT16} mies.'
   1686: '{COLOUR WINDOW_2}Wybór konkurencyjnych przedsiębiorstw'
   1687: '{COLOUR WINDOW_2}Preferowana inteligencja:'
   1688: '{COLOUR WINDOW_2}Preferowana zaciekłość:'
@@ -1724,9 +1724,9 @@ strings:
   1694: '{COLOUR WINDOW_2}Pożyczka początkowa:'
   1695: '{CURRENCY32}'
   1696: '{COLOUR WINDOW_2}Maksymalna wielkość pożyczki:'
-  1697: '{POP16}{POP16}{CURRENCY32}'
+  1697: '{CURRENCY32}'
   1698: '{COLOUR WINDOW_2}Stawka oprocentowania pożyczki:'
-  1699: '{POP16}{POP16}{POP16}{POP16}{INT16}%'
+  1699: '{INT16}%'
   1700: Edytuj...
   1701: '{COLOUR WINDOW_2}Nazwa scenariusza: {COLOUR BLACK}{STRINGID}'
   1702: '{COLOUR WINDOW_2}Grupa scenariusza:'
@@ -1887,7 +1887,7 @@ strings:
   1857: '{CURRENCY32}'
   1858: '{INT16_1DP}%'
   1859: '{INT32}'
-  1860: '{POP16}{POP16}{POP16}{INT16} lat(a)'
+  1860: '{INT16} lat(a)'
   1861: '{SMALLFONT}(Ukończony przez {STRINGID} w {INT16} lat(a) i {INT16} mies.)'
   1862: '{COLOUR WINDOW_2}Sukces!{NEWLINE}{COLOUR BLACK}  Ukończono wyzwanie w {INT16} lat(a) i {INT16} mies.'
   1863: '{COLOUR WINDOW_2}Porażka!{NEWLINE}{COLOUR BLACK}  Nie udało się zrealizować wyzwania'

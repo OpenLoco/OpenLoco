@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(640, 272, StringIds::title_company_list),
             makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
             makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         window->invalidate();
 
-        window->widgets = CompanyList::widgets;
+        window->setWidgets(CompanyList::widgets);
         window->enabledWidgets = CompanyList::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &CompanyList::getEvents();
@@ -641,7 +641,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(635, 322, StringIds::title_company_performance),
             widgetEnd(),
         };
@@ -734,7 +734,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(635, 322, StringIds::title_company_cargo_units),
             widgetEnd(),
         };
@@ -827,7 +827,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(635, 322, StringIds::title_cargo_distance_graphs),
             widgetEnd(),
         };
@@ -920,7 +920,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(685, 322, StringIds::title_company_values),
             widgetEnd(),
         };
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(495, 342, StringIds::title_cargo_payment_rates),
             widgetEnd(),
         };
@@ -1227,7 +1227,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(495, 169, StringIds::title_speed_records),
             widgetEnd(),
         };
@@ -1315,7 +1315,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -1424,14 +1424,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436419
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab
             self.activatedWidgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
             self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -1466,7 +1458,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             self->invalidate();
 

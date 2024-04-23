@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             change_owner_name,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(270, 182, StringIds::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, WidgetType::wt_13, WindowColour::secondary),
             makeWidget({ 3, 44 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name in title.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.disabledWidgets &= ~((1 << widx::centre_on_viewport) | (1 << widx::face));
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->height = Status::kWindowSize.height;
         window->invalidate();
 
-        window->widgets = Status::widgets;
+        window->setWidgets(Status::widgets);
         window->enabledWidgets = Status::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Status::getEvents();
@@ -675,7 +675,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             centre_on_viewport,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 315, 92 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_build_or_move_headquarters),
@@ -692,7 +692,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             auto companyColour = CompanyManager::getCompanyColour(CompanyId(self.number));
@@ -1284,7 +1284,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
         // clang-format on
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(265, 252, StringIds::title_company_colour_scheme),
             makeWidget({ 15, 81 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 98 }, { 204, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
@@ -1330,7 +1330,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -1683,7 +1683,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         constexpr uint16_t expenditureColumnWidth = 128;
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal),
             makeStepperWidgets({ 87, 264 }, { 100, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::company_current_loan_value),
@@ -1700,14 +1700,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::switchTabWidgets(&self);
 
-            // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            FormatArguments args{};
-            args.push(company->name);
-            args.push<uint32_t>(0);
-            args.push<uint16_t>(0);
-            // Used for the loan stepper current value at offset 4
-            args.push(company->currentLoan);
+
+            // Set company name.
+            {
+                auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
+                args.push(company->name);
+            }
+
+            // Set current loan value.
+            {
+                auto args = FormatArguments(self.widgets[widx::currentLoan].textArgs);
+                args.push(company->currentLoan);
+            }
 
             self.widgets[Common::widx::frame].right = self.width - 1;
             self.widgets[Common::widx::frame].bottom = self.height - 1;
@@ -2199,7 +2204,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->height = Finances::kWindowSize.height;
         window->invalidate();
 
-        window->widgets = Finances::widgets;
+        window->setWidgets(Finances::widgets);
         window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
         window->eventHandlers = &Finances::getEvents();
@@ -2217,7 +2222,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 240, 382 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
             widgetEnd(),
         };
@@ -2231,7 +2236,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -2394,7 +2399,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         static constexpr Ui::Size kWindowSize = { 320, 182 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(320, 182, StringIds::title_company_challenge),
             widgetEnd(),
         };
@@ -2408,7 +2413,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Set company name.
             auto company = CompanyManager::get(CompanyId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(company->name);
 
             self.widgets[Common::widx::frame].right = self.width - 1;
@@ -2601,7 +2606,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->height = Challenge::kWindowSize.height;
         window->invalidate();
 
-        window->widgets = Challenge::widgets;
+        window->setWidgets(Challenge::widgets);
         window->enabledWidgets = Challenge::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Challenge::getEvents();
@@ -2618,7 +2623,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -2664,7 +2669,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             self->activatedWidgets = 0;
 
-            static Widget* widgetCollectionsByTabId[] = {
+            static std::span<const Widget> widgetCollectionsByTabId[] = {
                 Status::widgets,
                 Details::widgets,
                 ColourScheme::widgets,
@@ -2673,12 +2678,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Challenge::widgets,
             };
 
-            Widget* newWidgets = widgetCollectionsByTabId[self->currentTab];
-            if (self->widgets != newWidgets)
-            {
-                self->widgets = newWidgets;
-                // self->initScrollWidgets();
-            }
+            auto newWidgets = widgetCollectionsByTabId[self->currentTab];
+            self->setWidgets(newWidgets);
+            // self->initScrollWidgets();
 
             static const widx tabWidgetIdxByTabId[] = {
                 tab_status,
@@ -2714,7 +2716,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             if (tabInfo.widgetIndex == widx::tab_finances)
                 self->holdableWidgets = Finances::holdableWidgets;

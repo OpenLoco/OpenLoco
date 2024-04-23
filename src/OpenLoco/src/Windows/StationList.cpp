@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::StationList
         scrollview,
     };
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 600, 197 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::stringid_all_stations),
         makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->currentTab = 0;
         window->invalidate();
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = (1 << close_button) | (1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports) | (1 << company_select) | (1 << sort_name) | (1 << sort_status) | (1 << sort_total_waiting) | (1 << sort_accepts) | (1 << scrollview);
 
         window->activatedWidgets = 0;
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Set company name.
         auto company = CompanyManager::get(CompanyId(window.number));
-        auto args = FormatArguments::common();
+        auto args = FormatArguments(window.widgets[widx::caption].textArgs);
         args.push(company->name);
 
         // Set window title.

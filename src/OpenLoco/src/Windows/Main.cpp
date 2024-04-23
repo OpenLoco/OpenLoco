@@ -18,7 +18,7 @@ namespace OpenLoco::Ui::Windows::Main
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, WindowColour::primary, Widget::kContentUnk),
         widgetEnd(),
     };
@@ -31,9 +31,6 @@ namespace OpenLoco::Ui::Windows::Main
         const int32_t uiWidth = Ui::width();
         const int32_t uiHeight = Ui::height();
 
-        _widgets[widx::viewport].bottom = uiHeight;
-        _widgets[widx::viewport].right = uiWidth;
-
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
@@ -41,7 +38,10 @@ namespace OpenLoco::Ui::Windows::Main
             Ui::WindowFlags::stickToBack,
             getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
+        window->widgets[widx::viewport].bottom = uiHeight;
+        window->widgets[widx::viewport].right = uiWidth;
+
         WindowManager::setCurrentRotation(0);
         ViewportManager::create(
             window,

@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         };
     }
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
         makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             WindowFlags::stickToFront | WindowFlags::flag_12,
             getEvents());
 
-        self->widgets = _widgets;
+        self->setWidgets(_widgets);
         self->enabledWidgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 

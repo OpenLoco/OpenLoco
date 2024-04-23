@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::Industry
             demolish_industry,
         };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(223, 137, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, Widget::kContentUnk),
             makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
@@ -331,7 +331,7 @@ namespace OpenLoco::Ui::Windows::Industry
         window->currentTab = Common::widx::tab_industry - Common::widx::tab_industry;
         window->invalidate();
 
-        window->widgets = Industry::widgets;
+        window->setWidgets(Industry::widgets);
         window->enabledWidgets = Industry::enabledWidgets;
         window->holdableWidgets = 0;
         window->eventHandlers = &Industry::getEvents();
@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static constexpr Ui::Size kMaxWindowSize = { 299, 337 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
             widgetEnd(),
         };
@@ -429,7 +429,7 @@ namespace OpenLoco::Ui::Windows::Industry
     {
         static constexpr Ui::Size kWindowSize = { 300, 127 };
 
-        static Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(300, 126, StringIds::title_statistics),
             widgetEnd(),
         };
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui::Windows::Industry
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -695,14 +695,6 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed.
-            auto tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab.
             self.activatedWidgets &= ~((1ULL << widx::tab_industry) | (1ULL << widx::tab_production) | (1ULL << widx::tab_production_2) | (1ULL << widx::tab_transported));
             widx widgetIndex = tabInformationByTabOffset[self.currentTab].widgetIndex;
@@ -710,7 +702,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Put industry name in place.
             auto industry = IndustryManager::get(IndustryId(self.number));
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(industry->name);
             args.push(industry->town);
 
@@ -803,7 +795,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             Common::setDisabledWidgets(self);
 

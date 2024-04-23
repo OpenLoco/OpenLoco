@@ -111,12 +111,36 @@ namespace OpenLoco::Gfx
     void initialiseCharacterWidths();
     void initialiseNoiseMaskMap();
 
-    [[nodiscard]] uint32_t recolour(uint32_t image);
-    [[nodiscard]] uint32_t recolour(uint32_t image, Colour colour);
-    [[nodiscard]] uint32_t recolour(uint32_t image, ExtColour colour);
-    [[nodiscard]] uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2);
-    [[nodiscard]] uint32_t recolour2(uint32_t image, ColourScheme colourScheme);
-    [[nodiscard]] uint32_t recolourTranslucent(uint32_t image, ExtColour colour);
+    // TODO: Move the recolour functions into Colour.h
+    [[nodiscard]] constexpr uint32_t recolour(uint32_t image)
+    {
+        return ImageIdFlags::remap | image;
+    }
+
+    [[nodiscard]] constexpr uint32_t recolour(uint32_t image, ExtColour colour)
+    {
+        return ImageIdFlags::remap | (enumValue(colour) << 19) | image;
+    }
+    [[nodiscard]] constexpr uint32_t recolour(uint32_t image, Colour colour)
+    {
+        return recolour(image, Colours::toExt(colour));
+    }
+
+    [[nodiscard]] constexpr uint32_t recolour2(uint32_t image, Colour colour1, Colour colour2)
+    {
+        return ImageIdFlags::remap | ImageIdFlags::remap2 | (enumValue(colour1) << 19) | (enumValue(colour2) << 24) | image;
+    }
+
+    [[nodiscard]] constexpr uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
+    {
+        return recolour2(image, colourScheme.primary, colourScheme.secondary);
+    }
+
+    [[nodiscard]] constexpr uint32_t recolourTranslucent(uint32_t image, ExtColour colour)
+    {
+        return ImageIdFlags::translucent | (enumValue(colour) << 19) | image;
+    }
+
     [[nodiscard]] ImageId applyGhostToImage(uint32_t imageIndex);
     [[nodiscard]] constexpr uint32_t getImageIndex(uint32_t imageId) { return imageId & 0x7FFFF; }
 

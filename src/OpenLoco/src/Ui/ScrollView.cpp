@@ -179,9 +179,13 @@ namespace OpenLoco::Ui::ScrollView
     {
         GetPartResult res{ { x, y }, ScrollPart::none, 0 };
 
-        for (const auto* winWidget = window->widgets; winWidget != widget; winWidget++)
+        for (auto& widget2 : window->widgets)
         {
-            if (winWidget->type == WidgetType::scrollview)
+            if (widget == &widget2)
+            {
+                break;
+            }
+            if (widget2.type == WidgetType::scrollview)
             {
                 res.index++;
             }

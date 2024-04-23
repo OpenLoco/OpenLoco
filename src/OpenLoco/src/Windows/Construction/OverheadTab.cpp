@@ -30,7 +30,7 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
-    Widget widgets[] = {
+    constexpr Widget widgets[] = {
         commonWidgets(138, 192, StringIds::stringid_2),
         makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 3, 57 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto trackType = _trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(roadObj->name);
 
             for (auto i = 0; i < 2; i++)
@@ -428,7 +428,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         {
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
             args.push(trackObj->name);
 
             for (auto i = 0; i < 4; i++)

@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_town_name) | (1 << sort_town_type) | (1 << sort_town_population) | (1 << sort_town_stations) | (1 << scrollview);
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_towns),
             makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_by_name),
             makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::buttonTableHeader, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_sort_town_type),
@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->height = TownList::kWindowSize.height;
             window->invalidate();
 
-            window->widgets = TownList::widgets;
+            window->setWidgets(TownList::widgets);
             window->enabledWidgets = TownList::enabledWidgets;
 
             if (isEditorMode() || isSandboxMode())
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << current_size) | (1 << select_size);
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(220, 87, StringIds::title_build_new_towns),
             makeDropdownWidgets({ 100, 45 }, { 117, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_town_size),
             widgetEnd(),
@@ -831,7 +831,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
 
-        Widget widgets[] = {
+        static constexpr Widget widgets[] = {
             commonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
             makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
@@ -1495,7 +1495,7 @@ namespace OpenLoco::Ui::Windows::TownList
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             const widx widgetIndex;
             const WindowEventList& events;
             const uint64_t enabledWidgets;
@@ -1512,14 +1512,6 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static void prepareDraw(Window& self)
         {
-            // Reset tab widgets if needed
-            const auto& tabWidgets = tabInformationByTabOffset[self.currentTab].widgets;
-            if (self.widgets != tabWidgets)
-            {
-                self.widgets = tabWidgets;
-                self.initScrollWidgets();
-            }
-
             // Activate the current tab
             self.activatedWidgets &= ~((1ULL << tab_town_list) | (1ULL << tab_build_town) | (1ULL << tab_build_buildings) | (1ULL << tab_build_misc_buildings));
             self.activatedWidgets |= (1ULL << Common::tabInformationByTabOffset[self.currentTab].widgetIndex);
@@ -1655,7 +1647,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->holdableWidgets = 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
 
             if (isEditorMode() || isSandboxMode())
                 self->disabledWidgets = 0;

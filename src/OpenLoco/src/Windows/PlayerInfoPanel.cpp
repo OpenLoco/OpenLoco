@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void companyValueMouseUp();
 
     // 0x00509d08
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
         makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::buttonWithImage, WindowColour::primary),
@@ -160,7 +160,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             Ui::Size(kWindowSize.width, kWindowSize.height),
             Ui::WindowFlags::stickToFront | Ui::WindowFlags::transparent | Ui::WindowFlags::noBackground,
             getEvents());
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performanceIndex);
         window->var_854 = 0;
         window->initScrollWidgets();
@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     {
         auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        Widget& frame = _widgets[Widx::outer_frame];
+        Widget& frame = window.widgets[Widx::outer_frame];
         drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.

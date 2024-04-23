@@ -25,7 +25,7 @@ using namespace OpenLoco::World::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Signal
 {
-    Widget widgets[] = {
+    constexpr Widget widgets[] = {
         commonWidgets(138, 167, StringIds::stringid_2),
         makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_signal_type),
         makeWidget({ 27, 110 }, { 40, 40 }, WidgetType::buttonWithImage, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_signal_both_directions),
@@ -288,7 +288,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-        auto args = FormatArguments::common();
+        auto args = FormatArguments(self.widgets[Common::widx::caption].textArgs);
         args.push(trackObj->name);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);

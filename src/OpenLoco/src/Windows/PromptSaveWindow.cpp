@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         cancelButton,
     };
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, WindowColour::primary),
         makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, WindowColour::primary, StringIds::empty),
         makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::button, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             if (window == nullptr)
                 return nullptr;
 
-            window->widgets = _widgets;
+            window->setWidgets(_widgets);
             window->enabledWidgets = (1 << widx::closeButton) | (1 << widx::saveButton) | (1 << widx::dontSaveButton) | (1 << widx::cancelButton);
             window->initScrollWidgets();
             window->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());

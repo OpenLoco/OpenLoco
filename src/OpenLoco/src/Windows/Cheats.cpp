@@ -162,7 +162,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::financial_cheats),
             // money
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_increase_funds),
@@ -509,7 +509,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::company_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_company),
             makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::textbox, WindowColour::secondary),
@@ -698,7 +698,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::vehicle_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_vehicle_reliability),
             makeWidget({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_reliability_zero),
@@ -852,7 +852,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static Widget _widgets[] = {
+        static constexpr Widget _widgets[] = {
             commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::town_cheats),
             makeWidget({ 4, 48 }, { kWindowSize.width - 8, 49 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_ratings),
             makeWidget({ 10, 62 }, { (kWindowSize.width - 26) / 2, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_ratings_min_10pct),
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         Finances::initDate();
 
-        window->widgets = Finances::_widgets;
+        window->setWidgets(Finances::_widgets);
         window->currentTab = Common::Widx::tab_finances - Common::Widx::tab_finances;
         window->enabledWidgets = Finances::enabledWidgets;
         window->holdableWidgets = Finances::holdableWidgets;
@@ -992,7 +992,7 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         struct TabInformation
         {
-            Widget* widgets;
+            std::span<const Widget> widgets;
             WidgetIndex_t widgetIndex;
             const WindowEventList& events;
             const uint64_t* enabledWidgets;
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             self->holdableWidgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
             self->eventHandlers = &tabInfo.events;
             self->activatedWidgets = 0;
-            self->widgets = tabInfo.widgets;
+            self->setWidgets(tabInfo.widgets);
             self->disabledWidgets = 0;
 
             self->invalidate();

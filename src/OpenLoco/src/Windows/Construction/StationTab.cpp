@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
-    Widget widgets[] = {
+    constexpr Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
         makeDropdownWidgets({ 3, 45 }, { 132, 12 }, WidgetType::combobox, WindowColour::secondary, Widget::kContentNull, StringIds::tooltip_select_station_type),
         makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, WindowColour::secondary),
@@ -873,7 +873,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         self.widgets[widx::rotate].type = WidgetType::none;
 
-        auto args = FormatArguments::common();
+        auto captionArgs = FormatArguments(self.widgets[Common::widx::caption].textArgs);
 
         if (_byte_1136063 & (1 << 7))
         {
@@ -883,7 +883,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             self.widgets[widx::station].text = airportObj->name;
 
-            args.push(StringIds::title_airport);
+            captionArgs.push(StringIds::title_airport);
         }
         else if (_byte_1136063 & (1 << 6))
         {
@@ -891,7 +891,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             self.widgets[widx::station].text = dockObj->name;
 
-            args.push(StringIds::title_ship_port);
+            captionArgs.push(StringIds::title_ship_port);
         }
         else if (_trackType & (1 << 7))
         {
@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
             auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
-            args.push(roadObj->name);
+            captionArgs.push(roadObj->name);
 
             auto roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
-            args.push(trackObj->name);
+            captionArgs.push(trackObj->name);
 
             auto trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 

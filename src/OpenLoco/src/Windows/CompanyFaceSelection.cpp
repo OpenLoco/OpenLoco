@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     };
 
     // 0x509680
-    static Widget widgets[] = {
+    static constexpr Widget widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::company_face_selection_title),
         makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         else
         {
             self = WindowManager::createWindow(WindowType::companyFaceSelection, kWindowSize, WindowFlags::none, getEvents());
-            self->widgets = widgets;
+            self->setWidgets(widgets);
             self->enabledWidgets = (1 << widx::close_button);
             self->initScrollWidgets();
             _9C68F2 = id;
@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self.widgets[widx::caption].text = StringIds::company_face_selection_title;
 
             const auto company = CompanyManager::get(self.owner);
-            auto args = FormatArguments::common();
+            auto args = FormatArguments(self.widgets[widx::caption].textArgs);
             args.push(company->name);
         }
         else

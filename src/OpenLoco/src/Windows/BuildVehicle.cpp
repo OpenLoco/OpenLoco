@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     // 0x5231D0
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, WindowColour::primary),
         makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
         makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static Window* create(CompanyId company)
     {
         auto window = WindowManager::createWindow(WindowType::buildVehicle, kWindowSize, WindowFlags::flag_11, getEvents());
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->number = enumValue(company);
         window->enabledWidgets = (1ULL << widx::close_button) | (1ULL << widx::tab_build_new_trains) | (1ULL << widx::tab_build_new_buses) | (1ULL << widx::tab_build_new_trucks) | (1ULL << widx::tab_build_new_trams) | (1ULL << widx::tab_build_new_aircraft) | (1ULL << widx::tab_build_new_ships) | (1ULL << widx::tab_track_type_0) | (1ULL << widx::tab_track_type_1) | (1ULL << widx::tab_track_type_2) | (1ULL << widx::tab_track_type_3) | (1ULL << widx::tab_track_type_4) | (1ULL << widx::tab_track_type_5) | (1ULL << widx::tab_track_type_6) | (1ULL << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1ULL << widx::scrollview_vehicle_selection);
         window->owner = CompanyManager::getControllingId();
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             window->var_83C = 0;
             window->rowHover = -1;
             window->invalidate();
-            window->widgets = _widgets;
+            window->setWidgets(_widgets);
             window->enabledWidgets = (1ULL << widx::close_button) | (1ULL << widx::tab_build_new_trains) | (1ULL << widx::tab_build_new_buses) | (1ULL << widx::tab_build_new_trucks) | (1ULL << widx::tab_build_new_trams) | (1ULL << widx::tab_build_new_aircraft) | (1ULL << widx::tab_build_new_ships) | (1ULL << widx::tab_track_type_0) | (1ULL << widx::tab_track_type_1) | (1ULL << widx::tab_track_type_2) | (1ULL << widx::tab_track_type_3) | (1ULL << widx::tab_track_type_4) | (1ULL << widx::tab_track_type_5) | (1ULL << widx::tab_track_type_6) | (1ULL << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1ULL << widx::scrollview_vehicle_selection);
             window->holdableWidgets = 0;
             window->eventHandlers = &getEvents();
@@ -741,7 +741,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 window.enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1ULL << widx::searchClearButton) | (1ULL << widx::filterLabel) | (1ULL << widx::filterDropdown) | (1ULL << widx::cargoLabel) | (1ULL << widx::cargoDropdown) | (1 << widx::scrollview_vehicle_selection);
                 window.holdableWidgets = 0;
                 window.eventHandlers = &getEvents();
-                window.widgets = _widgets;
+                window.setWidgets(_widgets);
                 setDisabledTransportTabs(&window);
                 window.invalidate();
                 _buildTargetVehicle = -1;
@@ -1143,12 +1143,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C2E5C
     static void prepareDraw(Ui::Window& window)
     {
-        if (window.widgets != _widgets)
-        {
-            window.widgets = _widgets;
-            window.initScrollWidgets();
-        }
-
         setDisabledTransportTabs(&window);
 
         // Mask off all the tabs

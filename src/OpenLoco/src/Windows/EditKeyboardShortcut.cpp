@@ -21,7 +21,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
     static loco_global<uint8_t, 0x011364A4> _editingShortcutIndex;
 
-    static Widget _widgets[] = {
+    static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, kWindowSize, WidgetType::frame, WindowColour::primary),                                                                     // 0,
         makeWidget({ 1, 1 }, { kWindowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::change_keyboard_shortcut),         // 1,
         makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::buttonWithImage, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), // 2,
@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
         auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, kWindowSize, WindowFlags::none, getEvents());
 
-        window->widgets = _widgets;
+        window->setWidgets(_widgets);
         window->enabledWidgets = 1 << Widx::close;
         window->initScrollWidgets();
 
