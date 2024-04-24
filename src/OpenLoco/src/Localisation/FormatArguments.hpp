@@ -61,7 +61,7 @@ namespace OpenLoco
 
         FormatArguments()
         {
-            loco_global<std::byte[14], 0x0112C826> _commonFormatArgs;
+            loco_global<std::byte[20], 0x0112C826> _commonFormatArgs;
 
             _bufferStart = _buffer = &*_commonFormatArgs;
             _length = std::size(_commonFormatArgs);
@@ -70,7 +70,7 @@ namespace OpenLoco
         template<typename... T>
         static FormatArguments common(T&&... args)
         {
-            loco_global<std::byte[14], 0x0112C826> _commonFormatArgs;
+            loco_global<std::byte[20], 0x0112C826> _commonFormatArgs;
             FormatArguments formatter{ _commonFormatArgs.get(), std::size(_commonFormatArgs) };
             (formatter.push(args), ...);
             return formatter;
