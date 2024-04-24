@@ -11,36 +11,13 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
+#include "World/Industry.h"
 #include "World/Station.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 
 namespace OpenLoco::GameCommands
 {
-    // TODO: Copied from Industry.h
-    struct Unk4F9274
-    {
-        World::Pos2 pos;
-        uint8_t index;
-    };
-
-    // TODO: Copied from Industry.cpp
-    static const std::array<Unk4F9274, 1> word_4F9274 = {
-        Unk4F9274{ { 0, 0 }, 0 },
-    };
-    static const std::array<Unk4F9274, 4> word_4F927C = {
-        Unk4F9274{ { 0, 0 }, 0 },
-        Unk4F9274{ { 0, 32 }, 1 },
-        Unk4F9274{ { 32, 32 }, 2 },
-        Unk4F9274{ { 32, 0 }, 3 },
-    };
-    static const std::span<const Unk4F9274> getBuildingTileOffsets(bool type)
-    {
-        if (type)
-            return word_4F927C;
-        return word_4F9274;
-    }
-
     static World::StationElement* getStationEl(const World::Pos3& pos)
     {
         auto tile = World::TileManager::get(pos);
