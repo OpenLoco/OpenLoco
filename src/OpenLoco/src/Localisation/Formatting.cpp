@@ -78,56 +78,46 @@ namespace OpenLoco::StringManager
         return kMonthToStringMap.find(month)->second;
     }
 
+    // 0x00495F35
     static char* formatInt32Grouped(int32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
-
-        call(0x00495F35, regs);
-        return X86Pointer<char>(regs.edi);
+        auto* ret = fmt::format_to(buffer, std::locale(), "{:L}", value);
+        *ret = '\0';
+        return ret;
     }
 
+    // 0x00495E2A
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
-
-        call(0x495E2A, regs);
-        return X86Pointer<char>(regs.edi);
+        auto* ret = fmt::format_to(buffer, "{}", value);
+        *ret = '\0';
+        return ret;
     }
 
+    // 0x00496052
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
-        regs.edi = X86Pointer(buffer);
-        regs.ebx = (uint32_t)separator;
-
-        call(0x496052, regs);
-        return X86Pointer<char>(regs.edi);
+        auto* ret = fmt::format_to(buffer, std::locale(), "{:L}", value * static_cast<uint64_t>(std::pow(10, separator)));
+        *ret = '\0';
+        return ret;
     }
 
-    static char* formatShortWithDecimals(int16_t value, char* buffer)
+    // 0x004963FC
+    static char* formatShortWithOneDecimal(int16_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
-
-        call(0x4963FC, regs);
-        return X86Pointer<char>(regs.edi);
+        auto* ret = fmt::format_to(buffer, std::locale(), "{:L}", value / 10);
+        ret = fmt::format_to(ret, ".{}", value % 10);
+        *ret = '\0';
+        return ret;
     }
 
-    static char* formatIntWithDecimals(int32_t value, char* buffer)
+    // 0x004962F1
+    static char* formatIntWithTwoDecimals(int32_t value, char* buffer)
     {
-        registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = X86Pointer(buffer);
-
-        call(0x4962F1, regs);
-        return X86Pointer<char>(regs.edi);
+        auto* ret = fmt::format_to(buffer, std::locale(), "{:L}", value / 100);
+        ret = fmt::format_to(ret, ".{}", value % 100);
+        *ret = '\0';
+        return ret;
     }
 
     // 0x00495D09
@@ -400,14 +390,14 @@ namespace OpenLoco::StringManager
                     case ControlCodes::int16_decimals:
                     {
                         int16_t value = args.pop<int16_t>();
-                        buffer = formatShortWithDecimals(value, buffer);
+                        buffer = formatShortWithOneDecimal(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int32_decimals:
                     {
                         int32_t value = args.pop<int32_t>();
-                        buffer = formatIntWithDecimals(value, buffer);
+                        buffer = formatIntWithTwoDecimals(value, buffer);
                         break;
                     }
 

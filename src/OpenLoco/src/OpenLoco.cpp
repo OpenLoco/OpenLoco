@@ -1014,6 +1014,7 @@ namespace OpenLoco
 
             const auto& cfg = Config::read();
             Environment::resolvePaths();
+            Environment::setLocale();
 
             resetCmdline();
             registerHooks();
