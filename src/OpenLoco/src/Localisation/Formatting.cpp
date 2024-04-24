@@ -709,6 +709,17 @@ namespace OpenLoco::StringManager
         return formatStringImpl(buffer, id, wrapped);
     }
 
+    char* formatString(char* buffer, StringId id, FormatArgumentsView args)
+    {
+        return formatString(buffer, 0xFFFFFFFFU, id, args);
+    }
+
+    char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, StringId id, FormatArgumentsView args)
+    {
+        // TODO: Make use of bufferLen.
+        return formatStringImpl(buffer, id, args);
+    }
+
     StringId isTownName(StringId stringId)
     {
         return stringId >= kTownNamesStart && stringId < kTownNamesEnd;
