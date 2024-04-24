@@ -1979,6 +1979,14 @@ namespace OpenLoco::StringIds
     constexpr StringId currentHeightmapFile = 2343;
     constexpr StringId noneSelected = 2344;
     constexpr StringId checkingScenarioFiles = 2345;
+    constexpr StringId cheat_set_industry_production_factor = 2345;
+    constexpr StringId cheat_apply = 2346;
+    constexpr StringId cheat_offset = 2347;
+    constexpr StringId cheat_industry_production_percent = 2348;
+    constexpr StringId industry_cheats = 2349;
+    constexpr StringId cheat_select_target_industry = 2350;
+    constexpr StringId cheat_all_industries = 2351;
+    constexpr StringId cheat_selected_industry = 2352;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

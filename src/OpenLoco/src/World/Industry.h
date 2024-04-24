@@ -89,6 +89,7 @@ namespace OpenLoco
         void expandGrounds(const World::Pos2& pos, uint8_t primaryWallType, uint8_t wallEntranceType, uint8_t dl);
         void createMapAnimations();
         void updateProducedCargoStats();
+        void offsetProductionRate(int16_t offset);
 
         constexpr bool hasFlags(IndustryFlags flagsToTest) const
         {

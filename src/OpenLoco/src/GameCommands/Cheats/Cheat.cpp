@@ -13,6 +13,7 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -196,6 +197,28 @@ namespace OpenLoco::GameCommands
             Logging::info("Date set to: Day={} Month={} Year={}", day, month, year);
             return 0;
         }
+
+        static uint32_t industryProductionPercentageOffset(IndustryId targetIndustryId, int32_t offset)
+        {
+            if (targetIndustryId == IndustryId::null)
+            {
+                for (auto& industry : IndustryManager::industries())
+                {
+                    industry.offsetProductionRate(offset);
+                }
+                return 0;
+            }
+
+            auto industry = IndustryManager::get(targetIndustryId);
+            if (!industry)
+            {
+                return FAILURE;
+            }
+
+            industry->offsetProductionRate(offset);
+
+            return 0;
+        }
     }
 
     static uint32_t cheat(const GameCommands::GenericCheatArgs& args, uint8_t flags)
@@ -234,6 +257,9 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::completeChallenge:
                 return Cheats::completeChallenge(CompanyId(args.param1));
+
+            case CheatCommand::industryProductionPercentageOffset:
+                return Cheats::industryProductionPercentageOffset(IndustryId(args.param1), args.param2);
 
             default:
                 break;

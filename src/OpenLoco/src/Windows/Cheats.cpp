@@ -18,6 +18,8 @@
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
+#include "World/IndustryManager.h"
+
 #include <OpenLoco/Math/Bound.hpp>
 
 using OpenLoco::GameCommands::CheatCommand;
@@ -38,9 +40,10 @@ namespace OpenLoco::Ui::Windows::Cheats
                 tab_companies,
                 tab_vehicles,
                 tab_towns,
+                tab_industries
             };
             // this should be 1 more than the number of widgets defined above in commonWidgets
-            constexpr uint32_t nextWidx = 8;
+            constexpr uint32_t nextWidx = 9;
         }
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                      \
@@ -51,9 +54,10 @@ namespace OpenLoco::Ui::Windows::Cheats
         makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab),                                                             \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab),                                                            \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab),                                                            \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab)
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab),                                                            \
+        makeRemapWidget({ 124, 15 }, { 31, 27 }, WidgetType::tab, WindowColour::secondary, ImageIds::tab)
 
-        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
+        constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns) | (1 << Widx::tab_industries);
 
         static void drawTabs(Ui::Window* const self, Gfx::RenderTarget* const rt)
         {
@@ -126,6 +130,12 @@ namespace OpenLoco::Ui::Windows::Cheats
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
                 Widget::drawTab(self, rt, imageId, Widx::tab_towns);
+            }
+
+            // Industries tab
+            {
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
+                Widget::drawTab(self, rt, imageId, Widx::tab_industries);
             }
         }
 
@@ -202,7 +212,6 @@ namespace OpenLoco::Ui::Windows::Cheats
             | (1 << Widx::year_step_increase)
             | (1 << Widx::month_step_decrease)
             | (1 << Widx::month_step_increase)
-            | (1 << Widx::day_step_decrease)
             | (1 << Widx::day_step_increase);
 
         static currency32_t _cashIncreaseStep = 10'000;
@@ -351,6 +360,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_industries:
                     Common::switchTab(&self, widgetIndex);
                     break;
 
@@ -581,6 +591,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_industries:
                     Common::switchTab(&self, widgetIndex);
                     break;
 
@@ -755,6 +766,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_industries:
                     Common::switchTab(&self, widgetIndex);
                     break;
 
@@ -888,6 +900,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_companies:
                 case Common::Widx::tab_vehicles:
                 case Common::Widx::tab_towns:
+                case Common::Widx::tab_industries:
                     Common::switchTab(&self, widgetIndex);
                     break;
 
@@ -961,6 +974,255 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
+    namespace Industries
+    {
+        static constexpr Ui::Size kWindowSize = { 250, 188 };
+
+        namespace Widx
+        {
+            enum
+            {
+                target_industry_group = Common::Widx::nextWidx,
+                target_industry_dropdown,
+                target_industry_dropdown_btn,
+                production_percentage_group,
+                production_percentage_value,
+                production_percentage_decrease,
+                production_percentage_increase,
+                production_percentage_apply,
+            };
+        }
+
+        static Widget _widgets[] = {
+            commonWidgets(kWindowSize.width, kWindowSize.height, StringIds::industry_cheats),
+
+            makeWidget({ 4, 48 }, { kWindowSize.width - 8, 33 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_select_target_industry),
+            makeDropdownWidgets({ 10, 62 }, { kWindowSize.width - 20, 12 }, WidgetType::textbox, WindowColour::secondary),
+
+            makeWidget({ 4, 86 }, { kWindowSize.width - 8, 96 }, WidgetType::groupbox, WindowColour::secondary, StringIds::cheat_set_industry_production_factor),
+            makeStepperWidgets({ 80, 100 }, { 95, 12 }, WidgetType::textbox, WindowColour::secondary, StringIds::empty),
+            makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::button, WindowColour::secondary, StringIds::cheat_apply),
+            widgetEnd(),
+        };
+
+        static uint64_t enabledWidgets
+            = Common::enabledWidgets
+            | (1 << Widx::target_industry_group)
+            | (1 << Widx::target_industry_dropdown)
+            | (1 << Widx::target_industry_dropdown_btn)
+            | (1 << Widx::production_percentage_group)
+            | (1 << Widx::production_percentage_value)
+            | (1 << Widx::production_percentage_decrease)
+            | (1 << Widx::production_percentage_increase)
+            | (1 << Widx::production_percentage_apply);
+
+        const uint64_t holdableWidgets
+            = (1 << Widx::production_percentage_decrease)
+            | (1 << Widx::production_percentage_increase);
+
+        static IndustryId _targetIndustryId = IndustryId::null; // 1-offset index of IndustryManager::industries, 0 means "all industries"
+        static int16_t _productivityOffsetStep = 5;
+
+        static void prepareDraw(Window& self)
+        {
+            self.activatedWidgets = (1 << Common::Widx::tab_industries);
+        }
+
+        static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
+        {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+            // Draw widgets and tabs.
+            self.draw(rt);
+            Common::drawTabs(&self, rt);
+
+            // Draw selected industry name
+            {
+                auto& widget = self.widgets[Widx::target_industry_dropdown];
+                auto point = Point(self.x + widget.left, self.y + widget.top);
+                const auto industry = IndustryManager::get(_targetIndustryId);
+                if (industry)
+                {
+                    FormatArguments args{};
+                    args.push(industry->getObject()->name);
+                    drawingCtx.drawStringLeft(
+                        *rt,
+                        point,
+                        Colour::black,
+                        StringIds::cheat_selected_industry,
+                        &args);
+                }
+                else
+                {
+                    drawingCtx.drawStringLeft(
+                        *rt,
+                        point,
+                        Colour::black,
+                        StringIds::cheat_all_industries);
+                }
+            }
+
+            // Productivity section
+            {
+                auto& widget = self.widgets[Widx::production_percentage_value];
+                auto point = Point(self.x + 10, self.y + widget.top);
+
+                drawingCtx.drawStringLeft(
+                    *rt,
+                    point,
+                    Colour::black,
+                    StringIds::cheat_offset);
+
+                FormatArguments args{};
+                args.push(_productivityOffsetStep);
+
+                point = Point(self.x + widget.left + 1, self.y + widget.top);
+                drawingCtx.drawStringLeft(
+                    *rt,
+                    point,
+                    Colour::black,
+                    StringIds::cheat_industry_production_percent,
+                    &args);
+            }
+        }
+
+        static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case Common::Widx::close_button:
+                    WindowManager::close(self.type);
+                    break;
+
+                case Common::Widx::tab_finances:
+                case Common::Widx::tab_companies:
+                case Common::Widx::tab_vehicles:
+                case Common::Widx::tab_towns:
+                case Common::Widx::tab_industries:
+                    Common::switchTab(&self, widgetIndex);
+                    break;
+
+                case Widx::production_percentage_apply:
+                    GameCommands::GenericCheatArgs args{};
+                    args.subcommand = CheatCommand::industryProductionPercentageOffset;
+                    args.param1 = static_cast<int32_t>(_targetIndustryId);
+                    args.param2 = _productivityOffsetStep;
+
+                    GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+                    WindowManager::invalidate(WindowType::industry);
+                    WindowManager::invalidate(WindowType::industryList);
+                    break;
+            }
+        }
+
+        static void createTargetIndustryDropDown(Window& self);
+        static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
+        {
+            constexpr int16_t maxProductivityOffset = 100;
+            constexpr int16_t minProductivityOffset = -100;
+            constexpr int16_t step = 5;
+
+            switch (widgetIndex)
+            {
+                case Widx::target_industry_dropdown:
+                    createTargetIndustryDropDown(self);
+                    break;
+
+                case Widx::production_percentage_decrease:
+                    _productivityOffsetStep = std::min<int16_t>(std::max<int16_t>(_productivityOffsetStep - step, minProductivityOffset), maxProductivityOffset);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::production_percentage_value);
+                    break;
+
+                case Widx::production_percentage_increase:
+                    _productivityOffsetStep = std::min<int16_t>(std::max<int16_t>(_productivityOffsetStep + step, minProductivityOffset), maxProductivityOffset);
+                    WindowManager::invalidateWidget(self.type, self.number, Widx::production_percentage_value);
+                    break;
+            }
+
+            WindowManager::invalidate(WindowType::cheats);
+        }
+
+        static void createTargetIndustryDropDown(Window& self)
+        {
+            const auto& industries = IndustryManager::industries();
+            const size_t industryCount = industries.size() + 1;
+
+            auto widget = self.widgets[Widx::target_industry_dropdown];
+            auto xPos = widget.left + self.x;
+            auto yPos = widget.top + self.y;
+            auto width = widget.width() + 2;
+            auto height = widget.height();
+
+            Dropdown::show(xPos, yPos, width, height, self.getColour(WindowColour::secondary), industryCount, (1 << 7));
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::cheat_all_industries);
+            if (_targetIndustryId == IndustryId::null)
+                Dropdown::setHighlightedItem(0);
+
+            uint8_t dropDownIndex = 1;
+            for (const auto& industry : industries)
+            {
+                Dropdown::add(dropDownIndex, StringIds::dropdown_stringid, industry.name);
+
+                if (industry.id() == _targetIndustryId)
+                {
+                    Dropdown::setHighlightedItem(dropDownIndex);
+                }
+
+                dropDownIndex++;
+            }
+        }
+
+        static void onDropdown(Window& self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+        {
+            if (widgetIndex != Widx::target_industry_dropdown || itemIndex < 0)
+            {
+                return;
+            }
+
+            if (itemIndex == 0)
+            {
+                _targetIndustryId = IndustryId::null;
+                return;
+            }
+
+            // Find the industry at the index, offset by 1 because of the special "All industries" option
+            uint8_t currentIndex = 1;
+            for (const auto& industry : IndustryManager::industries())
+            {
+                if (currentIndex++ == itemIndex)
+                {
+                    _targetIndustryId = industry.id();
+                    break;
+                }
+            }
+
+            self.invalidate();
+        }
+
+        static void onUpdate(Window& self)
+        {
+            self.frameNo += 1;
+            self.callPrepareDraw();
+            WindowManager::invalidateWidget(self.type, self.number, Common::Widx::tab_industries);
+        }
+
+        static constexpr WindowEventList kEvents = {
+            .onMouseUp = onMouseUp,
+            .onMouseDown = onMouseDown,
+            .onDropdown = onDropdown,
+            .onUpdate = onUpdate,
+            .prepareDraw = prepareDraw,
+            .draw = draw,
+        };
+
+        static const WindowEventList& getEvents()
+        {
+            return kEvents;
+        }
+    }
+
     Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::cheats);
@@ -1006,6 +1268,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             { Companies::_widgets, Widx::tab_companies, Companies::getEvents(), &Companies::enabledWidgets, nullptr,                    Companies::kWindowSize },
             { Vehicles::_widgets,  Widx::tab_vehicles,  Vehicles::getEvents(),  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::kWindowSize  },
             { Towns::_widgets,     Widx::tab_towns,     Towns::getEvents(),     &Towns::enabledWidgets,     nullptr,                    Towns::kWindowSize     },
+            { Industries::_widgets,     Widx::tab_industries,     Industries::getEvents(),     &Industries::enabledWidgets,     &Industries::holdableWidgets,                    Industries::kWindowSize     },
         };
         // clang-format on
 

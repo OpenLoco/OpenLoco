@@ -51,6 +51,7 @@ namespace OpenLoco::GameCommands
         vehicleReliability,
         modifyDate,
         completeChallenge,
+        industryProductionPercentageOffset
     };
 
     struct GenericCheatArgs
