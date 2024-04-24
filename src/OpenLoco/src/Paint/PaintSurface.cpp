@@ -1,6 +1,7 @@
 #include "PaintSurface.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
+#include "Map/MapSelection.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
@@ -240,6 +241,90 @@ namespace OpenLoco::Paint
         }
     };
 
+    static constexpr std::array<uint32_t, 19> kCornerSelectionBoxFromSlope = {
+        ImageIds::constructionSelectionCornersSlope0,
+        ImageIds::constructionSelectionCornersSlope1,
+        ImageIds::constructionSelectionCornersSlope2,
+        ImageIds::constructionSelectionCornersSlope3,
+        ImageIds::constructionSelectionCornersSlope4,
+        ImageIds::constructionSelectionCornersSlope5,
+        ImageIds::constructionSelectionCornersSlope6,
+        ImageIds::constructionSelectionCornersSlope7,
+        ImageIds::constructionSelectionCornersSlope8,
+        ImageIds::constructionSelectionCornersSlope9,
+        ImageIds::constructionSelectionCornersSlope10,
+        ImageIds::constructionSelectionCornersSlope11,
+        ImageIds::constructionSelectionCornersSlope12,
+        ImageIds::constructionSelectionCornersSlope13,
+        ImageIds::constructionSelectionCornersSlope14,
+        ImageIds::constructionSelectionCornersSlope15,
+        ImageIds::constructionSelectionCornersSlope16,
+        ImageIds::constructionSelectionCornersSlope17,
+        ImageIds::constructionSelectionCornersSlope18,
+    };
+    static constexpr std::array<ExtColour, 4> kCornerColours = {
+        ExtColour::unk21,
+        ExtColour::unk22,
+        ExtColour::unk23,
+        ExtColour::unk24,
+    };
+
+    static constexpr std::array<uint32_t, 19> kQuadSelectionBoxFromSlope = {
+        ImageIds::constructionSelectionQuadsSlope0,
+        ImageIds::constructionSelectionQuadsSlope1,
+        ImageIds::constructionSelectionQuadsSlope2,
+        ImageIds::constructionSelectionQuadsSlope3,
+        ImageIds::constructionSelectionQuadsSlope4,
+        ImageIds::constructionSelectionQuadsSlope5,
+        ImageIds::constructionSelectionQuadsSlope6,
+        ImageIds::constructionSelectionQuadsSlope7,
+        ImageIds::constructionSelectionQuadsSlope8,
+        ImageIds::constructionSelectionQuadsSlope9,
+        ImageIds::constructionSelectionQuadsSlope10,
+        ImageIds::constructionSelectionQuadsSlope11,
+        ImageIds::constructionSelectionQuadsSlope12,
+        ImageIds::constructionSelectionQuadsSlope13,
+        ImageIds::constructionSelectionQuadsSlope14,
+        ImageIds::constructionSelectionQuadsSlope15,
+        ImageIds::constructionSelectionQuadsSlope16,
+        ImageIds::constructionSelectionQuadsSlope17,
+        ImageIds::constructionSelectionQuadsSlope18,
+    };
+    static constexpr std::array<ExtColour, 4> kQuarterColours = {
+        ExtColour::unk27,
+        ExtColour::unk28,
+        ExtColour::unk29,
+        ExtColour::unk2A,
+    };
+
+    static constexpr std::array<uint32_t, 19> kEdgeSelectionBoxFromSlope = {
+        ImageIds::constructionSelectionEdgesSlope0,
+        ImageIds::constructionSelectionEdgesSlope1,
+        ImageIds::constructionSelectionEdgesSlope2,
+        ImageIds::constructionSelectionEdgesSlope3,
+        ImageIds::constructionSelectionEdgesSlope4,
+        ImageIds::constructionSelectionEdgesSlope5,
+        ImageIds::constructionSelectionEdgesSlope6,
+        ImageIds::constructionSelectionEdgesSlope7,
+        ImageIds::constructionSelectionEdgesSlope8,
+        ImageIds::constructionSelectionEdgesSlope9,
+        ImageIds::constructionSelectionEdgesSlope10,
+        ImageIds::constructionSelectionEdgesSlope11,
+        ImageIds::constructionSelectionEdgesSlope12,
+        ImageIds::constructionSelectionEdgesSlope13,
+        ImageIds::constructionSelectionEdgesSlope14,
+        ImageIds::constructionSelectionEdgesSlope15,
+        ImageIds::constructionSelectionEdgesSlope16,
+        ImageIds::constructionSelectionEdgesSlope17,
+        ImageIds::constructionSelectionEdgesSlope18,
+    };
+    static constexpr std::array<ExtColour, 4> kEdgeColours = {
+        ExtColour::unk22,
+        ExtColour::unk23,
+        ExtColour::unk24,
+        ExtColour::unk25,
+    };
+
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
     {
         return Numerics::rotl4bit(slope & 0xF, rotation) | (slope & 0x10);
@@ -269,6 +354,7 @@ namespace OpenLoco::Paint
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
+        session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
         const auto zoomLevel = session.getRenderTarget()->zoomLevel;
         session.setDidPassSurface(true);
 
@@ -438,5 +524,71 @@ namespace OpenLoco::Paint
             }
         }
         // 0x00465E92
+
+        if (World::hasMapSelectionFlag(World::MapSelectionFlags::enable))
+        {
+            const auto pos = session.getUnkPosition();
+            auto [pointA, pointB] = getMapSelectionArea();
+            if (pos.x >= pointA.x && pos.x <= pointB.x && pos.y >= pointA.y
+                && pos.y <= pointB.y)
+            {
+                switch (World::getMapSelectionCorner())
+                {
+                    case World::MapSelectionType::corner0:
+                    case World::MapSelectionType::corner1:
+                    case World::MapSelectionType::corner2:
+                    case World::MapSelectionType::corner3:
+                    {
+                        // 0x00465F01
+                        uint32_t variation = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::corner0);
+                        variation = (variation + rotation) & 3;
+                        const auto colour = kCornerColours[variation];
+
+                        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[unkF252AC], colour);
+                        session.attachToPrevious(imageId, { 0, 0 });
+                        break;
+                    }
+                    case World::MapSelectionType::full:
+                    {
+                        // 0x00465F08
+                        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[unkF252AC], ExtColour::unk25);
+                        session.attachToPrevious(imageId, { 0, 0 });
+                        break;
+                    }
+                    case World::MapSelectionType::fullWater:
+                        // 0x00465F99
+                        break;
+                    case World::MapSelectionType::quarter0:
+                    case World::MapSelectionType::quarter1:
+                    case World::MapSelectionType::quarter2:
+                    case World::MapSelectionType::quarter3:
+                    {
+                        // 0x00465F36
+                        uint32_t variation = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::quarter0);
+                        variation = (variation + rotation) & 3;
+                        const auto colour = kQuarterColours[variation];
+
+                        const auto imageId = ImageId(kQuadSelectionBoxFromSlope[unkF252AC], colour);
+                        session.attachToPrevious(imageId, { 0, 0 });
+                        break;
+                    }
+                    case World::MapSelectionType::edge0:
+                    case World::MapSelectionType::edge1:
+                    case World::MapSelectionType::edge2:
+                    case World::MapSelectionType::edge3:
+
+                    {
+                        // 0x00465F69
+                        uint32_t variation = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::edge0);
+                        variation = (variation + rotation) & 3;
+                        const auto colour = kEdgeColours[variation];
+
+                        const auto imageId = ImageId(kEdgeSelectionBoxFromSlope[unkF252AC], colour);
+                        session.attachToPrevious(imageId, { 0, 0 });
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

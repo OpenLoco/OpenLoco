@@ -11,6 +11,66 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t default_palette = 304;
 
+    constexpr uint32_t constructionSelectionCornersSlope0 = 322;
+    constexpr uint32_t constructionSelectionCornersSlope1 = 323;
+    constexpr uint32_t constructionSelectionCornersSlope2 = 324;
+    constexpr uint32_t constructionSelectionCornersSlope3 = 325;
+    constexpr uint32_t constructionSelectionCornersSlope4 = 326;
+    constexpr uint32_t constructionSelectionCornersSlope5 = 327;
+    constexpr uint32_t constructionSelectionCornersSlope6 = 328;
+    constexpr uint32_t constructionSelectionCornersSlope7 = 329;
+    constexpr uint32_t constructionSelectionCornersSlope8 = 330;
+    constexpr uint32_t constructionSelectionCornersSlope9 = 331;
+    constexpr uint32_t constructionSelectionCornersSlope10 = 332;
+    constexpr uint32_t constructionSelectionCornersSlope11 = 333;
+    constexpr uint32_t constructionSelectionCornersSlope12 = 334;
+    constexpr uint32_t constructionSelectionCornersSlope13 = 335;
+    constexpr uint32_t constructionSelectionCornersSlope14 = 336;
+    constexpr uint32_t constructionSelectionCornersSlope15 = 337;
+    constexpr uint32_t constructionSelectionCornersSlope16 = 338;
+    constexpr uint32_t constructionSelectionCornersSlope17 = 339;
+    constexpr uint32_t constructionSelectionCornersSlope18 = 340;
+
+    constexpr uint32_t constructionSelectionEdgesSlope0 = 360;
+    constexpr uint32_t constructionSelectionEdgesSlope1 = 361;
+    constexpr uint32_t constructionSelectionEdgesSlope2 = 362;
+    constexpr uint32_t constructionSelectionEdgesSlope3 = 363;
+    constexpr uint32_t constructionSelectionEdgesSlope4 = 364;
+    constexpr uint32_t constructionSelectionEdgesSlope5 = 365;
+    constexpr uint32_t constructionSelectionEdgesSlope6 = 366;
+    constexpr uint32_t constructionSelectionEdgesSlope7 = 367;
+    constexpr uint32_t constructionSelectionEdgesSlope8 = 368;
+    constexpr uint32_t constructionSelectionEdgesSlope9 = 369;
+    constexpr uint32_t constructionSelectionEdgesSlope10 = 370;
+    constexpr uint32_t constructionSelectionEdgesSlope11 = 371;
+    constexpr uint32_t constructionSelectionEdgesSlope12 = 372;
+    constexpr uint32_t constructionSelectionEdgesSlope13 = 373;
+    constexpr uint32_t constructionSelectionEdgesSlope14 = 374;
+    constexpr uint32_t constructionSelectionEdgesSlope15 = 375;
+    constexpr uint32_t constructionSelectionEdgesSlope16 = 376;
+    constexpr uint32_t constructionSelectionEdgesSlope17 = 377;
+    constexpr uint32_t constructionSelectionEdgesSlope18 = 378;
+
+    constexpr uint32_t constructionSelectionQuadsSlope0 = 398;
+    constexpr uint32_t constructionSelectionQuadsSlope1 = 399;
+    constexpr uint32_t constructionSelectionQuadsSlope2 = 400;
+    constexpr uint32_t constructionSelectionQuadsSlope3 = 401;
+    constexpr uint32_t constructionSelectionQuadsSlope4 = 402;
+    constexpr uint32_t constructionSelectionQuadsSlope5 = 403;
+    constexpr uint32_t constructionSelectionQuadsSlope6 = 404;
+    constexpr uint32_t constructionSelectionQuadsSlope7 = 405;
+    constexpr uint32_t constructionSelectionQuadsSlope8 = 406;
+    constexpr uint32_t constructionSelectionQuadsSlope9 = 407;
+    constexpr uint32_t constructionSelectionQuadsSlope10 = 408;
+    constexpr uint32_t constructionSelectionQuadsSlope11 = 409;
+    constexpr uint32_t constructionSelectionQuadsSlope12 = 410;
+    constexpr uint32_t constructionSelectionQuadsSlope13 = 411;
+    constexpr uint32_t constructionSelectionQuadsSlope14 = 412;
+    constexpr uint32_t constructionSelectionQuadsSlope15 = 413;
+    constexpr uint32_t constructionSelectionQuadsSlope16 = 414;
+    constexpr uint32_t constructionSelectionQuadsSlope17 = 415;
+    constexpr uint32_t constructionSelectionQuadsSlope18 = 416;
+
     constexpr uint32_t construction_arrow_north = 428;
     constexpr uint32_t construction_arrow_east = 429;
     constexpr uint32_t construction_arrow_south = 430;
