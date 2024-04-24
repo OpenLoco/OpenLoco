@@ -214,7 +214,7 @@ namespace OpenLoco::StringManager
         return buffer;
     }
 
-    static char* formatString(char* buffer, StringId id, FormatArgumentsView& args);
+    static char* formatStringImpl(char* buffer, StringId id, FormatArgumentsView& args);
 
     constexpr uint32_t hpTokW(uint32_t hp)
     {
@@ -433,7 +433,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::stringidArgs:
                     {
                         StringId id = args.pop<StringId>();
-                        buffer = formatString(buffer, id, args);
+                        buffer = formatStringImpl(buffer, id, args);
                         break;
                     }
 
@@ -441,7 +441,7 @@ namespace OpenLoco::StringManager
                     {
                         StringId id = *(StringId*)sourceStr;
                         sourceStr += 2;
-                        buffer = formatString(buffer, id, args);
+                        buffer = formatStringImpl(buffer, id, args);
                         break;
                     }
 
@@ -624,7 +624,7 @@ namespace OpenLoco::StringManager
     }
 
     // 0x004958C6
-    static char* formatString(char* buffer, StringId id, FormatArgumentsView& args)
+    static char* formatStringImpl(char* buffer, StringId id, FormatArgumentsView& args)
     {
         if (id < kUserStringsStart)
         {
@@ -657,9 +657,11 @@ namespace OpenLoco::StringManager
         else if (id < kTownNamesEnd)
         {
             id -= kTownNamesStart;
+
             const auto townId = TownId(args.pop<uint16_t>());
             auto town = TownManager::get(townId);
             void* town_name = (void*)&town->name;
+
             return formatString(buffer, id, town_name);
         }
         else if (id == kTownNamesEnd)
@@ -677,15 +679,19 @@ namespace OpenLoco::StringManager
         }
     }
 
+    // TODO: Remove this unsafe variant.
     char* formatString(char* buffer, StringId id, const void* args)
     {
-        auto wrapped = FormatArgumentsView(args);
-        return formatString(buffer, id, wrapped);
+        // Just to avoid code duplication we pass an arbitrary size.
+        return formatString(buffer, 0xFFFFFFFFU, id, args);
     }
 
     char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, StringId id, const void* args)
     {
-        return formatString(buffer, id, args);
+        auto wrapped = FormatArgumentsView(args);
+
+        // TODO: Make use of bufferLen.
+        return formatStringImpl(buffer, id, wrapped);
     }
 
     StringId isTownName(StringId stringId)
