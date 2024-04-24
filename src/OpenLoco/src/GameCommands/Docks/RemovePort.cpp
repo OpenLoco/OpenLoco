@@ -9,26 +9,12 @@
 #include "Objects/DockObject.h"
 #include "Objects/ObjectManager.h"
 #include "ViewportManager.h"
+#include "World/Industry.h"
 #include "World/Station.h"
 #include "World/StationManager.h"
 
 namespace OpenLoco::GameCommands
 {
-    // TODO: Copied from Industry.h
-    struct Unk4F9274
-    {
-        World::Pos2 pos;
-        uint8_t index;
-    };
-
-    // TODO: Copied from Industry.cpp
-    static const std::array<Unk4F9274, 4> word_4F927C = {
-        Unk4F9274{ { 0, 0 }, 0 },
-        Unk4F9274{ { 0, 32 }, 1 },
-        Unk4F9274{ { 32, 32 }, 2 },
-        Unk4F9274{ { 32, 0 }, 3 },
-    };
-
     static World::StationElement* getStationEl(const World::Pos3& pos)
     {
         auto tile = World::TileManager::get(pos);
@@ -52,7 +38,7 @@ namespace OpenLoco::GameCommands
     // 0x00494706
     static bool removePortTileElements(const World::Pos3& pos, const uint8_t flags)
     {
-        for (auto& searchTile : word_4F927C)
+        for (auto& searchTile : getBuildingTileOffsets(true))
         {
             const auto portPos = World::Pos3(searchTile.pos + pos, pos.z);
 
