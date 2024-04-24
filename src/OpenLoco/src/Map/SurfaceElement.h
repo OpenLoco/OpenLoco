@@ -73,18 +73,22 @@ namespace OpenLoco::World
         uint8_t slope() const { return _slope & 0x1F; }
         void setSlope(uint8_t slope)
         {
-            uint8_t var = snowCoverage();
-            _slope = var | (slope & 0x1F);
+            _slope &= ~0x1F;
+            _slope = slope & 0x1F;
         }
-        uint8_t snowCoverage() const { return _slope & 0xE0; }
-        void setSnowCoverage(uint8_t var4)
+        uint8_t snowCoverage() const { return (_slope & 0xE0) >> 5; }
+        void setSnowCoverage(uint8_t coverage)
         {
-            _slope &= 0x1F;
-            _slope |= var4 << 5;
+            _slope &= ~0xE0;
+            _slope |= coverage << 5;
         }
         MicroZ water() const { return _water & 0x1F; }
         int16_t waterHeight() const { return (_water & 0x1F) * kMicroZStep; }
         void setWater(MicroZ level) { _water = (_water & 0xE0) | (level & 0x1F); };
+        uint8_t getVar5SLR5() const
+        {
+            return (_water & 0xE0) >> 5;
+        }
         void setVar5SLR5(uint8_t var5) { _water = (_water & 0x1F) | ((var5 << 5) & 0xE0); }
         uint8_t terrain() const { return _terrain & 0x1F; }
         void setTerrain(uint8_t terrain)
@@ -123,4 +127,5 @@ namespace OpenLoco::World
 #pragma pack(pop)
     static_assert(sizeof(SurfaceElement) == kTileElementSize);
 
+    bool updateSurface(SurfaceElement& elSurface, const World::Pos2 loc);
 }
