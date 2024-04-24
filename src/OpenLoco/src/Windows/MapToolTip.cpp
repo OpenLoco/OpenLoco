@@ -1,7 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
-#include "Localisation/ArgsWrapper.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Objects/CompetitorObject.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -48,7 +47,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         tooltipLocation = cursor;
         auto args = FormatArguments::mapToolTip();
-        StringManager::ArgsWrapper argsWrap(&args);
+        FormatArgumentsView argsWrap(&args);
         auto firstArg = argsWrap.pop<StringId>();
         if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
@@ -116,7 +115,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto args = FormatArguments::mapToolTip();
-        StringManager::ArgsWrapper argsWrap(&args);
+        FormatArgumentsView argsWrap(&args);
         auto firstArg = argsWrap.pop<StringId>();
         if (firstArg == StringIds::null)
         {

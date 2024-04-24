@@ -1,7 +1,7 @@
 #include "StringManager.h"
-#include "ArgsWrapper.hpp"
 #include "Config.h"
 #include "Date.h"
+#include "FormatArguments.hpp"
 #include "GameCommands/GameCommands.h"
 #include "GameState.h"
 #include "Logging.h"

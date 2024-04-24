@@ -61,7 +61,7 @@ namespace OpenLoco
 
         FormatArguments()
         {
-            loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
+            loco_global<std::byte[14], 0x0112C826> _commonFormatArgs;
 
             _bufferStart = _buffer = &*_commonFormatArgs;
             _length = std::size(_commonFormatArgs);
@@ -70,7 +70,7 @@ namespace OpenLoco
         template<typename... T>
         static FormatArguments common(T&&... args)
         {
-            loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
+            loco_global<std::byte[14], 0x0112C826> _commonFormatArgs;
             FormatArguments formatter{ _commonFormatArgs.get(), std::size(_commonFormatArgs) };
             (formatter.push(args), ...);
             return formatter;
@@ -130,6 +130,43 @@ namespace OpenLoco
             if (nextOffset > _bufferStart + _length)
                 throw Exception::OutOfRange("FormatArguments: attempting to advance outside of buffer");
             return nextOffset;
+        }
+    };
+
+    class FormatArgumentsView
+    {
+    private:
+        const std::byte* args;
+
+    public:
+        FormatArgumentsView(const void* newargs)
+            : args(reinterpret_cast<const std::byte*>(newargs)){};
+
+        template<typename T>
+        T pop()
+        {
+            if (args == nullptr)
+                return T{};
+
+            T value;
+            std::memcpy(&value, args, sizeof(T));
+            args += sizeof(T);
+
+            return value;
+        }
+
+        template<typename T>
+        void skip()
+        {
+            if (args == nullptr)
+                return;
+            args += sizeof(T);
+        }
+
+        template<typename T>
+        void push()
+        {
+            args -= sizeof(T);
         }
     };
 }

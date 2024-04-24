@@ -1,5 +1,4 @@
 #include "Formatting.h"
-#include "ArgsWrapper.hpp"
 #include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
@@ -215,7 +214,7 @@ namespace OpenLoco::StringManager
         return buffer;
     }
 
-    static char* formatString(char* buffer, StringId id, ArgsWrapper& args);
+    static char* formatString(char* buffer, StringId id, FormatArgumentsView& args);
 
     constexpr uint32_t hpTokW(uint32_t hp)
     {
@@ -326,7 +325,7 @@ namespace OpenLoco::StringManager
         return dest;
     }
 
-    static char* formatStringPart(char* buffer, const char* sourceStr, ArgsWrapper& args)
+    static char* formatStringPart(char* buffer, const char* sourceStr, FormatArgumentsView& args)
     {
         while (true)
         {
@@ -620,12 +619,12 @@ namespace OpenLoco::StringManager
 
     static char* formatStringPart(char* buffer, const char* sourceStr, void* args)
     {
-        auto wrapped = ArgsWrapper(args);
+        auto wrapped = FormatArgumentsView(args);
         return formatStringPart(buffer, sourceStr, wrapped);
     }
 
     // 0x004958C6
-    static char* formatString(char* buffer, StringId id, ArgsWrapper& args)
+    static char* formatString(char* buffer, StringId id, FormatArgumentsView& args)
     {
         if (id < kUserStringsStart)
         {
@@ -680,7 +679,7 @@ namespace OpenLoco::StringManager
 
     char* formatString(char* buffer, StringId id, const void* args)
     {
-        auto wrapped = ArgsWrapper(args);
+        auto wrapped = FormatArgumentsView(args);
         return formatString(buffer, id, wrapped);
     }
 
