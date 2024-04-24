@@ -132,8 +132,11 @@ namespace OpenLoco
 
 namespace OpenLoco::StringManager
 {
-    char* formatString(char* buffer, StringId id, const void* args = nullptr);
-    char* formatString(char* buffer, size_t bufferLen, StringId id, const void* args = nullptr);
+    char* formatString(char* buffer, StringId id);
+    char* formatString(char* buffer, size_t bufferLen, StringId id);
+
+    char* formatString(char* buffer, StringId id, const void* args);
+    char* formatString(char* buffer, size_t bufferLen, StringId id, const void* args);
 
     // TODO: Move this somewhere more sensible, the string manager should have no idea about the meaning of strings
     StringId isTownName(StringId stringId);

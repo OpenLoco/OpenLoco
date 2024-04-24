@@ -145,6 +145,8 @@ namespace OpenLoco
         const std::byte* end{};
 
     public:
+        constexpr FormatArgumentsView() = default;
+
         FormatArgumentsView(const void* newargs)
             : args(reinterpret_cast<const std::byte*>(newargs)){};
 
