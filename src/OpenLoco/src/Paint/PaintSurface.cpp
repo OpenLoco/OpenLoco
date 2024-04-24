@@ -1,10 +1,12 @@
 #include "PaintSurface.h"
+#include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/SnowObject.h"
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 #include "Ui/ViewportInteraction.h"
@@ -151,10 +153,118 @@ namespace OpenLoco::Paint
         },
     };
 
+    static constexpr std::array<std::array<uint32_t, 19>, 4> kSnowCoverageSlopeToMask = {
+        std::array<uint32_t, 19>{
+            ImageIds::snowMaskCoverage1Slope0,
+            ImageIds::snowMaskCoverage1Slope1,
+            ImageIds::snowMaskCoverage1Slope2,
+            ImageIds::snowMaskCoverage1Slope3,
+            ImageIds::snowMaskCoverage1Slope4,
+            ImageIds::snowMaskCoverage1Slope5,
+            ImageIds::snowMaskCoverage1Slope6,
+            ImageIds::snowMaskCoverage1Slope7,
+            ImageIds::snowMaskCoverage1Slope8,
+            ImageIds::snowMaskCoverage1Slope9,
+            ImageIds::snowMaskCoverage1Slope10,
+            ImageIds::snowMaskCoverage1Slope11,
+            ImageIds::snowMaskCoverage1Slope12,
+            ImageIds::snowMaskCoverage1Slope13,
+            ImageIds::snowMaskCoverage1Slope14,
+            ImageIds::snowMaskCoverage1Slope15,
+            ImageIds::snowMaskCoverage1Slope16,
+            ImageIds::snowMaskCoverage1Slope17,
+            ImageIds::snowMaskCoverage1Slope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::snowMaskCoverage2Slope0,
+            ImageIds::snowMaskCoverage2Slope1,
+            ImageIds::snowMaskCoverage2Slope2,
+            ImageIds::snowMaskCoverage2Slope3,
+            ImageIds::snowMaskCoverage2Slope4,
+            ImageIds::snowMaskCoverage2Slope5,
+            ImageIds::snowMaskCoverage2Slope6,
+            ImageIds::snowMaskCoverage2Slope7,
+            ImageIds::snowMaskCoverage2Slope8,
+            ImageIds::snowMaskCoverage2Slope9,
+            ImageIds::snowMaskCoverage2Slope10,
+            ImageIds::snowMaskCoverage2Slope11,
+            ImageIds::snowMaskCoverage2Slope12,
+            ImageIds::snowMaskCoverage2Slope13,
+            ImageIds::snowMaskCoverage2Slope14,
+            ImageIds::snowMaskCoverage2Slope15,
+            ImageIds::snowMaskCoverage2Slope16,
+            ImageIds::snowMaskCoverage2Slope17,
+            ImageIds::snowMaskCoverage2Slope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::snowMaskCoverage3Slope0,
+            ImageIds::snowMaskCoverage3Slope1,
+            ImageIds::snowMaskCoverage3Slope2,
+            ImageIds::snowMaskCoverage3Slope3,
+            ImageIds::snowMaskCoverage3Slope4,
+            ImageIds::snowMaskCoverage3Slope5,
+            ImageIds::snowMaskCoverage3Slope6,
+            ImageIds::snowMaskCoverage3Slope7,
+            ImageIds::snowMaskCoverage3Slope8,
+            ImageIds::snowMaskCoverage3Slope9,
+            ImageIds::snowMaskCoverage3Slope10,
+            ImageIds::snowMaskCoverage3Slope11,
+            ImageIds::snowMaskCoverage3Slope12,
+            ImageIds::snowMaskCoverage3Slope13,
+            ImageIds::snowMaskCoverage3Slope14,
+            ImageIds::snowMaskCoverage3Slope15,
+            ImageIds::snowMaskCoverage3Slope16,
+            ImageIds::snowMaskCoverage3Slope17,
+            ImageIds::snowMaskCoverage3Slope18,
+        },
+        std::array<uint32_t, 19>{
+            ImageIds::snowMaskCoverage4Slope0,
+            ImageIds::snowMaskCoverage4Slope1,
+            ImageIds::snowMaskCoverage4Slope2,
+            ImageIds::snowMaskCoverage4Slope3,
+            ImageIds::snowMaskCoverage4Slope4,
+            ImageIds::snowMaskCoverage4Slope5,
+            ImageIds::snowMaskCoverage4Slope6,
+            ImageIds::snowMaskCoverage4Slope7,
+            ImageIds::snowMaskCoverage4Slope8,
+            ImageIds::snowMaskCoverage4Slope9,
+            ImageIds::snowMaskCoverage4Slope10,
+            ImageIds::snowMaskCoverage4Slope11,
+            ImageIds::snowMaskCoverage4Slope12,
+            ImageIds::snowMaskCoverage4Slope13,
+            ImageIds::snowMaskCoverage4Slope14,
+            ImageIds::snowMaskCoverage4Slope15,
+            ImageIds::snowMaskCoverage4Slope16,
+            ImageIds::snowMaskCoverage4Slope17,
+            ImageIds::snowMaskCoverage4Slope18,
+        }
+    };
+
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
     {
         return Numerics::rotl4bit(slope & 0xF, rotation) | (slope & 0x10);
     }
+
+    static void paintMainSurface(PaintSession& session, uint32_t imageIndex, int16_t baseHeight)
+    {
+        const auto imageId = [imageIndex, &session]() {
+            if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) != Ui::ViewportFlags::none)
+            {
+                return ImageId(imageIndex).withTranslucency(ExtColour::unk30);
+            }
+            return ImageId(imageIndex);
+        }();
+
+        const World::Pos3 offsetUnk(0, 0, baseHeight);
+        const World::Pos3 bbSizeUnk(32, 32, -1);
+        session.addToPlotListAsParent(imageId, offsetUnk, bbSizeUnk);
+    }
+
+    struct SnowImage
+    {
+        uint32_t baseImage;
+        uint32_t imageMask;
+    };
 
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
@@ -166,7 +276,7 @@ namespace OpenLoco::Paint
         [[maybe_unused]] uint8_t landObjId = elSurface.terrain();
 
         const auto rotation = session.getRotation();
-
+        const auto baseHeight = elSurface.baseHeight();
         const auto rotatedSlope = getRotatedSlope(elSurface.slope(), rotation);
 
         const auto selfDescriptor = TileDescriptor{
@@ -233,6 +343,8 @@ namespace OpenLoco::Paint
         [[maybe_unused]] const auto cliffEdgeImageBase = selfDescriptor.landObject->cliffEdgeImage;
         // 0x00F252AC
         const auto unkF252AC = k4FD97E[selfDescriptor.slope];
+        // 0x00F25344
+        std::optional<SnowImage> snowImage = std::nullopt;
 
         if (elSurface.isIndustrial())
         {
@@ -246,7 +358,7 @@ namespace OpenLoco::Paint
 
             // Draw trees if they exist
             {
-                const auto height = elSurface.baseHeight() + k4FD30C[unkF252AC];
+                const auto height = baseHeight + k4FD30C[unkF252AC];
                 const auto imageIndex = industryObj->var_16 + variation + (elSurface.snowCoverage() ? 20 : 19);
 
                 const World::Pos3 offset(0, 0, height);
@@ -261,28 +373,70 @@ namespace OpenLoco::Paint
                 || elSurface.snowCoverage() == 0)
             {
                 // Draw main surface image
-                const auto unkImageIndex = industryObj->var_16 + variation + unkF252AC;
-                const auto imageId = [unkImageIndex, &session]() {
-                    if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) != Ui::ViewportFlags::none)
-                    {
-                        return ImageId(unkImageIndex).withTranslucency(ExtColour::unk30);
-                    }
-                    return ImageId(unkImageIndex);
-                }();
-
-                const World::Pos3 offsetUnk(0, 0, elSurface.baseHeight());
-                const World::Pos3 bbSizeUnk(32, 32, -1);
-                session.addToPlotListAsParent(imageId, offsetUnk, bbSizeUnk);
+                const auto imageIndex = industryObj->var_16 + variation + unkF252AC;
+                paintMainSurface(session, imageIndex, baseHeight);
             }
             else
             {
                 // Draw snow surface image
+                auto* snowObj = ObjectManager::get<SnowObject>();
+                if (elSurface.snowCoverage() == 5)
+                {
+                    paintMainSurface(session, unkF252AC + snowObj->image, baseHeight);
+                }
+                else
+                {
+                    const auto imageIndex = industryObj->var_16 + variation + unkF252AC;
+                    paintMainSurface(session, imageIndex, baseHeight);
+
+                    if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none)
+                    {
+                        snowImage = SnowImage{ .baseImage = unkF252AC + snowObj->image, .imageMask = kSnowCoverageSlopeToMask[elSurface.snowCoverage() - 1][unkF252AC] };
+                    }
+                }
             }
-            // 0x00465E92
         }
         else
         {
-            // 0x00465BE0
+            auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
+            const auto variation = landObj->var_0E * elSurface.var_6_SLR5() + ((landObj->var_04 - 1) & rotation) * 25;
+            if (elSurface.snowCoverage())
+            {
+                // Draw snow surface image
+                auto* snowObj = ObjectManager::get<SnowObject>();
+                if (elSurface.snowCoverage() == 5)
+                {
+                    paintMainSurface(session, unkF252AC + snowObj->image, baseHeight);
+                }
+                else
+                {
+                    const auto imageIndex = landObj->image + variation + unkF252AC;
+                    paintMainSurface(session, imageIndex, baseHeight);
+
+                    if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none)
+                    {
+                        snowImage = SnowImage{ .baseImage = unkF252AC + snowObj->image, .imageMask = kSnowCoverageSlopeToMask[elSurface.snowCoverage() - 1][unkF252AC] };
+                    }
+                }
+            }
+            else
+            {
+                const auto imageIndex = [&elSurface, zoomLevel, unkF252AC, &landObj, variation]() {
+                    if (!elSurface.water()
+                        && elSurface.variation() != 0
+                        && zoomLevel == 0
+                        && unkF252AC == 0
+                        && (landObj->var_03 - 1) == elSurface.var_6_SLR5())
+                    {
+                        return landObj->mapPixelImage + 3 + elSurface.variation();
+                    }
+
+                    return landObj->image + variation + unkF252AC;
+                }();
+
+                paintMainSurface(session, imageIndex, baseHeight);
+            }
         }
+        // 0x00465E92
     }
 }
