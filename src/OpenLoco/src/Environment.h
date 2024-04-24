@@ -69,4 +69,5 @@ namespace OpenLoco::Environment
     fs::path getPath(PathId id);
     fs::path getPathNoWarning(PathId id);
     void resolvePaths();
+    void setLocale();
 }

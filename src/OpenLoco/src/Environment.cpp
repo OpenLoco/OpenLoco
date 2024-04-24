@@ -10,6 +10,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <locale>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
@@ -264,6 +265,30 @@ namespace OpenLoco::Environment
         setDirectory(_pathLandscapes, landscapeDirectory / "*.SC5");
         setDirectory(_pathScenarios, basePath / "Scenarios/*.SC5");
         setDirectory(_pathObjects, basePath / "ObjData/*.DAT");
+    }
+
+    class ThousandsSepFacet : public std::numpunct<char>
+    {
+        char _sep;
+
+    public:
+        explicit ThousandsSepFacet(char sep)
+            : _sep(sep)
+        {
+        }
+
+    protected:
+        [[nodiscard]] char do_thousands_sep() const override
+        {
+            return _sep;
+        }
+
+        [[nodiscard]] std::string do_grouping() const override { return "\3"; }
+    };
+
+    void setLocale()
+    {
+        std::locale::global(std::locale(std::locale(), new ThousandsSepFacet(',')));
     }
 
     static fs::path getBasePath(PathId id)
