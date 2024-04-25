@@ -72,19 +72,25 @@ namespace OpenLoco::GameCommands
 
         // Find the station element for an ownership check
         {
+            // Station element must be the next element after the last consecutive road element
             World::StationElement* stationEl = nullptr;
-            while (auto* nextElement = initialElRoad->next())
+            auto* elRoad = initialElRoad;
+            while (!elRoad->isLast())
             {
-                stationEl = nextElement->as<World::StationElement>();
-                if (stationEl != nullptr)
+                auto* nextEl = elRoad->next();
+                elRoad = nextEl->as<World::RoadElement>();
+                if (elRoad != nullptr && elRoad->baseHeight() == args.pos.z)
                 {
-                    break;
+                    continue;
                 }
 
-                if (nextElement->isLast())
-                {
-                    return FAILURE;
-                }
+                stationEl = nextEl->as<World::StationElement>();
+                break;
+            }
+
+            if (stationEl == nullptr)
+            {
+                return FAILURE;
             }
 
             // NB: vanilla would query owner from station struct, not the station element
