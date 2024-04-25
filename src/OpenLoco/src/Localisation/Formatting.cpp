@@ -69,10 +69,14 @@ namespace OpenLoco::StringManager
 
         void append(const char* input, size_t inputLen)
         {
-            const char* end = input + inputLen;
-            while (*input != '\0' && input < end)
+            for (size_t i = 0; i < inputLen;)
             {
-                auto ch = *input;
+                auto ch = input[i];
+                if (ch == '\0')
+                {
+                    break;
+                }
+
                 if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
                 {
                     append(ch);
@@ -84,13 +88,13 @@ namespace OpenLoco::StringManager
                     {
                         throw std::overflow_error("String buffer overflow");
                     }
-                    if (input + 2 > end)
+                    if (i + 2 > inputLen)
                     {
                         throw std::overflow_error("String buffer overflow");
                     }
                     std::memcpy(buffer + offset, input, 2);
                     offset += 2;
-                    input += 2;
+                    i += 2;
                 }
                 else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
                 {
@@ -98,18 +102,18 @@ namespace OpenLoco::StringManager
                     {
                         throw std::overflow_error("String buffer overflow");
                     }
-                    if (input + 4 > end)
+                    if (i + 4 > inputLen)
                     {
                         throw std::overflow_error("String buffer overflow");
                     }
                     std::memcpy(buffer + offset, input, 4);
                     offset += 4;
-                    input += 4;
+                    i += 4;
                 }
                 else
                 {
                     append(ch);
-                    input++;
+                    i++;
                 }
             }
         }
