@@ -439,7 +439,6 @@ namespace OpenLoco::StringManager
 
             if (ch == 0)
             {
-                buffer.append('\0');
                 return;
             }
             else if (ch <= 4)
