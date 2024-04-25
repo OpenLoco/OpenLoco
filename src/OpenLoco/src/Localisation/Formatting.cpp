@@ -679,11 +679,16 @@ namespace OpenLoco::StringManager
         }
     }
 
+    // TODO: Remove unsafe variant.
     char* formatString(char* buffer, StringId id)
+    {
+        return formatString(buffer, 0xFFFFFFFFU, id);
+    }
+
+    char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, StringId id)
     {
         auto wrapped = FormatArgumentsView{};
 
-        // TODO: Make use of bufferLen.
         return formatStringImpl(buffer, id, wrapped);
     }
 
@@ -699,13 +704,6 @@ namespace OpenLoco::StringManager
         auto wrapped = FormatArgumentsView(args);
 
         // TODO: Make use of bufferLen.
-        return formatStringImpl(buffer, id, wrapped);
-    }
-
-    char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, StringId id)
-    {
-        auto wrapped = FormatArgumentsView{};
-
         return formatStringImpl(buffer, id, wrapped);
     }
 
