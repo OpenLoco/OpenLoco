@@ -188,7 +188,7 @@ namespace OpenLoco::StringManager
         return buffer;
     }
 
-    static char* formatStringPart(char* buffer, const char* sourceStr, void* args);
+    static char* formatStringPart(char* buffer, const char* sourceStr);
 
     static char* formatCurrency(int64_t value, char* buffer)
     {
@@ -204,12 +204,12 @@ namespace OpenLoco::StringManager
         int64_t localisedValue = value * (1ULL << currency->factor);
 
         const char* prefixSymbol = getString(currency->prefixSymbol);
-        buffer = formatStringPart(buffer, prefixSymbol, nullptr);
+        buffer = formatStringPart(buffer, prefixSymbol);
 
         buffer = formatInt48Grouped(localisedValue, buffer, currency->separator);
 
         const char* suffixSymbol = getString(currency->suffixSymbol);
-        buffer = formatStringPart(buffer, suffixSymbol, nullptr);
+        buffer = formatStringPart(buffer, suffixSymbol);
 
         return buffer;
     }
@@ -617,9 +617,9 @@ namespace OpenLoco::StringManager
         }
     }
 
-    static char* formatStringPart(char* buffer, const char* sourceStr, void* args)
+    static char* formatStringPart(char* buffer, const char* sourceStr)
     {
-        auto wrapped = FormatArgumentsView(args);
+        auto wrapped = FormatArgumentsView();
         return formatStringPart(buffer, sourceStr, wrapped);
     }
 
