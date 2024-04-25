@@ -1,8 +1,8 @@
 #pragma once
 
+#include "FormatArguments.hpp"
 #include "StringManager.h"
 #include "Types.hpp"
-#include "FormatArguments.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
