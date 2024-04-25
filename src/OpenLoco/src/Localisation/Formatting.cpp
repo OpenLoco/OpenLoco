@@ -463,7 +463,7 @@ namespace OpenLoco::StringManager
             }
             else if (ch < 0x7B || ch >= 0x90)
             {
-                buffer.appendData(sourceStr, 1);
+                buffer.append(ch);
                 sourceStr += 1;
             }
             else
