@@ -44,7 +44,7 @@ namespace OpenLoco::StringManager
         {
             if (offset + size >= maxLen)
             {
-                throw std::overflow_error("String buffer overflow");
+                throw Exception::OverflowError("String buffer overflow");
             }
 
             std::memcpy(buffer + offset, data, size);
@@ -55,7 +55,7 @@ namespace OpenLoco::StringManager
         {
             if (offset >= maxLen)
             {
-                throw std::overflow_error("String buffer overflow");
+                throw Exception::OverflowError("String buffer overflow");
             }
 
             buffer[offset] = chr;
@@ -86,11 +86,11 @@ namespace OpenLoco::StringManager
                 {
                     if (offset + 2 >= maxLen)
                     {
-                        throw std::overflow_error("String buffer overflow");
+                        throw Exception::OverflowError("String buffer overflow");
                     }
                     if (i + 2 > inputLen)
                     {
-                        throw std::overflow_error("String buffer overflow");
+                        throw Exception::OverflowError("String buffer overflow");
                     }
                     std::memcpy(buffer + offset, input, 2);
                     offset += 2;
@@ -100,11 +100,11 @@ namespace OpenLoco::StringManager
                 {
                     if (offset + 4 >= maxLen)
                     {
-                        throw std::overflow_error("String buffer overflow");
+                        throw Exception::OverflowError("String buffer overflow");
                     }
                     if (i + 4 > inputLen)
                     {
-                        throw std::overflow_error("String buffer overflow");
+                        throw Exception::OverflowError("String buffer overflow");
                     }
                     std::memcpy(buffer + offset, input, 4);
                     offset += 4;
