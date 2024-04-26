@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     args.push(obj->name);
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::change_heightmap_btn].top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, &args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, args);
                     break;
                 }
 
@@ -293,7 +293,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                     // Draw value
                     pos = Point(window.x + widget.left + 1, window.y + widget.top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::black_stringid, &args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::black_stringid, args);
                     break;
                 }
 
@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         args.push(StringManager::getString(StringIds::noneSelected));
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::browseHeightmapFile].top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::currentHeightmapFile, &args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::currentHeightmapFile, args);
                     break;
                 }
             }
@@ -681,7 +681,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     FormatArguments args{};
                     args.push(landObject->name);
                     auto point = Point(24, yPos + 5);
-                    drawingCtx.drawStringLeftClipped(rt, point, 121, Colour::black, StringIds::wcolour2_stringid, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 121, Colour::black, StringIds::wcolour2_stringid, args);
                 }
 
                 // Draw rectangle.
@@ -693,7 +693,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                     args.push(distributionId);
                     auto point = Point(151, yPos + 5);
-                    drawingCtx.drawStringLeftClipped(rt, point, 177, Colour::black, StringIds::black_stringid, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 177, Colour::black, StringIds::black_stringid, args);
                 }
 
                 // Draw rectangle (knob).
@@ -703,7 +703,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 // Draw triangle (knob).
                 {
                     auto point = Point(330, yPos + 6);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::dropdown, nullptr);
+                    drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::dropdown);
                 }
 
                 yPos += kRowHeight;

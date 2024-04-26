@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             auto& widget = _widgets[Widx::date_btn];
             auto point = Point(self.x + widget.midX(), self.y + widget.top + 1);
-            drawingCtx.drawStringCentred(*rt, point, c, format, &args);
+            drawingCtx.drawStringCentred(*rt, point, c, format, args);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();

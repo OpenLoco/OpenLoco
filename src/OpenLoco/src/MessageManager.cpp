@@ -130,7 +130,7 @@ namespace OpenLoco::MessageManager
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
                 args.push(station->name);
                 args.push(station->town);
-                StringManager::formatString(tempBuffer, StringIds::message_not_allowed_to_wait_for_full_load_at, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_not_allowed_to_wait_for_full_load_at, args);
             }
             break;
             case MessageType::industryClosingDown:
@@ -141,7 +141,7 @@ namespace OpenLoco::MessageManager
                 args.push(industry->name);
                 args.push(industry->town);
                 auto* industryObj = industry->getObject();
-                StringManager::formatString(tempBuffer, industryObj->nameClosingDown, &args);
+                StringManager::formatString(tempBuffer, industryObj->nameClosingDown, args);
             }
             break;
             case MessageType::vehicleSlipped:
@@ -155,7 +155,7 @@ namespace OpenLoco::MessageManager
                 }
                 args.push(head->ordinalNumber);
                 args.push(head->name);
-                StringManager::formatString(tempBuffer, StringIds::message_has_slipped_to_a_halt_on_incline, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_has_slipped_to_a_halt_on_incline, args);
             }
             break;
             case MessageType::unk3:
@@ -175,7 +175,7 @@ namespace OpenLoco::MessageManager
                 args.push(station->town);
                 auto* cargoObj = ObjectManager::get<CargoObject>(message.itemSubjects[1]);
                 args.push(cargoObj->name);
-                StringManager::formatString(tempBuffer, StringIds::message_now_accepts, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_now_accepts, args);
             }
             break;
             case MessageType::cargoNoLongerAccepted:
@@ -187,7 +187,7 @@ namespace OpenLoco::MessageManager
                 args.push(station->town);
                 auto* cargoObj = ObjectManager::get<CargoObject>(message.itemSubjects[1]);
                 args.push(cargoObj->name);
-                StringManager::formatString(tempBuffer, StringIds::message_no_longer_accepts, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_no_longer_accepts, args);
             }
             break;
             case MessageType::newCompany:
@@ -199,7 +199,7 @@ namespace OpenLoco::MessageManager
                 args.skip(2);
                 auto* town = TownManager::get(static_cast<TownId>(message.itemSubjects[1]));
                 args.push(town->name);
-                StringManager::formatString(tempBuffer, StringIds::message_new_transport_company, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_new_transport_company, args);
             }
             break;
             case MessageType::unableToLandAtAirport:
@@ -216,7 +216,7 @@ namespace OpenLoco::MessageManager
                 auto* station = StationManager::get(static_cast<StationId>(message.itemSubjects[1]));
                 args.push(station->name);
                 args.push(station->town);
-                StringManager::formatString(tempBuffer, StringIds::message_not_able_to_land_at, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_not_able_to_land_at, args);
             }
             break;
             case MessageType::citizensCelebrate:
@@ -229,7 +229,7 @@ namespace OpenLoco::MessageManager
                 args.push(town->name);
 
                 const auto formatStr = cargoObj->hasFlags(CargoObjectFlags::delivering) ? StringIds::message_first_string_delivery_arives_at : StringIds::message_first_string_arrive_at;
-                StringManager::formatString(tempBuffer, formatStr, &args);
+                StringManager::formatString(tempBuffer, formatStr, args);
             }
             break;
             case MessageType::workersCelebrate:
@@ -242,7 +242,7 @@ namespace OpenLoco::MessageManager
                 args.push(industry->name);
                 args.push(industry->town);
 
-                StringManager::formatString(tempBuffer, StringIds::message_first_string_delivered_to, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_first_string_delivered_to, args);
             }
             break;
             case MessageType::newVehicle:
@@ -252,7 +252,7 @@ namespace OpenLoco::MessageManager
                 auto* vehicleObj = ObjectManager::get<VehicleObject>(message.itemSubjects[0]);
                 args.push(vehicleObj->name);
 
-                StringManager::formatString(tempBuffer, StringIds::message_new_vehicle_invented, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_new_vehicle_invented, args);
             }
             break;
             case MessageType::companyPromoted:
@@ -264,7 +264,7 @@ namespace OpenLoco::MessageManager
                 args.skip(2);
                 args.push(getCorporateRatingAsStringId(static_cast<CorporateRating>(message.itemSubjects[1] - 1)));
                 args.push(getCorporateRatingAsStringId(static_cast<CorporateRating>(message.itemSubjects[1])));
-                StringManager::formatString(tempBuffer, StringIds::message_is_promoted_to, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_is_promoted_to, args);
             }
             break;
             case MessageType::newIndustry:
@@ -276,7 +276,7 @@ namespace OpenLoco::MessageManager
                 args.push(industryObj->name);
                 auto* town = TownManager::get(industry->town);
                 args.push(town->name);
-                StringManager::formatString(tempBuffer, StringIds::message_new_string_under_construction_near, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_new_string_under_construction_near, args);
             }
             break;
             case MessageType::industryProductionUp:
@@ -287,7 +287,7 @@ namespace OpenLoco::MessageManager
                 args.push(industry->name);
                 args.push(industry->town);
                 auto* industryObj = industry->getObject();
-                StringManager::formatString(tempBuffer, industryObj->nameUpProduction, &args);
+                StringManager::formatString(tempBuffer, industryObj->nameUpProduction, args);
             }
             break;
             case MessageType::industryProductionDown:
@@ -298,7 +298,7 @@ namespace OpenLoco::MessageManager
                 args.push(industry->name);
                 args.push(industry->town);
                 auto* industryObj = industry->getObject();
-                StringManager::formatString(tempBuffer, industryObj->nameDownProduction, &args);
+                StringManager::formatString(tempBuffer, industryObj->nameDownProduction, args);
             }
             break;
             case MessageType::congratulationsCompleted:
@@ -307,7 +307,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->ownerName);
-                StringManager::formatString(tempBuffer, StringIds::message_congratulations_you_have_completed, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_congratulations_you_have_completed, args);
             }
             break;
             case MessageType::failedObjectives:
@@ -316,7 +316,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->ownerName);
-                StringManager::formatString(tempBuffer, StringIds::message_failure_you_have_failed, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_failure_you_have_failed, args);
             }
             break;
             case MessageType::haveBeenBeaten:
@@ -325,7 +325,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->ownerName);
-                StringManager::formatString(tempBuffer, StringIds::message_beaten_has_completed, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_beaten_has_completed, args);
             }
             break;
             case MessageType::bankruptcyWarning6Months:
@@ -334,7 +334,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_month, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_6_month, args);
             }
             break;
             case MessageType::bankruptcyWarning3Months:
@@ -343,7 +343,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_3_month, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankruptcy_warning_3_month, args);
             }
             break;
             case MessageType::bankruptcyDeclared:
@@ -352,7 +352,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankrupt, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankrupt, args);
             }
             break;
             case MessageType::bankruptcyDeclared2:
@@ -361,7 +361,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->name);
-                StringManager::formatString(tempBuffer, StringIds::message_bankrupt_2, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_bankrupt_2, args);
             }
             break;
             case MessageType::vehicleCrashed:
@@ -375,7 +375,7 @@ namespace OpenLoco::MessageManager
                 }
                 args.push(head->ordinalNumber);
                 args.push(head->name);
-                StringManager::formatString(tempBuffer, StringIds::message_has_crashed, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_has_crashed, args);
             }
             break;
             case MessageType::companyCheated:
@@ -384,7 +384,7 @@ namespace OpenLoco::MessageManager
                 FormatArguments args{};
                 auto* company = CompanyManager::get(static_cast<CompanyId>(message.itemSubjects[0]));
                 args.push(company->ownerName);
-                StringManager::formatString(tempBuffer, StringIds::message_corporate_scandal, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_corporate_scandal, args);
             }
             break;
             case MessageType::newSpeedRecord:
@@ -413,7 +413,7 @@ namespace OpenLoco::MessageManager
                 args.push(recordTypeStrings[message.itemSubjects[2]]);
                 args.push(vehicleTypeStrings[enumValue(head->vehicleType)]);
                 args.push(CompanyManager::getRecords().speed[message.itemSubjects[2]]);
-                StringManager::formatString(tempBuffer, StringIds::message_new_speed_record, &args);
+                StringManager::formatString(tempBuffer, StringIds::message_new_speed_record, args);
             }
             break;
         }

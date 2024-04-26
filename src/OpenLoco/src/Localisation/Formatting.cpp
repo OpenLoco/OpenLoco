@@ -787,24 +787,6 @@ namespace OpenLoco::StringManager
         return buf.current();
     }
 
-    // TODO: Remove this unsafe variant.
-    char* formatString(char* buffer, StringId id, const void* args)
-    {
-        // Just to avoid code duplication we pass an arbitrary size.
-        return formatString(buffer, 0xFFFFFFFFU, id, args);
-    }
-
-    char* formatString(char* buffer, size_t bufferLen, StringId id, const void* args)
-    {
-        auto wrapped = FormatArgumentsView(args);
-        auto buf = StringBuffer(buffer, bufferLen);
-
-        formatStringImpl(buf, id, wrapped);
-
-        buf.nullTerminate();
-        return buf.current();
-    }
-
     char* formatString(char* buffer, StringId id, FormatArgumentsView args)
     {
         return formatString(buffer, 0xFFFFFFFFU, id, args);

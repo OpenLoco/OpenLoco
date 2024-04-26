@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         window->widgets[widx::okButton].text = okButtonStringId;
 
         // Prepare description buffer for drawing
-        StringManager::formatString(_descriptionBuffer, descriptionId, &descriptionArgs);
+        StringManager::formatString(_descriptionBuffer, descriptionId, descriptionArgs);
 
         window->enabledWidgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         args.push(StringIds::buffer_2039);
 
         auto origin = Ui::Point(self.x + self.width / 2, self.y + 41);
-        drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, &args);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
     static constexpr WindowEventList kEvents = {

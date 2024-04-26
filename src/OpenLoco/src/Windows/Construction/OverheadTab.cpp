@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
         }
     }
 

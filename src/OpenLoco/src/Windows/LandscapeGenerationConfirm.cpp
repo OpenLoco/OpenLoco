@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             args.push(StringIds::prompt_confirm_random_landscape);
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, &args);
+        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
     // 0x004C18E4

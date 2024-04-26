@@ -135,9 +135,6 @@ namespace OpenLoco::StringManager
     char* formatString(char* buffer, StringId id);
     char* formatString(char* buffer, size_t bufferLen, StringId id);
 
-    char* formatString(char* buffer, StringId id, const void* args);
-    char* formatString(char* buffer, size_t bufferLen, StringId id, const void* args);
-
     char* formatString(char* buffer, StringId id, FormatArgumentsView args);
     char* formatString(char* buffer, size_t bufferLen, StringId id, FormatArgumentsView args);
 

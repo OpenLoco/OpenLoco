@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::Error
 
         if (title != StringIds::null)
         {
-            ptr = StringManager::formatString(ptr, title, &args);
+            ptr = StringManager::formatString(ptr, title, args);
         }
 
         if (message != StringIds::null)
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::Error
                 *ptr = ControlCodes::newline;
                 ptr++;
             }
-            StringManager::formatString(ptr, message, &args);
+            StringManager::formatString(ptr, message, args);
         }
 
         return ptr;

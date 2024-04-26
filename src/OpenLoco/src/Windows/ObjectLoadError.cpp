@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object name
             namePos.y = y;
-            drawingCtx.drawStringLeft(rt, namePos, window.getColour(WindowColour::secondary), textColourId, &args);
+            drawingCtx.drawStringLeft(rt, namePos, window.getColour(WindowColour::secondary), textColourId, args);
 
             // Copy object checksum to buffer
             const auto checksum = fmt::format("{:08X}", header.checksum);
@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object checksum
             checksumPos.y = y;
-            drawingCtx.drawStringLeft(rt, checksumPos, window.getColour(WindowColour::secondary), textColourId, &args);
+            drawingCtx.drawStringLeft(rt, checksumPos, window.getColour(WindowColour::secondary), textColourId, args);
 
             // Prepare object type for drawing
             args.rewind();
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object type
             typePos.y = y;
-            drawingCtx.drawStringLeftWrapped(rt, typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, &args);
+            drawingCtx.drawStringLeftWrapped(rt, typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, args);
 
             y += kRowHeight;
         }

@@ -39,7 +39,7 @@ namespace OpenLoco
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_intelligence, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_intelligence, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
@@ -47,7 +47,7 @@ namespace OpenLoco
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_aggressiveness, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_aggressiveness, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
@@ -55,7 +55,7 @@ namespace OpenLoco
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_competitiveness, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_competitiveness, args);
         }
     }
 

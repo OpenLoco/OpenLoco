@@ -80,38 +80,38 @@ namespace OpenLoco::Ui::Windows::About
         auto point = Point(window.x + kWindowSize.width / 2, window.y + 25);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_69, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_69);
 
         point.y += 10;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_70, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_70);
 
         // Chris Sawyer logo
         drawingCtx.drawImage(rt, window.x + 92, window.y + 52, ImageIds::chris_sawyer_logo_small);
 
         point.y += 79;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_71, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_71);
 
         point.y += 10;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_72, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_72);
 
         point.y += 10;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_73, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_73);
 
         point.y += 10;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_74, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_74);
 
         point.y += 13;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_75, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_75);
 
         point.y += 25;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_76, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_76);
 
         point.y += 10;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_77, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::about_locomotion_77);
 
         // Licenced to Atari
         point.y += 25;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::licenced_to_atari_inc, nullptr);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::licenced_to_atari_inc);
     }
 
     static constexpr WindowEventList kEvents = {

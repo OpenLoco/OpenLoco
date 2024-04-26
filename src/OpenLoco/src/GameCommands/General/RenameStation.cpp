@@ -63,7 +63,7 @@ namespace OpenLoco::GameCommands
         auto station = StationManager::get(_stationId);
         FormatArguments fArgs{};
         fArgs.push(station->town);
-        StringManager::formatString(currentStationName, station->name, &fArgs);
+        StringManager::formatString(currentStationName, station->name, fArgs);
 
         // Verify the new name actually differs from the old one.
         if (strcmp(currentStationName, renameStringBuffer) == 0)

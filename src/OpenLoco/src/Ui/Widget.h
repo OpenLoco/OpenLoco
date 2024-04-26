@@ -84,7 +84,7 @@ namespace OpenLoco::Ui
         int16_t bottom;            // 0x08
         union
         {
-            uint32_t image;
+            uint32_t image{};
             StringId text;
             uint32_t content;
         };

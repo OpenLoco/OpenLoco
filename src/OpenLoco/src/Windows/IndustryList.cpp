@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 4, self.y + self.height - 12);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00457EC4
@@ -226,10 +226,20 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static bool orderByName(const OpenLoco::Industry& lhs, const OpenLoco::Industry& rhs)
         {
             char lhsString[256] = { 0 };
-            StringManager::formatString(lhsString, lhs.name, (void*)&lhs.town);
+            {
+                FormatArguments args{};
+                args.push(lhs.town);
+
+                StringManager::formatString(lhsString, lhs.name, args);
+            }
 
             char rhsString[256] = { 0 };
-            StringManager::formatString(rhsString, rhs.name, (void*)&rhs.town);
+            {
+                FormatArguments args{};
+                args.push(rhs.town);
+
+                StringManager::formatString(rhsString, rhs.name, args);
+            }
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -463,7 +473,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(industry->town);
 
                     auto point = Point(0, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
                 }
                 // Industry Status
                 {
@@ -474,7 +484,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(StringIds::buffer_1250);
 
                     auto point = Point(200, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 238, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 238, Colour::black, text_colour_id, args);
                 }
                 if (industry->canProduceCargo())
                 {
@@ -486,7 +496,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         args.push<uint16_t>(productionTransported);
 
                         auto point = Point(440, yPos);
-                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::production_transported_percent, &args);
+                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::production_transported_percent, args);
                     }
                     // Industry Production Last Month
                     {
@@ -497,7 +507,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         args.push<uint32_t>(productionTransported.first);
 
                         auto point = Point(600, yPos);
-                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::black_stringid, &args);
+                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::black_stringid, args);
                     }
                 }
 
@@ -737,24 +747,27 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 industryCost = Economy::getInflationAdjustedCost(industryObj->costFactor, industryObj->costIndex, 3);
             }
 
-            FormatArguments args{};
-            args.push(industryCost);
-
             auto widthOffset = 0;
 
             if (!isEditorMode() && !isSandboxMode())
             {
+                FormatArguments args{};
+                args.push(industryCost);
+
                 auto point = Point(self.x + 3 + self.width - 19, self.y + self.height - 13);
                 widthOffset = 138;
 
-                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, &args);
+                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
             }
 
             {
+                FormatArguments args{};
+                args.push(industryObj->name);
+
                 auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - widthOffset;
 
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &industryObj->name);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
             }
         }
 

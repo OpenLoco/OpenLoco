@@ -397,7 +397,7 @@ namespace OpenLoco::StationManager
         char stationName[256] = "";
         FormatArguments args{};
         args.push(stationId);
-        StringManager::formatString(stationName, StringIds::station_name_ordinal, &args);
+        StringManager::formatString(stationName, StringIds::station_name_ordinal, args);
         return StringManager::userStringAllocate(stationName, 0);
     }
 

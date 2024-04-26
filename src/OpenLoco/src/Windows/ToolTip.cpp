@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        StringManager::formatString(_text, stringId, &args);
+        StringManager::formatString(_text, stringId, args);
 
         drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         int16_t strWidth = drawingCtx.getStringWidthNewLined(_text);

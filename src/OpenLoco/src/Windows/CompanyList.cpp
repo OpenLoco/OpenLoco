@@ -198,14 +198,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 FormatArguments args{};
                 auto statusString = CompanyManager::getOwnerStatus(lhs.id(), args);
-                StringManager::formatString(lhsString, statusString, &args);
+                StringManager::formatString(lhsString, statusString, args);
             }
 
             char rhsString[256] = { 0 };
             {
                 FormatArguments args{};
                 auto statusString = CompanyManager::getOwnerStatus(rhs.id(), args);
-                StringManager::formatString(rhsString, statusString, &args);
+                StringManager::formatString(rhsString, statusString, args);
             }
 
             return strcmp(lhsString, rhsString) < 0;
@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 3, self.y + self.height - 13);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00435EA7
@@ -490,7 +490,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(company->name);
 
                     auto point = Point(0, yBottom - 1);
-                    drawingCtx.drawStringLeftClipped(rt, point, 173, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 173, Colour::black, stringId, args);
                 }
 
                 {
@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(ownerStatus);
 
                     auto point = Point(175, yBottom + 7);
-                    drawingCtx.drawStringLeftClipped(rt, point, 208, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 208, Colour::black, stringId, args);
                 }
 
                 auto performanceStringId = StringIds::performance_index;
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     formatPerformanceIndex(company->performanceIndex, args);
 
                     auto point = Point(385, yBottom - 1);
-                    drawingCtx.drawStringLeftClipped(rt, point, 143, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 143, Colour::black, stringId, args);
                 }
 
                 {
@@ -533,7 +533,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(company->companyValueHistory[0]);
 
                     auto point = Point(530, yBottom - 1);
-                    drawingCtx.drawStringLeftClipped(rt, point, 98, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 98, Colour::black, stringId, args);
                 }
             }
         }
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 args.push(cargo->name);
 
                 auto point = Point(x + 6, y);
-                drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+                drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
                 y += 10;
                 cargoCount++;
@@ -1143,7 +1143,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 args.push<uint16_t>(100);
                 args.push<uint16_t>(10);
 
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::cargo_deliver_graph_title, &args);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::cargo_deliver_graph_title, args);
             }
 
             {
@@ -1264,7 +1264,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     };
 
                     auto point = Point(self.x + 4, y);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, string[i], &args);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, string[i], args);
                 }
                 y += 11;
 
@@ -1289,7 +1289,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push<uint16_t>(0);
                     args.push(CompanyManager::getRecords().date[i]);
 
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::record_date_achieved, &args);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::record_date_achieved, args);
                     y += 17;
                 }
 
@@ -1682,7 +1682,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 args.push(company.name);
 
                 auto point = Point(x + 6, y);
-                drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+                drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
                 y += 10;
                 companyCount++;

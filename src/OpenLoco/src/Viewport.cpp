@@ -131,7 +131,7 @@ namespace OpenLoco::Ui
         args.push<uint16_t>(enumValue(station.town));
         auto* str = buffer;
         *str++ = ControlCodes::Colour::black;
-        str = StringManager::formatString(str, station.name, &args);
+        str = StringManager::formatString(str, station.name, args);
         *str++ = ' ';
         StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
 
