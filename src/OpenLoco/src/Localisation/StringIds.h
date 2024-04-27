@@ -1207,7 +1207,7 @@ namespace OpenLoco::StringIds
     constexpr StringId stationOwnedByAnotherCompany = 1528;
 
     constexpr StringId water_channel_currently_needed_by_ships = 1530;
-
+    constexpr StringId currently_in_use_by_at_least_one_vehicle = 1531;
     constexpr StringId refit_vehicle_tip = 1532;
     constexpr StringId cant_refit_vehicle = 1533;
 

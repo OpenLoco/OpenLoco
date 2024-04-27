@@ -86,6 +86,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/RenameCompanyName.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/RenameCompanyOwner.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Company/UpdateOwnerStatus.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Docks/RemovePort.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/GameCommands.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/General/LoadSaveQuit.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/General/RenameStation.cpp"
