@@ -12,6 +12,7 @@
 #include "PaintTileDecorations.h"
 #include "Ui/ViewportInteraction.h"
 #include "World/IndustryManager.h"
+#include "World/Station.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
 namespace OpenLoco::Paint
@@ -324,6 +325,27 @@ namespace OpenLoco::Paint
         ExtColour::unk24,
         ExtColour::unk25,
     };
+    static constexpr std::array<uint32_t, 19> kCatchmentFromSlope = {
+        ImageIds::constructionCatchmentSlope0,
+        ImageIds::constructionCatchmentSlope1,
+        ImageIds::constructionCatchmentSlope2,
+        ImageIds::constructionCatchmentSlope3,
+        ImageIds::constructionCatchmentSlope4,
+        ImageIds::constructionCatchmentSlope5,
+        ImageIds::constructionCatchmentSlope6,
+        ImageIds::constructionCatchmentSlope7,
+        ImageIds::constructionCatchmentSlope8,
+        ImageIds::constructionCatchmentSlope9,
+        ImageIds::constructionCatchmentSlope10,
+        ImageIds::constructionCatchmentSlope11,
+        ImageIds::constructionCatchmentSlope12,
+        ImageIds::constructionCatchmentSlope13,
+        ImageIds::constructionCatchmentSlope14,
+        ImageIds::constructionCatchmentSlope15,
+        ImageIds::constructionCatchmentSlope16,
+        ImageIds::constructionCatchmentSlope17,
+        ImageIds::constructionCatchmentSlope18,
+    };
 
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
     {
@@ -382,8 +404,13 @@ namespace OpenLoco::Paint
         session.attachToPrevious(imageId, { 0, 0 });
     }
 
-    // 0x00465F99
-    static void paintSurfaceFullWaterTileSelection(PaintSession& session, const World::SurfaceElement& elSurface, uint8_t slope)
+    struct WaterSurface
+    {
+        int16_t height;
+        uint8_t slope;
+    };
+
+    static WaterSurface getWaterSurface(const World::SurfaceElement& elSurface, uint8_t slope)
     {
         int16_t height = elSurface.baseHeight();
         if (elSurface.waterHeight() > height)
@@ -403,13 +430,20 @@ namespace OpenLoco::Paint
                 slope = Numerics::rotl4bit((slope & 0xF) ^ 0xF, 2);
             }
         }
-        const auto displaySlope = k4FD97E[slope];
+        return WaterSurface{ .height = height, .slope = slope };
+    }
+
+    // 0x00465F99
+    static void paintSurfaceFullWaterTileSelection(PaintSession& session, const World::SurfaceElement& elSurface, uint8_t slope)
+    {
+        const auto waterSurface = getWaterSurface(elSurface, slope);
+        const auto displaySlope = k4FD97E[waterSurface.slope];
         const auto imageId = ImageId(kCornerSelectionBoxFromSlope[displaySlope], ExtColour::unk26);
 
         // TODO: Push/pop last ps?
         auto* lastPs = session.getLastPS();
 
-        session.addToPlotListAsParent(imageId, { 0, 0, height }, { 32, 32, 1 });
+        session.addToPlotListAsParent(imageId, { 0, 0, waterSurface.height }, { 32, 32, 1 });
 
         session.setLastPS(lastPs);
     }
@@ -644,6 +678,50 @@ namespace OpenLoco::Paint
                 && pos.y <= pointB.y)
             {
                 paintSurfaceSelection(session, elSurface, selfDescriptor.slope);
+            }
+        }
+
+        if (World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
+        {
+            if (isWithinMapSelectionTiles(session.getUnkPosition()))
+            {
+                const auto colour = World::hasMapSelectionFlag(World::MapSelectionFlags::unk_03) ? ExtColour::unk2B : ExtColour::unk25;
+
+                if (elSurface.water() && elSurface.waterHeight() > elSurface.baseHeight())
+                {
+                    const auto waterSurface = getWaterSurface(elSurface, selfDescriptor.slope);
+                    const auto waterDisplaySlope = k4FD97E[waterSurface.slope];
+                    const auto imageId = ImageId(kCornerSelectionBoxFromSlope[waterDisplaySlope], colour);
+
+                    // TODO: Push/pop last ps?
+                    auto* lastPs = session.getLastPS();
+
+                    session.addToPlotListAsParent(imageId, { 0, 0, waterSurface.height }, { 32, 32, 1 });
+
+                    session.setLastPS(lastPs);
+                }
+                else
+                {
+                    const auto imageId = ImageId(kCornerSelectionBoxFromSlope[unkF252AC], colour);
+                    session.attachToPrevious(imageId, { 0, 0 });
+                }
+            }
+        }
+
+        if (World::hasMapSelectionFlag(World::MapSelectionFlags::catchmentArea))
+        {
+            if (isWithinCatchmentDisplay(session.getUnkPosition()))
+            {
+                const auto waterSurface = getWaterSurface(elSurface, selfDescriptor.slope);
+                const auto waterDisplaySlope = k4FD97E[waterSurface.slope];
+                const auto imageId = ImageId(kCatchmentFromSlope[waterDisplaySlope], Colour::darkBlue);
+
+                // TODO: Push/pop last ps?
+                auto* lastPs = session.getLastPS();
+
+                session.addToPlotListAsParent(imageId, { 0, 0, waterSurface.height }, { 32, 32, 1 });
+
+                session.setLastPS(lastPs);
             }
         }
     }

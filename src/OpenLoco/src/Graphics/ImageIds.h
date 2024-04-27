@@ -30,7 +30,25 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t constructionSelectionCornersSlope16 = 338;
     constexpr uint32_t constructionSelectionCornersSlope17 = 339;
     constexpr uint32_t constructionSelectionCornersSlope18 = 340;
-
+    constexpr uint32_t constructionCatchmentSlope0 = 341;
+    constexpr uint32_t constructionCatchmentSlope1 = 342;
+    constexpr uint32_t constructionCatchmentSlope2 = 343;
+    constexpr uint32_t constructionCatchmentSlope3 = 344;
+    constexpr uint32_t constructionCatchmentSlope4 = 345;
+    constexpr uint32_t constructionCatchmentSlope5 = 346;
+    constexpr uint32_t constructionCatchmentSlope6 = 347;
+    constexpr uint32_t constructionCatchmentSlope7 = 348;
+    constexpr uint32_t constructionCatchmentSlope8 = 349;
+    constexpr uint32_t constructionCatchmentSlope9 = 350;
+    constexpr uint32_t constructionCatchmentSlope10 = 351;
+    constexpr uint32_t constructionCatchmentSlope11 = 352;
+    constexpr uint32_t constructionCatchmentSlope12 = 353;
+    constexpr uint32_t constructionCatchmentSlope13 = 354;
+    constexpr uint32_t constructionCatchmentSlope14 = 355;
+    constexpr uint32_t constructionCatchmentSlope15 = 356;
+    constexpr uint32_t constructionCatchmentSlope16 = 357;
+    constexpr uint32_t constructionCatchmentSlope17 = 358;
+    constexpr uint32_t constructionCatchmentSlope18 = 359;
     constexpr uint32_t constructionSelectionEdgesSlope0 = 360;
     constexpr uint32_t constructionSelectionEdgesSlope1 = 361;
     constexpr uint32_t constructionSelectionEdgesSlope2 = 362;

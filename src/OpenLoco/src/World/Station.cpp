@@ -51,6 +51,10 @@ namespace OpenLoco
         inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
 
     public:
+        bool mapHas1(const tile_coord_t x, const tile_coord_t y) const
+        {
+            return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_0))) != 0;
+        }
         bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
             return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_1))) != 0;
@@ -558,6 +562,13 @@ namespace OpenLoco
                 }
             }
         }
+    }
+
+    bool isWithinCatchmentDisplay(const World::Pos2 pos)
+    {
+        CargoSearchState cargoSearchState;
+        const auto tilePos = World::toTileSpace(pos);
+        return cargoSearchState.mapHas1(tilePos.x, tilePos.y);
     }
 
     // 0x0049B4E0
