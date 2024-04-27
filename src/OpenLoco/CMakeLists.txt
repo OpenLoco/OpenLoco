@@ -482,7 +482,6 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Intro.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LabelFrame.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/LastGameOptionManager.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/ArgsWrapper.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Conversion.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/FormatArguments.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Localisation/Formatting.h"

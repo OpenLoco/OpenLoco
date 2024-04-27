@@ -83,4 +83,6 @@ namespace OpenLoco::Exception
     using InvalidOperation = Detail::ExceptionBase<struct InvalidOperationTag>;
     using BadAllocation = Detail::ExceptionBase<struct BadAllocTag>;
     using OutOfRange = Detail::ExceptionBase<struct OutOfRangeTag>;
+    using OverflowError = Detail::ExceptionBase<struct OverflowErrorTag>;
+
 }

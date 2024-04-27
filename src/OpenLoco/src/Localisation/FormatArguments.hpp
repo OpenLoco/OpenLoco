@@ -34,21 +34,21 @@ namespace OpenLoco
     private:
         std::byte* _buffer;
         std::byte* _bufferStart;
-        size_t _length;
+        size_t _capacity;
 
     public:
         FormatArguments(std::byte* buffer, size_t length)
         {
             _bufferStart = buffer;
             _buffer = _bufferStart;
-            _length = length;
+            _capacity = length;
         }
 
         FormatArguments(FormatArgumentsBuffer& buffer)
         {
             _buffer = buffer.data();
             _bufferStart = _buffer;
-            _length = buffer.capacity();
+            _capacity = buffer.capacity();
         }
 
         FormatArguments(const FormatArgumentsBuffer& buffer)
@@ -56,21 +56,21 @@ namespace OpenLoco
             // FIXME: Create a view type for FormatArgumentsBuffer.
             _buffer = const_cast<std::byte*>(buffer.data());
             _bufferStart = _buffer;
-            _length = buffer.capacity();
+            _capacity = buffer.capacity();
         }
 
         FormatArguments()
         {
-            loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
+            loco_global<std::byte[20], 0x0112C826> _commonFormatArgs;
 
             _bufferStart = _buffer = &*_commonFormatArgs;
-            _length = std::size(_commonFormatArgs);
+            _capacity = std::size(_commonFormatArgs);
         }
 
         template<typename... T>
         static FormatArguments common(T&&... args)
         {
-            loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
+            loco_global<std::byte[20], 0x0112C826> _commonFormatArgs;
             FormatArguments formatter{ _commonFormatArgs.get(), std::size(_commonFormatArgs) };
             (formatter.push(args), ...);
             return formatter;
@@ -123,13 +123,66 @@ namespace OpenLoco
             return _buffer - _bufferStart;
         }
 
+        size_t getCapacity() const
+        {
+            return _capacity;
+        }
+
     private:
         std::byte* getNextOffset(const size_t size) const
         {
             std::byte* const nextOffset = reinterpret_cast<std::byte*>(reinterpret_cast<std::byte*>(_buffer) + size);
-            if (nextOffset > _bufferStart + _length)
+            if (nextOffset > _bufferStart + _capacity)
                 throw Exception::OutOfRange("FormatArguments: attempting to advance outside of buffer");
             return nextOffset;
+        }
+    };
+
+    class FormatArgumentsView
+    {
+    private:
+        const std::byte* args{};
+        const std::byte* end{};
+
+    public:
+        constexpr FormatArgumentsView() = default;
+
+        FormatArgumentsView(const void* newargs)
+            : args(reinterpret_cast<const std::byte*>(newargs)){};
+
+        FormatArgumentsView(const FormatArguments& newargs)
+            : args(newargs.getBufferStart())
+            , end(newargs.getBufferStart() + newargs.getCapacity()){};
+
+        FormatArgumentsView(const FormatArgumentsBuffer& newargs)
+            : args(newargs.data())
+            , end(newargs.data() + newargs.capacity()){};
+
+        template<typename T>
+        T pop()
+        {
+            if (args == nullptr)
+                return T{};
+
+            T value;
+            std::memcpy(&value, args, sizeof(T));
+            args += sizeof(T);
+
+            return value;
+        }
+
+        template<typename T>
+        void skip()
+        {
+            if (args == nullptr)
+                return;
+            args += sizeof(T);
+        }
+
+        template<typename T>
+        void push()
+        {
+            args -= sizeof(T);
         }
     };
 }
