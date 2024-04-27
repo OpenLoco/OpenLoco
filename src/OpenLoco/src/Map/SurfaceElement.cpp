@@ -173,7 +173,11 @@ namespace OpenLoco::World
                 args.pos = Pos3(loc, elWall->baseHeight());
                 args.rotation = i;
                 GameCommands::doCommand(args, GameCommands::Flags::apply);
-                tileAddedRemoved = true;
+                // tileAddedRemoved = true;
+                // To be safe we should really re-get the tile and stop processing the tile (tileAddedRemoved = true)
+                // but that subtly diverges from vanilla.
+                // TODO: Change this when we want to diverge!
+
                 // surf might be invalid! Re-get it just to be safe.
                 surf = TileManager::get(loc).surface();
                 continue;
