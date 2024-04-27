@@ -351,6 +351,117 @@ namespace OpenLoco::Paint
         uint32_t imageMask;
     };
 
+    // 0x00465F01
+    static void paintSurfaceCornerSelection(PaintSession& session, const uint8_t displaySlope, const uint8_t corner)
+    {
+        const auto colour = kCornerColours[corner];
+        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[displaySlope], colour);
+        session.attachToPrevious(imageId, { 0, 0 });
+    }
+
+    // 0x00465F08
+    static void paintSurfaceFullTileSelection(PaintSession& session, const uint8_t displaySlope)
+    {
+        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[displaySlope], ExtColour::unk25);
+        session.attachToPrevious(imageId, { 0, 0 });
+    }
+
+    // 0x00465F36
+    static void paintSurfaceQuadSelection(PaintSession& session, const uint8_t displaySlope, const uint8_t quad)
+    {
+        const auto colour = kQuarterColours[quad];
+        const auto imageId = ImageId(kQuadSelectionBoxFromSlope[displaySlope], colour);
+        session.attachToPrevious(imageId, { 0, 0 });
+    }
+
+    // 0x00465F69
+    static void paintSurfaceEdgeSelection(PaintSession& session, const uint8_t displaySlope, const uint8_t edge)
+    {
+        const auto colour = kEdgeColours[edge];
+        const auto imageId = ImageId(kEdgeSelectionBoxFromSlope[displaySlope], colour);
+        session.attachToPrevious(imageId, { 0, 0 });
+    }
+
+    // 0x00465F99
+    static void paintSurfaceFullWaterTileSelection(PaintSession& session, const World::SurfaceElement& elSurface, uint8_t slope)
+    {
+        int16_t height = elSurface.baseHeight();
+        if (elSurface.waterHeight() > height)
+        {
+            height += World::kMicroZStep;
+            if (elSurface.waterHeight() != height
+                || !elSurface.isSlopeDoubleHeight())
+            {
+                // This is the simple case where the water is flat as no
+                // bits of surface breach the water
+                slope = 0;
+                height = elSurface.waterHeight();
+            }
+            else
+            {
+                // Adjust the slope to handle surface breaches
+                slope = Numerics::rotl4bit((slope & 0xF) ^ 0xF, 2);
+            }
+        }
+        const auto displaySlope = k4FD97E[slope];
+        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[displaySlope], ExtColour::unk26);
+
+        // TODO: Push/pop last ps?
+        auto* lastPs = session.getLastPS();
+
+        session.addToPlotListAsParent(imageId, { 0, 0, height }, { 32, 32, 1 });
+
+        session.setLastPS(lastPs);
+    }
+
+    // 0x00465EE9
+    static void paintSurfaceSelection(PaintSession& session, const World::SurfaceElement& elSurface, const uint8_t slope)
+    {
+        const auto rotation = session.getRotation();
+        const auto unkF252AC = k4FD97E[slope];
+        switch (World::getMapSelectionCorner())
+        {
+            case World::MapSelectionType::corner0:
+            case World::MapSelectionType::corner1:
+            case World::MapSelectionType::corner2:
+            case World::MapSelectionType::corner3:
+            {
+                uint32_t corner = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::corner0);
+                corner = (corner + rotation) & 3;
+                paintSurfaceCornerSelection(session, unkF252AC, corner);
+                break;
+            }
+            case World::MapSelectionType::full:
+                paintSurfaceFullTileSelection(session, unkF252AC);
+                break;
+
+            case World::MapSelectionType::fullWater:
+                paintSurfaceFullWaterTileSelection(session, elSurface, slope);
+                break;
+
+            case World::MapSelectionType::quarter0:
+            case World::MapSelectionType::quarter1:
+            case World::MapSelectionType::quarter2:
+            case World::MapSelectionType::quarter3:
+            {
+                uint32_t quad = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::quarter0);
+                quad = (quad + rotation) & 3;
+                paintSurfaceQuadSelection(session, unkF252AC, quad);
+                break;
+            }
+            case World::MapSelectionType::edge0:
+            case World::MapSelectionType::edge1:
+            case World::MapSelectionType::edge2:
+            case World::MapSelectionType::edge3:
+            {
+                uint32_t edge = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::edge0);
+                edge = (edge + rotation) & 3;
+                paintSurfaceEdgeSelection(session, unkF252AC, edge);
+                break;
+            }
+        }
+    }
+
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
@@ -532,62 +643,7 @@ namespace OpenLoco::Paint
             if (pos.x >= pointA.x && pos.x <= pointB.x && pos.y >= pointA.y
                 && pos.y <= pointB.y)
             {
-                switch (World::getMapSelectionCorner())
-                {
-                    case World::MapSelectionType::corner0:
-                    case World::MapSelectionType::corner1:
-                    case World::MapSelectionType::corner2:
-                    case World::MapSelectionType::corner3:
-                    {
-                        // 0x00465F01
-                        uint32_t variation = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::corner0);
-                        variation = (variation + rotation) & 3;
-                        const auto colour = kCornerColours[variation];
-
-                        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[unkF252AC], colour);
-                        session.attachToPrevious(imageId, { 0, 0 });
-                        break;
-                    }
-                    case World::MapSelectionType::full:
-                    {
-                        // 0x00465F08
-                        const auto imageId = ImageId(kCornerSelectionBoxFromSlope[unkF252AC], ExtColour::unk25);
-                        session.attachToPrevious(imageId, { 0, 0 });
-                        break;
-                    }
-                    case World::MapSelectionType::fullWater:
-                        // 0x00465F99
-                        break;
-                    case World::MapSelectionType::quarter0:
-                    case World::MapSelectionType::quarter1:
-                    case World::MapSelectionType::quarter2:
-                    case World::MapSelectionType::quarter3:
-                    {
-                        // 0x00465F36
-                        uint32_t variation = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::quarter0);
-                        variation = (variation + rotation) & 3;
-                        const auto colour = kQuarterColours[variation];
-
-                        const auto imageId = ImageId(kQuadSelectionBoxFromSlope[unkF252AC], colour);
-                        session.attachToPrevious(imageId, { 0, 0 });
-                        break;
-                    }
-                    case World::MapSelectionType::edge0:
-                    case World::MapSelectionType::edge1:
-                    case World::MapSelectionType::edge2:
-                    case World::MapSelectionType::edge3:
-
-                    {
-                        // 0x00465F69
-                        uint32_t variation = enumValue(World::getMapSelectionCorner()) - enumValue(World::MapSelectionType::edge0);
-                        variation = (variation + rotation) & 3;
-                        const auto colour = kEdgeColours[variation];
-
-                        const auto imageId = ImageId(kEdgeSelectionBoxFromSlope[unkF252AC], colour);
-                        session.attachToPrevious(imageId, { 0, 0 });
-                        break;
-                    }
-                }
+                paintSurfaceSelection(session, elSurface, selfDescriptor.slope);
             }
         }
     }
