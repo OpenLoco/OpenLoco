@@ -8,6 +8,7 @@
 #include "Localisation/StringIds.h"
 #include "Objects/CargoObject.h"
 #include "Objects/InterfaceSkinObject.h"
+#include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/ScenarioTextObject.h"
 #include "S5/S5.h"
@@ -1145,6 +1146,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.widgets[widx::scenario_group].text = scenarioGroupLabelIds[S5::getOptions().difficulty];
         }
 
+        static void unloadScenarioTextObjects()
+        {
+            if (ObjectManager::get<ScenarioTextObject>() == nullptr)
+                return;
+
+            LoadedObjectHandle handle = { ObjectType::scenarioText, 0 };
+            auto header = ObjectManager::getHeader(handle);
+            ObjectManager::unload(header);
+        }
+
         // 0x0043F156
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
@@ -1154,6 +1165,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     strncpy(S5::getOptions().scenarioName, input, sizeof(S5::Options::scenarioName) - 1);
                     S5::getOptions().scenarioName[sizeof(S5::Options::scenarioName) - 1] = '\0';
+                    unloadScenarioTextObjects();
                     self.invalidate();
                     break;
                 }
@@ -1162,6 +1174,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     strncpy(S5::getOptions().scenarioDetails, input, sizeof(S5::Options::scenarioDetails) - 1);
                     S5::getOptions().scenarioDetails[sizeof(S5::Options::scenarioDetails) - 1] = '\0';
+                    unloadScenarioTextObjects();
                     self.invalidate();
                     break;
                 }
