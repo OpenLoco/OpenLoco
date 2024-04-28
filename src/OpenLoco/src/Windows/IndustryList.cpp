@@ -540,10 +540,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457FCA
         static void tabReset(Window* self)
         {
+            self->invalidate();
             self->minWidth = kMinDimensions.width;
             self->minHeight = kMinDimensions.height;
             self->maxWidth = kMaxDimensions.width;
             self->maxHeight = kMaxDimensions.height;
+            self->width = kWindowSize.width;
+            self->height = kWindowSize.height;
             self->var_83C = 0;
             self->rowHover = -1;
             Common::refreshIndustryList(self);
