@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->requiredCargoType)
                 {
-                    if (receivedCargoType != 0xFF)
+                    if (receivedCargoType != kCargoTypeNull)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(receivedCargoType);
                         FormatArguments args{};
@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto cargoNumber = 0;
                 for (const auto& producedCargoType : industryObj->producedCargoType)
                 {
-                    if (producedCargoType != 0xFF)
+                    if (producedCargoType != kCargoTypeNull)
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
                         FormatArguments args{};
@@ -565,10 +565,10 @@ namespace OpenLoco::Ui::Windows::Industry
             auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(IndustryId(self->number))->objectId);
             auto disabledWidgets = 0;
 
-            if (industryObj->producedCargoType[0] == 0xFF)
+            if (industryObj->producedCargoType[0] == kCargoTypeNull)
                 disabledWidgets |= (1 << Common::widx::tab_production);
 
-            if (industryObj->producedCargoType[1] == 0xFF)
+            if (industryObj->producedCargoType[1] == kCargoTypeNull)
                 disabledWidgets |= (1 << Common::widx::tab_production_2);
 
             self->disabledWidgets = disabledWidgets;
@@ -836,7 +836,7 @@ namespace OpenLoco::Ui::Windows::Industry
             uint32_t imageId = 0xFFFFFFFF;
             auto widget = self->widgets[tab];
 
-            if (industryObj->producedCargoType[productionTabNumber] != 0xFF)
+            if (industryObj->producedCargoType[productionTabNumber] != kCargoTypeNull)
             {
                 imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary).c());
 

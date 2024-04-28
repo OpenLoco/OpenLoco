@@ -1979,6 +1979,9 @@ namespace OpenLoco::StringIds
     constexpr StringId currentHeightmapFile = 2343;
     constexpr StringId noneSelected = 2344;
     constexpr StringId checkingScenarioFiles = 2345;
+    constexpr StringId industry_table_header_production_last_month = 2346;
+    constexpr StringId industry_table_header_production_last_month_desc = 2347;
+    constexpr StringId sort_industry_production_last_month = 2348;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

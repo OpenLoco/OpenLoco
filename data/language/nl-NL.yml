@@ -2398,3 +2398,6 @@ strings:
   2343: "{COLOUR WINDOW_2}Huidig hoogtekaart-bestand: {COLOUR BLACK}{STRING}"
   2344: "(geen selectie)"
   2345: "Bezig met checken van scenario's..."
+  2346: "{COLOUR BLACK}Productie afgelopen maand"
+  2347: "{COLOUR BLACK}Productie afgelopen maand ▼"
+  2348: "{SMALLFONT}{COLOUR BLACK}Sorteer lijst op productie afgelopen maand"
