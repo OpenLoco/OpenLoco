@@ -346,6 +346,27 @@ namespace OpenLoco::Paint
         ImageIds::constructionCatchmentSlope17,
         ImageIds::constructionCatchmentSlope18,
     };
+    static constexpr std::array<uint32_t, 19> kGridlinesBoxFromSlope = {
+        ImageIds::gridlinesSlope0,
+        ImageIds::gridlinesSlope1,
+        ImageIds::gridlinesSlope2,
+        ImageIds::gridlinesSlope3,
+        ImageIds::gridlinesSlope4,
+        ImageIds::gridlinesSlope5,
+        ImageIds::gridlinesSlope6,
+        ImageIds::gridlinesSlope7,
+        ImageIds::gridlinesSlope8,
+        ImageIds::gridlinesSlope9,
+        ImageIds::gridlinesSlope10,
+        ImageIds::gridlinesSlope11,
+        ImageIds::gridlinesSlope12,
+        ImageIds::gridlinesSlope13,
+        ImageIds::gridlinesSlope14,
+        ImageIds::gridlinesSlope15,
+        ImageIds::gridlinesSlope16,
+        ImageIds::gridlinesSlope17,
+        ImageIds::gridlinesSlope18,
+    };
 
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
     {
@@ -722,6 +743,25 @@ namespace OpenLoco::Paint
                 session.addToPlotListAsParent(imageId, { 0, 0, waterSurface.height }, { 32, 32, 1 });
 
                 session.setLastPS(lastPs);
+            }
+        }
+
+        if ((session.getViewFlags() & Ui::ViewportFlags::gridlines_on_landscape) != Ui::ViewportFlags::none
+            && zoomLevel <= 2
+            && (session.getViewFlags() & Ui::ViewportFlags::underground_view) == Ui::ViewportFlags::none)
+        {
+            const auto imageId = ImageId(kGridlinesBoxFromSlope[unkF252AC], ExtColour::unk30);
+            session.attachToPrevious(imageId, { 0, 0 });
+        }
+
+        if (snowImage.has_value() && zoomLevel <= 2)
+        {
+            const auto imageId = ImageId(snowImage->baseImage);
+            auto* attachedPs = session.attachToPrevious(imageId, { 0, 0 });
+            if (attachedPs != nullptr)
+            {
+                attachedPs->flags |= PaintStructFlags::hasMaskedImage;
+                attachedPs->maskedImageId = ImageId(snowImage->imageMask);
             }
         }
     }
