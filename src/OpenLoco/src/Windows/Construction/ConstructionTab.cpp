@@ -2165,7 +2165,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             WindowManager::viewportSetVisibility(newViewState);
             if (_lastSelectedTrackGradient != 0)
             {
-                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnTrack);
             }
         }
         _byte_113603A = 0;
@@ -2218,7 +2218,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             WindowManager::viewportSetVisibility(newViewState);
             if (_lastSelectedTrackGradient != 0)
             {
-                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnTrack);
             }
         }
         _byte_113603A = 0;
