@@ -2313,6 +2313,25 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t scenario_completed_tick = 3629;
     constexpr uint32_t owner_jailed = 3630;
 
+    constexpr uint32_t surfaceSmoothSlope0 = 3803;
+    constexpr uint32_t surfaceSmoothSlope1 = 3804;
+    constexpr uint32_t surfaceSmoothSlope2 = 3805;
+    constexpr uint32_t surfaceSmoothSlope3 = 3806;
+    constexpr uint32_t surfaceSmoothSlope4 = 3807;
+    constexpr uint32_t surfaceSmoothSlope5 = 3808;
+    constexpr uint32_t surfaceSmoothSlope6 = 3809;
+    constexpr uint32_t surfaceSmoothSlope7 = 3810;
+    constexpr uint32_t surfaceSmoothSlope8 = 3811;
+    constexpr uint32_t surfaceSmoothSlope9 = 3812;
+    constexpr uint32_t surfaceSmoothSlope10 = 3813;
+    constexpr uint32_t surfaceSmoothSlope11 = 3814;
+    constexpr uint32_t surfaceSmoothSlope12 = 3815;
+    constexpr uint32_t surfaceSmoothSlope13 = 3816;
+    constexpr uint32_t surfaceSmoothSlope14 = 3817;
+    constexpr uint32_t surfaceSmoothSlope15 = 3818;
+    constexpr uint32_t surfaceSmoothSlope16 = 3819;
+    constexpr uint32_t surfaceSmoothSlope17 = 3820;
+    constexpr uint32_t surfaceSmoothSlope18 = 3821;
     constexpr uint32_t snowMaskCoverage1Slope0 = 3822;
     constexpr uint32_t snowMaskCoverage1Slope1 = 3823;
     constexpr uint32_t snowMaskCoverage1Slope2 = 3824;

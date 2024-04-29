@@ -1,4 +1,5 @@
 #include "PaintSurface.h"
+#include "Config.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Map/MapSelection.h"
@@ -15,8 +16,12 @@
 #include "World/Station.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
+using namespace OpenLoco::Interop;
+
 namespace OpenLoco::Paint
 {
+    static loco_global<LandObjectFlags[32], 0x00F003D3> _F003D3;
+
     struct CornerHeight
     {
         uint8_t top;
@@ -29,9 +34,11 @@ namespace OpenLoco::Paint
     {
         World::Pos2 pos;
         const World::SurfaceElement* elSurface;
-        const LandObject* landObject;
+        uint8_t landObjectId;
         uint8_t slope;
         CornerHeight cornerHeights;
+        uint8_t snowCoverage;
+        uint8_t var6SLR5;
     };
 
     // TODO: Check
@@ -126,6 +133,98 @@ namespace OpenLoco::Paint
         16,
         16,
         16,
+    };
+
+    // bottom left tint
+    static constexpr std::array<uint8_t, 19> k4FDA5E = {
+        2,
+        5,
+        1,
+        4,
+        2,
+        5,
+        1,
+        2,
+        2,
+        4,
+        1,
+        2,
+        1,
+        3,
+        0,
+        3,
+        1,
+        5,
+        0,
+    };
+
+    // top left tint
+    static constexpr std::array<uint8_t, 19> k4FDA71 = {
+        2,
+        5,
+        2,
+        4,
+        2,
+        5,
+        1,
+        1,
+        3,
+        4,
+        3,
+        2,
+        1,
+        2,
+        0,
+        3,
+        1,
+        5,
+        0,
+    };
+
+    // top right tint
+    static constexpr std::array<uint8_t, 19> k4FDA84 = {
+        2,
+        2,
+        2,
+        4,
+        0,
+        0,
+        1,
+        1,
+        3,
+        4,
+        3,
+        5,
+        1,
+        2,
+        2,
+        3,
+        1,
+        5,
+        0,
+    };
+
+    // bottom right tint
+    static constexpr std::array<uint8_t, 19> k4FDA97 = {
+        2,
+        2,
+        1,
+        4,
+        0,
+        0,
+        1,
+        2,
+        2,
+        4,
+        1,
+        5,
+        1,
+        3,
+        2,
+        3,
+        1,
+        5,
+        0,
     };
 
     std::array<std::array<World::Pos2, 4>, 4> _unk4FD99E = {
@@ -367,6 +466,27 @@ namespace OpenLoco::Paint
         ImageIds::gridlinesSlope17,
         ImageIds::gridlinesSlope18,
     };
+    static constexpr std::array<uint32_t, 19> kSurfaceSmoothFromSlope = {
+        ImageIds::surfaceSmoothSlope0,
+        ImageIds::surfaceSmoothSlope1,
+        ImageIds::surfaceSmoothSlope2,
+        ImageIds::surfaceSmoothSlope3,
+        ImageIds::surfaceSmoothSlope4,
+        ImageIds::surfaceSmoothSlope5,
+        ImageIds::surfaceSmoothSlope6,
+        ImageIds::surfaceSmoothSlope7,
+        ImageIds::surfaceSmoothSlope8,
+        ImageIds::surfaceSmoothSlope9,
+        ImageIds::surfaceSmoothSlope10,
+        ImageIds::surfaceSmoothSlope11,
+        ImageIds::surfaceSmoothSlope12,
+        ImageIds::surfaceSmoothSlope13,
+        ImageIds::surfaceSmoothSlope14,
+        ImageIds::surfaceSmoothSlope15,
+        ImageIds::surfaceSmoothSlope16,
+        ImageIds::surfaceSmoothSlope17,
+        ImageIds::surfaceSmoothSlope18,
+    };
 
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
     {
@@ -517,6 +637,106 @@ namespace OpenLoco::Paint
         }
     }
 
+    static void paintSurfaceSmoothenEdge(
+        PaintSession& session, uint8_t edge, const TileDescriptor& self, const TileDescriptor& neighbour)
+    {
+        if (neighbour.elSurface == nullptr)
+            return;
+
+        if (neighbour.cornerHeights.left != neighbour.cornerHeights.right
+            || neighbour.cornerHeights.bottom != neighbour.cornerHeights.top)
+            return;
+
+        // If either is industrial
+        if (neighbour.landObjectId == 0xFFU || self.landObjectId == 0xFFU)
+        {
+            return;
+        }
+
+        if (self.snowCoverage == 3)
+        {
+            return;
+        }
+
+        // 0x00F25304
+        const auto displaySlope = k4FD97E[self.slope];
+        const auto neighbourDislaySlope = k4FD97E[neighbour.slope];
+
+        uint8_t dh = 0, cl = 0;
+        switch (edge)
+        {
+            case 0:
+                dh = k4FDA5E[displaySlope];
+                cl = k4FDA84[neighbourDislaySlope];
+                break;
+
+            case 1:
+                dh = k4FDA71[displaySlope];
+                cl = k4FDA97[neighbourDislaySlope];
+                break;
+
+            case 2:
+                dh = k4FDA97[displaySlope];
+                cl = k4FDA71[neighbourDislaySlope];
+                break;
+
+            case 3:
+                dh = k4FDA84[displaySlope];
+                cl = k4FDA5E[neighbourDislaySlope];
+                break;
+        }
+
+        auto selfObj = self.snowCoverage >= 4 ? 0xFFU : self.landObjectId;
+        auto neighbourObj = neighbour.snowCoverage >= 4 ? 0xFFU : neighbour.landObjectId;
+
+        if (self.var6SLR5 == neighbour.var6SLR5 && selfObj == neighbourObj)
+        {
+            // same tint
+            if (cl == dh)
+                return;
+
+            if ((_F003D3[self.landObjectId] & LandObjectFlags::unk4) != LandObjectFlags::none)
+                return;
+        }
+        else
+        {
+            if ((_F003D3[self.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+                return;
+
+            if ((_F003D3[neighbour.landObjectId] & LandObjectFlags::unk5) != LandObjectFlags::none)
+                return;
+        }
+
+        const auto baseImageId = ImageId(kSurfaceSmoothFromSlope[displaySlope]);
+
+        if (neighbourObj == 0xFFU)
+        {
+            auto* snowObj = ObjectManager::get<SnowObject>();
+            const auto variation = 38 + cl;
+            const auto maskImageId = ImageId(snowObj->image).withIndexOffset(variation);
+
+            auto* attachedPs = session.attachToPrevious(baseImageId, { 0, 0 });
+            if (attachedPs != nullptr)
+            {
+                attachedPs->maskedImageId = maskImageId;
+                attachedPs->flags |= PaintStructFlags::hasMaskedImage;
+            }
+        }
+        else
+        {
+            auto* landObj = ObjectManager::get<LandObject>(neighbour.landObjectId);
+            const auto variation = landObj->var_0E * neighbour.var6SLR5 + 19 + cl;
+            const auto maskImageId = ImageId(landObj->image).withIndexOffset(variation);
+
+            auto* attachedPs = session.attachToPrevious(baseImageId, { 0, 0 });
+            if (attachedPs != nullptr)
+            {
+                attachedPs->maskedImageId = maskImageId;
+                attachedPs->flags |= PaintStructFlags::hasMaskedImage;
+            }
+        }
+    }
+
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
@@ -526,6 +746,7 @@ namespace OpenLoco::Paint
 
         // 0x00F252B0 / 0x00F252B4 but if 0x00F252B0 == -2 that means industrial
         [[maybe_unused]] uint8_t landObjId = elSurface.terrain();
+        const auto* landObj = ObjectManager::get<LandObject>(landObjId);
 
         const auto rotation = session.getRotation();
         const auto baseHeight = elSurface.baseHeight();
@@ -534,7 +755,7 @@ namespace OpenLoco::Paint
         const auto selfDescriptor = TileDescriptor{
             session.getSpritePosition(),
             &elSurface,
-            ObjectManager::get<LandObject>(elSurface.terrain()),
+            elSurface.isIndustrial() ? static_cast<uint8_t>(0xFFU) : elSurface.terrain(),
             rotatedSlope,
             {
                 static_cast<uint8_t>(elSurface.baseZ() + cornerHeights[rotatedSlope].top),
@@ -542,6 +763,8 @@ namespace OpenLoco::Paint
                 static_cast<uint8_t>(elSurface.baseZ() + cornerHeights[rotatedSlope].bottom),
                 static_cast<uint8_t>(elSurface.baseZ() + cornerHeights[rotatedSlope].left),
             },
+            elSurface.snowCoverage(),
+            elSurface.var_6_SLR5(),
         };
         std::array<TileDescriptor, 4> tileDescriptors;
 
@@ -570,12 +793,14 @@ namespace OpenLoco::Paint
             const CornerHeight& ch = cornerHeights[surfaceSlope];
 
             descriptor.pos = position;
-            descriptor.landObject = ObjectManager::get<LandObject>(descriptor.elSurface->terrain());
+            descriptor.landObjectId = descriptor.elSurface->isIndustrial() ? static_cast<uint8_t>(0xFFU) : descriptor.elSurface->terrain();
             descriptor.slope = surfaceSlope;
             descriptor.cornerHeights.top = baseZ + ch.top;
             descriptor.cornerHeights.right = baseZ + ch.right;
             descriptor.cornerHeights.bottom = baseZ + ch.bottom;
             descriptor.cornerHeights.left = baseZ + ch.left;
+            descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
+            descriptor.var6SLR5 = descriptor.elSurface->var_6_SLR5();
         }
 
         if (((session.getViewFlags() & Ui::ViewportFlags::height_marks_on_land) != Ui::ViewportFlags::none)
@@ -592,7 +817,7 @@ namespace OpenLoco::Paint
         }
 
         // 0x00F25314
-        [[maybe_unused]] const auto cliffEdgeImageBase = selfDescriptor.landObject->cliffEdgeImage;
+        [[maybe_unused]] const auto cliffEdgeImageBase = landObj->cliffEdgeImage;
         // 0x00F252AC
         const auto unkF252AC = k4FD97E[selfDescriptor.slope];
         // 0x00F25344
@@ -650,7 +875,6 @@ namespace OpenLoco::Paint
         }
         else
         {
-            auto* landObj = ObjectManager::get<LandObject>(elSurface.terrain());
             const auto variation = landObj->var_0E * elSurface.var_6_SLR5() + ((landObj->var_04 - 1) & rotation) * 25;
             if (elSurface.snowCoverage())
             {
@@ -763,6 +987,16 @@ namespace OpenLoco::Paint
                 attachedPs->flags |= PaintStructFlags::hasMaskedImage;
                 attachedPs->maskedImageId = ImageId(snowImage->imageMask);
             }
+        }
+
+        if (zoomLevel == 0
+            && (session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none
+            && ((Config::get().old.flags & Config::Flags::landscapeSmoothing) != Config::Flags::none))
+        {
+            paintSurfaceSmoothenEdge(session, 2, selfDescriptor, tileDescriptors[2]);
+            paintSurfaceSmoothenEdge(session, 3, selfDescriptor, tileDescriptors[3]);
+            paintSurfaceSmoothenEdge(session, 0, selfDescriptor, tileDescriptors[0]);
+            paintSurfaceSmoothenEdge(session, 1, selfDescriptor, tileDescriptors[1]);
         }
     }
 }
