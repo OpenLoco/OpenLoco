@@ -634,7 +634,7 @@ namespace OpenLoco::IndustryManager
                     FormatArguments args{};
                     args.push<uint16_t>(unique);
                     char buffer[512]{};
-                    StringManager::formatString(buffer, indObj->var_02 + 1, &args);
+                    StringManager::formatString(buffer, indObj->var_02 + 1, args);
                     const auto newName = StringManager::userStringAllocate(buffer, 0);
                     if (newName == StringIds::empty)
                     {

@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(message->date);
 
                     auto point = Point(0, height);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, args);
                 }
                 {
                     auto args = FormatArguments();
@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
                     auto point = Point(0, height + 6);
-                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, stringId, &args);
+                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, stringId, args);
                     height += messageHeight;
                 }
             }
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(newsStringIds[i]);
 
                     auto point = Point(self.x + 4, yPos);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, &args);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
                 }
 
                 {
@@ -553,7 +553,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().old.newsSettings[i])]);
 
                     auto point = Point(xPos, yPos);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
+                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
                 }
                 yPos += 15;
             }

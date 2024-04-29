@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto& widget = self.widgets[Widx::frame];
         auto point = Point(self.x + widget.midX(), self.y + widget.top + 4);
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_text, &args);
+        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_text, args);
 
         point.y += 10;
         drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_control);

@@ -44,7 +44,7 @@ namespace OpenLoco::Ui::ProgressBar
         if (captionStringId != StringIds::null)
         {
             auto args = FormatArguments::common();
-            StringManager::formatString(_captionBuffer, std::size(_captionBuffer), captionStringId, &args);
+            StringManager::formatString(_captionBuffer, std::size(_captionBuffer), captionStringId, args);
         }
         begin(_captionBuffer);
     }

@@ -224,7 +224,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->cash.var_04);
 
             auto point = Point(x, window.y + frame.top + 2);
-            drawingCtx.drawStringCentred(*rt, point, colour, companyValueString, &args);
+            drawingCtx.drawStringCentred(*rt, point, colour, companyValueString, args);
         }
 
         {
@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->performanceIndex);
 
             auto point = Point(x, window.y + frame.top + 14);
-            drawingCtx.drawStringCentred(*rt, point, colour, performanceString, &args);
+            drawingCtx.drawStringCentred(*rt, point, colour, performanceString, args);
         }
     }
 

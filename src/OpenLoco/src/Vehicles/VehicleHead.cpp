@@ -3558,7 +3558,7 @@ namespace OpenLoco::Vehicles
             auto unitNameFormat = cargoTotal == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural;
             FormatArguments args{};
             args.push(cargoTotal);
-            buffer = StringManager::formatString(buffer, unitNameFormat, &args);
+            buffer = StringManager::formatString(buffer, unitNameFormat, args);
         }
 
         if (!hasCargo)

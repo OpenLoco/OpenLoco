@@ -113,14 +113,22 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             if (config.enabledMusic[i])
             {
                 auto point = Point(2, y);
-                drawingCtx.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
+
+                auto argsBuf = FormatArgumentsBuffer{};
+                auto args = FormatArguments{ argsBuf };
+                args.push(StringIds::checkmark);
+                drawingCtx.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, args);
             }
 
             // Draw track name.
             {
                 auto point = Point(15, y);
                 StringId music_title_id = Audio::getMusicInfo(i)->titleId;
-                drawingCtx.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
+
+                auto argsBuf = FormatArgumentsBuffer{};
+                auto args = FormatArguments{ argsBuf };
+                args.push(music_title_id);
+                drawingCtx.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), text_colour_id, args);
             }
 
             y += kRowHeight;

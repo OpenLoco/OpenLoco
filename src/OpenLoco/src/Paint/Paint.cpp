@@ -1225,8 +1225,11 @@ namespace OpenLoco::Paint
 
         for (; psString != nullptr; psString = psString->next)
         {
+            // FIXME: Modify psString->args to be a buffer.
+            FormatArguments args{ reinterpret_cast<std::byte*>(psString->args), sizeof(psString->args) };
+
             Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
-            StringManager::formatString(buffer, psString->stringId, psString->args);
+            StringManager::formatString(buffer, psString->stringId, args);
 
             Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));

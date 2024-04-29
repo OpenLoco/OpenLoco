@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     point,
                     Colour::black,
                     StringIds::cheat_loan_value,
-                    &args);
+                    args);
             }
 
             // Loan label and value
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     point,
                     Colour::black,
                     StringIds::cheat_loan_value,
-                    &args);
+                    args);
             }
 
             // Add year label and value
@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     point,
                     Colour::black,
                     StringIds::cheat_year_value,
-                    &args);
+                    args);
             }
 
             // Add month label and value
@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     point,
                     Colour::black,
                     StringIds::black_stringid,
-                    &args);
+                    args);
             }
 
             // Add day label and value
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                     point,
                     Colour::black,
                     StringIds::cheat_day_value,
-                    &args);
+                    args);
             }
         }
 
@@ -559,6 +559,11 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Draw current company name
             auto company = CompanyManager::get(_targetCompanyId);
+
+            auto argsBuf = FormatArgumentsBuffer();
+            auto args = FormatArguments(argsBuf);
+            args.push(company->name);
+
             auto& widget = self.widgets[Widx::target_company_dropdown];
             auto point = Point(self.x + widget.left, self.y + widget.top);
             drawingCtx.drawStringLeft(
@@ -566,7 +571,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 point,
                 Colour::black,
                 StringIds::black_stringid,
-                &company->name);
+                args);
         }
 
         static void onMouseUp(Ui::Window& self, const WidgetIndex_t widgetIndex)

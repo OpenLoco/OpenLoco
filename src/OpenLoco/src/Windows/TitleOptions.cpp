@@ -62,7 +62,11 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
         Ui::Point origin = { x, y };
 
-        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
+        auto argsBuf = FormatArgumentsBuffer{};
+        auto args = FormatArguments{ argsBuf };
+        args.push(StringIds::options);
+
+        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, args);
     }
 
     static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)

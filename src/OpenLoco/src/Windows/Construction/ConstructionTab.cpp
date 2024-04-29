@@ -2660,7 +2660,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 FormatArguments args{};
                 args.push<uint32_t>(_trackCost);
-                drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, &args);
+                drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, args);
             }
         }
     }

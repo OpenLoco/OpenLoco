@@ -592,7 +592,7 @@ namespace OpenLoco::Ui
 
         auto formatArgs = FormatArguments(widget.textArgs);
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, &formatArgs);
+        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, formatArgs);
     }
 
     // 0x004CB263
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui
         auto formatArgs = FormatArguments(widget.textArgs);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, &formatArgs);
+        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, formatArgs);
     }
 
     // 0x4CB2D6
@@ -635,7 +635,7 @@ namespace OpenLoco::Ui
         auto point = Point(window->x + widget.left + 1, window->y + widget.top);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, &formatArgs);
+        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, formatArgs);
     }
 
     // 0x4CB29C
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui
             width,
             AdvancedColour(Colour::white).outline(),
             widget.text,
-            &formatArgs);
+            formatArgs);
     }
 
     // 0x004CF3EB
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui
 
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::black;
-        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
+        StringManager::formatString(&stringBuffer[1], widget.text, formatArgs);
 
         auto* window = widgetState.window;
         int16_t width = widget.right - widget.left - 4 - 14;
@@ -738,7 +738,7 @@ namespace OpenLoco::Ui
 
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::windowColour1;
-        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
+        StringManager::formatString(&stringBuffer[1], widget.text, formatArgs);
 
         auto* window = widgetState.window;
         int16_t x = widget.left + window->x + 2;
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui
 
         char stringBuffer[512];
         stringBuffer[0] = ControlCodes::Colour::white;
-        StringManager::formatString(&stringBuffer[1], widget.text, &formatArgs);
+        StringManager::formatString(&stringBuffer[1], widget.text, formatArgs);
 
         auto* window = widgetState.window;
         int16_t x = widget.left + window->x + 2;
@@ -1050,7 +1050,7 @@ namespace OpenLoco::Ui
         auto* window = widgetState.window;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto point = Point(window->x + widget.left + 14, window->y + widget.top);
-        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, &formatArgs);
+        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, formatArgs);
     }
 
     // 0x004CA679

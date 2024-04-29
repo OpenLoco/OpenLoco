@@ -57,25 +57,25 @@ namespace OpenLoco
         {
             FormatArguments args{};
             args.push(power);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_power, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_power, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_length, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_length, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_weight, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_weight, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_max_speed, &args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_max_speed, args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -108,7 +108,7 @@ namespace OpenLoco
                         }
                         args.push(cargoUnitName);
                         args.push<uint32_t>(maxCargo[0]);
-                        buffer = StringManager::formatString(buffer, StringIds::stats_capacity, &args);
+                        buffer = StringManager::formatString(buffer, StringIds::stats_capacity, args);
                     }
                     cargoType = Numerics::bitScanForward(primaryCargoTypes);
                     if (cargoType != -1)
@@ -127,7 +127,7 @@ namespace OpenLoco
                             auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
-                            buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
+                            buffer = StringManager::formatString(buffer, StringIds::stats_or_string, args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -157,7 +157,7 @@ namespace OpenLoco
                         }
                         args.push(cargoUnitName);
                         args.push<uint32_t>(maxCargo[1]);
-                        buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, &args);
+                        buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, args);
                     }
 
                     cargoType = Numerics::bitScanForward(secondaryCargoTypes);
@@ -177,7 +177,7 @@ namespace OpenLoco
                             auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
-                            buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
+                            buffer = StringManager::formatString(buffer, StringIds::stats_or_string, args);
                             strcpy(buffer, " ");
                             buffer++;
                         }

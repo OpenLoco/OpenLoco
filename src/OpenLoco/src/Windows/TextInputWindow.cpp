@@ -118,8 +118,10 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         memcpy(_formatArgs, _commonFormatArgs, 16);
 
+        // FIXME: Make valueArgs a view.
+        auto args = FormatArguments{ const_cast<std::byte*>(static_cast<const std::byte*>(valueArgs)), 16 };
         char temp[200] = {};
-        StringManager::formatString(temp, value, valueArgs);
+        StringManager::formatString(temp, value, args);
 
         inputSession = Ui::TextInput::InputSession(temp, inputSize);
         inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
@@ -221,11 +223,12 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         window.draw(rt);
 
+        // FIXME: This is pretty horrible.
         *((StringId*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
-        drawingCtx.drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
+        drawingCtx.drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
 
         auto widget = &_widgets[Widx::input];
         auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
@@ -242,7 +245,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push(StringIds::buffer_2039);
 
             position = { inputSession.xOffset, 1 };
-            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
         }
 
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
@@ -255,7 +258,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
             widget = &_widgets[Widx::ok];
             auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
-            drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::num_characters_left_int_int, &args);
+            drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::num_characters_left_int_int, args);
         }
 
         if ((inputSession.cursorFrame % 32) >= 16)

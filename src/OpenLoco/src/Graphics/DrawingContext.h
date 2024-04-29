@@ -2,6 +2,7 @@
 
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
+#include "Localisation/FormatArguments.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
@@ -55,7 +56,7 @@ namespace OpenLoco::Gfx
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringLeftClipped(
@@ -64,7 +65,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringLeftUnderline(
@@ -72,7 +73,7 @@ namespace OpenLoco::Gfx
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringLeftWrapped(
@@ -81,7 +82,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringCentred(
@@ -89,7 +90,7 @@ namespace OpenLoco::Gfx
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringCentredClipped(
@@ -98,7 +99,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringCentredRaw(
@@ -115,7 +116,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringRight(
@@ -123,7 +124,7 @@ namespace OpenLoco::Gfx
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual Ui::Point drawStringRightUnderline(
@@ -131,7 +132,7 @@ namespace OpenLoco::Gfx
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args = {})
             = 0;
 
         virtual void drawStringYOffsets(Gfx::RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) = 0;

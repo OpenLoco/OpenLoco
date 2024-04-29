@@ -588,7 +588,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicleTab:
                 {
                     auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-                    drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::black_tiny_font, &args);
+                    drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::black_tiny_font, args);
                     break;
                 }
 
@@ -635,7 +635,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             y = self->y + 1;
             origin = { x, y };
 
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, &news->date);
+            auto argsBuf = FormatArgumentsBuffer{};
+            auto args = FormatArguments{ argsBuf };
+            args.push(news->date);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, args);
 
             drawNewsSubjectImages(self, rt, news);
         }
@@ -717,7 +720,10 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, &news->date);
+            auto argsBuf = FormatArgumentsBuffer{};
+            auto args = FormatArguments{ argsBuf };
+            args.push(news->date);
+            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, args);
 
             drawNewsSubjectImages(self, rt, news);
 

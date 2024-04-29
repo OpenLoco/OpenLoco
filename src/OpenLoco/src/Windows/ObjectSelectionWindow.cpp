@@ -867,7 +867,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             args.push<StringId>(StringIds::buffer_1250);
 
             auto point = Point(18, height - kDescriptionRowHeight * 3 - 4);
-            drawingCtx.drawStringLeft(*clipped, point, Colour::black, StringIds::object_selection_filename, &args);
+            drawingCtx.drawStringLeft(*clipped, point, Colour::black, StringIds::object_selection_filename, args);
         }
     }
 
@@ -888,7 +888,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         // Draw search box input buffer
         Ui::Point position = { inputSession.xOffset, 1 };
-        drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+        drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
 
         // Draw search box cursor, blinking
         if (Input::isFocused(self.type, self.number, widx::textInput) && (inputSession.cursorFrame % 32) < 16)
@@ -896,7 +896,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             // We draw the string again to figure out where the cursor should go; position.x will be adjusted
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
-            position = drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+            position = drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
             drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
     }
@@ -927,7 +927,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto point = Point(self.x + widget.left, self.y + widget.top);
 
             // Draw current level on combobox
-            drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         bool doDefault = true;
@@ -962,7 +962,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         {
             auto point = Point(self.x + 3, self.y + self.height - 12);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::buffer_2038, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::buffer_2038, args);
         }
 
         if (self.rowHover == -1)

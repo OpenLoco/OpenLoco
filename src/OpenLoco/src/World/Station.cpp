@@ -598,7 +598,7 @@ namespace OpenLoco
 
             auto cargo = ObjectManager::get<CargoObject>(cargoId);
             auto unitName = stationCargoStat.quantity == 1 ? cargo->unitNameSingular : cargo->unitNamePlural;
-            ptr = StringManager::formatString(ptr, unitName, &args);
+            ptr = StringManager::formatString(ptr, unitName, args);
         }
 
         StringId suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
