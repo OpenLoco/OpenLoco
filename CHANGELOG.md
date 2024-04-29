@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#2] The window limit has been increased from 12 to 64.
 - Feature: [#1652] Display the production of each industry from the previous month in the industry list.
+- Fix: [#2374] Height markers re-appear when building sloped track in construction window.
 - Fix: [#2411] Progress bar windows are not actually rendered.
 - Fix: [#2413] Gridlines are hidden when closing construction windows.
 - Fix: [#2416] Cursors in embedded text fiels are not rendering in the right position.
