@@ -576,7 +576,7 @@ namespace OpenLoco::Paint
     void PaintSession::insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge)
     {
         TunnelEntry entry{ static_cast<World::MicroZ>(z / World::kMicroZStep), tunnelType };
-        auto tunnelCount = _tunnelCounts[edge];
+        auto& tunnelCount = _tunnelCounts[edge];
         auto tunnels = getTunnels(edge);
         bool insert = true;
         if (tunnelCount > 0)
