@@ -488,6 +488,17 @@ namespace OpenLoco::Paint
         ImageIds::surfaceSmoothSlope18,
     };
 
+    constexpr std::array<uint8_t, 8> kUndergroundViewSnowNoise = {
+        0, // Don't display (No snow handled differently)
+        0, // Don't display
+        0, // Don't display
+        3,
+        6,
+        0, // Don't display (full snow handled differently)
+        0,
+        0,
+    };
+
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
     {
         return Numerics::rotl4bit(slope & 0xF, rotation) | (slope & 0x10);
@@ -734,6 +745,16 @@ namespace OpenLoco::Paint
                 attachedPs->maskedImageId = maskImageId;
                 attachedPs->flags |= PaintStructFlags::hasMaskedImage;
             }
+        }
+    }
+
+    static void paintMainUndergroundSurface(PaintSession& session, uint32_t imageIndex, uint8_t displaySlope)
+    {
+        auto* attachedPs = session.attachToPrevious(ImageId(imageIndex), { 0, 0 });
+        if (attachedPs != nullptr)
+        {
+            attachedPs->maskedImageId = ImageId(kGridlinesBoxFromSlope[displaySlope]);
+            attachedPs->flags |= PaintStructFlags::hasMaskedImage;
         }
     }
 
@@ -997,6 +1018,76 @@ namespace OpenLoco::Paint
             paintSurfaceSmoothenEdge(session, 3, selfDescriptor, tileDescriptors[3]);
             paintSurfaceSmoothenEdge(session, 0, selfDescriptor, tileDescriptors[0]);
             paintSurfaceSmoothenEdge(session, 1, selfDescriptor, tileDescriptors[1]);
+        }
+
+        if (((session.getViewFlags() & Ui::ViewportFlags::underground_view) != Ui::ViewportFlags::none)
+            && ((session.getViewFlags() & Ui::ViewportFlags::flag_7) == Ui::ViewportFlags::none))
+        {
+            if (elSurface.isIndustrial())
+            {
+                auto* industry = IndustryManager::get(elSurface.industryId());
+                auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
+
+                const auto variation = industryObj->var_1A * elSurface.var_6_SLR5() + ((industryObj->var_E9 - 1) & rotation) * 21;
+                const auto imageIndex = industryObj->var_16 + variation + unkF252AC;
+
+                if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
+                    || selfDescriptor.snowCoverage == 0)
+                {
+                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                }
+                else if (selfDescriptor.snowCoverage == 5)
+                {
+                    auto* snowObj = ObjectManager::get<SnowObject>();
+
+                    const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC);
+                    session.attachToPrevious(imageId, { 0, 0 });
+                }
+                else
+                {
+                    auto* snowObj = ObjectManager::get<SnowObject>();
+                    const auto snowNoise = kUndergroundViewSnowNoise[selfDescriptor.snowCoverage];
+
+                    if (snowNoise != 0)
+                    {
+                        const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC).withNoiseMask(snowNoise);
+                        session.attachToPrevious(imageId, { 0, 0 });
+                    }
+
+                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                }
+            }
+            else
+            {
+                const auto variation = landObj->var_0E * elSurface.var_6_SLR5() + ((landObj->var_04 - 1) & rotation) * 25;
+                const auto imageIndex = landObj->image + variation + unkF252AC;
+
+                if (selfDescriptor.snowCoverage == 0)
+                {
+                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                }
+                else if (selfDescriptor.snowCoverage == 5)
+                {
+                    // 0x00466389
+                    auto* snowObj = ObjectManager::get<SnowObject>();
+
+                    const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC);
+                    session.attachToPrevious(imageId, { 0, 0 });
+                }
+                else
+                {
+                    auto* snowObj = ObjectManager::get<SnowObject>();
+                    const auto snowNoise = kUndergroundViewSnowNoise[selfDescriptor.snowCoverage];
+
+                    if (snowNoise != 0)
+                    {
+                        const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC).withNoiseMask(snowNoise);
+                        session.attachToPrevious(imageId, { 0, 0 });
+                    }
+
+                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                }
+            }
         }
     }
 }
