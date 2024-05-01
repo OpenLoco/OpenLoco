@@ -758,6 +758,94 @@ namespace OpenLoco::Paint
         }
     }
 
+    constexpr std::array<uint8_t, 4> kEdgeFactorOffset = { 0, 1, 1, 0 };
+    constexpr std::array<uint8_t, 4> kEdgeUndergroundOffset = { 0, 0, 67, 64 };
+    constexpr std::array<std::array<std::array<uint32_t, 5>, 2>, 2> kEdgeMaskImageFromSlope = {
+        std::array<std::array<uint32_t, 5>, 2>{
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge0MaskSlope0,
+                ImageIds::cliffEdge0MaskSlope1,
+                ImageIds::cliffEdge0MaskSlope2,
+                ImageIds::cliffEdge0MaskSlope3,
+                ImageIds::cliffEdge0MaskSlope4,
+            },
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge1MaskSlope0,
+                ImageIds::cliffEdge1MaskSlope1,
+                ImageIds::cliffEdge1MaskSlope2,
+                ImageIds::cliffEdge1MaskSlope3,
+                ImageIds::cliffEdge1MaskSlope4,
+            },
+        },
+        std::array<std::array<uint32_t, 5>, 2>{
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge0UndergroundMaskSlope0,
+                ImageIds::cliffEdge0UndergroundMaskSlope1,
+                ImageIds::cliffEdge0UndergroundMaskSlope2,
+                ImageIds::cliffEdge0UndergroundMaskSlope3,
+                ImageIds::cliffEdge0UndergroundMaskSlope4,
+            },
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge1UndergroundMaskSlope0,
+                ImageIds::cliffEdge1UndergroundMaskSlope1,
+                ImageIds::cliffEdge1UndergroundMaskSlope2,
+                ImageIds::cliffEdge1UndergroundMaskSlope3,
+                ImageIds::cliffEdge1UndergroundMaskSlope4,
+            },
+        },
+    };
+
+    static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const TileDescriptor& self, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
+    {
+        if (neighbour.elSurface == nullptr)
+        {
+            return;
+        }
+        if (neighbour.cornerHeights.top <= neighbour.cornerHeights.bottom
+            && neighbour.cornerHeights.left <= neighbour.cornerHeights.right)
+        {
+            return;
+        }
+
+        const bool isUnderground = (session.getViewFlags() & Ui::ViewportFlags::underground_view) != Ui::ViewportFlags::none;
+        [[maybe_unused]] uint32_t factor = ((session.getSpritePosition().x ^ session.getSpritePosition().y) & 0b10'0000) + kEdgeFactorOffset[edge];
+        const auto undergroundOffset = kEdgeUndergroundOffset[edge];
+        if (undergroundOffset != 0 && isUnderground)
+        {
+            const auto offset = neighbour.cornerHeights.left - neighbour.cornerHeights.top + 1;
+            const auto yOffset = ((neighbour.cornerHeights.top - self.elSurface->baseZ() / kMicroToSmallZStep) * kMicroZStep) - 1;
+            const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(offset + undergroundOffset);
+            session.attachToPrevious(image, Ui::Point(0, -yOffset));
+        }
+
+        auto& maskArr = kEdgeMaskImageFromSlope[isUnderground][edge & 0b1];
+        if (edge == 2)
+        {
+            if (neighbour.cornerHeights.bottom != neighbour.cornerHeights.right)
+            {
+                uint8_t unk = 3;
+                uint8_t heighest = neighbour.cornerHeights.bottom;
+                if (neighbour.cornerHeights.right >= neighbour.cornerHeights.bottom)
+                {
+                    unk = 4;
+                    heighest = neighbour.cornerHeights.right;
+                }
+                if (heighest != neighbour.cornerHeights.top && heighest != neighbour.cornerHeights.left)
+                {
+                    const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (heighest & 0xF));
+                    const World::Pos3 offset(0, -2, heighest * kMicroZStep + 1);
+                    const World::Pos3 boundBoxSize(30, 0, neighbour.cornerHeights.bottom);
+                    auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
+                    if (ps != nullptr)
+                    {
+                        ps->flags |= PaintStructFlags::hasMaskedImage;
+                        ps->maskedImageId = ImageId(maskArr[unk]);
+                    }
+                }
+            }
+        }
+    }
+
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
@@ -838,7 +926,7 @@ namespace OpenLoco::Paint
         }
 
         // 0x00F25314
-        [[maybe_unused]] const auto cliffEdgeImageBase = landObj->cliffEdgeImage;
+        const auto cliffEdgeImageBase = landObj->cliffEdgeImage;
         // 0x00F252AC
         const auto unkF252AC = k4FD97E[selfDescriptor.slope];
         // 0x00F25344
@@ -1088,6 +1176,14 @@ namespace OpenLoco::Paint
                     paintMainUndergroundSurface(session, imageIndex, unkF252AC);
                 }
             }
+        }
+
+        if (((session.getViewFlags() & Ui::ViewportFlags::flag_8) == Ui::ViewportFlags::none))
+        {
+            paintSurfaceCliffEdge(session, 2, selfDescriptor, tileDescriptors[2], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 3, selfDescriptor, tileDescriptors[3], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 0, selfDescriptor, tileDescriptors[0], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 1, selfDescriptor, tileDescriptors[1], cliffEdgeImageBase);
         }
     }
 }
