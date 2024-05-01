@@ -867,7 +867,7 @@ namespace OpenLoco::Paint
 
             session.setItemType(Ui::ViewportInteraction::InteractionItem::surface);
 
-            if (zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26)
+            if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
                 || elSurface.snowCoverage() == 0)
             {
                 // Draw main surface image
