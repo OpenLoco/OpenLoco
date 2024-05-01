@@ -4,6 +4,7 @@
 - Fix: [#2411] Progress bar windows are not actually rendered.
 - Fix: [#2413] Gridlines are hidden when closing construction windows.
 - Fix: [#2416] Cursors in embedded text fiels are not rendering in the right position.
+- Fix: [#2470] Only one tunnel image drawn when there are multiple in the same surface tile.
 - Change: [#1014] Loading and saving save files and scenarios uses progress bars again.
 - Change: [#2411] Internal progress bars can now be used during the object and scenario indexing processes.
 - Change: [#2416] Most text input fields are no longer focused by default, allowing shortcuts to be used.
