@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Dropdown
         // 0x00494BF6
         static void sub_494BF6([[maybe_unused]] Window* self, Gfx::RenderTarget* rt, StringId stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
-            StringManager::formatString(_byte_112CC04, stringId, &args);
+            StringManager::formatString(_byte_112CC04, stringId, args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
@@ -373,7 +373,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 dropdownFormatArgsToFormatArgs(itemCount, args);
 
-                StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
+                StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], args);
 
                 drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 

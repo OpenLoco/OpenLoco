@@ -649,7 +649,7 @@ namespace OpenLoco::CompanyManager
             char companyName[256] = { 0 };
             FormatArguments args{};
             args.push(StringIds::buffer_2039);
-            StringManager::formatString(companyName, StringIds::company_owner_name_transport, &args);
+            StringManager::formatString(companyName, StringIds::company_owner_name_transport, args);
 
             // Now, set the company name.
 

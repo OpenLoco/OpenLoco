@@ -67,7 +67,7 @@ namespace OpenLoco::GameCommands
         char existingVehicleName[512];
         FormatArguments fArgs{};
         fArgs.push(vehicleHead->ordinalNumber);
-        StringManager::formatString(existingVehicleName, vehicleHead->name, &fArgs);
+        StringManager::formatString(existingVehicleName, vehicleHead->name, fArgs);
 
         if (strcmp(existingVehicleName, renameStringBuffer) == 0)
         {

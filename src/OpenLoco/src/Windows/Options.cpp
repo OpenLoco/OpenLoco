@@ -702,7 +702,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             auto& scaleWidget = w.widgets[Widx::display_scale];
             point = Point(w.x + scaleWidget.left + 1, w.y + scaleWidget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scale_formatted, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scale_formatted, args);
         }
 
         static void applyScreenModeRestrictions(Window* w)
@@ -2140,7 +2140,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 auto width = w.widgets[Widx::changeOwnerNameBtn].left - 24;
                 auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1);
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, &args);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, args);
             }
 
             // Draw competitor name and face
@@ -2152,7 +2152,7 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(competitor->name);
                 const auto width = w.widgets[Widx::changeOwnerFaceBtn].left - 24;
                 auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1);
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::currentPreferredFace, &args);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::currentPreferredFace, args);
 
                 const auto& widget = w.widgets[Widx::ownerFacePreview];
                 auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
@@ -2445,7 +2445,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(value);
 
             auto point = Point(w->x + widget.left + 1, w->y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x004C1282
@@ -2458,7 +2458,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Label for autosave frequency
             auto point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_frequency].top);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_frequency, nullptr);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_frequency);
 
             // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;

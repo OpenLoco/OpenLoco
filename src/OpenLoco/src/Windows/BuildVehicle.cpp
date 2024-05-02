@@ -1216,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         args.push(StringIds::buffer_2039);
 
         Ui::Point position = { inputSession.xOffset, 1 };
-        drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+        drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
 
         // Draw search box cursor, blinking
         if (Input::isFocused(self.type, self.number, widx::searchBox) && (inputSession.cursorFrame % 32) < 16)
@@ -1224,7 +1224,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             // We draw the string again to figure out where the cursor should go; position.x will be adjusted
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
-            position = drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, &args);
+            position = drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
             drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
     }
@@ -1254,7 +1254,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
 
             auto point = Point(window.x + 2, window.y + window.height - 13);
-            drawingCtx.drawStringLeftClipped(*rt, point, window.width - 186, Colour::black, bottomLeftMessage, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, window.width - 186, Colour::black, bottomLeftMessage, args);
         }
 
         if (_cargoSupportedFilter != 0xFF && _cargoSupportedFilter != 0xFE)
@@ -1268,7 +1268,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             auto& widget = window.widgets[widx::cargoLabel];
             auto point = Point(window.x + widget.left + 2, window.y + widget.top);
-            drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         if (window.rowHover == -1)
@@ -1283,14 +1283,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             auto cost = Economy::getInflationAdjustedCost(vehicleObj->costFactor, vehicleObj->costIndex, 6);
             FormatArguments args{};
             args.push(cost);
-            buffer = StringManager::formatString(buffer, StringIds::stats_cost, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_cost, args);
         }
 
         {
             auto runningCost = Economy::getInflationAdjustedCost(vehicleObj->runCostFactor, vehicleObj->runCostIndex, 10);
             FormatArguments args{};
             args.push(runningCost);
-            buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, args);
         }
 
         if (vehicleObj->designed != 0)
@@ -1303,14 +1303,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             buffer = StringManager::formatString(
                 buffer,
                 unlocked ? StringIds::stats_designed : StringIds::stats_proposed_design,
-                &args);
+                args);
         }
 
         if (vehicleObj->obsolete != 0 && vehicleObj->obsolete != std::numeric_limits<uint16_t>::max())
         {
             FormatArguments args{};
             args.push(vehicleObj->obsolete);
-            buffer = StringManager::formatString(buffer, StringIds::stats_obsolete, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_obsolete, args);
         }
 
         if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
@@ -1352,7 +1352,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 auto trackExtraObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
                 FormatArguments args{};
                 args.push(trackExtraObj->name);
-                buffer = StringManager::formatString(buffer, StringIds::stats_string_steep_slope, &args);
+                buffer = StringManager::formatString(buffer, StringIds::stats_string_steep_slope, args);
             }
         }
 
@@ -1362,24 +1362,24 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 FormatArguments args{};
                 args.push(vehicleObj->power);
-                buffer = StringManager::formatString(buffer, StringIds::stats_power, &args);
+                buffer = StringManager::formatString(buffer, StringIds::stats_power, args);
             }
         }
 
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(vehicleObj->getLength()));
-            buffer = StringManager::formatString(buffer, StringIds::stats_length, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_length, args);
         }
         {
             FormatArguments args{};
             args.push(vehicleObj->weight);
-            buffer = StringManager::formatString(buffer, StringIds::stats_weight, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_weight, args);
         }
         {
             FormatArguments args{};
             args.push(vehicleObj->speed.getRaw());
-            buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, args);
         }
         if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
         {
@@ -1387,7 +1387,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             FormatArguments args{};
             args.push(vehicleObj->rackSpeed);
             args.push(trackExtraObj->name);
-            buffer = StringManager::formatString(buffer, StringIds::stats_velocity_on_string, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_velocity_on_string, args);
         }
 
         vehicleObj->getCargoString(buffer);
@@ -1426,7 +1426,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto point = Point(3, (window.rowHeight - 10) / 2);
-                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, defaultMessage, &args);
+                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, defaultMessage, args);
                 }
                 else
                 {
@@ -1488,7 +1488,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         half = (window.rowHeight - 10) / 2;
 
                         auto point = Point(x + 3, y + half);
-                        drawingCtx.drawStringLeft(rt, point, Colour::black, colouredString, &args);
+                        drawingCtx.drawStringLeft(rt, point, Colour::black, colouredString, args);
                     }
                 }
                 break;
@@ -1528,7 +1528,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
 
-                drawingCtx.drawStringCentredClipped(rt, Point(89, 52), 177, Colour::darkOrange, StringIds::wcolour2_stringid, &args);
+                drawingCtx.drawStringCentredClipped(rt, Point(89, 52), 177, Colour::darkOrange, StringIds::wcolour2_stringid, args);
                 break;
             }
         }

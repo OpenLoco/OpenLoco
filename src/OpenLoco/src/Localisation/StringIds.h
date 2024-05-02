@@ -1207,7 +1207,7 @@ namespace OpenLoco::StringIds
     constexpr StringId stationOwnedByAnotherCompany = 1528;
 
     constexpr StringId water_channel_currently_needed_by_ships = 1530;
-
+    constexpr StringId currently_in_use_by_at_least_one_vehicle = 1531;
     constexpr StringId refit_vehicle_tip = 1532;
     constexpr StringId cant_refit_vehicle = 1533;
 
@@ -1979,6 +1979,9 @@ namespace OpenLoco::StringIds
     constexpr StringId currentHeightmapFile = 2343;
     constexpr StringId noneSelected = 2344;
     constexpr StringId checkingScenarioFiles = 2345;
+    constexpr StringId industry_table_header_production_last_month = 2346;
+    constexpr StringId industry_table_header_production_last_month_desc = 2347;
+    constexpr StringId sort_industry_production_last_month = 2348;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;

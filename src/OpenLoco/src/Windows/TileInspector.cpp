@@ -150,14 +150,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
             auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
         }
         {
             FormatArguments args{};
             args.push(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
             auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         // Coord X/Y values
@@ -166,14 +166,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
             auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
         }
         {
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
             auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
         }
 
         // Selected element details
@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             // Draw name and type
             auto* widget = &self.widgets[widx::nameTypeHeader];
             auto point = Point(0, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw base height
             widget = &self.widgets[widx::baseHeightHeader];
@@ -393,7 +393,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.baseZ());
             point = Point(widget->left - 4, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw clear height
             widget = &self.widgets[widx::clearHeightHeader];
@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.clearZ());
             point = Point(widget->left - 4, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw direction
             widget = &self.widgets[widx::directionHeader];
@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.data()[0] & 0x03);
             point = Point(widget->left - 4, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, &args);
+            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw ghost flag
             widget = &self.widgets[widx::ghostHeader];

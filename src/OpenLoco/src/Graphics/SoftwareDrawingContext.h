@@ -30,7 +30,7 @@ namespace OpenLoco::Gfx
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringLeftClipped(
             RenderTarget& rt,
@@ -38,14 +38,14 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringLeftUnderline(
             RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringLeftWrapped(
             RenderTarget& rt,
@@ -53,14 +53,14 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringCentred(
             RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringCentredClipped(
             RenderTarget& rt,
@@ -68,7 +68,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringCentredRaw(
             RenderTarget& rt,
@@ -83,21 +83,21 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringRight(
             RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args = nullptr) override;
+            FormatArgumentsView args = {}) override;
 
         Ui::Point drawStringRightUnderline(
             RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args) override;
+            FormatArgumentsView args = {}) override;
 
         void drawStringYOffsets(RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) override;
         void drawStringTicker(RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) override;

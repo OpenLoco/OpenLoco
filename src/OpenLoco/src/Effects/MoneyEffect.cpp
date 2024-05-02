@@ -121,7 +121,7 @@ namespace OpenLoco
             char buffer[255] = {};
             FormatArguments args{};
             args.push(amount);
-            StringManager::formatString(buffer, strFormat, &args);
+            StringManager::formatString(buffer, strFormat, args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);

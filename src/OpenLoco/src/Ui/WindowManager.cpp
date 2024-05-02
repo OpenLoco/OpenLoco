@@ -1941,11 +1941,11 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
 
-            case ViewportVisibility::heightMarksOnLand:
+            case ViewportVisibility::heightMarksOnTrack:
             {
-                if (!viewport->hasFlags(ViewportFlags::height_marks_on_land))
+                if (!viewport->hasFlags(ViewportFlags::height_marks_on_tracks_roads))
                 {
-                    viewport->flags |= (ViewportFlags::height_marks_on_land);
+                    viewport->flags |= (ViewportFlags::height_marks_on_tracks_roads);
                     flagsChanged = true;
                 }
                 break;

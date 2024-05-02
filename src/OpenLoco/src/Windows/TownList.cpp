@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(town->name);
 
                     auto point = Point(0, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
                 }
                 // Town Type
                 {
@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(town->getTownSizeString());
 
                     auto point = Point(200, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 278, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 278, Colour::black, text_colour_id, args);
                 }
                 // Town Population
                 {
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(town->population);
 
                     auto point = Point(280, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, args);
                 }
                 // Town Stations
                 {
@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push<int32_t>(town->numStations);
 
                     auto point = Point(350, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, &args);
+                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, args);
                 }
                 yPos += kRowHeight;
             }
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::TownList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 4, self.y + self.height - 12);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0049A27F
@@ -894,7 +894,7 @@ namespace OpenLoco::Ui::Windows::TownList
             args.push(buildingObj->name);
 
             auto point = Point(self.x + 3, self.y + self.height - 13);
-            drawingCtx.drawStringLeftClipped(*rt, point, self.width - 19, Colour::black, StringIds::black_stringid, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, self.width - 19, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0049AB31

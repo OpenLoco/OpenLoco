@@ -21,7 +21,7 @@ namespace OpenLoco
         auto requiredCargoState = false;
         for (const auto& requiredCargo : requiredCargoType)
         {
-            if (requiredCargo != 0xff)
+            if (requiredCargo != kCargoTypeNull)
             {
                 requiredCargoState = true;
                 break;
@@ -35,7 +35,7 @@ namespace OpenLoco
         auto produceCargoState = false;
         for (const auto& producedCargo : producedCargoType)
         {
-            if (producedCargo != 0xff)
+            if (producedCargo != kCargoTypeNull)
             {
                 produceCargoState = true;
                 break;
@@ -51,7 +51,7 @@ namespace OpenLoco
 
         for (const auto& producedCargo : producedCargoType)
         {
-            if (producedCargo != 0xFF)
+            if (producedCargo != kCargoTypeNull)
             {
                 producedCargoCount++;
 
@@ -72,7 +72,7 @@ namespace OpenLoco
 
         for (const auto& requiredCargo : requiredCargoType)
         {
-            if (requiredCargo != 0xFF)
+            if (requiredCargo != kCargoTypeNull)
             {
                 requiredCargoCount++;
 

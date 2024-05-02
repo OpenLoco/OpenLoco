@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
             y += 10;
         }
@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
             y += 10;
         }
@@ -689,7 +689,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
             y += 10;
         }
@@ -742,7 +742,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
             y += 10;
         }
@@ -774,7 +774,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
             y += 10;
         }
@@ -874,7 +874,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto buffer = StringManager::getString(StringIds::buffer_1250);
             char* ptr = const_cast<char*>(buffer);
 
-            ptr = StringManager::formatString(ptr, stringId, &industryCount);
+            auto argsBuf = FormatArgumentsBuffer{};
+            auto argsTmp = FormatArguments{ argsBuf };
+            argsTmp.push(industryCount);
+            ptr = StringManager::formatString(ptr, stringId, argsTmp);
 
             *ptr++ = ' ';
             *ptr++ = '(';
@@ -972,7 +975,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
         auto width = widget.width();
 
-        drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &args);
+        drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
     }
 
     // 0x0046BF0F based on

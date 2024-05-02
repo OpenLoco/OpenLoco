@@ -1,7 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Input.h"
-#include "Localisation/ArgsWrapper.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Objects/CompetitorObject.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -48,7 +47,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         tooltipLocation = cursor;
         auto args = FormatArguments::mapToolTip();
-        StringManager::ArgsWrapper argsWrap(&args);
+        FormatArgumentsView argsWrap(args);
         auto firstArg = argsWrap.pop<StringId>();
         if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::rightMousePressed) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
@@ -116,7 +115,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto args = FormatArguments::mapToolTip();
-        StringManager::ArgsWrapper argsWrap(&args);
+        FormatArgumentsView argsWrap(args);
         auto firstArg = argsWrap.pop<StringId>();
         if (firstArg == StringIds::null)
         {
@@ -126,12 +125,12 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
             Ui::Point origin(self.x + self.width / 2, self.y + self.height / 2 - 5);
-            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
+            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, args);
         }
         else
         {
             Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
-            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
+            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
 
             auto left = self.width / 2 + self.x + 13 - self.width / 2 - 28;
             auto top = self.height / 2 - 13 + self.y;

@@ -728,7 +728,9 @@ void OpenLoco::Interop::registerHooks()
             registers backup = regs;
             char* buffer = X86Pointer<char>(regs.edi);
             void* args = X86Pointer(regs.ecx);
-            buffer = StringManager::formatString(buffer, regs.eax, args);
+            // Welp, not properly bounded but short term.
+            auto fmtArgs = FormatArguments{ static_cast<std::byte*>(args), 40 };
+            buffer = StringManager::formatString(buffer, regs.eax, fmtArgs);
             regs = backup;
             regs.edi = X86Pointer(buffer);
             return 0;

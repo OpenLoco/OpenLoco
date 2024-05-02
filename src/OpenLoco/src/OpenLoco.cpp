@@ -987,6 +987,8 @@ namespace OpenLoco
         // Always print the product name and version first.
         Logging::info("{}", OpenLoco::getVersionInfo());
 
+        Environment::setLocale();
+
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)
         {

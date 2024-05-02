@@ -1130,7 +1130,7 @@ namespace OpenLoco::Gfx
             int16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Gfx
             Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1220,7 +1220,7 @@ namespace OpenLoco::Gfx
             Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1246,7 +1246,7 @@ namespace OpenLoco::Gfx
             Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1278,7 +1278,7 @@ namespace OpenLoco::Gfx
             Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1308,7 +1308,7 @@ namespace OpenLoco::Gfx
             Point origin,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1339,7 +1339,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), stringId, args);
@@ -1368,7 +1368,7 @@ namespace OpenLoco::Gfx
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            const void* args)
+            FormatArgumentsView args)
         {
             _currentFontSpriteBase = Font::medium_bold;
             // Setup the text colours (FIXME: This should be a separate function)
@@ -2398,32 +2398,32 @@ namespace OpenLoco::Gfx
         return Impl::drawString(rt, origin, colour, str);
     }
 
-    Point SoftwareDrawingContext::drawStringLeft(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringLeft(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringLeft(rt, origin, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringLeftClipped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringLeftClipped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringLeftClipped(rt, origin, width, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringLeftUnderline(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringLeftUnderline(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringLeftUnderline(rt, origin, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringLeftWrapped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringLeftWrapped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringLeftWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringCentred(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringCentred(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringCentred(rt, origin, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringCentredClipped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringCentredClipped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringCentredClipped(rt, origin, width, colour, stringId, args);
     }
@@ -2433,17 +2433,17 @@ namespace OpenLoco::Gfx
         return Impl::drawStringCentredRaw(rt, origin, linebreakCount, colour, wrappedStr);
     }
 
-    Point SoftwareDrawingContext::drawStringCentredWrapped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringCentredWrapped(RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringCentredWrapped(rt, origin, width, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringRight(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args /*= nullptr*/)
+    Point SoftwareDrawingContext::drawStringRight(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringRight(rt, origin, colour, stringId, args);
     }
 
-    Point SoftwareDrawingContext::drawStringRightUnderline(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, const void* args)
+    Point SoftwareDrawingContext::drawStringRightUnderline(RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         return Impl::drawStringRightUnderline(rt, origin, colour, stringId, args);
     }

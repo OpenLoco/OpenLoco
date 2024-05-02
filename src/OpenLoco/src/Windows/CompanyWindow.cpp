@@ -211,8 +211,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     *rt,
                     point,
                     Colour::black,
-                    StringIds::window_owner,
-                    nullptr);
+                    StringIds::window_owner);
             }
 
             // Draw company owner image.
@@ -245,7 +244,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     widget.right - widget.left,
                     Colour::black,
                     StringIds::black_stringid,
-                    &args);
+                    args);
             }
 
             // Draw owner status
@@ -267,7 +266,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     widget.right - widget.left,
                     Colour::black,
                     StringIds::black_stringid,
-                    &args);
+                    args);
             }
         }
 
@@ -368,7 +367,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             FormatArguments args{};
             args.push(StringIds::buffer_2039);
             // Add the ' Transport' suffix to the company name, and rename the company.
-            StringManager::formatString(buffer, StringIds::company_owner_name_transport, const_cast<void*>(&args));
+            StringManager::formatString(buffer, StringIds::company_owner_name_transport, args);
             Common::renameCompany(self, buffer);
         }
 
@@ -747,7 +746,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(aiRatingToLevel(competitor->intelligence));
 
                 auto point = Point(x, y);
-                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::company_details_intelligence, &args);
+                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::company_details_intelligence, args);
                 y += 10;
             }
             {
@@ -756,7 +755,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(aiRatingToLevel(competitor->aggressiveness));
 
                 auto point = Point(x, y);
-                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::company_details_aggressiveness, &args);
+                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::company_details_aggressiveness, args);
                 y += 10;
             }
             {
@@ -765,7 +764,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(aiRatingToLevel(competitor->competitiveness));
 
                 auto point = Point(x, y);
-                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::company_details_competitiveness, &args);
+                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::company_details_competitiveness, args);
                 y += 10;
             }
         }
@@ -798,7 +797,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(company->startedDate);
 
                 auto point = Point(x, y);
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::company_details_started, &args);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::company_details_started, args);
                 y += 10;
             }
 
@@ -817,7 +816,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 }
 
                 auto point = Point(x, y);
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, formatId, &args);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, formatId, args);
                 y += 25;
             }
 
@@ -826,7 +825,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(company->ownerName);
 
                 auto point = Point(x, y);
-                drawingCtx.drawStringLeftClipped(*rt, point, 213, Colour::black, StringIds::owner_label, &args);
+                drawingCtx.drawStringLeftClipped(*rt, point, 213, Colour::black, StringIds::owner_label, args);
                 y += 10;
             }
 
@@ -846,7 +845,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         args.push(count);
 
                         auto point = Point(x, y);
-                        drawingCtx.drawStringLeft(*rt, point, Colour::black, transportTypeCountString[i], &args);
+                        drawingCtx.drawStringLeft(*rt, point, Colour::black, transportTypeCountString[i], args);
                         y += 10;
                     }
                 }
@@ -1773,8 +1772,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     *rt,
                     point,
                     Colour::black,
-                    StringIds::expenditure_income,
-                    nullptr);
+                    StringIds::expenditure_income);
             }
 
             const StringId ExpenditureLabels[] = {
@@ -1816,7 +1814,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     point,
                     Colour::black,
                     StringIds::wcolour2_stringid,
-                    &args);
+                    args);
 
                 y += 10;
             }
@@ -1843,7 +1841,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     point,
                     Colour::black,
                     StringIds::interest_per_year,
-                    &args);
+                    args);
             }
 
             // 'Cash' label with value
@@ -1864,7 +1862,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     point,
                     Colour::black,
                     cashFormat,
-                    &args);
+                    args);
             }
 
             // 'Company value' label with value
@@ -1879,7 +1877,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     point,
                     Colour::black,
                     StringIds::company_value,
-                    &args);
+                    args);
             }
 
             // 'Profit from vehicles' label with value
@@ -1894,7 +1892,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     point,
                     Colour::black,
                     StringIds::profit_from_vehicles,
-                    &args);
+                    args);
             }
         }
 
@@ -1917,7 +1915,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 point,
                 Colour::black,
                 format,
-                &args);
+                args);
 
             y += 14;
         }
@@ -1944,7 +1942,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         point,
                         Colour::black,
                         StringIds::black_stringid,
-                        &args);
+                        args);
                 }
                 y += 10;
             }
@@ -1970,7 +1968,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 4;
 
             auto point = Point(x, y);
-            drawingCtx.drawStringRight(*rt, point, Colour::black, mainFormat, &args);
+            drawingCtx.drawStringRight(*rt, point, Colour::black, mainFormat, args);
 
             drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::index_0A, Gfx::RectFlags::none);
         }
@@ -2288,7 +2286,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(company->cargoDelivered[i]);
 
                 auto point = Point(self.x + 10, y);
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, &args);
+                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
 
                 numPrinted++;
                 y += 10;
@@ -2460,7 +2458,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
 
-                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::challenge_value, &args);
+                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::challenge_value, args);
                 point.y += 5;
             }
 
@@ -2475,7 +2473,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(years);
                 args.push(months);
 
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
+                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, args);
                 return;
             }
 
@@ -2495,14 +2493,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.skip(2);
                 args.push(years);
                 args.push(months);
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, &args);
+                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, args);
                 return;
             }
 
             {
                 FormatArguments args{};
                 args.push<uint16_t>(playerCompany->challengeProgress);
-                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
+                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, args);
             }
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
@@ -2516,7 +2514,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(years);
                 args.push(months);
 
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
+                drawingCtx.drawStringLeftWrapped(*rt, point, self.width + 10, Colour::black, StringIds::time_remaining_years_months, args);
                 return;
             }
         }
