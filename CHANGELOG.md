@@ -9,6 +9,7 @@
 - Fix: [#2411] Progress bar windows are not actually rendered.
 - Fix: [#2413] Gridlines are hidden when closing construction windows.
 - Fix: [#2416] Cursors in embedded text fiels are not rendering in the right position.
+- Fix: [#2441] Can't change name of scenarios with text object selected.
 - Fix: [#2470] Only one tunnel image drawn when there are multiple in the same surface tile.
 - Technical: [#2456] Changing the in-game language has been sped up considerably.
 
