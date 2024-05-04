@@ -1,4 +1,4 @@
-24.04+ (???)
+24.05 (2024-05-04)
 ------------------------------------------------------------------------
 - Feature: [#2] The window limit has been increased from 12 to 64.
 - Feature: [#1652] Display the production of each industry from the previous month in the industry list.
