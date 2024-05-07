@@ -122,7 +122,7 @@ namespace OpenLoco::GameCommands
         auto maybeTown = TownManager::getClosestTownAndDensity(pos);
         if (maybeTown && (flags & Flags::apply) != 0)
         {
-            if ((flags & Flags::aiAllocated) == 0)
+            if ((flags & (Flags::aiAllocated | Flags::ghost)) == 0)
             {
                 auto* town = TownManager::get(maybeTown->first);
                 town->unk_1A5--;
