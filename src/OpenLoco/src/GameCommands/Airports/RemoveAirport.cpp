@@ -41,11 +41,11 @@ namespace OpenLoco::GameCommands
     // 0x004938D9
     static bool removeAirportTileElement(const World::Pos3& pos, const AirportObject* airportObj, const uint8_t bh, const uint8_t flags)
     {
-        for (auto& searchTile : getBuildingTileOffsets(airportObj->largeTiles & bh))
+        for (auto& searchTile : getBuildingTileOffsets(airportObj->largeTiles & (1 << bh)))
         {
             const auto portPos = World::Pos3(searchTile.pos + pos, pos.z);
 
-            if ((flags & Flags::aiAllocated) == 0 && (flags & Flags::apply) != 0)
+            if ((flags & Flags::aiAllocated) != 0 && (flags & Flags::apply) != 0)
             {
                 auto tile = World::TileManager::get(portPos);
                 auto* surfaceEl = tile.surface();
