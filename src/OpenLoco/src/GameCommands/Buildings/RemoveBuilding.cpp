@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
                 continue;
 
             const auto* buildingObj = elBuilding->getObject();
-            if (!isEditorMode())
+            if (!isEditorMode() && !isSandboxMode())
             {
                 if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::flag_7)) == 0)
                 {
