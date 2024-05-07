@@ -52,11 +52,11 @@ namespace OpenLoco::GameCommands
                 continue;
 
             const auto* buildingObj = elBuilding->getObject();
-            if (!isEditorMode() && !isSandboxMode())
+            if (!isEditorMode())
             {
                 if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::flag_7)) == 0)
                 {
-                    if (buildingObj->hasFlags(BuildingObjectFlags::undestructible))
+                    if (!isSandboxMode() && buildingObj->hasFlags(BuildingObjectFlags::undestructible))
                     {
                         GameCommands::setErrorText(StringIds::demolition_not_allowed);
                         return GameCommands::FAILURE;
