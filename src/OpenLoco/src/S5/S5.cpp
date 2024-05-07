@@ -473,7 +473,7 @@ namespace OpenLoco::S5
     static void setObjectErrorMessage(const ObjectHeader& header)
     {
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
-        StringManager::formatString(buffer, sizeof(buffer), StringIds::missing_object_data_id_x);
+        StringManager::formatString(buffer, 512, StringIds::missing_object_data_id_x);
         objectCreateIdentifierName(strchr(buffer, 0), header);
         _loadErrorCode = 255;
         _loadErrorMessage = StringIds::buffer_2040;
