@@ -18,6 +18,13 @@
 
 namespace OpenLoco::GameCommands
 {
+    constexpr std::array<World::Pos2, 4> _largeTileOffsets = { {
+        { 0, 0 },
+        { 0, -32 },
+        { -32, -32 },
+        { -32, 0 },
+    } };
+
     static World::StationElement* getStationEl(const World::Pos3& pos)
     {
         auto tile = World::TileManager::get(pos);
@@ -141,9 +148,8 @@ namespace OpenLoco::GameCommands
 
             if ((airportObj->largeTiles & (1 << var_9C[0])) != 0)
             {
-                static loco_global<World::Pos2[4], 0x004FEB70> largeTileOffsets;
-                worldPos.x += largeTileOffsets[rotation].x;
-                worldPos.y += largeTileOffsets[rotation].y;
+                worldPos.x += _largeTileOffsets[rotation].x;
+                worldPos.y += _largeTileOffsets[rotation].y;
             }
 
             worldPos += pos;
