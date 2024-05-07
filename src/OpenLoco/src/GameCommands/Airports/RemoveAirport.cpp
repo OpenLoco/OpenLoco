@@ -137,12 +137,16 @@ namespace OpenLoco::GameCommands
             auto offset = World::TilePos2(var_9C[2], var_9C[3]);
             offset = Math::Vector::rotate(offset, rotation);
 
-            auto worldPos = World::Pos3(World::toWorldSpace(offset), pos.z);
-            if ((airportObj->largeTiles & var_9C[0]) != 0)
+            auto worldPos = World::Pos3(World::toWorldSpace(offset), 0);
+
+            if ((airportObj->largeTiles & (1 << var_9C[0])) != 0)
             {
-                worldPos.x += addr<0x004FEB70, coord_t*>()[rotation];
-                worldPos.y += addr<0x004FEB72, coord_t*>()[rotation];
+                static loco_global<World::Pos2[4], 0x004FEB70> largeTileOffsets;
+                worldPos.x += largeTileOffsets[rotation].x;
+                worldPos.y += largeTileOffsets[rotation].y;
             }
+
+            worldPos += pos;
 
             if (!removeAirportTileElement(worldPos, airportObj, var_9C[0], flags))
             {
