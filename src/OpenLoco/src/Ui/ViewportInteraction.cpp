@@ -766,7 +766,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         const auto* buildingObj = building->getObject();
         auto args = FormatArguments::mapToolTip();
-        if (isEditorMode() || !buildingObj->hasFlags(BuildingObjectFlags::undestructible))
+        if (isEditorMode() || !buildingObj->hasFlags(BuildingObjectFlags::indestructible))
         {
             args.push(StringIds::stringid_right_click_to_remove);
         }
