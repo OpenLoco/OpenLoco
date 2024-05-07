@@ -118,14 +118,14 @@ namespace OpenLoco::GameCommands
         // Calculate base removal cost
         currency32_t totalCost = Economy::getInflationAdjustedCost(airportObj->sellCostFactor, airportObj->costIndex, 6);
 
-        // Adjust unk_1A5 for nearest town (num airports?)
+        // Adjust number of airports for nearest town
         auto maybeTown = TownManager::getClosestTownAndDensity(pos);
         if (maybeTown && (flags & Flags::apply) != 0)
         {
             if ((flags & (Flags::aiAllocated | Flags::ghost)) == 0)
             {
                 auto* town = TownManager::get(maybeTown->first);
-                town->unk_1A5--;
+                town->numberOfAirports--;
             }
         }
 

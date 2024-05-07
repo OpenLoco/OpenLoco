@@ -59,9 +59,9 @@ namespace OpenLoco
         uint16_t monthlyCargoDelivered[32];
         uint32_t cargoInfluenceFlags;
         uint16_t var_19C[2][2];
-        uint8_t buildSpeed;   // 0x1A4, 1=slow build speed, 4=fast build speed
-        uint8_t unk_1A5;      // number of airports?
-        uint16_t numStations; // 0x1A6
+        uint8_t buildSpeed;       // 0x1A4, 1=slow build speed, 4=fast build speed
+        uint8_t numberOfAirports; // 0x1A5
+        uint16_t numStations;     // 0x1A6
         uint32_t var_1A8;
         uint8_t pad_1AC[0x270 - 0x1AC];
 
