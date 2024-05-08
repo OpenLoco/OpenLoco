@@ -51,34 +51,24 @@ namespace OpenLoco
             if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
             {
                 append(ch);
-                input++;
+                i++;
             }
             else if (ch >= ControlCodes::twoArgBegin && ch < ControlCodes::twoArgEnd)
             {
-                if (offset + 2 >= maxLen)
-                {
-                    throw Exception::OverflowError("String buffer overflow");
-                }
                 if (i + 2 > inputLen)
                 {
                     throw Exception::OverflowError("String buffer overflow");
                 }
-                std::memcpy(buffer + offset, input, 2);
-                offset += 2;
+                appendData(input + i, 2);
                 i += 2;
             }
             else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
             {
-                if (offset + 4 >= maxLen)
-                {
-                    throw Exception::OverflowError("String buffer overflow");
-                }
                 if (i + 4 > inputLen)
                 {
                     throw Exception::OverflowError("String buffer overflow");
                 }
-                std::memcpy(buffer + offset, input, 4);
-                offset += 4;
+                appendData(input + i, 4);
                 i += 4;
             }
             else
