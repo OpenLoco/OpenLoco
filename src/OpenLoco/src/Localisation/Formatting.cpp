@@ -6,6 +6,7 @@
 #include "Logging.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
+#include "StringBuffer.h"
 #include "StringIds.h"
 #include "StringManager.h"
 #include "World/TownManager.h"
@@ -24,135 +25,6 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::StringManager
 {
-    struct StringBuffer
-    {
-        using value_type = char;
-
-        char* buffer;
-        size_t offset;
-        size_t maxLen;
-
-    public:
-        StringBuffer(value_type* buffer, size_t maxLen)
-            : buffer(buffer)
-            , offset(0)
-            , maxLen(maxLen)
-        {
-        }
-
-        void appendData(const void* data, size_t size)
-        {
-            if (offset + size >= maxLen)
-            {
-                throw Exception::OverflowError("String buffer overflow");
-            }
-
-            std::memcpy(buffer + offset, data, size);
-            offset += size;
-        }
-
-        void append(value_type chr)
-        {
-            if (offset >= maxLen)
-            {
-                throw Exception::OverflowError("String buffer overflow");
-            }
-
-            buffer[offset] = chr;
-            offset++;
-        }
-
-        void append(const char* input)
-        {
-            return append(input, 0xFFFFFFFFU);
-        }
-
-        void append(const char* input, size_t inputLen)
-        {
-            for (size_t i = 0; i < inputLen;)
-            {
-                auto ch = input[i];
-                if (ch == '\0')
-                {
-                    break;
-                }
-
-                if (ch >= ControlCodes::oneArgBegin && ch < ControlCodes::oneArgEnd)
-                {
-                    append(ch);
-                    input++;
-                }
-                else if (ch >= ControlCodes::twoArgBegin && ch < ControlCodes::twoArgEnd)
-                {
-                    if (offset + 2 >= maxLen)
-                    {
-                        throw Exception::OverflowError("String buffer overflow");
-                    }
-                    if (i + 2 > inputLen)
-                    {
-                        throw Exception::OverflowError("String buffer overflow");
-                    }
-                    std::memcpy(buffer + offset, input, 2);
-                    offset += 2;
-                    i += 2;
-                }
-                else if (ch >= ControlCodes::fourArgBegin && ch < ControlCodes::fourArgEnd)
-                {
-                    if (offset + 4 >= maxLen)
-                    {
-                        throw Exception::OverflowError("String buffer overflow");
-                    }
-                    if (i + 4 > inputLen)
-                    {
-                        throw Exception::OverflowError("String buffer overflow");
-                    }
-                    std::memcpy(buffer + offset, input, 4);
-                    offset += 4;
-                    i += 4;
-                }
-                else
-                {
-                    append(ch);
-                    i++;
-                }
-            }
-        }
-
-        // std::back_inserter support.
-        void push_back(value_type chr)
-        {
-            append(chr);
-        }
-
-        template<typename TLocale, typename... TArgs>
-        void format(TLocale&& loc, fmt::format_string<TArgs...> fmt, TArgs&&... args)
-        {
-            fmt::format_to(std::back_inserter(*this), loc, fmt, std::forward<TArgs>(args)...);
-        }
-
-        char* current() const
-        {
-            return buffer + offset;
-        }
-
-        void nullTerminate()
-        {
-            if (offset < maxLen)
-                buffer[offset] = '\0';
-            else
-                buffer[maxLen - 1] = '\0';
-        }
-
-        void grow(size_t numChars)
-        {
-            if (offset + numChars >= maxLen)
-            {
-                throw std::overflow_error("String buffer overflow");
-            }
-            offset += numChars;
-        }
-    };
-
     static const std::map<int32_t, StringId> kDayToString = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
