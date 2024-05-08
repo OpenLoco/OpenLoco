@@ -750,7 +750,7 @@ namespace OpenLoco::World::MapGenerator
 
     // 0x0042E893
     // Example: 'Electricity Pylon' building object
-    static void generateMiscBuildingType1(const BuildingObject* buildingObj, [[maybe_unused]] const size_t id)
+    static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
         for (auto& industry : IndustryManager::industries())
         {
