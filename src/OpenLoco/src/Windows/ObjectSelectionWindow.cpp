@@ -962,7 +962,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         {
             auto point = Point(self.x + 3, self.y + self.height - 12);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::buffer_2038, args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::num_selected_num_max, args);
         }
 
         if (self.rowHover == -1)
