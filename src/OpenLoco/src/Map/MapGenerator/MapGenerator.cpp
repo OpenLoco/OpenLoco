@@ -827,7 +827,7 @@ namespace OpenLoco::World::MapGenerator
                     GameCommands::BuildingPlacementArgs buildArgs{};
                     buildArgs.pos = World::Pos3(targetPos, baseZ);
                     buildArgs.rotation = preferredRotation;
-                    buildArgs.type = id;
+                    buildArgs.type = static_cast<uint8_t>(id);
                     buildArgs.variation = 0;
                     buildArgs.colour = Colour::black;
                     buildArgs.buildImmediately = true;
