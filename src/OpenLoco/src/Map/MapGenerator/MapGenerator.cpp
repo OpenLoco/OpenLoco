@@ -25,6 +25,7 @@
 #include "SimplexTerrainGenerator.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cstdint>
@@ -41,6 +42,8 @@ namespace OpenLoco::World::MapGenerator
 {
     static constexpr auto kCliffTerrainHeightDiff = 4;
     static constexpr auto kMountainTerrainHeight = 26;
+
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
@@ -747,12 +750,97 @@ namespace OpenLoco::World::MapGenerator
 
     // 0x0042E893
     // Example: 'Electricity Pylon' building object
-    static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
+    static void generateMiscBuildingType1(const BuildingObject* buildingObj, [[maybe_unused]] const size_t id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042E893, regs);
+        for (auto& industry : IndustryManager::industries())
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
+            if (!industryObj->hasFlags(IndustryObjectFlags::requiresElectricityPylons))
+                continue;
+
+            auto numTownsLeft = 3;
+            for (auto& town : TownManager::towns())
+            {
+                // Figure out distance and rotation (angle) between town and industry
+                auto rotationBL = 2;
+                auto xDist = town.x - industry.x; // ax
+                if (xDist < 0)
+                {
+                    xDist = -xDist;
+                    rotationBL = 0;
+                }
+
+                auto rotationBH = 1;
+                auto yDist = town.y - industry.y; // dx
+                if (yDist < 0)
+                {
+                    yDist = -yDist;
+                    rotationBH = 3;
+                }
+
+                auto totalDist = xDist + yDist; // bp
+                if (totalDist < 800 || totalDist > 2240)
+                    continue;
+
+                // Figure out the preferred rotation and distance to work with
+                if (yDist > xDist)
+                {
+                    std::swap(xDist, yDist);
+                    std::swap(rotationBL, rotationBH);
+                }
+
+                // 0x0042E91B
+                for (auto attemptsLeft = 2; attemptsLeft > 0; attemptsLeft--)
+                {
+                    // 0x0042E932
+                    auto remainingDistance = xDist;
+                    auto preferredRotation = rotationBL;
+
+                    // 0x0042E945
+                    auto targetNumber = remainingDistance - buildingObj->averageNumberOnMap;
+                    if (targetNumber < 0)
+                    {
+                        rotationBL = rotationBH; // bl = bh
+                        yDist = xDist;           // dh = dl
+                        continue;
+                    }
+
+                    // 0x0042E956
+                    auto index = (rotationBH << 8) | rotationBL;
+                    auto offset = World::Pos2(_503C6C[index].x * targetNumber, _503C6C[index].y * targetNumber);
+                    auto targetPos = World::Pos2(industry.x, industry.y) + offset;
+                    if (!drawableCoords(targetPos))
+                    {
+                        continue;
+                    }
+
+                    // 0x0042E98A
+                    auto tile = TileManager::get(targetPos);
+                    auto* surface = tile.surface();
+                    if (surface == nullptr)
+                    {
+                        continue;
+                    }
+
+                    auto baseZ = TileManager::getSurfaceCornerHeight(*surface);
+
+                    GameCommands::BuildingPlacementArgs buildArgs{};
+                    buildArgs.pos = World::Pos3(targetPos, baseZ);
+                    buildArgs.rotation = preferredRotation;
+                    buildArgs.type = id;
+                    buildArgs.variation = 0;
+                    buildArgs.colour = Colour::black;
+                    buildArgs.buildImmediately = true;
+
+                    GameCommands::doCommand(buildArgs, GameCommands::Flags::apply);
+                }
+
+                // 0x0042E9FF
+                numTownsLeft--;
+                if (!numTownsLeft)
+                    break;
+            }
+        }
     }
 
     // 0x0042EA29

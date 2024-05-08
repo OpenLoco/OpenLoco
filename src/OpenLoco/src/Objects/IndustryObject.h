@@ -40,6 +40,7 @@ namespace OpenLoco
         requiresAllCargo = 1U << 17,
         unk18 = 1U << 18,
         unk19 = 1U << 19,
+        requiresElectricityPylons = 1U << 20,
         hasShadows = 1U << 21,
         unk23 = 1U << 23,
         builtInDesert = 1U << 24,
