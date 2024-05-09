@@ -761,19 +761,19 @@ namespace OpenLoco::Paint
     constexpr std::array<uint8_t, 4> kEdgeFactorOffset = { 0, 16, 16, 0 };
     constexpr std::array<uint8_t, 4> kEdgeUndergroundOffset = { 0, 0, 67, 64 };
     constexpr std::array<World::Pos3, 4> kEdgeImageOffset = {
-        World::Pos3{ 0, -2, 1 },
-        World::Pos3{ 0, -2, 1 },
+        World::Pos3{ 30, 0, 0 },
+        World::Pos3{ 0, 30, 0 },
         World::Pos3{ 0, -2, 1 },
         World::Pos3{ -2, 0, 1 },
     };
     constexpr std::array<World::Pos3, 4> kEdgeBoundingBoxSize = {
-        World::Pos3{ 0, -2, 1 },
-        World::Pos3{ 0, -2, 1 },
+        World::Pos3{ 0, 30, 15 },
+        World::Pos3{ 30, 0, 15 },
         World::Pos3{ 30, 0, 15 },
         World::Pos3{ 0, 30, 15 },
     };
-    constexpr std::array<std::array<std::array<uint32_t, 5>, 2>, 2> kEdgeMaskImageFromSlope = {
-        std::array<std::array<uint32_t, 5>, 2>{
+    constexpr std::array<std::array<std::array<uint32_t, 5>, 4>, 2> kEdgeMaskImageFromSlope = {
+        std::array<std::array<uint32_t, 5>, 4>{
             std::array<uint32_t, 5>{
                 ImageIds::cliffEdge0MaskSlope0,
                 ImageIds::cliffEdge0MaskSlope1,
@@ -788,8 +788,22 @@ namespace OpenLoco::Paint
                 ImageIds::cliffEdge1MaskSlope3,
                 ImageIds::cliffEdge1MaskSlope4,
             },
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge1MaskSlope0,
+                ImageIds::cliffEdge1MaskSlope1,
+                ImageIds::cliffEdge1MaskSlope2,
+                ImageIds::cliffEdge1MaskSlope3,
+                ImageIds::cliffEdge1MaskSlope4,
+            },
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge0MaskSlope0,
+                ImageIds::cliffEdge0MaskSlope1,
+                ImageIds::cliffEdge0MaskSlope2,
+                ImageIds::cliffEdge0MaskSlope3,
+                ImageIds::cliffEdge0MaskSlope4,
+            },
         },
-        std::array<std::array<uint32_t, 5>, 2>{
+        std::array<std::array<uint32_t, 5>, 4>{
             std::array<uint32_t, 5>{
                 ImageIds::cliffEdge0UndergroundMaskSlope0,
                 ImageIds::cliffEdge0UndergroundMaskSlope1,
@@ -803,6 +817,20 @@ namespace OpenLoco::Paint
                 ImageIds::cliffEdge1UndergroundMaskSlope2,
                 ImageIds::cliffEdge1UndergroundMaskSlope3,
                 ImageIds::cliffEdge1UndergroundMaskSlope4,
+            },
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge1UndergroundMaskSlope0,
+                ImageIds::cliffEdge1UndergroundMaskSlope1,
+                ImageIds::cliffEdge1UndergroundMaskSlope2,
+                ImageIds::cliffEdge1UndergroundMaskSlope3,
+                ImageIds::cliffEdge1UndergroundMaskSlope4,
+            },
+            std::array<uint32_t, 5>{
+                ImageIds::cliffEdge0UndergroundMaskSlope0,
+                ImageIds::cliffEdge0UndergroundMaskSlope1,
+                ImageIds::cliffEdge0UndergroundMaskSlope2,
+                ImageIds::cliffEdge0UndergroundMaskSlope3,
+                ImageIds::cliffEdge0UndergroundMaskSlope4,
             },
         },
     };
@@ -830,7 +858,7 @@ namespace OpenLoco::Paint
             session.attachToPrevious(image, Ui::Point(0, -yOffset));
         }
 
-        auto& maskArr = kEdgeMaskImageFromSlope[isUnderground][edge & 0b1];
+        auto& maskArr = kEdgeMaskImageFromSlope[isUnderground][edge];
         uint8_t highest = neighbour.cornerHeights.left;
         if (highest != neighbour.cornerHeights.right)
         {
@@ -962,7 +990,21 @@ namespace OpenLoco::Paint
             descriptor.pos = position;
             descriptor.landObjectId = descriptor.elSurface->isIndustrial() ? static_cast<uint8_t>(0xFFU) : descriptor.elSurface->terrain();
             descriptor.slope = surfaceSlope;
-            if (i == 2)
+            if (i == 0)
+            {
+                descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].left;
+                descriptor.cornerHeights.right = microZ + ch.top;
+                descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].bottom;
+                descriptor.cornerHeights.left = microZ + ch.right;
+            }
+            else if (i == 1)
+            {
+                descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].right;
+                descriptor.cornerHeights.right = microZ + ch.top;
+                descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].bottom;
+                descriptor.cornerHeights.left = microZ + ch.left;
+            }
+            else if (i == 2)
             {
                 descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].top;
                 descriptor.cornerHeights.right = microZ + ch.right;
@@ -975,13 +1017,6 @@ namespace OpenLoco::Paint
                 descriptor.cornerHeights.right = microZ + ch.left;
                 descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].right;
                 descriptor.cornerHeights.left = microZ + ch.bottom;
-            }
-            else
-            {
-                descriptor.cornerHeights.top = microZ + ch.top;
-                descriptor.cornerHeights.right = microZ + ch.right;
-                descriptor.cornerHeights.bottom = microZ + ch.bottom;
-                descriptor.cornerHeights.left = microZ + ch.left;
             }
             descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
             descriptor.var6SLR5 = descriptor.elSurface->var_6_SLR5();
@@ -1257,8 +1292,8 @@ namespace OpenLoco::Paint
         {
             paintSurfaceCliffEdge(session, 2, selfDescriptor, tileDescriptors[2], cliffEdgeImageBase);
             paintSurfaceCliffEdge(session, 3, selfDescriptor, tileDescriptors[3], cliffEdgeImageBase);
-            // paintSurfaceCliffEdge(session, 0, selfDescriptor, tileDescriptors[0], cliffEdgeImageBase);
-            // paintSurfaceCliffEdge(session, 1, selfDescriptor, tileDescriptors[1], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 0, selfDescriptor, tileDescriptors[0], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 1, selfDescriptor, tileDescriptors[1], cliffEdgeImageBase);
         }
     }
 }
