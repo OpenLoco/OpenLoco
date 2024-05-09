@@ -9,6 +9,7 @@
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/SnowObject.h"
+#include "Objects/TunnelObject.h"
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 #include "Ui/ViewportInteraction.h"
@@ -230,8 +231,8 @@ namespace OpenLoco::Paint
     std::array<std::array<World::Pos2, 4>, 4> _unk4FD99E = {
         std::array<World::Pos2, 4>{
             World::Pos2{ 32, 0 },
-            World::Pos2{ -32, 0 },
-            World::Pos2{ -64, -32 },
+            World::Pos2{ -32, 32 },
+            World::Pos2{ -64, 0 },
             World::Pos2{ 0, -64 },
         },
         std::array<World::Pos2, 4>{
@@ -848,7 +849,8 @@ namespace OpenLoco::Paint
         }
 
         const bool isUnderground = (session.getViewFlags() & Ui::ViewportFlags::underground_view) != Ui::ViewportFlags::none;
-        uint32_t factor = ((session.getSpritePosition().x ^ session.getSpritePosition().y) & 0b10'0000) + kEdgeFactorOffset[edge];
+        const auto spritePos = session.getSpritePosition();
+        const uint32_t factor = ((spritePos.x ^ spritePos.y) & 0b10'0000) + kEdgeFactorOffset[edge];
         const auto undergroundOffset = kEdgeUndergroundOffset[edge];
         if (undergroundOffset != 0 && isUnderground)
         {
@@ -894,6 +896,46 @@ namespace OpenLoco::Paint
             auto& tunnel = session.getTunnels(edge)[tunnelNum];
             if (highest == tunnel.height)
             {
+                if (edge == 0)
+                {
+                    auto* tunnelObj = ObjectManager::get<TunnelObject>(tunnel.type);
+                    {
+                        const auto image = ImageId(tunnelObj->image);
+                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(2, 2, 25);
+                        const World::Pos3 boundBoxOffset = World::Pos3(29, 0, 6) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                    {
+                        const auto image = ImageId(tunnelObj->image).withIndexOffset(1);
+                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(1, 1, 31);
+                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                }
+                else if (edge == 1)
+                {
+                    auto* tunnelObj = ObjectManager::get<TunnelObject>(tunnel.type);
+                    {
+                        const auto image = ImageId(tunnelObj->image).withIndexOffset(2);
+                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(2, 2, 25);
+                        const World::Pos3 boundBoxOffset = World::Pos3(0, 29, 6) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                    {
+                        const auto image = ImageId(tunnelObj->image).withIndexOffset(3);
+                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(1, 1, 31);
+                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                }
                 highest += 2;
                 tunnelNum++;
                 continue;
