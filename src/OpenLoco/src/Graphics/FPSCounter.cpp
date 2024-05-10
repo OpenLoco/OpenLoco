@@ -36,7 +36,8 @@ namespace OpenLoco::Gfx
 
     void drawFPS()
     {
-        auto& drawingCtx = getDrawingEngine().getDrawingContext();
+        auto& drawingEngine = getDrawingEngine();
+        auto& drawingCtx = drawingEngine.getDrawingContext();
 
         // Measure FPS
         const float fps = measureFPS();
@@ -50,7 +51,7 @@ namespace OpenLoco::Gfx
         const char* formatString = (_currentFPS >= 10.0f ? "%.0f" : "%.1f");
         snprintf(&buffer[3], std::size(buffer) - 3, formatString, fps);
 
-        auto& rt = getScreenRT();
+        auto& rt = drawingEngine.getScreenRT();
 
         // Draw text
         const int stringWidth = drawingCtx.getStringWidth(buffer);

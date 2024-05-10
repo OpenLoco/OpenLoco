@@ -1,6 +1,7 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
@@ -73,7 +74,7 @@ namespace OpenLoco::Ui
         ostream->flush();
     }
 
-    static void saveRenderTargetToPng(Gfx::RenderTarget& rt, std::fstream& outputStream)
+    static void saveRenderTargetToPng(const Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
         static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
 
@@ -135,7 +136,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00452667
-    static std::string prepareSaveScreenshot(Gfx::RenderTarget& rt)
+    static std::string prepareSaveScreenshot(const Gfx::RenderTarget& rt)
     {
         auto basePath = Platform::getUserDirectory();
         std::string scenarioName = S5::getOptions().scenarioName;
@@ -170,7 +171,8 @@ namespace OpenLoco::Ui
 
     static std::string saveScreenshot()
     {
-        auto& rt = Gfx::getScreenRT();
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& rt = drawingEngine.getScreenRT();
         return prepareSaveScreenshot(rt);
     }
 
@@ -214,7 +216,9 @@ namespace OpenLoco::Ui
         Gfx::RenderTarget rt{};
         rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
         if (rt.bits == nullptr)
-            return nullptr;
+        {
+            return {};
+        }
 
         rt.x = 0;
         rt.y = 0;

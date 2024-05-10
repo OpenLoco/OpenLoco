@@ -166,7 +166,7 @@ namespace OpenLoco::Gfx
 
         int32_t pitch = _screenSurface->pitch;
 
-        auto& rt = getScreenRT();
+        RenderTarget& rt = _screenRT;
         if (rt.bits != nullptr)
         {
             delete[] rt.bits;
@@ -336,4 +336,8 @@ namespace OpenLoco::Gfx
         return _screenSurface != nullptr;
     }
 
+    const RenderTarget& SoftwareDrawingEngine::getScreenRT()
+    {
+        return _screenRT;
+    }
 }
