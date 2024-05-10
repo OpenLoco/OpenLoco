@@ -880,7 +880,7 @@ namespace OpenLoco::Paint
         if (undergroundOffset != 0 && isUnderground)
         {
             const auto offset = neighbour.cornerHeights.bottom - neighbour.cornerHeights.top + 1;
-            const auto yOffset = ((neighbour.cornerHeights.top - self.elSurface->baseZ() / kMicroToSmallZStep) * kMicroZStep) - 1;
+            const auto yOffset = ((neighbour.cornerHeights.top - self.elSurface->baseZ() / kMicroToSmallZStep) * kMicroZStep) + 1;
             const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(offset + undergroundOffset);
             session.attachToPrevious(image, Ui::Point(0, -yOffset));
         }
