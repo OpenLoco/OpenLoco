@@ -1244,7 +1244,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        const auto cornerHeights = CornerHeight(waterHeight / kMicroZStep, neighbour.cornerHeights.right, waterHeight / kMicroZStep, neighbour.cornerHeights.left);
+        const auto cornerHeights = CornerHeight{ static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.cornerHeights.right, static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.cornerHeights.left };
 
         if (cornerHeights.top <= cornerHeights.right
             && cornerHeights.bottom <= cornerHeights.left)
