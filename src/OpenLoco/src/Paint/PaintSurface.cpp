@@ -677,8 +677,8 @@ namespace OpenLoco::Paint
         if (neighbour.elSurface == nullptr)
             return;
 
-        if (neighbour.cornerHeights.left != neighbour.cornerHeights.right
-            || neighbour.cornerHeights.bottom != neighbour.cornerHeights.top)
+        if (neighbour.cornerHeights.left != neighbour.cornerHeights.bottom
+            || neighbour.cornerHeights.right != neighbour.cornerHeights.top)
             return;
 
         // If either is industrial
@@ -705,13 +705,13 @@ namespace OpenLoco::Paint
                 break;
 
             case 1:
-                dh = k4FDA71[displaySlope];
-                cl = k4FDA97[neighbourDislaySlope];
+                dh = k4FDA97[displaySlope];
+                cl = k4FDA71[neighbourDislaySlope];
                 break;
 
             case 2:
-                dh = k4FDA97[displaySlope];
-                cl = k4FDA71[neighbourDislaySlope];
+                dh = k4FDA71[displaySlope];
+                cl = k4FDA97[neighbourDislaySlope];
                 break;
 
             case 3:
@@ -1523,7 +1523,7 @@ namespace OpenLoco::Paint
 
         if (zoomLevel == 0
             && (session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none
-            && ((Config::get().old.flags & Config::Flags::landscapeSmoothing) != Config::Flags::none))
+            && ((Config::get().old.flags & Config::Flags::landscapeSmoothing) == Config::Flags::none))
         {
             paintSurfaceSmoothenEdge(session, 2, selfDescriptor, tileDescriptors[2]);
             paintSurfaceSmoothenEdge(session, 3, selfDescriptor, tileDescriptors[3]);
