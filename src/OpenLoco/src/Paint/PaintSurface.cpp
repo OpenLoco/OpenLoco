@@ -836,6 +836,9 @@ namespace OpenLoco::Paint
         },
     };
 
+    // TODO: Unscramble this so they are the same
+    constexpr std::array<uint8_t, 4> kCliffEdgeToTunnelEdge = { 2, 1, 3, 0 };
+
     static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const TileDescriptor& self, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
     {
         if (neighbour.elSurface == nullptr)
@@ -888,12 +891,13 @@ namespace OpenLoco::Paint
         uint8_t tunnelNum = 0;
         while (highest < neighbour.cornerHeights.top && highest < neighbour.cornerHeights.bottom)
         {
-            while (highest > session.getTunnels(edge)[tunnelNum].height)
+            const auto tunnelEdge = kCliffEdgeToTunnelEdge[edge];
+            while (highest > session.getTunnels(tunnelEdge)[tunnelNum].height)
             {
                 tunnelNum++;
             }
 
-            auto& tunnel = session.getTunnels(edge)[tunnelNum];
+            auto& tunnel = session.getTunnels(tunnelEdge)[tunnelNum];
             if (highest == tunnel.height)
             {
                 if (edge == 0)
