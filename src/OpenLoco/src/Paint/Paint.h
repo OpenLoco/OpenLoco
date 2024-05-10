@@ -307,6 +307,8 @@ namespace OpenLoco::Paint
         void insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge);
         void insertTunnels(const std::array<int16_t, 4>& tunnelHeights, coord_t height, uint8_t tunnelType);
         void setDidPassSurface(bool value) { _didPassSurface = value; }
+        void setWaterHeight(int16_t height) { _waterHeight = height; }
+        void setWaterHeight2(int16_t height) { _waterHeight2 = height; }
         PaintStruct* getLastPS() { return _lastPS; }
         void setLastPS(PaintStruct* ps) { _lastPS = ps; }
 
@@ -498,6 +500,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegments;
         inline static Interop::loco_global<SupportHeight, 0x00F0047C> _support;
         inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
+        inline static Interop::loco_global<int16_t, 0x00F25324> _waterHeight2;
         inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
         inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
 

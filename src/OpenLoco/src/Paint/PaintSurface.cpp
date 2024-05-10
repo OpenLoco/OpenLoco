@@ -5,11 +5,14 @@
 #include "Map/MapSelection.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
+#include "Map/Wave.h"
+#include "Map/WaveManager.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/SnowObject.h"
 #include "Objects/TunnelObject.h"
+#include "Objects/WaterObject.h"
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 #include "Ui/ViewportInteraction.h"
@@ -498,6 +501,25 @@ namespace OpenLoco::Paint
         0, // Don't display (full snow handled differently)
         0,
         0,
+    };
+
+    constexpr std::array<uint8_t, 16> kSlopeToWaterShape = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        3,
+        0,
+        1,
+        4,
+        0
     };
 
     static constexpr uint8_t getRotatedSlope(uint8_t slope, uint8_t rotation)
@@ -1340,6 +1362,43 @@ namespace OpenLoco::Paint
             paintSurfaceCliffEdge(session, 3, selfDescriptor, tileDescriptors[3], cliffEdgeImageBase);
             paintSurfaceCliffEdge(session, 0, selfDescriptor, tileDescriptors[0], cliffEdgeImageBase);
             paintSurfaceCliffEdge(session, 1, selfDescriptor, tileDescriptors[1], cliffEdgeImageBase);
+        }
+
+        session.setWaterHeight2(0);
+        if (elSurface.water() != 0)
+        {
+            session.setItemType(Ui::ViewportInteraction::InteractionItem::water);
+
+            const auto waterHeight = elSurface.waterHeight();
+            // Why are there 2 ???
+            session.setWaterHeight2(waterHeight);
+            session.setWaterHeight(waterHeight);
+
+            uint8_t shape = 0;
+            if (waterHeight <= baseHeight + World::kMicroZStep)
+            {
+                shape = kSlopeToWaterShape[rotatedSlope & 0xF];
+            }
+
+            auto* waterObj = ObjectManager::get<WaterObject>();
+            const auto imageId = ImageId(waterObj->image).withIndexOffset(shape + 35).withTranslucency(ExtColour::null);
+
+            session.addToPlotListAsParent(imageId, { 0, 0, waterHeight }, { 32, 32, -1 });
+
+            const auto attachedImage = ImageId(waterObj->image).withIndexOffset(shape + 30);
+            session.attachToPrevious(attachedImage, { 0, 0 });
+
+            // Draw waves
+            if (elSurface.hasType6Flag() && zoomLevel == 0)
+            {
+                const auto waveIndex = WaveManager::getWaveIndex(toTileSpace(session.getUnkPosition()));
+                const auto& wave = WaveManager::getWave(waveIndex);
+
+                const auto waveImage = ImageId(waterObj->image).withIndexOffset(wave.frame + 60);
+                session.attachToPrevious(waveImage, { 0, 0 });
+            }
+
+            // Do water edges
         }
     }
 }
