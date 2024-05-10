@@ -38,7 +38,8 @@ namespace OpenLoco::Intro
 
     static void updateEnd()
     {
-        Gfx::getDrawingEngine().getDrawingContext().clearSingle(Gfx::getScreenRT(), PaletteIndex::index_0A);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        drawingEngine.getDrawingContext().clearSingle(drawingEngine.getScreenRT(), PaletteIndex::index_0A);
         if (!_50C196)
         {
             // Audio::stopIntro(); Note: There is no sound!
@@ -77,8 +78,9 @@ namespace OpenLoco::Intro
 
         Gfx::loadPalette(ImageIds::atari_intro_palette, 0);
 
-        auto& rt = Gfx::getScreenRT();
-        auto& drawContext = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& rt = drawingEngine.getScreenRT();
+        auto& drawContext = drawingEngine.getDrawingContext();
 
         drawContext.clearSingle(rt, PaletteIndex::index_3F);
 
@@ -109,8 +111,10 @@ namespace OpenLoco::Intro
         if (_50C190 >= 110)
         {
             Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, 0);
-            auto& rt = Gfx::getScreenRT();
-            auto& drawContext = Gfx::getDrawingEngine().getDrawingContext();
+
+            auto& drawingEngine = Gfx::getDrawingEngine();
+            auto& rt = drawingEngine.getScreenRT();
+            auto& drawContext = drawingEngine.getDrawingContext();
 
             drawContext.clearSingle(rt, PaletteIndex::index_0A);
 
@@ -139,8 +143,9 @@ namespace OpenLoco::Intro
         Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, modifier);
         if (_50C190 >= 100)
         {
-            auto& rt = Gfx::getScreenRT();
-            auto& drawContext = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingEngine = Gfx::getDrawingEngine();
+            auto& rt = drawingEngine.getScreenRT();
+            auto& drawContext = drawingEngine.getDrawingContext();
 
             drawContext.clearSingle(rt, PaletteIndex::index_0A);
 
@@ -162,8 +167,9 @@ namespace OpenLoco::Intro
 
     static void updateDisplayNotice()
     {
-        auto& rt = Gfx::getScreenRT();
-        auto& drawContext = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& rt = drawingEngine.getScreenRT();
+        auto& drawContext = drawingEngine.getDrawingContext();
 
         drawContext.clearSingle(rt, PaletteIndex::index_0A);
 

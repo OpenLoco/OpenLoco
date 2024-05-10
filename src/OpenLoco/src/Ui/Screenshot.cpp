@@ -1,6 +1,7 @@
 #include "Screenshot.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
@@ -170,7 +171,8 @@ namespace OpenLoco::Ui
 
     static std::string saveScreenshot()
     {
-        auto& rt = Gfx::getScreenRT();
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& rt = drawingEngine.getScreenRT();
         return prepareSaveScreenshot(rt);
     }
 
@@ -214,7 +216,9 @@ namespace OpenLoco::Ui
         Gfx::RenderTarget rt{};
         rt.bits = static_cast<uint8_t*>(malloc(resolutionWidth * resolutionHeight));
         if (rt.bits == nullptr)
-            return nullptr;
+        {
+            return {};
+        }
 
         rt.x = 0;
         rt.y = 0;
