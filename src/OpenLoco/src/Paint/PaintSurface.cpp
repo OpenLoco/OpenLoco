@@ -1095,6 +1095,19 @@ namespace OpenLoco::Paint
     // TODO: Unscramble this so they are the same
     constexpr std::array<uint8_t, 4> kCliffEdgeToTunnelEdge = { 2, 1, 3, 0 };
 
+    static void paintEdgeSection(PaintSession& session, uint32_t cliffEdgeImageBase, uint32_t factor, MicroZ height, uint8_t edge, uint32_t edgeSlopeMaskImageIndex)
+    {
+        const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (height & 0xF));
+        const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, height * kMicroZStep);
+        const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
+        auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
+        if (ps != nullptr)
+        {
+            ps->flags |= PaintStructFlags::hasMaskedImage;
+            ps->maskedImageId = ImageId(edgeSlopeMaskImageIndex);
+        }
+    }
+
     static void paintSurfaceCliffEdgeImpl(PaintSession& session, uint8_t edge, int16_t baseHeight, const CornerHeight& cornerHeights, uint32_t cliffEdgeImageBase)
     {
         if (cornerHeights.top <= cornerHeights.right
@@ -1126,15 +1139,7 @@ namespace OpenLoco::Paint
             }
             if (highest != cornerHeights.top && highest != cornerHeights.bottom)
             {
-                const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (highest & 0xF));
-                const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, highest * kMicroZStep);
-                const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
-                auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
-                if (ps != nullptr)
-                {
-                    ps->flags |= PaintStructFlags::hasMaskedImage;
-                    ps->maskedImageId = ImageId(maskArr[unk]);
-                }
+                paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[unk]);
                 highest++;
             }
         }
@@ -1196,15 +1201,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (highest & 0xF));
-            const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, highest * kMicroZStep);
-            const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
-            auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
-            if (ps != nullptr)
-            {
-                ps->flags |= PaintStructFlags::hasMaskedImage;
-                ps->maskedImageId = ImageId(maskArr[0]);
-            }
+            paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[0]);
             highest++;
         }
 
@@ -1217,15 +1214,8 @@ namespace OpenLoco::Paint
                 return;
             }
         }
-        const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (highest & 0xF));
-        const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, highest * kMicroZStep);
-        const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
-        auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
-        if (ps != nullptr)
-        {
-            ps->flags |= PaintStructFlags::hasMaskedImage;
-            ps->maskedImageId = ImageId(maskArr[unk]);
-        }
+
+        paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[unk]);
     }
 
     static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const TileDescriptor& self, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
