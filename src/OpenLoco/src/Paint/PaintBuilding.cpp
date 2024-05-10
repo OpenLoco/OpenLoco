@@ -215,7 +215,7 @@ namespace OpenLoco::Paint
             {
                 paintBuildingBuilding(session, elBuilding, *buildingObj, imageOffset, bbOffset, bbSize, baseColour, rotation, isMultiTile);
             }
-            session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
+            session.setSegmentsSupportHeight(SegmentFlags::all, 0xFFFF, 0);
             session.setGeneralSupportHeight(0xFFFF, 0); // TODO: Check if this works previously would not set slope to zero
         }
         else

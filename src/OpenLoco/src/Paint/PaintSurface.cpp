@@ -858,6 +858,240 @@ namespace OpenLoco::Paint
         },
     };
 
+    struct SegmentHeight
+    {
+        int16_t height;
+        uint8_t slope;
+    };
+
+    // Unrepresentable slopes are assumed to be flat
+    std::array<SegmentHeight, 9> kFlatSegmentSupportHeight = {
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+        SegmentHeight{ 0, 0 },
+    };
+
+    std::array<std::array<SegmentHeight, 9>, 32> kSlopeToSegmentsSupportHeights = {
+        kFlatSegmentSupportHeight,
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 0, 1 },
+            SegmentHeight{ 0, 1 },
+            SegmentHeight{ 12, 27 },
+            SegmentHeight{ 0, 1 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 6, 27 },
+            SegmentHeight{ 6, 27 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 0, 2 },
+            SegmentHeight{ 12, 23 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 0, 2 },
+            SegmentHeight{ 0, 2 },
+            SegmentHeight{ 6, 23 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 6, 23 },
+            SegmentHeight{ 0, 0 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 2, 3 },
+            SegmentHeight{ 14, 3 },
+            SegmentHeight{ 2, 3 },
+            SegmentHeight{ 14, 3 },
+            SegmentHeight{ 8, 3 },
+            SegmentHeight{ 8, 3 },
+            SegmentHeight{ 2, 3 },
+            SegmentHeight{ 14, 3 },
+            SegmentHeight{ 8, 3 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 12, 30 },
+            SegmentHeight{ 0, 4 },
+            SegmentHeight{ 0, 4 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 0, 4 },
+            SegmentHeight{ 6, 30 },
+            SegmentHeight{ 6, 30 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 0, 0 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 12, 30 },
+            SegmentHeight{ 0, 5 },
+            SegmentHeight{ 0, 5 },
+            SegmentHeight{ 12, 27 },
+            SegmentHeight{ 0, 5 },
+            SegmentHeight{ 6, 30 },
+            SegmentHeight{ 6, 30 },
+            SegmentHeight{ 6, 27 },
+            SegmentHeight{ 6, 27 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 14, 6 },
+            SegmentHeight{ 14, 6 },
+            SegmentHeight{ 2, 6 },
+            SegmentHeight{ 2, 6 },
+            SegmentHeight{ 8, 6 },
+            SegmentHeight{ 14, 6 },
+            SegmentHeight{ 8, 6 },
+            SegmentHeight{ 8, 6 },
+            SegmentHeight{ 2, 6 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 16, 7 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 4, 23 },
+            SegmentHeight{ 16, 7 },
+            SegmentHeight{ 16, 7 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 10, 23 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 10, 23 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 0, 8 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 12, 29 },
+            SegmentHeight{ 0, 8 },
+            SegmentHeight{ 0, 8 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 6, 29 },
+            SegmentHeight{ 0, 0 },
+            SegmentHeight{ 6, 29 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 2, 9 },
+            SegmentHeight{ 2, 9 },
+            SegmentHeight{ 14, 9 },
+            SegmentHeight{ 14, 9 },
+            SegmentHeight{ 8, 9 },
+            SegmentHeight{ 2, 9 },
+            SegmentHeight{ 8, 9 },
+            SegmentHeight{ 8, 9 },
+            SegmentHeight{ 14, 9 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 0, 10 },
+            SegmentHeight{ 12, 23 },
+            SegmentHeight{ 12, 29 },
+            SegmentHeight{ 0, 10 },
+            SegmentHeight{ 0, 10 },
+            SegmentHeight{ 6, 23 },
+            SegmentHeight{ 6, 29 },
+            SegmentHeight{ 6, 23 },
+            SegmentHeight{ 6, 29 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 4, 27 },
+            SegmentHeight{ 16, 11 },
+            SegmentHeight{ 16, 11 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 16, 11 },
+            SegmentHeight{ 10, 27 },
+            SegmentHeight{ 10, 27 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 16, 0 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 14, 12 },
+            SegmentHeight{ 2, 12 },
+            SegmentHeight{ 14, 12 },
+            SegmentHeight{ 2, 12 },
+            SegmentHeight{ 8, 12 },
+            SegmentHeight{ 8, 12 },
+            SegmentHeight{ 14, 12 },
+            SegmentHeight{ 2, 12 },
+            SegmentHeight{ 8, 12 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 16, 13 },
+            SegmentHeight{ 4, 29 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 16, 13 },
+            SegmentHeight{ 16, 13 },
+            SegmentHeight{ 10, 29 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 10, 29 },
+            SegmentHeight{ 16, 0 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 16, 14 },
+            SegmentHeight{ 16, 14 },
+            SegmentHeight{ 4, 30 },
+            SegmentHeight{ 16, 14 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 16, 0 },
+            SegmentHeight{ 10, 30 },
+            SegmentHeight{ 10, 30 },
+        },
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 16, 23 },
+            SegmentHeight{ 28, 23 },
+            SegmentHeight{ 4, 23 },
+            SegmentHeight{ 16, 23 },
+            SegmentHeight{ 16, 23 },
+            SegmentHeight{ 22, 23 },
+            SegmentHeight{ 10, 23 },
+            SegmentHeight{ 22, 23 },
+            SegmentHeight{ 10, 23 },
+        },
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        kFlatSegmentSupportHeight,
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 4, 27 },
+            SegmentHeight{ 16, 27 },
+            SegmentHeight{ 16, 27 },
+            SegmentHeight{ 28, 27 },
+            SegmentHeight{ 16, 27 },
+            SegmentHeight{ 10, 27 },
+            SegmentHeight{ 10, 27 },
+            SegmentHeight{ 22, 27 },
+            SegmentHeight{ 22, 27 },
+        },
+        kFlatSegmentSupportHeight,
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 16, 29 },
+            SegmentHeight{ 4, 29 },
+            SegmentHeight{ 28, 29 },
+            SegmentHeight{ 16, 29 },
+            SegmentHeight{ 16, 29 },
+            SegmentHeight{ 10, 29 },
+            SegmentHeight{ 22, 29 },
+            SegmentHeight{ 10, 29 },
+            SegmentHeight{ 22, 29 },
+        },
+        std::array<SegmentHeight, 9>{
+            SegmentHeight{ 28, 30 },
+            SegmentHeight{ 16, 30 },
+            SegmentHeight{ 16, 30 },
+            SegmentHeight{ 4, 30 },
+            SegmentHeight{ 16, 30 },
+            SegmentHeight{ 22, 30 },
+            SegmentHeight{ 22, 30 },
+            SegmentHeight{ 10, 30 },
+            SegmentHeight{ 10, 30 },
+        },
+        kFlatSegmentSupportHeight,
+    };
+
     // TODO: Unscramble this so they are the same
     constexpr std::array<uint8_t, 4> kCliffEdgeToTunnelEdge = { 2, 1, 3, 0 };
 
@@ -1010,7 +1244,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        const auto cornerHeights = CornerHeight(waterHeight / kMicroZStep, neighbour.cornerHeights.right, waterHeight / kMicroZStep, neighbour.cornerHeights.left );
+        const auto cornerHeights = CornerHeight(waterHeight / kMicroZStep, neighbour.cornerHeights.right, waterHeight / kMicroZStep, neighbour.cornerHeights.left);
 
         if (cornerHeights.top <= cornerHeights.right
             && cornerHeights.bottom <= cornerHeights.left)
@@ -1548,6 +1782,17 @@ namespace OpenLoco::Paint
             paintSurfaceWaterCliffEdge(session, 3, waterHeight, tileDescriptors[3], cliffEdgeImageBase);
             paintSurfaceWaterCliffEdge(session, 0, waterHeight, tileDescriptors[0], cliffEdgeImageBase);
             paintSurfaceWaterCliffEdge(session, 1, waterHeight, tileDescriptors[1], cliffEdgeImageBase);
+        }
+
+        // Only used by dead code...
+        // session.getGeneralSupportHeight().var_03 |= (1U << 0);
+
+        session.setGeneralSupportHeight(baseHeight, selfDescriptor.slope);
+        const auto& segmentsSupportHeight = kSlopeToSegmentsSupportHeights[selfDescriptor.slope];
+        for (auto segment = 0U; segment < 9U; ++segment)
+        {
+            const auto& segmentSupportHeight = segmentsSupportHeight[segment];
+            session.setSegmentSupportHeight(segment, segmentSupportHeight.height, segmentSupportHeight.slope);
         }
     }
 }

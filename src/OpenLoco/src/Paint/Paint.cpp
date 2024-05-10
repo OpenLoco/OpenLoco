@@ -541,19 +541,24 @@ namespace OpenLoco::Paint
             });
     }
 
-    void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
+    void PaintSession::setSegmentsSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
     {
         for (int32_t s = 0; s < 9; s++)
         {
             if ((segments & kSegmentOffsets[s]) != SegmentFlags::none)
             {
-                _supportSegments[s].height = height;
-                if (height != 0xFFFF)
-                {
-                    _supportSegments[s].slope = slope;
-                    _supportSegments[s].var_03 = 0;
-                }
+                setSegmentSupportHeight(s, height, slope);
             }
+        }
+    }
+
+    void PaintSession::setSegmentSupportHeight(const uint8_t segment, const uint16_t height, const uint8_t slope)
+    {
+        _supportSegments[segment].height = height;
+        if (height != 0xFFFF)
+        {
+            _supportSegments[segment].slope = slope;
+            _supportSegments[segment].var_03 = 0;
         }
     }
 
