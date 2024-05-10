@@ -1389,7 +1389,7 @@ namespace OpenLoco::Paint
             session.attachToPrevious(attachedImage, { 0, 0 });
 
             // Draw waves
-            if (elSurface.hasType6Flag() && zoomLevel == 0)
+            if (elSurface.isFlag6() && zoomLevel == 0)
             {
                 const auto waveIndex = WaveManager::getWaveIndex(toTileSpace(session.getUnkPosition()));
                 const auto& wave = WaveManager::getWave(waveIndex);
