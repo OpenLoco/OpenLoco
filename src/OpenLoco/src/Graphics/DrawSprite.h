@@ -69,5 +69,5 @@ namespace OpenLoco::Gfx
     DrawBlendOp getDrawBlendOp(const ImageId image, const DrawSpriteArgs& args);
 
     template<uint8_t TZoomLevel, bool TIsRLE>
-    void drawSpriteToBuffer(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op);
+    void drawSpriteToBuffer(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op);
 }

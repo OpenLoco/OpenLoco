@@ -74,7 +74,7 @@ namespace OpenLoco::Ui
         ostream->flush();
     }
 
-    static void saveRenderTargetToPng(Gfx::RenderTarget& rt, std::fstream& outputStream)
+    static void saveRenderTargetToPng(const Gfx::RenderTarget& rt, std::fstream& outputStream)
     {
         static loco_global<uint8_t[256][4], 0x0113ED20> _113ED20;
 
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00452667
-    static std::string prepareSaveScreenshot(Gfx::RenderTarget& rt)
+    static std::string prepareSaveScreenshot(const Gfx::RenderTarget& rt)
     {
         auto basePath = Platform::getUserDirectory();
         std::string scenarioName = S5::getOptions().scenarioName;

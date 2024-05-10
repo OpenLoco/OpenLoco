@@ -336,7 +336,7 @@ namespace OpenLoco::Gfx
         return _screenSurface != nullptr;
     }
 
-    RenderTarget& SoftwareDrawingEngine::getScreenRT()
+    const RenderTarget& SoftwareDrawingEngine::getScreenRT()
     {
         return _screenRT;
     }

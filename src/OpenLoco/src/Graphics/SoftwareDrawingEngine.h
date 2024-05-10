@@ -55,7 +55,7 @@ namespace OpenLoco::Gfx
 
         SoftwareDrawingContext& getDrawingContext();
 
-        RenderTarget& getScreenRT();
+        const RenderTarget& getScreenRT();
 
     private:
         SDL_Renderer* _renderer{};

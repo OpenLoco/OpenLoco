@@ -52,7 +52,7 @@ namespace OpenLoco::Gfx
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch" // not a valid value for a switch of this enum
     template<uint8_t TZoomLevel, bool TIsRLE>
-    inline void drawSpriteToBufferHelper(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    inline void drawSpriteToBufferHelper(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         if constexpr (!TIsRLE)
         {
@@ -116,42 +116,42 @@ namespace OpenLoco::Gfx
 #pragma warning(pop)
 
     template<>
-    void drawSpriteToBuffer<0, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<0, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<0, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<1, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<1, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<1, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<2, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<2, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<2, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<3, false>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<3, false>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<3, false>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<0, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<0, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<0, true>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<1, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<1, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<1, true>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<2, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<2, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<2, true>(rt, args, op);
     }
     template<>
-    void drawSpriteToBuffer<3, true>(RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
+    void drawSpriteToBuffer<3, true>(const RenderTarget& rt, const DrawSpriteArgs& args, const DrawBlendOp op)
     {
         drawSpriteToBufferHelper<3, true>(rt, args, op);
     }
