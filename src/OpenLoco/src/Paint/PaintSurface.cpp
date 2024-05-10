@@ -46,7 +46,7 @@ namespace OpenLoco::Paint
     };
 
     // TODO: Check
-    static constexpr std::array<CornerHeight, 32> cornerHeights = {
+    static constexpr std::array<CornerHeight, 32> kCornerHeights = {
         // T  R  B  L
         CornerHeight{ 0, 0, 0, 0 },
         CornerHeight{ 0, 0, 1, 0 },
@@ -999,6 +999,151 @@ namespace OpenLoco::Paint
         }
     }
 
+    static void paintSurfaceWaterCliffEdge(PaintSession& session, uint8_t edge, const int16_t waterHeight, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
+    {
+        if (neighbour.elSurface == nullptr)
+        {
+            return;
+        }
+        if (neighbour.elSurface->waterHeight() == waterHeight)
+        {
+            return;
+        }
+
+        const auto cornerHeights = CornerHeight(waterHeight / kMicroZStep, neighbour.cornerHeights.right, waterHeight / kMicroZStep, neighbour.cornerHeights.left );
+
+        if (cornerHeights.top <= cornerHeights.right
+            && cornerHeights.bottom <= cornerHeights.left)
+        {
+            return;
+        }
+
+        const bool isUnderground = (session.getViewFlags() & Ui::ViewportFlags::underground_view) != Ui::ViewportFlags::none;
+        const auto spritePos = session.getSpritePosition();
+        const uint32_t factor = ((spritePos.x ^ spritePos.y) & 0b10'0000) + kEdgeFactorOffset[edge];
+        const auto undergroundOffset = kEdgeUndergroundOffset[edge];
+        if (undergroundOffset != 0 && isUnderground)
+        {
+            const auto offset = 1;
+            const auto yOffset = 1;
+            const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(offset + undergroundOffset);
+            session.attachToPrevious(image, Ui::Point(0, -yOffset));
+        }
+
+        auto& maskArr = kEdgeMaskImageFromSlope[isUnderground][edge];
+        uint8_t highest = cornerHeights.left;
+        if (highest != cornerHeights.right)
+        {
+            uint8_t unk = 3;
+            if (highest >= cornerHeights.right)
+            {
+                unk = 4;
+                highest = cornerHeights.right;
+            }
+            if (highest != cornerHeights.top && highest != cornerHeights.bottom)
+            {
+                const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (highest & 0xF));
+                const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, highest * kMicroZStep);
+                const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
+                auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
+                if (ps != nullptr)
+                {
+                    ps->flags |= PaintStructFlags::hasMaskedImage;
+                    ps->maskedImageId = ImageId(maskArr[unk]);
+                }
+                highest++;
+            }
+        }
+
+        uint8_t tunnelNum = 0;
+        while (highest < cornerHeights.top && highest < cornerHeights.bottom)
+        {
+            const auto tunnelEdge = kCliffEdgeToTunnelEdge[edge];
+            while (highest > session.getTunnels(tunnelEdge)[tunnelNum].height)
+            {
+                tunnelNum++;
+            }
+
+            auto& tunnel = session.getTunnels(tunnelEdge)[tunnelNum];
+            if (highest == tunnel.height)
+            {
+                if (edge == 0)
+                {
+                    auto* tunnelObj = ObjectManager::get<TunnelObject>(tunnel.type);
+                    {
+                        const auto image = ImageId(tunnelObj->image);
+                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(2, 2, 25);
+                        const World::Pos3 boundBoxOffset = World::Pos3(29, 0, 6) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                    {
+                        const auto image = ImageId(tunnelObj->image).withIndexOffset(1);
+                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(1, 1, 31);
+                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                }
+                else if (edge == 1)
+                {
+                    auto* tunnelObj = ObjectManager::get<TunnelObject>(tunnel.type);
+                    {
+                        const auto image = ImageId(tunnelObj->image).withIndexOffset(2);
+                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(2, 2, 25);
+                        const World::Pos3 boundBoxOffset = World::Pos3(0, 29, 6) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                    {
+                        const auto image = ImageId(tunnelObj->image).withIndexOffset(3);
+                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxSize = World::Pos3(1, 1, 31);
+                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+
+                        session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
+                    }
+                }
+                highest += 2;
+                tunnelNum++;
+                continue;
+            }
+
+            const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (highest & 0xF));
+            const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, highest * kMicroZStep);
+            const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
+            auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
+            if (ps != nullptr)
+            {
+                ps->flags |= PaintStructFlags::hasMaskedImage;
+                ps->maskedImageId = ImageId(maskArr[0]);
+            }
+            highest++;
+        }
+
+        uint8_t unk = 1;
+        if (highest >= cornerHeights.top)
+        {
+            unk = 2;
+            if (highest >= cornerHeights.bottom)
+            {
+                return;
+            }
+        }
+        const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(factor + (highest & 0xF));
+        const World::Pos3 offset = kEdgeImageOffset[edge] + World::Pos3(0, 0, highest * kMicroZStep);
+        const World::Pos3 boundBoxSize = kEdgeBoundingBoxSize[edge];
+        auto* ps = session.addToPlotListAsParent(image, offset, boundBoxSize);
+        if (ps != nullptr)
+        {
+            ps->flags |= PaintStructFlags::hasMaskedImage;
+            ps->maskedImageId = ImageId(maskArr[unk]);
+        }
+    }
+
     // 0x004656BF
     void paintSurface(PaintSession& session, World::SurfaceElement& elSurface)
     {
@@ -1020,10 +1165,10 @@ namespace OpenLoco::Paint
             elSurface.isIndustrial() ? static_cast<uint8_t>(0xFFU) : elSurface.terrain(),
             rotatedSlope,
             {
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + cornerHeights[rotatedSlope].top),
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + cornerHeights[rotatedSlope].right),
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + cornerHeights[rotatedSlope].bottom),
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + cornerHeights[rotatedSlope].left),
+                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].top),
+                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].right),
+                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].bottom),
+                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].left),
             },
             elSurface.snowCoverage(),
             elSurface.var_6_SLR5(),
@@ -1053,37 +1198,37 @@ namespace OpenLoco::Paint
 
             const uint8_t microZ = descriptor.elSurface->baseZ() / kMicroToSmallZStep;
             const uint8_t selfMicroZ = selfDescriptor.elSurface->baseZ() / kMicroToSmallZStep;
-            const CornerHeight& ch = cornerHeights[surfaceSlope];
+            const CornerHeight& ch = kCornerHeights[surfaceSlope];
 
             descriptor.pos = position;
             descriptor.landObjectId = descriptor.elSurface->isIndustrial() ? static_cast<uint8_t>(0xFFU) : descriptor.elSurface->terrain();
             descriptor.slope = surfaceSlope;
             if (i == 0)
             {
-                descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].left;
+                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].left;
                 descriptor.cornerHeights.right = microZ + ch.top;
-                descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].bottom;
+                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].bottom;
                 descriptor.cornerHeights.left = microZ + ch.right;
             }
             else if (i == 1)
             {
-                descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].right;
+                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].right;
                 descriptor.cornerHeights.right = microZ + ch.top;
-                descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].bottom;
+                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].bottom;
                 descriptor.cornerHeights.left = microZ + ch.left;
             }
             else if (i == 2)
             {
-                descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].top;
+                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].top;
                 descriptor.cornerHeights.right = microZ + ch.right;
-                descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].left;
+                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].left;
                 descriptor.cornerHeights.left = microZ + ch.bottom;
             }
             else if (i == 3)
             {
-                descriptor.cornerHeights.top = selfMicroZ + cornerHeights[selfDescriptor.slope].top;
+                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].top;
                 descriptor.cornerHeights.right = microZ + ch.left;
-                descriptor.cornerHeights.bottom = selfMicroZ + cornerHeights[selfDescriptor.slope].right;
+                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].right;
                 descriptor.cornerHeights.left = microZ + ch.bottom;
             }
             descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
@@ -1399,6 +1544,10 @@ namespace OpenLoco::Paint
             }
 
             // Do water edges
+            paintSurfaceWaterCliffEdge(session, 2, waterHeight, tileDescriptors[2], cliffEdgeImageBase);
+            paintSurfaceWaterCliffEdge(session, 3, waterHeight, tileDescriptors[3], cliffEdgeImageBase);
+            paintSurfaceWaterCliffEdge(session, 0, waterHeight, tileDescriptors[0], cliffEdgeImageBase);
+            paintSurfaceWaterCliffEdge(session, 1, waterHeight, tileDescriptors[1], cliffEdgeImageBase);
         }
     }
 }
