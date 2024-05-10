@@ -277,6 +277,8 @@ namespace OpenLoco
 
     static void initialise()
     {
+        _last_tick_time = Platform::getTime();
+
         std::srand(std::time(nullptr));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE); // getSystemTime unused dead code?
@@ -391,20 +393,12 @@ namespace OpenLoco
     // 0x0046A794
     static void tick()
     {
-        static bool isInitialised = false;
-
         try
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             addr<0x00113E87C, int32_t>() = 0;
             addr<0x0005252E0, int32_t>() = 0;
-            if (!isInitialised)
-            {
-                isInitialised = true;
-                initialise();
-                _last_tick_time = Platform::getTime();
-            }
 
             uint32_t time = Platform::getTime();
             _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
@@ -916,10 +910,7 @@ namespace OpenLoco
         sub_4062D1();
         sub_406417(nullptr);
 
-        // Call tick before Ui::processMessages to ensure initialise is called
-        // otherwise window events can end up using an uninitialised window manager.
-        // This can be removed when initialise is moved out of tick().
-        tick();
+        initialise();
 
         while (Ui::processMessages())
         {
