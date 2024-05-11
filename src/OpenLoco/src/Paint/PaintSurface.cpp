@@ -26,12 +26,27 @@ namespace OpenLoco::Paint
 {
     static loco_global<LandObjectFlags[32], 0x00F003D3> _F003D3;
 
+    //    T
+    //   ---
+    //  L---R
+    //   ---
+    //    B
     struct CornerHeight
     {
-        uint8_t top;    // al
-        uint8_t right;  // ah
-        uint8_t bottom; // cl
-        uint8_t left;   // ch
+        MicroZ top;    // al
+        MicroZ right;  // ah
+        MicroZ bottom; // cl
+        MicroZ left;   // ch
+    };
+
+    // The height of corners either side of
+    // an edge
+    struct EdgeHeight
+    {
+        MicroZ self0;      // al self corner 0
+        MicroZ neighbour0; // ah neighbour corner 0
+        MicroZ self1;      // cl self corner 1
+        MicroZ neighbour1; // ch neighbour corner 1
     };
 
     struct TileDescriptor
@@ -40,12 +55,11 @@ namespace OpenLoco::Paint
         const World::SurfaceElement* elSurface;
         uint8_t landObjectId;
         uint8_t slope;
-        CornerHeight cornerHeights;
+        EdgeHeight edgeHeight;
         uint8_t snowCoverage;
         uint8_t var6SLR5;
     };
 
-    // TODO: Check
     static constexpr std::array<CornerHeight, 32> kCornerHeights = {
         // T  R  B  L
         CornerHeight{ 0, 0, 0, 0 },
@@ -742,8 +756,8 @@ namespace OpenLoco::Paint
         if (neighbour.elSurface == nullptr)
             return;
 
-        if (neighbour.cornerHeights.left != neighbour.cornerHeights.bottom
-            || neighbour.cornerHeights.right != neighbour.cornerHeights.top)
+        if (neighbour.edgeHeight.neighbour1 != neighbour.edgeHeight.self1
+            || neighbour.edgeHeight.neighbour0 != neighbour.edgeHeight.self0)
             return;
 
         // If either is industrial
@@ -1173,10 +1187,10 @@ namespace OpenLoco::Paint
         }
     }
 
-    static void paintSurfaceCliffEdgeImpl(PaintSession& session, uint8_t edge, int16_t baseHeight, const CornerHeight& cornerHeights, uint32_t cliffEdgeImageBase)
+    static void paintSurfaceCliffEdgeImpl(PaintSession& session, uint8_t edge, int16_t baseHeight, const EdgeHeight& edgeHeight, uint32_t cliffEdgeImageBase)
     {
-        if (cornerHeights.top <= cornerHeights.right
-            && cornerHeights.bottom <= cornerHeights.left)
+        if (edgeHeight.self0 <= edgeHeight.neighbour0
+            && edgeHeight.self1 <= edgeHeight.neighbour1)
         {
             return;
         }
@@ -1186,23 +1200,23 @@ namespace OpenLoco::Paint
         const auto undergroundOffset = kEdgeUndergroundOffset[edge];
         if (undergroundOffset != 0 && isUnderground)
         {
-            const auto offset = cornerHeights.bottom - cornerHeights.top + 1;
-            const auto yOffset = ((cornerHeights.top - baseHeight / kMicroToSmallZStep) * kMicroZStep) + 1;
+            const auto offset = edgeHeight.self1 - edgeHeight.self0 + 1;
+            const auto yOffset = ((edgeHeight.self0 - baseHeight / kMicroToSmallZStep) * kMicroZStep) + 1;
             const auto image = ImageId(cliffEdgeImageBase).withIndexOffset(offset + undergroundOffset);
             session.attachToPrevious(image, Ui::Point(0, -yOffset));
         }
 
         auto& maskArr = kEdgeMaskImageFromSlope[isUnderground][edge];
-        uint8_t highest = cornerHeights.left;
-        if (highest != cornerHeights.right)
+        MicroZ highest = edgeHeight.neighbour1;
+        if (highest != edgeHeight.neighbour0)
         {
             uint8_t unk = 3;
-            if (highest >= cornerHeights.right)
+            if (highest >= edgeHeight.neighbour0)
             {
                 unk = 4;
-                highest = cornerHeights.right;
+                highest = edgeHeight.neighbour0;
             }
-            if (highest != cornerHeights.top && highest != cornerHeights.bottom)
+            if (highest != edgeHeight.self0 && highest != edgeHeight.self1)
             {
                 paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[unk]);
                 highest++;
@@ -1210,7 +1224,7 @@ namespace OpenLoco::Paint
         }
 
         uint8_t tunnelNum = 0;
-        while (highest < cornerHeights.top && highest < cornerHeights.bottom)
+        while (highest < edgeHeight.self0 && highest < edgeHeight.self1)
         {
             const auto tunnelEdge = kCliffEdgeToTunnelEdge[edge];
             while (highest > session.getTunnels(tunnelEdge)[tunnelNum].height)
@@ -1271,10 +1285,10 @@ namespace OpenLoco::Paint
         }
 
         uint8_t unk = 1;
-        if (highest >= cornerHeights.top)
+        if (highest >= edgeHeight.self0)
         {
             unk = 2;
-            if (highest >= cornerHeights.bottom)
+            if (highest >= edgeHeight.self1)
             {
                 return;
             }
@@ -1283,14 +1297,14 @@ namespace OpenLoco::Paint
         paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[unk]);
     }
 
-    static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const TileDescriptor& self, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
+    static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const int16_t baseHeight, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
     {
         if (neighbour.elSurface == nullptr)
         {
             return;
         }
 
-        paintSurfaceCliffEdgeImpl(session, edge, self.elSurface->baseHeight(), neighbour.cornerHeights, cliffEdgeImageBase);
+        paintSurfaceCliffEdgeImpl(session, edge, baseHeight, neighbour.edgeHeight, cliffEdgeImageBase);
     }
 
     static void paintSurfaceWaterCliffEdge(PaintSession& session, uint8_t edge, const int16_t waterHeight, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
@@ -1304,9 +1318,9 @@ namespace OpenLoco::Paint
             return;
         }
 
-        const auto cornerHeights = CornerHeight{ static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.cornerHeights.right, static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.cornerHeights.left };
+        const auto edgeHeight = EdgeHeight{ static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.edgeHeight.neighbour0, static_cast<uint8_t>(waterHeight / kMicroZStep), neighbour.edgeHeight.neighbour1 };
 
-        paintSurfaceCliffEdgeImpl(session, edge, waterHeight, cornerHeights, cliffEdgeImageBase);
+        paintSurfaceCliffEdgeImpl(session, edge, waterHeight, edgeHeight, cliffEdgeImageBase);
     }
 
     // 0x004656BF
@@ -1329,16 +1343,20 @@ namespace OpenLoco::Paint
             &elSurface,
             elSurface.isIndustrial() ? static_cast<uint8_t>(0xFFU) : elSurface.terrain(),
             rotatedSlope,
-            {
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].top),
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].right),
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].bottom),
-                static_cast<uint8_t>(elSurface.baseZ() / kMicroToSmallZStep + kCornerHeights[rotatedSlope].left),
-            },
+            {}, // Edge height unused
             elSurface.snowCoverage(),
             elSurface.var_6_SLR5(),
         };
-        std::array<TileDescriptor, 4> tileDescriptors;
+
+        const uint8_t selfMicroZ = elSurface.baseZ() / kMicroToSmallZStep;
+        const CornerHeight selfCornerHeight = {
+            static_cast<uint8_t>(selfMicroZ + kCornerHeights[rotatedSlope].top),
+            static_cast<uint8_t>(selfMicroZ + kCornerHeights[rotatedSlope].right),
+            static_cast<uint8_t>(selfMicroZ + kCornerHeights[rotatedSlope].bottom),
+            static_cast<uint8_t>(selfMicroZ + kCornerHeights[rotatedSlope].left),
+        };
+
+        std::array<TileDescriptor, 4> tileDescriptors{};
 
         for (std::size_t i = 0; i < std::size(tileDescriptors); i++)
         {
@@ -1362,39 +1380,38 @@ namespace OpenLoco::Paint
             const uint32_t surfaceSlope = getRotatedSlope(descriptor.elSurface->slope(), rotation);
 
             const uint8_t microZ = descriptor.elSurface->baseZ() / kMicroToSmallZStep;
-            const uint8_t selfMicroZ = selfDescriptor.elSurface->baseZ() / kMicroToSmallZStep;
             const CornerHeight& ch = kCornerHeights[surfaceSlope];
 
             descriptor.pos = position;
             descriptor.landObjectId = descriptor.elSurface->isIndustrial() ? static_cast<uint8_t>(0xFFU) : descriptor.elSurface->terrain();
             descriptor.slope = surfaceSlope;
-            if (i == 0)
+            if (i == 0) // SW edge
             {
-                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].left;
-                descriptor.cornerHeights.right = microZ + ch.top;
-                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].bottom;
-                descriptor.cornerHeights.left = microZ + ch.right;
+                descriptor.edgeHeight.self0 = selfCornerHeight.left;
+                descriptor.edgeHeight.neighbour0 = microZ + ch.top;
+                descriptor.edgeHeight.self1 = selfCornerHeight.bottom;
+                descriptor.edgeHeight.neighbour1 = microZ + ch.right;
             }
-            else if (i == 1)
+            else if (i == 1) // SE edge
             {
-                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].right;
-                descriptor.cornerHeights.right = microZ + ch.top;
-                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].bottom;
-                descriptor.cornerHeights.left = microZ + ch.left;
+                descriptor.edgeHeight.self0 = selfCornerHeight.right;
+                descriptor.edgeHeight.neighbour0 = microZ + ch.top;
+                descriptor.edgeHeight.self1 = selfCornerHeight.bottom;
+                descriptor.edgeHeight.neighbour1 = microZ + ch.left;
             }
-            else if (i == 2)
+            else if (i == 2) // NW edge
             {
-                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].top;
-                descriptor.cornerHeights.right = microZ + ch.right;
-                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].left;
-                descriptor.cornerHeights.left = microZ + ch.bottom;
+                descriptor.edgeHeight.self0 = selfCornerHeight.top;
+                descriptor.edgeHeight.neighbour0 = microZ + ch.right;
+                descriptor.edgeHeight.self1 = selfCornerHeight.left;
+                descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
             }
-            else if (i == 3)
+            else if (i == 3) // NE edge
             {
-                descriptor.cornerHeights.top = selfMicroZ + kCornerHeights[selfDescriptor.slope].top;
-                descriptor.cornerHeights.right = microZ + ch.left;
-                descriptor.cornerHeights.bottom = selfMicroZ + kCornerHeights[selfDescriptor.slope].right;
-                descriptor.cornerHeights.left = microZ + ch.bottom;
+                descriptor.edgeHeight.self0 = selfCornerHeight.top;
+                descriptor.edgeHeight.neighbour0 = microZ + ch.left;
+                descriptor.edgeHeight.self1 = selfCornerHeight.right;
+                descriptor.edgeHeight.neighbour1 = microZ + ch.bottom;
             }
             descriptor.snowCoverage = descriptor.elSurface->snowCoverage();
             descriptor.var6SLR5 = descriptor.elSurface->var_6_SLR5();
@@ -1668,10 +1685,10 @@ namespace OpenLoco::Paint
 
         if (((session.getViewFlags() & Ui::ViewportFlags::flag_8) == Ui::ViewportFlags::none))
         {
-            paintSurfaceCliffEdge(session, 2, selfDescriptor, tileDescriptors[2], cliffEdgeImageBase);
-            paintSurfaceCliffEdge(session, 3, selfDescriptor, tileDescriptors[3], cliffEdgeImageBase);
-            paintSurfaceCliffEdge(session, 0, selfDescriptor, tileDescriptors[0], cliffEdgeImageBase);
-            paintSurfaceCliffEdge(session, 1, selfDescriptor, tileDescriptors[1], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 2, baseHeight, tileDescriptors[2], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 3, baseHeight, tileDescriptors[3], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 0, baseHeight, tileDescriptors[0], cliffEdgeImageBase);
+            paintSurfaceCliffEdge(session, 1, baseHeight, tileDescriptors[1], cliffEdgeImageBase);
         }
 
         session.setWaterHeight2(0);
