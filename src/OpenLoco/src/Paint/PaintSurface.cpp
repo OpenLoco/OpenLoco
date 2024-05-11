@@ -96,7 +96,12 @@ namespace OpenLoco::Paint
         CornerHeight{ 1, 1, 1, 1 },
     };
 
-    static constexpr std::array<uint8_t, 32> k4FD97E = {
+    // 0x004FD97E
+    // Truncates a SurfaceSlope slope into only the representable values
+    // input is SurfaceSlope 0 <-> 31 with some unrepresentable
+    // output is 0 <-> 18
+    // unrepresentable will be displayed at 0 (flat)
+    static constexpr std::array<uint8_t, 32> kSlopeToDisplaySlope = {
         0,
         2,
         1,
@@ -691,7 +696,7 @@ namespace OpenLoco::Paint
     static void paintSurfaceFullWaterTileSelection(PaintSession& session, const World::SurfaceElement& elSurface, uint8_t slope)
     {
         const auto waterSurface = getWaterSurface(elSurface, slope);
-        const auto displaySlope = k4FD97E[waterSurface.slope];
+        const auto displaySlope = kSlopeToDisplaySlope[waterSurface.slope];
         const auto imageId = ImageId(kCornerSelectionBoxFromSlope[displaySlope], ExtColour::unk26);
 
         // TODO: Push/pop last ps?
@@ -706,7 +711,7 @@ namespace OpenLoco::Paint
     static void paintSurfaceSelection(PaintSession& session, const World::SurfaceElement& elSurface, const uint8_t slope)
     {
         const auto rotation = session.getRotation();
-        const auto unkF252AC = k4FD97E[slope];
+        const auto unkF252AC = kSlopeToDisplaySlope[slope];
         switch (World::getMapSelectionCorner())
         {
             case World::MapSelectionType::corner0:
@@ -772,8 +777,8 @@ namespace OpenLoco::Paint
         }
 
         // 0x00F25304
-        const auto displaySlope = k4FD97E[self.slope];
-        const auto neighbourDislaySlope = k4FD97E[neighbour.slope];
+        const auto displaySlope = kSlopeToDisplaySlope[self.slope];
+        const auto neighbourDislaySlope = kSlopeToDisplaySlope[neighbour.slope];
 
         uint8_t dh = 0, cl = 0;
         switch (edge)
@@ -1207,50 +1212,51 @@ namespace OpenLoco::Paint
         }
 
         auto& maskArr = kEdgeMaskImageFromSlope[isUnderground][edge];
-        MicroZ highest = edgeHeight.neighbour1;
-        if (highest != edgeHeight.neighbour0)
+        // The current height we are drawing the edge at **MicroZ**
+        MicroZ uHeight = edgeHeight.neighbour1;
+        if (uHeight != edgeHeight.neighbour0)
         {
             uint8_t unk = 3;
-            if (highest >= edgeHeight.neighbour0)
+            if (uHeight >= edgeHeight.neighbour0)
             {
                 unk = 4;
-                highest = edgeHeight.neighbour0;
+                uHeight = edgeHeight.neighbour0;
             }
-            if (highest != edgeHeight.self0 && highest != edgeHeight.self1)
+            if (uHeight != edgeHeight.self0 && uHeight != edgeHeight.self1)
             {
-                paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[unk]);
-                highest++;
+                paintEdgeSection(session, cliffEdgeImageBase, factor, uHeight, edge, maskArr[unk]);
+                uHeight++;
             }
         }
 
         uint8_t tunnelNum = 0;
-        while (highest < edgeHeight.self0 && highest < edgeHeight.self1)
+        while (uHeight < edgeHeight.self0 && uHeight < edgeHeight.self1)
         {
             const auto tunnelEdge = kCliffEdgeToTunnelEdge[edge];
-            while (highest > session.getTunnels(tunnelEdge)[tunnelNum].height)
+            while (uHeight > session.getTunnels(tunnelEdge)[tunnelNum].height)
             {
                 tunnelNum++;
             }
 
             auto& tunnel = session.getTunnels(tunnelEdge)[tunnelNum];
-            if (highest == tunnel.height)
+            if (uHeight == tunnel.height)
             {
                 if (edge == 0)
                 {
                     auto* tunnelObj = ObjectManager::get<TunnelObject>(tunnel.type);
                     {
                         const auto image = ImageId(tunnelObj->image);
-                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, uHeight * kMicroZStep);
                         const World::Pos3 boundBoxSize = World::Pos3(2, 2, 25);
-                        const World::Pos3 boundBoxOffset = World::Pos3(29, 0, 6) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxOffset = World::Pos3(29, 0, 6) + World::Pos3(0, 0, uHeight * kMicroZStep);
 
                         session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
                     }
                     {
                         const auto image = ImageId(tunnelObj->image).withIndexOffset(1);
-                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 offset = World::Pos3(30, 0, 0) + World::Pos3(0, 0, uHeight * kMicroZStep);
                         const World::Pos3 boundBoxSize = World::Pos3(1, 1, 31);
-                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, uHeight * kMicroZStep);
 
                         session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
                     }
@@ -1260,41 +1266,41 @@ namespace OpenLoco::Paint
                     auto* tunnelObj = ObjectManager::get<TunnelObject>(tunnel.type);
                     {
                         const auto image = ImageId(tunnelObj->image).withIndexOffset(2);
-                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, uHeight * kMicroZStep);
                         const World::Pos3 boundBoxSize = World::Pos3(2, 2, 25);
-                        const World::Pos3 boundBoxOffset = World::Pos3(0, 29, 6) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxOffset = World::Pos3(0, 29, 6) + World::Pos3(0, 0, uHeight * kMicroZStep);
 
                         session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
                     }
                     {
                         const auto image = ImageId(tunnelObj->image).withIndexOffset(3);
-                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 offset = World::Pos3(0, 30, 0) + World::Pos3(0, 0, uHeight * kMicroZStep);
                         const World::Pos3 boundBoxSize = World::Pos3(1, 1, 31);
-                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, highest * kMicroZStep);
+                        const World::Pos3 boundBoxOffset = World::Pos3(30, 30, 0) + World::Pos3(0, 0, uHeight * kMicroZStep);
 
                         session.addToPlotListAsParent(image, offset, boundBoxOffset, boundBoxSize);
                     }
                 }
-                highest += 2;
+                uHeight += 2;
                 tunnelNum++;
                 continue;
             }
 
-            paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[0]);
-            highest++;
+            paintEdgeSection(session, cliffEdgeImageBase, factor, uHeight, edge, maskArr[0]);
+            uHeight++;
         }
 
         uint8_t unk = 1;
-        if (highest >= edgeHeight.self0)
+        if (uHeight >= edgeHeight.self0)
         {
             unk = 2;
-            if (highest >= edgeHeight.self1)
+            if (uHeight >= edgeHeight.self1)
             {
                 return;
             }
         }
 
-        paintEdgeSection(session, cliffEdgeImageBase, factor, highest, edge, maskArr[unk]);
+        paintEdgeSection(session, cliffEdgeImageBase, factor, uHeight, edge, maskArr[unk]);
     }
 
     static void paintSurfaceCliffEdge(PaintSession& session, uint8_t edge, const int16_t baseHeight, const TileDescriptor& neighbour, uint32_t cliffEdgeImageBase)
@@ -1433,7 +1439,7 @@ namespace OpenLoco::Paint
         // 0x00F25314
         const auto cliffEdgeImageBase = landObj->cliffEdgeImage;
         // 0x00F252AC
-        const auto unkF252AC = k4FD97E[selfDescriptor.slope];
+        const auto displaySlope = kSlopeToDisplaySlope[selfDescriptor.slope];
         // 0x00F25344
         std::optional<SnowImage> snowImage = std::nullopt;
 
@@ -1449,7 +1455,7 @@ namespace OpenLoco::Paint
 
             // Draw trees if they exist
             {
-                const auto height = baseHeight + k4FD30C[unkF252AC];
+                const auto height = baseHeight + k4FD30C[displaySlope];
                 const auto imageIndex = industryObj->var_16 + variation + (elSurface.snowCoverage() ? 20 : 19);
 
                 const World::Pos3 offset(0, 0, height);
@@ -1464,7 +1470,7 @@ namespace OpenLoco::Paint
                 || elSurface.snowCoverage() == 0)
             {
                 // Draw main surface image
-                const auto imageIndex = industryObj->var_16 + variation + unkF252AC;
+                const auto imageIndex = industryObj->var_16 + variation + displaySlope;
                 paintMainSurface(session, imageIndex, baseHeight);
             }
             else
@@ -1473,16 +1479,16 @@ namespace OpenLoco::Paint
                 auto* snowObj = ObjectManager::get<SnowObject>();
                 if (elSurface.snowCoverage() == 5)
                 {
-                    paintMainSurface(session, unkF252AC + snowObj->image, baseHeight);
+                    paintMainSurface(session, displaySlope + snowObj->image, baseHeight);
                 }
                 else
                 {
-                    const auto imageIndex = industryObj->var_16 + variation + unkF252AC;
+                    const auto imageIndex = industryObj->var_16 + variation + displaySlope;
                     paintMainSurface(session, imageIndex, baseHeight);
 
                     if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none)
                     {
-                        snowImage = SnowImage{ .baseImage = unkF252AC + snowObj->image, .imageMask = kSnowCoverageSlopeToMask[elSurface.snowCoverage() - 1][unkF252AC] };
+                        snowImage = SnowImage{ .baseImage = displaySlope + snowObj->image, .imageMask = kSnowCoverageSlopeToMask[elSurface.snowCoverage() - 1][displaySlope] };
                     }
                 }
             }
@@ -1496,32 +1502,32 @@ namespace OpenLoco::Paint
                 auto* snowObj = ObjectManager::get<SnowObject>();
                 if (elSurface.snowCoverage() == 5)
                 {
-                    paintMainSurface(session, unkF252AC + snowObj->image, baseHeight);
+                    paintMainSurface(session, displaySlope + snowObj->image, baseHeight);
                 }
                 else
                 {
-                    const auto imageIndex = landObj->image + variation + unkF252AC;
+                    const auto imageIndex = landObj->image + variation + displaySlope;
                     paintMainSurface(session, imageIndex, baseHeight);
 
                     if ((session.getViewFlags() & (Ui::ViewportFlags::underground_view | Ui::ViewportFlags::flag_7)) == Ui::ViewportFlags::none)
                     {
-                        snowImage = SnowImage{ .baseImage = unkF252AC + snowObj->image, .imageMask = kSnowCoverageSlopeToMask[elSurface.snowCoverage() - 1][unkF252AC] };
+                        snowImage = SnowImage{ .baseImage = displaySlope + snowObj->image, .imageMask = kSnowCoverageSlopeToMask[elSurface.snowCoverage() - 1][displaySlope] };
                     }
                 }
             }
             else
             {
-                const auto imageIndex = [&elSurface, zoomLevel, unkF252AC, &landObj, variation]() {
+                const auto imageIndex = [&elSurface, zoomLevel, displaySlope, &landObj, variation]() {
                     if (!elSurface.water()
                         && elSurface.variation() != 0
                         && zoomLevel == 0
-                        && unkF252AC == 0
+                        && displaySlope == 0
                         && (landObj->var_03 - 1) == elSurface.var_6_SLR5())
                     {
                         return landObj->mapPixelImage + 3 + elSurface.variation();
                     }
 
-                    return landObj->image + variation + unkF252AC;
+                    return landObj->image + variation + displaySlope;
                 }();
 
                 paintMainSurface(session, imageIndex, baseHeight);
@@ -1549,7 +1555,7 @@ namespace OpenLoco::Paint
                 if (elSurface.water() && elSurface.waterHeight() > elSurface.baseHeight())
                 {
                     const auto waterSurface = getWaterSurface(elSurface, selfDescriptor.slope);
-                    const auto waterDisplaySlope = k4FD97E[waterSurface.slope];
+                    const auto waterDisplaySlope = kSlopeToDisplaySlope[waterSurface.slope];
                     const auto imageId = ImageId(kCornerSelectionBoxFromSlope[waterDisplaySlope], colour);
 
                     // TODO: Push/pop last ps?
@@ -1561,7 +1567,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    const auto imageId = ImageId(kCornerSelectionBoxFromSlope[unkF252AC], colour);
+                    const auto imageId = ImageId(kCornerSelectionBoxFromSlope[displaySlope], colour);
                     session.attachToPrevious(imageId, { 0, 0 });
                 }
             }
@@ -1572,7 +1578,7 @@ namespace OpenLoco::Paint
             if (isWithinCatchmentDisplay(session.getUnkPosition()))
             {
                 const auto waterSurface = getWaterSurface(elSurface, selfDescriptor.slope);
-                const auto waterDisplaySlope = k4FD97E[waterSurface.slope];
+                const auto waterDisplaySlope = kSlopeToDisplaySlope[waterSurface.slope];
                 const auto imageId = ImageId(kCatchmentFromSlope[waterDisplaySlope], Colour::darkBlue);
 
                 // TODO: Push/pop last ps?
@@ -1588,7 +1594,7 @@ namespace OpenLoco::Paint
             && zoomLevel <= 2
             && (session.getViewFlags() & Ui::ViewportFlags::underground_view) == Ui::ViewportFlags::none)
         {
-            const auto imageId = ImageId(kGridlinesBoxFromSlope[unkF252AC], ExtColour::unk30);
+            const auto imageId = ImageId(kGridlinesBoxFromSlope[displaySlope], ExtColour::unk30);
             session.attachToPrevious(imageId, { 0, 0 });
         }
 
@@ -1622,18 +1628,18 @@ namespace OpenLoco::Paint
                 auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
 
                 const auto variation = industryObj->var_1A * elSurface.var_6_SLR5() + ((industryObj->var_E9 - 1) & rotation) * 21;
-                const auto imageIndex = industryObj->var_16 + variation + unkF252AC;
+                const auto imageIndex = industryObj->var_16 + variation + displaySlope;
 
                 if ((zoomLevel == 0 && industryObj->hasFlags(IndustryObjectFlags::unk26))
                     || selfDescriptor.snowCoverage == 0)
                 {
-                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                    paintMainUndergroundSurface(session, imageIndex, displaySlope);
                 }
                 else if (selfDescriptor.snowCoverage == 5)
                 {
                     auto* snowObj = ObjectManager::get<SnowObject>();
 
-                    const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC);
+                    const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + displaySlope);
                     session.attachToPrevious(imageId, { 0, 0 });
                 }
                 else
@@ -1643,28 +1649,28 @@ namespace OpenLoco::Paint
 
                     if (snowNoise != 0)
                     {
-                        const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC).withNoiseMask(snowNoise);
+                        const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + displaySlope).withNoiseMask(snowNoise);
                         session.attachToPrevious(imageId, { 0, 0 });
                     }
 
-                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                    paintMainUndergroundSurface(session, imageIndex, displaySlope);
                 }
             }
             else
             {
                 const auto variation = landObj->var_0E * elSurface.var_6_SLR5() + ((landObj->var_04 - 1) & rotation) * 25;
-                const auto imageIndex = landObj->image + variation + unkF252AC;
+                const auto imageIndex = landObj->image + variation + displaySlope;
 
                 if (selfDescriptor.snowCoverage == 0)
                 {
-                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                    paintMainUndergroundSurface(session, imageIndex, displaySlope);
                 }
                 else if (selfDescriptor.snowCoverage == 5)
                 {
                     // 0x00466389
                     auto* snowObj = ObjectManager::get<SnowObject>();
 
-                    const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC);
+                    const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + displaySlope);
                     session.attachToPrevious(imageId, { 0, 0 });
                 }
                 else
@@ -1674,11 +1680,11 @@ namespace OpenLoco::Paint
 
                     if (snowNoise != 0)
                     {
-                        const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + unkF252AC).withNoiseMask(snowNoise);
+                        const auto imageId = ImageId(snowObj->image).withIndexOffset(19 + displaySlope).withNoiseMask(snowNoise);
                         session.attachToPrevious(imageId, { 0, 0 });
                     }
 
-                    paintMainUndergroundSurface(session, imageIndex, unkF252AC);
+                    paintMainUndergroundSurface(session, imageIndex, displaySlope);
                 }
             }
         }
