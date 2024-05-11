@@ -2368,9 +2368,9 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t surfaceSmooth1Slope13 = 3778;
     constexpr uint32_t surfaceSmooth1Slope14 = 3779;
     constexpr uint32_t surfaceSmooth1Slope15 = 3780;
-    constexpr uint32_t surfaceSmooth1Slope16 = 3881;
-    constexpr uint32_t surfaceSmooth1Slope17 = 3882;
-    constexpr uint32_t surfaceSmooth1Slope18 = 3883;
+    constexpr uint32_t surfaceSmooth1Slope16 = 3781;
+    constexpr uint32_t surfaceSmooth1Slope17 = 3782;
+    constexpr uint32_t surfaceSmooth1Slope18 = 3783;
     constexpr uint32_t surfaceSmooth0Slope0 = 3784;
     constexpr uint32_t surfaceSmooth0Slope1 = 3785;
     constexpr uint32_t surfaceSmooth0Slope2 = 3786;
