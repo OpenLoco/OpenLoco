@@ -18,7 +18,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    constexpr std::array<World::Pos2, 4> _largeTileOffsets = { {
+    constexpr std::array<World::Pos2, 4> kLargeTileOffsets = { {
         { 0, 0 },
         { 0, -32 },
         { -32, -32 },
@@ -148,8 +148,8 @@ namespace OpenLoco::GameCommands
 
             if ((airportObj->largeTiles & (1 << var_9C[0])) != 0)
             {
-                worldPos.x += _largeTileOffsets[rotation].x;
-                worldPos.y += _largeTileOffsets[rotation].y;
+                worldPos.x += kLargeTileOffsets[rotation].x;
+                worldPos.y += kLargeTileOffsets[rotation].y;
             }
 
             worldPos += pos;
