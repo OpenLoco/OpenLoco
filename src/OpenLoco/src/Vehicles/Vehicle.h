@@ -351,14 +351,14 @@ namespace OpenLoco::Vehicles
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
-        uint8_t airportMovementEdge; // 0x68
-        uint32_t totalRefundCost;    // 0x69
-        uint8_t crashedTimeout;      // 0x6D
-        int8_t manualPower;          // 0x6E manual power control VehicleFlags::manualControl
-        World::Pos2 journeyStartPos; // 0x6F journey start position
-        uint32_t journeyStartTicks;  // 0x73 ticks since journey start
-        Speed16 lastAverageSpeed;    // 0x77
-        uint8_t var_79;              // 0x79 timeout before auto starting trams/buses
+        uint8_t airportMovementEdge;       // 0x68
+        uint32_t totalRefundCost;          // 0x69
+        uint8_t crashedTimeout;            // 0x6D
+        int8_t manualPower;                // 0x6E manual power control VehicleFlags::manualControl
+        World::Pos2 journeyStartPos;       // 0x6F journey start position
+        uint32_t journeyStartTicks;        // 0x73 ticks since journey start
+        Speed16 lastAverageSpeed;          // 0x77
+        uint8_t restartStoppedCarsTimeout; // 0x79 timeout before auto starting trams/buses
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
@@ -646,10 +646,10 @@ namespace OpenLoco::Vehicles
         BreakdownFlags breakdownFlags;
         uint8_t var_60;
         uint8_t var_61;
-        uint32_t refundCost;  // 0x62 front bogies only
-        uint16_t reliability; // 0x66 front bogies only
-        uint16_t var_68;
-        uint8_t var_6A;
+        uint32_t refundCost;         // 0x62 front bogies only
+        uint16_t reliability;        // 0x66 front bogies only
+        uint16_t timeoutToBreakdown; // 0x68 front bogies only (days) counts down to the next breakdown 0xFFFFU disables this
+        uint8_t breakdownTimeout;    // 0x6A front bogies only (days)
 
     public:
         AirportObjectFlags getCompatibleAirportType();
