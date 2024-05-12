@@ -431,7 +431,7 @@ namespace OpenLoco::GameCommands
         newHead->var_61 = 0xFFU;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
-        newHead->var_79 = 0;
+        newHead->restartStoppedCarsTimeout = 0;
         OrderManager::allocateOrders(*newHead);
         return newHead;
     }

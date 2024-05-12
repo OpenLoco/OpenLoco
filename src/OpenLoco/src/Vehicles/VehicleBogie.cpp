@@ -304,7 +304,7 @@ namespace OpenLoco::Vehicles
     // esi : vehBogie
     void sub_4BA873(VehicleBogie& vehBogie)
     {
-        vehBogie.var_68 = 0xFFFF;
+        vehBogie.timeoutToBreakdown = 0xFFFF;
         if (vehBogie.reliability != 0)
         {
             int32_t reliabilityFactor = vehBogie.reliability / 256;
@@ -315,7 +315,7 @@ namespace OpenLoco::Vehicles
             int32_t randVal = (prng.randNext(65535) * reliabilityFactor / 2) / 65536;
             reliabilityFactor -= reliabilityFactor / 4;
             reliabilityFactor += randVal;
-            vehBogie.var_68 = static_cast<uint16_t>(std::max(4, reliabilityFactor));
+            vehBogie.timeoutToBreakdown = static_cast<uint16_t>(std::max(4, reliabilityFactor));
         }
     }
 }
