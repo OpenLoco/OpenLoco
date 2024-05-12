@@ -209,7 +209,10 @@ namespace OpenLoco::GameCommands
         for (auto i = 0U; i < station->stationTileSize; i++)
         {
             auto& tilePos = station->stationTiles[i];
-            if (World::heightFloor(tilePos.z) != args.pos.z)
+            auto rotation = tilePos.z & 3;
+            tilePos.z = World::heightFloor(tilePos.z);
+
+            if (tilePos.z != args.pos.z)
             {
                 continue;
             }
@@ -228,7 +231,6 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x0049365A
-            auto rotation = tilePos.z & 3; // dx
             auto* airportObj = ObjectManager::get<AirportObject>(stationEl->objectId());
 
             auto minPos = World::toWorldSpace(World::TilePos2(airportObj->minX, airportObj->minY));
