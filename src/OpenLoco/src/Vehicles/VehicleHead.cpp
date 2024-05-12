@@ -219,8 +219,8 @@ namespace OpenLoco::Vehicles
                 {
                     if (Tutorial::state() == Tutorial::State::none)
                     {
-                        var_79++;
-                        if (var_79 >= 20)
+                        restartStoppedCarsTimeout++;
+                        if (restartStoppedCarsTimeout >= 20)
                         {
                             GameCommands::VehicleChangeRunningModeArgs args{};
                             args.head = head;
@@ -251,7 +251,7 @@ namespace OpenLoco::Vehicles
         }
         if (resetStoppedTimeout)
         {
-            var_79 = 0;
+            restartStoppedCarsTimeout = 0;
         }
 
         if (status == Status::crashed || status == Status::stuck)
@@ -319,20 +319,20 @@ namespace OpenLoco::Vehicles
 
             if (front.hasBreakdownFlags(BreakdownFlags::brokenDown))
             {
-                front.var_6A--;
-                if (front.var_6A == 0)
+                front.breakdownTimeout--;
+                if (front.breakdownTimeout == 0)
                 {
                     front.breakdownFlags &= ~BreakdownFlags::brokenDown;
                     applyBreakdownToTrain();
                 }
             }
-            else if (front.var_68 != 0xFFFFU)
+            else if (front.timeoutToBreakdown != 0xFFFFU)
             {
-                if (front.var_68 != 0)
+                if (front.timeoutToBreakdown != 0)
                 {
-                    front.var_68--;
+                    front.timeoutToBreakdown--;
                 }
-                if (front.var_68 == 0)
+                if (front.timeoutToBreakdown == 0)
                 {
                     sub_4BA873(front);
                     front.breakdownFlags |= BreakdownFlags::breakdownPending;
@@ -389,7 +389,7 @@ namespace OpenLoco::Vehicles
                 {
                     car.front->breakdownFlags &= ~BreakdownFlags::breakdownPending;
                     car.front->breakdownFlags |= BreakdownFlags::brokenDown;
-                    car.front->var_6A = 5;
+                    car.front->breakdownTimeout = 5;
                     applyBreakdownToTrain();
 
                     auto soundId = (Audio::SoundId)gPrng1().randNext(26, 26 + 5);
