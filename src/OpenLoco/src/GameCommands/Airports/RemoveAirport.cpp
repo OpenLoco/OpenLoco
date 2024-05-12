@@ -225,7 +225,7 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x0049364C
-            if (stationEl->unk5SHR5() != 2) // airport type?
+            if (stationEl->stationType() != StationType::airport)
             {
                 continue;
             }
