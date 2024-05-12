@@ -187,19 +187,22 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B8340
-    static void RecalculateTrainMinReliability(VehicleHead& head)
+    static void recalculateTrainMinReliability(VehicleHead& head)
     {
         Vehicle train(head);
-        const auto getReliabilty = [](const Car& car) -> uint16_t {
+        const auto getReliability = [](const Car& car) -> uint16_t {
             if (car.front->reliability == 0)
             {
                 return 0xFFFFU;
             }
             return car.front->reliability;
         };
-        const auto minReliability = (*std::min_element(train.cars.begin(), train.cars.end(), [&getReliabilty](const Car& carLhs, const Car& carRhs) {
-                                        return getReliabilty(carLhs) < getReliabilty(carRhs);
-                                    })).front->reliability;
+
+        const auto reliabilityPredicate = [&getReliability](const Car& carLhs, const Car& carRhs) {
+            return getReliability(carLhs) < getReliability(carRhs);
+        };
+
+        const auto minReliability = (*std::min_element(train.cars.begin(), train.cars.end(), reliabilityPredicate)).front->reliability;
         train.veh2->reliability = minReliability == 0xFFFFU ? 0 : minReliability / 256;
     }
 
@@ -331,13 +334,13 @@ namespace OpenLoco::Vehicles
                     front.breakdownFlags |= BreakdownFlags::breakdownPending;
                 }
             }
-            auto newReliabilty = front.reliability;
+            auto newReliability = front.reliability;
             auto* vehObj = ObjectManager::get<VehicleObject>(front.objectId);
-            newReliabilty -= vehObj->obsolete <= getCurrentYear() ? 10 : 4;
-            newReliabilty = std::max<uint16_t>(newReliabilty, 100);
-            front.reliability = newReliabilty;
+            newReliability -= vehObj->obsolete <= getCurrentYear() ? 10 : 4;
+            newReliability = std::max<uint16_t>(newReliability, 100);
+            front.reliability = newReliability;
         }
-        RecalculateTrainMinReliability(*this);
+        recalculateTrainMinReliability(*this);
     }
 
     // 0x004BA8D4
