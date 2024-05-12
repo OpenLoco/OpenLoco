@@ -23,7 +23,7 @@ namespace OpenLoco
         none = 0U,
         largeTile = 1U << 0, // 2x2 tile
         miscBuilding = 1U << 1,
-        undestructible = 1U << 2,
+        indestructible = 1U << 2,
         isHeadquarters = 1U << 3,
         hasShadows = 1U << 4,
     };
