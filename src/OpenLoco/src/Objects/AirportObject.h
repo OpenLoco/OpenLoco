@@ -33,6 +33,14 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(AirportMovementNodeFlags);
 
+    struct AirportBuilding
+    {
+        uint8_t index;    // 0x00
+        uint8_t rotation; // 0x01
+        uint8_t x;        // 0x02
+        uint8_t y;        // 0x03
+    };
+
     struct AirportObject
     {
         static constexpr auto kObjectType = ObjectType::airport;
@@ -73,18 +81,18 @@ namespace OpenLoco
         const uint8_t* var_14;
         const uint16_t* var_18;
         const uint8_t* var_1C[32];
-        const uint32_t* var_9C;
-        uint32_t largeTiles;               // 0xA0
-        int8_t minX;                       // 0xA4
-        int8_t minY;                       // 0xA5
-        int8_t maxX;                       // 0xA6
-        int8_t maxY;                       // 0xA7
-        uint16_t designedYear;             // 0xA8
-        uint16_t obsoleteYear;             // 0xAA
-        uint8_t numMovementNodes;          // 0xAC
-        uint8_t numMovementEdges;          // 0xAD
-        const MovementNode* movementNodes; // 0xAE
-        const MovementEdge* movementEdges; // 0xB2
+        const AirportBuilding* buildingParts; // 0x9C
+        uint32_t largeTiles;                  // 0xA0
+        int8_t minX;                          // 0xA4
+        int8_t minY;                          // 0xA5
+        int8_t maxX;                          // 0xA6
+        int8_t maxY;                          // 0xA7
+        uint16_t designedYear;                // 0xA8
+        uint16_t obsoleteYear;                // 0xAA
+        uint8_t numMovementNodes;             // 0xAC
+        uint8_t numMovementEdges;             // 0xAD
+        const MovementNode* movementNodes;    // 0xAE
+        const MovementEdge* movementEdges;    // 0xB2
         uint32_t var_B6;
 
         void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
@@ -92,7 +100,9 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
+
         std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const;
+        std::span<const AirportBuilding> getBuildingParts() const;
     };
 #pragma pack(pop)
 

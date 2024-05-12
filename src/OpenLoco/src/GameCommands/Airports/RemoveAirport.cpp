@@ -136,17 +136,15 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // TODO: introduce struct
-        auto* var_9C = reinterpret_cast<const int8_t*>(airportObj->var_9C);
-        while (var_9C[0] != -1)
+        for (auto& part : airportObj->getBuildingParts())
         {
             // 0x004937FA
-            auto offset = World::TilePos2(var_9C[2], var_9C[3]);
+            auto offset = World::TilePos2(part.x, part.y);
             offset = Math::Vector::rotate(offset, rotation);
 
             auto worldPos = World::Pos3(World::toWorldSpace(offset), 0);
 
-            if ((airportObj->largeTiles & (1 << var_9C[0])) != 0)
+            if ((airportObj->largeTiles & (1 << part.index)) != 0)
             {
                 worldPos.x += kLargeTileOffsets[rotation].x;
                 worldPos.y += kLargeTileOffsets[rotation].y;
@@ -154,12 +152,10 @@ namespace OpenLoco::GameCommands
 
             worldPos += pos;
 
-            if (!removeAirportTileElement(worldPos, airportObj, var_9C[0], flags))
+            if (!removeAirportTileElement(worldPos, airportObj, part.index, flags))
             {
                 return FAILURE;
             }
-
-            var_9C += 4;
         }
 
         // 0x00493858
