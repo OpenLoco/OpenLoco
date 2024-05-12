@@ -50,11 +50,11 @@ namespace OpenLoco::GameCommands
     {
         for (auto& searchTile : getBuildingTileOffsets(airportObj->largeTiles & (1U << buildingIndex)))
         {
-            const auto portPos = World::Pos3(searchTile.pos + pos, pos.z);
+            const auto airportPos = World::Pos3(searchTile.pos + pos, pos.z);
 
             if ((flags & Flags::aiAllocated) != 0 && (flags & Flags::apply) != 0)
             {
-                auto tile = World::TileManager::get(portPos);
+                auto tile = World::TileManager::get(airportPos);
                 auto* surfaceEl = tile.surface();
                 if (surfaceEl != nullptr)
                 {
@@ -67,7 +67,7 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            auto* stationEl = getStationEl(portPos);
+            auto* stationEl = getStationEl(airportPos);
             if (stationEl == nullptr)
             {
                 return false;
@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
 
             if ((flags & (Flags::aiAllocated)) == 0)
             {
-                Ui::ViewportManager::invalidate(World::Pos2(portPos), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
+                Ui::ViewportManager::invalidate(World::Pos2(airportPos), stationEl->baseHeight(), stationEl->clearHeight(), ZoomLevel::eighth);
             }
 
             World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(stationEl));
