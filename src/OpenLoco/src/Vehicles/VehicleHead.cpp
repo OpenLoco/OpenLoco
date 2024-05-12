@@ -228,6 +228,10 @@ namespace OpenLoco::Vehicles
                             auto regs = static_cast<Interop::registers>(args);
                             regs.bl = GameCommands::Flags::apply;
                             GameCommands::vehicleChangeRunningMode(regs);
+                            if (regs.ebx == GameCommands::FAILURE)
+                            {
+                                liftUpVehicle();
+                            }
                         }
                         else
                         {
@@ -255,7 +259,7 @@ namespace OpenLoco::Vehicles
             crashedTimeout = Math::Bound::add(crashedTimeout, 1U);
             if (!CompanyManager::isPlayerCompany(owner))
             {
-                if (crashedTimeout > 14 && var_60 != 0xFF)
+                if (crashedTimeout >= 14 && var_60 != 0xFF)
                 {
                     auto* aiCompany = CompanyManager::get(owner);
                     auto& aiThought = aiCompany->aiThoughts[var_60];
@@ -328,7 +332,7 @@ namespace OpenLoco::Vehicles
                 {
                     front.var_68--;
                 }
-                if (front.var_68 != 0)
+                if (front.var_68 == 0)
                 {
                     sub_4BA873(front);
                     front.breakdownFlags |= BreakdownFlags::breakdownPending;

@@ -1438,7 +1438,7 @@ namespace OpenLoco
         // I don't think that is possible but lets just add an assert.
         assert(thought.var_44 < 7);
 
-        *iter = thought.var_66[sizeof(thought.var_66) - 1];
+        *iter = thought.var_66[std::size(thought.var_66) - 1];
         std::rotate(iter, iter + 1, std::end(thought.var_66));
         thought.var_44--;
     }
