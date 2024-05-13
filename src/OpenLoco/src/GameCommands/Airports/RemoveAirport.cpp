@@ -165,6 +165,7 @@ namespace OpenLoco::GameCommands
             auto* station = StationManager::get(stationId);
 
             removeTileFromStationAndRecalcCargo(stationId, pos, rotation);
+            station->flags &= ~StationFlags::flag_6;
             station->invalidate();
 
             recalculateStationModes(stationId);
@@ -204,7 +205,7 @@ namespace OpenLoco::GameCommands
         World::Pos3 foundPos{};
         for (auto i = 0U; i < station->stationTileSize; i++)
         {
-            auto& tilePos = station->stationTiles[i];
+            auto tilePos = station->stationTiles[i];
             auto rotation = tilePos.z & 3;
             tilePos.z = World::heightFloor(tilePos.z);
 
