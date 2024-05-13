@@ -37,8 +37,8 @@ namespace OpenLoco
     {
         uint8_t index;    // 0x00
         uint8_t rotation; // 0x01
-        uint8_t x;        // 0x02
-        uint8_t y;        // 0x03
+        int8_t x;         // 0x02
+        int8_t y;         // 0x03
     };
 
     struct AirportObject
