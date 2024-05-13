@@ -312,7 +312,7 @@ namespace OpenLoco::Vehicles
             reliabilityFactor /= 16;
 
             auto& prng = gPrng1();
-            int32_t randVal = (prng.randNext(65535) * reliabilityFactor / 2) / 65536;
+            int32_t randVal = (prng.randNext(65535) * (reliabilityFactor / 2)) / 65536;
             reliabilityFactor -= reliabilityFactor / 4;
             reliabilityFactor += randVal;
             vehBogie.timeoutToBreakdown = static_cast<uint16_t>(std::max(4, reliabilityFactor));
