@@ -147,6 +147,10 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
             World::StationElement* stationEl = roadRange.end->as<World::StationElement>();
+            if (stationEl == nullptr)
+            {
+                return FAILURE;
+            }
 
             if (stationEl->isGhost())
                 updateStationTileRegistration = false;
