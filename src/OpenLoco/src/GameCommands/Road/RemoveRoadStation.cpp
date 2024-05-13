@@ -96,7 +96,7 @@ namespace OpenLoco::GameCommands
         bool updateStationTileRegistration = true;
 
         // Get road at position
-        auto* initialElRoad = getElRoad(args.pos, args.rotation, args.type, args.roadId, args.index);
+        auto* initialElRoad = getElRoad(args.pos, args.rotation, args.roadObjectId, args.roadId, args.index);
         if (initialElRoad == nullptr)
         {
             return FAILURE;
