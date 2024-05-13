@@ -142,6 +142,10 @@ namespace OpenLoco::GameCommands
             const auto roadLoc = roadStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
             const auto roadRange = getRoadElementsRange(args.pos);
+            if (roadRange.begin == nullptr || roadRange.end == nullptr)
+            {
+                return FAILURE;
+            }
             World::StationElement* stationEl = roadRange.end->as<World::StationElement>();
 
             if (stationEl->isGhost())
