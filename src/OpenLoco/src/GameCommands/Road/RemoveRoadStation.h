@@ -14,7 +14,7 @@ namespace OpenLoco::GameCommands
             , rotation(regs.bh & 0x3)
             , roadId(regs.dl & 0xF)
             , index(regs.dh & 0x3)
-            , type(regs.bp & 0xF)
+            , roadObjectId(regs.bp & 0xF)
         {
         }
 
@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
         uint8_t rotation;
         uint8_t roadId;
         uint8_t index;
-        uint8_t type;
+        uint8_t roadObjectId;
 
         explicit operator registers() const
         {
@@ -33,8 +33,10 @@ namespace OpenLoco::GameCommands
             regs.bh = rotation;
             regs.dl = roadId;
             regs.dh = index;
-            regs.bp = type;
+            regs.bp = roadObjectId;
             return regs;
         }
     };
+
+    void removeRoadStation(registers& regs);
 }

@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.rotation = road->unkDirection();
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();
-        args.type = road->roadObjectId();
+        args.roadObjectId = road->roadObjectId();
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());

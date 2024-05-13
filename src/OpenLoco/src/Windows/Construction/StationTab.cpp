@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.rotation = _stationGhostRotation;
                 args.roadId = _stationGhostTrackId;
                 args.index = _stationGhostTileIndex;
-                args.type = _stationGhostType & ~(1 << 7);
+                args.roadObjectId = _stationGhostType & ~(1 << 7);
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
