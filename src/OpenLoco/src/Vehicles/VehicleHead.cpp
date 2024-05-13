@@ -328,10 +328,8 @@ namespace OpenLoco::Vehicles
             }
             else if (front.timeoutToBreakdown != 0xFFFFU)
             {
-                if (front.timeoutToBreakdown != 0)
-                {
-                    front.timeoutToBreakdown--;
-                }
+                front.timeoutToBreakdown = Math::Bound::sub(front.timeoutToBreakdown, 1U);
+
                 if (front.timeoutToBreakdown == 0)
                 {
                     sub_4BA873(front);
