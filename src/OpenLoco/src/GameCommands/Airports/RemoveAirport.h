@@ -26,4 +26,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void removeAirport(registers& regs);
 }

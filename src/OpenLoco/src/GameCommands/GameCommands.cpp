@@ -1,5 +1,6 @@
 #include "GameCommands.h"
 #include "Airports/CreateAirport.h"
+#include "Airports/RemoveAirport.h"
 #include "Audio/Audio.h"
 #include "Buildings/CreateBuilding.h"
 #include "Buildings/RemoveBuilding.h"
@@ -178,7 +179,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::buildCompanyHeadquarters,     buildCompanyHeadquarters,  0x0042ECFC, true  },
         { GameCommand::removeCompanyHeadquarters,    removeCompanyHeadquarters, 0x0042EEAF, true  },
         { GameCommand::createAirport,                nullptr,                   0x00492C41, true  },
-        { GameCommand::removeAirport,                nullptr,                   0x00493559, true  },
+        { GameCommand::removeAirport,                removeAirport,             0x00493559, true  },
         { GameCommand::vehiclePlaceAir,              vehiclePlaceAir,           0x004267BE, true  },
         { GameCommand::vehiclePickupAir,             vehiclePickupAir,          0x00426B29, true  },
         { GameCommand::createPort,                   nullptr,                   0x00493AA7, true  },

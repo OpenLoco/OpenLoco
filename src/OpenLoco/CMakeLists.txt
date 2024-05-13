@@ -75,6 +75,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Entities/EntityTweener.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Environment.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Game.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Airports/RemoveAirport.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Buildings/CreateBuilding.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Buildings/RemoveBuilding.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Cheats/Cheat.cpp"
