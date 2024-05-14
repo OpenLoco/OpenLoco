@@ -1354,6 +1354,10 @@ namespace OpenLoco::Paint
             elSurface.var_6_SLR5(),
         };
 
+        // Used by bridge shadows to know where to draw
+        session.setSurfaceHeight(elSurface.baseHeight());
+        session.setSurfaceSlope(rotatedSlope);
+
         const uint8_t selfMicroZ = elSurface.baseZ() / kMicroToSmallZStep;
         const CornerHeight selfCornerHeight = {
             static_cast<uint8_t>(selfMicroZ + kCornerHeights[rotatedSlope].top),
