@@ -379,6 +379,7 @@ namespace OpenLoco::Vehicles
             return (breakdownFlags & flagsToTest) != BreakdownFlags::none;
         }
         void movePlaneTo(const World::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
+        void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
 
     private:
         void updateDrivingSounds();
@@ -415,7 +416,6 @@ namespace OpenLoco::Vehicles
         void beginUnloading();
         void beginLoading();
         WaterMotionFlags updateWaterMotion(WaterMotionFlags flags);
-        void moveBoatTo(const World::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         uint8_t getLoadingModifier(const VehicleBogie* bogie);
         bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
