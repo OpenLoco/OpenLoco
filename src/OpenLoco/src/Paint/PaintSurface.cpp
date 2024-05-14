@@ -1714,7 +1714,7 @@ namespace OpenLoco::Paint
             }
 
             auto* waterObj = ObjectManager::get<WaterObject>();
-            const auto imageId = ImageId(waterObj->image).withIndexOffset(shape + 35).withTranslucency(ExtColour::null);
+            const auto imageId = ImageId(waterObj->image).withIndexOffset(shape + 35).withBlend(ExtColour::water);
 
             session.addToPlotListAsParent(imageId, { 0, 0, waterHeight }, { 32, 32, -1 });
 

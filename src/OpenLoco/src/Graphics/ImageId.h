@@ -207,6 +207,15 @@ namespace OpenLoco
             result._index |= kFlagBlend;
             return result;
         }
+
+        [[nodiscard]] constexpr ImageId withBlend(ExtColour colour) const
+        {
+            ImageId result = *this;
+            result._index &= ~(kMaskPrimary | kMaskSecondary | kFlagSecondary);
+            result._index |= enumValue(colour) << kShiftRemap;
+            result._index |= kFlagBlend | kFlagPrimary;
+            return result;
+        }
     };
     static_assert(sizeof(ImageId) == 4);
 }
