@@ -822,11 +822,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             owner = roadEl->owner();
                         }
 
-                        auto companyColour = CompanyManager::getCompanyColour(owner);
-                        colourFlash1 = colourFlash0 = colour1 = colour0 = Colours::getShade(companyColour, 5);
-                        if (_flashingItems & (1 << enumValue(owner)))
+                        if (owner != CompanyId::neutral)
                         {
-                            colourFlash1 = colourFlash0 = _flashColours[colour0];
+                            auto companyColour = CompanyManager::getCompanyColour(owner);
+                            colourFlash1 = colourFlash0 = colour1 = colour0 = Colours::getShade(companyColour, 5);
+                            if (_flashingItems & (1 << enumValue(owner)))
+                            {
+                                colourFlash1 = colourFlash0 = _flashColours[colour0];
+                            }
+                        }
+                        else
+                        {
+                            colour0 = colour1 = colourFlash1 = colourFlash0 = PaletteIndex::index_0B;
                         }
                         break;
                     }
