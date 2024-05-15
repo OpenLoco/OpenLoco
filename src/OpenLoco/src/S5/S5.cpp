@@ -606,7 +606,7 @@ namespace OpenLoco::S5
 
             if (file->header.type == S5Type::objects)
             {
-                addr<0x00525F62, uint16_t>() = 0;
+                _gameState->var_014A = 0;
                 _loadErrorCode = 254;
                 _loadErrorMessage = StringIds::new_objects_installed_successfully;
                 Ui::ProgressBar::end();
@@ -651,7 +651,7 @@ namespace OpenLoco::S5
                 if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();
-                    addr<0x00525F62, uint16_t>() = 0;
+                    _gameState->var_014A = 0;
                     Ui::ProgressBar::end();
                     return false;
                 }
@@ -767,7 +767,7 @@ namespace OpenLoco::S5
                 Scenario::loadPreferredCurrencyAlways();
             }
             Gfx::loadCurrency();
-            addr<0x00525F62, uint16_t>() = 0;
+            _gameState->var_014A = 0;
 
             if (hasLoadFlags(flags, LoadFlags::titleSequence))
             {
