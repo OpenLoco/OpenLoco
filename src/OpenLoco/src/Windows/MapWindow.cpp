@@ -788,17 +788,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         break;
                     }
 
-                    case ElementType::building:
-                    case ElementType::industry:
-                        // Vanilla omits the ghost check, but I think it should be here anyway.
-                        if (!el.isGhost())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_0B;
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
                     case ElementType::track:
                     case ElementType::station:
                     case ElementType::road:
@@ -830,13 +819,19 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             {
                                 colourFlash1 = colourFlash0 = _flashColours[colour0];
                             }
+                            break;
                         }
-                        else
+                        [[fallthrough]];
+                    }
+
+                    case ElementType::building:
+                    case ElementType::industry:
+                        // Vanilla omitted the ghost check
+                        if (!el.isGhost())
                         {
                             colour0 = colour1 = colourFlash1 = colourFlash0 = PaletteIndex::index_0B;
                         }
                         break;
-                    }
 
                     default:
                         break;
