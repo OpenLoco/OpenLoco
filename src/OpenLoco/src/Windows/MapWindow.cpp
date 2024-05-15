@@ -490,7 +490,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     // 0x004FB464
     // clang-format off
-    static constexpr std::array<PaletteIndex_t, 31> industryColours = {
+    static constexpr std::array<PaletteIndex_t, 31> kIndustryColours = {
         PaletteIndex::index_0A, PaletteIndex::index_0E, PaletteIndex::index_15, PaletteIndex::index_1F,
         PaletteIndex::index_29, PaletteIndex::index_35, PaletteIndex::index_38, PaletteIndex::index_3F,
         PaletteIndex::index_43, PaletteIndex::index_4B, PaletteIndex::index_50, PaletteIndex::index_58,
@@ -545,7 +545,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             const auto* industry = IndustryManager::get(surfaceEl->industryId());
                             const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                            colour0 = colourFlash0 = industryColours[colourIndex];
+                            colour0 = colourFlash0 = kIndustryColours[colourIndex];
                             if (_flashingItems & (1 << industry->objectId))
                             {
                                 colourFlash0 = PaletteIndex::index_0A;
@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                         const auto* industry = IndustryManager::get(industryEl->industryId());
                         const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                        colourFlash0 = colourFlash1 = colour0 = colour1 = industryColours[colourIndex];
+                        colourFlash0 = colourFlash1 = colour0 = colour1 = kIndustryColours[colourIndex];
                         if (_flashingItems & (1 << industry->objectId))
                         {
                             colourFlash0 = colourFlash1 = PaletteIndex::index_0A;
@@ -1325,7 +1325,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                auto colour = industryColours[_assignedIndustryColours[i]];
+                auto colour = kIndustryColours[_assignedIndustryColours[i]];
 
                 drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
@@ -2085,7 +2085,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (auto i = 0; i < 31; i++)
         {
-            auto industryColour = industryColours[i];
+            auto industryColour = kIndustryColours[i];
             auto diff = industryColour - colour;
             if (industryColour < colour)
             {
@@ -2219,7 +2219,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
             availableColours &= ~(1U << freeColour);
 
-            auto colour = industryColours[freeColour];
+            auto colour = kIndustryColours[freeColour];
             _routeColours[i] = colour;
 
             if (id & (1U << 7))
