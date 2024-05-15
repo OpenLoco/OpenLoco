@@ -555,7 +555,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                     }
 
                     case ElementType::building:
-                        // Vanilla omits the ghost check, but I think it should be here anyway.
+                        // Vanilla omitted the ghost check
                         if (!el.isGhost())
                         {
                             colour0 = colourFlash0 = PaletteIndex::index_3C;
