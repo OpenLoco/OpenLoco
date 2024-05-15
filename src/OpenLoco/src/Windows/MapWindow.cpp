@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
 
     // 0x004FDC4C
-    static std::array<Point, 4> _viewFrameOffsetsByRotation = { {
+    static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
         { kMapColumns - 2, 0 },
         { kRenderedMapWidth - 6, kMapRows },
         { kMapColumns - 2, kRenderedMapHeight },
@@ -1835,10 +1835,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
         top /= 16;
         right /= 32;
         bottom /= 16;
-        left += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
-        top += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
-        right += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
-        bottom += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
+        left += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
+        top += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        right += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
+        bottom += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
 
         const auto colour = PaletteIndex::index_0A;
 
@@ -1850,8 +1850,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         left /= 32;
         top /= 16;
-        left += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
-        top += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
+        left += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
+        top += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
         auto right = left;
         auto bottom = top;
         left += leftOffset;
@@ -2340,8 +2340,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         y += viewport->viewY;
         x /= 32;
         y /= 16;
-        x += _viewFrameOffsetsByRotation[getCurrentRotation()].x;
-        y += _viewFrameOffsetsByRotation[getCurrentRotation()].y;
+        x += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
+        y += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
 
         auto width = widgets[widx::scrollview].width() - 10;
         auto height = widgets[widx::scrollview].height() - 10;
