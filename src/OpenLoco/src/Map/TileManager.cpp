@@ -1450,7 +1450,30 @@ namespace OpenLoco::World::TileManager
     // 0x0047AB9B
     void updateYearly()
     {
-        call(0x0047AB9B);
+        const auto isObjectTram = getGameState().roadObjectIdIsTram;
+        for (const auto& tilePos : getWorldRange())
+        {
+            auto tile = get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elRoad = el.as<RoadElement>();
+                if (elRoad == nullptr)
+                {
+                    continue;
+                }
+                if (elRoad->isAiAllocated() || elRoad->isGhost())
+                {
+                    continue;
+                }
+                // This is a much cheaper tram checker
+                // compared to getting the object
+                if (isObjectTram & (1U << elRoad->roadObjectId()))
+                {
+                    elRoad->setUnk7_80(elRoad->hasUnk7_40());
+                    elRoad->setUnk7_40(false);
+                }
+            }
+        }
     }
 
     void registerHooks()
