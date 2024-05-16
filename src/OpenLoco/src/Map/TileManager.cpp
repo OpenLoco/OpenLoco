@@ -1450,7 +1450,7 @@ namespace OpenLoco::World::TileManager
     // 0x0047AB9B
     void updateYearly()
     {
-        const auto isObjectTram = getGameState().roadObjectIdIsTram;
+        const auto isObjectNotTram = getGameState().roadObjectIdIsNotTram;
         for (const auto& tilePos : getWorldRange())
         {
             auto tile = get(tilePos);
@@ -1467,7 +1467,7 @@ namespace OpenLoco::World::TileManager
                 }
                 // This is a much cheaper tram checker
                 // compared to getting the object
-                if (isObjectTram & (1U << elRoad->roadObjectId()))
+                if (isObjectNotTram & (1U << elRoad->roadObjectId()))
                 {
                     elRoad->setUnk7_80(elRoad->hasUnk7_40());
                     elRoad->setUnk7_40(false);
