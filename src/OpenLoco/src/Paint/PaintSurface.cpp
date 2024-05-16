@@ -254,7 +254,7 @@ namespace OpenLoco::Paint
         std::array<World::Pos2, 4>{
             World::Pos2{ 32, 0 },
             World::Pos2{ -32, 32 },
-            World::Pos2{ -64, 0 },
+            World::Pos2{ -64, -32 },
             World::Pos2{ 0, -64 },
         },
         std::array<World::Pos2, 4>{
