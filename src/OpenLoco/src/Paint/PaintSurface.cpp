@@ -250,30 +250,37 @@ namespace OpenLoco::Paint
         0,
     };
 
-    std::array<std::array<World::Pos2, 4>, 4> _unk4FD99E = {
+    // 0x004FD99E
+    constexpr std::array<std::array<World::Pos2, 4>, 4> kNeighbourOffsets = {
+        // For some reason we use spritePosition with this so we need to take into
+        // account the spritePosition offset which varies by rotation:
+        // { 0, 0 },
+        // { 32, 0 },
+        // { 32, 32 },
+        // { 0, 32 },
         std::array<World::Pos2, 4>{
             World::Pos2{ 32, 0 },
-            World::Pos2{ -32, 32 },
-            World::Pos2{ -64, -32 },
-            World::Pos2{ 0, -64 },
-        },
-        std::array<World::Pos2, 4>{
             World::Pos2{ 0, 32 },
-            World::Pos2{ -64, 0 },
-            World::Pos2{ -32, -64 },
-            World::Pos2{ 32, -32 },
+            World::Pos2{ 0, -32 },
+            World::Pos2{ -32, 0 },
         },
         std::array<World::Pos2, 4>{
-            World::Pos2{ 0, -32 },
-            World::Pos2{ 0, 0 },
-            World::Pos2{ -32, 0 },
-            World::Pos2{ -32, -32 },
+            World::Pos2{ -32, 32 },  // 0, 32
+            World::Pos2{ -64, 0 },   // -32, 0
+            World::Pos2{ 0, 0 },     // 32, 0
+            World::Pos2{ -32, -32 }, // 0, 32
         },
         std::array<World::Pos2, 4>{
-            World::Pos2{ -32, 0 },
-            World::Pos2{ -32, -32 },
-            World::Pos2{ 0, -32 },
-            World::Pos2{ 0, 0 },
+            World::Pos2{ -64, -32 }, // -32, 0
+            World::Pos2{ -32, -64 }, // 0, -32
+            World::Pos2{ -32, 0 },   // 0, 32
+            World::Pos2{ 0, -32 },   // 32, 0
+        },
+        std::array<World::Pos2, 4>{
+            World::Pos2{ 0, -64 },   // 0, -32
+            World::Pos2{ 32, -32 },  // 32, 0
+            World::Pos2{ -32, -32 }, // -32, 0
+            World::Pos2{ 0, 0 },     // 0, 32
         },
     };
 
@@ -1370,7 +1377,7 @@ namespace OpenLoco::Paint
 
         for (std::size_t i = 0; i < std::size(tileDescriptors); i++)
         {
-            const auto& offset = _unk4FD99E[i][rotation];
+            const auto& offset = kNeighbourOffsets[rotation][i];
             const auto position = session.getSpritePosition() + offset;
 
             TileDescriptor& descriptor = tileDescriptors[i];
