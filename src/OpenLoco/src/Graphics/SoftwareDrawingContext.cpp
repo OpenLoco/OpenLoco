@@ -58,6 +58,8 @@ namespace OpenLoco::Gfx
         static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
+        static void drawMaskedScalar(
+            int32_t width, int32_t height, const uint8_t* maskSrc, const uint8_t* colourSrc, uint8_t* dst, int32_t maskWrap, int32_t colourWrap, int32_t dstWrap);
 
         // 0x0112C876
         static int16_t getCurrentFontSpriteBase()
@@ -726,16 +728,488 @@ namespace OpenLoco::Gfx
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
+        static void drawMasked(
+            int32_t width, int32_t height, const uint8_t* maskSrc, const uint8_t* colourSrc, uint8_t* dst, int32_t maskWrap, int32_t colourWrap, int32_t dstWrap)
+        {
+            for (int32_t yy = 0; yy < height; yy++)
+            {
+                for (int32_t xx = 0; xx < width; xx++)
+                {
+                    uint8_t colour = (*colourSrc) & (*maskSrc);
+                    if (colour != 0)
+                    {
+                        *dst = colour;
+                    }
+
+                    maskSrc++;
+                    colourSrc++;
+                    dst++;
+                }
+                maskSrc += maskWrap;
+                colourSrc += colourWrap;
+                dst += dstWrap;
+            }
+        }
+
         // 0x00450705
         static void drawImageMasked(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
         {
-            registers regs;
-            regs.edi = X86Pointer(&rt);
-            regs.cx = pos.x;
-            regs.dx = pos.y;
-            regs.ebx = image.toUInt32();
-            regs.ebp = maskImage.toUInt32();
-            call(0x00450705, regs);
+            struct WH16
+            {
+                int16_t width;
+                int16_t height;
+            };
+
+            uint8_t* imageBytes_1;       // eax
+            WH16 widthHeight;            // ebp
+            const uint8_t* imageBytes_2; // esi
+            __int16 rtPosY_3;            // dx
+            bool v14;                    // zf
+            int v15;                     // eax
+            int16_t v16;                 // ax
+            __int16 v17;                 // dx
+            bool v18;                    // cc
+            int16_t v19;                 // dx
+            __int16 rtPosX_2;            // cx
+            bool v22;                    // zf
+            unsigned __int8* dstBuf_3;   // edi
+            signed __int16 v24;          // cx
+            int16_t v25;                 // cx
+            uint8_t* imageBytes;         // eax
+            WH16 imageSize;              // ebp
+            G1ElementFlags imageFlags;   // ebp
+            const uint8_t* imageDataPos; // esi
+            __int16 rtPosY;              // dx
+            bool rtPosYZero;             // zf
+            int v34;                     // eax
+            int scaledWidth;             // eax
+            __int16 v36;                 // dx
+            int16_t v37;                 // dx
+            __int16 v38;                 // ax
+            int16_t rtPosX_3;            // cx
+            bool rtPosXZero_2;           // zf
+            unsigned __int8* dstBuf2;    // edi
+            int16_t v42;                 // cx
+            uint8_t* imageBytes_3;       // eax
+            WH16 imageWidthHeight;       // ebp
+            int imageFlags_1;            // ebp
+            const uint8_t* imageBytes_4; // esi
+            unsigned __int8* bits;       // edi
+            __int16 rtPosY_1;            // dx
+            bool rtPosYZero_1;           // zf
+            int v51;                     // eax
+            int scaledWidth_1;           // eax
+            __int16 v53;                 // dx
+            int16_t v54;                 // dx
+            __int16 v55;                 // ax
+            int16_t rtPosX;              // cx
+            bool rtPosXZero;             // zf
+            unsigned __int8* v58;        // edi
+            int16_t v59;                 // cx
+            uint8_t* imageBytes_5;       // eax
+            WH16 imageSize_1;            // ebp
+            G1ElementFlags imageFlags_2; // ebp
+            const uint8_t* imageBytes_6; // esi
+            __int16 rtPosY_2;            // dx
+            bool rtPosYZero_2;           // zf
+            int v68;                     // eax
+            int scaledWidth_2;           // eax
+            __int16 imageHeightY;        // dx
+            int16_t v71;                 // dx
+            __int16 dstWrap_1;           // ax
+            int16_t rtPosX_1;            // cx
+            bool rtPosXZero_1;           // zf
+            unsigned __int8* dstBuf_4;   // edi
+            int16_t v76;                 // cx
+            int16_t v77;                 // [esp-8h] [ebp-8h]
+            int16_t v78;                 // [esp-8h] [ebp-8h]
+            int16_t v79;                 // [esp-8h] [ebp-8h]
+
+            const auto* g1Image = Gfx::getG1Element(image.getIndex());
+            const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
+
+            const uint8_t* gMaskBytes = nullptr;
+            const uint8_t* gImageData = nullptr;
+            WH16 gImageSize = { 0, 0 };
+            Ui::Point gImageOffsets{ 0, 0 };
+            G1ElementFlags gImageFlags = G1ElementFlags::none;
+            int16_t gImageWidth;
+            int16_t gImageHeight;
+            int16_t imageWidth;
+            int16_t dstWrap;
+
+            if (rt.zoomLevel)
+            {
+                if (rt.zoomLevel == 1)
+                {
+                    // G1_FLAG_NO_ZOOM_DRAW
+                    if (g1Image->hasFlags(G1ElementFlags::none))
+                        return;
+                    // G1_FLAG_HAS_ZOOM_SPRITE
+                    if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
+                    {
+                        // G1_FLAG_NO_ZOOM_DRAW
+                        if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
+                            return;
+                        // G1_FLAG_HAS_ZOOM_SPRITE
+                        if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
+                        {
+                            auto newRt = rt;
+                            --newRt.zoomLevel;
+                            newRt.x >>= 1;
+                            newRt.y >>= 1;
+                            newRt.width = (signed __int16)rt.width >> 1;
+                            newRt.height >>= 1;
+                            drawImageMasked(
+                                newRt,
+                                { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
+                                image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
+                                maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
+                            return;
+                        }
+                    }
+
+                    imageBytes = g1Image->offset;
+                    gMaskBytes = g1ImageMask->offset;
+                    imageSize = { g1Image->width, g1Image->height };
+                    gImageData = imageBytes;
+                    gImageSize = imageSize;
+                    imageFlags = g1Image->flags;
+                    gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
+                    gImageFlags = imageFlags;
+                    imageDataPos = imageBytes;
+                    bits = rt.bits;
+                    gImageHeight = gImageSize.height;
+
+                    rtPosY = ((gImageOffsets.y + pos.y) & 0xFFFE) - rt.y;
+                    if (rtPosY >= 0)
+                    {
+                        scaledWidth = rt.width >> 1;
+                        LOWORD(scaledWidth) = rt.pitch + scaledWidth;
+                        bits += ((unsigned __int16)rtPosY >> 1) * scaledWidth;
+                    }
+                    else
+                    {
+                        rtPosYZero = rtPosY + gImageHeight == 0;
+                        gImageHeight += rtPosY;
+                        if (gImageHeight < 0 || rtPosYZero)
+                            return;
+                        v34 = (unsigned __int16)-rtPosY * gImageSize.width;
+                        rtPosY = 0;
+                        imageDataPos = &gImageData[v34];
+                    }
+                    v36 = gImageHeight + rtPosY;
+                    v18 = v36 <= rt.height;
+                    v37 = v36 - rt.height;
+                    if (v18 || (v18 = gImageHeight <= v37, gImageHeight -= v37, !v18))
+                    {
+                        gImageWidth = gImageSize.width;
+                        v38 = rt.pitch + (rt.width >> 1);
+                        imageWidth = 0;
+                        dstWrap = v38;
+                        rtPosX_3 = ((gImageOffsets.x + pos.x + 1) & 0xFFFE) - rt.x;
+                        if (rtPosX_3 < 0)
+                        {
+                            rtPosXZero_2 = rtPosX_3 + gImageWidth == 0;
+                            gImageWidth += rtPosX_3;
+                            if (gImageWidth < 0 || rtPosXZero_2)
+                                return;
+                            imageWidth -= rtPosX_3;
+                            imageDataPos -= rtPosX_3;
+                            rtPosX_3 = 0;
+                        }
+                        *(_DWORD*)&rtPosX_3 = (unsigned __int16)rtPosX_3;
+                        v77 = rtPosX_3;
+                        rtPosX_3 = (unsigned __int16)rtPosX_3 >> 1;
+                        dstBuf2 = &bits[rtPosX_3];
+                        v42 = gImageWidth + v77 - rt.width;
+                        if ((__int16)(gImageWidth + v77) > rt.width)
+                        {
+                            v18 = gImageWidth <= v42;
+                            gImageWidth -= v42;
+                            if (v18)
+                                return;
+                            imageWidth += v42;
+                        }
+                        drawMaskedZoom1(
+                            gImageHeight,
+                            imageWidth,
+                            (_BYTE*)(&gMaskBytes[(_DWORD)imageDataPos] - gImageData),
+                            dstWrap,
+                            dstBuf2,
+                            imageDataPos);
+                    }
+                }
+                else if (rt.zoomLevel < 3u)
+                {
+                    // G1_FLAG_NO_ZOOM_DRAW
+                    if (g1Image->hasFlags(G1ElementFlags::none))
+                        return;
+                    // G1_FLAG_HAS_ZOOM_SPRITE
+                    if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
+                    {
+                        // G1_FLAG_NO_ZOOM_DRAW
+                        if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
+                            return;
+                        // G1_FLAG_HAS_ZOOM_SPRITE
+                        if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
+                        {
+                            auto newRt = rt;
+                            --newRt.zoomLevel;
+                            newRt.x >>= 1;
+                            newRt.y >>= 1;
+                            newRt.width = (signed __int16)rt.width >> 1;
+                            newRt.height >>= 1;
+                            drawImageMasked(
+                                newRt,
+                                { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
+                                image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
+                                maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
+                            return;
+                        }
+                    }
+
+                    imageBytes_3 = g1Image->offset;
+                    gMaskBytes = g1ImageMask->offset;
+                    imageWidthHeight = { g1Image->width, g1Image->height };
+                    gImageData = imageBytes_3;
+                    gImageSize = imageWidthHeight;
+                    imageFlags = g1Image->flags;
+                    gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
+                    gImageFlags = imageFlags;
+                    imageBytes_4 = imageBytes_3;
+                    bits = rt.bits;
+                    gImageHeight = gImageSize.height;
+                    rtPosY_1 = ((gImageOffsets.y + pos.y) & 0xFFFC) - rt.y;
+                    if (rtPosY_1 >= 0)
+                    {
+                        scaledWidth_1 = rt.width >> 2;
+                        LOWORD(scaledWidth_1) = rt.pitch + scaledWidth_1;
+                        bits += ((unsigned __int16)rtPosY_1 >> 2) * scaledWidth_1;
+                    }
+                    else
+                    {
+                        rtPosYZero_1 = rtPosY_1 + gImageHeight == 0;
+                        gImageHeight += rtPosY_1;
+                        if (gImageHeight < 0 || rtPosYZero_1)
+                            return;
+                        v51 = (unsigned __int16)-rtPosY_1 * gImageSize.width;
+                        rtPosY_1 = 0;
+                        imageBytes_4 = &gImageData[v51];
+                    }
+                    v53 = gImageHeight + rtPosY_1;
+                    v18 = v53 <= rt.height;
+                    v54 = v53 - rt.height;
+                    if (v18 || (v18 = gImageHeight <= v54, gImageHeight -= v54, !v18))
+                    {
+                        gImageWidth = gImageSize.width;
+                        v55 = rt.pitch + (rt.width >> 2);
+                        imageWidth = 0;
+                        dstWrap = v55;
+                        rtPosX = ((gImageOffsets.x + pos.x + 3) & 0xFFFC) - rt.x;
+                        if (rtPosX < 0)
+                        {
+                            rtPosXZero = rtPosX + gImageWidth == 0;
+                            gImageWidth += rtPosX;
+                            if (gImageWidth < 0 || rtPosXZero)
+                                return;
+                            imageWidth -= rtPosX;
+                            imageBytes_4 -= rtPosX;
+                            rtPosX = 0;
+                        }
+                        *(_DWORD*)&rtPosX = (unsigned __int16)rtPosX;
+                        v78 = rtPosX;
+                        rtPosX = (unsigned __int16)rtPosX >> 2;
+                        v58 = &bits[rtPosX];
+                        v59 = gImageWidth + v78 - rt.width;
+                        if ((__int16)(gImageWidth + v78) > (__int16)rt.width)
+                        {
+                            v18 = gImageWidth <= v59;
+                            gImageWidth -= v59;
+                            if (v18)
+                                return;
+                            imageWidth += v59;
+                        }
+                        drawMaskedZoom2(
+                            gImageHeight,
+                            imageWidth,
+                            (_BYTE*)(&gMaskBytes[(_DWORD)imageBytes_4] - gImageData),
+                            dstWrap,
+                            v58,
+                            imageBytes_4);
+                    }
+                }
+                else
+                {
+                    // G1_FLAG_NO_ZOOM_DRAW
+                    if (g1Image->hasFlags(G1ElementFlags::none))
+                        return;
+                    // G1_FLAG_HAS_ZOOM_SPRITE
+                    if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
+                    {
+                        // G1_FLAG_NO_ZOOM_DRAW
+                        if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
+                            return;
+                        // G1_FLAG_HAS_ZOOM_SPRITE
+                        if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
+                        {
+                            auto newRt = rt;
+                            --newRt.zoomLevel;
+                            newRt.x >>= 1;
+                            newRt.y >>= 1;
+                            newRt.width = (signed __int16)rt.width >> 1;
+                            newRt.height >>= 1;
+                            drawImageMasked(
+                                newRt,
+                                { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
+                                image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
+                                maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
+                            return;
+                        }
+                    }
+
+                    imageBytes_5 = g1Image->offset;
+                    gMaskBytes = g1ImageMask->offset;
+                    imageSize_1 = { g1Image->width, g1Image->height };
+                    gImageData = imageBytes_5;
+                    gImageSize = imageSize_1;
+                    imageFlags_2 = g1Image->flags;
+                    gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
+                    gImageFlags = imageFlags_2;
+                    imageBytes_6 = imageBytes_5;
+                    bits = rt.bits;
+                    gImageHeight = gImageSize.height;
+                    rtPosY_2 = ((gImageOffsets.y + pos.y) & 0xFFF8) - rt.y;
+                    if (rtPosY_2 >= 0)
+                    {
+                        scaledWidth_2 = rt.width >> 3;
+                        LOWORD(scaledWidth_2) = rt.pitch + scaledWidth_2;
+                        bits += ((unsigned __int16)rtPosY_2 >> 3) * scaledWidth_2;
+                    }
+                    else
+                    {
+                        rtPosYZero_2 = rtPosY_2 + gImageHeight == 0;
+                        gImageHeight += rtPosY_2;
+                        if (gImageHeight < 0 || rtPosYZero_2)
+                            return;
+                        v68 = (unsigned __int16)-rtPosY_2 * gImageSize.width;
+                        rtPosY_2 = 0;
+                        imageBytes_6 = &gImageData[v68];
+                    }
+                    imageHeightY = gImageHeight + rtPosY_2;
+                    v18 = imageHeightY <= rt.height;
+                    v71 = imageHeightY - rt.height;
+                    if (v18 || (v18 = gImageHeight <= v71, gImageHeight -= v71, !v18))
+                    {
+                        gImageWidth = gImageSize.width;
+                        dstWrap_1 = rt.pitch + (rt.width >> 3);
+                        imageWidth = 0;
+                        dstWrap = dstWrap_1;
+                        rtPosX_1 = ((gImageOffsets.x + pos.x + 7) & 0xFFF8) - rt.x;
+                        if (rtPosX_1 < 0)
+                        {
+                            rtPosXZero_1 = rtPosX_1 + gImageWidth == 0;
+                            gImageWidth += rtPosX_1;
+                            if (gImageWidth < 0 || rtPosXZero_1)
+                                return;
+                            imageWidth -= rtPosX_1;
+                            imageBytes_6 -= rtPosX_1;
+                            rtPosX_1 = 0;
+                        }
+                        *(_DWORD*)&rtPosX_1 = (unsigned __int16)rtPosX_1;
+                        v79 = rtPosX_1;
+                        rtPosX_1 = (unsigned __int16)rtPosX_1 >> 3;
+                        dstBuf_4 = &bits[rtPosX_1];
+                        v76 = gImageWidth + v79 - rt.width;
+                        if ((__int16)(gImageWidth + v79) > (__int16)rt.width)
+                        {
+                            v18 = gImageWidth <= v76;
+                            gImageWidth -= v76;
+                            if (v18)
+                                return;
+                            imageWidth += v76;
+                        }
+                        drawMaskedZoom3(
+                            gImageHeight,
+                            imageWidth,
+                            (_BYTE*)(&gMaskBytes[(_DWORD)imageBytes_6] - gImageData),
+                            dstWrap,
+                            dstBuf_4,
+                            imageBytes_6);
+                    }
+                }
+            }
+            else
+            {
+                imageBytes_1 = g1Image->offset;
+                gMaskBytes = g1ImageMask->offset;
+                widthHeight = { g1Image->width, g1Image->height };
+                gImageData = imageBytes_1;
+                gImageSize = widthHeight;
+                gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
+                gImageFlags = g1Image->flags;
+                imageBytes_2 = imageBytes_1;
+                bits = rt.bits;
+                gImageHeight = gImageSize.height;
+                rtPosY_3 = gImageOffsets.y + pos.y - rt.y;
+                if (rtPosY_3 >= 0)
+                {
+                    v16 = rt.width;
+                    v16 += rt.pitch;
+                    bits += (unsigned __int16)rtPosY_3 * v16;
+                }
+                else
+                {
+                    v14 = rtPosY_3 + gImageHeight == 0;
+                    gImageHeight += rtPosY_3;
+                    if (gImageHeight < 0 || v14)
+                        return;
+                    v15 = (unsigned __int16)-rtPosY_3 * gImageSize.width;
+                    rtPosY_3 = 0;
+                    imageBytes_2 = &gImageData[v15];
+                }
+                v17 = gImageHeight + rtPosY_3;
+                v18 = v17 <= rt.height;
+                v19 = v17 - rt.height;
+                if (v18 || (v18 = gImageHeight <= v19, gImageHeight -= v19, !v18))
+                {
+                    gImageWidth = gImageSize.width;
+                    dstWrap = rt.pitch + rt.width - gImageSize.width;
+                    imageWidth = 0;
+                    rtPosX_2 = gImageOffsets.x + pos.x - rt.x;
+                    if (rtPosX_2 < 0)
+                    {
+                        v22 = rtPosX_2 + gImageWidth == 0;
+                        gImageWidth += rtPosX_2;
+                        if (gImageWidth < 0 || v22)
+                            return;
+                        imageWidth -= rtPosX_2;
+                        imageBytes_2 -= rtPosX_2;
+                        dstWrap -= rtPosX_2;
+                        rtPosX_2 = 0;
+                    }
+                    dstBuf_3 = &bits[rtPosX_2];
+                    v24 = gImageWidth + rtPosX_2;
+                    v18 = v24 <= rt.width;
+                    v25 = v24 - rt.width;
+                    if (!v18)
+                    {
+                        v18 = gImageWidth <= v25;
+                        gImageWidth -= v25;
+                        if (v18)
+                            return;
+                        imageWidth += v25;
+                        dstWrap += v25;
+                    }
+                    drawMaskedZoom0(
+                        gImageHeight,
+                        imageWidth,
+                        (_BYTE*)(&gMaskBytes[(_DWORD)imageBytes_2] - gImageData),
+                        dstWrap,
+                        dstBuf_3,
+                        imageBytes_2);
+                }
+            }
         }
 
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
