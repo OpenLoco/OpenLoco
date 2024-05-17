@@ -744,7 +744,7 @@ namespace OpenLoco::Gfx
             if (scaledHeight == 0)
                 return;
 
-            const auto scaledWidth = (unsigned __int16)gImageWidth >> TZoomLevel;
+            const auto scaledWidth = gImageWidth >> TZoomLevel;
             if (scaledWidth == 0)
                 return;
 
@@ -855,13 +855,13 @@ namespace OpenLoco::Gfx
                         --newRt.zoomLevel;
                         newRt.x >>= 1;
                         newRt.y >>= 1;
-                        newRt.width = (signed __int16)rt.width >> 1;
+                        newRt.width >>= 1;
                         newRt.height >>= 1;
                         drawImageMaskedZoom<TZoomLevel - 1>(
                             newRt,
                             { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
-                            image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
-                            maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
+                            image.withIndexOffset(-g1Image->zoomOffset),
+                            maskImage.withIndexOffset(-g1ImageMask->zoomOffset));
                         return;
                     }
                 }
@@ -882,7 +882,7 @@ namespace OpenLoco::Gfx
             {
                 auto scaledWidth = rt.width >> TZoomLevel;
                 scaledWidth = rt.pitch + scaledWidth;
-                bits += ((unsigned __int16)rtPosY >> TZoomLevel) * scaledWidth;
+                bits += (rtPosY >> TZoomLevel) * scaledWidth;
             }
             else
             {
@@ -891,7 +891,7 @@ namespace OpenLoco::Gfx
                 imageHeight += rtPosY;
                 if (imageHeight < 0)
                     return;
-                auto v34 = (unsigned __int16)-rtPosY * gImageSize.width;
+                const auto v34 = static_cast<uint16_t>(-rtPosY) * gImageSize.width;
                 rtPosY = 0;
                 imageDataPos = &g1Image->offset[v34];
             }
@@ -928,10 +928,10 @@ namespace OpenLoco::Gfx
                 }
 
                 int16_t rtPosXUnscaled = rtPosX;
-                rtPosX = (unsigned __int16)rtPosX >> TZoomLevel;
+                rtPosX = rtPosX >> TZoomLevel;
                 auto* dstBuf2 = &bits[rtPosX];
                 int16_t v42 = gImageWidth + rtPosXUnscaled - rt.width;
-                if ((__int16)(gImageWidth + rtPosXUnscaled) > rt.width)
+                if ((gImageWidth + rtPosXUnscaled) > rt.width)
                 {
                     v18 = gImageWidth <= v42;
                     gImageWidth -= v42;
