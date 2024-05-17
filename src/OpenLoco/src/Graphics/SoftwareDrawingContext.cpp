@@ -730,8 +730,9 @@ namespace OpenLoco::Gfx
 
         static int16_t gImageWidth;
 
+        // 0x00450890, 0x00450F87, 0x00450D1E, 0x00450ABA
         template<int32_t TZoomLevel>
-        void drawMaskedZoom(
+        static void drawMaskedZoom(
             int16_t imageHeight,
             int16_t imageWidth,
             const uint8_t* bytesMask,
@@ -832,114 +833,37 @@ namespace OpenLoco::Gfx
             int16_t height;
         };
 
-        static void drawImageMasked0(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
+        template<int32_t TZoomLevel>
+        static void drawImageMaskedZoom(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
         {
             const auto* g1Image = Gfx::getG1Element(image.getIndex());
             const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
 
-            const auto* imageDataPos = g1Image->offset;
-            WH16 widthHeight = { g1Image->width, g1Image->height };
-            WH16 gImageSize = widthHeight;
-            Ui::Point gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
-            auto* bits = rt.bits;
-            int16_t imageHeight = gImageSize.height;
-
-            int16_t rtPosY = gImageOffsets.y + pos.y - rt.y;
-            if (rtPosY >= 0)
+            if constexpr (TZoomLevel > 0)
             {
-                auto v16 = rt.width;
-                v16 += rt.pitch;
-                bits += (unsigned __int16)rtPosY * v16;
-            }
-            else
-            {
-                if (rtPosY + imageHeight == 0)
+                if (g1Image->hasFlags(G1ElementFlags::none))
                     return;
-                imageHeight += rtPosY;
-                if (imageHeight < 0)
-                    return;
-                auto v15 = (unsigned __int16)-rtPosY * gImageSize.width;
-                rtPosY = 0;
-                imageDataPos = &g1Image->offset[v15];
-            }
-            auto v17 = imageHeight + rtPosY;
-            auto v18 = v17 <= rt.height;
-            auto v19 = v17 - rt.height;
-            if (v18 || (v18 = imageHeight <= v19, imageHeight -= v19, !v18))
-            {
-                gImageWidth = gImageSize.width;
-                auto dstWrap = rt.pitch + rt.width - gImageSize.width;
-                auto imageWidth = 0;
 
-                auto rtPosX = gImageOffsets.x + pos.x - rt.x;
-                if (rtPosX < 0)
+                if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
                 {
-                    if (rtPosX + gImageWidth == 0)
+                    if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
                         return;
-                    gImageWidth += rtPosX;
-                    if (gImageWidth < 0)
+
+                    if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
+                    {
+                        auto newRt = rt;
+                        --newRt.zoomLevel;
+                        newRt.x >>= 1;
+                        newRt.y >>= 1;
+                        newRt.width = (signed __int16)rt.width >> 1;
+                        newRt.height >>= 1;
+                        drawImageMaskedZoom<TZoomLevel - 1>(
+                            newRt,
+                            { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
+                            image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
+                            maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
                         return;
-                    imageWidth -= rtPosX;
-                    imageDataPos -= rtPosX;
-                    dstWrap -= rtPosX;
-                    rtPosX = 0;
-                }
-
-                auto* dstBuf_3 = &bits[rtPosX];
-                auto v24 = gImageWidth + rtPosX;
-                v18 = v24 <= rt.width;
-                auto v25 = v24 - rt.width;
-                if (!v18)
-                {
-                    v18 = gImageWidth <= v25;
-                    gImageWidth -= v25;
-                    if (v18)
-                        return;
-                    imageWidth += v25;
-                    dstWrap += v25;
-                }
-
-                auto imageOffset = imageDataPos - g1Image->offset;
-                drawMaskedZoom<0>(
-                    imageHeight,
-                    imageWidth,
-                    &g1ImageMask->offset[imageOffset],
-                    dstWrap,
-                    dstBuf_3,
-                    imageDataPos);
-            }
-        }
-
-        static void drawImageMasked1(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
-        {
-            const auto* g1Image = Gfx::getG1Element(image.getIndex());
-            const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
-
-            // G1_FLAG_NO_ZOOM_DRAW
-            if (g1Image->hasFlags(G1ElementFlags::none))
-                return;
-
-            // G1_FLAG_HAS_ZOOM_SPRITE
-            if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
-            {
-                // G1_FLAG_NO_ZOOM_DRAW
-                if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
-                    return;
-                // G1_FLAG_HAS_ZOOM_SPRITE
-                if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
-                {
-                    auto newRt = rt;
-                    --newRt.zoomLevel;
-                    newRt.x >>= 1;
-                    newRt.y >>= 1;
-                    newRt.width = (signed __int16)rt.width >> 1;
-                    newRt.height >>= 1;
-                    drawImageMasked0(
-                        newRt,
-                        { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
-                        image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
-                        maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
-                    return;
+                    }
                 }
             }
 
@@ -950,12 +874,15 @@ namespace OpenLoco::Gfx
             auto* bits = rt.bits;
             int16_t imageHeight = gImageSize.height;
 
-            int16_t rtPosY = ((gImageOffsets.y + pos.y) & 0xFFFE) - rt.y;
+            constexpr uint16_t zoomMask = static_cast<uint16_t>(0xFFFFFFFFULL << TZoomLevel);
+            constexpr int16_t offsetX = (1 << TZoomLevel) - 1;
+
+            int16_t rtPosY = ((gImageOffsets.y + pos.y) & zoomMask) - rt.y;
             if (rtPosY >= 0)
             {
-                auto scaledWidth = rt.width >> 1;
+                auto scaledWidth = rt.width >> TZoomLevel;
                 scaledWidth = rt.pitch + scaledWidth;
-                bits += ((unsigned __int16)rtPosY >> 1) * scaledWidth;
+                bits += ((unsigned __int16)rtPosY >> TZoomLevel) * scaledWidth;
             }
             else
             {
@@ -969,16 +896,21 @@ namespace OpenLoco::Gfx
                 imageDataPos = &g1Image->offset[v34];
             }
 
-            int16_t v36 = imageHeight + rtPosY;
-            bool v18 = v36 <= rt.height;
-            int16_t v37 = v36 - rt.height;
+            int16_t v17 = imageHeight + rtPosY;
+            bool v18 = v17 <= rt.height;
+            int16_t v37 = v17 - rt.height;
             if (v18 || (v18 = imageHeight <= v37, imageHeight -= v37, !v18))
             {
                 gImageWidth = gImageSize.width;
-                int16_t v38 = rt.pitch + (rt.width >> 1);
                 int16_t imageWidth = 0;
-                int16_t dstWrap = v38;
-                int16_t rtPosX = ((gImageOffsets.x + pos.x + 1) & 0xFFFE) - rt.x;
+                int16_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
+
+                if constexpr (TZoomLevel == 0)
+                {
+                    dstWrap -= gImageSize.width;
+                }
+
+                int16_t rtPosX = ((gImageOffsets.x + pos.x + offsetX) & zoomMask) - rt.x;
                 if (rtPosX < 0)
                 {
                     if (rtPosX + gImageWidth == 0)
@@ -988,234 +920,32 @@ namespace OpenLoco::Gfx
                         return;
                     imageWidth -= rtPosX;
                     imageDataPos -= rtPosX;
+                    if constexpr (TZoomLevel == 0)
+                    {
+                        dstWrap -= rtPosX;
+                    }
                     rtPosX = 0;
                 }
 
-                int16_t v77 = rtPosX;
-                rtPosX = (unsigned __int16)rtPosX >> 1;
+                int16_t rtPosXUnscaled = rtPosX;
+                rtPosX = (unsigned __int16)rtPosX >> TZoomLevel;
                 auto* dstBuf2 = &bits[rtPosX];
-                int16_t v42 = gImageWidth + v77 - rt.width;
-                if ((__int16)(gImageWidth + v77) > rt.width)
+                int16_t v42 = gImageWidth + rtPosXUnscaled - rt.width;
+                if ((__int16)(gImageWidth + rtPosXUnscaled) > rt.width)
                 {
                     v18 = gImageWidth <= v42;
                     gImageWidth -= v42;
                     if (v18)
                         return;
                     imageWidth += v42;
+                    if constexpr (TZoomLevel == 0)
+                    {
+                        dstWrap += v42;
+                    }
                 }
 
                 auto imageOffset = imageDataPos - g1Image->offset;
-                drawMaskedZoom<1>(
-                    imageHeight,
-                    imageWidth,
-                    &g1ImageMask->offset[imageOffset],
-                    dstWrap,
-                    dstBuf2,
-                    imageDataPos);
-            }
-        }
-
-        static void drawImageMasked2(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
-        {
-            const auto* g1Image = Gfx::getG1Element(image.getIndex());
-            const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
-
-            // G1_FLAG_NO_ZOOM_DRAW
-            if (g1Image->hasFlags(G1ElementFlags::none))
-                return;
-
-            // G1_FLAG_HAS_ZOOM_SPRITE
-            if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
-            {
-                // G1_FLAG_NO_ZOOM_DRAW
-                if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
-                    return;
-                // G1_FLAG_HAS_ZOOM_SPRITE
-                if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
-                {
-                    auto newRt = rt;
-                    --newRt.zoomLevel;
-                    newRt.x >>= 1;
-                    newRt.y >>= 1;
-                    newRt.width = (signed __int16)rt.width >> 1;
-                    newRt.height >>= 1;
-                    drawImageMasked1(
-                        newRt,
-                        { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
-                        image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
-                        maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
-                    return;
-                }
-            }
-
-            const auto* imageDataPos = g1Image->offset;
-            WH16 imageSize = { g1Image->width, g1Image->height };
-            WH16 gImageSize = imageSize;
-            Ui::Point gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
-            auto* bits = rt.bits;
-            int16_t imageHeight = gImageSize.height;
-
-            int16_t rtPosY = ((gImageOffsets.y + pos.y) & 0xFFFC) - rt.y;
-            if (rtPosY >= 0)
-            {
-                auto scaledWidth = rt.width >> 2;
-                scaledWidth = rt.pitch + scaledWidth;
-                bits += ((unsigned __int16)rtPosY >> 2) * scaledWidth;
-            }
-            else
-            {
-                if (rtPosY + imageHeight == 0)
-                    return;
-                imageHeight += rtPosY;
-                if (imageHeight < 0)
-                    return;
-                auto v34 = (unsigned __int16)-rtPosY * gImageSize.width;
-                rtPosY = 0;
-                imageDataPos = &g1Image->offset[v34];
-            }
-
-            int16_t v36 = imageHeight + rtPosY;
-            bool v18 = v36 <= rt.height;
-            int16_t v37 = v36 - rt.height;
-            if (v18 || (v18 = imageHeight <= v37, imageHeight -= v37, !v18))
-            {
-                gImageWidth = gImageSize.width;
-                int16_t v38 = rt.pitch + (rt.width >> 2);
-                int16_t imageWidth = 0;
-                int16_t dstWrap = v38;
-                int16_t rtPosX = ((gImageOffsets.x + pos.x + 3) & 0xFFFC) - rt.x;
-                if (rtPosX < 0)
-                {
-                    if (rtPosX + gImageWidth == 0)
-                        return;
-                    gImageWidth += rtPosX;
-                    if (gImageWidth < 0)
-                        return;
-                    imageWidth -= rtPosX;
-                    imageDataPos -= rtPosX;
-                    rtPosX = 0;
-                }
-
-                int16_t v77 = rtPosX;
-                rtPosX = (unsigned __int16)rtPosX >> 2;
-                auto* dstBuf2 = &bits[rtPosX];
-                int16_t v42 = gImageWidth + v77 - rt.width;
-                if ((__int16)(gImageWidth + v77) > rt.width)
-                {
-                    v18 = gImageWidth <= v42;
-                    gImageWidth -= v42;
-                    if (v18)
-                        return;
-                    imageWidth += v42;
-                }
-
-                auto imageOffset = imageDataPos - g1Image->offset;
-                drawMaskedZoom<2>(
-                    imageHeight,
-                    imageWidth,
-                    &g1ImageMask->offset[imageOffset],
-                    dstWrap,
-                    dstBuf2,
-                    imageDataPos);
-            }
-        }
-
-        static void drawImageMasked3(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
-        {
-            const auto* g1Image = Gfx::getG1Element(image.getIndex());
-            const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
-
-            // G1_FLAG_NO_ZOOM_DRAW
-            if (g1Image->hasFlags(G1ElementFlags::none))
-                return;
-
-            // G1_FLAG_HAS_ZOOM_SPRITE
-            if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
-            {
-                // G1_FLAG_NO_ZOOM_DRAW
-                if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
-                    return;
-                // G1_FLAG_HAS_ZOOM_SPRITE
-                if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
-                {
-                    auto newRt = rt;
-                    --newRt.zoomLevel;
-                    newRt.x >>= 1;
-                    newRt.y >>= 1;
-                    newRt.width = (signed __int16)rt.width >> 1;
-                    newRt.height >>= 1;
-                    drawImageMasked2(
-                        newRt,
-                        { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
-                        image.withIndexOffset(-(unsigned __int16)g1Image->zoomOffset),
-                        maskImage.withIndexOffset(-(unsigned __int16)g1ImageMask->zoomOffset));
-                    return;
-                }
-            }
-
-            const auto* imageDataPos = g1Image->offset;
-            WH16 imageSize = { g1Image->width, g1Image->height };
-            WH16 gImageSize = imageSize;
-            Ui::Point gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
-            auto* bits = rt.bits;
-            int16_t imageHeight = gImageSize.height;
-
-            int16_t rtPosY = ((gImageOffsets.y + pos.y) & 0xFFF8) - rt.y;
-            if (rtPosY >= 0)
-            {
-                auto scaledWidth = rt.width >> 3;
-                scaledWidth = rt.pitch + scaledWidth;
-                bits += ((unsigned __int16)rtPosY >> 3) * scaledWidth;
-            }
-            else
-            {
-                if (rtPosY + imageHeight == 0)
-                    return;
-                imageHeight += rtPosY;
-                if (imageHeight < 0)
-                    return;
-                auto v34 = (unsigned __int16)-rtPosY * gImageSize.width;
-                rtPosY = 0;
-                imageDataPos = &g1Image->offset[v34];
-            }
-
-            int16_t v36 = imageHeight + rtPosY;
-            bool v18 = v36 <= rt.height;
-            int16_t v37 = v36 - rt.height;
-            if (v18 || (v18 = imageHeight <= v37, imageHeight -= v37, !v18))
-            {
-                gImageWidth = gImageSize.width;
-                int16_t v38 = rt.pitch + (rt.width >> 3);
-                int16_t imageWidth = 0;
-                int16_t dstWrap = v38;
-                int16_t rtPosX = ((gImageOffsets.x + pos.x + 7) & 0xFFF8) - rt.x;
-                if (rtPosX < 0)
-                {
-                    if (rtPosX + gImageWidth == 0)
-                        return;
-                    gImageWidth += rtPosX;
-                    if (gImageWidth < 0)
-                        return;
-                    imageWidth -= rtPosX;
-                    imageDataPos -= rtPosX;
-                    rtPosX = 0;
-                }
-
-                int16_t v77 = rtPosX;
-                rtPosX = (unsigned __int16)rtPosX >> 3;
-                auto* dstBuf2 = &bits[rtPosX];
-                int16_t v42 = gImageWidth + v77 - rt.width;
-                if ((__int16)(gImageWidth + v77) > rt.width)
-                {
-                    v18 = gImageWidth <= v42;
-                    gImageWidth -= v42;
-                    if (v18)
-                        return;
-                    imageWidth += v42;
-                }
-
-                auto imageOffset = imageDataPos - g1Image->offset;
-                drawMaskedZoom<3>(
+                drawMaskedZoom<TZoomLevel>(
                     imageHeight,
                     imageWidth,
                     &g1ImageMask->offset[imageOffset],
@@ -1231,16 +961,16 @@ namespace OpenLoco::Gfx
             switch (rt.zoomLevel)
             {
                 case 0:
-                    drawImageMasked0(rt, pos, image, maskImage);
+                    drawImageMaskedZoom<0>(rt, pos, image, maskImage);
                     break;
                 case 1:
-                    drawImageMasked1(rt, pos, image, maskImage);
+                    drawImageMaskedZoom<1>(rt, pos, image, maskImage);
                     break;
                 case 2:
-                    drawImageMasked2(rt, pos, image, maskImage);
+                    drawImageMaskedZoom<2>(rt, pos, image, maskImage);
                     break;
                 case 3:
-                    drawImageMasked3(rt, pos, image, maskImage);
+                    drawImageMaskedZoom<3>(rt, pos, image, maskImage);
                     break;
                 default:
                     break;
