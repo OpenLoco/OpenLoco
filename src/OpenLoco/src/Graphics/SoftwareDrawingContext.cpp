@@ -728,7 +728,8 @@ namespace OpenLoco::Gfx
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
-        #pragma warning(disable : 4101)
+#pragma warning(disable : 4101)
+#pragma warning(disable : 4100)
 
         static int16_t gImageWidth;
 
@@ -788,6 +789,108 @@ namespace OpenLoco::Gfx
                 bytesMask += imageWidth;
                 --imageHeight;
             } while (imageHeight);
+        }
+
+        void drawMaskedZoom1(
+            int16_t imageHeight,
+            int16_t imageWidth,
+            const uint8_t* bytesMask,
+            int16_t dstWrap,
+            uint8_t* dstBuf,
+            const uint8_t* bytesImage)
+        {
+            char scaledHeight;    // ah
+            int v7;               // edx
+            int v8;               // ecx
+            unsigned __int16 v9;  // bp
+            int v10;              // edx
+            unsigned __int16 v11; // cx
+            char v12;             // al
+            __int16 v13;          // cx
+            char v14;             // al
+            __int16 v15;          // cx
+            char v16;             // al
+            __int16 v17;          // cx
+            char v18;             // al
+
+            scaledHeight = imageHeight >> 1;
+            if (scaledHeight)
+            {
+                v7 = (unsigned __int16)(imageWidth + gImageWidth) + imageWidth;
+                v8 = (unsigned __int16)gImageWidth;
+                v9 = (unsigned __int16)gImageWidth >> 1;
+                if ((unsigned __int16)gImageWidth >> 1)
+                {
+                    // LOWORD(v8) = gImageWidth & 1;
+                    v8 = gImageWidth & 1;
+                    v10 = v8 + v7;
+                    do
+                    {
+                        v11 = v9;
+                        do
+                        {
+                            v12 = *bytesMask & *bytesImage;
+                            bytesImage += 2;
+                            bytesMask += 2;
+                            if (v12)
+                                *dstBuf = v12;
+                            ++dstBuf;
+                            v13 = v11 - 1;
+                            if (!v13)
+                                break;
+                            v14 = *bytesMask & *bytesImage;
+                            bytesImage += 2;
+                            bytesMask += 2;
+                            if (v14)
+                                *dstBuf = v14;
+                            ++dstBuf;
+                            v15 = v13 - 1;
+                            if (!v15)
+                                break;
+                            v16 = *bytesMask & *bytesImage;
+                            bytesImage += 2;
+                            bytesMask += 2;
+                            if (v16)
+                                *dstBuf = v16;
+                            ++dstBuf;
+                            v17 = v15 - 1;
+                            if (!v17)
+                                break;
+                            v18 = *bytesMask & *bytesImage;
+                            bytesImage += 2;
+                            bytesMask += 2;
+                            if (v18)
+                                *dstBuf = v18;
+                            ++dstBuf;
+                            v11 = v17 - 1;
+                        } while (v11);
+                        bytesImage += v10;
+                        dstBuf = &dstBuf[dstWrap - v9];
+                        bytesMask += v10;
+                        --scaledHeight;
+                    } while (scaledHeight);
+                }
+            }
+        }
+
+        void drawMaskedZoom2(
+            int16_t imageHeight,
+            int16_t imageWidth,
+            const uint8_t* bytesMask,
+            int16_t dstWrap,
+            uint8_t* dstBuf,
+            const uint8_t* bytesImage)
+        {
+        }
+
+        void drawMaskedZoom3(
+            int16_t imageHeight,
+            int16_t imageWidth,
+            const uint8_t* bytesMask,
+            int16_t dstWrap,
+            uint8_t* dstBuf,
+            const uint8_t* bytesImage)
+        {
         }
 
         // 0x00450705
@@ -876,7 +979,6 @@ namespace OpenLoco::Gfx
             int16_t imageWidth;
             int16_t dstWrap;
 
-#if 0
             if (rt.zoomLevel)
             {
                 if (rt.zoomLevel == 1)
@@ -924,7 +1026,8 @@ namespace OpenLoco::Gfx
                     if (rtPosY >= 0)
                     {
                         scaledWidth = rt.width >> 1;
-                        LOWORD(scaledWidth) = rt.pitch + scaledWidth;
+                        // LOWORD(scaledWidth) = rt.pitch + scaledWidth;
+                        scaledWidth = rt.pitch + scaledWidth;
                         bits += ((unsigned __int16)rtPosY >> 1) * scaledWidth;
                     }
                     else
@@ -957,7 +1060,7 @@ namespace OpenLoco::Gfx
                             imageDataPos -= rtPosX_3;
                             rtPosX_3 = 0;
                         }
-                        *(_DWORD*)&rtPosX_3 = (unsigned __int16)rtPosX_3;
+                        //*(_DWORD*)&rtPosX_3 = (unsigned __int16)rtPosX_3;
                         v77 = rtPosX_3;
                         rtPosX_3 = (unsigned __int16)rtPosX_3 >> 1;
                         dstBuf2 = &bits[rtPosX_3];
@@ -970,10 +1073,11 @@ namespace OpenLoco::Gfx
                                 return;
                             imageWidth += v42;
                         }
+                        auto imageOffset = imageDataPos - gImageData;
                         drawMaskedZoom1(
                             gImageHeight,
                             imageWidth,
-                            (_BYTE*)(&gMaskBytes[(_DWORD)imageDataPos] - gImageData),
+                            &gMaskBytes[imageOffset],
                             dstWrap,
                             dstBuf2,
                             imageDataPos);
@@ -1023,7 +1127,8 @@ namespace OpenLoco::Gfx
                     if (rtPosY_1 >= 0)
                     {
                         scaledWidth_1 = rt.width >> 2;
-                        LOWORD(scaledWidth_1) = rt.pitch + scaledWidth_1;
+                        // LOWORD(scaledWidth_1) = rt.pitch + scaledWidth_1;
+                        scaledWidth_1 = rt.pitch + scaledWidth_1;
                         bits += ((unsigned __int16)rtPosY_1 >> 2) * scaledWidth_1;
                     }
                     else
@@ -1056,7 +1161,7 @@ namespace OpenLoco::Gfx
                             imageBytes_4 -= rtPosX;
                             rtPosX = 0;
                         }
-                        *(_DWORD*)&rtPosX = (unsigned __int16)rtPosX;
+                        //*(_DWORD*)&rtPosX = (unsigned __int16)rtPosX;
                         v78 = rtPosX;
                         rtPosX = (unsigned __int16)rtPosX >> 2;
                         v58 = &bits[rtPosX];
@@ -1069,10 +1174,11 @@ namespace OpenLoco::Gfx
                                 return;
                             imageWidth += v59;
                         }
+                        auto imageOffset = imageBytes_4 - gImageData;
                         drawMaskedZoom2(
                             gImageHeight,
                             imageWidth,
-                            (_BYTE*)(&gMaskBytes[(_DWORD)imageBytes_4] - gImageData),
+                            &gMaskBytes[imageOffset],
                             dstWrap,
                             v58,
                             imageBytes_4);
@@ -1122,7 +1228,8 @@ namespace OpenLoco::Gfx
                     if (rtPosY_2 >= 0)
                     {
                         scaledWidth_2 = rt.width >> 3;
-                        LOWORD(scaledWidth_2) = rt.pitch + scaledWidth_2;
+                        // LOWORD(scaledWidth_2) = rt.pitch + scaledWidth_2;
+                        scaledWidth_2 = rt.pitch + scaledWidth_2;
                         bits += ((unsigned __int16)rtPosY_2 >> 3) * scaledWidth_2;
                     }
                     else
@@ -1155,7 +1262,7 @@ namespace OpenLoco::Gfx
                             imageBytes_6 -= rtPosX_1;
                             rtPosX_1 = 0;
                         }
-                        *(_DWORD*)&rtPosX_1 = (unsigned __int16)rtPosX_1;
+                        //*(_DWORD*)&rtPosX_1 = (unsigned __int16)rtPosX_1;
                         v79 = rtPosX_1;
                         rtPosX_1 = (unsigned __int16)rtPosX_1 >> 3;
                         dstBuf_4 = &bits[rtPosX_1];
@@ -1168,10 +1275,11 @@ namespace OpenLoco::Gfx
                                 return;
                             imageWidth += v76;
                         }
+                        auto imageOffset = imageBytes_6 - gImageData;
                         drawMaskedZoom3(
                             gImageHeight,
                             imageWidth,
-                            (_BYTE*)(&gMaskBytes[(_DWORD)imageBytes_6] - gImageData),
+                            &gMaskBytes[imageOffset],
                             dstWrap,
                             dstBuf_4,
                             imageBytes_6);
@@ -1179,7 +1287,6 @@ namespace OpenLoco::Gfx
                 }
             }
             else
-#endif
             {
                 imageBytes_1 = g1Image->offset;
                 gMaskBytes = g1ImageMask->offset;
