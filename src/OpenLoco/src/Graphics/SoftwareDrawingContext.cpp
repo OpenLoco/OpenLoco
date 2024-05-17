@@ -733,6 +733,85 @@ namespace OpenLoco::Gfx
 
         static int16_t gImageWidth;
 
+        template<int32_t TZoomLevel>
+        void drawMaskedZoom(
+            int16_t imageHeight,
+            int16_t imageWidth,
+            const uint8_t* bytesMask,
+            int16_t dstWrap,
+            uint8_t* dstBuf,
+            const uint8_t* bytesImage)
+        {
+            auto scaledHeight = imageHeight >> TZoomLevel;
+            if (scaledHeight == 0)
+                return;
+
+            auto scaledWidth = (unsigned __int16)gImageWidth >> TZoomLevel;
+            if (scaledWidth == 0)
+                return;
+
+            constexpr auto shift = (1 << TZoomLevel) - 1;
+            constexpr auto skip = (1 << TZoomLevel);
+
+            auto v7 = shift * (unsigned __int16)(imageWidth + gImageWidth) + imageWidth;
+            auto v8 = (unsigned __int16)gImageWidth;
+
+            v8 = gImageWidth & shift;
+            auto v10 = v8 + v7;
+            do
+            {
+                auto remainingWidth = scaledWidth;
+                do
+                {
+                    uint8_t masked = *bytesMask & *bytesImage;
+                    bytesImage += skip;
+                    bytesMask += skip;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    remainingWidth--;
+                    if (!remainingWidth)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += skip;
+                    bytesMask += skip;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    remainingWidth--;
+                    if (!remainingWidth)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += skip;
+                    bytesMask += skip;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    remainingWidth--;
+                    if (!remainingWidth)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += skip;
+                    bytesMask += skip;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    remainingWidth--;
+
+                } while (remainingWidth);
+
+                bytesImage += v10;
+                bytesMask += v10;
+                dstBuf = &dstBuf[dstWrap - scaledWidth];
+
+                --scaledHeight;
+
+            } while (scaledHeight);
+        }
+
         static void drawMaskedZoom0(
             int16_t imageHeight,
             int16_t imageWidth,
@@ -742,8 +821,6 @@ namespace OpenLoco::Gfx
             const uint8_t* bytesImage)
         {
             uint16_t width; // bp
-            uint16_t v7;    // cx
-            char v8;        // al
             __int16 v9;     // cx
             char v10;       // al
             __int16 v11;    // cx
@@ -754,36 +831,41 @@ namespace OpenLoco::Gfx
             width = gImageWidth;
             do
             {
-                v7 = width;
+                auto v7 = width;
                 do
                 {
-                    v8 = *bytesMask++ & *bytesImage++;
-                    if (v8)
-                        *dstBuf = v8;
+                    uint8_t masked = *bytesMask++ & *bytesImage++;
+                    if (masked)
+                        *dstBuf = masked;
                     ++dstBuf;
-                    v9 = v7 - 1;
-                    if (!v9)
+                    v7--;
+                    if (!v7)
                         break;
+
                     v10 = *bytesMask++ & *bytesImage++;
                     if (v10)
                         *dstBuf = v10;
                     ++dstBuf;
-                    v11 = v9 - 1;
-                    if (!v11)
+                    v7--;
+                    if (!v7)
                         break;
+
                     v12 = *bytesMask++ & *bytesImage++;
                     if (v12)
                         *dstBuf = v12;
                     ++dstBuf;
-                    v13 = v11 - 1;
-                    if (!v13)
+                    v7--;
+                    if (!v7)
                         break;
+
                     v14 = *bytesMask++ & *bytesImage++;
                     if (v14)
                         *dstBuf = v14;
                     ++dstBuf;
-                    v7 = v13 - 1;
+                    v7--;
+
                 } while (v7);
+
                 bytesImage += imageWidth;
                 dstBuf += dstWrap;
                 bytesMask += imageWidth;
@@ -799,78 +881,72 @@ namespace OpenLoco::Gfx
             uint8_t* dstBuf,
             const uint8_t* bytesImage)
         {
-            char scaledHeight;    // ah
-            int v7;               // edx
-            int v8;               // ecx
-            unsigned __int16 v9;  // bp
-            int v10;              // edx
-            unsigned __int16 v11; // cx
-            char v12;             // al
-            __int16 v13;          // cx
-            char v14;             // al
-            __int16 v15;          // cx
-            char v16;             // al
-            __int16 v17;          // cx
-            char v18;             // al
+#if 0
+            auto scaledHeight = imageHeight >> 1;
+            if (scaledHeight == 0)
+                return;
 
-            scaledHeight = imageHeight >> 1;
-            if (scaledHeight)
+            auto v7 = (unsigned __int16)(imageWidth + gImageWidth) + imageWidth;
+            auto v8 = (unsigned __int16)gImageWidth;
+            auto scaledWidth = (unsigned __int16)gImageWidth >> 1;
+            if (scaledWidth == 0)
+                return;
+
+            // LOWORD(v8) = gImageWidth & 1;
+            v8 = gImageWidth & 1;
+            auto v10 = v8 + v7;
+            do
             {
-                v7 = (unsigned __int16)(imageWidth + gImageWidth) + imageWidth;
-                v8 = (unsigned __int16)gImageWidth;
-                v9 = (unsigned __int16)gImageWidth >> 1;
-                if ((unsigned __int16)gImageWidth >> 1)
+                auto v11 = scaledWidth;
+                do
                 {
-                    // LOWORD(v8) = gImageWidth & 1;
-                    v8 = gImageWidth & 1;
-                    v10 = v8 + v7;
-                    do
-                    {
-                        v11 = v9;
-                        do
-                        {
-                            v12 = *bytesMask & *bytesImage;
-                            bytesImage += 2;
-                            bytesMask += 2;
-                            if (v12)
-                                *dstBuf = v12;
-                            ++dstBuf;
-                            v13 = v11 - 1;
-                            if (!v13)
-                                break;
-                            v14 = *bytesMask & *bytesImage;
-                            bytesImage += 2;
-                            bytesMask += 2;
-                            if (v14)
-                                *dstBuf = v14;
-                            ++dstBuf;
-                            v15 = v13 - 1;
-                            if (!v15)
-                                break;
-                            v16 = *bytesMask & *bytesImage;
-                            bytesImage += 2;
-                            bytesMask += 2;
-                            if (v16)
-                                *dstBuf = v16;
-                            ++dstBuf;
-                            v17 = v15 - 1;
-                            if (!v17)
-                                break;
-                            v18 = *bytesMask & *bytesImage;
-                            bytesImage += 2;
-                            bytesMask += 2;
-                            if (v18)
-                                *dstBuf = v18;
-                            ++dstBuf;
-                            v11 = v17 - 1;
-                        } while (v11);
-                        bytesImage += v10;
-                        dstBuf = &dstBuf[dstWrap - v9];
-                        bytesMask += v10;
-                        --scaledHeight;
-                    } while (scaledHeight);
-                }
-            }
+                    uint8_t masked = *bytesMask & *bytesImage;
+                    bytesImage += 2;
+                    bytesMask += 2;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+                    if (!v11)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += 2;
+                    bytesMask += 2;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+                    if (!v11)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += 2;
+                    bytesMask += 2;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+                    if (!v11)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += 2;
+                    bytesMask += 2;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+
+                } while (v11);
+
+                bytesImage += v10;
+                dstBuf = &dstBuf[dstWrap - scaledWidth];
+                bytesMask += v10;
+                --scaledHeight;
+            } while (scaledHeight);
+#endif
+            drawMaskedZoom<1>(imageHeight, imageWidth, bytesMask, dstWrap, dstBuf, bytesImage);
         }
 
         void drawMaskedZoom2(
@@ -881,78 +957,72 @@ namespace OpenLoco::Gfx
             uint8_t* dstBuf,
             const uint8_t* bytesImage)
         {
-            char scaledHeight;            // ah
-            int v7;                       // edx
-            int v8;                       // ecx
-            unsigned __int16 scaledWidth; // bp
-            int v10;                      // edx
-            unsigned __int16 v11;         // cx
-            char v12;                     // al
-            __int16 v13;                  // cx
-            char v14;                     // al
-            __int16 v15;                  // cx
-            char v16;                     // al
-            __int16 v17;                  // cx
-            char v18;                     // al
+#if 0
+            auto scaledHeight = imageHeight >> 2;
+            if (scaledHeight == 0)
+                return;
 
-            scaledHeight = imageHeight >> 2;
-            if (scaledHeight)
+            auto v7 = 3 * (unsigned __int16)(imageWidth + gImageWidth) + imageWidth;
+            auto v8 = (unsigned __int16)gImageWidth;
+            auto scaledWidth = (unsigned __int16)gImageWidth >> 2;
+            if (scaledWidth == 0)
+                return;
+
+            v8 = gImageWidth & 3;
+            auto v10 = v8 + v7;
+            do
             {
-                v7 = 3 * (unsigned __int16)(imageWidth + gImageWidth) + imageWidth;
-                v8 = (unsigned __int16)gImageWidth;
-                scaledWidth = (unsigned __int16)gImageWidth >> 2;
-                if ((unsigned __int16)gImageWidth >> 2)
+                auto v11 = scaledWidth;
+                do
                 {
-                    // LOWORD(v8) = gImageWidth & 3;
-                    v8 = gImageWidth & 3;
-                    v10 = v8 + v7;
-                    do
-                    {
-                        v11 = scaledWidth;
-                        do
-                        {
-                            v12 = *bytesMask & *bytesImage;
-                            bytesImage += 4;
-                            bytesMask += 4;
-                            if (v12)
-                                *dstBuf = v12;
-                            ++dstBuf;
-                            v13 = v11 - 1;
-                            if (!v13)
-                                break;
-                            v14 = *bytesMask & *bytesImage;
-                            bytesImage += 4;
-                            bytesMask += 4;
-                            if (v14)
-                                *dstBuf = v14;
-                            ++dstBuf;
-                            v15 = v13 - 1;
-                            if (!v15)
-                                break;
-                            v16 = *bytesMask & *bytesImage;
-                            bytesImage += 4;
-                            bytesMask += 4;
-                            if (v16)
-                                *dstBuf = v16;
-                            ++dstBuf;
-                            v17 = v15 - 1;
-                            if (!v17)
-                                break;
-                            v18 = *bytesMask & *bytesImage;
-                            bytesImage += 4;
-                            bytesMask += 4;
-                            if (v18)
-                                *dstBuf = v18;
-                            ++dstBuf;
-                            v11 = v17 - 1;
-                        } while (v11);
-                        bytesImage += v10;
-                        dstBuf = &dstBuf[dstWrap - scaledWidth];
-                        bytesMask += v10;
-                        --scaledHeight;
-                    } while (scaledHeight);
-                }
-            }
+                    uint8_t masked = *bytesMask & *bytesImage;
+                    bytesImage += 4;
+                    bytesMask += 4;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+                    if (!v11)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += 4;
+                    bytesMask += 4;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+                    if (!v11)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += 4;
+                    bytesMask += 4;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+                    if (!v11)
+                        break;
+
+                    masked = *bytesMask & *bytesImage;
+                    bytesImage += 4;
+                    bytesMask += 4;
+                    if (masked)
+                        *dstBuf = masked;
+                    ++dstBuf;
+                    v11--;
+
+                } while (v11);
+
+                bytesImage += v10;
+                dstBuf = &dstBuf[dstWrap - scaledWidth];
+                bytesMask += v10;
+                --scaledHeight;
+
+            } while (scaledHeight);
+#endif
+            drawMaskedZoom<2>(imageHeight, imageWidth, bytesMask, dstWrap, dstBuf, bytesImage);
         }
 
         void drawMaskedZoom3(
@@ -963,6 +1033,7 @@ namespace OpenLoco::Gfx
             uint8_t* dstBuf,
             const uint8_t* bytesImage)
         {
+#if 0
             char scaledHeight;            // ah
             int v7;                       // edx
             int v8;                       // ecx
@@ -1035,6 +1106,8 @@ namespace OpenLoco::Gfx
                     } while (scaledHeight);
                 }
             }
+#endif
+            drawMaskedZoom<3>(imageHeight, imageWidth, bytesMask, dstWrap, dstBuf, bytesImage);
         }
 
         // 0x00450705
