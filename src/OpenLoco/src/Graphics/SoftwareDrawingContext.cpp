@@ -747,7 +747,7 @@ namespace OpenLoco::Gfx
             if (scaledWidth == 0)
                 return;
 
-            constexpr auto skip = (1 << TZoomLevel);
+            constexpr auto skip = (1U << TZoomLevel);
 
             // Calculate the row size.
             const auto scaledRowSize = [&]() {
@@ -826,12 +826,6 @@ namespace OpenLoco::Gfx
             } while (remainingRows);
         }
 
-        struct WH16
-        {
-            int16_t width;
-            int16_t height;
-        };
-
         template<int32_t TZoomLevel>
         static void drawImageMaskedZoom(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
         {
@@ -866,93 +860,117 @@ namespace OpenLoco::Gfx
                 }
             }
 
-            const auto* imageDataPos = g1Image->offset;
-            WH16 imageSize = { g1Image->width, g1Image->height };
-            WH16 gImageSize = imageSize;
-            Ui::Point gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
-            auto* bits = rt.bits;
-            int16_t imageHeight = gImageSize.height;
+            int16_t imageHeight = g1Image->height;
+            int16_t imageWidth = g1Image->width;
 
-            constexpr uint16_t zoomMask = static_cast<uint16_t>(0xFFFFFFFFULL << TZoomLevel);
+            const auto* imageDataPos = g1Image->offset;
+            auto* dstBuf = rt.bits;
+
+            constexpr uint16_t zoomMask = static_cast<uint16_t>(~0ULL << TZoomLevel);
             constexpr int16_t offsetX = (1 << TZoomLevel) - 1;
 
-            int16_t rtPosY = ((gImageOffsets.y + pos.y) & zoomMask) - rt.y;
+            int16_t rtPosY = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
             if (rtPosY >= 0)
             {
                 auto scaledWidth = rt.width >> TZoomLevel;
                 scaledWidth = rt.pitch + scaledWidth;
-                bits += (rtPosY >> TZoomLevel) * scaledWidth;
+                dstBuf += (rtPosY >> TZoomLevel) * scaledWidth;
             }
             else
             {
                 if (rtPosY + imageHeight == 0)
+                {
                     return;
+                }
+
                 imageHeight += rtPosY;
+
                 if (imageHeight < 0)
+                {
                     return;
-                const auto v34 = static_cast<uint16_t>(-rtPosY) * gImageSize.width;
-                rtPosY = 0;
+                }
+
+                const auto v34 = static_cast<uint16_t>(-rtPosY) * g1Image->width;
                 imageDataPos = &g1Image->offset[v34];
+
+                rtPosY = 0;
             }
 
             int16_t v17 = imageHeight + rtPosY;
-            bool v18 = v17 <= rt.height;
-            int16_t v37 = v17 - rt.height;
-            if (v18 || (v18 = imageHeight <= v37, imageHeight -= v37, !v18))
+            if (v17 > rt.height)
             {
-                int16_t imageWidth = gImageSize.width;
-                int16_t rowSize = 0;
-                int16_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
+                int16_t v37 = v17 - rt.height;
+                if (imageHeight <= v37)
+                {
+                    return;
+                }
+                imageHeight -= v37;
+            }
+
+            int16_t rowSize = 0;
+            int16_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
+
+            if constexpr (TZoomLevel == 0)
+            {
+                dstWrap -= g1Image->width;
+            }
+
+            int16_t rtPosX = ((g1Image->xOffset + pos.x + offsetX) & zoomMask) - rt.x;
+            if (rtPosX < 0)
+            {
+                if (rtPosX + imageWidth == 0)
+                {
+                    return;
+                }
+
+                imageWidth += rtPosX;
+
+                if (imageWidth < 0)
+                {
+                    return;
+                }
+
+                rowSize -= rtPosX;
+                imageDataPos -= rtPosX;
+                if constexpr (TZoomLevel == 0)
+                {
+                    dstWrap -= rtPosX;
+                }
+
+                rtPosX = 0;
+            }
+
+            int16_t rtPosXUnscaled = rtPosX;
+            rtPosX = rtPosX >> TZoomLevel;
+
+            int16_t v42 = imageWidth + rtPosXUnscaled - rt.width;
+            if (imageWidth + rtPosXUnscaled > rt.width)
+            {
+                if (imageWidth <= v42)
+                {
+                    return;
+                }
+
+                imageWidth -= v42;
+                rowSize += v42;
 
                 if constexpr (TZoomLevel == 0)
                 {
-                    dstWrap -= gImageSize.width;
+                    dstWrap += v42;
                 }
-
-                int16_t rtPosX = ((gImageOffsets.x + pos.x + offsetX) & zoomMask) - rt.x;
-                if (rtPosX < 0)
-                {
-                    if (rtPosX + imageWidth == 0)
-                        return;
-                    imageWidth += rtPosX;
-                    if (imageWidth < 0)
-                        return;
-                    rowSize -= rtPosX;
-                    imageDataPos -= rtPosX;
-                    if constexpr (TZoomLevel == 0)
-                    {
-                        dstWrap -= rtPosX;
-                    }
-                    rtPosX = 0;
-                }
-
-                int16_t rtPosXUnscaled = rtPosX;
-                rtPosX = rtPosX >> TZoomLevel;
-                auto* dstBuf2 = &bits[rtPosX];
-                int16_t v42 = imageWidth + rtPosXUnscaled - rt.width;
-                if ((imageWidth + rtPosXUnscaled) > rt.width)
-                {
-                    v18 = imageWidth <= v42;
-                    imageWidth -= v42;
-                    if (v18)
-                        return;
-                    rowSize += v42;
-                    if constexpr (TZoomLevel == 0)
-                    {
-                        dstWrap += v42;
-                    }
-                }
-
-                auto imageOffset = imageDataPos - g1Image->offset;
-                drawMaskedZoom<TZoomLevel>(
-                    imageHeight,
-                    imageWidth,
-                    rowSize,
-                    &g1ImageMask->offset[imageOffset],
-                    dstWrap,
-                    dstBuf2,
-                    imageDataPos);
             }
+
+            dstBuf += rtPosX;
+
+            auto imageOffset = imageDataPos - g1Image->offset;
+            drawMaskedZoom<TZoomLevel>(
+                imageHeight,
+                imageWidth,
+                rowSize,
+                &g1ImageMask->offset[imageOffset],
+                dstWrap,
+                dstBuf,
+                imageDataPos);
         }
 
         // 0x00450705
