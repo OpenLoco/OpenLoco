@@ -783,7 +783,7 @@ namespace OpenLoco::Gfx
                     bytesMask += skip;
                     dstBuf++;
                     remainingWidth--;
-                    
+
                 } while (remainingWidth);
 
                 bytesImage += scaledRowSize;
