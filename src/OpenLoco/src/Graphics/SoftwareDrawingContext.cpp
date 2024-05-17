@@ -58,8 +58,6 @@ namespace OpenLoco::Gfx
         static uint16_t wrapStringTicker(char* buffer, uint16_t stringWidth, uint16_t numCharacters);
         static void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags);
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
-        static void drawMaskedScalar(
-            int32_t width, int32_t height, const uint8_t* maskSrc, const uint8_t* colourSrc, uint8_t* dst, int32_t maskWrap, int32_t colourWrap, int32_t dstWrap);
 
         // 0x0112C876
         static int16_t getCurrentFontSpriteBase()
