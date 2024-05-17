@@ -37,7 +37,7 @@ namespace OpenLoco::World
         if (sequenceIndex())
             return true;
 
-        if (hasUnk7_10() || hasLevelCrossing() || mods())
+        if (hasUnk7_10() || hasLevelCrossing() || hasUnk7_40() || hasUnk7_80())
             return true;
 
         if (isGhost() || isAiAllocated())
@@ -67,7 +67,7 @@ namespace OpenLoco::World
             if (roadEl->sequenceIndex())
                 return true;
 
-            if (hasUnk7_10() || hasLevelCrossing() || mods())
+            if (hasUnk7_10() || hasLevelCrossing() || hasUnk7_40() || hasUnk7_80())
                 return true;
 
             if (roadEl->isGhost() || roadEl->isAiAllocated())

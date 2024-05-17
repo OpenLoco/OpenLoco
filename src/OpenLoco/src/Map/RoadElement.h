@@ -87,15 +87,17 @@ namespace OpenLoco::World
             _7 &= ~(1 << 5);
             _7 |= state ? (1U << 5) : 0;
         }
-        // NOTE: This is the same field as mods! TRAM SPECIFIC
+        // NOTE: This is the same field as mods! NON-TRAM SPECIFIC
         bool hasUnk7_40() const { return _7 & (1U << 6); }
-        // NOTE: This is the same field as mods! TRAM SPECIFIC
+        // NOTE: This is the same field as mods! NON-TRAM SPECIFIC
         void setUnk7_40(bool newState)
         {
             _7 &= ~(1 << 6);
             _7 |= newState ? (1 << 6) : 0;
         }
-        // NOTE: This is the same field as mods! TRAM SPECIFIC
+        // NOTE: This is the same field as mods! NON-TRAM SPECIFIC
+        bool hasUnk7_80() const { return _7 & (1U << 7); }
+        // NOTE: This is the same field as mods! NON-TRAM SPECIFIC
         void setUnk7_80(bool newState)
         {
             _7 &= ~(1U << 7);
