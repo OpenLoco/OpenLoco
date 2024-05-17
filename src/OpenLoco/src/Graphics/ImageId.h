@@ -155,7 +155,7 @@ namespace OpenLoco
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withIndexOffset(ImageIndex offset) const
+        [[nodiscard]] constexpr ImageId withIndexOffset(int32_t offset) const
         {
             ImageId result = *this;
             result._index += offset;
