@@ -728,13 +728,12 @@ namespace OpenLoco::Gfx
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
-        static int16_t gImageWidth;
-
         // 0x00450890, 0x00450F87, 0x00450D1E, 0x00450ABA
         template<int32_t TZoomLevel>
         static void drawMaskedZoom(
             int16_t imageHeight,
             int16_t imageWidth,
+            int16_t rowSize,
             const uint8_t* bytesMask,
             int16_t dstWrap,
             uint8_t* dstBuf,
@@ -744,24 +743,24 @@ namespace OpenLoco::Gfx
             if (scaledHeight == 0)
                 return;
 
-            const auto scaledWidth = gImageWidth >> TZoomLevel;
+            const auto scaledWidth = imageWidth >> TZoomLevel;
             if (scaledWidth == 0)
                 return;
 
             constexpr auto skip = (1 << TZoomLevel);
 
             // Calculate the row size.
-            const auto rowSize = [&]() {
+            const auto scaledRowSize = [&]() {
                 if constexpr (TZoomLevel == 0)
                 {
-                    return imageWidth;
+                    return rowSize;
                 }
                 else
                 {
                     constexpr auto shift = (1 << TZoomLevel) - 1;
 
-                    const auto v7 = shift * static_cast<uint16_t>(imageWidth + gImageWidth) + imageWidth;
-                    const auto v8 = static_cast<uint16_t>(gImageWidth) & shift;
+                    const auto v7 = shift * static_cast<uint16_t>(rowSize + imageWidth) + rowSize;
+                    const auto v8 = static_cast<uint16_t>(imageWidth) & shift;
 
                     return v8 + v7;
                 }
@@ -818,8 +817,8 @@ namespace OpenLoco::Gfx
 
                 } while (remainingWidth);
 
-                bytesImage += rowSize;
-                bytesMask += rowSize;
+                bytesImage += scaledRowSize;
+                bytesMask += scaledRowSize;
                 dstBuf += dstWrap;
 
                 --remainingRows;
@@ -901,8 +900,8 @@ namespace OpenLoco::Gfx
             int16_t v37 = v17 - rt.height;
             if (v18 || (v18 = imageHeight <= v37, imageHeight -= v37, !v18))
             {
-                gImageWidth = gImageSize.width;
-                int16_t imageWidth = 0;
+                int16_t imageWidth = gImageSize.width;
+                int16_t rowSize = 0;
                 int16_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
 
                 if constexpr (TZoomLevel == 0)
@@ -913,12 +912,12 @@ namespace OpenLoco::Gfx
                 int16_t rtPosX = ((gImageOffsets.x + pos.x + offsetX) & zoomMask) - rt.x;
                 if (rtPosX < 0)
                 {
-                    if (rtPosX + gImageWidth == 0)
+                    if (rtPosX + imageWidth == 0)
                         return;
-                    gImageWidth += rtPosX;
-                    if (gImageWidth < 0)
+                    imageWidth += rtPosX;
+                    if (imageWidth < 0)
                         return;
-                    imageWidth -= rtPosX;
+                    rowSize -= rtPosX;
                     imageDataPos -= rtPosX;
                     if constexpr (TZoomLevel == 0)
                     {
@@ -930,14 +929,14 @@ namespace OpenLoco::Gfx
                 int16_t rtPosXUnscaled = rtPosX;
                 rtPosX = rtPosX >> TZoomLevel;
                 auto* dstBuf2 = &bits[rtPosX];
-                int16_t v42 = gImageWidth + rtPosXUnscaled - rt.width;
-                if ((gImageWidth + rtPosXUnscaled) > rt.width)
+                int16_t v42 = imageWidth + rtPosXUnscaled - rt.width;
+                if ((imageWidth + rtPosXUnscaled) > rt.width)
                 {
-                    v18 = gImageWidth <= v42;
-                    gImageWidth -= v42;
+                    v18 = imageWidth <= v42;
+                    imageWidth -= v42;
                     if (v18)
                         return;
-                    imageWidth += v42;
+                    rowSize += v42;
                     if constexpr (TZoomLevel == 0)
                     {
                         dstWrap += v42;
@@ -948,6 +947,7 @@ namespace OpenLoco::Gfx
                 drawMaskedZoom<TZoomLevel>(
                     imageHeight,
                     imageWidth,
+                    rowSize,
                     &g1ImageMask->offset[imageOffset],
                     dstWrap,
                     dstBuf2,
