@@ -780,41 +780,12 @@ namespace OpenLoco::Gfx
                     uint8_t masked = *bytesMask & *bytesImage;
                     if (masked)
                         *dstBuf = masked;
+
                     bytesImage += skip;
                     bytesMask += skip;
                     dstBuf++;
                     remainingWidth--;
-                    if (!remainingWidth)
-                        break;
-
-                    masked = *bytesMask & *bytesImage;
-                    if (masked)
-                        *dstBuf = masked;
-                    bytesImage += skip;
-                    bytesMask += skip;
-                    dstBuf++;
-                    remainingWidth--;
-                    if (!remainingWidth)
-                        break;
-
-                    masked = *bytesMask & *bytesImage;
-                    if (masked)
-                        *dstBuf = masked;
-                    bytesImage += skip;
-                    bytesMask += skip;
-                    dstBuf++;
-                    remainingWidth--;
-                    if (!remainingWidth)
-                        break;
-
-                    masked = *bytesMask & *bytesImage;
-                    if (masked)
-                        *dstBuf = masked;
-                    bytesImage += skip;
-                    bytesMask += skip;
-                    dstBuf++;
-                    remainingWidth--;
-
+                    
                 } while (remainingWidth);
 
                 bytesImage += scaledRowSize;
