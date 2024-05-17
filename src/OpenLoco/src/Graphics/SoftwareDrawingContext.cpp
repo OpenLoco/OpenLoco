@@ -728,27 +728,66 @@ namespace OpenLoco::Gfx
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
-        static void drawMasked(
-            int32_t width, int32_t height, const uint8_t* maskSrc, const uint8_t* colourSrc, uint8_t* dst, int32_t maskWrap, int32_t colourWrap, int32_t dstWrap)
-        {
-            for (int32_t yy = 0; yy < height; yy++)
-            {
-                for (int32_t xx = 0; xx < width; xx++)
-                {
-                    uint8_t colour = (*colourSrc) & (*maskSrc);
-                    if (colour != 0)
-                    {
-                        *dst = colour;
-                    }
+        #pragma warning(disable : 4101)
 
-                    maskSrc++;
-                    colourSrc++;
-                    dst++;
-                }
-                maskSrc += maskWrap;
-                colourSrc += colourWrap;
-                dst += dstWrap;
-            }
+        static int16_t gImageWidth;
+
+        static void drawMaskedZoom0(
+            int16_t imageHeight,
+            int16_t imageWidth,
+            const uint8_t* bytesMask,
+            int16_t dstWrap,
+            uint8_t* dstBuf,
+            const uint8_t* bytesImage)
+        {
+            uint16_t width; // bp
+            uint16_t v7;    // cx
+            char v8;        // al
+            __int16 v9;     // cx
+            char v10;       // al
+            __int16 v11;    // cx
+            char v12;       // al
+            __int16 v13;    // cx
+            char v14;       // al
+
+            width = gImageWidth;
+            do
+            {
+                v7 = width;
+                do
+                {
+                    v8 = *bytesMask++ & *bytesImage++;
+                    if (v8)
+                        *dstBuf = v8;
+                    ++dstBuf;
+                    v9 = v7 - 1;
+                    if (!v9)
+                        break;
+                    v10 = *bytesMask++ & *bytesImage++;
+                    if (v10)
+                        *dstBuf = v10;
+                    ++dstBuf;
+                    v11 = v9 - 1;
+                    if (!v11)
+                        break;
+                    v12 = *bytesMask++ & *bytesImage++;
+                    if (v12)
+                        *dstBuf = v12;
+                    ++dstBuf;
+                    v13 = v11 - 1;
+                    if (!v13)
+                        break;
+                    v14 = *bytesMask++ & *bytesImage++;
+                    if (v14)
+                        *dstBuf = v14;
+                    ++dstBuf;
+                    v7 = v13 - 1;
+                } while (v7);
+                bytesImage += imageWidth;
+                dstBuf += dstWrap;
+                bytesMask += imageWidth;
+                --imageHeight;
+            } while (imageHeight);
         }
 
         // 0x00450705
@@ -833,11 +872,11 @@ namespace OpenLoco::Gfx
             WH16 gImageSize = { 0, 0 };
             Ui::Point gImageOffsets{ 0, 0 };
             G1ElementFlags gImageFlags = G1ElementFlags::none;
-            int16_t gImageWidth;
             int16_t gImageHeight;
             int16_t imageWidth;
             int16_t dstWrap;
 
+#if 0
             if (rt.zoomLevel)
             {
                 if (rt.zoomLevel == 1)
@@ -1140,6 +1179,7 @@ namespace OpenLoco::Gfx
                 }
             }
             else
+#endif
             {
                 imageBytes_1 = g1Image->offset;
                 gMaskBytes = g1ImageMask->offset;
@@ -1201,10 +1241,11 @@ namespace OpenLoco::Gfx
                         imageWidth += v25;
                         dstWrap += v25;
                     }
+                    auto imageOffset = imageBytes_2 - gImageData;
                     drawMaskedZoom0(
                         gImageHeight,
                         imageWidth,
-                        (_BYTE*)(&gMaskBytes[(_DWORD)imageBytes_2] - gImageData),
+                        &gMaskBytes[imageOffset],
                         dstWrap,
                         dstBuf_3,
                         imageBytes_2);
