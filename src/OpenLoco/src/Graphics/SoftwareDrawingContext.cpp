@@ -728,9 +728,6 @@ namespace OpenLoco::Gfx
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
-#pragma warning(disable : 4101)
-#pragma warning(disable : 4100)
-
         static int16_t gImageWidth;
 
         template<int32_t TZoomLevel>
@@ -838,65 +835,41 @@ namespace OpenLoco::Gfx
                 int16_t height;
             };
 
-            uint8_t* imageBytes_1;       // eax
             WH16 widthHeight;            // ebp
-            const uint8_t* imageBytes_2; // esi
-            __int16 rtPosY_3;            // dx
-            bool v14;                    // zf
+            __int16 rtPosY;              // dx
             int v15;                     // eax
             int16_t v16;                 // ax
             __int16 v17;                 // dx
             bool v18;                    // cc
             int16_t v19;                 // dx
-            __int16 rtPosX_2;            // cx
-            bool v22;                    // zf
+            __int16 rtPosX;              // cx
             unsigned __int8* dstBuf_3;   // edi
             signed __int16 v24;          // cx
             int16_t v25;                 // cx
-            uint8_t* imageBytes;         // eax
             WH16 imageSize;              // ebp
             G1ElementFlags imageFlags;   // ebp
             const uint8_t* imageDataPos; // esi
-            __int16 rtPosY;              // dx
-            bool rtPosYZero;             // zf
             int v34;                     // eax
             int scaledWidth;             // eax
             __int16 v36;                 // dx
             int16_t v37;                 // dx
             __int16 v38;                 // ax
-            int16_t rtPosX_3;            // cx
-            bool rtPosXZero_2;           // zf
             unsigned __int8* dstBuf2;    // edi
             int16_t v42;                 // cx
-            uint8_t* imageBytes_3;       // eax
             WH16 imageWidthHeight;       // ebp
-            int imageFlags_1;            // ebp
-            const uint8_t* imageBytes_4; // esi
             unsigned __int8* bits;       // edi
-            __int16 rtPosY_1;            // dx
-            bool rtPosYZero_1;           // zf
             int v51;                     // eax
             int scaledWidth_1;           // eax
             __int16 v53;                 // dx
             int16_t v54;                 // dx
             __int16 v55;                 // ax
-            int16_t rtPosX;              // cx
-            bool rtPosXZero;             // zf
             unsigned __int8* v58;        // edi
             int16_t v59;                 // cx
-            uint8_t* imageBytes_5;       // eax
             WH16 imageSize_1;            // ebp
-            G1ElementFlags imageFlags_2; // ebp
-            const uint8_t* imageBytes_6; // esi
-            __int16 rtPosY_2;            // dx
-            bool rtPosYZero_2;           // zf
             int v68;                     // eax
-            int scaledWidth_2;           // eax
             __int16 imageHeightY;        // dx
             int16_t v71;                 // dx
             __int16 dstWrap_1;           // ax
-            int16_t rtPosX_1;            // cx
-            bool rtPosXZero_1;           // zf
             unsigned __int8* dstBuf_4;   // edi
             int16_t v76;                 // cx
             int16_t v77;                 // [esp-8h] [ebp-8h]
@@ -906,8 +879,6 @@ namespace OpenLoco::Gfx
             const auto* g1Image = Gfx::getG1Element(image.getIndex());
             const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
 
-            const uint8_t* gMaskBytes = nullptr;
-            const uint8_t* gImageData = nullptr;
             WH16 gImageSize = { 0, 0 };
             Ui::Point gImageOffsets{ 0, 0 };
             G1ElementFlags gImageFlags = G1ElementFlags::none;
@@ -946,15 +917,12 @@ namespace OpenLoco::Gfx
                         }
                     }
 
-                    imageBytes = g1Image->offset;
-                    gMaskBytes = g1ImageMask->offset;
+                    imageDataPos = g1Image->offset;
                     imageSize = { g1Image->width, g1Image->height };
-                    gImageData = imageBytes;
                     gImageSize = imageSize;
                     imageFlags = g1Image->flags;
                     gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
                     gImageFlags = imageFlags;
-                    imageDataPos = imageBytes;
                     bits = rt.bits;
                     gImageHeight = gImageSize.height;
 
@@ -962,19 +930,19 @@ namespace OpenLoco::Gfx
                     if (rtPosY >= 0)
                     {
                         scaledWidth = rt.width >> 1;
-                        // LOWORD(scaledWidth) = rt.pitch + scaledWidth;
                         scaledWidth = rt.pitch + scaledWidth;
                         bits += ((unsigned __int16)rtPosY >> 1) * scaledWidth;
                     }
                     else
                     {
-                        rtPosYZero = rtPosY + gImageHeight == 0;
+                        if (rtPosY + gImageHeight == 0)
+                            return;
                         gImageHeight += rtPosY;
-                        if (gImageHeight < 0 || rtPosYZero)
+                        if (gImageHeight < 0)
                             return;
                         v34 = (unsigned __int16)-rtPosY * gImageSize.width;
                         rtPosY = 0;
-                        imageDataPos = &gImageData[v34];
+                        imageDataPos = &g1Image->offset[v34];
                     }
                     v36 = gImageHeight + rtPosY;
                     v18 = v36 <= rt.height;
@@ -985,21 +953,22 @@ namespace OpenLoco::Gfx
                         v38 = rt.pitch + (rt.width >> 1);
                         imageWidth = 0;
                         dstWrap = v38;
-                        rtPosX_3 = ((gImageOffsets.x + pos.x + 1) & 0xFFFE) - rt.x;
-                        if (rtPosX_3 < 0)
+                        rtPosX = ((gImageOffsets.x + pos.x + 1) & 0xFFFE) - rt.x;
+                        if (rtPosX < 0)
                         {
-                            rtPosXZero_2 = rtPosX_3 + gImageWidth == 0;
-                            gImageWidth += rtPosX_3;
-                            if (gImageWidth < 0 || rtPosXZero_2)
+                            if (rtPosX + gImageWidth == 0)
                                 return;
-                            imageWidth -= rtPosX_3;
-                            imageDataPos -= rtPosX_3;
-                            rtPosX_3 = 0;
+                            gImageWidth += rtPosX;
+                            if (gImageWidth < 0)
+                                return;
+                            imageWidth -= rtPosX;
+                            imageDataPos -= rtPosX;
+                            rtPosX = 0;
                         }
                         //*(_DWORD*)&rtPosX_3 = (unsigned __int16)rtPosX_3;
-                        v77 = rtPosX_3;
-                        rtPosX_3 = (unsigned __int16)rtPosX_3 >> 1;
-                        dstBuf2 = &bits[rtPosX_3];
+                        v77 = rtPosX;
+                        rtPosX = (unsigned __int16)rtPosX >> 1;
+                        dstBuf2 = &bits[rtPosX];
                         v42 = gImageWidth + v77 - rt.width;
                         if ((__int16)(gImageWidth + v77) > rt.width)
                         {
@@ -1009,11 +978,11 @@ namespace OpenLoco::Gfx
                                 return;
                             imageWidth += v42;
                         }
-                        auto imageOffset = imageDataPos - gImageData;
+                        auto imageOffset = imageDataPos - g1Image->offset;
                         drawMaskedZoom<1>(
                             gImageHeight,
                             imageWidth,
-                            &gMaskBytes[imageOffset],
+                            &g1ImageMask->offset[imageOffset],
                             dstWrap,
                             dstBuf2,
                             imageDataPos);
@@ -1048,36 +1017,33 @@ namespace OpenLoco::Gfx
                         }
                     }
 
-                    imageBytes_3 = g1Image->offset;
-                    gMaskBytes = g1ImageMask->offset;
+                    imageDataPos = g1Image->offset;
                     imageWidthHeight = { g1Image->width, g1Image->height };
-                    gImageData = imageBytes_3;
                     gImageSize = imageWidthHeight;
                     imageFlags = g1Image->flags;
                     gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
                     gImageFlags = imageFlags;
-                    imageBytes_4 = imageBytes_3;
                     bits = rt.bits;
                     gImageHeight = gImageSize.height;
-                    rtPosY_1 = ((gImageOffsets.y + pos.y) & 0xFFFC) - rt.y;
-                    if (rtPosY_1 >= 0)
+                    rtPosY = ((gImageOffsets.y + pos.y) & 0xFFFC) - rt.y;
+                    if (rtPosY >= 0)
                     {
                         scaledWidth_1 = rt.width >> 2;
-                        // LOWORD(scaledWidth_1) = rt.pitch + scaledWidth_1;
                         scaledWidth_1 = rt.pitch + scaledWidth_1;
-                        bits += ((unsigned __int16)rtPosY_1 >> 2) * scaledWidth_1;
+                        bits += ((unsigned __int16)rtPosY >> 2) * scaledWidth_1;
                     }
                     else
                     {
-                        rtPosYZero_1 = rtPosY_1 + gImageHeight == 0;
-                        gImageHeight += rtPosY_1;
-                        if (gImageHeight < 0 || rtPosYZero_1)
+                        if (rtPosY + gImageHeight == 0)
                             return;
-                        v51 = (unsigned __int16)-rtPosY_1 * gImageSize.width;
-                        rtPosY_1 = 0;
-                        imageBytes_4 = &gImageData[v51];
+                        gImageHeight += rtPosY;
+                        if (gImageHeight < 0)
+                            return;
+                        v51 = (unsigned __int16)-rtPosY * gImageSize.width;
+                        rtPosY = 0;
+                        imageDataPos = &g1Image->offset[v51];
                     }
-                    v53 = gImageHeight + rtPosY_1;
+                    v53 = gImageHeight + rtPosY;
                     v18 = v53 <= rt.height;
                     v54 = v53 - rt.height;
                     if (v18 || (v18 = gImageHeight <= v54, gImageHeight -= v54, !v18))
@@ -1089,12 +1055,13 @@ namespace OpenLoco::Gfx
                         rtPosX = ((gImageOffsets.x + pos.x + 3) & 0xFFFC) - rt.x;
                         if (rtPosX < 0)
                         {
-                            rtPosXZero = rtPosX + gImageWidth == 0;
+                            if (rtPosX + gImageWidth == 0)
+                                return;
                             gImageWidth += rtPosX;
-                            if (gImageWidth < 0 || rtPosXZero)
+                            if (gImageWidth < 0)
                                 return;
                             imageWidth -= rtPosX;
-                            imageBytes_4 -= rtPosX;
+                            imageDataPos -= rtPosX;
                             rtPosX = 0;
                         }
                         //*(_DWORD*)&rtPosX = (unsigned __int16)rtPosX;
@@ -1110,14 +1077,14 @@ namespace OpenLoco::Gfx
                                 return;
                             imageWidth += v59;
                         }
-                        auto imageOffset = imageBytes_4 - gImageData;
+                        auto imageOffset = imageDataPos - g1Image->offset;
                         drawMaskedZoom<2>(
                             gImageHeight,
                             imageWidth,
-                            &gMaskBytes[imageOffset],
+                            &g1ImageMask->offset[imageOffset],
                             dstWrap,
                             v58,
-                            imageBytes_4);
+                            imageDataPos);
                     }
                 }
                 else
@@ -1149,36 +1116,33 @@ namespace OpenLoco::Gfx
                         }
                     }
 
-                    imageBytes_5 = g1Image->offset;
-                    gMaskBytes = g1ImageMask->offset;
+                    imageDataPos = g1Image->offset;
                     imageSize_1 = { g1Image->width, g1Image->height };
-                    gImageData = imageBytes_5;
                     gImageSize = imageSize_1;
-                    imageFlags_2 = g1Image->flags;
+                    imageFlags = g1Image->flags;
                     gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
-                    gImageFlags = imageFlags_2;
-                    imageBytes_6 = imageBytes_5;
+                    gImageFlags = imageFlags;
                     bits = rt.bits;
                     gImageHeight = gImageSize.height;
-                    rtPosY_2 = ((gImageOffsets.y + pos.y) & 0xFFF8) - rt.y;
-                    if (rtPosY_2 >= 0)
+                    rtPosY = ((gImageOffsets.y + pos.y) & 0xFFF8) - rt.y;
+                    if (rtPosY >= 0)
                     {
-                        scaledWidth_2 = rt.width >> 3;
-                        // LOWORD(scaledWidth_2) = rt.pitch + scaledWidth_2;
-                        scaledWidth_2 = rt.pitch + scaledWidth_2;
-                        bits += ((unsigned __int16)rtPosY_2 >> 3) * scaledWidth_2;
+                        scaledWidth = rt.width >> 3;
+                        scaledWidth = rt.pitch + scaledWidth;
+                        bits += ((unsigned __int16)rtPosY >> 3) * scaledWidth;
                     }
                     else
                     {
-                        rtPosYZero_2 = rtPosY_2 + gImageHeight == 0;
-                        gImageHeight += rtPosY_2;
-                        if (gImageHeight < 0 || rtPosYZero_2)
+                        if (rtPosY + gImageHeight == 0)
                             return;
-                        v68 = (unsigned __int16)-rtPosY_2 * gImageSize.width;
-                        rtPosY_2 = 0;
-                        imageBytes_6 = &gImageData[v68];
+                        gImageHeight += rtPosY;
+                        if (gImageHeight < 0)
+                            return;
+                        v68 = (unsigned __int16)-rtPosY * gImageSize.width;
+                        rtPosY = 0;
+                        imageDataPos = &g1Image->offset[v68];
                     }
-                    imageHeightY = gImageHeight + rtPosY_2;
+                    imageHeightY = gImageHeight + rtPosY;
                     v18 = imageHeightY <= rt.height;
                     v71 = imageHeightY - rt.height;
                     if (v18 || (v18 = gImageHeight <= v71, gImageHeight -= v71, !v18))
@@ -1187,21 +1151,21 @@ namespace OpenLoco::Gfx
                         dstWrap_1 = rt.pitch + (rt.width >> 3);
                         imageWidth = 0;
                         dstWrap = dstWrap_1;
-                        rtPosX_1 = ((gImageOffsets.x + pos.x + 7) & 0xFFF8) - rt.x;
-                        if (rtPosX_1 < 0)
+                        rtPosX = ((gImageOffsets.x + pos.x + 7) & 0xFFF8) - rt.x;
+                        if (rtPosX < 0)
                         {
-                            rtPosXZero_1 = rtPosX_1 + gImageWidth == 0;
-                            gImageWidth += rtPosX_1;
-                            if (gImageWidth < 0 || rtPosXZero_1)
+                            if (rtPosX + gImageWidth == 0)
                                 return;
-                            imageWidth -= rtPosX_1;
-                            imageBytes_6 -= rtPosX_1;
-                            rtPosX_1 = 0;
+                            gImageWidth += rtPosX;
+                            if (gImageWidth < 0)
+                                return;
+                            imageWidth -= rtPosX;
+                            imageDataPos -= rtPosX;
+                            rtPosX = 0;
                         }
-                        //*(_DWORD*)&rtPosX_1 = (unsigned __int16)rtPosX_1;
-                        v79 = rtPosX_1;
-                        rtPosX_1 = (unsigned __int16)rtPosX_1 >> 3;
-                        dstBuf_4 = &bits[rtPosX_1];
+                        v79 = rtPosX;
+                        rtPosX = (unsigned __int16)rtPosX >> 3;
+                        dstBuf_4 = &bits[rtPosX];
                         v76 = gImageWidth + v79 - rt.width;
                         if ((__int16)(gImageWidth + v79) > (__int16)rt.width)
                         {
@@ -1211,47 +1175,46 @@ namespace OpenLoco::Gfx
                                 return;
                             imageWidth += v76;
                         }
-                        auto imageOffset = imageBytes_6 - gImageData;
+
+                        auto imageOffset = imageDataPos - g1Image->offset;
                         drawMaskedZoom<3>(
                             gImageHeight,
                             imageWidth,
-                            &gMaskBytes[imageOffset],
+                            &g1ImageMask->offset[imageOffset],
                             dstWrap,
                             dstBuf_4,
-                            imageBytes_6);
+                            imageDataPos);
                     }
                 }
             }
             else
             {
-                imageBytes_1 = g1Image->offset;
-                gMaskBytes = g1ImageMask->offset;
+                imageDataPos = g1Image->offset;
                 widthHeight = { g1Image->width, g1Image->height };
-                gImageData = imageBytes_1;
                 gImageSize = widthHeight;
                 gImageOffsets = { g1Image->xOffset, g1Image->yOffset };
                 gImageFlags = g1Image->flags;
-                imageBytes_2 = imageBytes_1;
                 bits = rt.bits;
                 gImageHeight = gImageSize.height;
-                rtPosY_3 = gImageOffsets.y + pos.y - rt.y;
-                if (rtPosY_3 >= 0)
+                rtPosY = gImageOffsets.y + pos.y - rt.y;
+                if (rtPosY >= 0)
                 {
                     v16 = rt.width;
                     v16 += rt.pitch;
-                    bits += (unsigned __int16)rtPosY_3 * v16;
+                    bits += (unsigned __int16)rtPosY * v16;
                 }
                 else
                 {
-                    v14 = rtPosY_3 + gImageHeight == 0;
-                    gImageHeight += rtPosY_3;
-                    if (gImageHeight < 0 || v14)
+                    if (rtPosY + gImageHeight == 0)
                         return;
-                    v15 = (unsigned __int16)-rtPosY_3 * gImageSize.width;
-                    rtPosY_3 = 0;
-                    imageBytes_2 = &gImageData[v15];
+                    gImageHeight += rtPosY;
+                    if (gImageHeight < 0)
+                        return;
+                    v15 = (unsigned __int16)-rtPosY * gImageSize.width;
+                    rtPosY = 0;
+                    imageDataPos = &g1Image->offset[v15];
                 }
-                v17 = gImageHeight + rtPosY_3;
+                v17 = gImageHeight + rtPosY;
                 v18 = v17 <= rt.height;
                 v19 = v17 - rt.height;
                 if (v18 || (v18 = gImageHeight <= v19, gImageHeight -= v19, !v18))
@@ -1259,20 +1222,21 @@ namespace OpenLoco::Gfx
                     gImageWidth = gImageSize.width;
                     dstWrap = rt.pitch + rt.width - gImageSize.width;
                     imageWidth = 0;
-                    rtPosX_2 = gImageOffsets.x + pos.x - rt.x;
-                    if (rtPosX_2 < 0)
+                    rtPosX = gImageOffsets.x + pos.x - rt.x;
+                    if (rtPosX < 0)
                     {
-                        v22 = rtPosX_2 + gImageWidth == 0;
-                        gImageWidth += rtPosX_2;
-                        if (gImageWidth < 0 || v22)
+                        if (rtPosX + gImageWidth == 0)
                             return;
-                        imageWidth -= rtPosX_2;
-                        imageBytes_2 -= rtPosX_2;
-                        dstWrap -= rtPosX_2;
-                        rtPosX_2 = 0;
+                        gImageWidth += rtPosX;
+                        if (gImageWidth < 0)
+                            return;
+                        imageWidth -= rtPosX;
+                        imageDataPos -= rtPosX;
+                        dstWrap -= rtPosX;
+                        rtPosX = 0;
                     }
-                    dstBuf_3 = &bits[rtPosX_2];
-                    v24 = gImageWidth + rtPosX_2;
+                    dstBuf_3 = &bits[rtPosX];
+                    v24 = gImageWidth + rtPosX;
                     v18 = v24 <= rt.width;
                     v25 = v24 - rt.width;
                     if (!v18)
@@ -1284,14 +1248,15 @@ namespace OpenLoco::Gfx
                         imageWidth += v25;
                         dstWrap += v25;
                     }
-                    auto imageOffset = imageBytes_2 - gImageData;
+
+                    auto imageOffset = imageDataPos - g1Image->offset;
                     drawMaskedZoom<0>(
                         gImageHeight,
                         imageWidth,
-                        &gMaskBytes[imageOffset],
+                        &g1ImageMask->offset[imageOffset],
                         dstWrap,
                         dstBuf_3,
-                        imageBytes_2);
+                        imageDataPos);
                 }
             }
         }
