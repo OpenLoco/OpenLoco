@@ -730,7 +730,7 @@ namespace OpenLoco
 
             auto autosaveFullPath8 = autosaveFullPath.u8string();
             Logging::info("Autosaving game to {}", autosaveFullPath8.c_str());
-            S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::noWindowClose);
+            S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::isAutosave | S5::SaveFlags::noWindowClose);
         }
         catch (const std::exception& e)
         {
