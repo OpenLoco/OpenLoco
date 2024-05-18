@@ -755,12 +755,12 @@ namespace OpenLoco::Gfx
                 }
                 else
                 {
-                    constexpr auto shift = (1 << TZoomLevel) - 1;
+                    constexpr auto zoomMask = (1 << TZoomLevel) - 1;
 
-                    const auto v7 = shift * static_cast<uint16_t>(rowSize + imageWidth) + rowSize;
-                    const auto v8 = static_cast<uint16_t>(imageWidth) & shift;
+                    const auto scaledRowSize = zoomMask * static_cast<uint16_t>(rowSize + imageWidth) + rowSize;
+                    const auto maskedRowSize = static_cast<uint16_t>(imageWidth) & zoomMask;
 
-                    return v8 + v7;
+                    return maskedRowSize + scaledRowSize;
                 }
             }();
 
@@ -769,37 +769,53 @@ namespace OpenLoco::Gfx
                 dstWrap -= scaledWidth;
             }
 
-            auto remainingRows = scaledHeight;
-            do
+            for (auto y = 0; y < scaledHeight; y++)
             {
-                auto remainingWidth = scaledWidth;
-                do
+                for (auto x = 0; x < scaledWidth; x++)
                 {
-                    uint8_t masked = *bytesMask & *bytesImage;
+                    const auto masked = *bytesMask & *bytesImage;
                     if (masked)
                         *dstBuf = masked;
 
                     bytesImage += skip;
                     bytesMask += skip;
                     dstBuf++;
-                    remainingWidth--;
-
-                } while (remainingWidth);
+                }
 
                 bytesImage += scaledRowSize;
                 bytesMask += scaledRowSize;
                 dstBuf += dstWrap;
-
-                --remainingRows;
-
-            } while (remainingRows);
+            }
         }
 
         template<int32_t TZoomLevel>
         static void drawImageMaskedZoom(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
         {
             const auto* g1Image = Gfx::getG1Element(image.getIndex());
+            if (g1Image == nullptr)
+            {
+                return;
+            }
+            if (g1Image->hasFlags(G1ElementFlags::isRLECompressed))
+            {
+                // This is not supported.
+                assert(false);
+
+                return;
+            }
+
             const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
+            if (g1ImageMask == nullptr)
+            {
+                return;
+            }
+            if (g1ImageMask->hasFlags(G1ElementFlags::isRLECompressed))
+            {
+                // This is not supported.
+                assert(false);
+
+                return;
+            }
 
             if constexpr (TZoomLevel > 0)
             {
@@ -838,42 +854,42 @@ namespace OpenLoco::Gfx
             constexpr uint16_t zoomMask = static_cast<uint16_t>(~0ULL << TZoomLevel);
             constexpr int16_t offsetX = (1 << TZoomLevel) - 1;
 
-            int16_t rtPosY = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
-            if (rtPosY >= 0)
+            int16_t dstTop = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
+            if (dstTop >= 0)
             {
                 auto scaledWidth = rt.width >> TZoomLevel;
                 scaledWidth = rt.pitch + scaledWidth;
-                dstBuf += (rtPosY >> TZoomLevel) * scaledWidth;
+                dstBuf += (dstTop >> TZoomLevel) * scaledWidth;
             }
             else
             {
-                if (rtPosY + imageHeight == 0)
+                if (dstTop + imageHeight == 0)
                 {
                     return;
                 }
 
-                imageHeight += rtPosY;
+                imageHeight += dstTop;
 
                 if (imageHeight < 0)
                 {
                     return;
                 }
 
-                const auto v34 = static_cast<uint16_t>(-rtPosY) * g1Image->width;
-                imageDataPos = &g1Image->offset[v34];
+                const auto startOffset = static_cast<uint16_t>(-dstTop) * g1Image->width;
+                imageDataPos = &g1Image->offset[startOffset];
 
-                rtPosY = 0;
+                dstTop = 0;
             }
 
-            int16_t v17 = imageHeight + rtPosY;
-            if (v17 > rt.height)
+            int16_t dstBottom = imageHeight + dstTop;
+            if (dstBottom > rt.height)
             {
-                int16_t v37 = v17 - rt.height;
-                if (imageHeight <= v37)
+                imageHeight -= dstBottom - rt.height;
+
+                if (imageHeight <= 0)
                 {
                     return;
                 }
-                imageHeight -= v37;
             }
 
             int16_t rowSize = 0;
@@ -884,52 +900,44 @@ namespace OpenLoco::Gfx
                 dstWrap -= g1Image->width;
             }
 
-            int16_t rtPosX = ((g1Image->xOffset + pos.x + offsetX) & zoomMask) - rt.x;
-            if (rtPosX < 0)
+            int16_t dstLeft = ((g1Image->xOffset + pos.x + offsetX) & zoomMask) - rt.x;
+            if (dstLeft < 0)
             {
-                if (rtPosX + imageWidth == 0)
+                imageWidth += dstLeft;
+                if (imageWidth <= 0)
                 {
                     return;
                 }
 
-                imageWidth += rtPosX;
-
-                if (imageWidth < 0)
-                {
-                    return;
-                }
-
-                rowSize -= rtPosX;
-                imageDataPos -= rtPosX;
-                if constexpr (TZoomLevel == 0)
-                {
-                    dstWrap -= rtPosX;
-                }
-
-                rtPosX = 0;
-            }
-
-            int16_t rtPosXUnscaled = rtPosX;
-            rtPosX = rtPosX >> TZoomLevel;
-
-            int16_t v42 = imageWidth + rtPosXUnscaled - rt.width;
-            if (imageWidth + rtPosXUnscaled > rt.width)
-            {
-                if (imageWidth <= v42)
-                {
-                    return;
-                }
-
-                imageWidth -= v42;
-                rowSize += v42;
+                rowSize -= dstLeft;
+                imageDataPos -= dstLeft;
 
                 if constexpr (TZoomLevel == 0)
                 {
-                    dstWrap += v42;
+                    dstWrap -= dstLeft;
+                }
+
+                dstLeft = 0;
+            }
+
+            int16_t dstRight = imageWidth + dstLeft - rt.width;
+            if (imageWidth + dstLeft > rt.width)
+            {
+                imageWidth -= dstRight;
+                if (imageWidth <= 0)
+                {
+                    return;
+                }
+
+                rowSize += dstRight;
+
+                if constexpr (TZoomLevel == 0)
+                {
+                    dstWrap += dstRight;
                 }
             }
 
-            dstBuf += rtPosX;
+            dstBuf += (dstLeft >> TZoomLevel);
 
             auto imageOffset = imageDataPos - g1Image->offset;
             drawMaskedZoom<TZoomLevel>(
@@ -949,20 +957,22 @@ namespace OpenLoco::Gfx
             {
                 case 0:
                     drawImageMaskedZoom<0>(rt, pos, image, maskImage);
-                    break;
+                    return;
                 case 1:
                     drawImageMaskedZoom<1>(rt, pos, image, maskImage);
-                    break;
+                    return;
                 case 2:
                     drawImageMaskedZoom<2>(rt, pos, image, maskImage);
-                    break;
+                    return;
                 case 3:
                     drawImageMaskedZoom<3>(rt, pos, image, maskImage);
-                    break;
+                    return;
                 default:
                     break;
             }
+
             // Unreachable
+            assert(false);
         }
 
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
