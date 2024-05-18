@@ -1,5 +1,6 @@
 24.05.1+ (???)
 ------------------------------------------------------------------------
+- Change: [#2473] Progress bars no longer pop up for autosaves.
 - Fix: [#2463] Allow removing protected structures (e.g. electricity pylons) when sandbox mode is enabled.
 
 24.05.1 (2024-05-09)
