@@ -18,6 +18,7 @@
 #include "PaintIndustry.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
+#include "PaintSurface.h"
 #include "PaintTrack.h"
 #include "PaintTree.h"
 #include "PaintWall.h"
@@ -115,15 +116,6 @@ namespace OpenLoco::Paint
         return regs.al != 0;
     }
 
-    // 0x004656BF
-    static void paintSurface([[maybe_unused]] PaintSession& session, World::SurfaceElement& elSurface)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elSurface);
-        regs.dx = elSurface.baseHeight();
-        call(0x004656BF, regs);
-    }
-
     // 0x004759A6
     static void paintRoad([[maybe_unused]] PaintSession& session, World::RoadElement& elRoad)
     {
@@ -137,7 +129,7 @@ namespace OpenLoco::Paint
     // Returns std::nullopt on no need to paint
     static std::optional<Ui::viewport_pos> paintTileElementsSetup(PaintSession& session, const World::Pos2& loc)
     {
-        session.setSegmentSupportHeight(SegmentFlags::all, std::numeric_limits<uint16_t>::max(), 0);
+        session.setSegmentsSupportHeight(SegmentFlags::all, std::numeric_limits<uint16_t>::max(), 0);
         session.setGeneralSupportHeight(std::numeric_limits<uint16_t>::max(), 0);
         session.resetTunnels();
         session.setUnkPosition(loc);
@@ -191,7 +183,7 @@ namespace OpenLoco::Paint
             {
                 if (sub_42AC9C(session))
                 {
-                    session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
+                    session.setSegmentsSupportHeight(SegmentFlags::all, 0xFFFF, 0);
                 }
                 if (session.getGeneralSupportHeight().height >= bridgeEntry.height)
                 {
@@ -202,7 +194,7 @@ namespace OpenLoco::Paint
 
             if (session.get525CF8() != SegmentFlags::none)
             {
-                session.setSegmentSupportHeight(session.get525CF8(), 0xFFFF, 0);
+                session.setSegmentsSupportHeight(session.get525CF8(), 0xFFFF, 0);
                 session.set525CF8(SegmentFlags::none);
             }
         }

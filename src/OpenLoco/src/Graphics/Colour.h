@@ -77,7 +77,7 @@ namespace OpenLoco
         mutedRed = 30,
         // First 30 are inherited from Colour
         clear = 31, // No colour
-        null = 32,  // Does not represent any palette
+        water = 32, // Water palette map dynamically loaded from water object
         unk21,
         unk22,
         unk23,

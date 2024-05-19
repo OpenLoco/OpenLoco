@@ -1,6 +1,11 @@
 #pragma once
 #include "Tile.h"
 
+namespace OpenLoco::World
+{
+    struct Wave;
+}
+
 namespace OpenLoco::World::WaveManager
 {
     void update();
@@ -11,4 +16,6 @@ namespace OpenLoco::World::WaveManager
     {
         return (pos.x & 0x7) | ((pos.y & 0x7) << 3);
     }
+
+    const Wave& getWave(const uint8_t waveIndex);
 }

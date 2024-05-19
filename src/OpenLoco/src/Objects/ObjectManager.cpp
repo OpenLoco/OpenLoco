@@ -989,6 +989,7 @@ namespace OpenLoco::ObjectManager
         call(0x004697A1);
         // determine trafficHandedness
         call(0x0047D9F2);
+        // set water palette map
         call(0x004C57A6);
         call(0x00469F90);
     }

@@ -173,7 +173,7 @@ namespace OpenLoco::Colours
     };
 
     static constexpr std::array<ExtColour, 31> _shadowColourMap = {
-        ExtColour::null,
+        ExtColour::water,
         ExtColour::unk21,
         ExtColour::unk22,
         ExtColour::unk23,
