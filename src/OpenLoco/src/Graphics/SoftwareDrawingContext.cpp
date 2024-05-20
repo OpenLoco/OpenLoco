@@ -1451,9 +1451,8 @@ namespace OpenLoco::Gfx
             return basePoint;
         }
 
-        static void drawStringYOffsets(const RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
+        static void drawStringYOffsets(const RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
         {
-            auto* str = static_cast<const uint8_t*>(args);
             // This function has been somewhat simplified removing unreachable parts
             if (colour.isFE())
             {
@@ -1492,7 +1491,7 @@ namespace OpenLoco::Gfx
                     }
                 }
 
-                const auto chr = *str;
+                const auto chr = static_cast<uint8_t>(*str);
                 str++;
 
                 switch (chr)
@@ -2685,9 +2684,9 @@ namespace OpenLoco::Gfx
         return Impl::drawStringRightUnderline(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
+    void SoftwareDrawingContext::drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
     {
-        return Impl::drawStringYOffsets(rt, loc, colour, args, yOffsets);
+        return Impl::drawStringYOffsets(rt, loc, colour, str, yOffsets);
     }
 
     void SoftwareDrawingContext::drawStringTicker(const RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
