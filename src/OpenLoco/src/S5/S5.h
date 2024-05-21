@@ -442,6 +442,7 @@ namespace OpenLoco::S5
         packCustomObjects = 1U << 0,
         scenario = 1U << 1,
         landscape = 1U << 2,
+        isAutosave = 1U << 28,
         noWindowClose = 1U << 29,
         raw = 1U << 30,  // Save raw data including pointers with no clean up
         dump = 1U << 31, // Used for dumping the game state when there is a fatal error
