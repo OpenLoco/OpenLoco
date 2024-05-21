@@ -247,13 +247,6 @@ namespace OpenLoco::Gfx
         auto max = Rect(0, 0, Ui::width(), Ui::height());
         auto rect = _rect.intersection(max);
 
-        registers regs;
-        regs.ax = rect.left();
-        regs.bx = rect.top();
-        regs.cx = rect.right() - 1;
-        regs.dx = rect.bottom() - 1;
-        call(0x00451D98, regs);
-
         RenderTarget rt;
         rt.width = rect.width();
         rt.height = rect.height();

@@ -557,7 +557,8 @@ namespace OpenLoco
 
                     Audio::playBackgroundMusic();
 
-                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
+                    // 0x0052532C != 0 isMinimized
+                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && Ui::width() < 64)
                     {
                         Tutorial::stop();
 
