@@ -726,16 +726,253 @@ namespace OpenLoco::Gfx
             drawImage(*rt, { x, y }, ImageId::fromUInt32(image));
         }
 
+        // 0x00450890, 0x00450F87, 0x00450D1E, 0x00450ABA
+        template<int32_t TZoomLevel>
+        static void drawMaskedZoom(
+            int16_t imageHeight,
+            int16_t imageWidth,
+            int16_t rowSize,
+            const uint8_t* bytesMask,
+            int16_t dstWrap,
+            uint8_t* dstBuf,
+            const uint8_t* bytesImage)
+        {
+            const auto scaledHeight = imageHeight >> TZoomLevel;
+            if (scaledHeight == 0)
+                return;
+
+            const auto scaledWidth = imageWidth >> TZoomLevel;
+            if (scaledWidth == 0)
+                return;
+
+            constexpr auto skip = (1U << TZoomLevel);
+
+            // Calculate the row size.
+            const auto scaledRowSize = [&]() {
+                if constexpr (TZoomLevel == 0)
+                {
+                    return rowSize;
+                }
+                else
+                {
+                    constexpr auto zoomMask = (1 << TZoomLevel) - 1;
+
+                    const auto scaledRowSize = zoomMask * static_cast<uint16_t>(rowSize + imageWidth) + rowSize;
+                    const auto maskedRowSize = static_cast<uint16_t>(imageWidth) & zoomMask;
+
+                    return maskedRowSize + scaledRowSize;
+                }
+            }();
+
+            if constexpr (TZoomLevel > 0)
+            {
+                dstWrap -= scaledWidth;
+            }
+
+            for (auto y = 0; y < scaledHeight; y++)
+            {
+                for (auto x = 0; x < scaledWidth; x++)
+                {
+                    const auto masked = *bytesMask & *bytesImage;
+                    if (masked)
+                        *dstBuf = masked;
+
+                    bytesImage += skip;
+                    bytesMask += skip;
+                    dstBuf++;
+                }
+
+                bytesImage += scaledRowSize;
+                bytesMask += scaledRowSize;
+                dstBuf += dstWrap;
+            }
+        }
+
+        template<int32_t TZoomLevel>
+        static void drawImageMaskedZoom(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
+        {
+            const auto* g1Image = Gfx::getG1Element(image.getIndex());
+            if (g1Image == nullptr)
+            {
+                return;
+            }
+            if (g1Image->hasFlags(G1ElementFlags::isRLECompressed))
+            {
+                // This is not supported.
+                assert(false);
+
+                return;
+            }
+
+            const auto* g1ImageMask = Gfx::getG1Element(maskImage.getIndex());
+            if (g1ImageMask == nullptr)
+            {
+                return;
+            }
+            if (g1ImageMask->hasFlags(G1ElementFlags::isRLECompressed))
+            {
+                // This is not supported.
+                assert(false);
+
+                return;
+            }
+
+            if constexpr (TZoomLevel > 0)
+            {
+                if (g1Image->hasFlags(G1ElementFlags::none))
+                    return;
+
+                if (g1Image->hasFlags(G1ElementFlags::hasZoomSprites))
+                {
+                    if (g1ImageMask->hasFlags(G1ElementFlags::noZoomDraw))
+                        return;
+
+                    if (g1ImageMask->hasFlags(G1ElementFlags::hasZoomSprites))
+                    {
+                        auto newRt = rt;
+                        --newRt.zoomLevel;
+                        newRt.x >>= 1;
+                        newRt.y >>= 1;
+                        newRt.width >>= 1;
+                        newRt.height >>= 1;
+                        drawImageMaskedZoom<TZoomLevel - 1>(
+                            newRt,
+                            { static_cast<int16_t>(pos.x >> 1), static_cast<int16_t>(pos.y >> 1) },
+                            image.withIndexOffset(-g1Image->zoomOffset),
+                            maskImage.withIndexOffset(-g1ImageMask->zoomOffset));
+                        return;
+                    }
+                }
+            }
+
+            int16_t imageHeight = g1Image->height;
+            int16_t imageWidth = g1Image->width;
+
+            const auto* imageDataPos = g1Image->offset;
+            auto* dstBuf = rt.bits;
+
+            constexpr uint16_t zoomMask = static_cast<uint16_t>(~0ULL << TZoomLevel);
+            constexpr int16_t offsetX = (1 << TZoomLevel) - 1;
+
+            int16_t dstTop = ((g1Image->yOffset + pos.y) & zoomMask) - rt.y;
+            if (dstTop >= 0)
+            {
+                auto scaledWidth = rt.width >> TZoomLevel;
+                scaledWidth = rt.pitch + scaledWidth;
+                dstBuf += (dstTop >> TZoomLevel) * scaledWidth;
+            }
+            else
+            {
+                if (dstTop + imageHeight == 0)
+                {
+                    return;
+                }
+
+                imageHeight += dstTop;
+
+                if (imageHeight < 0)
+                {
+                    return;
+                }
+
+                const auto startOffset = static_cast<uint16_t>(-dstTop) * g1Image->width;
+                imageDataPos = &g1Image->offset[startOffset];
+
+                dstTop = 0;
+            }
+
+            int16_t dstBottom = imageHeight + dstTop;
+            if (dstBottom > rt.height)
+            {
+                imageHeight -= dstBottom - rt.height;
+
+                if (imageHeight <= 0)
+                {
+                    return;
+                }
+            }
+
+            int16_t rowSize = 0;
+            int16_t dstWrap = rt.pitch + (rt.width >> TZoomLevel);
+
+            if constexpr (TZoomLevel == 0)
+            {
+                dstWrap -= g1Image->width;
+            }
+
+            int16_t dstLeft = ((g1Image->xOffset + pos.x + offsetX) & zoomMask) - rt.x;
+            if (dstLeft < 0)
+            {
+                imageWidth += dstLeft;
+                if (imageWidth <= 0)
+                {
+                    return;
+                }
+
+                rowSize -= dstLeft;
+                imageDataPos -= dstLeft;
+
+                if constexpr (TZoomLevel == 0)
+                {
+                    dstWrap -= dstLeft;
+                }
+
+                dstLeft = 0;
+            }
+
+            int16_t dstRight = imageWidth + dstLeft - rt.width;
+            if (imageWidth + dstLeft > rt.width)
+            {
+                imageWidth -= dstRight;
+                if (imageWidth <= 0)
+                {
+                    return;
+                }
+
+                rowSize += dstRight;
+
+                if constexpr (TZoomLevel == 0)
+                {
+                    dstWrap += dstRight;
+                }
+            }
+
+            dstBuf += (dstLeft >> TZoomLevel);
+
+            auto imageOffset = imageDataPos - g1Image->offset;
+            drawMaskedZoom<TZoomLevel>(
+                imageHeight,
+                imageWidth,
+                rowSize,
+                &g1ImageMask->offset[imageOffset],
+                dstWrap,
+                dstBuf,
+                imageDataPos);
+        }
+
         // 0x00450705
         static void drawImageMasked(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
         {
-            registers regs;
-            regs.edi = X86Pointer(&rt);
-            regs.cx = pos.x;
-            regs.dx = pos.y;
-            regs.ebx = image.toUInt32();
-            regs.ebp = maskImage.toUInt32();
-            call(0x00450705, regs);
+            switch (rt.zoomLevel)
+            {
+                case 0:
+                    drawImageMaskedZoom<0>(rt, pos, image, maskImage);
+                    return;
+                case 1:
+                    drawImageMaskedZoom<1>(rt, pos, image, maskImage);
+                    return;
+                case 2:
+                    drawImageMaskedZoom<2>(rt, pos, image, maskImage);
+                    return;
+                case 3:
+                    drawImageMaskedZoom<3>(rt, pos, image, maskImage);
+                    return;
+                default:
+                    break;
+            }
+
+            // Unreachable
+            assert(false);
         }
 
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
