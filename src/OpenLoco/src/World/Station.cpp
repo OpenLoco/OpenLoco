@@ -1,5 +1,8 @@
 #include "Station.h"
 #include "CompanyManager.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/SoftwareDrawingContext.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -801,12 +804,72 @@ namespace OpenLoco
         }
     }
 
+    // TODO: Deduplicate
+    static constexpr std::array<int16_t, 4> kZoomToStationFonts = {
+        Font::medium_bold,
+        Font::medium_bold,
+        Font::small,
+        Font::small,
+    };
+
+    static constexpr std::array<int16_t, 4> kZoomToBorder = {
+        6,
+        6,
+        2,
+        2,
+    };
+
+    static constexpr std::array<int16_t, 4> kZoomToTextHeight = {
+        11,
+        11,
+        7,
+        7,
+    };
+
     // 0x0048DCA5
     void Station::updateLabel()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x0048DCA5, regs);
+        // duplicate of drawStationName in Viewport.cpp
+        char buffer[256]{};
+        FormatArguments args{};
+        args.push(town);
+        auto* strEnd = StringManager::formatString(buffer, 256, name, args);
+
+        *strEnd++ = ' ';
+        *strEnd = '\0';
+
+        const auto remainingLength = strEnd - buffer;
+        StringManager::formatString(strEnd, remainingLength, getTransportIconsFromStationFlags(flags));
+
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
+        for (auto zoom = 0U; zoom < 4; ++zoom)
+        {
+            Ui::Viewport virtualVp{};
+            virtualVp.zoom = zoom;
+
+            const auto labelCenter = World::Pos3{ x, y, z };
+            const auto vpPos = World::gameToScreen(labelCenter, WindowManager::getCurrentRotation());
+
+            drawingCtx.setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
+            const auto width = drawingCtx.getStringWidth(buffer) + kZoomToBorder[zoom];
+            const auto height = kZoomToTextHeight[zoom];
+
+            const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
+
+            const auto left = vpPos.x - zoomWidth / 2;
+            const auto right = left + zoomWidth;
+            const auto top = vpPos.y - zoomHeight / 2;
+            const auto bottom = top + zoomHeight;
+
+            const auto [uiLeft, uiTop] = ViewportToScreen::scaleTransform(Ui::Point(left, top), virtualVp);
+            const auto [uiRight, uiBottom] = ViewportToScreen::scaleTransform(Ui::Point(right, bottom), virtualVp);
+
+            labelFrame.left[zoom] = uiLeft;
+            labelFrame.right[zoom] = uiRight;
+            labelFrame.top[zoom] = uiTop;
+            labelFrame.bottom[zoom] = uiBottom;
+        }
     }
 
     // 0x004CBA2D
