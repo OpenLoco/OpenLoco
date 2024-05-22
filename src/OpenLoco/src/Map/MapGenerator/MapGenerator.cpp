@@ -782,7 +782,7 @@ namespace OpenLoco::World::MapGenerator
                 if (totalDist < 800 || totalDist > 2240)
                     continue;
 
-                // Figure out the preferred rotation and distance to work with
+                // Order distances such that the longest edge is in xDist
                 if (yDist > xDist)
                 {
                     std::swap(xDist, yDist);
@@ -801,12 +801,12 @@ namespace OpenLoco::World::MapGenerator
                     if (targetNumber < 0)
                     {
                         rotationBL = rotationBH; // bl = bh
-                        yDist = xDist;           // dh = dl
+                        xDist = yDist;           // dh = dl
                         continue;
                     }
 
                     // 0x0042E956
-                    auto index = (rotationBH << 8) | rotationBL;
+                    auto index = rotationBL;
                     auto offset = World::Pos2(_503C6C[index].x * targetNumber, _503C6C[index].y * targetNumber);
                     auto targetPos = World::Pos2(industry.x, industry.y) + offset;
                     if (!drawableCoords(targetPos))
@@ -822,10 +822,10 @@ namespace OpenLoco::World::MapGenerator
                         continue;
                     }
 
-                    auto baseZ = TileManager::getSurfaceCornerHeight(*surface);
+                    auto height = TileManager::getSurfaceCornerHeight(*surface);
 
                     GameCommands::BuildingPlacementArgs buildArgs{};
-                    buildArgs.pos = World::Pos3(targetPos, baseZ);
+                    buildArgs.pos = World::Pos3(targetPos, height);
                     buildArgs.rotation = preferredRotation;
                     buildArgs.type = static_cast<uint8_t>(id);
                     buildArgs.variation = 0;
