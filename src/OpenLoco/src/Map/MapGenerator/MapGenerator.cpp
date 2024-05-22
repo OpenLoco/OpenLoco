@@ -750,16 +750,10 @@ namespace OpenLoco::World::MapGenerator
 
     static void placeBuildingsAlongLine(World::Pos2 origin, const BuildingObject* buildingObj, const size_t buildingId, int16_t remainingDistance, uint8_t rotation)
     {
-        // We'll be placing two buildings along the line, working towards the origin.
-        for (auto i = 0; i < 2; i++)
+        // We'll be placing buildings along the line, working towards the origin.
+        // 0x0042E945
+        for (; remainingDistance > 0; remainingDistance -= buildingObj->averageNumberOnMap)
         {
-            // 0x0042E945
-            remainingDistance -= buildingObj->averageNumberOnMap;
-            if (remainingDistance < 0)
-            {
-                return;
-            }
-
             // 0x0042E956
             auto offset = _503C6C[rotation] * remainingDistance;
             auto targetPos = origin + offset;
