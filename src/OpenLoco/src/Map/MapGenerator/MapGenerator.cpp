@@ -748,6 +748,51 @@ namespace OpenLoco::World::MapGenerator
         });
     }
 
+    static void placeBuildingsAlongLine(World::Pos2 origin, const BuildingObject* buildingObj, const size_t buildingId, int16_t remainingDistance, uint8_t rotation)
+    {
+        // We'll be placing two buildings along the line, working towards the origin.
+        for (auto i = 0; i < 2; i++)
+        {
+            // 0x0042E945
+            remainingDistance -= buildingObj->averageNumberOnMap;
+            if (remainingDistance < 0)
+            {
+                return;
+            }
+
+            // 0x0042E956
+            auto offset = _503C6C[rotation] * remainingDistance;
+            auto targetPos = origin + offset;
+            if (!drawableCoords(targetPos))
+            {
+                return;
+            }
+
+            // 0x0042E98A
+            auto tile = TileManager::get(targetPos);
+            auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                return;
+            }
+
+            auto height = TileManager::getSurfaceCornerHeight(*surface);
+
+            GameCommands::BuildingPlacementArgs buildArgs{};
+            buildArgs.pos = World::Pos3(targetPos, height);
+            buildArgs.rotation = rotation;
+            buildArgs.type = static_cast<uint8_t>(buildingId);
+            buildArgs.variation = 0;
+            buildArgs.colour = Colour::black;
+            buildArgs.buildImmediately = true;
+
+            // NB: return is ignored
+            GameCommands::doCommand(buildArgs, GameCommands::Flags::apply);
+        }
+
+        return;
+    }
+
     // 0x0042E893
     // Example: 'Electricity Pylon' building object
     static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
@@ -789,51 +834,9 @@ namespace OpenLoco::World::MapGenerator
                     std::swap(rotationBL, rotationBH);
                 }
 
-                // 0x0042E91B
-                for (auto attemptsLeft = 2; attemptsLeft > 0; attemptsLeft--)
-                {
-                    // 0x0042E932
-                    auto remainingDistance = xDist;
-                    auto preferredRotation = rotationBL;
-
-                    // 0x0042E945
-                    auto targetNumber = remainingDistance - buildingObj->averageNumberOnMap;
-                    if (targetNumber < 0)
-                    {
-                        rotationBL = rotationBH; // bl = bh
-                        xDist = yDist;           // dh = dl
-                        continue;
-                    }
-
-                    // 0x0042E956
-                    auto index = rotationBL;
-                    auto offset = World::Pos2(_503C6C[index].x * targetNumber, _503C6C[index].y * targetNumber);
-                    auto targetPos = World::Pos2(industry.x, industry.y) + offset;
-                    if (!drawableCoords(targetPos))
-                    {
-                        continue;
-                    }
-
-                    // 0x0042E98A
-                    auto tile = TileManager::get(targetPos);
-                    auto* surface = tile.surface();
-                    if (surface == nullptr)
-                    {
-                        continue;
-                    }
-
-                    auto height = TileManager::getSurfaceCornerHeight(*surface);
-
-                    GameCommands::BuildingPlacementArgs buildArgs{};
-                    buildArgs.pos = World::Pos3(targetPos, height);
-                    buildArgs.rotation = preferredRotation;
-                    buildArgs.type = static_cast<uint8_t>(id);
-                    buildArgs.variation = 0;
-                    buildArgs.colour = Colour::black;
-                    buildArgs.buildImmediately = true;
-
-                    GameCommands::doCommand(buildArgs, GameCommands::Flags::apply);
-                }
+                auto origin = World::Pos2(industry.x, industry.y);
+                placeBuildingsAlongLine(origin, buildingObj, id, xDist, rotationBL);
+                placeBuildingsAlongLine(origin, buildingObj, id, yDist, rotationBH);
 
                 // 0x0042E9FF
                 numTownsLeft--;
