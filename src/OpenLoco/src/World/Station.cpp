@@ -859,7 +859,7 @@ namespace OpenLoco
 
             const auto left = vpPos.x - zoomWidth / 2;
             const auto right = left + zoomWidth;
-            const auto top = vpPos.y - zoomHeight / 2;
+            const auto top = vpPos.y - zoomHeight / 2 - 32;
             const auto bottom = top + zoomHeight;
 
             const auto [uiLeft, uiTop] = ViewportToScreen::scaleTransform(Ui::Point(left, top), virtualVp);
