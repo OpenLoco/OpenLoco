@@ -748,18 +748,20 @@ namespace OpenLoco::World::MapGenerator
         });
     }
 
-    static void placeBuildingsAlongLine(World::Pos2 origin, uint8_t numTilesBetween, const size_t buildingId, int16_t remainingDistance, uint8_t rotation)
+    static World::Pos2 placeBuildingsAlongLine(World::Pos2 origin, uint8_t numTilesBetween, const size_t buildingId, int16_t remainingTilesDistance, uint8_t rotation)
     {
-        // We'll be placing buildings along the line, working towards the origin.
+        // We'll be placing buildings along the line and return the final location.
+
+        World::Pos2 targetPos = origin;
         // 0x0042E945
-        for (; remainingDistance > 0; remainingDistance -= numTilesBetween)
+        for (remainingTilesDistance -= numTilesBetween; remainingTilesDistance > 0; remainingTilesDistance -= numTilesBetween)
         {
             // 0x0042E956
-            auto offset = _503C6C[rotation] * remainingDistance;
-            auto targetPos = origin + offset;
+            auto offset = _503C6C[rotation] * numTilesBetween;
+            targetPos += offset;
             if (!drawableCoords(targetPos))
             {
-                return;
+                break;
             }
 
             // 0x0042E98A
@@ -767,24 +769,24 @@ namespace OpenLoco::World::MapGenerator
             auto* surface = tile.surface();
             if (surface == nullptr)
             {
-                return;
+                break;
             }
 
             auto height = TileManager::getSurfaceCornerHeight(*surface);
 
             GameCommands::BuildingPlacementArgs buildArgs{};
-            buildArgs.pos = World::Pos3(targetPos, height);
+            buildArgs.pos = World::Pos3(targetPos, height * World::kSmallZStep);
             buildArgs.rotation = rotation;
             buildArgs.type = static_cast<uint8_t>(buildingId);
             buildArgs.variation = 0;
             buildArgs.colour = Colour::black;
             buildArgs.buildImmediately = true;
 
-            // NB: return is ignored
+            // NB: return is ignored (it doesn't matter if some pylons missing)
             GameCommands::doCommand(buildArgs, GameCommands::Flags::apply);
         }
 
-        return;
+        return targetPos;
     }
 
     // 0x0042E893
@@ -817,8 +819,8 @@ namespace OpenLoco::World::MapGenerator
                     rotationBH = 3;
                 }
 
-                auto totalDist = xDist + yDist; // bp
-                if (totalDist < 800 || totalDist > 2240)
+                auto manhattanDistance = xDist + yDist; // bp
+                if (manhattanDistance < 800 || manhattanDistance > 2240)
                     continue;
 
                 // Order distances such that the longest edge is in xDist
@@ -829,8 +831,8 @@ namespace OpenLoco::World::MapGenerator
                 }
 
                 auto origin = World::Pos2(industry.x, industry.y);
-                placeBuildingsAlongLine(origin, buildingObj->averageNumberOnMap, id, xDist, rotationBL);
-                placeBuildingsAlongLine(origin, buildingObj->averageNumberOnMap, id, yDist, rotationBH);
+                const auto lineEnd = placeBuildingsAlongLine(origin, buildingObj->averageNumberOnMap, id, xDist / kTileSize, rotationBL);
+                placeBuildingsAlongLine(lineEnd, buildingObj->averageNumberOnMap, id, yDist / kTileSize, rotationBH);
 
                 // 0x0042E9FF
                 numTownsLeft--;
