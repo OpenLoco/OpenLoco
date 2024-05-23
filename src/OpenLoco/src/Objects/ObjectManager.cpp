@@ -501,6 +501,7 @@ namespace OpenLoco::ObjectManager
     static void callObjectLoad(const LoadedObjectHandle& handle, Object& obj, std::span<const std::byte> data, DependentObjects* dependencies = nullptr)
     {
         return visitObject(handle.type, obj, [&](auto&& obj) {
+            std::memcpy(obj, data.data(), sizeof(*obj));
             return obj->load(handle, data, dependencies);
         });
     }
@@ -516,7 +517,7 @@ namespace OpenLoco::ObjectManager
         forEachLoadedObject([&loadedObjects](const LoadedObjectHandle& handle) {
             auto* obj = getAny(handle);
             auto& extHdr = getRepositoryItem(handle.type).objectEntryExtendeds[handle.id];
-            callObjectLoad(handle, *obj, std::span<const std::byte>(reinterpret_cast<std::byte*>(obj), extHdr.dataSize));
+            callObjectLoad(handle, *obj, std::span(_rawObjectDatas._datas[enumValue(handle.type)][handle.id].get(), extHdr.dataSize));
             loadedObjects++;
         });
 
@@ -757,7 +758,7 @@ namespace OpenLoco::ObjectManager
             return;
         }
         unload(*handle);
-        free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
+        //free(_objectRepository[enumValue(handle->type)].objects[handle->id]);
         _objectRepository[enumValue(handle->type)].objects[handle->id] = reinterpret_cast<Object*>(-1);
     }
 
@@ -1233,6 +1234,15 @@ namespace OpenLoco::ObjectManager
                 regs = backup;
 
                 return res ? 0 : X86_FLAG_CARRY;
+            });
+
+        registerHook(
+            0x0047237D,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                reloadAll();
+                regs = backup;
+                return 0;
             });
     }
 }
