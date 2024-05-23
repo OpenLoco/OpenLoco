@@ -167,77 +167,116 @@ namespace OpenLoco::ObjectManager
 
     struct ObjectHeaderDatas
     {
-        std::array<InterfaceSkinObject, getMaxObjects(ObjectType::interfaceSkin)> _interfaceSkins;
-        std::array<SoundObject, getMaxObjects(ObjectType::sound)> _sounds;
-        std::array<CurrencyObject, getMaxObjects(ObjectType::currency)> _currencys;
-        std::array<SteamObject, getMaxObjects(ObjectType::steam)> _steams;
-        std::array<CliffEdgeObject, getMaxObjects(ObjectType::cliffEdge)> _cliffEdges;
-        std::array<WaterObject, getMaxObjects(ObjectType::water)> _waters;
-        std::array<LandObject, getMaxObjects(ObjectType::land)> _lands;
-        std::array<TownNamesObject, getMaxObjects(ObjectType::townNames)> _townNamess;
-        std::array<CargoObject, getMaxObjects(ObjectType::cargo)> _cargos;
-        std::array<WallObject, getMaxObjects(ObjectType::wall)> _walls;
-        std::array<TrainSignalObject, getMaxObjects(ObjectType::trackSignal)> _trackSignals;
-        std::array<LevelCrossingObject, getMaxObjects(ObjectType::levelCrossing)> _levelCrossings;
-        std::array<StreetLightObject, getMaxObjects(ObjectType::streetLight)> _streetLights;
-        std::array<TunnelObject, getMaxObjects(ObjectType::tunnel)> _tunnels;
-        std::array<BridgeObject, getMaxObjects(ObjectType::bridge)> _bridges;
-        std::array<TrainStationObject, getMaxObjects(ObjectType::trainStation)> _trainStations;
-        std::array<TrackExtraObject, getMaxObjects(ObjectType::trackExtra)> _trackExtras;
-        std::array<TrackObject, getMaxObjects(ObjectType::track)> _tracks;
-        std::array<RoadStationObject, getMaxObjects(ObjectType::roadStation)> _roadStations;
-        std::array<RoadExtraObject, getMaxObjects(ObjectType::roadExtra)> _roadExtras;
-        std::array<RoadObject, getMaxObjects(ObjectType::road)> _roads;
-        std::array<AirportObject, getMaxObjects(ObjectType::airport)> _airports;
-        std::array<DockObject, getMaxObjects(ObjectType::dock)> _docks;
-        std::array<VehicleObject, getMaxObjects(ObjectType::vehicle)> _vehicles;
-        std::array<TreeObject, getMaxObjects(ObjectType::tree)> _trees;
-        std::array<SnowObject, getMaxObjects(ObjectType::snow)> _snows;
-        std::array<ClimateObject, getMaxObjects(ObjectType::climate)> _climates;
-        std::array<HillShapesObject, getMaxObjects(ObjectType::hillShapes)> _hillShapess;
-        std::array<BuildingObject, getMaxObjects(ObjectType::building)> _buildings;
-        std::array<ScaffoldingObject, getMaxObjects(ObjectType::scaffolding)> _scaffoldings;
-        std::array<IndustryObject, getMaxObjects(ObjectType::industry)> _industrys;
-        std::array<RegionObject, getMaxObjects(ObjectType::region)> _regions;
-        std::array<CompetitorObject, getMaxObjects(ObjectType::competitor)> _competitors;
-        std::array<ScenarioTextObject, getMaxObjects(ObjectType::scenarioText)> _scenarioTexts;
+        std::array<InterfaceSkinObject, getMaxObjects(ObjectType::interfaceSkin)> _interfaceSkins{};
+        std::array<SoundObject, getMaxObjects(ObjectType::sound)> _sounds{};
+        std::array<CurrencyObject, getMaxObjects(ObjectType::currency)> _currencys{};
+        std::array<SteamObject, getMaxObjects(ObjectType::steam)> _steams{};
+        std::array<CliffEdgeObject, getMaxObjects(ObjectType::cliffEdge)> _cliffEdges{};
+        std::array<WaterObject, getMaxObjects(ObjectType::water)> _waters{};
+        std::array<LandObject, getMaxObjects(ObjectType::land)> _lands{};
+        std::array<TownNamesObject, getMaxObjects(ObjectType::townNames)> _townNamess{};
+        std::array<CargoObject, getMaxObjects(ObjectType::cargo)> _cargos{};
+        std::array<WallObject, getMaxObjects(ObjectType::wall)> _walls{};
+        std::array<TrainSignalObject, getMaxObjects(ObjectType::trackSignal)> _trackSignals{};
+        std::array<LevelCrossingObject, getMaxObjects(ObjectType::levelCrossing)> _levelCrossings{};
+        std::array<StreetLightObject, getMaxObjects(ObjectType::streetLight)> _streetLights{};
+        std::array<TunnelObject, getMaxObjects(ObjectType::tunnel)> _tunnels{};
+        std::array<BridgeObject, getMaxObjects(ObjectType::bridge)> _bridges{};
+        std::array<TrainStationObject, getMaxObjects(ObjectType::trainStation)> _trainStations{};
+        std::array<TrackExtraObject, getMaxObjects(ObjectType::trackExtra)> _trackExtras{};
+        std::array<TrackObject, getMaxObjects(ObjectType::track)> _tracks{};
+        std::array<RoadStationObject, getMaxObjects(ObjectType::roadStation)> _roadStations{};
+        std::array<RoadExtraObject, getMaxObjects(ObjectType::roadExtra)> _roadExtras{};
+        std::array<RoadObject, getMaxObjects(ObjectType::road)> _roads{};
+        std::array<AirportObject, getMaxObjects(ObjectType::airport)> _airports{};
+        std::array<DockObject, getMaxObjects(ObjectType::dock)> _docks{};
+        std::array<VehicleObject, getMaxObjects(ObjectType::vehicle)> _vehicles{};
+        std::array<TreeObject, getMaxObjects(ObjectType::tree)> _trees{};
+        std::array<SnowObject, getMaxObjects(ObjectType::snow)> _snows{};
+        std::array<ClimateObject, getMaxObjects(ObjectType::climate)> _climates{};
+        std::array<HillShapesObject, getMaxObjects(ObjectType::hillShapes)> _hillShapess{};
+        std::array<BuildingObject, getMaxObjects(ObjectType::building)> _buildings{};
+        std::array<ScaffoldingObject, getMaxObjects(ObjectType::scaffolding)> _scaffoldings{};
+        std::array<IndustryObject, getMaxObjects(ObjectType::industry)> _industrys{};
+        std::array<RegionObject, getMaxObjects(ObjectType::region)> _regions{};
+        std::array<CompetitorObject, getMaxObjects(ObjectType::competitor)> _competitors{};
+        std::array<ScenarioTextObject, getMaxObjects(ObjectType::scenarioText)> _scenarioTexts{};
 
-        std::array<std::span<Object*>, kMaxObjectTypes> _datas = {
-            std::span<Object*>((Object**)&*_interfaceSkins.data(), (Object**)&*_interfaceSkins.end()),
-            std::span<Object*>((Object**)&*_sounds.begin(), (Object**)&*_sounds.end()),
-            std::span<Object*>((Object**)&*_currencys.begin(), (Object**)&*_currencys.end()),
-            std::span<Object*>((Object**)&*_steams.begin(), (Object**)&*_steams.end()),
-            std::span<Object*>((Object**)&*_cliffEdges.begin(), (Object**)&*_cliffEdges.end()),
-            std::span<Object*>((Object**)&*_waters.begin(), (Object**)&*_waters.end()),
-            std::span<Object*>((Object**)&*_lands.begin(), (Object**)&*_lands.end()),
-            std::span<Object*>((Object**)&*_townNamess.begin(), (Object**)&*_townNamess.end()),
-            std::span<Object*>((Object**)&*_cargos.begin(), (Object**)&*_cargos.end()),
-            std::span<Object*>((Object**)&*_walls.begin(), (Object**)&*_walls.end()),
-            std::span<Object*>((Object**)&*_trackSignals.begin(), (Object**)&*_trackSignals.end()),
-            std::span<Object*>((Object**)&*_levelCrossings.begin(), (Object**)&*_levelCrossings.end()),
-            std::span<Object*>((Object**)&*_streetLights.begin(), (Object**)&*_streetLights.end()),
-            std::span<Object*>((Object**)&*_tunnels.begin(), (Object**)&*_tunnels.end()),
-            std::span<Object*>((Object**)&*_bridges.begin(), (Object**)&*_bridges.end()),
-            std::span<Object*>((Object**)&*_trainStations.begin(), (Object**)&*_trainStations.end()),
-            std::span<Object*>((Object**)&*_trackExtras.begin(), (Object**)&*_trackExtras.end()),
-            std::span<Object*>((Object**)&*_tracks.begin(), (Object**)&*_tracks.end()),
-            std::span<Object*>((Object**)&*_roadStations.begin(), (Object**)&*_roadStations.end()),
-            std::span<Object*>((Object**)&*_roadExtras.begin(), (Object**)&*_roadExtras.end()),
-            std::span<Object*>((Object**)&*_roads.begin(), (Object**)&*_roads.end()),
-            std::span<Object*>((Object**)&*_airports.begin(), (Object**)&*_airports.end()),
-            std::span<Object*>((Object**)&*_docks.begin(), (Object**)&*_docks.end()),
-            std::span<Object*>((Object**)&*_vehicles.begin(), (Object**)&*_vehicles.end()),
-            std::span<Object*>((Object**)&*_trees.begin(), (Object**)&*_trees.end()),
-            std::span<Object*>((Object**)&*_snows.begin(), (Object**)&*_snows.end()),
-            std::span<Object*>((Object**)&*_climates.begin(), (Object**)&*_climates.end()),
-            std::span<Object*>((Object**)&*_hillShapess.begin(), (Object**)&*_hillShapess.end()),
-            std::span<Object*>((Object**)&*_buildings.begin(), (Object**)&*_buildings.end()),
-            std::span<Object*>((Object**)&*_scaffoldings.begin(), (Object**)&*_scaffoldings.end()),
-            std::span<Object*>((Object**)&*_industrys.begin(), (Object**)&*_industrys.end()),
-            std::span<Object*>((Object**)&*_regions.begin(), (Object**)&*_regions.end()),
-            std::span<Object*>((Object**)&*_competitors.begin(), (Object**)&*_competitors.end()),
-            std::span<Object*>((Object**)&*_scenarioTexts.begin(), (Object**)&*_scenarioTexts.end()),
-        };
+        Object* getObject(const LoadedObjectHandle handle)
+        {
+            switch (handle.type)
+            {
+                case ObjectType::interfaceSkin:
+                    return (Object*)&_interfaceSkins[handle.id];
+                case ObjectType::sound:
+                    return (Object*)&_sounds[handle.id];
+                case ObjectType::currency:
+                    return (Object*)&_currencys[handle.id];
+                case ObjectType::steam:
+                    return (Object*)&_steams[handle.id];
+                case ObjectType::cliffEdge:
+                    return (Object*)&_cliffEdges[handle.id];
+                case ObjectType::water:
+                    return (Object*)&_waters[handle.id];
+                case ObjectType::land:
+                    return (Object*)&_lands[handle.id];
+                case ObjectType::townNames:
+                    return (Object*)&_townNamess[handle.id];
+                case ObjectType::cargo:
+                    return (Object*)&_cargos[handle.id];
+                case ObjectType::wall:
+                    return (Object*)&_walls[handle.id];
+                case ObjectType::trackSignal:
+                    return (Object*)&_trackSignals[handle.id];
+                case ObjectType::levelCrossing:
+                    return (Object*)&_levelCrossings[handle.id];
+                case ObjectType::streetLight:
+                    return (Object*)&_streetLights[handle.id];
+                case ObjectType::tunnel:
+                    return (Object*)&_tunnels[handle.id];
+                case ObjectType::bridge:
+                    return (Object*)&_bridges[handle.id];
+                case ObjectType::trainStation:
+                    return (Object*)&_trainStations[handle.id];
+                case ObjectType::trackExtra:
+                    return (Object*)&_trackExtras[handle.id];
+                case ObjectType::track:
+                    return (Object*)&_tracks[handle.id];
+                case ObjectType::roadStation:
+                    return (Object*)&_roadStations[handle.id];
+                case ObjectType::roadExtra:
+                    return (Object*)&_roadExtras[handle.id];
+                case ObjectType::road:
+                    return (Object*)&_roads[handle.id];
+                case ObjectType::airport:
+                    return (Object*)&_airports[handle.id];
+                case ObjectType::dock:
+                    return (Object*)&_docks[handle.id];
+                case ObjectType::vehicle:
+                    return (Object*)&_vehicles[handle.id];
+                case ObjectType::tree:
+                    return (Object*)&_trees[handle.id];
+                case ObjectType::snow:
+                    return (Object*)&_snows[handle.id];
+                case ObjectType::climate:
+                    return (Object*)&_climates[handle.id];
+                case ObjectType::hillShapes:
+                    return (Object*)&_hillShapess[handle.id];
+                case ObjectType::building:
+                    return (Object*)&_buildings[handle.id];
+                case ObjectType::scaffolding:
+                    return (Object*)&_scaffoldings[handle.id];
+                case ObjectType::industry:
+                    return (Object*)&_industrys[handle.id];
+                case ObjectType::region:
+                    return (Object*)&_regions[handle.id];
+                case ObjectType::competitor:
+                    return (Object*)&_competitors[handle.id];
+                case ObjectType::scenarioText:
+                    return (Object*)&_scenarioTexts[handle.id];
+            }
+            return nullptr;
+        }
     };
     static ObjectHeaderDatas _objectHeaderDatas;
 
@@ -682,7 +721,7 @@ namespace OpenLoco::ObjectManager
         }
 
         _rawObjectDatas._datas[enumValue(preLoadObj->header.getType())][id] = std::move(preLoadObj->object);
-        _objectRepository[enumValue(preLoadObj->header.getType())].objects[id] = (Object*)&_objectHeaderDatas._datas[enumValue(preLoadObj->header.getType())][id];
+        _objectRepository[enumValue(preLoadObj->header.getType())].objects[id] = _objectHeaderDatas.getObject(LoadedObjectHandle(preLoadObj->header.getType(), id));
         preLoadObj->object = nullptr;
         auto& extendedHeader = _objectRepository[enumValue(preLoadObj->header.getType())].objectEntryExtendeds[id];
         extendedHeader = ObjectEntry2{
