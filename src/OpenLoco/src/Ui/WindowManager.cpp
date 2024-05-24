@@ -1502,16 +1502,14 @@ namespace OpenLoco::Ui::WindowManager
             return false;
         }
 
-        const auto buttonWidgetIndex = wheel < 0 ? widgetIndex + 2 : widgetIndex + 1;
-        const auto entryWidgetType = w.widgets[buttonWidgetIndex].type;
-
+        const auto entryWidgetType = w.widgets[*stepperGroupIndex].type;
         if (entryWidgetType == WidgetType::wt_3)
         {
             auto expectedContent1 = Gfx::recolour(ImageIds::decrease_tool_area, Colour::white);
             auto expectedContent2 = Gfx::recolour(ImageIds::increase_tool_area, Colour::white);
 
-            auto button1Image = w.widgets[widgetIndex + 1].image;
-            auto button2Image = w.widgets[widgetIndex + 2].image;
+            auto button1Image = w.widgets[*stepperGroupIndex + 1].image;
+            auto button2Image = w.widgets[*stepperGroupIndex + 2].image;
             if (button1Image != expectedContent1 || button2Image != expectedContent2)
             {
                 return false;
@@ -1519,20 +1517,21 @@ namespace OpenLoco::Ui::WindowManager
         }
         else if (entryWidgetType == WidgetType::textbox)
         {
-            auto button1StringId = w.widgets[widgetIndex + 1].text;
-            auto button2StringId = w.widgets[widgetIndex + 2].text;
+            auto button1StringId = w.widgets[*stepperGroupIndex + 1].text;
+            auto button2StringId = w.widgets[*stepperGroupIndex + 2].text;
             if (button1StringId != StringIds::stepper_minus || button2StringId != StringIds::stepper_plus)
             {
                 return false;
             }
         }
 
-        if (w.isDisabled(buttonWidgetIndex))
+        const auto targetWidgetIndex = wheel < 0 ? *stepperGroupIndex + 2 : *stepperGroupIndex + 1;
+        if (w.isDisabled(targetWidgetIndex))
         {
             return false;
         }
 
-        w.callOnMouseDown(buttonWidgetIndex);
+        w.callOnMouseDown(targetWidgetIndex);
         return true;
     }
 
