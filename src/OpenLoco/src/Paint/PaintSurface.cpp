@@ -1605,7 +1605,7 @@ namespace OpenLoco::Paint
             && zoomLevel <= 2
             && (session.getViewFlags() & Ui::ViewportFlags::underground_view) == Ui::ViewportFlags::none)
         {
-            const auto imageId = ImageId(kGridlinesBoxFromSlope[displaySlope], ExtColour::unk30);
+            const auto imageId = ImageId(kGridlinesBoxFromSlope[displaySlope]).withTranslucency(ExtColour::unk30);
             session.attachToPrevious(imageId, { 0, 0 });
         }
 
