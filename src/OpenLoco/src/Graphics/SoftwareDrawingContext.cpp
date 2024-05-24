@@ -1688,16 +1688,252 @@ namespace OpenLoco::Gfx
             return basePoint;
         }
 
-        static void drawStringYOffsets(const RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
+        static void drawStringYOffsets(const RenderTarget& rt, const Ui::Point& loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
         {
-            registers regs;
-            regs.edi = X86Pointer(&rt);
-            regs.esi = X86Pointer(args);
-            regs.ebp = X86Pointer(yOffsets);
-            regs.cx = loc.x;
-            regs.dx = loc.y;
-            regs.al = colour.u8();
-            call(0x0045196C, regs);
+            // This function has been somewhat simplified removing unreachable parts
+            if (colour.isFE())
+            {
+                assert(false);
+                return;
+            }
+            if (loc.x >= rt.x + rt.width)
+                return;
+
+            if (loc.x < rt.x - 1280)
+                return;
+
+            if (loc.y >= rt.y + rt.height)
+                return;
+
+            // Note: 60 not 90 like drawString
+            if (loc.y < rt.y - 60)
+                return;
+
+            _currentFontFlags = TextDrawFlags::none;
+
+            setTextColours(Colours::getShade(colour.c(), 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+
+            Ui::Point pos = loc;
+            while (true)
+            {
+                // When off-screen in y dimension don't draw text
+                // In original this check only performed if pos.y updated instead of every loop
+                bool offscreen = true;
+                // Note: 39 unlike drawString
+                if (pos.y + 39 > rt.y)
+                {
+                    if (rt.y + rt.height > pos.y - 20)
+                    {
+                        offscreen = false;
+                    }
+                }
+
+                const auto chr = static_cast<uint8_t>(*str);
+                str++;
+
+                switch (chr)
+                {
+                    case 0U:
+                        return;
+
+                    case ControlCodes::adjustPalette:
+                        // This control character does not appear in the localisation files
+                        assert(false);
+                        str++;
+                        break;
+
+                    case ControlCodes::newlineSmaller:
+                        pos.x = loc.x;
+                        if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
+                        {
+                            pos.y += 5;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::small)
+                        {
+                            pos.y += 3;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::large)
+                        {
+                            pos.y += 9;
+                        }
+                        break;
+
+                    case ControlCodes::newline:
+                        pos.x = loc.x;
+                        if (getCurrentFontSpriteBase() == Font::medium_normal || getCurrentFontSpriteBase() == Font::medium_bold)
+                        {
+                            pos.y += 10;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::small)
+                        {
+                            pos.y += 6;
+                        }
+                        else if (getCurrentFontSpriteBase() == Font::large)
+                        {
+                            pos.y += 18;
+                        }
+                        break;
+
+                    case ControlCodes::moveX:
+                    {
+                        uint8_t offset = *str;
+                        str++;
+                        pos.x = loc.x + offset;
+
+                        break;
+                    }
+
+                    case ControlCodes::newlineXY:
+                    {
+                        uint8_t offset = *str;
+                        str++;
+                        pos.x = loc.x + offset;
+
+                        offset = *str;
+                        str++;
+                        pos.y = loc.y + offset;
+
+                        break;
+                    }
+
+                    case ControlCodes::Font::small:
+                        setCurrentFontSpriteBase(Font::small);
+                        break;
+                    case ControlCodes::Font::large:
+                        setCurrentFontSpriteBase(Font::large);
+                        break;
+                    case ControlCodes::Font::regular:
+                        setCurrentFontSpriteBase(Font::medium_normal);
+                        break;
+                    case ControlCodes::Font::bold:
+                        setCurrentFontSpriteBase(Font::medium_bold);
+                        break;
+                    case ControlCodes::Font::outline:
+                        _currentFontFlags = _currentFontFlags | TextDrawFlags::outline;
+                        break;
+                    case ControlCodes::Font::outlineOff:
+                        _currentFontFlags = _currentFontFlags & ~TextDrawFlags::outline;
+                        break;
+                    case ControlCodes::windowColour1:
+                    {
+                        auto hue = _windowColours[0].c();
+                        setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour2:
+                    {
+                        auto hue = _windowColours[1].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour3:
+                    {
+                        auto hue = _windowColours[2].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+                    case ControlCodes::windowColour4:
+                    {
+                        auto hue = _windowColours[3].c();
+                        setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                        break;
+                    }
+
+                    case ControlCodes::inlineSpriteStr:
+                    {
+                        str += 4;
+                        // Not handled for YOffsets code
+                        assert(false);
+                        break;
+                    }
+
+                    case ControlCodes::Colour::black:
+                        setTextColour(0);
+                        break;
+
+                    case ControlCodes::Colour::grey:
+                        setTextColour(1);
+                        break;
+
+                    case ControlCodes::Colour::white:
+                        setTextColour(2);
+                        break;
+
+                    case ControlCodes::Colour::red:
+                        setTextColour(3);
+                        break;
+
+                    case ControlCodes::Colour::green:
+                        setTextColour(4);
+                        break;
+
+                    case ControlCodes::Colour::yellow:
+                        setTextColour(5);
+                        break;
+
+                    case ControlCodes::Colour::topaz:
+                        setTextColour(6);
+                        break;
+
+                    case ControlCodes::Colour::celadon:
+                        setTextColour(7);
+                        break;
+
+                    case ControlCodes::Colour::babyBlue:
+                        setTextColour(8);
+                        break;
+
+                    case ControlCodes::Colour::paleLavender:
+                        setTextColour(9);
+                        break;
+
+                    case ControlCodes::Colour::paleGold:
+                        setTextColour(10);
+                        break;
+
+                    case ControlCodes::Colour::lightPink:
+                        setTextColour(11);
+                        break;
+
+                    case ControlCodes::Colour::pearlAqua:
+                        setTextColour(12);
+                        break;
+
+                    case ControlCodes::Colour::paleSilver:
+                        setTextColour(13);
+                        break;
+
+                    default:
+                        if (pos.x >= rt.x + rt.width)
+                        {
+                            offscreen = true;
+                        }
+                        if (!offscreen)
+                        {
+                            if (pos.x + 26 < rt.x)
+                            {
+                                pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                                yOffsets++;
+                            }
+                            else
+                            {
+                                if (chr >= 32)
+                                {
+                                    // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
+                                    drawImagePaletteSet(rt, pos + Ui::Point(0, *yOffsets), ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                    pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                                    yOffsets++;
+                                }
+                                else
+                                {
+                                    // Unhandled control code
+                                    assert(false);
+                                }
+                            }
+                        }
+                        break;
+                }
+            }
         }
 
         // 0x00451582
@@ -2685,9 +2921,9 @@ namespace OpenLoco::Gfx
         return Impl::drawStringRightUnderline(rt, origin, colour, stringId, args);
     }
 
-    void SoftwareDrawingContext::drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets)
+    void SoftwareDrawingContext::drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
     {
-        return Impl::drawStringYOffsets(rt, loc, colour, args, yOffsets);
+        return Impl::drawStringYOffsets(rt, loc, colour, str, yOffsets);
     }
 
     void SoftwareDrawingContext::drawStringTicker(const RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
