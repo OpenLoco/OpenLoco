@@ -432,4 +432,20 @@ namespace OpenLoco::Gfx
 
         return ImageExtents{ static_cast<uint8_t>(spriteWidth), static_cast<uint8_t>(spriteHeightNegative), static_cast<uint8_t>(spriteHeightPositive) };
     }
+
+    static int32_t getFontBaseIndex(Font font)
+    {
+        // The Font type currently encodes the index, this may change in the future.
+        return enumValue(font);
+    }
+
+    int16_t getCharacterWidth(Font font, uint8_t character)
+    {
+        return _characterWidths[getFontBaseIndex(font) + character - 32];
+    }
+
+    void setCharacterWidth(Font font, uint8_t character, int16_t width)
+    {
+        _characterWidths[getFontBaseIndex(font) + character - 32] = width;
+    }
 }
