@@ -1,5 +1,6 @@
 #include "SoftwareDrawingContext.h"
 #include "DrawSprite.h"
+#include "Font.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Localisation/Formatting.h"
@@ -32,7 +33,7 @@ namespace OpenLoco::Gfx
 
         // TODO: Move them into RenderContext once everything is implemented.
         static loco_global<TextDrawFlags, 0x112C824> _currentFontFlags;
-        static loco_global<int16_t, 0x0112C876> _currentFontSpriteBase;
+        static loco_global<Font, 0x0112C876> _currentFontSpriteBase;
         static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
         static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
@@ -60,12 +61,12 @@ namespace OpenLoco::Gfx
         static void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex);
 
         // 0x0112C876
-        static int16_t getCurrentFontSpriteBase()
+        static Font getCurrentFontSpriteBase()
         {
             return _currentFontSpriteBase;
         }
 
-        static void setCurrentFontSpriteBase(int16_t base)
+        static void setCurrentFontSpriteBase(Font base)
         {
             _currentFontSpriteBase = base;
         }
@@ -205,7 +206,7 @@ namespace OpenLoco::Gfx
 
                 if (chr >= 32)
                 {
-                    width += _characterWidths[chr - 32 + fontSpriteBase];
+                    width += _characterWidths[chr - 32 + enumValue(fontSpriteBase)];
                     continue;
                 }
 
@@ -280,7 +281,7 @@ namespace OpenLoco::Gfx
             return width;
         }
 
-        static std::tuple<uint16_t, const char*, int16_t> getStringWidthOneLine(const char* ptr, int16_t font)
+        static std::tuple<uint16_t, const char*, Font> getStringWidthOneLine(const char* ptr, Font font)
         {
             uint16_t lineWidth = 0;
             for (; *ptr != '\0'; ++ptr)
@@ -342,7 +343,7 @@ namespace OpenLoco::Gfx
                 }
                 else
                 {
-                    lineWidth += _characterWidths[font + (chr - 32)];
+                    lineWidth += _characterWidths[enumValue(font) + (chr - 32)];
                 }
             }
             return std::make_tuple(lineWidth, ptr, font);
@@ -385,7 +386,7 @@ namespace OpenLoco::Gfx
 
                 if (chr >= 32)
                 {
-                    width += _characterWidths[chr - 32 + fontSpriteBase];
+                    width += _characterWidths[chr - 32 + enumValue(fontSpriteBase)];
                     continue;
                 }
 
@@ -1195,9 +1196,10 @@ namespace OpenLoco::Gfx
                             // When off-screen in the y dimension there is no requirement to keep pos.x correct
                             if (chr >= 32)
                             {
+                                const auto fontBase = enumValue(getCurrentFontSpriteBase());
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                drawImagePaletteSet(*rt, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
-                                pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                                drawImagePaletteSet(*rt, pos, ImageId(1116 + chr - 32 + fontBase).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                pos.x += _characterWidths[chr - 32 + fontBase];
                             }
                             else
                             {
@@ -1342,7 +1344,7 @@ namespace OpenLoco::Gfx
             return nullptr;
         }
 
-        static uint16_t lineHeightFromFont(int16_t font)
+        static uint16_t lineHeightFromFont(Font font)
         {
             if (font <= Font::medium_bold)
                 return 10;
@@ -1912,7 +1914,7 @@ namespace OpenLoco::Gfx
                         {
                             if (pos.x + 26 < rt.x)
                             {
-                                pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                                pos.x += _characterWidths[chr - 32 + enumValue(getCurrentFontSpriteBase())];
                                 yOffsets++;
                             }
                             else
@@ -1920,8 +1922,9 @@ namespace OpenLoco::Gfx
                                 if (chr >= 32)
                                 {
                                     // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                    drawImagePaletteSet(rt, pos + Ui::Point(0, *yOffsets), ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
-                                    pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                                    const auto fontBase = enumValue(getCurrentFontSpriteBase());
+                                    drawImagePaletteSet(rt, pos + Ui::Point(0, *yOffsets), ImageId(1116 + chr - 32 + fontBase).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                    pos.x += _characterWidths[chr - 32 + fontBase];
                                     yOffsets++;
                                 }
                                 else
@@ -2155,8 +2158,9 @@ namespace OpenLoco::Gfx
                             if (chr >= 32)
                             {
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                drawImagePaletteSet(rt, pos, ImageId(1116 + chr - 32 + getCurrentFontSpriteBase()).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
-                                pos.x += _characterWidths[chr - 32 + getCurrentFontSpriteBase()];
+                                const auto fontBase = enumValue(getCurrentFontSpriteBase());
+                                drawImagePaletteSet(rt, pos, ImageId(1116 + chr - 32 + fontBase).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                pos.x += _characterWidths[chr - 32 + fontBase];
                             }
                             else
                             {
@@ -2300,7 +2304,7 @@ namespace OpenLoco::Gfx
                             wordStart = ptr;
                             lastWordLineWith = lineWidth;
                         }
-                        lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                        lineWidth += _characterWidths[enumValue(font) + (static_cast<uint8_t>(*ptr) - 32)];
                     }
                 }
                 if (lineWidth >= stringWidth || *ptr == '\0')
@@ -2431,7 +2435,7 @@ namespace OpenLoco::Gfx
                         }
 
                         charNum--;
-                        lineWidth += _characterWidths[font + (static_cast<uint8_t>(*ptr) - 32)];
+                        lineWidth += _characterWidths[enumValue(font) + (static_cast<uint8_t>(*ptr) - 32)];
                     }
                 }
                 if (lineWidth >= stringWidth || *ptr == '\0')
@@ -2991,12 +2995,12 @@ namespace OpenLoco::Gfx
         return Impl::drawImagePaletteSet(rt, pos, image, palette, noiseImage);
     }
 
-    int16_t SoftwareDrawingContext::getCurrentFontSpriteBase()
+    Font SoftwareDrawingContext::getCurrentFontSpriteBase()
     {
         return Impl::getCurrentFontSpriteBase();
     }
 
-    void SoftwareDrawingContext::setCurrentFontSpriteBase(int16_t base)
+    void SoftwareDrawingContext::setCurrentFontSpriteBase(Font base)
     {
         return Impl::setCurrentFontSpriteBase(base);
     }

@@ -318,11 +318,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             std::string name(object.second._name);
             name.insert(0, 1, inlineColour);
 
-            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
             AdvancedColour stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
-                drawingCtx.setCurrentFontSpriteBase(Font::m1);
+                drawingCtx.setCurrentFontSpriteBase(Gfx::Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
 

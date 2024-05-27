@@ -70,11 +70,11 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         StringManager::formatString(_text, stringId, args);
 
-        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
         int16_t strWidth = drawingCtx.getStringWidthNewLined(_text);
         strWidth = std::min<int16_t>(strWidth, 196);
 
-        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
 
         auto [wrappedWidth, breakCount] = drawingCtx.wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;

@@ -473,6 +473,7 @@ set(OLOCO_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DrawSpriteRLE.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/DrawingContext.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/FPSCounter.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Font.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/Gfx.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImageId.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/ImageIds.h"

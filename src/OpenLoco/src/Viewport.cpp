@@ -80,11 +80,11 @@ namespace OpenLoco::Ui
         },
     };
 
-    static constexpr std::array<int16_t, 4> kZoomToStationFonts = {
-        Font::medium_bold,
-        Font::medium_bold,
-        Font::small,
-        Font::small,
+    static constexpr std::array<Gfx::Font, 4> kZoomToStationFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
+        Gfx::Font::small,
+        Gfx::Font::small,
     };
 
     // 0x0048DF4D, 0x0048E13B
@@ -164,11 +164,11 @@ namespace OpenLoco::Ui
         }
     }
 
-    static constexpr std::array<int16_t, 4> kZoomToTownFonts = {
-        Font::medium_bold,
-        Font::medium_bold,
-        Font::medium_normal,
-        Font::medium_normal,
+    static constexpr std::array<Gfx::Font, 4> kZoomToTownFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_normal,
+        Gfx::Font::medium_normal,
     };
 
     // 0x004977E5
@@ -237,7 +237,7 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            drawingCtx.setCurrentFontSpriteBase(Font::medium_normal);
+            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_normal);
 
             auto point = Point(orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel]);
             drawingCtx.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));

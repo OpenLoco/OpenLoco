@@ -2,6 +2,7 @@
 #include "Colour.h"
 #include "Config.h"
 #include "Environment.h"
+#include "Font.h"
 #include "Graphics/DrawSprite.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
@@ -156,7 +157,7 @@ namespace OpenLoco::Gfx
     {
         struct FontEntry
         {
-            int16_t offset;
+            Font offset;
             int8_t widthFudge;
         };
         constexpr std::array<FontEntry, 4> fonts = {
@@ -173,7 +174,7 @@ namespace OpenLoco::Gfx
             {
                 auto c = i + 32;
                 // TODO: Use an indirection to convert from character to imageId
-                auto* element = getG1Element(ImageIds::characters_medium_normal_space + i + font.offset);
+                auto* element = getG1Element(ImageIds::characters_medium_normal_space + i + enumValue(font.offset));
                 if (element == nullptr)
                 {
                     continue;
@@ -185,7 +186,7 @@ namespace OpenLoco::Gfx
                 {
                     width = 0;
                 }
-                _characterWidths[font.offset + i] = width;
+                _characterWidths[enumValue(font.offset) + i] = width;
             }
         }
         // Vanilla setup scrolling text related globals here (unused)

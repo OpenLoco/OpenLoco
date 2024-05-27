@@ -2011,7 +2011,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             char townNameBuffer[512]{};
             StringManager::formatString(townNameBuffer, town.name);
-            drawingCtx.setCurrentFontSpriteBase(Font::small);
+            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::small);
 
             auto strWidth = drawingCtx.getStringWidth(townNameBuffer);
 
@@ -2020,7 +2020,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             townPos.x -= strWidth;
             townPos.y -= 3;
 
-            drawingCtx.setCurrentFontSpriteBase(Font::small);
+            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::small);
             drawingCtx.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), townNameBuffer);
         }
     }
