@@ -3286,7 +3286,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), strFormat, args);
 
-            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
             drawingCtx.drawString(rt, Point(8, y - 1), Colour::black, buffer);
             auto labelWidth = drawingCtx.getStringWidth(buffer);
 

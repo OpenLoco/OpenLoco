@@ -164,8 +164,8 @@ namespace OpenLoco::Gfx
 
         virtual void drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) = 0;
 
-        virtual Font getCurrentFontSpriteBase() = 0;
+        virtual Font getCurrentFont() = 0;
 
-        virtual void setCurrentFontSpriteBase(Font base) = 0;
+        virtual void setCurrentFont(Font base) = 0;
     };
 }

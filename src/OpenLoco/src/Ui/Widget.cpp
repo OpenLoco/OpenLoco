@@ -720,7 +720,7 @@ namespace OpenLoco::Ui
         int16_t x = widget.left + window->x + 2 + (width / 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
         width = drawingCtx.clipString(width - 8, stringBuffer);
 
         x -= width / 2;
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui
         x = x + (width / 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
         int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui
         x = x + (width / 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
         int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
@@ -943,7 +943,7 @@ namespace OpenLoco::Ui
 
         const auto* scroll_area = &window->scrollAreas[widgetState.scrollviewIndex];
 
-        drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
         if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             draw_hscroll(rt, widget, widgetState);
@@ -1025,7 +1025,7 @@ namespace OpenLoco::Ui
             auto point = Point(window->x + widget.left, window->y + widget.top);
 
             auto color = widgetState.colour;
-            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
             drawingCtx.drawString(*rt, point, color.opaque(), strCheckmark);
         }
     }

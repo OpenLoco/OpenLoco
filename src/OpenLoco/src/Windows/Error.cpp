@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::Error
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
             int16_t strWidth;
             {
                 strWidth = drawingCtx.getStringWidthNewLined(&_errorText[0]);
@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             strWidth = std::min<int16_t>(strWidth, 196);
 
-            drawingCtx.setCurrentFontSpriteBase(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
             {
                 uint16_t breakLineCount = 0;
                 std::tie(strWidth, breakLineCount) = drawingCtx.wrapString(&_errorText[0], strWidth);

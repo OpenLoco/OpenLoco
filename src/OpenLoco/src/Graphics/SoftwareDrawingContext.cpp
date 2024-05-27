@@ -2994,12 +2994,12 @@ namespace OpenLoco::Gfx
         return Impl::drawImagePaletteSet(rt, pos, image, palette, noiseImage);
     }
 
-    Font SoftwareDrawingContext::getCurrentFontSpriteBase()
+    Font SoftwareDrawingContext::getCurrentFont()
     {
         return Impl::getCurrentFontSpriteBase();
     }
 
-    void SoftwareDrawingContext::setCurrentFontSpriteBase(Font base)
+    void SoftwareDrawingContext::setCurrentFont(Font base)
     {
         return Impl::setCurrentFontSpriteBase(base);
     }
