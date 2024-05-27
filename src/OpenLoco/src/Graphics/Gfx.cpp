@@ -192,7 +192,7 @@ namespace OpenLoco::Gfx
                 auto width = element->width + font.widthFudge;
                 // Characters from 123 to 150 are unused
                 // Unsure why this zeros it out though since a negative width isn't an issue
-                if (chr >= '{' && chr <= '\x96')
+                if (chr >= 123 && chr <= 150)
                 {
                     width = 0;
                 }
