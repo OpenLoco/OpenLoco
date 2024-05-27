@@ -1,40 +1,36 @@
 #include "InvalidationGrid.h"
 
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cstring>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Gfx
 {
     uint32_t InvalidationGrid::getRowCount() const noexcept
     {
-        return _screenInvalidation->rowCount;
+        return _rowCount;
     }
 
     uint32_t InvalidationGrid::getColumnCount() const noexcept
     {
-        return _screenInvalidation->columnCount;
+        return _columnCount;
     }
 
     uint32_t InvalidationGrid::getBlockWidth() const noexcept
     {
-        return _screenInvalidation->blockWidth;
+        return _blockWidth;
     }
 
     uint32_t InvalidationGrid::getBlockHeight() const noexcept
     {
-        return _screenInvalidation->blockHeight;
+        return _blockHeight;
     }
 
     void InvalidationGrid::reset(int32_t width, int32_t height, uint32_t blockWidth, uint32_t blockHeight) noexcept
     {
-        _screenInvalidation->blockWidth = blockWidth;
-        _screenInvalidation->blockHeight = blockHeight;
-        _screenInvalidation->columnCount = (width / blockWidth) + 1;
-        _screenInvalidation->rowCount = (height / blockHeight) + 1;
-        _screenInvalidation->initialised = 1;
+        _blockWidth = blockWidth;
+        _blockHeight = blockHeight;
+        _columnCount = (width / blockWidth) + 1;
+        _rowCount = (height / blockHeight) + 1;
         _screenWidth = width;
         _screenHeight = height;
     }
@@ -51,20 +47,20 @@ namespace OpenLoco::Gfx
         if (top >= bottom)
             return;
 
-        left /= _screenInvalidation->blockWidth;
-        right /= _screenInvalidation->blockWidth;
+        left /= _blockWidth;
+        right /= _blockWidth;
 
-        top /= _screenInvalidation->blockHeight;
-        bottom /= _screenInvalidation->blockHeight;
+        top /= _blockHeight;
+        bottom /= _blockHeight;
 
         // TODO: Remove this once _blocks is no longer interop wrapper.
-        auto* blocks = _blocks.get();
+        auto& blocks = _blocks;
 
         const auto columnSize = right - left + 1;
 
         for (int16_t y = top; y <= bottom; y++)
         {
-            const auto yOffset = y * _screenInvalidation->columnCount;
+            const auto yOffset = y * _columnCount;
 
             // Mark row by column size as invalidated.
             std::memset(blocks + yOffset + left, 0xFF, columnSize);

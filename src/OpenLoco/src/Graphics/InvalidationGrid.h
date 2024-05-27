@@ -1,31 +1,18 @@
 #pragma once
 
-#include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
 #include <cstdint>
 
 namespace OpenLoco::Gfx
 {
-#pragma pack(push, 1)
-    struct ScreenInvalidationData
-    {
-        uint16_t blockWidth;
-        uint16_t blockHeight;
-        uint32_t columnCount;
-        uint32_t rowCount;
-        // TODO: Unused, remove when interop is no longer required.
-        int8_t columnShift;
-        int8_t rowShift;
-        int8_t initialised;
-    };
-    static_assert(sizeof(ScreenInvalidationData) == 0xF);
-#pragma pack(pop)
-
     class InvalidationGrid
     {
-        // TODO: Make non-static once interop is no longer required.
-        static inline Interop::loco_global<ScreenInvalidationData, 0x0050B8A0> _screenInvalidation;
-        static inline Interop::loco_global<uint8_t[7500], 0x00E025C4> _blocks;
+        uint16_t _blockWidth{};
+        uint16_t _blockHeight{};
+        uint32_t _columnCount{};
+        uint32_t _rowCount{};
+
+        uint8_t _blocks[7500]{};
         uint32_t _screenWidth{};
         uint32_t _screenHeight{};
 
@@ -45,17 +32,18 @@ namespace OpenLoco::Gfx
         template<typename F>
         void traverseDirtyCells(F&& func)
         {
-            const auto columnCount = _screenInvalidation->columnCount;
-            const auto rowCount = _screenInvalidation->rowCount;
-            const auto blockWidth = _screenInvalidation->blockWidth;
-            const auto blockHeight = _screenInvalidation->blockHeight;
+            const auto columnCount = _columnCount;
+            const auto rowCount = _rowCount;
+            const auto blockWidth = _blockWidth;
+            const auto blockHeight = _blockHeight;
+            auto& blocks = _blocks;
 
             for (uint32_t column = 0; column < columnCount; column++)
             {
                 for (uint32_t row = 0; row < rowCount; row++)
                 {
                     const auto rowStartOffset = row * columnCount;
-                    if (_blocks[rowStartOffset + column] != 0)
+                    if (blocks[rowStartOffset + column] != 0)
                     {
                         uint32_t rowEndOffset = rowStartOffset;
                         uint32_t numRowsDirty = 0;
@@ -63,7 +51,7 @@ namespace OpenLoco::Gfx
                         // Count amount of dirty rows at current column.
                         while (true)
                         {
-                            if (row + numRowsDirty + 1 >= rowCount || _blocks[rowEndOffset + column + columnCount] == 0)
+                            if (row + numRowsDirty + 1 >= rowCount || blocks[rowEndOffset + column + columnCount] == 0)
                                 break;
 
                             numRowsDirty++;
@@ -73,7 +61,7 @@ namespace OpenLoco::Gfx
                         // Clear rows at the current column.
                         for (auto rowOffset = rowStartOffset; rowOffset <= rowEndOffset; rowOffset += columnCount)
                         {
-                            _blocks[rowOffset + column] = 0;
+                            blocks[rowOffset + column] = 0;
                         }
 
                         // Convert to pixel coordinates.
