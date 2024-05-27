@@ -15,8 +15,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
-
     // 0x0046DFA9
     bool CurrencyObject::validate() const
     {
