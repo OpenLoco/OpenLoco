@@ -1195,9 +1195,9 @@ namespace OpenLoco::Gfx
                             // When off-screen in the y dimension there is no requirement to keep pos.x correct
                             if (chr >= 32)
                             {
-                                const auto fontBase = enumValue(getCurrentFontSpriteBase());
+                                const auto chrImage = getImageForCharacter(getCurrentFontSpriteBase(), chr);
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                drawImagePaletteSet(*rt, pos, ImageId(1116 + chr - 32 + fontBase).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                drawImagePaletteSet(*rt, pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
                                 pos.x += Gfx::getCharacterWidth(getCurrentFontSpriteBase(), chr);
                             }
                             else
@@ -1921,8 +1921,8 @@ namespace OpenLoco::Gfx
                                 if (chr >= 32)
                                 {
                                     // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                    const auto fontBase = enumValue(getCurrentFontSpriteBase());
-                                    drawImagePaletteSet(rt, pos + Ui::Point(0, *yOffsets), ImageId(1116 + chr - 32 + fontBase).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                    const auto chrImage = getImageForCharacter(getCurrentFontSpriteBase(), chr);
+                                    drawImagePaletteSet(rt, pos + Ui::Point(0, *yOffsets), chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
                                     pos.x += Gfx::getCharacterWidth(getCurrentFontSpriteBase(), chr);
                                     yOffsets++;
                                 }
@@ -2157,8 +2157,8 @@ namespace OpenLoco::Gfx
                             if (chr >= 32)
                             {
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                const auto fontBase = enumValue(getCurrentFontSpriteBase());
-                                drawImagePaletteSet(rt, pos, ImageId(1116 + chr - 32 + fontBase).withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                const auto chrImage = getImageForCharacter(getCurrentFontSpriteBase(), chr);
+                                drawImagePaletteSet(rt, pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
                                 pos.x += Gfx::getCharacterWidth(getCurrentFontSpriteBase(), chr);
                             }
                             else
