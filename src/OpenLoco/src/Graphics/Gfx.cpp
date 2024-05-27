@@ -452,7 +452,7 @@ namespace OpenLoco::Gfx
     ImageId getImageForCharacter(Font font, uint8_t character)
     {
         const auto fontBaseIndex = getFontBaseIndex(font);
-        return ImageId(1116 + character - 32 + fontBaseIndex);
+        return ImageId(ImageIds::characters_medium_normal_space + character - 32 + fontBaseIndex);
     }
 
 }
