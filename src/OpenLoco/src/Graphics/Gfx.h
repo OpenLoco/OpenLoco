@@ -173,4 +173,5 @@ namespace OpenLoco::Gfx
 
     int16_t getCharacterWidth(Font font, uint8_t character);
     void setCharacterWidth(Font font, uint8_t character, int16_t width);
+    ImageId getImageForCharacter(Font font, uint8_t character);
 }

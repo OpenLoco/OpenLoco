@@ -448,4 +448,11 @@ namespace OpenLoco::Gfx
     {
         _characterWidths[getFontBaseIndex(font) + character - 32] = width;
     }
+
+    ImageId getImageForCharacter(Font font, uint8_t character)
+    {
+        const auto fontBaseIndex = getFontBaseIndex(font);
+        return ImageId(1116 + character - 32 + fontBaseIndex);
+    }
+
 }
