@@ -190,11 +190,11 @@ namespace OpenLoco::Ui::Dropdown
             StringManager::formatString(_byte_112CC04, stringId, args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
 
             drawingCtx.clipString(width, _byte_112CC04);
 
-            drawingCtx.setCurrentFontSpriteBase(Font::m1);
+            drawingCtx.setCurrentFont(Gfx::Font::m1);
 
             drawingCtx.drawString(*rt, Point(x, y), colour, _byte_112CC04);
         }
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], args);
 
-                drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+                drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
 
                 auto stringWidth = drawingCtx.getMaxStringWidth(_byte_112CC04);
 

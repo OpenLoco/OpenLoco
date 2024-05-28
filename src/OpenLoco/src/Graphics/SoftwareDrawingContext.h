@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DrawingContext.h"
+#include "Font.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Types.hpp"
@@ -116,7 +117,7 @@ namespace OpenLoco::Gfx
         void drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) override;
 
         // 0x0112C876
-        int16_t getCurrentFontSpriteBase() override;
-        void setCurrentFontSpriteBase(int16_t base) override;
+        Font getCurrentFont() override;
+        void setCurrentFont(Font base) override;
     };
 }

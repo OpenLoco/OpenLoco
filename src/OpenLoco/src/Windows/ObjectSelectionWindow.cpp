@@ -1072,11 +1072,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if ((selectionFlags[entry.index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
                 auto x = 2;
-                drawingCtx.setCurrentFontSpriteBase(Font::m2);
+                drawingCtx.setCurrentFont(Gfx::Font::m2);
 
                 if (textColour != ControlCodes::windowColour2)
                 {
-                    drawingCtx.setCurrentFontSpriteBase(Font::m1);
+                    drawingCtx.setCurrentFont(Gfx::Font::m1);
                 }
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
@@ -1094,7 +1094,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             char buffer[512]{};
             buffer[0] = textColour;
             strncpy(&buffer[1], entry.object._name, 510);
-            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
+            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
 
             auto point = Point(15, y);
             drawingCtx.drawString(rt, point, Colour::black, buffer);

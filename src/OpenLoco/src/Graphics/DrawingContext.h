@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Font.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Localisation/FormatArguments.hpp"
@@ -163,8 +164,8 @@ namespace OpenLoco::Gfx
 
         virtual void drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) = 0;
 
-        virtual int16_t getCurrentFontSpriteBase() = 0;
+        virtual Font getCurrentFont() = 0;
 
-        virtual void setCurrentFontSpriteBase(int16_t base) = 0;
+        virtual void setCurrentFont(Font base) = 0;
     };
 }

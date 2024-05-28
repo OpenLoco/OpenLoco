@@ -14,17 +14,6 @@
 
 namespace OpenLoco
 {
-    namespace Font
-    {
-        constexpr int16_t m1 = -1;
-        constexpr int16_t m2 = -2;
-
-        constexpr int16_t medium_normal = 0;
-        constexpr int16_t medium_bold = 224;
-        constexpr int16_t small = 448;
-        constexpr int16_t large = 672;
-    }
-
     namespace ControlCodes
     {
         // Arguments (1 byte): uint8_t

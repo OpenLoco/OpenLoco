@@ -2,6 +2,7 @@
 #include "Colour.h"
 #include "Config.h"
 #include "Environment.h"
+#include "Font.h"
 #include "Graphics/DrawSprite.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "ImageIds.h"
@@ -151,12 +152,23 @@ namespace OpenLoco::Gfx
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
+    static int32_t getFontBaseIndex(Font font)
+    {
+        // The Font type currently encodes the index, this may change in the future.
+        return enumValue(font);
+    }
+
+    static uint32_t getImageIdForCharacter(Font font, uint8_t character)
+    {
+        return ImageIds::characters_medium_normal_space + (character - 32) + getFontBaseIndex(font);
+    }
+
     // 0x004949BC
     void initialiseCharacterWidths()
     {
         struct FontEntry
         {
-            int16_t offset;
+            Font offset;
             int8_t widthFudge;
         };
         constexpr std::array<FontEntry, 4> fonts = {
@@ -169,11 +181,10 @@ namespace OpenLoco::Gfx
         for (const auto& font : fonts)
         {
             // Supported character range is from 32 -> 255
-            for (auto i = 0; i < 224; ++i)
+            for (uint8_t i = 0; i < 224; ++i)
             {
-                auto c = i + 32;
-                // TODO: Use an indirection to convert from character to imageId
-                auto* element = getG1Element(ImageIds::characters_medium_normal_space + i + font.offset);
+                uint8_t chr = i + 32;
+                auto* element = getG1Element(getImageIdForCharacter(font.offset, chr));
                 if (element == nullptr)
                 {
                     continue;
@@ -181,11 +192,11 @@ namespace OpenLoco::Gfx
                 auto width = element->width + font.widthFudge;
                 // Characters from 123 to 150 are unused
                 // Unsure why this zeros it out though since a negative width isn't an issue
-                if (c >= '{' && c <= '\x96')
+                if (chr >= 123 && chr <= 150)
                 {
                     width = 0;
                 }
-                _characterWidths[font.offset + i] = width;
+                _characterWidths[enumValue(font.offset) + i] = width;
             }
         }
         // Vanilla setup scrolling text related globals here (unused)
@@ -431,4 +442,21 @@ namespace OpenLoco::Gfx
 
         return ImageExtents{ static_cast<uint8_t>(spriteWidth), static_cast<uint8_t>(spriteHeightNegative), static_cast<uint8_t>(spriteHeightPositive) };
     }
+
+    int16_t getCharacterWidth(Font font, uint8_t character)
+    {
+        return _characterWidths[getFontBaseIndex(font) + character - 32];
+    }
+
+    void setCharacterWidth(Font font, uint8_t character, int16_t width)
+    {
+        _characterWidths[getFontBaseIndex(font) + character - 32] = width;
+    }
+
+    ImageId getImageForCharacter(Font font, uint8_t character)
+    {
+        const auto imageId = getImageIdForCharacter(font, character);
+        return ImageId(imageId);
+    }
+
 }
