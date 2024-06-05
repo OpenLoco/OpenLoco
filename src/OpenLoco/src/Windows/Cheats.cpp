@@ -554,6 +554,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             // Draw widgets and tabs.
             self.draw(rt);
@@ -568,7 +569,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             auto& widget = self.widgets[Widx::target_company_dropdown];
             auto point = Point(self.x + widget.left, self.y + widget.top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,

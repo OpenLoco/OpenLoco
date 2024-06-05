@@ -948,11 +948,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + window.widgets[widx::sea_level].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
@@ -1319,18 +1320,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + window.widgets[widx::number_of_towns].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::number_of_towns);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::max_town_size].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,

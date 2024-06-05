@@ -1404,6 +1404,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         switch (scrollIndex)
         {
@@ -1429,7 +1430,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
                     auto point = Point(3, (window.rowHeight - 10) / 2);
-                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, defaultMessage, args);
+                    tr.drawStringLeftWrapped(rt, point, width, Colour::black, defaultMessage, args);
                 }
                 else
                 {
@@ -1491,7 +1492,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         half = (window.rowHeight - 10) / 2;
 
                         auto point = Point(x + 3, y + half);
-                        drawingCtx.drawStringLeft(rt, point, Colour::black, colouredString, args);
+                        tr.drawStringLeft(rt, point, Colour::black, colouredString, args);
                     }
                 }
                 break;
@@ -1531,7 +1532,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
 
-                drawingCtx.drawStringCentredClipped(rt, Point(89, 52), 177, Colour::darkOrange, StringIds::wcolour2_stringid, args);
+                tr.drawStringCentredClipped(rt, Point(89, 52), 177, Colour::darkOrange, StringIds::wcolour2_stringid, args);
                 break;
             }
         }

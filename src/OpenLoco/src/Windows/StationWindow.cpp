@@ -690,6 +690,8 @@ namespace OpenLoco::Ui::Windows::Station
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
@@ -711,7 +713,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto args = FormatArguments{ argsBuf };
                     args.push(cargoObj->name);
 
-                    drawingCtx.drawStringLeftClipped(rt, point, 98, Colour::black, StringIds::wcolour2_stringid, args);
+                    tr.drawStringLeftClipped(rt, point, 98, Colour::black, StringIds::wcolour2_stringid, args);
                 }
 
                 auto rating = cargo.rating;
@@ -735,7 +737,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto args = FormatArguments{ argsBuf };
                     args.push(percent);
 
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::station_cargo_rating_percent, args);
+                    tr.drawStringLeft(rt, point, Colour::black, StringIds::station_cargo_rating_percent, args);
                 }
 
                 point.y += 10;

@@ -1068,6 +1068,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1146,13 +1147,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 args.push<uint16_t>(100);
                 args.push<uint16_t>(10);
 
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::cargo_deliver_graph_title, args);
+                tr.drawStringLeft(*rt, point, Colour::black, StringIds::cargo_deliver_graph_title, args);
             }
 
             {
                 auto point = Point(self.x + 160, self.height + self.y - 13);
 
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::cargo_transit_time);
+                tr.drawStringLeft(*rt, point, Colour::black, StringIds::cargo_transit_time);
             }
         }
 
@@ -1245,6 +1246,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1267,7 +1269,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     };
 
                     auto point = Point(self.x + 4, y);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, string[i], args);
+                    tr.drawStringLeft(*rt, point, Colour::black, string[i], args);
                 }
                 y += 11;
 
@@ -1292,7 +1294,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push<uint16_t>(0);
                     args.push(CompanyManager::getRecords().date[i]);
 
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::record_date_achieved, args);
+                    tr.drawStringLeft(*rt, point, Colour::black, StringIds::record_date_achieved, args);
                     y += 17;
                 }
 

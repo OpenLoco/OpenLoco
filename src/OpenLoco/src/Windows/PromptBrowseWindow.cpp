@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             // Draw filename label
             auto point = Point(window.x + 3, window.y + filenameBox.top + 2);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_filename);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_filename);
 
             // Clip to text box
             auto context2 = Gfx::clipRenderTarget(*rt, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));

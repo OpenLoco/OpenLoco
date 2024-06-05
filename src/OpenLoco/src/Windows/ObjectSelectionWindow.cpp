@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         // Draw search box input buffer
         Ui::Point position = { inputSession.xOffset, 1 };
-        drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
+        tr.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
 
         // Draw search box cursor, blinking
         if (Input::isFocused(self.type, self.number, widx::textInput) && (inputSession.cursorFrame % 32) < 16)

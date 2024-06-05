@@ -1412,6 +1412,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1421,7 +1422,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto point = Point(self.x + 6, self.y + widget.top + 3);
 
             // 'Main colour scheme'
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
@@ -1429,7 +1430,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // 'Special colour schemes used for'
             point.y += 17;
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
