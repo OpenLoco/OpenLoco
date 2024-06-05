@@ -7,6 +7,7 @@
 #include "GameCommands/Track/RemoveTrackMod.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -523,8 +524,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             args.push<uint32_t>(_modCost);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            tr.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
         }
     }
 

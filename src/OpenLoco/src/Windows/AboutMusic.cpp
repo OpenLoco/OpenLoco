@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -135,6 +136,8 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         auto point = Point(240, 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         for (const auto& songStrings : stringsToDraw)
         {
             if (point.y + (kRowHeight * 3 + 4) < rt.y)
@@ -148,15 +151,15 @@ namespace OpenLoco::Ui::Windows::AboutMusic
             }
 
             // Song name
-            drawingCtx.drawStringCentred(rt, point, Colour::black, songStrings.first);
+            tr.drawStringCentred(rt, point, Colour::black, songStrings.first);
             point.y += kRowHeight;
 
             // Credit line
-            drawingCtx.drawStringCentred(rt, point, Colour::black, songStrings.second);
+            tr.drawStringCentred(rt, point, Colour::black, songStrings.second);
             point.y += kRowHeight;
 
             // Show CS' copyright after every two lines.
-            drawingCtx.drawStringCentred(rt, point, Colour::black, StringIds::music_copyright);
+            tr.drawStringCentred(rt, point, Colour::black, StringIds::music_copyright);
             point.y += kRowHeight + 4;
         }
     }

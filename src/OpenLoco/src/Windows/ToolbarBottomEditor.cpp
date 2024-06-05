@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/StringIds.h"
 #include "Ui/Widget.h"
@@ -62,6 +63,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& previous = self.widgets[widx::previous_frame];
         Widget& next = self.widgets[widx::next_frame];
@@ -81,7 +83,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
-        drawingCtx.drawStringCentred(*rt, point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
+        tr.drawStringCentred(*rt, point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {
@@ -95,10 +97,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             }
 
             point = Point(self.x + x, self.y + y);
-            drawingCtx.drawStringCentred(*rt, point, textColour, StringIds::editor_previous_step);
+            tr.drawStringCentred(*rt, point, textColour, StringIds::editor_previous_step);
 
             point = Point(self.x + x, self.y + y + 10);
-            drawingCtx.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getPreviousStep()]);
+            tr.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getPreviousStep()]);
         }
         drawingCtx.drawImage(rt, self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
@@ -110,10 +112,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
 
         point = Point(self.x + x, self.y + y);
-        drawingCtx.drawStringCentred(*rt, point, textColour, StringIds::editor_next_step);
+        tr.drawStringCentred(*rt, point, textColour, StringIds::editor_next_step);
 
         point = Point(self.x + x, self.y + y + 10);
-        drawingCtx.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getNextStep()]);
+        tr.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getNextStep()]);
     }
 
     // 0x0043D0ED

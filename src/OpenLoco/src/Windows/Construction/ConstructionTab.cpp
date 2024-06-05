@@ -8,6 +8,7 @@
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -2641,15 +2642,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049D38A and 0x0049D16B
     static void drawCostString(Window* self, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         auto x = self->widgets[widx::construct].midX();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
         if (_constructionHover != 1)
         {
-            drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_this);
+            tr.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_this);
         }
 
         y += 11;
@@ -2660,7 +2662,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 FormatArguments args{};
                 args.push<uint32_t>(_trackCost);
-                drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, args);
+                tr.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, args);
             }
         }
     }

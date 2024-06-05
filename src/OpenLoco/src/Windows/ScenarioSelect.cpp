@@ -352,6 +352,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, colour);
@@ -393,7 +394,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push(StringIds::buffer_2039);
 
                 auto point = Point(210, y + 1);
-                drawingCtx.drawStringCentred(rt, point, Colour::black, formatStringId, args);
+                tr.drawStringCentred(rt, point, Colour::black, formatStringId, args);
             }
 
             // Completed?
@@ -418,7 +419,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push<uint16_t>(scenarioInfo->completedMonths % 12);
 
                 auto point = Point((self.widgets[widx::list].width() - ScrollView::barWidth) / 2, y + 10);
-                drawingCtx.drawStringCentred(rt, point, Colour::black, formatStringId, args);
+                tr.drawStringCentred(rt, point, Colour::black, formatStringId, args);
             }
 
             y += kRowHeight;

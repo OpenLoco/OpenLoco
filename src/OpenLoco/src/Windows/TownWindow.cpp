@@ -396,6 +396,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -440,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Town
                         args.push(year);
 
                         auto point = Point(xPos, yPos);
-                        drawingCtx.drawStringCentred(*clipped, point, Colour::black, StringIds::population_graph_year, args);
+                        tr.drawStringCentred(*clipped, point, Colour::black, StringIds::population_graph_year, args);
                     }
 
                     drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);

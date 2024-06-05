@@ -4,6 +4,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
 #include "Localisation/FormatArguments.hpp"
@@ -185,6 +186,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& frame = window.widgets[Widx::outer_frame];
         drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
@@ -224,7 +226,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->cash.var_04);
 
             auto point = Point(x, window.y + frame.top + 2);
-            drawingCtx.drawStringCentred(*rt, point, colour, companyValueString, args);
+            tr.drawStringCentred(*rt, point, colour, companyValueString, args);
         }
 
         {
@@ -249,7 +251,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->performanceIndex);
 
             auto point = Point(x, window.y + frame.top + 14);
-            drawingCtx.drawStringCentred(*rt, point, colour, performanceString, args);
+            tr.drawStringCentred(*rt, point, colour, performanceString, args);
         }
     }
 

@@ -3,6 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "ObjectImageTable.h"
@@ -65,6 +66,9 @@ namespace OpenLoco
     // 0x0046DFC3
     void CurrencyObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         auto currencyIndex = objectIcon + 3;
 
         auto defaultElement = Gfx::getG1Element(ImageIds::currency_symbol);
@@ -76,8 +80,7 @@ namespace OpenLoco
         auto defaultWidth = Gfx::getCharacterWidth(Gfx::Font::large, 131);
         Gfx::setCharacterWidth(Gfx::Font::large, 131, currencyElement->width + 1);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentred(rt, Ui::Point(x, y - 9), Colour::black, StringIds::object_currency_big_font);
+        tr.drawStringCentred(rt, Ui::Point(x, y - 9), Colour::black, StringIds::object_currency_big_font);
 
         Gfx::setCharacterWidth(Gfx::Font::large, 131, defaultWidth);
         *defaultElement = backupElement;

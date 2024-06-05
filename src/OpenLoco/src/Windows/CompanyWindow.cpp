@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 auto& widget = self.widgets[widx::face];
                 auto point = Point(self.x + (widget.left + widget.right) / 2, self.y + widget.top - 12);
-                drawingCtx.drawStringCentred(
+                tr.drawStringCentred(
                     *rt,
                     point,
                     Colour::black,
