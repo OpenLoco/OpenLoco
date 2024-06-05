@@ -10,7 +10,7 @@
 
 namespace OpenLoco::Gfx
 {
-    class SoftwareDrawingContext final : DrawingContext
+    class SoftwareDrawingContext final : public DrawingContext
     {
     public:
         void clear(const RenderTarget& rt, uint32_t fill) override;

@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     // 004CF7A0
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         self.draw(rt);
 

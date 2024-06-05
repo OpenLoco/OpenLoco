@@ -319,7 +319,7 @@ namespace OpenLoco::Gfx
         SDL_RenderPresent(_renderer);
     }
 
-    SoftwareDrawingContext& SoftwareDrawingEngine::getDrawingContext()
+    DrawingContext& SoftwareDrawingEngine::getDrawingContext()
     {
         return _ctx;
     }

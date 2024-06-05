@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;

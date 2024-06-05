@@ -2,6 +2,7 @@
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -190,6 +191,8 @@ namespace OpenLoco::Ui::Dropdown
             StringManager::formatString(_byte_112CC04, stringId, args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
 
             drawingCtx.clipString(width, _byte_112CC04);

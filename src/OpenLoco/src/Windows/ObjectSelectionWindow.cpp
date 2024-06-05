@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047328D
     static void drawTabs(Window* self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto y = self->widgets[widx::panel].top + self->y - 26;
         auto x = self->x + 3;
@@ -631,7 +631,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
         for (int i = widx::vehicleTypeTrain; i <= widx::vehicleTypeShip; i++)
@@ -857,7 +856,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (!clipped)
             return;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         {
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -884,7 +883,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw search box input buffer
         Ui::Point position = { inputSession.xOffset, 1 };
@@ -904,7 +903,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733F5
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
         self.draw(rt);
@@ -1027,7 +1026,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047361D
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 

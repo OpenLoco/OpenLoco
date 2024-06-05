@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (!clipped)
             return;
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // Draw search box input buffer
         FormatArguments args{};

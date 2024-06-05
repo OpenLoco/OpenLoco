@@ -672,7 +672,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004BFAF9
         static void draw(Window& w, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             // Draw widgets.
             w.draw(rt);
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C05F9
         static void draw(Window& w, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             // Draw widgets.
             w.draw(rt);
@@ -1465,7 +1465,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C0B5B
         static void draw(Window& w, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             // Draw widgets.
             w.draw(rt);
@@ -2123,7 +2123,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void draw(Window& w, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             w.draw(rt);
             Common::drawTabs(&w, rt);
@@ -2437,7 +2437,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void drawDropdownContent(Window* w, Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto& widget = w->widgets[widgetIndex];
             FormatArguments args{};
@@ -2451,7 +2451,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C1282
         static void draw(Window& w, Gfx::RenderTarget* rt)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             w.draw(rt);
             Common::drawTabs(&w, rt);

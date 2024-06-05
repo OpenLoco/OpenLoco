@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x43944B
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         Widget& frame = window.widgets[Widx::outer_frame];
         drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);

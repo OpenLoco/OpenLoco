@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x0042A136
         static void drawNewsSubjectImages(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             for (auto i = 0; i < 2; ++i)
             {
                 const auto itemSubject = news->itemSubjects[i];
@@ -587,7 +587,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::company:
                 case MessageItemArgumentType::vehicleTab:
                 {
-                    auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+                    auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
                     drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::black_tiny_font, args);
                     break;
                 }
@@ -602,7 +602,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429872
         static void drawLateNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             drawingCtx.drawImage(rt, self->x, self->y, ImageIds::news_background_new_left);
 
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429934
         static void drawMiddleNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             const auto& mtd = getMessageTypeDescriptor(news->type);
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))
@@ -685,7 +685,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x004299E7
         static void drawEarlyNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::translucentBrown1);
             drawingCtx.drawImage(rt, self->x, self->y, imageId);
@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         // 0x00429761
         static void drawStationNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
-            auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             self->draw(rt);
 
