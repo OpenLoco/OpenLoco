@@ -965,12 +965,6 @@ namespace OpenLoco::Gfx
         return tr.getMaxStringWidth(buffer);
     }
 
-    void SoftwareDrawingContext::drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
-    {
-        TextRenderer tr(*this);
-        return tr.drawStringYOffsets(rt, loc, colour, str, yOffsets);
-    }
-
     void SoftwareDrawingContext::drawStringTicker(const RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
     {
         TextRenderer tr(*this);

@@ -4,6 +4,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include "Map/SurfaceElement.h"
@@ -1224,7 +1225,8 @@ namespace OpenLoco::Paint
         unZoomedRt.height >>= zoom;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(zoom == 0 ? Gfx::Font::medium_bold : Gfx::Font::small);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(zoom == 0 ? Gfx::Font::medium_bold : Gfx::Font::small);
 
         char buffer[512]{};
 
@@ -1239,7 +1241,7 @@ namespace OpenLoco::Paint
             Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));
 
-            drawingCtx.drawStringYOffsets(unZoomedRt, loc, Colour::black, buffer, psString->yOffsets);
+            tr.drawStringYOffsets(unZoomedRt, loc, Colour::black, buffer, psString->yOffsets);
         }
     }
 
