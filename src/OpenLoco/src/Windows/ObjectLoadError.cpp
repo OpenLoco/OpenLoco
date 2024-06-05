@@ -84,9 +84,10 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         self.draw(rt);
 
         // Draw explanatory text
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto point = Point(self.x + 3, self.y + 19);
-        drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.drawStringLeftWrapped(*rt, point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
 
     static StringId objectTypeToString(ObjectType type)

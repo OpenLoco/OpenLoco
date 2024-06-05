@@ -2508,7 +2508,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 FormatArguments args{};
                 args.push<uint16_t>(playerCompany->challengeProgress);
-                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, args);
+                point = tr.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, args);
             }
 
             if ((Scenario::getObjective().flags & Scenario::ObjectiveFlags::withinTimeLimit) != Scenario::ObjectiveFlags::none)
