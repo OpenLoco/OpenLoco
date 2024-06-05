@@ -25,10 +25,5 @@ namespace OpenLoco::Gfx
         void drawImageMasked(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) override;
         void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) override;
         void drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) override;
-
-    public:
-        // Legacy text drawing functions, use TextRenderer instead.
-
-        std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) override;
     };
 }

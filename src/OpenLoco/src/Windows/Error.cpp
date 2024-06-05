@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::Error
             tr.setCurrentFont(Gfx::Font::medium_bold);
             {
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = drawingCtx.wrapString(&_errorText[0], strWidth);
+                std::tie(strWidth, breakLineCount) = tr.wrapString(&_errorText[0], strWidth);
                 _linebreakCount = breakLineCount;
             }
 

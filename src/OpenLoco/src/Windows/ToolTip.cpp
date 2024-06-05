@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         tr.setCurrentFont(Gfx::Font::medium_bold);
 
-        auto [wrappedWidth, breakCount] = drawingCtx.wrapString(_text, strWidth + 1);
+        auto [wrappedWidth, breakCount] = tr.wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;
 
         int width = wrappedWidth + 3;

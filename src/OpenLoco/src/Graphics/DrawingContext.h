@@ -61,10 +61,5 @@ namespace OpenLoco::Gfx
         virtual void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) = 0;
 
         virtual void drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) = 0;
-
-    public:
-        // Legacy text drawing functions, use TextRenderer instead.
-
-        virtual std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) = 0;
     };
 }

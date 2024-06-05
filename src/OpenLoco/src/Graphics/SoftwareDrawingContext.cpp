@@ -947,12 +947,6 @@ namespace OpenLoco::Gfx
         return Impl::clearSingle(rt, paletteId);
     }
 
-    std::pair<uint16_t, uint16_t> SoftwareDrawingContext::wrapString(char* buffer, uint16_t stringWidth)
-    {
-        TextRenderer tr(*this);
-        return tr.wrapString(buffer, stringWidth);
-    }
-
     void SoftwareDrawingContext::fillRect(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
     {
         return Impl::fillRect(rt, left, top, right, bottom, colour, flags);
