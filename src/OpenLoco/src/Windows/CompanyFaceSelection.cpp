@@ -258,6 +258,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         {
             const auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
@@ -281,7 +282,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
 
-            drawingCtx.drawStringCentredClipped(*rt, Point(x, y), width, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredClipped(*rt, Point(x, y), width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none

@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
@@ -102,13 +103,14 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(rt);
 
         auto origin = Point(self.x + (self.width / 2), self.y + (self.height / 2));
         auto width = self.width;
 
-        drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::buffer_1250);
+        tr.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::buffer_1250);
     }
 
     static constexpr WindowEventList kEvents = {

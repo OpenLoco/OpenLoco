@@ -589,7 +589,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case MessageItemArgumentType::vehicleTab:
                 {
                     auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-                    drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::black_tiny_font, args);
+                    auto tr = Gfx::TextRenderer(drawingCtx);
+                    tr.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::black_tiny_font, args);
                     break;
                 }
 

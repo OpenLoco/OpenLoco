@@ -593,7 +593,8 @@ namespace OpenLoco::Ui
 
         auto formatArgs = FormatArguments(widget.textArgs);
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, formatArgs);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.drawStringCentredClipped(*rt, Point(centreX, y), width, colour, string, formatArgs);
     }
 
     // 0x004CB263
@@ -668,6 +669,7 @@ namespace OpenLoco::Ui
         int b = window->y + widget.bottom;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         drawingCtx.fillRectInset(
             *rt,
@@ -691,7 +693,7 @@ namespace OpenLoco::Ui
         auto point = Point(l + 2 + (width / 2), t + 1);
 
         auto formatArgs = FormatArguments(widget.textArgs);
-        drawingCtx.drawStringCentredClipped(
+        tr.drawStringCentredClipped(
             *rt,
             point,
             width,
