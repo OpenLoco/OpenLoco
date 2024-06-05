@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 tr.setCurrentFont(Gfx::Font::medium_bold);
 
-                auto stringWidth = drawingCtx.getMaxStringWidth(_byte_112CC04);
+                auto stringWidth = tr.getMaxStringWidth(_byte_112CC04);
 
                 maxStringWidth = std::max(maxStringWidth, stringWidth);
             }

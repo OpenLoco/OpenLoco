@@ -30,7 +30,6 @@ namespace OpenLoco::Gfx
         // Legacy text drawing functions, use TextRenderer instead.
 
         int16_t clipString(int16_t width, char* string) override;
-        uint16_t getMaxStringWidth(const char* buffer) override;
 
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) override;
     };
