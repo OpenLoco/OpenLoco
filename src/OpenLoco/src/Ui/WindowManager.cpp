@@ -7,6 +7,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
 #include "Logging.h"
@@ -191,7 +192,8 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 const char* buffer = (const char*)regs.esi;
                 auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-                uint16_t width = drawingCtx.getStringWidth(buffer);
+                auto tr = Gfx::TextRenderer(drawingCtx);
+                uint16_t width = tr.getStringWidth(buffer);
                 regs = backup;
                 regs.cx = width;
 

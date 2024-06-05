@@ -66,7 +66,6 @@ namespace OpenLoco::Gfx
         // Legacy text drawing functions, use TextRenderer instead.
 
         virtual int16_t clipString(int16_t width, char* string) = 0;
-        virtual uint16_t getStringWidth(const char* buffer) = 0;
         virtual uint16_t getMaxStringWidth(const char* buffer) = 0;
 
         virtual std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) = 0;

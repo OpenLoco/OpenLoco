@@ -93,8 +93,8 @@ namespace OpenLoco::Ui::TextInput
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         tr.setCurrentFont(Gfx::Font::medium_bold);
-        auto stringWidth = drawingCtx.getStringWidth(buffer.c_str());
-        auto cursorX = drawingCtx.getStringWidth(cursorStr.c_str());
+        auto stringWidth = tr.getStringWidth(buffer.c_str());
+        auto cursorX = tr.getStringWidth(cursorStr.c_str());
 
         int x = xOffset + cursorX;
 
@@ -123,8 +123,8 @@ namespace OpenLoco::Ui::TextInput
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         tr.setCurrentFont(Gfx::Font::medium_bold);
-        auto stringWidth = drawingCtx.getStringWidth(buffer.c_str());
-        auto cursorX = drawingCtx.getStringWidth(cursorStr.c_str());
+        auto stringWidth = tr.getStringWidth(buffer.c_str());
+        auto cursorX = tr.getStringWidth(cursorStr.c_str());
 
         auto midX = containerWidth / 2;
 
