@@ -69,14 +69,6 @@ namespace OpenLoco::Gfx
         virtual uint16_t getStringWidth(const char* buffer) = 0;
         virtual uint16_t getMaxStringWidth(const char* buffer) = 0;
 
-        virtual Ui::Point drawStringLeft(
-            const RenderTarget& rt,
-            Ui::Point origin,
-            AdvancedColour colour,
-            StringId stringId,
-            FormatArgumentsView args = {})
-            = 0;
-
         virtual Ui::Point drawStringLeftClipped(
             const RenderTarget& rt,
             Ui::Point origin,

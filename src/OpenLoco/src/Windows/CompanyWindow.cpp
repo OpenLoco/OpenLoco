@@ -2442,6 +2442,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2454,17 +2455,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto point = Point(self.x + 5, self.y + 47);
 
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
-            point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::buffer_2039);
+            point = tr.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::buffer_2039);
             point.y += 5;
 
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_label);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_label);
             point.y += 10;
 
             {
                 FormatArguments args{};
                 Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
 
-                point = drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::challenge_value, args);
+                point = tr.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::challenge_value, args);
                 point.y += 5;
             }
 
@@ -2479,13 +2480,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(years);
                 args.push(months);
 
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, args);
+                tr.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, args);
                 return;
             }
 
             if ((playerCompany->challengeFlags & CompanyFlags::challengeFailed) != CompanyFlags::none)
             {
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
+                tr.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
@@ -2499,7 +2500,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.skip(2);
                 args.push(years);
                 args.push(months);
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, args);
+                tr.drawStringLeftWrapped(*rt, point, self.width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, args);
                 return;
             }
 
@@ -2520,7 +2521,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.push(years);
                 args.push(months);
 
-                drawingCtx.drawStringLeftWrapped(*rt, point, self.width + 10, Colour::black, StringIds::time_remaining_years_months, args);
+                tr.drawStringLeftWrapped(*rt, point, self.width + 10, Colour::black, StringIds::time_remaining_years_months, args);
                 return;
             }
         }

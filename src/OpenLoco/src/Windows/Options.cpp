@@ -2464,7 +2464,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // Label for autosave frequency
             auto point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_frequency].top);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_frequency);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_frequency);
 
             // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
