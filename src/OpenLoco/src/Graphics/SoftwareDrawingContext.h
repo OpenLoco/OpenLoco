@@ -33,13 +33,6 @@ namespace OpenLoco::Gfx
         uint16_t getStringWidth(const char* buffer) override;
         uint16_t getMaxStringWidth(const char* buffer) override;
 
-        Ui::Point drawStringCentredRaw(
-            const RenderTarget& rt,
-            Ui::Point origin,
-            uint16_t linebreakCount,
-            AdvancedColour colour,
-            const char* wrappedStr) override;
-
         Ui::Point drawStringCentredWrapped(
             const RenderTarget& rt,
             Ui::Point origin,
