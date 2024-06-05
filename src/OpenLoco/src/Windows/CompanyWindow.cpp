@@ -1904,6 +1904,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawFinanceYear(Gfx::RenderTarget* rt, int16_t x, int16_t& y, uint16_t columnYear, uint16_t currentYear)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             FormatArguments args{};
             args.push(StringIds::uint16_raw);
             args.push(columnYear);
@@ -1914,9 +1917,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 format = StringIds::black_stringid;
             }
 
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto point = Point(x, y);
-            drawingCtx.drawStringRightUnderline(
+            tr.drawStringRightUnderline(
                 *rt,
                 point,
                 Colour::black,
