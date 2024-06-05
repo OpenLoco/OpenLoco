@@ -947,12 +947,6 @@ namespace OpenLoco::Gfx
         return Impl::clearSingle(rt, paletteId);
     }
 
-    int16_t SoftwareDrawingContext::clipString(int16_t width, char* string)
-    {
-        TextRenderer tr(*this);
-        return tr.clipString(width, string);
-    }
-
     std::pair<uint16_t, uint16_t> SoftwareDrawingContext::wrapString(char* buffer, uint16_t stringWidth)
     {
         TextRenderer tr(*this);
