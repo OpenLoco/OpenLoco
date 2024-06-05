@@ -4,6 +4,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -1027,6 +1028,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
@@ -1071,11 +1073,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             if ((selectionFlags[entry.index] & SelectedObjectsFlags::selected) != SelectedObjectsFlags::none)
             {
                 auto x = 2;
-                drawingCtx.setCurrentFont(Gfx::Font::m2);
+                tr.setCurrentFont(Gfx::Font::m2);
 
                 if (textColour != ControlCodes::windowColour2)
                 {
-                    drawingCtx.setCurrentFont(Gfx::Font::m1);
+                    tr.setCurrentFont(Gfx::Font::m1);
                 }
 
                 auto checkColour = self.getColour(WindowColour::secondary).opaque();
@@ -1087,16 +1089,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 static constexpr char strCheckmark[] = "\xAC";
                 auto point = Point(x, y);
-                drawingCtx.drawString(rt, point, checkColour, strCheckmark);
+                tr.drawString(rt, point, checkColour, strCheckmark);
             }
 
             char buffer[512]{};
             buffer[0] = textColour;
             strncpy(&buffer[1], entry.object._name, 510);
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
 
             auto point = Point(15, y);
-            drawingCtx.drawString(rt, point, Colour::black, buffer);
+            tr.drawString(rt, point, Colour::black, buffer);
             y += kRowHeight;
         }
     }

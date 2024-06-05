@@ -3,6 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -135,9 +136,10 @@ namespace OpenLoco::Ui
         *str++ = ' ';
         StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
 
-        drawingCtx.setCurrentFont(kZoomToStationFonts[zoom]);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(kZoomToStationFonts[zoom]);
         auto point = topLeft + Point(borderImages.width, 0);
-        drawingCtx.drawString(unZoomedRt, point, Colour::black, buffer);
+        tr.drawString(unZoomedRt, point, Colour::black, buffer);
     }
 
     // 0x0048DE97
@@ -182,6 +184,7 @@ namespace OpenLoco::Ui
         unZoomedRt.height >>= rt.zoomLevel;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         char buffer[512]{};
         for (const auto& town : TownManager::towns())
@@ -192,10 +195,10 @@ namespace OpenLoco::Ui
             }
 
             StringManager::formatString(buffer, town.name);
-            drawingCtx.setCurrentFont(kZoomToTownFonts[rt.zoomLevel]);
+            tr.setCurrentFont(kZoomToTownFonts[rt.zoomLevel]);
 
             auto point = Point(town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1);
-            drawingCtx.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), buffer);
+            tr.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), buffer);
         }
     }
 
@@ -215,6 +218,7 @@ namespace OpenLoco::Ui
         unZoomedRt.height >>= rt.zoomLevel;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto orderNum = 0;
         for (auto& orderFrame : Vehicles::OrderManager::displayFrames())
@@ -237,10 +241,10 @@ namespace OpenLoco::Ui
                 continue;
             }
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_normal);
+            tr.setCurrentFont(Gfx::Font::medium_normal);
 
             auto point = Point(orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel]);
-            drawingCtx.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
+            tr.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
         }
     }
 

@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Ui.h"
 
@@ -38,6 +39,7 @@ namespace OpenLoco::Gfx
     {
         auto& drawingEngine = getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Measure FPS
         const float fps = measureFPS();
@@ -54,9 +56,9 @@ namespace OpenLoco::Gfx
         auto& rt = drawingEngine.getScreenRT();
 
         // Draw text
-        const int stringWidth = drawingCtx.getStringWidth(buffer);
+        const int stringWidth = tr.getStringWidth(buffer);
         auto point = Ui::Point(Ui::width() / 2 - (stringWidth / 2), 2);
-        drawingCtx.drawString(rt, point, Colour::black, buffer);
+        tr.drawString(rt, point, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
         invalidateRegion(point.x - 16, point.y - 4, point.x + 16, 16);

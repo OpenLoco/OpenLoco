@@ -193,13 +193,13 @@ namespace OpenLoco::Ui::Dropdown
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
 
-            drawingCtx.clipString(width, _byte_112CC04);
+            tr.clipString(width, _byte_112CC04);
 
-            drawingCtx.setCurrentFont(Gfx::Font::m1);
+            tr.setCurrentFont(Gfx::Font::m1);
 
-            drawingCtx.drawString(*rt, Point(x, y), colour, _byte_112CC04);
+            tr.drawString(*rt, Point(x, y), colour, _byte_112CC04);
         }
 
         // 0x004CD00E

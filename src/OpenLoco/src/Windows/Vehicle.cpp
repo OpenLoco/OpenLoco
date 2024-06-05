@@ -27,6 +27,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LabelFrame.h"
 #include "LastGameOptionManager.h"
@@ -3282,13 +3283,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void drawOrderLabel(Window& self, Gfx::RenderTarget& rt, const StringId strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y, int16_t& orderNumber)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             char buffer[512];
             StringManager::formatString(buffer, std::size(buffer), strFormat, args);
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-            drawingCtx.drawString(rt, Point(8, y - 1), Colour::black, buffer);
-            auto labelWidth = drawingCtx.getStringWidth(buffer);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
+            tr.drawString(rt, Point(8, y - 1), Colour::black, buffer);
+            auto labelWidth = tr.getStringWidth(buffer);
 
             if (order.hasFlags(Vehicles::OrderFlags::HasNumber))
             {
@@ -3305,6 +3307,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t i)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
@@ -3319,7 +3322,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (head->sizeOfOrderTable == 1)
             {
                 auto point = Point(8, 0);
-                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::no_route_defined);
+                tr.drawStringLeft(rt, point, Colour::black, StringIds::no_route_defined);
                 rowNum++; // Used to move down the text
             }
 
@@ -3368,7 +3371,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
                     auto point = Point(1, y - 1);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::orders_current_order);
+                    tr.drawStringLeft(rt, point, Colour::black, StringIds::orders_current_order);
                 }
 
                 rowNum++;
@@ -3390,7 +3393,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            drawingCtx.drawStringLeft(rt, loc, Colour::black, strFormat, args);
+            tr.drawStringLeft(rt, loc, Colour::black, strFormat, args);
         }
 
         static constexpr WindowEventList kEvents = {

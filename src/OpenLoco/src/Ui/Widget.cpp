@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -720,15 +721,17 @@ namespace OpenLoco::Ui
         int16_t x = widget.left + window->x + 2 + (width / 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        width = drawingCtx.clipString(width - 8, stringBuffer);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        width = tr.clipString(width - 8, stringBuffer);
 
         x -= width / 2;
         int16_t y = window->y + widget.top + 1;
 
         drawStationNameBackground(rt, window, &widget, x, y, widgetState.colour, width);
 
-        drawingCtx.drawString(*rt, Point(x, y), Colour::black, stringBuffer);
+        tr.drawString(*rt, Point(x, y), Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
@@ -746,12 +749,13 @@ namespace OpenLoco::Ui
         x = x + (width / 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        int16_t stringWidth = tr.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
         auto point = Point(x, window->y + widget.top + 1);
-        drawingCtx.drawString(*rt, point, AdvancedColour(Colour::black).outline(), stringBuffer);
+        tr.drawString(*rt, point, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     // 0x004CA88B
@@ -769,12 +773,13 @@ namespace OpenLoco::Ui
         x = x + (width / 2);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        int16_t stringWidth = drawingCtx.clipString(width - 8, stringBuffer);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        int16_t stringWidth = tr.clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
         auto point = Point(x, window->y + widget.top + 1);
-        drawingCtx.drawString(*rt, point, AdvancedColour(Colour::black).outline(), stringBuffer);
+        tr.drawString(*rt, point, AdvancedColour(Colour::black).outline(), stringBuffer);
     }
 
     static void draw_hscroll(Gfx::RenderTarget* rt, const Widget& widget, const WidgetState& widgetState)
@@ -795,6 +800,7 @@ namespace OpenLoco::Ui
 
         Gfx::RectInsetFlags f;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // pusha
         f = Gfx::RectInsetFlags::none;
@@ -808,7 +814,7 @@ namespace OpenLoco::Ui
         // pusha
         {
             const char* hLeftStr = "\x90\xBE";
-            drawingCtx.drawString(*rt, Point(ax + 2, cx), Colour::black, hLeftStr);
+            tr.drawString(*rt, Point(ax + 2, cx), Colour::black, hLeftStr);
         }
         // popa
 
@@ -824,7 +830,7 @@ namespace OpenLoco::Ui
         // pusha
         {
             const char* hRightStr = "\x90\xAF";
-            drawingCtx.drawString(*rt, Point(bx - 7, cx), Colour::black, hRightStr);
+            tr.drawString(*rt, Point(bx - 7, cx), Colour::black, hRightStr);
         }
         // popa
 
@@ -869,6 +875,7 @@ namespace OpenLoco::Ui
 
         Gfx::RectInsetFlags f = Gfx::RectInsetFlags::none;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // pusha
         if (scroll_area->hasFlags(ScrollFlags::vscrollbarUpPressed))
@@ -881,7 +888,7 @@ namespace OpenLoco::Ui
         // pusha
         {
             const char* vTopStr = "\x90\xA0";
-            drawingCtx.drawString(*rt, Point(ax + 1, cx - 1), Colour::black, vTopStr);
+            tr.drawString(*rt, Point(ax + 1, cx - 1), Colour::black, vTopStr);
         }
         // popa
 
@@ -897,7 +904,7 @@ namespace OpenLoco::Ui
         // pusha
         {
             const char* vBottomStr = "\x90\xAA";
-            drawingCtx.drawString(*rt, Point(ax + 1, dx - 9), Colour::black, vBottomStr);
+            tr.drawString(*rt, Point(ax + 1, dx - 9), Colour::black, vBottomStr);
         }
         // popa
 
@@ -1021,12 +1028,13 @@ namespace OpenLoco::Ui
 
         if (widgetState.activated)
         {
+            auto tr = Gfx::TextRenderer(drawingCtx);
             static constexpr char strCheckmark[] = "\xAC";
             auto point = Point(window->x + widget.left, window->y + widget.top);
 
             auto color = widgetState.colour;
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-            drawingCtx.drawString(*rt, point, color.opaque(), strCheckmark);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
+            tr.drawString(*rt, point, color.opaque(), strCheckmark);
         }
     }
 
@@ -1049,8 +1057,9 @@ namespace OpenLoco::Ui
         auto formatArgs = FormatArguments(widget.textArgs);
         auto* window = widgetState.window;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
         auto point = Point(window->x + widget.left + 14, window->y + widget.top);
-        drawingCtx.drawStringLeft(*rt, point, colour, widget.text, formatArgs);
+        tr.drawStringLeft(*rt, point, colour, widget.text, formatArgs);
     }
 
     // 0x004CA679
@@ -1078,15 +1087,18 @@ namespace OpenLoco::Ui
         int32_t textEndPos = l;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+
         // First, draw the label text, if any.
         if (widget.text != StringIds::null)
         {
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), widget.text);
 
             auto point = Point(l, t);
-            drawingCtx.drawString(*rt, point, colour, buffer);
-            textEndPos = l + drawingCtx.getStringWidth(buffer) + 1;
+            tr.drawString(*rt, point, colour, buffer);
+            textEndPos = l + tr.getStringWidth(buffer) + 1;
         }
 
         // Prepare border dimensions

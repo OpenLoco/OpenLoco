@@ -8,6 +8,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -2004,6 +2005,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void drawTownNames(Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         for (const auto& town : TownManager::towns())
         {
@@ -2011,17 +2013,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             char townNameBuffer[512]{};
             StringManager::formatString(townNameBuffer, town.name);
-            drawingCtx.setCurrentFont(Gfx::Font::small);
+            tr.setCurrentFont(Gfx::Font::small);
 
-            auto strWidth = drawingCtx.getStringWidth(townNameBuffer);
+            auto strWidth = tr.getStringWidth(townNameBuffer);
 
             strWidth /= 2;
 
             townPos.x -= strWidth;
             townPos.y -= 3;
 
-            drawingCtx.setCurrentFont(Gfx::Font::small);
-            drawingCtx.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), townNameBuffer);
+            tr.setCurrentFont(Gfx::Font::small);
+            tr.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), townNameBuffer);
         }
     }
 
