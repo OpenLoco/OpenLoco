@@ -6,6 +6,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -468,6 +469,8 @@ namespace OpenLoco::Ui::Windows::Station
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
             const auto station = StationManager::get(StationId(self.number));
@@ -518,7 +521,7 @@ namespace OpenLoco::Ui::Windows::Station
                         cargoStr = StringIds::station_cargo_en_route_start;
 
                     auto point = Point(xPos, y);
-                    drawingCtx.drawStringRight(rt, point, AdvancedColour(Colour::black).outline(), cargoStr, args);
+                    tr.drawStringRight(rt, point, AdvancedColour(Colour::black).outline(), cargoStr, args);
                     y += 10;
                 }
 
@@ -530,7 +533,7 @@ namespace OpenLoco::Ui::Windows::Station
                     args.push(originStation->town);
 
                     auto point = Point(xPos, y);
-                    drawingCtx.drawStringRight(rt, point, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, args);
+                    tr.drawStringRight(rt, point, AdvancedColour(Colour::black).outline(), StringIds::station_cargo_en_route_end, args);
                     y += 10;
                 }
 
@@ -548,7 +551,7 @@ namespace OpenLoco::Ui::Windows::Station
                 args.push(StringIds::nothing_waiting);
 
                 auto point = Point(1, 0);
-                drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::black_stringid, args);
+                tr.drawStringLeft(rt, point, Colour::black, StringIds::black_stringid, args);
             }
         }
 

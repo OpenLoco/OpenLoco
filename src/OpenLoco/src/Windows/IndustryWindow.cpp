@@ -8,6 +8,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -446,6 +447,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -457,7 +459,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months received cargo stats
             if (industry->canReceiveCargo())
             {
-                drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::received_cargo);
+                tr.drawStringLeft(*rt, origin, Colour::black, StringIds::received_cargo);
                 origin.x += 4;
                 origin.y += 10;
 
@@ -479,7 +481,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->receivedCargoQuantityPreviousMonth[cargoNumber]);
 
-                        origin = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::black_stringid, args);
+                        origin = tr.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::black_stringid, args);
                     }
                     cargoNumber++;
                 }
@@ -490,7 +492,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::produced_cargo);
+                tr.drawStringLeft(*rt, origin, Colour::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -513,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->producedCargoQuantityPreviousMonth[cargoNumber]);
                         args.push<uint16_t>(industry->producedCargoPercentTransportedPreviousMonth[cargoNumber]);
 
-                        origin = drawingCtx.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::transported_cargo, args);
+                        origin = tr.drawStringLeftWrapped(*rt, origin, 290, Colour::black, StringIds::transported_cargo, args);
                     }
                     cargoNumber++;
                 }
@@ -578,6 +580,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -592,7 +595,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 args.push(cargoObj->unitsAndCargoName);
 
                 auto point = Point(self.x + 2, self.y - 24 + 68);
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::production_graph_label, args);
+                tr.drawStringLeft(*rt, point, Colour::black, StringIds::production_graph_label, args);
             }
 
             // Draw Y label and grid lines.
@@ -606,7 +609,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 drawingCtx.drawRect(*rt, self.x + 41, yPos, 239, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
                 auto point = Point(self.x + 39, yPos - 6);
-                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::population_graph_people, args);
+                tr.drawStringRight(*rt, point, Colour::black, StringIds::population_graph_people, args);
 
                 yTick += 1000;
             }
@@ -632,7 +635,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push(year);
 
                         auto point = Point(xPos, yPos);
-                        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::population_graph_year, args);
+                        tr.drawStringCentred(*rt, point, Colour::black, StringIds::population_graph_year, args);
                     }
 
                     drawingCtx.drawRect(*rt, xPos, yPos + 11, 1, self.height - 74, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);

@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -136,6 +137,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto colour = self.getColour(WindowColour::secondary).c();
         auto shade = Colours::getShade(colour, 4);
@@ -188,7 +190,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(buffer);
 
             auto point = Point(0, yPos - 1);
-            drawingCtx.drawStringLeft(rt, point, Colour::black, format, formatter);
+            tr.drawStringLeft(rt, point, Colour::black, format, formatter);
             yPos += kRowHeight;
         }
     }

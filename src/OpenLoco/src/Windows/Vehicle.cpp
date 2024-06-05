@@ -1586,6 +1586,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t i)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto head = Common::getVehicle(&self);
@@ -1631,7 +1632,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 {
                     auto point = Point(x, y);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, carStr, args);
+                    tr.drawStringLeft(rt, point, Colour::black, carStr, args);
                 }
 
                 pos.y += self.rowHeight;
@@ -1908,6 +1909,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
             auto unitNameFormat = cargoQty == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural;
@@ -1921,7 +1923,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(station->town);
 
             auto point = Point(x, y);
-            drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, args);
+            tr.drawStringLeft(rt, point, Colour::black, strFormat, args);
             y += 10;
         }
 
@@ -1929,6 +1931,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t i)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
             auto* head = Common::getVehicle(&self);
@@ -1972,7 +1975,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         args.push<StringId>(StringIds::cargo_empty);
 
                         auto point = Point(width, cargoTextHeight + 5);
-                        drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, args);
+                        tr.drawStringLeft(rt, point, Colour::black, strFormat, args);
                     }
                 }
 
@@ -2269,6 +2272,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2288,7 +2292,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     FormatArguments args{};
                     args.push<uint32_t>(veh1->lastIncome.day);
                     // Last income on: {DATE DMY}
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_on_date, args);
+                    tr.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_on_date, args);
                 }
 
                 pos.y += 10;
@@ -2311,7 +2315,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
                     pos.x += 4;
-                    drawingCtx.drawStringLeftWrapped(*rt, pos, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, args);
+                    tr.drawStringLeftWrapped(*rt, pos, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, args);
                     pos.x -= 4;
 
                     // TODO: fix function to take pointer to offset
@@ -2321,7 +2325,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
             {
                 // Last income: N/A"
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_na);
+                tr.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_na);
                 pos.y += 10;
             }
 
@@ -2332,7 +2336,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Last journey average speed: {VELOCITY}
                 FormatArguments args{};
                 args.push(head->lastAverageSpeed);
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_journey_average_speed, args);
+                tr.drawStringLeft(*rt, pos, Colour::black, StringIds::last_journey_average_speed, args);
                 pos.y += 10 + 5;
             }
 
@@ -2340,7 +2344,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Monthly Running Cost: {CURRENCY32}
                 FormatArguments args{};
                 args.push(head->calculateRunningCost());
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_running_cost, args);
+                tr.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_running_cost, args);
                 pos.y += 10;
             }
 
@@ -2349,7 +2353,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_profit, args);
+                tr.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_profit, args);
                 pos.y += 10 + 5;
             }
 
@@ -2358,7 +2362,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 args.push(train.head->totalRefundCost);
                 pos.y = self.y + self.height - 14;
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::sale_value_of_vehicle, args);
+                tr.drawStringLeft(*rt, pos, Colour::black, StringIds::sale_value_of_vehicle, args);
             }
         }
 

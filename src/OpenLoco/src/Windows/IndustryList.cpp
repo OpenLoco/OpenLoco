@@ -8,6 +8,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -144,6 +145,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -156,7 +158,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 4, self.y + self.height - 12);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00457EC4

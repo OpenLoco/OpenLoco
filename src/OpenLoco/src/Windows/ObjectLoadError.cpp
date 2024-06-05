@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -168,6 +169,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         const auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, shade);
@@ -212,7 +214,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object name
             namePos.y = y;
-            drawingCtx.drawStringLeft(rt, namePos, window.getColour(WindowColour::secondary), textColourId, args);
+            tr.drawStringLeft(rt, namePos, window.getColour(WindowColour::secondary), textColourId, args);
 
             // Copy object checksum to buffer
             const auto checksum = fmt::format("{:08X}", header.checksum);
@@ -221,7 +223,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object checksum
             checksumPos.y = y;
-            drawingCtx.drawStringLeft(rt, checksumPos, window.getColour(WindowColour::secondary), textColourId, args);
+            tr.drawStringLeft(rt, checksumPos, window.getColour(WindowColour::secondary), textColourId, args);
 
             // Prepare object type for drawing
             args.rewind();
@@ -229,7 +231,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object type
             typePos.y = y;
-            drawingCtx.drawStringLeftWrapped(rt, typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, args);
+            tr.drawStringLeftWrapped(rt, typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, args);
 
             y += kRowHeight;
         }

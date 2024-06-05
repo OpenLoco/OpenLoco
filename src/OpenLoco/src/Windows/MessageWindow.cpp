@@ -6,6 +6,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
 #include "Localisation/FormatArguments.hpp"
@@ -213,6 +214,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             drawingCtx.clearSingle(rt, colour);
 
             auto height = 0;
@@ -249,7 +252,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(message->date);
 
                     auto point = Point(0, height);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, args);
+                    tr.drawStringLeft(rt, point, Colour::black, stringId, args);
                 }
                 {
                     auto args = FormatArguments();
@@ -257,7 +260,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                     auto width = self.widgets[widx::scrollview].width() - 14;
                     auto point = Point(0, height + 6);
-                    drawingCtx.drawStringLeftWrapped(rt, point, width, Colour::black, stringId, args);
+                    tr.drawStringLeftWrapped(rt, point, width, Colour::black, stringId, args);
                     height += messageHeight;
                 }
             }
@@ -517,6 +520,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -544,7 +548,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(newsStringIds[i]);
 
                     auto point = Point(self.x + 4, yPos);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
+                    tr.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
                 }
 
                 {
@@ -553,7 +557,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().old.newsSettings[i])]);
 
                     auto point = Point(xPos, yPos);
-                    drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
+                    tr.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
                 }
                 yPos += 15;
             }

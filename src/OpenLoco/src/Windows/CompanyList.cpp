@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -431,6 +432,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -444,13 +446,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 3, self.y + self.height - 13);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00435EA7
         static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, colour);
@@ -490,7 +493,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(company->name);
 
                     auto point = Point(0, yBottom - 1);
-                    drawingCtx.drawStringLeftClipped(rt, point, 173, Colour::black, stringId, args);
+                    tr.drawStringLeftClipped(rt, point, 173, Colour::black, stringId, args);
                 }
 
                 {
@@ -501,7 +504,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(ownerStatus);
 
                     auto point = Point(175, yBottom + 7);
-                    drawingCtx.drawStringLeftClipped(rt, point, 208, Colour::black, stringId, args);
+                    tr.drawStringLeftClipped(rt, point, 208, Colour::black, stringId, args);
                 }
 
                 auto performanceStringId = StringIds::performance_index;
@@ -523,7 +526,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     formatPerformanceIndex(company->performanceIndex, args);
 
                     auto point = Point(385, yBottom - 1);
-                    drawingCtx.drawStringLeftClipped(rt, point, 143, Colour::black, stringId, args);
+                    tr.drawStringLeftClipped(rt, point, 143, Colour::black, stringId, args);
                 }
 
                 {
@@ -533,7 +536,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(company->companyValueHistory[0]);
 
                     auto point = Point(530, yBottom - 1);
-                    drawingCtx.drawStringLeftClipped(rt, point, 98, Colour::black, stringId, args);
+                    tr.drawStringLeftClipped(rt, point, 98, Colour::black, stringId, args);
                 }
             }
         }

@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -550,6 +551,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets and tabs.
         window.draw(rt);
@@ -573,7 +575,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::black_stringid, args);
+        tr.drawStringLeft(*rt, origin, Colour::black, StringIds::black_stringid, args);
     }
 
     // 0x004917BB

@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -615,6 +616,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C211C
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         self.draw(rt);
         drawTabs(&self, rt);
 
@@ -624,7 +628,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         uint32_t image = Gfx::recolour(competitorObj->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
         uint16_t x = self.x + self.widgets[Widx::company_select].left + 1;
         uint16_t y = self.y + self.widgets[Widx::company_select].top + 1;
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawImage(rt, x, y, image);
 
         static constexpr std::pair<StringId, StringId> typeToFooterStringIds[]{
@@ -645,7 +648,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 3, self.y + self.height - 13);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         static constexpr std::array<StringId, 3> typeToFilterStringIds{
@@ -661,7 +664,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto* widget = &self.widgets[Widx::filter_type];
 
             auto point = Point(self.x + widget->left + 1, self.y + widget->top);
-            drawingCtx.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         auto* widget = &self.widgets[Widx::cargo_type];
@@ -708,7 +711,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         {
             // Draw filter text as prepared
             auto point = Point(xPos, self.y + widget->top);
-            drawingCtx.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringLeftClipped(*rt, point, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
     }
 

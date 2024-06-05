@@ -4,6 +4,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -603,6 +604,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static void drawLateNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             drawingCtx.drawImage(rt, self->x, self->y, ImageIds::news_background_new_left);
 
@@ -629,7 +631,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Ui::Point origin = { x, y };
 
-            drawingCtx.drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
 
             x = self->x + 1;
             y = self->y + 1;
@@ -638,7 +640,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto argsBuf = FormatArgumentsBuffer{};
             auto args = FormatArguments{ argsBuf };
             args.push(news->date);
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, args);
+            tr.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, args);
 
             drawNewsSubjectImages(self, rt, news);
         }
@@ -686,6 +688,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static void drawEarlyNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, ExtColour::translucentBrown1);
             drawingCtx.drawImage(rt, self->x, self->y, imageId);
@@ -715,7 +718,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Ui::Point origin = { x, y };
 
-            drawingCtx.drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredWrapped(*rt, origin, 352, Colour::black, StringIds::buffer_2039);
 
             origin.x = self->x + 4;
             origin.y = self->y + 5;
@@ -723,7 +726,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto argsBuf = FormatArgumentsBuffer{};
             auto args = FormatArguments{ argsBuf };
             args.push(news->date);
-            drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, args);
+            tr.drawStringLeft(*rt, origin, Colour::black, StringIds::news_date, args);
 
             drawNewsSubjectImages(self, rt, news);
 
@@ -746,6 +749,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static void drawStationNews(Window* self, Gfx::RenderTarget* rt, Message* news)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self->draw(rt);
 
@@ -761,7 +765,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 17;
             Ui::Point origin = { x, y };
 
-            drawingCtx.drawStringCentredWrapped(*rt, origin, 338, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredWrapped(*rt, origin, 338, Colour::black, StringIds::buffer_2039);
 
             const auto& mtd = getMessageTypeDescriptor(news->type);
             if (mtd.hasFlag(MessageTypeFlags::hasFirstItem))

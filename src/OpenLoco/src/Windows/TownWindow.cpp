@@ -8,6 +8,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -526,12 +527,13 @@ namespace OpenLoco::Ui::Windows::Town
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
 
             auto point = Point(self.x + 4, self.y + 46);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             point.x += 4;
             point.y += 14;
@@ -560,7 +562,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, args);
+                tr.drawStringLeftClipped(*rt, point, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, args);
 
                 point.y += 10;
             }

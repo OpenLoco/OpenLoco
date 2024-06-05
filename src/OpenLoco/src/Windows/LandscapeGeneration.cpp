@@ -4,6 +4,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/Conversion.h"
@@ -248,18 +249,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + window.widgets[widx::start_year].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::start_year);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::heightMapBox].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
@@ -275,7 +277,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     args.push(obj->name);
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::change_heightmap_btn].top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, args);
+                    tr.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsCurrentHillObject, args);
                     break;
                 }
 
@@ -284,7 +286,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     // Draw label
                     auto& widget = window.widgets[widx::terrainSmoothingNum];
                     auto pos = Point(window.x + 10, window.y + widget.top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsSmoothingPasses);
+                    tr.drawStringLeft(*rt, pos, Colour::black, StringIds::landscapeOptionsSmoothingPasses);
 
                     // Prepare value
                     FormatArguments args{};
@@ -293,7 +295,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                     // Draw value
                     pos = Point(window.x + widget.left + 1, window.y + widget.top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::black_stringid, args);
+                    tr.drawStringLeft(*rt, pos, Colour::black, StringIds::black_stringid, args);
                     break;
                 }
 
@@ -311,7 +313,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                         args.push(StringManager::getString(StringIds::noneSelected));
 
                     auto pos = Point(window.x + 10, window.y + window.widgets[widx::browseHeightmapFile].top);
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::currentHeightmapFile, args);
+                    tr.drawStringLeft(*rt, pos, Colour::black, StringIds::currentHeightmapFile, args);
                     break;
                 }
             }
@@ -613,25 +615,26 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + window.widgets[widx::min_land_height].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::min_land_height);
 
             point.y = window.y + window.widgets[widx::topography_style].top;
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::topography_style);
 
             point.y = window.y + window.widgets[widx::hill_density].top;
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
@@ -654,6 +657,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < kMaxLandObjects; i++)
@@ -681,7 +685,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     FormatArguments args{};
                     args.push(landObject->name);
                     auto point = Point(24, yPos + 5);
-                    drawingCtx.drawStringLeftClipped(rt, point, 121, Colour::black, StringIds::wcolour2_stringid, args);
+                    tr.drawStringLeftClipped(rt, point, 121, Colour::black, StringIds::wcolour2_stringid, args);
                 }
 
                 // Draw rectangle.
@@ -693,7 +697,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     const StringId distributionId = landDistributionLabelIds[enumValue(S5::getOptions().landDistributionPatterns[i])];
                     args.push(distributionId);
                     auto point = Point(151, yPos + 5);
-                    drawingCtx.drawStringLeftClipped(rt, point, 177, Colour::black, StringIds::black_stringid, args);
+                    tr.drawStringLeftClipped(rt, point, 177, Colour::black, StringIds::black_stringid, args);
                 }
 
                 // Draw rectangle (knob).
@@ -703,7 +707,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 // Draw triangle (knob).
                 {
                     auto point = Point(330, yPos + 6);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, StringIds::dropdown);
+                    tr.drawStringLeft(rt, point, Colour::black, StringIds::dropdown);
                 }
 
                 yPos += kRowHeight;
@@ -1050,60 +1054,61 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + window.widgets[widx::number_of_forests].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::number_of_forests);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::minForestRadius].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::min_forest_radius);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::maxForestRadius].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::max_forest_radius);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::minForestDensity].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::min_forest_density);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::maxForestDensity].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::max_forest_density);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::number_random_trees].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::number_random_trees);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::min_altitude_for_trees].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
                 StringIds::min_altitude_for_trees);
 
             point = Point(window.x + 10, window.y + window.widgets[widx::max_altitude_for_trees].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
@@ -1448,11 +1453,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + window.widgets[widx::num_industries].top);
-            drawingCtx.drawStringLeft(
+            tr.drawStringLeft(
                 *rt,
                 point,
                 Colour::black,
