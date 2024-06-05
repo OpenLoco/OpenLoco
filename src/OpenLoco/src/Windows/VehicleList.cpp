@@ -730,8 +730,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C21CD
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
-        auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 1);
         drawingCtx.clearSingle(rt, shade);
 
         auto yPos = 0;
@@ -781,7 +783,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 // Draw status
                 yPos += 2;
                 auto point = Point(1, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 308, AdvancedColour(Colour::black).outline(), format, args);
+                tr.drawStringLeftClipped(rt, point, 308, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             auto vehicle = Vehicles::Vehicle(*head);
@@ -798,7 +800,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 auto args = FormatArguments::common(profit);
                 auto point = Point(310, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 98, AdvancedColour(Colour::black).outline(), format, args);
+                tr.drawStringLeftClipped(rt, point, 98, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle age
@@ -810,7 +812,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 auto args = FormatArguments::common(age);
                 auto point = Point(410, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 63, AdvancedColour(Colour::black).outline(), format, args);
+                tr.drawStringLeftClipped(rt, point, 63, AdvancedColour(Colour::black).outline(), format, args);
             }
 
             // Vehicle reliability
@@ -818,7 +820,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
                 auto point = Point(475, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, args);
+                tr.drawStringLeftClipped(rt, point, 65, AdvancedColour(Colour::black).outline(), StringIds::vehicle_list_reliability, args);
             }
 
             yPos += self.rowHeight - 2;

@@ -147,6 +147,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 3);
             drawingCtx.clearSingle(rt, shade);
@@ -182,7 +183,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(town->name);
 
                     auto point = Point(0, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
+                    tr.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
                 }
                 // Town Type
                 {
@@ -190,7 +191,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(town->getTownSizeString());
 
                     auto point = Point(200, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 278, Colour::black, text_colour_id, args);
+                    tr.drawStringLeftClipped(rt, point, 278, Colour::black, text_colour_id, args);
                 }
                 // Town Population
                 {
@@ -199,7 +200,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(town->population);
 
                     auto point = Point(280, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, args);
+                    tr.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, args);
                 }
                 // Town Stations
                 {
@@ -208,7 +209,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push<int32_t>(town->numStations);
 
                     auto point = Point(350, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, args);
+                    tr.drawStringLeftClipped(rt, point, 68, Colour::black, text_colour_id, args);
                 }
                 yPos += kRowHeight;
             }
@@ -878,6 +879,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -897,7 +899,7 @@ namespace OpenLoco::Ui::Windows::TownList
             args.push(buildingObj->name);
 
             auto point = Point(self.x + 3, self.y + self.height - 13);
-            drawingCtx.drawStringLeftClipped(*rt, point, self.width - 19, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeftClipped(*rt, point, self.width - 19, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x0049AB31

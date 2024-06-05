@@ -134,6 +134,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -148,7 +149,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto widget = &self.widgets[widx::status_bar];
             auto point = Point(self.x + widget->left - 1, self.y + widget->top - 1);
             auto width = widget->width();
-            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00455C86

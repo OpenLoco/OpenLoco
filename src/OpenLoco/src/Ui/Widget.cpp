@@ -610,7 +610,8 @@ namespace OpenLoco::Ui
         auto formatArgs = FormatArguments(widget.textArgs);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, formatArgs);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.drawStringLeftClipped(*rt, Point(x, y), width, colour, string, formatArgs);
     }
 
     // 0x4CB2D6
@@ -636,7 +637,8 @@ namespace OpenLoco::Ui
         auto point = Point(window->x + widget.left + 1, window->y + widget.top);
         int width = widget.right - widget.left - 2;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawStringLeftClipped(*rt, point, width, colour, widget.text, formatArgs);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.drawStringLeftClipped(*rt, point, width, colour, widget.text, formatArgs);
     }
 
     // 0x4CB29C

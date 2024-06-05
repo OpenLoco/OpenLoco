@@ -1031,6 +1031,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawGraphLegend(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto cargoCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
@@ -1057,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 args.push(cargo->name);
 
                 auto point = Point(x + 6, y);
-                drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+                tr.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
                 y += 10;
                 cargoCount++;
@@ -1665,6 +1666,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawGraphLegend(Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto companyCount = 0;
             for (auto& company : CompanyManager::companies())
@@ -1687,7 +1689,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 args.push(company.name);
 
                 auto point = Point(x + 6, y);
-                drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+                tr.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
 
                 y += 10;
                 companyCount++;

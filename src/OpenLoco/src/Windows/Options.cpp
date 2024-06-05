@@ -2128,6 +2128,7 @@ namespace OpenLoco::Ui::Windows::Options
         static void draw(Window& w, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             w.draw(rt);
             Common::drawTabs(&w, rt);
@@ -2144,7 +2145,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 auto width = w.widgets[Widx::changeOwnerNameBtn].left - 24;
                 auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1);
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, args);
+                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, args);
             }
 
             // Draw competitor name and face
@@ -2156,7 +2157,7 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(competitor->name);
                 const auto width = w.widgets[Widx::changeOwnerFaceBtn].left - 24;
                 auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1);
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::currentPreferredFace, args);
+                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::currentPreferredFace, args);
 
                 const auto& widget = w.widgets[Widx::ownerFacePreview];
                 auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
