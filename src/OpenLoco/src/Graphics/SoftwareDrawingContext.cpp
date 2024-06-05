@@ -965,12 +965,6 @@ namespace OpenLoco::Gfx
         return tr.getMaxStringWidth(buffer);
     }
 
-    uint16_t SoftwareDrawingContext::getStringWidthNewLined(const char* buffer)
-    {
-        TextRenderer tr(*this);
-        return tr.getStringWidthNewLined(buffer);
-    }
-
     std::pair<uint16_t, uint16_t> SoftwareDrawingContext::wrapString(char* buffer, uint16_t stringWidth)
     {
         TextRenderer tr(*this);

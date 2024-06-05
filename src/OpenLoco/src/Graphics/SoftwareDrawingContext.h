@@ -33,7 +33,6 @@ namespace OpenLoco::Gfx
         uint16_t getStringWidth(const char* buffer) override;
         uint16_t getMaxStringWidth(const char* buffer) override;
 
-        uint16_t getStringWidthNewLined(const char* buffer) override;
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) override;
 
         // 0x0112C876
