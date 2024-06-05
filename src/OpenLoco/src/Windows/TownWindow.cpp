@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Town
                 drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
                 auto point = Point(xPos, yPos - 6);
-                drawingCtx.drawStringRight(*clipped, point, Colour::black, StringIds::population_graph_people, args);
+                tr.drawStringRight(*clipped, point, Colour::black, StringIds::population_graph_people, args);
 
                 yTick += 1000;
             }

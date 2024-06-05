@@ -1929,6 +1929,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static currency48_t drawFinanceExpenditureColumn(Gfx::RenderTarget* rt, const int16_t x, int16_t& y, uint8_t columnIndex, Company& company)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             currency48_t sum = 0;
             for (auto j = 0; j < ExpenditureType::Count; j++)
@@ -1943,7 +1944,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     args.push(expenditures);
 
                     auto point = Point(x, y);
-                    drawingCtx.drawStringRight(
+                    tr.drawStringRight(
                         *rt,
                         point,
                         Colour::black,
@@ -1958,6 +1959,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void drawFinanceSum(Gfx::RenderTarget* rt, int16_t x, int16_t& y, currency48_t sum)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto mainFormat = StringIds::black_stringid;
             auto sumFormat = StringIds::plus_currency48;
@@ -1974,7 +1976,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 4;
 
             auto point = Point(x, y);
-            drawingCtx.drawStringRight(*rt, point, Colour::black, mainFormat, args);
+            tr.drawStringRight(*rt, point, Colour::black, mainFormat, args);
 
             drawingCtx.fillRect(*rt, x - expenditureColumnWidth + 10, y - 2, x, y - 2, PaletteIndex::index_0A, Gfx::RectFlags::none);
         }

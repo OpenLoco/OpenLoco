@@ -1501,6 +1501,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawTabs(Window* self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1611,7 +1612,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     auto& widget = self->widgets[widx::tab_values];
                     auto point = Point(widget.left + self->x + 28, widget.top + self->y + 14 + 1);
-                    drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::currency_symbol);
+                    tr.drawStringRight(*rt, point, Colour::black, StringIds::currency_symbol);
                 }
             }
 
@@ -1627,7 +1628,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     auto& widget = self->widgets[widx::tab_payment_rates];
                     auto point = Point(widget.left + self->x + 28, widget.top + self->y + 14 + 1);
-                    drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::currency_symbol);
+                    tr.drawStringRight(*rt, point, Colour::black, StringIds::currency_symbol);
                 }
             }
 

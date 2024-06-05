@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto point = Point(self.x + 3 + self.width - 19, self.y + self.height - 13);
                 widthOffset = 138;
 
-                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
+                tr.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
             }
 
             {
