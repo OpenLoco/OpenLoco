@@ -4,6 +4,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Intro.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -70,6 +71,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets.
         window.draw(rt);
@@ -77,7 +79,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         int16_t x = window.x + window.width / 2;
         int16_t y = window.y + window.widgets[Widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
-        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::title_exit_game);
+        tr.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::title_exit_game);
     }
 
     // 0x00439268

@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 auto& widget = self.widgets[widx::change_owner_name];
                 auto origin = Ui::Point(self.x + (widget.left + widget.right) / 2, self.y + widget.top + 5);
-                drawingCtx.drawStringCentredWrapped(
+                tr.drawStringCentredWrapped(
                     *rt,
                     origin,
                     widget.right - widget.left,

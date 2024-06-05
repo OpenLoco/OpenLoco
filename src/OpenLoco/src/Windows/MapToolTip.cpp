@@ -1,5 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Objects/CompetitorObject.h"
@@ -113,6 +114,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto args = FormatArguments::mapToolTip();
         FormatArgumentsView argsWrap(args);
@@ -125,12 +127,12 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
             Ui::Point origin(self.x + self.width / 2, self.y + self.height / 2 - 5);
-            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, args);
+            tr.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, args);
         }
         else
         {
             Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
-            drawingCtx.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
+            tr.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
 
             auto left = self.width / 2 + self.x + 13 - self.width / 2 - 28;
             auto top = self.height / 2 - 13 + self.y;

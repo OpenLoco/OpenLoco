@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Intro.h"
 #include "Localisation/StringIds.h"
 #include "OpenLoco.h"
@@ -54,6 +55,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets.
         window.draw(rt);
@@ -66,7 +68,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         auto args = FormatArguments{ argsBuf };
         args.push(StringIds::options);
 
-        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, args);
+        tr.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, args);
     }
 
     static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)

@@ -965,12 +965,6 @@ namespace OpenLoco::Gfx
         return tr.getMaxStringWidth(buffer);
     }
 
-    Point SoftwareDrawingContext::drawStringCentredWrapped(const RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
-    {
-        TextRenderer tr(*this);
-        return tr.drawStringCentredWrapped(rt, origin, width, colour, stringId, args);
-    }
-
     Point SoftwareDrawingContext::drawStringRight(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
         TextRenderer tr(*this);
