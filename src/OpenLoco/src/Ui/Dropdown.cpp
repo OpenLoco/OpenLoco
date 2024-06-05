@@ -357,6 +357,7 @@ namespace OpenLoco::Ui::Dropdown
         static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             _dropdownColumnCount = 1;
             _dropdownItemWidth = 0;
@@ -378,7 +379,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], args);
 
-                drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+                tr.setCurrentFont(Gfx::Font::medium_bold);
 
                 auto stringWidth = drawingCtx.getMaxStringWidth(_byte_112CC04);
 

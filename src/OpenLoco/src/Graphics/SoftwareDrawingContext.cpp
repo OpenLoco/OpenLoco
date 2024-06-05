@@ -1021,16 +1021,4 @@ namespace OpenLoco::Gfx
         return Impl::drawImagePaletteSet(rt, pos, image, palette, noiseImage);
     }
 
-    Font SoftwareDrawingContext::getCurrentFont()
-    {
-        TextRenderer tr(*this);
-        return tr.getCurrentFont();
-    }
-
-    void SoftwareDrawingContext::setCurrentFont(Font base)
-    {
-        TextRenderer tr(*this);
-        return tr.setCurrentFont(base);
-    }
-
 }

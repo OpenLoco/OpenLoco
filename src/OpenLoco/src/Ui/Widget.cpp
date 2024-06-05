@@ -945,6 +945,8 @@ namespace OpenLoco::Ui
         int16_t b = window->y + widget.bottom;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         drawingCtx.fillRectInset(*rt, l, t, r, b, widgetState.colour, widgetState.flags | Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillDarker);
 
         l++;
@@ -954,7 +956,7 @@ namespace OpenLoco::Ui
 
         const auto* scroll_area = &window->scrollAreas[widgetState.scrollviewIndex];
 
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+        tr.setCurrentFont(Gfx::Font::medium_bold);
         if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             draw_hscroll(rt, widget, widgetState);

@@ -70,9 +70,5 @@ namespace OpenLoco::Gfx
         virtual uint16_t getMaxStringWidth(const char* buffer) = 0;
 
         virtual std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) = 0;
-
-        virtual Font getCurrentFont() = 0;
-
-        virtual void setCurrentFont(Font base) = 0;
     };
 }
