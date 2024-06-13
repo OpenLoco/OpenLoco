@@ -639,6 +639,65 @@ namespace OpenLoco::World::TileManager
         Ui::setCursor(curCursor);
     }
 
+    // 0x004613F0
+    void defragmentTilePeriodic()
+    {
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
+            return;
+        }
+        if (addr<0x0050BF6C, uint8_t>() != 0)
+        {
+            addr<0x0050BF6C, uint8_t>() = 0;
+            return;
+        }
+        addr<0x0050BF6C, uint8_t>() = 0;
+
+        const uint32_t searchStart = _F00168 + 1;
+        for (auto i = 0U; i < 0x30000; ++i)
+        {
+            const auto j = (i + searchStart) % 0x30000;
+            if (_tiles[j] != kInvalidTile)
+            {
+                _F00168 = j;
+                break;
+            }
+        }
+
+        auto* firstTile = _tiles[_F00168];
+        auto* emptyTile = firstTile - 1;
+        while (emptyTile != &_elements[0] && emptyTile->baseZ() == 0xFFU)
+        {
+            emptyTile--;
+        }
+        emptyTile++;
+        if (emptyTile == firstTile)
+        {
+            return;
+        }
+
+        _tiles[_F00168] = emptyTile;
+        {
+            auto* dest = emptyTile;
+            auto* source = firstTile;
+            do
+            {
+                *dest = *source;
+                source->setBaseZ(0xFFU);
+                source++;
+            } while (!dest++->isLast());
+        }
+
+        // Its possible we have freed up elements at the end so this
+        // looks to see if we should move the element end
+        auto* newEnd = _elementsEnd - 1;
+        while (newEnd->baseZ() == 0xFFU)
+        {
+            newEnd--;
+        }
+        _elementsEnd = newEnd + 1;
+    }
+
     // 0x00461393
     bool checkFreeElementsAndReorganise()
     {

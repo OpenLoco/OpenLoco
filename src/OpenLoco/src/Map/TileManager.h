@@ -69,7 +69,10 @@ namespace OpenLoco::World::TileManager
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
     SmallZ getSurfaceCornerDownHeight(const SurfaceElement& surface, const uint8_t cornerMask);
     void updateTilePointers();
+    // Fully defragment the tile element array
     void reorganise();
+    // Defragments singular tile (chosen tile updates each call)
+    void defragmentTilePeriodic();
     bool checkFreeElementsAndReorganise();
     CompanyId getTileOwner(const World::TileElement& el);
     void mapInvalidateTileFull(World::Pos2 pos);
