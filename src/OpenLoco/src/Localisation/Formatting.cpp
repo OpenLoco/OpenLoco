@@ -1,4 +1,5 @@
 #include "Formatting.h"
+#include "ArgsWrapper.hpp"
 #include "Config.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
@@ -6,7 +7,6 @@
 #include "Logging.h"
 #include "Objects/CurrencyObject.h"
 #include "Objects/ObjectManager.h"
-#include "StringBuffer.h"
 #include "StringIds.h"
 #include "StringManager.h"
 #include "World/TownManager.h"
@@ -16,7 +16,6 @@
 #include <cassert>
 #include <cmath>
 #include <cstring>
-#include <fmt/core.h>
 #include <map>
 #include <stdexcept>
 
@@ -79,103 +78,135 @@ namespace OpenLoco::StringManager
         return kMonthToStringMap.find(month)->second;
     }
 
-    static void formatString(StringBuffer& buffer, StringId id);
-
-    // 0x00495F35
-    static void formatInt32Grouped(int32_t value, StringBuffer& buffer)
+    static char* formatInt32Grouped(int32_t value, char* buffer)
     {
-        fmt::format_to(std::back_inserter(buffer), std::locale(), "{:L}", value);
+        registers regs;
+        regs.eax = (uint32_t)value;
+        regs.edi = X86Pointer(buffer);
+
+        call(0x00495F35, regs);
+        return X86Pointer<char>(regs.edi);
     }
 
-    // 0x00495E2A
-    static void formatInt32Ungrouped(int32_t value, StringBuffer& buffer)
+    static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
-        fmt::format_to(std::back_inserter(buffer), "{}", value);
+        registers regs;
+        regs.eax = (uint32_t)value;
+        regs.edi = X86Pointer(buffer);
+
+        call(0x495E2A, regs);
+        return X86Pointer<char>(regs.edi);
     }
 
-    // 0x00496052
-    static void formatInt48Grouped(uint64_t value, StringBuffer& buffer, uint8_t separator)
+    static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
     {
-        fmt::format_to(std::back_inserter(buffer), std::locale(), "{:L}", value * static_cast<uint64_t>(std::pow(10, separator)));
+        registers regs;
+        regs.eax = (uint32_t)value;
+        regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
+        regs.edi = X86Pointer(buffer);
+        regs.ebx = (uint32_t)separator;
+
+        call(0x496052, regs);
+        return X86Pointer<char>(regs.edi);
     }
 
-    // 0x004963FC
-    static void formatShortWithOneDecimal(int16_t value, StringBuffer& buffer)
+    static char* formatShortWithDecimals(int16_t value, char* buffer)
     {
-        fmt::format_to(std::back_inserter(buffer), std::locale(), "{:L}", value / 10);
-        fmt::format_to(std::back_inserter(buffer), ".{}", value % 10);
+        registers regs;
+        regs.eax = (uint32_t)value;
+        regs.edi = X86Pointer(buffer);
+
+        call(0x4963FC, regs);
+        return X86Pointer<char>(regs.edi);
     }
 
-    // 0x004962F1
-    static void formatIntWithTwoDecimals(int32_t value, StringBuffer& buffer)
+    static char* formatIntWithDecimals(int32_t value, char* buffer)
     {
-        fmt::format_to(std::back_inserter(buffer), std::locale(), "{:L}", value / 100);
-        fmt::format_to(std::back_inserter(buffer), ".{}", value % 100);
+        registers regs;
+        regs.eax = (uint32_t)value;
+        regs.edi = X86Pointer(buffer);
+
+        call(0x4962F1, regs);
+        return X86Pointer<char>(regs.edi);
     }
 
     // 0x00495D09
-    static void formatDateDMYFull(uint32_t totalDays, StringBuffer& buffer)
+    static char* formatDateDMYFull(uint32_t totalDays, char* buffer)
     {
         auto date = calcDate(totalDays);
 
         StringId dayString = kDayToString.find(date.day)->second;
-        formatString(buffer, dayString);
+        buffer = formatString(buffer, dayString, nullptr);
 
-        buffer.append(' ');
+        *buffer = ' ';
+        buffer++;
 
         StringId monthString = monthToString(date.month).second;
-        formatString(buffer, monthString);
+        buffer = formatString(buffer, monthString, nullptr);
 
-        buffer.append(' ');
+        *buffer = ' ';
+        buffer++;
 
-        formatInt32Ungrouped(date.year, buffer);
+        buffer = formatInt32Ungrouped(date.year, buffer);
+
+        return buffer;
     }
 
     // 0x00495D77
-    static void formatDateMYFull(uint32_t totalDays, StringBuffer& buffer)
+    static char* formatDateMYFull(uint32_t totalDays, char* buffer)
     {
         auto date = calcDate(totalDays);
 
         StringId monthString = monthToString(date.month).second;
-        formatString(buffer, monthString);
+        buffer = formatString(buffer, monthString, nullptr);
 
-        buffer.append(' ');
+        *buffer = ' ';
+        buffer++;
 
-        formatInt32Ungrouped(date.year, buffer);
+        buffer = formatInt32Ungrouped(date.year, buffer);
+
+        return buffer;
     }
 
     // 0x00495DC7
-    static void formatDateMYAbbrev(uint32_t totalDays, StringBuffer& buffer)
+    static char* formatDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto date = calcDate(totalDays);
 
         StringId monthString = monthToString(date.month).second;
-        formatString(buffer, monthString);
+        buffer = formatString(buffer, monthString, nullptr);
 
-        buffer.append(' ');
+        *buffer = ' ';
+        buffer++;
 
-        formatInt32Ungrouped(date.year, buffer);
+        buffer = formatInt32Ungrouped(date.year, buffer);
+
+        return buffer;
     }
 
     // 0x00495DC7
-    static void formatRawDateMYAbbrev(uint32_t totalDays, StringBuffer& buffer)
+    static char* formatRawDateMYAbbrev(uint32_t totalDays, char* buffer)
     {
         auto month = static_cast<MonthId>(totalDays % 12);
         StringId monthString = monthToString(month).first;
-        formatString(buffer, monthString);
+        buffer = formatString(buffer, monthString, nullptr);
 
-        buffer.append(' ');
+        *buffer = ' ';
+        buffer++;
 
-        formatInt32Ungrouped(totalDays / 12, buffer);
+        buffer = formatInt32Ungrouped(totalDays / 12, buffer);
+
+        return buffer;
     }
 
-    static void formatStringPart(StringBuffer& buffer, const char* sourceStr);
+    static char* formatStringPart(char* buffer, const char* sourceStr, void* args);
 
-    static void formatCurrency(int64_t value, StringBuffer& buffer)
+    static char* formatCurrency(int64_t value, char* buffer)
     {
         if (value < 0)
         {
-            buffer.append('-');
+            *buffer = '-';
+            buffer++;
             value = -value;
         }
 
@@ -184,15 +215,17 @@ namespace OpenLoco::StringManager
         int64_t localisedValue = value * (1ULL << currency->factor);
 
         const char* prefixSymbol = getString(currency->prefixSymbol);
-        formatStringPart(buffer, prefixSymbol);
+        buffer = formatStringPart(buffer, prefixSymbol, nullptr);
 
-        formatInt48Grouped(localisedValue, buffer, currency->separator);
+        buffer = formatInt48Grouped(localisedValue, buffer, currency->separator);
 
         const char* suffixSymbol = getString(currency->suffixSymbol);
-        formatStringPart(buffer, suffixSymbol);
+        buffer = formatStringPart(buffer, suffixSymbol, nullptr);
+
+        return buffer;
     }
 
-    static void formatStringImpl(StringBuffer& buffer, StringId id, FormatArgumentsView& args);
+    static char* formatString(char* buffer, StringId id, ArgsWrapper& args);
 
     constexpr uint32_t hpTokW(uint32_t hp)
     {
@@ -303,7 +336,7 @@ namespace OpenLoco::StringManager
         return dest;
     }
 
-    static void formatStringPart(StringBuffer& buffer, const char* sourceStr, FormatArgumentsView& args)
+    static char* formatStringPart(char* buffer, const char* sourceStr, ArgsWrapper& args)
     {
         while (true)
         {
@@ -311,31 +344,37 @@ namespace OpenLoco::StringManager
 
             if (ch == 0)
             {
-                return;
+                *buffer = '\0';
+                return buffer;
             }
             else if (ch <= 4)
             {
-                buffer.appendData(sourceStr, 2);
+                std::memcpy(buffer, sourceStr, 2);
+                buffer += 2;
                 sourceStr += 2;
             }
             else if (ch <= 16)
             {
-                buffer.appendData(sourceStr, 1);
+                std::memcpy(buffer, sourceStr, 1);
+                buffer += 1;
                 sourceStr += 1;
             }
             else if (ch <= 22)
             {
-                buffer.appendData(sourceStr, 3);
+                std::memcpy(buffer, sourceStr, 3);
+                buffer += 3;
                 sourceStr += 3;
             }
             else if (ch <= 0x1F)
             {
-                buffer.appendData(sourceStr, 5);
+                std::memcpy(buffer, sourceStr, 5);
+                buffer += 5;
                 sourceStr += 5;
             }
             else if (ch < 0x7B || ch >= 0x90)
             {
-                buffer.append(ch);
+                std::memcpy(buffer, sourceStr, 1);
+                buffer += 1;
                 sourceStr += 1;
             }
             else
@@ -347,49 +386,49 @@ namespace OpenLoco::StringManager
                     case ControlCodes::int32_grouped:
                     {
                         int32_t value = args.pop<int32_t>();
-                        formatInt32Grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int32_ungrouped:
                     {
                         int32_t value = args.pop<int32_t>();
-                        formatInt32Ungrouped(value, buffer);
+                        buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int16_decimals:
                     {
                         int16_t value = args.pop<int16_t>();
-                        formatShortWithOneDecimal(value, buffer);
+                        buffer = formatShortWithDecimals(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int32_decimals:
                     {
                         int32_t value = args.pop<int32_t>();
-                        formatIntWithTwoDecimals(value, buffer);
+                        buffer = formatIntWithDecimals(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int16_grouped:
                     {
                         int16_t value = args.pop<int16_t>();
-                        formatInt32Grouped(value, buffer);
+                        buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::uint16_ungrouped:
                     {
                         int32_t value = args.pop<uint16_t>();
-                        formatInt32Ungrouped(value, buffer);
+                        buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::currency32:
                     {
                         int32_t value = args.pop<uint32_t>();
-                        formatCurrency(value, buffer);
+                        buffer = formatCurrency(value, buffer);
                         break;
                     }
 
@@ -398,14 +437,14 @@ namespace OpenLoco::StringManager
                         uint32_t valueLow = args.pop<uint32_t>();
                         int32_t valueHigh = args.pop<int16_t>();
                         int64_t value = (valueHigh * (1ULL << 32)) | valueLow;
-                        formatCurrency(value, buffer);
+                        buffer = formatCurrency(value, buffer);
                         break;
                     }
 
                     case ControlCodes::stringidArgs:
                     {
                         StringId id = args.pop<StringId>();
-                        formatStringImpl(buffer, id, args);
+                        buffer = formatString(buffer, id, args);
                         break;
                     }
 
@@ -413,14 +452,15 @@ namespace OpenLoco::StringManager
                     {
                         StringId id = *(StringId*)sourceStr;
                         sourceStr += 2;
-                        formatStringImpl(buffer, id, args);
+                        buffer = formatString(buffer, id, args);
                         break;
                     }
 
                     case ControlCodes::string_ptr:
                     {
                         const char* str = args.pop<const char*>();
-                        buffer.append(str);
+                        locoStrcpy(buffer, str);
+                        buffer += locoStrlen(str);
                         break;
                     }
 
@@ -433,19 +473,19 @@ namespace OpenLoco::StringManager
                         switch (modifier)
                         {
                             case DateModifier::dmy_full:
-                                formatDateDMYFull(totalDays, buffer);
+                                buffer = formatDateDMYFull(totalDays, buffer);
                                 break;
 
                             case DateModifier::my_full:
-                                formatDateMYFull(totalDays, buffer);
+                                buffer = formatDateMYFull(totalDays, buffer);
                                 break;
 
                             case DateModifier::my_abbr:
-                                formatDateMYAbbrev(totalDays, buffer);
+                                buffer = formatDateMYAbbrev(totalDays, buffer);
                                 break;
 
                             case DateModifier::raw_my_abbr:
-                                formatRawDateMYAbbrev(totalDays, buffer);
+                                buffer = formatRawDateMYAbbrev(totalDays, buffer);
                                 break;
 
                             default:
@@ -472,8 +512,10 @@ namespace OpenLoco::StringManager
                             value = std::round(value * 1.609375);
                         }
 
-                        formatInt32Grouped(value, buffer);
-                        buffer.append(unit);
+                        buffer = formatInt32Grouped(value, buffer);
+
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
@@ -508,8 +550,10 @@ namespace OpenLoco::StringManager
                             unit = getString(StringIds::unit_m);
                         }
 
-                        formatInt32Grouped(value, buffer);
-                        buffer.append(unit);
+                        buffer = formatInt32Grouped(value, buffer);
+
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
@@ -537,8 +581,10 @@ namespace OpenLoco::StringManager
                             value *= 5;
                         }
 
-                        formatInt32Grouped(value, buffer);
-                        buffer.append(unit);
+                        buffer = formatInt32Grouped(value, buffer);
+
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
@@ -559,18 +605,21 @@ namespace OpenLoco::StringManager
                             value = hpTokW(value);
                         }
 
-                        formatInt32Grouped(value, buffer);
-                        buffer.append(unit);
+                        buffer = formatInt32Grouped(value, buffer);
+
+                        strcpy(buffer, unit);
+                        buffer += strlen(unit);
 
                         break;
                     }
 
                     case ControlCodes::inlineSpriteArgs:
                     {
+                        *buffer = ControlCodes::inlineSpriteStr;
                         uint32_t value = args.pop<uint32_t>();
-
-                        buffer.append(static_cast<char>(ControlCodes::inlineSpriteStr));
-                        buffer.appendData(&value, sizeof(value));
+                        uint32_t* spritePtr = (uint32_t*)(buffer + 1);
+                        *spritePtr = value;
+                        buffer += 5;
 
                         break;
                     }
@@ -579,26 +628,29 @@ namespace OpenLoco::StringManager
         }
     }
 
-    static void formatStringPart(StringBuffer& buffer, const char* sourceStr)
+    static char* formatStringPart(char* buffer, const char* sourceStr, void* args)
     {
-        auto wrapped = FormatArgumentsView();
-        formatStringPart(buffer, sourceStr, wrapped);
+        auto wrapped = ArgsWrapper(args);
+        return formatStringPart(buffer, sourceStr, wrapped);
     }
 
     // 0x004958C6
-    static void formatStringImpl(StringBuffer& buffer, StringId id, FormatArgumentsView& args)
+    static char* formatString(char* buffer, StringId id, ArgsWrapper& args)
     {
         if (id < kUserStringsStart)
         {
             const char* sourceStr = getString(id);
             if (sourceStr == nullptr)
             {
-                buffer.format(std::locale(), "(missing string id: {})", id);
+                sprintf(buffer, "(missing string id: %d)", id);
                 Logging::warn("formatString: nullptr for string id: {}", id);
-                return;
+                buffer += strlen(buffer);
+                return buffer;
             }
 
-            formatStringPart(buffer, sourceStr, args);
+            buffer = formatStringPart(buffer, sourceStr, args);
+            assert(*buffer == '\0');
+            return buffer;
         }
         else if (id < kUserStringsEnd)
         {
@@ -606,72 +658,45 @@ namespace OpenLoco::StringManager
             args.skip<uint16_t>();
             const char* sourceStr = getUserString(id);
 
-            buffer.append(sourceStr, kUserStringSize);
+            // !!! TODO: original code is prone to buffer overflow.
+            buffer = strncpy(buffer, sourceStr, kUserStringSize);
+            buffer += locoStrlen(sourceStr);
+            *buffer = '\0';
+
+            return buffer;
         }
         else if (id < kTownNamesEnd)
         {
             id -= kTownNamesStart;
-
             const auto townId = TownId(args.pop<uint16_t>());
             auto town = TownManager::get(townId);
-
-            // TODO: Clean this up once we have only FormatArguments.
-            FormatArgumentsBuffer buf;
-            auto fmt = FormatArguments(buf);
-            fmt.push(town->name);
-
-            auto fmtView = FormatArgumentsView(fmt);
-            formatStringImpl(buffer, id, fmtView);
+            void* town_name = (void*)&town->name;
+            return formatString(buffer, id, town_name);
         }
         else if (id == kTownNamesEnd)
         {
             const auto townId = TownId(args.pop<uint16_t>());
             auto town = TownManager::get(townId);
-            formatString(buffer, town->name);
+            return formatString(buffer, town->name, nullptr);
         }
         else
         {
-            buffer.format(std::locale(), "(invalid string id: {})", id);
+            sprintf(buffer, "(invalid string id: %d)", id);
             Logging::warn("formatString: invalid string id: {}", id);
+            buffer += strlen(buffer);
+            return buffer;
         }
     }
 
-    static void formatString(StringBuffer& buffer, StringId id)
+    char* formatString(char* buffer, StringId id, const void* args)
     {
-        auto args = FormatArgumentsView{};
-        formatStringImpl(buffer, id, args);
+        auto wrapped = ArgsWrapper(args);
+        return formatString(buffer, id, wrapped);
     }
 
-    // TODO: Remove unsafe variant.
-    char* formatString(char* buffer, StringId id)
+    char* formatString(char* buffer, [[maybe_unused]] size_t bufferLen, StringId id, const void* args)
     {
-        return formatString(buffer, 0xFFFFFFFFU, id);
-    }
-
-    char* formatString(char* buffer, size_t bufferLen, StringId id)
-    {
-        auto wrapped = FormatArgumentsView{};
-        auto buf = StringBuffer(buffer, bufferLen);
-
-        formatStringImpl(buf, id, wrapped);
-
-        buf.nullTerminate();
-        return buf.current();
-    }
-
-    char* formatString(char* buffer, StringId id, FormatArgumentsView args)
-    {
-        return formatString(buffer, 0xFFFFFFFFU, id, args);
-    }
-
-    char* formatString(char* buffer, size_t bufferLen, StringId id, FormatArgumentsView args)
-    {
-        auto buf = StringBuffer(buffer, bufferLen);
-
-        formatStringImpl(buf, id, args);
-
-        buf.nullTerminate();
-        return buf.current();
+        return formatString(buffer, id, args);
     }
 
     StringId isTownName(StringId stringId)

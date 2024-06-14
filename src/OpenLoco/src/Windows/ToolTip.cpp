@@ -68,13 +68,13 @@ namespace OpenLoco::Ui::Windows::ToolTip
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        StringManager::formatString(_text, stringId, args);
+        StringManager::formatString(_text, stringId, &args);
 
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         int16_t strWidth = drawingCtx.getStringWidthNewLined(_text);
         strWidth = std::min<int16_t>(strWidth, 196);
 
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
         auto [wrappedWidth, breakCount] = drawingCtx.wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;

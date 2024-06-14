@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         GameCommands::SignalPlacementArgs args;
         args.type = _lastSelectedSignal;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
-        args.rotation = elTrack->unkDirection();
+        args.rotation = elTrack->rotation();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();
         args.trackObjType = elTrack->trackObjectId();
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push(trainSignalObject->description);
 
             auto point = Point(xPos, yPos);
-            drawingCtx.drawStringLeftWrapped(*rt, point, width, Colour::black, StringIds::signal_black, args);
+            drawingCtx.drawStringLeftWrapped(*rt, point, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->image;
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push<uint32_t>(_signalCost);
 
             auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
         }
     }
 

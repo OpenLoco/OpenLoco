@@ -155,7 +155,7 @@ namespace OpenLoco
             return result;
         }
 
-        [[nodiscard]] constexpr ImageId withIndexOffset(int32_t offset) const
+        [[nodiscard]] constexpr ImageId withIndexOffset(ImageIndex offset) const
         {
             ImageId result = *this;
             result._index += offset;
@@ -205,15 +205,6 @@ namespace OpenLoco
             result._index &= ~(kMaskPrimary | kMaskSecondary | kFlagSecondary | kFlagPrimary);
             result._index |= enumValue(colour) << kShiftRemap;
             result._index |= kFlagBlend;
-            return result;
-        }
-
-        [[nodiscard]] constexpr ImageId withBlend(ExtColour colour) const
-        {
-            ImageId result = *this;
-            result._index &= ~(kMaskPrimary | kMaskSecondary | kFlagSecondary);
-            result._index |= enumValue(colour) << kShiftRemap;
-            result._index |= kFlagBlend | kFlagPrimary;
             return result;
         }
     };

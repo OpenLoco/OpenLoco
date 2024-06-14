@@ -102,7 +102,7 @@ namespace OpenLoco
                 continue;
             }
 
-            if (elStation->multiTileIndex() == 0)
+            if (elStation->sequenceIndex() == 0)
             {
                 continue;
             }

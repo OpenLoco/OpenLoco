@@ -12,7 +12,7 @@ namespace OpenLoco::GameCommands
         explicit VehicleWaterPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dx)
             , head(EntityId(regs.di))
-            , convertGhost((regs.ebx & 0xFFFF0000) == 0xFFFF0000)
+            , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
@@ -31,6 +31,4 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    void vehiclePlaceWater(registers& regs);
 }

@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             GameCommands::RoadRemovalArgs args;
             args.pos = loc2;
             args.sequenceIndex = roadPiece[i].index;
-            args.unkDirection = trackAndDirection2 & 0x3;
+            args.rotation = trackAndDirection2 & 0x3;
             args.roadId = trackAndDirection2 >> 3;
             args.objectId = _trackType & ~(1 << 7);
 
@@ -2098,7 +2098,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 GameCommands::RoadRemovalArgs args;
                 args.pos = _ghostRemovalTrackPos;
                 args.pos.z += TrackData::getRoadPiece(_ghostRemovalTrackId)[0].z;
-                args.unkDirection = _ghostRemovalTrackRotation & 3;
+                args.rotation = _ghostRemovalTrackRotation & 3;
                 args.sequenceIndex = 0;
                 args.roadId = _ghostRemovalTrackId;
                 args.objectId = _ghostRemovalTrackObjectId & ~(1 << 7);
@@ -2165,7 +2165,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             WindowManager::viewportSetVisibility(newViewState);
             if (_lastSelectedTrackGradient != 0)
             {
-                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnTrack);
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
             }
         }
         _byte_113603A = 0;
@@ -2218,7 +2218,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             WindowManager::viewportSetVisibility(newViewState);
             if (_lastSelectedTrackGradient != 0)
             {
-                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnTrack);
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
             }
         }
         _byte_113603A = 0;
@@ -2660,7 +2660,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 FormatArguments args{};
                 args.push<uint32_t>(_trackCost);
-                drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, args);
+                drawingCtx.drawStringCentred(*rt, Point(x, y), Colour::black, StringIds::build_cost, &args);
             }
         }
     }

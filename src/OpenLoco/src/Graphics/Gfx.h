@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Font.h"
 #include "ImageId.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -170,8 +169,4 @@ namespace OpenLoco::Gfx
     void loadPalette(uint32_t imageIndex, uint8_t modifier);
 
     ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages);
-
-    int16_t getCharacterWidth(Font font, uint8_t character);
-    void setCharacterWidth(Font font, uint8_t character, int16_t width);
-    ImageId getImageForCharacter(Font font, uint8_t character);
 }

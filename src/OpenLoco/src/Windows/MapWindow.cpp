@@ -12,12 +12,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
-#include "Map/IndustryElement.h"
-#include "Map/RoadElement.h"
-#include "Map/StationElement.h"
-#include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
-#include "Map/TrackElement.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/InterfaceSkinObject.h"
 #include "Objects/LandObject.h"
@@ -39,7 +34,6 @@
 #include "World/IndustryManager.h"
 #include "World/StationManager.h"
 #include "World/TownManager.h"
-#include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -48,28 +42,25 @@ using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static loco_global<int32_t, 0x00523338> _cursorX2;
-    static loco_global<int32_t, 0x0052333C> _cursorY2;
-
-    static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
-    static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
-    static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
-
-    // 0x004FDC4C
-    static std::array<Point, 4> kViewFrameOffsetsByRotation = { {
-        { kMapColumns - 2, 0 },
-        { kRenderedMapWidth - 6, kMapRows },
-        { kMapColumns - 2, kRenderedMapHeight },
-        { -8, kMapRows },
-    } };
-
-    static loco_global<uint8_t[256], 0x004FDC5C> _flashColours; // can be integrated (all 0x0A, except 0x15 at indices (11-14))
-    static loco_global<uint32_t, 0x00F253A4> _flashingItems;
-
-    static PaletteIndex_t* _mapPixels; // 0x00F253A8
-    static PaletteIndex_t* _mapAltPixels;
-
-    static loco_global<uint32_t, 0x00F253AC> _drawMapRowIndex;
+    static std::array<int16_t, 4> _4FDC4C = {
+        {
+            376,
+            760,
+            376,
+            -8,
+        }
+    };
+    static std::array<int16_t, 4> _4FDC4E = {
+        {
+            0,
+            384,
+            768,
+            384,
+        }
+    };
+    static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
+    static loco_global<uint32_t, 0x00F253A4> _dword_F253A4;
+    static loco_global<uint8_t*, 0x00F253A8> _dword_F253A8;
     static std::array<uint16_t, 6> _vehicleTypeCounts = {
         {
             0,
@@ -85,6 +76,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint8_t[8], 0x00F25404> _trackColours;
     static loco_global<uint8_t[8], 0x00F2540C> _roadColours;
+    static loco_global<Colour[Limits::kMaxCompanies + 1], 0x009C645C> _companyColours;
+    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
     enum widx
     {
@@ -178,7 +171,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Ui::getLastMapWindowAttributes().var88C = self.var_88C;
         Ui::getLastMapWindowAttributes().flags = self.flags | WindowFlags::flag_31;
 
-        free(_mapPixels);
+        free(_dword_F253A8);
     }
 
     // 0x0046B8CF
@@ -223,674 +216,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self.setSize(kMinWindowSize, kMaxWindowSize);
     }
 
-    // 0x0046C5E5
-    static void setMapPixelsOverall(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
-    {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
-        {
-            // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
-            {
-                pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
-                continue;
-            }
-
-            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
-            auto tile = TileManager::get(pos);
-            for (auto& el : tile)
-            {
-                switch (el.type())
-                {
-                    case ElementType::surface:
-                    {
-                        auto* surfaceEl = el.as<SurfaceElement>();
-                        if (surfaceEl == nullptr)
-                            continue;
-
-                        if (surfaceEl->water() == 0)
-                        {
-                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            auto offset = surfaceEl->baseZ() / kMicroToSmallZStep * 2;
-                            colourFlash0 = landImage->offset[offset];
-                            colourFlash1 = landImage->offset[offset + 1];
-                        }
-                        else
-                        {
-                            const auto* waterObj = ObjectManager::get<WaterObject>();
-                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            auto offset = (surfaceEl->water() * kMicroToSmallZStep - surfaceEl->baseZ()) / 2;
-                            colourFlash0 = waterImage->offset[offset - 2];
-                            colourFlash1 = waterImage->offset[offset - 1];
-                        }
-
-                        colour0 = colourFlash0;
-                        colour1 = colourFlash1;
-                        break;
-                    }
-
-                    case ElementType::track:
-                        if (!el.isGhost() && !el.isAiAllocated())
-                        {
-                            auto* trackEl = el.as<TrackElement>();
-                            if (trackEl == nullptr)
-                                continue;
-
-                            auto* trackObj = ObjectManager::get<TrackObject>(trackEl->trackObjectId());
-                            if (trackObj->hasFlags(TrackObjectFlags::unk_02))
-                            {
-                                colour0 = colourFlash0 = PaletteIndex::index_0C;
-                                if (_flashingItems & (1 << 2))
-                                {
-                                    colourFlash0 = _flashColours[colourFlash0];
-                                }
-                            }
-                            else
-                            {
-                                colour0 = colourFlash0 = PaletteIndex::index_11;
-                                if (_flashingItems & (1 << 3))
-                                {
-                                    colourFlash0 = _flashColours[colourFlash0];
-                                }
-                            }
-
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::station:
-                        if (!el.isGhost() && !el.isAiAllocated())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_BA;
-                            if (_flashingItems & (1 << 4))
-                            {
-                                colourFlash0 = _flashColours[colourFlash0];
-                            }
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::signal:
-                        break;
-
-                    case ElementType::building:
-                        if (!el.isGhost())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_41;
-                            if (_flashingItems & (1 << 0))
-                            {
-                                colourFlash0 = _flashColours[colourFlash0];
-                            }
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::tree:
-                        if (!el.isGhost())
-                        {
-                            colour1 = colourFlash1 = PaletteIndex::index_64;
-                            if (_flashingItems & (1 << 5))
-                            {
-                                colourFlash1 = PaletteIndex::index_0A;
-                            }
-                        }
-                        break;
-
-                    case ElementType::wall:
-                        continue;
-
-                    case ElementType::road:
-                        if (!el.isGhost() && !el.isAiAllocated())
-                        {
-                            auto* roadEl = el.as<RoadElement>();
-                            if (roadEl == nullptr)
-                                continue;
-
-                            auto* roadObj = ObjectManager::get<RoadObject>(roadEl->roadObjectId());
-                            if (roadObj->hasFlags(RoadObjectFlags::unk_01))
-                            {
-                                colour0 = colourFlash0 = PaletteIndex::index_11;
-                                if (_flashingItems & (1 << 3))
-                                {
-                                    colourFlash0 = _flashColours[colourFlash0];
-                                }
-                            }
-                            else
-                            {
-                                colour0 = colourFlash0 = PaletteIndex::index_0C;
-                                if (_flashingItems & (1 << 2))
-                                {
-                                    colourFlash0 = _flashColours[colourFlash0];
-                                }
-                            }
-
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::industry:
-                        if (!el.isGhost())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_7D;
-                            if (_flashingItems & (1 << 1))
-                            {
-                                colourFlash0 = _flashColours[colourFlash0];
-                            }
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-                };
-            }
-
-            mapPtr[0] = colour0;
-            mapPtr[1] = colour1;
-            mapAltPtr[0] = colourFlash0;
-            mapAltPtr[1] = colourFlash1;
-
-            pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
-        }
-
-        _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
-            _drawMapRowIndex = 0;
-    }
-
-    // 0x0046C873
-    static void setMapPixelsVehicles(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
-    {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
-        {
-            // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
-            {
-                pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
-                continue;
-            }
-
-            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
-            auto tile = TileManager::get(pos);
-            for (auto& el : tile)
-            {
-                switch (el.type())
-                {
-                    case ElementType::surface:
-                    {
-                        auto* surfaceEl = el.as<SurfaceElement>();
-                        if (surfaceEl == nullptr)
-                            continue;
-
-                        if (surfaceEl->water() == 0)
-                        {
-                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
-                        }
-                        else
-                        {
-                            const auto* waterObj = ObjectManager::get<WaterObject>();
-                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = waterImage->offset[0];
-                        }
-
-                        colour0 = colour1 = colourFlash0;
-                        break;
-                    }
-
-                    case ElementType::track:
-                    case ElementType::station:
-                    case ElementType::road:
-                        if (!el.isGhost() && !el.isAiAllocated())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_0C;
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::building:
-                    case ElementType::industry:
-                        if (!el.isGhost())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_3C;
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    default:
-                        break;
-                };
-            }
-
-            mapPtr[0] = colour0;
-            mapPtr[1] = colour1;
-            mapAltPtr[0] = colourFlash0;
-            mapAltPtr[1] = colourFlash1;
-
-            pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
-        }
-
-        _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
-            _drawMapRowIndex = 0;
-    }
-
-    // 0x004FB464
-    // clang-format off
-    static constexpr std::array<PaletteIndex_t, 31> kIndustryColours = {
-        PaletteIndex::index_0A, PaletteIndex::index_0E, PaletteIndex::index_15, PaletteIndex::index_1F,
-        PaletteIndex::index_29, PaletteIndex::index_35, PaletteIndex::index_38, PaletteIndex::index_3F,
-        PaletteIndex::index_43, PaletteIndex::index_4B, PaletteIndex::index_50, PaletteIndex::index_58,
-        PaletteIndex::index_66, PaletteIndex::index_71, PaletteIndex::index_7D, PaletteIndex::index_85,
-        PaletteIndex::index_89, PaletteIndex::index_9D, PaletteIndex::index_A1, PaletteIndex::index_A3,
-        PaletteIndex::index_AC, PaletteIndex::index_B8, PaletteIndex::index_BB, PaletteIndex::index_C3,
-        PaletteIndex::index_C6, PaletteIndex::index_D0, PaletteIndex::index_D3, PaletteIndex::index_DB,
-        PaletteIndex::index_DE, PaletteIndex::index_24, PaletteIndex::index_12,
-    };
-    // clang-format on
-
-    // 0x0046C9A8
-    static void setMapPixelsIndustries(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
-    {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
-        {
-            // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
-            {
-                pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
-                continue;
-            }
-
-            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
-            auto tile = TileManager::get(pos);
-            for (auto& el : tile)
-            {
-                switch (el.type())
-                {
-                    case ElementType::surface:
-                    {
-                        auto* surfaceEl = el.as<SurfaceElement>();
-                        if (surfaceEl == nullptr)
-                            continue;
-
-                        if (surfaceEl->water() > 0)
-                        {
-                            const auto* waterObj = ObjectManager::get<WaterObject>();
-                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colour0 = colour1 = colourFlash0 = colourFlash1 = waterImage->offset[0];
-                        }
-                        else
-                        {
-                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colour0 = colour1 = colourFlash0 = colourFlash1 = landImage->offset[0];
-                        }
-
-                        if (surfaceEl->isIndustrial())
-                        {
-                            const auto* industry = IndustryManager::get(surfaceEl->industryId());
-                            const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                            colour0 = colourFlash0 = kIndustryColours[colourIndex];
-                            if (_flashingItems & (1 << industry->objectId))
-                            {
-                                colourFlash0 = PaletteIndex::index_0A;
-                            }
-                        }
-                        break;
-                    }
-
-                    case ElementType::building:
-                        // Vanilla omitted the ghost check
-                        if (!el.isGhost())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_3C;
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::industry:
-                    {
-                        if (el.isGhost())
-                            continue;
-
-                        auto* industryEl = el.as<IndustryElement>();
-                        if (industryEl == nullptr)
-                            continue;
-
-                        const auto* industry = IndustryManager::get(industryEl->industryId());
-                        const auto colourIndex = _assignedIndustryColours[industry->objectId];
-                        colourFlash0 = colourFlash1 = colour0 = colour1 = kIndustryColours[colourIndex];
-                        if (_flashingItems & (1 << industry->objectId))
-                        {
-                            colourFlash0 = colourFlash1 = PaletteIndex::index_0A;
-                        }
-                        break;
-                    }
-
-                    case ElementType::track:
-                    case ElementType::station:
-                    case ElementType::road:
-                    {
-                        if (el.isGhost() || el.isAiAllocated())
-                            continue;
-
-                        colour0 = colour1 = colourFlash1 = colourFlash0 = PaletteIndex::index_0C;
-                        break;
-                    }
-
-                    default:
-                        break;
-                };
-            }
-
-            mapPtr[0] = colour0;
-            mapPtr[1] = colour1;
-            mapAltPtr[0] = colourFlash0;
-            mapAltPtr[1] = colourFlash1;
-
-            pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
-        }
-
-        _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
-            _drawMapRowIndex = 0;
-    }
-
-    // 0x0046CB68
-    static void setMapPixelsRoutes(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
-    {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
-        {
-            // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
-            {
-                pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
-                continue;
-            }
-
-            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
-            auto tile = TileManager::get(pos);
-            for (auto& el : tile)
-            {
-                switch (el.type())
-                {
-                    case ElementType::surface:
-                    {
-                        auto* surfaceEl = el.as<SurfaceElement>();
-                        if (surfaceEl == nullptr)
-                            continue;
-
-                        if (surfaceEl->water() == 0)
-                        {
-                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
-                        }
-                        else
-                        {
-                            const auto* waterObj = ObjectManager::get<WaterObject>();
-                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = waterImage->offset[0];
-                        }
-
-                        colour0 = colour1 = colourFlash0;
-                        break;
-                    }
-
-                    case ElementType::building:
-                    case ElementType::industry:
-                        if (!el.isGhost())
-                        {
-                            colour0 = colourFlash0 = PaletteIndex::index_3C;
-                            colourFlash1 = colourFlash0;
-                            colour1 = colour0;
-                        }
-                        break;
-
-                    case ElementType::track:
-                    {
-                        if (el.isGhost() || el.isAiAllocated())
-                            continue;
-
-                        auto* trackEl = el.as<TrackElement>();
-                        if (trackEl == nullptr)
-                            continue;
-
-                        colourFlash0 = _trackColours[trackEl->trackObjectId()];
-
-                        auto firstFlashable = Numerics::bitScanForward(_flashingItems);
-                        if (firstFlashable != -1)
-                        {
-                            if (_routeToObjectIdMap[firstFlashable] == colourFlash0)
-                            {
-                                colourFlash0 = _flashColours[colourFlash0];
-                            }
-                        }
-
-                        colour1 = colourFlash1 = colour0 = colourFlash0;
-                        break;
-                    }
-
-                    case ElementType::station:
-                    {
-                        if (!el.isGhost() && !el.isAiAllocated())
-                        {
-                            colour1 = colourFlash1 = colour0 = colourFlash0 = PaletteIndex::index_BA;
-                        }
-                        break;
-                    }
-
-                    case ElementType::road:
-                    {
-                        if (el.isGhost() || el.isAiAllocated())
-                            continue;
-
-                        auto* roadEl = el.as<RoadElement>();
-                        if (roadEl == nullptr)
-                            continue;
-
-                        colourFlash0 = colour0 = _roadColours[roadEl->roadObjectId()];
-
-                        auto firstFlashable = Numerics::bitScanForward(_flashingItems);
-                        if (firstFlashable != -1)
-                        {
-                            if (_routeToObjectIdMap[firstFlashable] == (roadEl->roadObjectId() | (1 << 7)))
-                            {
-                                colourFlash0 = _flashColours[colourFlash0];
-                            }
-                        }
-
-                        colour1 = colour0;
-                        colourFlash1 = colourFlash0;
-                        break;
-                    }
-
-                    default:
-                        break;
-                };
-            }
-
-            mapPtr[0] = colour0;
-            mapPtr[1] = colour1;
-            mapAltPtr[0] = colourFlash0;
-            mapAltPtr[1] = colourFlash1;
-
-            pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
-        }
-
-        _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
-            _drawMapRowIndex = 0;
-    }
-
-    // 0x0046CD31
-    static void setMapPixelsOwnership(PaletteIndex_t* mapPtr, PaletteIndex_t* mapAltPtr, Pos2 pos, Pos2 delta)
-    {
-        for (auto rowCountLeft = kMapColumns; rowCountLeft > 0; rowCountLeft--)
-        {
-            // Coords shouldn't be at map edge
-            if (!(pos.x > 0 && pos.y > 0 && pos.x < kMapWidth - kTileSize && pos.y < kMapHeight - kTileSize))
-            {
-                pos += delta;
-                mapPtr += kRenderedMapWidth + 1;
-                mapAltPtr += kRenderedMapWidth + 1;
-                continue;
-            }
-
-            PaletteIndex_t colourFlash0{}, colourFlash1{}, colour0{}, colour1{};
-            auto tile = TileManager::get(pos);
-            for (auto& el : tile)
-            {
-                switch (el.type())
-                {
-                    case ElementType::surface:
-                    {
-                        auto* surfaceEl = el.as<SurfaceElement>();
-                        if (surfaceEl == nullptr)
-                            continue;
-
-                        if (surfaceEl->water() == 0)
-                        {
-                            const auto* landObj = ObjectManager::get<LandObject>(surfaceEl->terrain());
-                            const auto* landImage = Gfx::getG1Element(landObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = landImage->offset[0];
-                        }
-                        else
-                        {
-                            const auto* waterObj = ObjectManager::get<WaterObject>();
-                            const auto* waterImage = Gfx::getG1Element(waterObj->mapPixelImage);
-                            colourFlash0 = colourFlash1 = waterImage->offset[0];
-                        }
-
-                        colour0 = colour1 = colourFlash0;
-                        break;
-                    }
-
-                    case ElementType::track:
-                    case ElementType::station:
-                    case ElementType::road:
-                    {
-                        if (el.isGhost() || el.isAiAllocated())
-                            continue;
-
-                        auto owner = CompanyId::null;
-
-                        if (auto* stationEl = el.as<StationElement>())
-                        {
-                            auto station = StationManager::get(stationEl->stationId());
-                            owner = station->owner;
-                        }
-                        else if (auto* trackEl = el.as<TrackElement>())
-                        {
-                            owner = trackEl->owner();
-                        }
-                        else if (auto* roadEl = el.as<RoadElement>())
-                        {
-                            owner = roadEl->owner();
-                        }
-
-                        if (owner != CompanyId::neutral)
-                        {
-                            auto companyColour = CompanyManager::getCompanyColour(owner);
-                            colourFlash1 = colourFlash0 = colour1 = colour0 = Colours::getShade(companyColour, 5);
-                            if (_flashingItems & (1 << enumValue(owner)))
-                            {
-                                colourFlash1 = colourFlash0 = _flashColours[colour0];
-                            }
-                            break;
-                        }
-                        [[fallthrough]];
-                    }
-
-                    case ElementType::building:
-                    case ElementType::industry:
-                        // Vanilla omitted the ghost check
-                        if (!el.isGhost())
-                        {
-                            colour0 = colour1 = colourFlash1 = colourFlash0 = PaletteIndex::index_0B;
-                        }
-                        break;
-
-                    default:
-                        break;
-                };
-            }
-
-            mapPtr[0] = colour0;
-            mapPtr[1] = colour1;
-            mapAltPtr[0] = colourFlash0;
-            mapAltPtr[1] = colourFlash1;
-
-            pos += delta;
-            mapPtr += kRenderedMapWidth + 1;
-            mapAltPtr += kRenderedMapWidth + 1;
-        }
-
-        _drawMapRowIndex++;
-        if (_drawMapRowIndex > kMapColumns)
-            _drawMapRowIndex = 0;
-    }
-
     // 0x0046C544
-    static void setMapPixels(const Window& self)
+    static void sub_46C544(Window* self)
     {
-        _flashingItems = self.var_854;
-        auto offset = _drawMapRowIndex * (kRenderedMapWidth - 1) + (kMapRows - 1);
-        auto* mapPtr = &_mapPixels[offset];
-        auto* mapAltPtr = &_mapAltPixels[offset];
-
-        Pos2 pos{};
-        Pos2 delta{};
-        switch (WindowManager::getCurrentRotation())
-        {
-            case 0:
-                pos = Pos2(_drawMapRowIndex * kTileSize, 0);
-                delta = { 0, kTileSize };
-                break;
-            case 1:
-                pos = Pos2(kMapWidth - kTileSize, _drawMapRowIndex * kTileSize);
-                delta = { -kTileSize, 0 };
-                break;
-            case 2:
-                pos = Pos2((kMapColumns - 1 - _drawMapRowIndex) * kTileSize, kMapWidth - kTileSize);
-                delta = { 0, -kTileSize };
-                break;
-            case 3:
-                pos = Pos2(0, (kMapColumns - 1 - _drawMapRowIndex) * kTileSize);
-                delta = { kTileSize, 0 };
-                break;
-        }
-
-        switch (self.currentTab)
-        {
-            case 0: setMapPixelsOverall(mapPtr, mapAltPtr, pos, delta); return;
-            case 1: setMapPixelsVehicles(mapPtr, mapAltPtr, pos, delta); return;
-            case 2: setMapPixelsIndustries(mapPtr, mapAltPtr, pos, delta); return;
-            case 3: setMapPixelsRoutes(mapPtr, mapAltPtr, pos, delta); return;
-            case 4: setMapPixelsOwnership(mapPtr, mapAltPtr, pos, delta); return;
-        }
+        registers regs;
+        regs.esi = X86Pointer(self);
+        call(0x0046C544, regs);
     }
 
     // 0x0046D34D based on
@@ -1006,7 +337,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B69C
     static void clearMap()
     {
-        std::fill(_mapPixels, _mapPixels + kRenderedMapSize * 2, PaletteIndex::index_0A);
+        std::fill(static_cast<uint8_t*>(_dword_F253A8), _dword_F253A8 + 0x120000, PaletteIndex::index_0A);
     }
 
     // 0x00F2541D
@@ -1032,7 +363,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         while (i > 0)
         {
-            setMapPixels(self);
+            sub_46C544(&self);
             i--;
         }
 
@@ -1048,8 +379,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         self.callPrepareDraw();
-        *scrollWidth = kRenderedMapWidth;
-        *scrollHeight = kRenderedMapHeight;
+        *scrollWidth = kMapColumns * 2;
+        *scrollHeight = kMapRows * 2;
     }
 
     // 0x0046B9D4
@@ -1258,7 +589,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
 
             y += 10;
         }
@@ -1308,11 +639,25 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
 
             y += 10;
         }
     }
+
+    // 0x004FB464
+    // clang-format off
+    static constexpr std::array<PaletteIndex_t, 31> industryColours = {
+        PaletteIndex::index_0A, PaletteIndex::index_0E, PaletteIndex::index_15, PaletteIndex::index_1F,
+        PaletteIndex::index_29, PaletteIndex::index_35, PaletteIndex::index_38, PaletteIndex::index_3F,
+        PaletteIndex::index_43, PaletteIndex::index_4B, PaletteIndex::index_50, PaletteIndex::index_58,
+        PaletteIndex::index_66, PaletteIndex::index_71, PaletteIndex::index_7D, PaletteIndex::index_85,
+        PaletteIndex::index_89, PaletteIndex::index_9D, PaletteIndex::index_A1, PaletteIndex::index_A3,
+        PaletteIndex::index_AC, PaletteIndex::index_B8, PaletteIndex::index_BB, PaletteIndex::index_C3,
+        PaletteIndex::index_C6, PaletteIndex::index_D0, PaletteIndex::index_D3, PaletteIndex::index_DB,
+        PaletteIndex::index_DE, PaletteIndex::index_24, PaletteIndex::index_12,
+    };
+    // clang-format on
 
     // 0x0046D47F
     static void drawGraphKeyIndustries(Window* self, Gfx::RenderTarget* rt, uint16_t x, uint16_t& y)
@@ -1328,7 +673,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                auto colour = kIndustryColours[_assignedIndustryColours[i]];
+                auto colour = industryColours[_assignedIndustryColours[i]];
 
                 drawingCtx.drawRect(*rt, x, y + 3, 5, 5, colour, Gfx::RectFlags::none);
             }
@@ -1344,7 +689,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
 
             y += 10;
         }
@@ -1397,7 +742,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
 
             y += 10;
         }
@@ -1429,7 +774,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             }
 
             auto point = Point(x + 6, y);
-            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, args);
+            drawingCtx.drawStringLeftClipped(*rt, point, 94, Colour::black, stringId, &args);
 
             y += 10;
         }
@@ -1529,10 +874,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto buffer = StringManager::getString(StringIds::buffer_1250);
             char* ptr = const_cast<char*>(buffer);
 
-            auto argsBuf = FormatArgumentsBuffer{};
-            auto argsTmp = FormatArguments{ argsBuf };
-            argsTmp.push(industryCount);
-            ptr = StringManager::formatString(ptr, stringId, argsTmp);
+            ptr = StringManager::formatString(ptr, stringId, &industryCount);
 
             *ptr++ = ' ';
             *ptr++ = '(';
@@ -1630,7 +972,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
         auto width = widget.width();
 
-        drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
+        drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, &args);
     }
 
     // 0x0046BF0F based on
@@ -1673,14 +1015,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (train.head->vehicleType == VehicleType::aircraft)
         {
             colour = 211;
-            auto index = Numerics::bitScanForward(_flashingItems);
+            auto index = Numerics::bitScanForward(_dword_F253A4);
             if (index != -1)
             {
                 if (_routeToObjectIdMap[index] == 0xFE)
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
-                        colour = _flashColours[colour];
+                        colour = _byte_4FDC5C[colour];
                     }
                 }
             }
@@ -1688,14 +1030,14 @@ namespace OpenLoco::Ui::Windows::MapWindow
         else if (train.head->vehicleType == VehicleType::ship)
         {
             colour = 139;
-            auto index = Numerics::bitScanForward(_flashingItems);
+            auto index = Numerics::bitScanForward(_dword_F253A4);
             if (index != -1)
             {
                 if (_routeToObjectIdMap[index] == 0xFD)
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
-                        colour = _flashColours[colour];
+                        colour = _byte_4FDC5C[colour];
                     }
                 }
             }
@@ -1747,20 +1089,20 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
-            auto companyId = car.front->owner;
-            colour = Colours::getShade(CompanyManager::getCompanyColour(companyId), 7);
+            uint8_t index = enumValue(car.front->owner);
+            colour = Colours::getShade(_companyColours[index], 7);
 
             if (widgetIndex == widx::tabVehicles)
             {
-                auto index = enumValue(train.head->vehicleType);
+                index = enumValue(train.head->vehicleType);
                 colour = vehicleTypeColours[index];
             }
 
-            if (_flashingItems & (1 << enumValue(companyId)))
+            if (_dword_F253A4 & (1 << index))
             {
                 if (!(mapFrameNumber & (1 << 2)))
                 {
-                    colour = _flashColours[colour];
+                    colour = _byte_4FDC5C[colour];
                 }
             }
         }
@@ -1841,10 +1183,10 @@ namespace OpenLoco::Ui::Windows::MapWindow
         top /= 16;
         right /= 32;
         bottom /= 16;
-        left += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        top += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
-        right += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        bottom += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        left += _4FDC4C[getCurrentRotation()];
+        top += _4FDC4E[getCurrentRotation()];
+        right += _4FDC4C[getCurrentRotation()];
+        bottom += _4FDC4E[getCurrentRotation()];
 
         const auto colour = PaletteIndex::index_0A;
 
@@ -1856,8 +1198,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         left /= 32;
         top /= 16;
-        left += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        top += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        left += _4FDC4C[getCurrentRotation()];
+        top += _4FDC4E[getCurrentRotation()];
         auto right = left;
         auto bottom = top;
         left += leftOffset;
@@ -1930,7 +1272,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!(mapFrameNumber & (1 << 2)))
             return;
 
-        if (_flashingItems != 0)
+        if (_dword_F253A4 != 0)
             return;
 
         uint8_t cornerSize = 5;
@@ -2009,19 +1351,18 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
-            char townNameBuffer[512]{};
-            StringManager::formatString(townNameBuffer, town.name);
-            drawingCtx.setCurrentFont(Gfx::Font::small);
+            StringManager::formatString(_stringFormatBuffer, town.name);
+            drawingCtx.setCurrentFontSpriteBase(Font::small);
 
-            auto strWidth = drawingCtx.getStringWidth(townNameBuffer);
+            auto strWidth = drawingCtx.getStringWidth(_stringFormatBuffer);
 
             strWidth /= 2;
 
             townPos.x -= strWidth;
             townPos.y -= 3;
 
-            drawingCtx.setCurrentFont(Gfx::Font::small);
-            drawingCtx.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), townNameBuffer);
+            drawingCtx.setCurrentFontSpriteBase(Font::small);
+            drawingCtx.drawString(*rt, townPos, AdvancedColour(Colour::purple).outline(), _stringFormatBuffer);
         }
     }
 
@@ -2034,12 +1375,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.clearSingle(rt, PaletteIndex::index_0A);
 
-        auto* element = Gfx::getG1Element(0);
+        auto element = Gfx::getG1Element(0);
         auto backupElement = *element;
+        auto offset = *_dword_F253A8;
 
-        auto* offset = _mapPixels;
         if (mapFrameNumber & (1 << 2))
-            offset = _mapAltPixels;
+            offset += 0x90000;
 
         Gfx::getG1Element(0)->offset = offset;
         Gfx::getG1Element(0)->width = kMapColumns * 2;
@@ -2091,7 +1432,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (auto i = 0; i < 31; i++)
         {
-            auto industryColour = kIndustryColours[i];
+            auto industryColour = industryColours[i];
             auto diff = industryColour - colour;
             if (industryColour < colour)
             {
@@ -2225,7 +1566,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto freeColour = std::max(0, Numerics::bitScanForward(availableColours));
             availableColours &= ~(1U << freeColour);
 
-            auto colour = kIndustryColours[freeColour];
+            auto colour = industryColours[freeColour];
             _routeColours[i] = colour;
 
             if (id & (1U << 7))
@@ -2271,13 +1612,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (window != nullptr)
             return;
 
-        auto ptr = malloc(kRenderedMapSize * 2);
+        auto ptr = malloc(kMapSize * 8);
+
         if (ptr == nullptr)
             return;
 
-        _mapPixels = static_cast<PaletteIndex_t*>(ptr);
-        _mapAltPixels = &_mapPixels[kRenderedMapSize];
-
+        _dword_F253A8 = static_cast<uint8_t*>(ptr);
         Ui::Size size = { 350, 272 };
 
         if (Ui::getLastMapWindowAttributes().flags != WindowFlags::none)
@@ -2346,8 +1686,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         y += viewport->viewY;
         x /= 32;
         y /= 16;
-        x += kViewFrameOffsetsByRotation[getCurrentRotation()].x;
-        y += kViewFrameOffsetsByRotation[getCurrentRotation()].y;
+        x += _4FDC4C[getCurrentRotation()];
+        y += _4FDC4E[getCurrentRotation()];
 
         auto width = widgets[widx::scrollview].width() - 10;
         auto height = widgets[widx::scrollview].height() - 10;

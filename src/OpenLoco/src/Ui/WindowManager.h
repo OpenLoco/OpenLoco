@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         reset,
         undergroundView,
-        heightMarksOnTrack,
+        heightMarksOnLand,
         overgroundView,
     };
 

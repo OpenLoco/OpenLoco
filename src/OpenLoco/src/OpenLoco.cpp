@@ -277,8 +277,6 @@ namespace OpenLoco
 
     static void initialise()
     {
-        _last_tick_time = Platform::getTime();
-
         std::srand(std::time(nullptr));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE); // getSystemTime unused dead code?
@@ -303,9 +301,8 @@ namespace OpenLoco
         Scenario::reset();
 
         Gfx::loadDefaultPalette();
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.clearSingle(drawingEngine.getScreenRT(), PaletteIndex::index_0A);
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.clearSingle(Gfx::getScreenRT(), PaletteIndex::index_0A);
 
         setScreenFlag(ScreenFlags::initialised);
 
@@ -394,13 +391,20 @@ namespace OpenLoco
     // 0x0046A794
     static void tick()
     {
+        static bool isInitialised = false;
+
         try
         {
-            auto& drawingEngine = Gfx::getDrawingEngine();
-            auto& drawingCtx = drawingEngine.getDrawingContext();
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             addr<0x00113E87C, int32_t>() = 0;
             addr<0x0005252E0, int32_t>() = 0;
+            if (!isInitialised)
+            {
+                isInitialised = true;
+                initialise();
+                _last_tick_time = Platform::getTime();
+            }
 
             uint32_t time = Platform::getTime();
             _time_since_last_tick = (uint16_t)std::min(time - _last_tick_time, 500U);
@@ -426,7 +430,7 @@ namespace OpenLoco
                 Config::get().old.var_72 = 16;
                 const auto cursor = Ui::getCursorPosScaled();
                 addr<0x00F2538C, Ui::Point32>() = cursor;
-                drawingCtx.clear(drawingEngine.getScreenRT(), 0);
+                drawingCtx.clear(Gfx::getScreenRT(), 0);
                 addr<0x00F2539C, int32_t>() = 0;
             }
             else
@@ -557,8 +561,7 @@ namespace OpenLoco
 
                     Audio::playBackgroundMusic();
 
-                    // 0x0052532C != 0 isMinimized
-                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && Ui::width() < 64)
+                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                     {
                         Tutorial::stop();
 
@@ -731,7 +734,7 @@ namespace OpenLoco
 
             auto autosaveFullPath8 = autosaveFullPath.u8string();
             Logging::info("Autosaving game to {}", autosaveFullPath8.c_str());
-            S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::isAutosave | S5::SaveFlags::noWindowClose);
+            S5::exportGameStateToFile(autosaveFullPath, S5::SaveFlags::noWindowClose);
         }
         catch (const std::exception& e)
         {
@@ -913,7 +916,10 @@ namespace OpenLoco
         sub_4062D1();
         sub_406417(nullptr);
 
-        initialise();
+        // Call tick before Ui::processMessages to ensure initialise is called
+        // otherwise window events can end up using an uninitialised window manager.
+        // This can be removed when initialise is moved out of tick().
+        tick();
 
         while (Ui::processMessages())
         {
@@ -980,8 +986,6 @@ namespace OpenLoco
 
         // Always print the product name and version first.
         Logging::info("{}", OpenLoco::getVersionInfo());
-
-        Environment::setLocale();
 
         auto ret = runCommandLineOnlyCommand(options);
         if (ret)

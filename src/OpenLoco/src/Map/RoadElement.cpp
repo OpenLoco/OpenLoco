@@ -69,7 +69,7 @@ namespace OpenLoco::World
 
         GameCommands::RoadRemovalArgs args;
         args.pos = World::Pos3(loc.x, loc.y, baseHeight());
-        args.unkDirection = unkDirection();
+        args.rotation = rotation();
         args.roadId = roadId();
         args.sequenceIndex = sequenceIndex();
         args.objectId = roadObjectId();

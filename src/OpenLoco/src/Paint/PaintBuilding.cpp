@@ -209,13 +209,13 @@ namespace OpenLoco::Paint
 
         if (isMultiTile)
         {
-            const auto sequenceIndex = elBuilding.multiTileIndex();
+            const auto sequenceIndex = elBuilding.sequenceIndex();
             // Only the front of the 2x2 area will draw. Images are sized to overlap into the other tiles.
             if ((sequenceIndex ^ (1 << 1)) == ((-session.getRotation()) & 0x3))
             {
                 paintBuildingBuilding(session, elBuilding, *buildingObj, imageOffset, bbOffset, bbSize, baseColour, rotation, isMultiTile);
             }
-            session.setSegmentsSupportHeight(SegmentFlags::all, 0xFFFF, 0);
+            session.setSegmentSupportHeight(SegmentFlags::all, 0xFFFF, 0);
             session.setGeneralSupportHeight(0xFFFF, 0); // TODO: Check if this works previously would not set slope to zero
         }
         else

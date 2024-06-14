@@ -1,6 +1,5 @@
 #pragma once
 
-#include "FormatArguments.hpp"
 #include "StringManager.h"
 #include "Types.hpp"
 #include <cstddef>
@@ -14,6 +13,17 @@
 
 namespace OpenLoco
 {
+    namespace Font
+    {
+        constexpr int16_t m1 = -1;
+        constexpr int16_t m2 = -2;
+
+        constexpr int16_t medium_normal = 0;
+        constexpr int16_t medium_bold = 224;
+        constexpr int16_t small = 448;
+        constexpr int16_t large = 672;
+    }
+
     namespace ControlCodes
     {
         // Arguments (1 byte): uint8_t
@@ -121,11 +131,8 @@ namespace OpenLoco
 
 namespace OpenLoco::StringManager
 {
-    char* formatString(char* buffer, StringId id);
-    char* formatString(char* buffer, size_t bufferLen, StringId id);
-
-    char* formatString(char* buffer, StringId id, FormatArgumentsView args);
-    char* formatString(char* buffer, size_t bufferLen, StringId id, FormatArgumentsView args);
+    char* formatString(char* buffer, StringId id, const void* args = nullptr);
+    char* formatString(char* buffer, size_t bufferLen, StringId id, const void* args = nullptr);
 
     // TODO: Move this somewhere more sensible, the string manager should have no idea about the meaning of strings
     StringId isTownName(StringId stringId);

@@ -5,7 +5,6 @@
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
 #include <OpenLoco/Interop/Interop.hpp>
 #include <fstream>
-#include <locale>
 #include <yaml-cpp/yaml.h>
 
 using namespace OpenLoco::Interop;
@@ -308,7 +307,6 @@ namespace OpenLoco::Config
         auto dir = configPath.parent_path();
         Environment::autoCreateDirectory(dir);
 
-        auto backupLocale = std::locale::global(std::locale::classic());
         auto& node = _configYaml;
 
         // Display
@@ -408,8 +406,6 @@ namespace OpenLoco::Config
         {
             stream << node << std::endl;
         }
-
-        std::locale::global(backupLocale);
     }
 
     // 0x004BE3F3

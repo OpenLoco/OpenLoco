@@ -346,7 +346,7 @@ namespace OpenLoco
         auto& roadPiece = World::TrackData::getRoadPiece(res->elRoad->roadId());
         return RoadExtentResult{
             World::Pos3(res->loc, res->elRoad->baseHeight() - roadPiece[0].z),
-            static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->unkDirection()),
+            static_cast<uint16_t>((res->elRoad->roadId() << 3) | res->elRoad->rotation()),
             res->elRoad->hasBridge()
         };
     }

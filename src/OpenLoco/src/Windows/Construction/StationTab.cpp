@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 args.rotation = _stationGhostRotation;
                 args.roadId = _stationGhostTrackId;
                 args.index = _stationGhostTileIndex;
-                args.roadObjectId = _stationGhostType & ~(1 << 7);
+                args.type = _stationGhostType & ~(1 << 7);
                 GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::noErrorWindow | GameCommands::Flags::noPayment | GameCommands::Flags::ghost);
             }
             else
@@ -757,7 +757,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::RoadStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
-        placementArgs.rotation = elRoad->unkDirection();
+        placementArgs.rotation = elRoad->rotation();
         placementArgs.roadId = elRoad->roadId();
         placementArgs.index = elRoad->sequenceIndex();
         placementArgs.roadObjectId = elRoad->roadObjectId();
@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::TrainStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
-        placementArgs.rotation = elTrack->unkDirection();
+        placementArgs.rotation = elTrack->rotation();
         placementArgs.trackId = elTrack->trackId();
         placementArgs.index = elTrack->sequenceIndex();
         placementArgs.trackObjectId = elTrack->trackObjectId();
@@ -985,7 +985,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             FormatArguments args{};
             args.push<uint32_t>(_stationCost);
 
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
         }
 
         xPos = self.x + 3;
@@ -1015,7 +1015,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
-        drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::new_station_buffer, args);
+        drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::new_station_buffer, &args);
 
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 29;

@@ -118,7 +118,7 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->unkDirection() != rotation)
+            if (elTrack->rotation() != rotation)
             {
                 continue;
             }
@@ -347,7 +347,7 @@ namespace OpenLoco::GameCommands
                     return FAILURE;
                 }
                 // Connect flags validation
-                const auto connectFlags = piece.connectFlags[elTrack->unkDirection()];
+                const auto connectFlags = piece.connectFlags[elTrack->rotation()];
                 auto tile = World::TileManager::get(trackLoc);
                 for (auto& el : tile)
                 {
@@ -369,7 +369,7 @@ namespace OpenLoco::GameCommands
                         continue;
                     }
                     auto& connectPiece = World::TrackData::getTrackPiece(elConnectTrack->trackId())[elConnectTrack->sequenceIndex()];
-                    if (connectFlags & connectPiece.connectFlags[elConnectTrack->unkDirection()])
+                    if (connectFlags & connectPiece.connectFlags[elConnectTrack->rotation()])
                     {
                         setErrorText(StringIds::station_cannot_be_built_on_a_junction);
                         return FAILURE;
@@ -452,7 +452,7 @@ namespace OpenLoco::GameCommands
                     }
                     auto* oldStationObj = ObjectManager::get<TrainStationObject>(elStation->objectId());
                     elTrack->setClearZ(elTrack->clearZ() - oldStationObj->height / World::kSmallZStep);
-                    elStation->setMultiTileIndex(0);
+                    elStation->setSequenceIndex(0);
                     updateStationTileRegistration = false;
                     Ui::ViewportManager::invalidate(trackLoc, elStation->baseHeight(), elStation->clearHeight());
                     newStationElement = elStation;
@@ -474,10 +474,10 @@ namespace OpenLoco::GameCommands
                     {
                         return FAILURE;
                     }
-                    newStationElement->setRotation(elTrack->unkDirection());
+                    newStationElement->setRotation(elTrack->rotation());
                     newStationElement->setGhost(flags & Flags::ghost);
                     newStationElement->setAiAllocated(flags & Flags::aiAllocated);
-                    newStationElement->setMultiTileIndex(0);
+                    newStationElement->setSequenceIndex(0);
                     newStationElement->setUnk4SLR4(0);
                     newStationElement->setStationType(StationType::trainStation);
                     newStationElement->setUnk7SLR2(0);

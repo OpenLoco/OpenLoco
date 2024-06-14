@@ -51,10 +51,6 @@ namespace OpenLoco
         inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
 
     public:
-        bool mapHas1(const tile_coord_t x, const tile_coord_t y) const
-        {
-            return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_0))) != 0;
-        }
         bool mapHas2(const tile_coord_t x, const tile_coord_t y) const
         {
             return (_map[y * kMapColumns + x] & (1 << enumValue(CatchmentFlags::flag_1))) != 0;
@@ -377,7 +373,7 @@ namespace OpenLoco
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
                                 if (obj->hasFlags(BuildingObjectFlags::largeTile))
                                 {
-                                    auto index = buildingEl.multiTileIndex();
+                                    auto index = buildingEl.sequenceIndex();
                                     tile_coord_t xPos = (pos.x - World::kOffsets[index].x) / kTileSize;
                                     tile_coord_t yPos = (pos.y - World::kOffsets[index].y) / kTileSize;
 
@@ -564,13 +560,6 @@ namespace OpenLoco
         }
     }
 
-    bool isWithinCatchmentDisplay(const World::Pos2 pos)
-    {
-        CargoSearchState cargoSearchState;
-        const auto tilePos = World::toTileSpace(pos);
-        return cargoSearchState.mapHas1(tilePos.x, tilePos.y);
-    }
-
     // 0x0049B4E0
     void Station::deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity)
     {
@@ -609,7 +598,7 @@ namespace OpenLoco
 
             auto cargo = ObjectManager::get<CargoObject>(cargoId);
             auto unitName = stationCargoStat.quantity == 1 ? cargo->unitNameSingular : cargo->unitNamePlural;
-            ptr = StringManager::formatString(ptr, unitName, args);
+            ptr = StringManager::formatString(ptr, unitName, &args);
         }
 
         StringId suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;

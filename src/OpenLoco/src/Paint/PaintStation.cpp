@@ -393,13 +393,13 @@ namespace OpenLoco::Paint
         if (elStation.isGhost())
         {
             session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-            imageIdbase = Gfx::applyGhostToImage(stationObj->var_12[elStation.multiTileIndex()]);
-            imageIdTranslucentBase = ImageId{ stationObj->var_12[elStation.multiTileIndex()] }.withTranslucency(ExtColour::unk2F);
+            imageIdbase = Gfx::applyGhostToImage(stationObj->var_12[elStation.sequenceIndex()]);
+            imageIdTranslucentBase = ImageId{ stationObj->var_12[elStation.sequenceIndex()] }.withTranslucency(ExtColour::unk2F);
         }
         else
         {
-            imageIdbase = ImageId{ stationObj->var_12[elStation.multiTileIndex()], companyColour };
-            imageIdTranslucentBase = ImageId{ stationObj->var_12[elStation.multiTileIndex()] }.withTranslucency(translucentColour);
+            imageIdbase = ImageId{ stationObj->var_12[elStation.sequenceIndex()], companyColour };
+            imageIdTranslucentBase = ImageId{ stationObj->var_12[elStation.sequenceIndex()] }.withTranslucency(translucentColour);
         }
 
         switch (stationObj->drawStyle)

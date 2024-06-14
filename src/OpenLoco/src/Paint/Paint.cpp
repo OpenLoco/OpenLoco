@@ -541,24 +541,19 @@ namespace OpenLoco::Paint
             });
     }
 
-    void PaintSession::setSegmentsSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
+    void PaintSession::setSegmentSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
     {
         for (int32_t s = 0; s < 9; s++)
         {
             if ((segments & kSegmentOffsets[s]) != SegmentFlags::none)
             {
-                setSegmentSupportHeight(s, height, slope);
+                _supportSegments[s].height = height;
+                if (height != 0xFFFF)
+                {
+                    _supportSegments[s].slope = slope;
+                    _supportSegments[s].var_03 = 0;
+                }
             }
-        }
-    }
-
-    void PaintSession::setSegmentSupportHeight(const uint8_t segment, const uint16_t height, const uint8_t slope)
-    {
-        _supportSegments[segment].height = height;
-        if (height != 0xFFFF)
-        {
-            _supportSegments[segment].slope = slope;
-            _supportSegments[segment].var_03 = 0;
         }
     }
 
@@ -581,7 +576,7 @@ namespace OpenLoco::Paint
     void PaintSession::insertTunnel(coord_t z, uint8_t tunnelType, uint8_t edge)
     {
         TunnelEntry entry{ static_cast<World::MicroZ>(z / World::kMicroZStep), tunnelType };
-        auto& tunnelCount = _tunnelCounts[edge];
+        auto tunnelCount = _tunnelCounts[edge];
         auto tunnels = getTunnels(edge);
         bool insert = true;
         if (tunnelCount > 0)
@@ -1224,17 +1219,14 @@ namespace OpenLoco::Paint
         unZoomedRt.height >>= zoom;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(zoom == 0 ? Gfx::Font::medium_bold : Gfx::Font::small);
+        drawingCtx.setCurrentFontSpriteBase(zoom == 0 ? Font::medium_bold : Font::small);
 
         char buffer[512]{};
 
         for (; psString != nullptr; psString = psString->next)
         {
-            // FIXME: Modify psString->args to be a buffer.
-            FormatArguments args{ reinterpret_cast<std::byte*>(psString->args), sizeof(psString->args) };
-
             Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
-            StringManager::formatString(buffer, psString->stringId, args);
+            StringManager::formatString(buffer, psString->stringId, psString->args);
 
             Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));

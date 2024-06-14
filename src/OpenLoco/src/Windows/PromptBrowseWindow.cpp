@@ -345,10 +345,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         char folderBuffer[256]{};
         FormatArguments args{};
         args.push(StringIds::empty);
-        StringManager::formatString(folderBuffer, StringIds::window_browse_folder, args);
+        StringManager::formatString(folderBuffer, StringIds::window_browse_folder, &args);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         const auto folderLabelWidth = drawingCtx.getStringWidth(folderBuffer);
 
         // We'll ensure the folder width does not reach the parent button.
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto folder = &_displayFolderBuffer[0];
             auto args = getStringPtrFormatArgs(folder);
             auto point = Point(window.x + 3, window.y + window.widgets[widx::parent_button].top + 6);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_folder, args);
+            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_folder, &args);
         }
 
         auto selectedIndex = window.var_85A;
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     width,
                     Colour::black,
                     StringIds::wcolour2_stringid,
-                    args);
+                    &args);
                 y += 12;
 
                 if (*_fileType == BrowseFileType::savedGame)
@@ -490,21 +490,18 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Company
         {
             auto args = getStringPtrFormatArgs(saveInfo.company);
-            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_company, args);
+            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_company, &args);
         }
 
         // Owner
         {
             auto args = getStringPtrFormatArgs(saveInfo.owner);
-            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::owner_label, args);
+            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::owner_label, &args);
         }
 
         // Date
         {
-            auto argsBuf = FormatArgumentsBuffer{};
-            auto args = FormatArguments{ argsBuf };
-            args.push(saveInfo.date);
-            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_date, args);
+            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
         }
 
         // Challenge progress
@@ -523,10 +520,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 }
             }
 
-            auto argsBuf = FormatArgumentsBuffer{};
-            auto args = FormatArguments{ argsBuf };
-            args.push(progress);
-            drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, stringId, args);
+            drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, stringId, &progress);
         }
     }
 
@@ -572,7 +566,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Ui::Point origin = { 0, 1 };
         {
             auto args = getStringPtrFormatArgs(text);
-            drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, args);
+            drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, &args);
         }
 
         if (showCaret)
@@ -580,7 +574,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             if (caret == -1)
             {
                 // Draw horizontal caret
-                drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::window_browse_input_caret);
+                drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::window_browse_input_caret, nullptr);
             }
             else
             {
@@ -589,7 +583,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const std::string gbuffer = std::string(text, caret);
                 auto args = getStringPtrFormatArgs(gbuffer.c_str());
                 origin = { 0, 1 };
-                origin = drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, args);
+                origin = drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
                 drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
@@ -650,7 +644,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             // Draw the name
             auto args = getStringPtrFormatArgs(nameBuffer.c_str());
             auto point = Point(x, y);
-            drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, args);
+            drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, &args);
 
             y += lineHeight;
             i++;

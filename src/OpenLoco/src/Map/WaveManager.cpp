@@ -77,11 +77,6 @@ namespace OpenLoco::World::WaveManager
         ViewportManager::invalidate(pos, surface.waterHeight(), surface.waterHeight(), ZoomLevel::full);
     }
 
-    const Wave& getWave(const uint8_t waveIndex)
-    {
-        return rawWaves()[waveIndex];
-    }
-
     // 0x004C56F6
     void update()
     {

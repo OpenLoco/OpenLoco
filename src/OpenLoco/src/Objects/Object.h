@@ -46,8 +46,6 @@ namespace OpenLoco
     };
 
     constexpr size_t kMaxObjectTypes = 34;
-    constexpr uint8_t kCargoTypeNull = 0xFF;
-
 #pragma pack(push, 1)
     struct ObjectHeader
     {

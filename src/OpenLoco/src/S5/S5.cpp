@@ -237,11 +237,8 @@ namespace OpenLoco::S5
 
     bool exportGameStateToFile(Stream& stream, SaveFlags flags)
     {
-        if ((flags & SaveFlags::isAutosave) == SaveFlags::none)
-        {
-            Ui::ProgressBar::begin(StringIds::please_wait);
-            Ui::ProgressBar::setProgress(20);
-        }
+        Ui::ProgressBar::begin(StringIds::please_wait);
+        Ui::ProgressBar::setProgress(20);
 
         if ((flags & SaveFlags::noWindowClose) == SaveFlags::none
             && (flags & SaveFlags::raw) == SaveFlags::none
@@ -259,10 +256,7 @@ namespace OpenLoco::S5
             Vehicles::OrderManager::zeroUnusedOrderTable();
         }
 
-        if ((flags & SaveFlags::isAutosave) == SaveFlags::none)
-        {
-            Ui::ProgressBar::setProgress(40);
-        }
+        Ui::ProgressBar::setProgress(40);
 
         bool saveResult;
         {
@@ -279,10 +273,7 @@ namespace OpenLoco::S5
             saveResult = exportGameState(stream, *file, packedObjects);
         }
 
-        if ((flags & SaveFlags::isAutosave) == SaveFlags::none)
-        {
-            Ui::ProgressBar::setProgress(230);
-        }
+        Ui::ProgressBar::setProgress(230);
 
         if ((flags & SaveFlags::raw) == SaveFlags::none
             && (flags & SaveFlags::dump) == SaveFlags::none)
@@ -290,10 +281,7 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
         }
 
-        if ((flags & SaveFlags::isAutosave) == SaveFlags::none)
-        {
-            Ui::ProgressBar::end();
-        }
+        Ui::ProgressBar::end();
 
         if (saveResult)
         {
@@ -485,7 +473,7 @@ namespace OpenLoco::S5
     static void setObjectErrorMessage(const ObjectHeader& header)
     {
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
-        StringManager::formatString(buffer, 512, StringIds::missing_object_data_id_x);
+        StringManager::formatString(buffer, sizeof(buffer), StringIds::missing_object_data_id_x);
         objectCreateIdentifierName(strchr(buffer, 0), header);
         _loadErrorCode = 255;
         _loadErrorMessage = StringIds::buffer_2040;
@@ -618,7 +606,7 @@ namespace OpenLoco::S5
 
             if (file->header.type == S5Type::objects)
             {
-                _gameState->var_014A = 0;
+                addr<0x00525F62, uint16_t>() = 0;
                 _loadErrorCode = 254;
                 _loadErrorMessage = StringIds::new_objects_installed_successfully;
                 Ui::ProgressBar::end();
@@ -663,7 +651,7 @@ namespace OpenLoco::S5
                 if (hasLoadFlags(flags, LoadFlags::twoPlayer))
                 {
                     CompanyManager::reset();
-                    _gameState->var_014A = 0;
+                    addr<0x00525F62, uint16_t>() = 0;
                     Ui::ProgressBar::end();
                     return false;
                 }
@@ -779,7 +767,7 @@ namespace OpenLoco::S5
                 Scenario::loadPreferredCurrencyAlways();
             }
             Gfx::loadCurrency();
-            _gameState->var_014A = 0;
+            addr<0x00525F62, uint16_t>() = 0;
 
             if (hasLoadFlags(flags, LoadFlags::titleSequence))
             {

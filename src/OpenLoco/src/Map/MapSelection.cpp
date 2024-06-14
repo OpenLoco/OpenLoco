@@ -170,26 +170,6 @@ namespace OpenLoco::World
         }
     }
 
-    bool isWithinMapSelectionTiles(const Pos2 pos)
-    {
-        if (!World::hasMapSelectionFlag(World::MapSelectionFlags::enableConstruct))
-            return false;
-
-        for (uint16_t index = 0; index < kMapSelectedTilesSize; ++index)
-        {
-            auto& position = _mapSelectedTiles[index];
-            if (position.x == -1)
-            {
-                return false;
-            }
-            if (position == pos)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB)
     {
         _mapSelectionAX = locA.x;

@@ -45,8 +45,8 @@ namespace OpenLoco::World
             _type &= ~0x3;
             _type |= rotation & 0x3;
         }
-        uint8_t multiTileIndex() const { return (_type >> 6) & 3; }
-        void setMultiTileIndex(uint8_t index)
+        uint8_t sequenceIndex() const { return (_type >> 6) & 3; }
+        void setSequenceIndex(uint8_t index)
         {
             _type &= ~0xC0;
             _type |= (index & 3) << 6;

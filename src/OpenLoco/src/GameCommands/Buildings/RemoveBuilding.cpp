@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
             {
                 if ((flags & (GameCommands::Flags::ghost | GameCommands::Flags::flag_7)) == 0)
                 {
-                    if (!isSandboxMode() && buildingObj->hasFlags(BuildingObjectFlags::indestructible))
+                    if (buildingObj->hasFlags(BuildingObjectFlags::undestructible))
                     {
                         GameCommands::setErrorText(StringIds::demolition_not_allowed);
                         return GameCommands::FAILURE;

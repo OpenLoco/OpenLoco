@@ -379,6 +379,10 @@ namespace OpenLoco::Ui
             cfg.windowResolution = { width, height };
             Config::write();
         }
+
+        auto optionsWindow = WindowManager::find(WindowType::options);
+        if (optionsWindow != nullptr)
+            optionsWindow->moveToCentre();
     }
 
     void triggerResize()

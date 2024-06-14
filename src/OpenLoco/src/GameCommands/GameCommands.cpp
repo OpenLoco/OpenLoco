@@ -1,6 +1,5 @@
 #include "GameCommands.h"
 #include "Airports/CreateAirport.h"
-#include "Airports/RemoveAirport.h"
 #include "Audio/Audio.h"
 #include "Buildings/CreateBuilding.h"
 #include "Buildings/RemoveBuilding.h"
@@ -165,7 +164,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::createRoadMod,                nullptr,                   0x0047A21E, true  },
         { GameCommand::removeRoadMod,                nullptr,                   0x0047A42F, true  },
         { GameCommand::createRoadStation,            createRoadStation,         0x0048C708, true  },
-        { GameCommand::removeRoadStation,            removeRoadStation,         0x0048D2AC, true  },
+        { GameCommand::removeRoadStation,            nullptr,                   0x0048D2AC, true  },
         { GameCommand::createBuilding,               createBuilding,            0x0042D133, true  },
         { GameCommand::removeBuilding,               removeBuilding,            0x0042D74E, true  },
         { GameCommand::renameTown,                   renameTown,                0x0049B11E, false },
@@ -179,12 +178,12 @@ namespace OpenLoco::GameCommands
         { GameCommand::buildCompanyHeadquarters,     buildCompanyHeadquarters,  0x0042ECFC, true  },
         { GameCommand::removeCompanyHeadquarters,    removeCompanyHeadquarters, 0x0042EEAF, true  },
         { GameCommand::createAirport,                nullptr,                   0x00492C41, true  },
-        { GameCommand::removeAirport,                removeAirport,             0x00493559, true  },
+        { GameCommand::removeAirport,                nullptr,                   0x00493559, true  },
         { GameCommand::vehiclePlaceAir,              vehiclePlaceAir,           0x004267BE, true  },
         { GameCommand::vehiclePickupAir,             vehiclePickupAir,          0x00426B29, true  },
         { GameCommand::createPort,                   nullptr,                   0x00493AA7, true  },
-        { GameCommand::removePort,                   removePort,                0x00494570, true  },
-        { GameCommand::vehiclePlaceWater,            vehiclePlaceWater,         0x0042773C, true  },
+        { GameCommand::removePort,                   nullptr,                   0x00494570, true  },
+        { GameCommand::vehiclePlaceWater,            nullptr,                   0x0042773C, true  },
         { GameCommand::vehiclePickupWater,           vehiclePickupWater,        0x004279CC, true  },
         { GameCommand::vehicleRefit,                 vehicleRefit,              0x0042F6DB, false },
         { GameCommand::changeCompanyFace,            changeCompanyFace,         0x00435506, false },

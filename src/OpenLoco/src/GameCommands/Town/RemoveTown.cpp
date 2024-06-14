@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
                             continue;
                         }
 
-                        if (buildingEl->multiTileIndex() != 0)
+                        if (buildingEl->sequenceIndex() != 0)
                         {
                             continue;
                         }
@@ -119,7 +119,7 @@ namespace OpenLoco::GameCommands
 
                         RoadRemovalArgs rmArgs{};
                         rmArgs.pos = Pos3(worldPos.x, worldPos.y, roadEl->baseHeight());
-                        rmArgs.unkDirection = roadEl->unkDirection();
+                        rmArgs.rotation = roadEl->rotation();
                         rmArgs.roadId = roadEl->roadId();
                         rmArgs.sequenceIndex = roadEl->sequenceIndex();
                         rmArgs.objectId = roadEl->roadObjectId();

@@ -912,7 +912,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(designed);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_designed, args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_designed, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
 
@@ -920,7 +920,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(obsolete);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_obsolete, args);
+            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_obsolete, &args);
             rowPosition.y += kDescriptionRowHeight;
         }
     }
@@ -989,7 +989,6 @@ namespace OpenLoco::ObjectManager
         call(0x004697A1);
         // determine trafficHandedness
         call(0x0047D9F2);
-        // set water palette map
         call(0x004C57A6);
         call(0x00469F90);
     }

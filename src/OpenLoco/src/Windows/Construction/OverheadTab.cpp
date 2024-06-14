@@ -151,7 +151,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         GameCommands::RoadModsPlacementArgs args;
         args.type = _lastSelectedMods;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
-        args.rotation = elRoad->unkDirection();
+        args.rotation = elRoad->rotation();
         args.roadId = elRoad->roadId();
         args.index = elRoad->sequenceIndex();
         args.roadObjType = elRoad->roadObjectId();
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         GameCommands::TrackModsPlacementArgs args;
         args.type = _lastSelectedMods;
         args.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
-        args.rotation = elTrack->unkDirection();
+        args.rotation = elTrack->rotation();
         args.trackId = elTrack->trackId();
         args.index = elTrack->sequenceIndex();
         args.trackObjType = elTrack->trackObjectId();
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, &args);
         }
     }
 

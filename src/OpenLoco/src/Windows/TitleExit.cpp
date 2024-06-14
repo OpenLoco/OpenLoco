@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         auto exitString = StringManager::getString(StringIds::title_exit_game);
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+        drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
         self.width = drawingCtx.getStringWidthNewLined(exitString) + 10;
 
         self.x = Ui::width() - self.width;

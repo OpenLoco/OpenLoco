@@ -3558,7 +3558,7 @@ namespace OpenLoco::Vehicles
             auto unitNameFormat = cargoTotal == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural;
             FormatArguments args{};
             args.push(cargoTotal);
-            buffer = StringManager::formatString(buffer, unitNameFormat, args);
+            buffer = StringManager::formatString(buffer, unitNameFormat, &args);
         }
 
         if (!hasCargo)
@@ -3652,7 +3652,7 @@ namespace OpenLoco::Vehicles
                 if (elTrack->isGhost() || elTrack->isAiAllocated())
                     continue;
 
-                if (elTrack->unkDirection() != veh->trackAndDirection.track.cardinalDirection())
+                if (elTrack->rotation() != veh->trackAndDirection.track.cardinalDirection())
                     continue;
 
                 if (elTrack->trackId() != veh->trackAndDirection.track.id())

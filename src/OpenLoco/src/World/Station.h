@@ -140,7 +140,6 @@ namespace OpenLoco
 #pragma pack(pop)
 
     void setCatchmentDisplay(const Station* station, const CatchmentFlags flags);
-    bool isWithinCatchmentDisplay(const World::Pos2 pos);
     struct PotentialCargo
     {
         uint32_t accepted;

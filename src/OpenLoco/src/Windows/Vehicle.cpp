@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 auto& widget = self.widgets[widx::status];
                 auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
-                drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 1, Colour::black, strFormat, args);
+                drawingCtx.drawStringLeftClipped(*rt, point, widget.width() - 1, Colour::black, strFormat, &args);
             }
 
             Widget& speedWidget = self.widgets[widx::speedControl];
@@ -1012,7 +1012,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 auto& button = self.widgets[widx::viewport];
                 auto origin = Point(self.x + button.midX(), self.y + button.midY());
-                drawingCtx.drawStringCentredWrapped(*rt, origin, button.width() - 6, Colour::black, StringIds::click_on_view_select_string_id_start, args);
+                drawingCtx.drawStringCentredWrapped(*rt, origin, button.width() - 6, Colour::black, StringIds::click_on_view_select_string_id_start, &args);
             }
         }
 
@@ -1323,39 +1323,39 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 FormatArguments args{};
                 args.push(vehicleObj->name);
-                buffer = StringManager::formatString(buffer, StringIds::tooltip_stringid, args);
+                buffer = StringManager::formatString(buffer, StringIds::tooltip_stringid, &args);
             }
 
             {
                 FormatArguments args{};
                 args.push(car->front->creationDay);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_built, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_built, &args);
             }
 
             if (vehicleObj->power != 0 && (vehicleObj->mode == TransportMode::road || vehicleObj->mode == TransportMode::rail))
             {
                 FormatArguments args{};
                 args.push(vehicleObj->power);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_power, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_power, &args);
             }
 
             if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
             {
                 FormatArguments args{};
                 args.push<uint32_t>(StringManager::internalLengthToComma1DP(vehicleObj->getLength()));
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_length, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_length, &args);
             }
 
             {
                 FormatArguments args{};
                 args.push(vehicleObj->weight);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_weight, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_weight, &args);
             }
 
             {
                 FormatArguments args{};
                 args.push(vehicleObj->speed);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_max_speed, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_max_speed, &args);
             }
 
             if (vehicleObj->hasFlags(VehicleObjectFlags::rackRail))
@@ -1364,20 +1364,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(vehicleObj->rackSpeed);
                 auto rackRailObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rackRailType);
                 args.push(rackRailObj->name);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_speed_on_stringid, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_speed_on_stringid, &args);
             }
 
             {
                 FormatArguments args{};
                 args.push(car->front->refundCost);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_value, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_value, &args);
             }
 
             if (car->front->reliability != 0)
             {
                 FormatArguments args{};
                 args.push(car->front->reliability / 256);
-                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_reliability, args);
+                buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_reliability, &args);
             }
         }
 
@@ -1549,7 +1549,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_total_power_and_weight;
                 }
-                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 6, Colour::black, str, args);
+                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 6, Colour::black, str, &args);
             }
 
             {
@@ -1563,7 +1563,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     str = StringIds::vehicle_details_max_speed_and_rack_rail_and_reliability;
                 }
-                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 16, Colour::black, str, args);
+                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 16, Colour::black, str, &args);
             }
 
             {
@@ -1577,7 +1577,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     str = StringIds::vehicle_car_count_and_length;
                     args.push<uint32_t>(head->getCarCount());
                 }
-                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 16, Colour::black, str, args);
+                drawingCtx.drawStringLeftClipped(*rt, pos, self.width - 16, Colour::black, str, &args);
             }
         }
 
@@ -1630,7 +1630,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 {
                     auto point = Point(x, y);
-                    drawingCtx.drawStringLeft(rt, point, Colour::black, carStr, args);
+                    drawingCtx.drawStringLeft(rt, point, Colour::black, carStr, &args);
                 }
 
                 pos.y += self.rowHeight;
@@ -1882,7 +1882,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push<StringId>(StringIds::buffer_1250);
 
                 auto point = Point(self.x + 3, self.y + self.height - 25);
-                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 15, Colour::black, StringIds::total_stringid, args);
+                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 15, Colour::black, StringIds::total_stringid, &args);
             }
 
             // draw cargo capacity
@@ -1894,7 +1894,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push<StringId>(StringIds::buffer_1250);
 
                 auto point = Point(self.x + 3, self.y + self.height - 13);
-                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, args);
+                drawingCtx.drawStringLeftClipped(*rt, point, self.width - 15, Colour::black, StringIds::vehicle_capacity_stringid, &args);
             }
         }
 
@@ -1920,7 +1920,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(station->town);
 
             auto point = Point(x, y);
-            drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, args);
+            drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, &args);
             y += 10;
         }
 
@@ -1971,7 +1971,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         args.push<StringId>(StringIds::cargo_empty);
 
                         auto point = Point(width, cargoTextHeight + 5);
-                        drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, args);
+                        drawingCtx.drawStringLeft(rt, point, Colour::black, strFormat, &args);
                     }
                 }
 
@@ -2116,7 +2116,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 args.push(maxCargo == 1 ? cargoObj->unitNameSingular : cargoObj->unitNamePlural);
                 args.push<uint32_t>(maxCargo);
-                buffer = StringManager::formatString(buffer, cargoFormat, args);
+                buffer = StringManager::formatString(buffer, cargoFormat, &args);
             }
 
             auto availableCargoTypes = acceptedCargoTypes & ~(1 << cargoType);
@@ -2133,7 +2133,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     auto cargoObj = ObjectManager::get<CargoObject>(type);
                     FormatArguments args{};
                     args.push(cargoObj->name);
-                    buffer = StringManager::formatString(buffer, StringIds::stats_or_string, args);
+                    buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
                     *buffer++ = ' ';
                 }
                 --buffer;
@@ -2186,7 +2186,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->objectId);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
-                buffer = StringManager::formatString(buffer, StringIds::cargo_capacity_tooltip, args);
+                buffer = StringManager::formatString(buffer, StringIds::cargo_capacity_tooltip, &args);
             }
 
             auto body = car->body;
@@ -2287,7 +2287,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     FormatArguments args{};
                     args.push<uint32_t>(veh1->lastIncome.day);
                     // Last income on: {DATE DMY}
-                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_on_date, args);
+                    drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_income_on_date, &args);
                 }
 
                 pos.y += 10;
@@ -2310,7 +2310,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
                     pos.x += 4;
-                    drawingCtx.drawStringLeftWrapped(*rt, pos, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, args);
+                    drawingCtx.drawStringLeftWrapped(*rt, pos, self.width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
                     pos.x -= 4;
 
                     // TODO: fix function to take pointer to offset
@@ -2331,7 +2331,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Last journey average speed: {VELOCITY}
                 FormatArguments args{};
                 args.push(head->lastAverageSpeed);
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_journey_average_speed, args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::last_journey_average_speed, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2339,7 +2339,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 // Monthly Running Cost: {CURRENCY32}
                 FormatArguments args{};
                 args.push(head->calculateRunningCost());
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_running_cost, args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
                 pos.y += 10;
             }
 
@@ -2348,7 +2348,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_profit, args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::vehicle_monthly_profit, &args);
                 pos.y += 10 + 5;
             }
 
@@ -2357,7 +2357,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args{};
                 args.push(train.head->totalRefundCost);
                 pos.y = self.y + self.height - 14;
-                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::sale_value_of_vehicle, args);
+                drawingCtx.drawStringLeft(*rt, pos, Colour::black, StringIds::sale_value_of_vehicle, &args);
             }
         }
 
@@ -2866,12 +2866,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& trackPiece = World::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
-                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->unkDirection());
+                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->rotation());
                     auto firstTilePos = args.pos - offsetToFirstTile;
                     const auto tPos = World::toTileSpace(firstTilePos);
                     height -= trackPart.z;
 
-                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->rotation(), trackId);
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
@@ -2912,12 +2912,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& roadPiece = World::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
-                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->unkDirection());
+                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->rotation());
                     auto firstTilePos = args.pos - offsetToFirstTile;
                     const auto tPos = World::toTileSpace(firstTilePos);
                     height -= roadPart.z;
 
-                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->unkDirection(), roadId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->rotation(), roadId);
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
@@ -3284,9 +3284,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
             char buffer[512];
-            StringManager::formatString(buffer, std::size(buffer), strFormat, args);
+            StringManager::formatString(buffer, std::size(buffer), strFormat, &args);
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             drawingCtx.drawString(rt, Point(8, y - 1), Colour::black, buffer);
             auto labelWidth = drawingCtx.getStringWidth(buffer);
 
@@ -3390,7 +3390,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            drawingCtx.drawStringLeft(rt, loc, Colour::black, strFormat, args);
+            drawingCtx.drawStringLeft(rt, loc, Colour::black, strFormat, &args);
         }
 
         static constexpr WindowEventList kEvents = {
@@ -3566,12 +3566,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             continue;
                         }
 
-                        if (elStation->multiTileIndex() != 0)
+                        if (elStation->sequenceIndex() != 0)
                         {
                             continue;
                         }
 
-                        auto firstTile = loc - World::kOffsets[elStation->multiTileIndex()];
+                        auto firstTile = loc - World::kOffsets[elStation->sequenceIndex()];
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
                         auto boatLoc = firstTile + World::toWorldSpace(TilePos2{ 1, 1 }) + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
 
@@ -3785,12 +3785,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement.roadId());
             const auto& roadData = roadDataArr[roadElement.sequenceIndex()];
-            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
+            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement.rotation());
             auto roadOffset = World::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
 
             // Get the movement info for this specific road id
-            uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
+            uint16_t trackAndDirection = roadElement.rotation() | (roadElement.roadId() << 3);
             const auto moveInfoArr = World::TrackData::getRoadPlacementSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the road that is as close as possible
@@ -3829,14 +3829,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement->roadId());
             const auto& roadData = roadDataArr[roadElement->sequenceIndex()];
-            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
+            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement->rotation());
             auto roadOffset = World::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
 
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = roadFirstTile;
             placementArgs.trackProgress = progress;
-            placementArgs.trackAndDirection = roadElement->unkDirection() | (roadElement->roadId() << 3);
+            placementArgs.trackAndDirection = roadElement->rotation() | (roadElement->roadId() << 3);
             return { placementArgs };
         }
 
@@ -3885,12 +3885,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile track
             const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement.trackId());
             const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
-            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
+            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement.rotation());
             auto trackOffset = World::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
 
             // Get the movement info for this specific track id
-            uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
+            uint16_t trackAndDirection = trackElement.rotation() | (trackElement.trackId() << 3);
             const auto moveInfoArr = World::TrackData::getTrackSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the track that is as close as possible
@@ -3929,14 +3929,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement->trackId());
             const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
-            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
+            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement->rotation());
             auto trackOffset = World::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
 
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = trackFirstTile;
             placementArgs.trackProgress = progress;
-            placementArgs.trackAndDirection = trackElement->unkDirection() | (trackElement->trackId() << 3);
+            placementArgs.trackAndDirection = trackElement->rotation() | (trackElement->trackId() << 3);
             return { placementArgs };
         }
 

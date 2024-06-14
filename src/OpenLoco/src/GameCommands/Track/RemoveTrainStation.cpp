@@ -28,7 +28,7 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->unkDirection() != rotation)
+            if (elTrack->rotation() != rotation)
             {
                 continue;
             }

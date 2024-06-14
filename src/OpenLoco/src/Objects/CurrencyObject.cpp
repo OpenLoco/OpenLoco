@@ -15,6 +15,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
+
     // 0x0046DFA9
     bool CurrencyObject::validate() const
     {
@@ -73,13 +75,13 @@ namespace OpenLoco
 
         *defaultElement = *currencyElement;
 
-        auto defaultWidth = Gfx::getCharacterWidth(Gfx::Font::large, 131);
-        Gfx::setCharacterWidth(Gfx::Font::large, 131, currencyElement->width + 1);
+        auto defaultWidth = _characterWidths[Font::large + 131];
+        _characterWidths[Font::large + 131] = currencyElement->width + 1;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         drawingCtx.drawStringCentred(rt, Ui::Point(x, y - 9), Colour::black, StringIds::object_currency_big_font);
 
-        Gfx::setCharacterWidth(Gfx::Font::large, 131, defaultWidth);
+        _characterWidths[Font::large + 131] = defaultWidth;
         *defaultElement = backupElement;
     }
 }

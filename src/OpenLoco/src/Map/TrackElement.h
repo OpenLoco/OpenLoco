@@ -19,7 +19,7 @@ namespace OpenLoco::World
 
     public:
         TrackElement() = default;
-        TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t direction, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
+        TrackElement(World::SmallZ baseZ, World::SmallZ clearZ, uint8_t rotation, uint8_t quarterTile, uint8_t sequenceIndex, uint8_t trackObjId, uint8_t trackId, std::optional<uint8_t> bridge, CompanyId owner, uint8_t mods);
 
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         void setHasStationElement(bool state)
@@ -33,7 +33,7 @@ namespace OpenLoco::World
             _type &= ~0x40;
             _type |= state ? 0x40 : 0;
         }
-        uint8_t unkDirection() const { return _type & 0x03; }
+        uint8_t rotation() const { return _type & 0x03; }
         void setRotation(uint8_t rotation)
         {
             _type &= ~0x3;

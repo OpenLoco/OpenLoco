@@ -122,7 +122,7 @@ namespace OpenLoco::World
             trackFound = false;
             if (elTrack->baseZ() != baseZ)
                 continue;
-            if (elTrack->unkDirection() != direction)
+            if (elTrack->rotation() != direction)
                 continue;
             if (elTrack->trackId() != trackId)
                 continue;
@@ -164,7 +164,7 @@ namespace OpenLoco::World
                 trackFound = false;
                 continue;
             }
-            if (elRoad->unkDirection() != direction)
+            if (elRoad->rotation() != direction)
                 continue;
             if (elRoad->roadId() != roadId)
                 continue;

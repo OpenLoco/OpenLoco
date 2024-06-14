@@ -121,10 +121,10 @@ namespace OpenLoco
             char buffer[255] = {};
             FormatArguments args{};
             args.push(amount);
-            StringManager::formatString(buffer, strFormat, args);
+            StringManager::formatString(buffer, strFormat, &args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
             m->offsetX = -drawingCtx.getStringWidth(buffer) / 2;
             m->wiggle = 0;
         }

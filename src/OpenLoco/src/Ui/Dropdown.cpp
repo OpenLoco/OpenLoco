@@ -187,14 +187,14 @@ namespace OpenLoco::Ui::Dropdown
         // 0x00494BF6
         static void sub_494BF6([[maybe_unused]] Window* self, Gfx::RenderTarget* rt, StringId stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
-            StringManager::formatString(_byte_112CC04, stringId, args);
+            StringManager::formatString(_byte_112CC04, stringId, &args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
             drawingCtx.clipString(width, _byte_112CC04);
 
-            drawingCtx.setCurrentFont(Gfx::Font::m1);
+            drawingCtx.setCurrentFontSpriteBase(Font::m1);
 
             drawingCtx.drawString(*rt, Point(x, y), colour, _byte_112CC04);
         }
@@ -373,9 +373,9 @@ namespace OpenLoco::Ui::Dropdown
 
                 dropdownFormatArgsToFormatArgs(itemCount, args);
 
-                StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], args);
+                StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
-                drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+                drawingCtx.setCurrentFontSpriteBase(Font::medium_bold);
 
                 auto stringWidth = drawingCtx.getMaxStringWidth(_byte_112CC04);
 

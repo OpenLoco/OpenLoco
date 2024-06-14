@@ -41,7 +41,6 @@ namespace OpenLoco::World
     uint16_t setMapSelectionSingleTile(const Pos2& loc, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
     void mapInvalidateMapSelectionTiles();
-    bool isWithinMapSelectionTiles(const Pos2 pos);
 
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB);
     std::pair<Pos2, Pos2> getMapSelectionArea();

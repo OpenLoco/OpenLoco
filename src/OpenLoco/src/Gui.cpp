@@ -133,9 +133,5 @@ namespace OpenLoco::Gui
                 WindowManager::close(window);
             }
         }
-
-        window = WindowManager::find(WindowType::options);
-        if (window != nullptr)
-            window->moveToCentre();
     }
 }

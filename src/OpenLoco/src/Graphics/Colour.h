@@ -77,7 +77,7 @@ namespace OpenLoco
         mutedRed = 30,
         // First 30 are inherited from Colour
         clear = 31, // No colour
-        water = 32, // Water palette map dynamically loaded from water object
+        null = 32,  // Does not represent any palette
         unk21,
         unk22,
         unk23,
@@ -292,7 +292,6 @@ namespace OpenLoco
         constexpr PaletteIndex_t primaryRemap1 = 0x08;
         constexpr PaletteIndex_t primaryRemap2 = 0x09;
         constexpr PaletteIndex_t index_0A = 0x0A;
-        constexpr PaletteIndex_t index_0B = 0x0B;
         constexpr PaletteIndex_t index_0C = 0x0C;
         constexpr PaletteIndex_t index_0E = 0x0E;
         constexpr PaletteIndex_t index_11 = 0x11;

@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Font.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/PaletteMap.h"
-#include "Localisation/FormatArguments.hpp"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Engine/Ui/Rect.hpp>
@@ -38,73 +36,73 @@ namespace OpenLoco::Gfx
     public:
         virtual ~DrawingContext() = default;
 
-        virtual void clear(const RenderTarget& rt, uint32_t fill) = 0;
-        virtual void clearSingle(const RenderTarget& rt, uint8_t paletteId) = 0;
+        virtual void clear(Gfx::RenderTarget& rt, uint32_t fill) = 0;
+        virtual void clearSingle(Gfx::RenderTarget& rt, uint8_t paletteId) = 0;
 
         virtual int16_t clipString(int16_t width, char* string) = 0;
         virtual uint16_t getStringWidth(const char* buffer) = 0;
         virtual uint16_t getMaxStringWidth(const char* buffer) = 0;
 
         virtual Ui::Point drawString(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             const char* str)
             = 0;
 
         virtual Ui::Point drawStringLeft(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringLeftClipped(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringLeftUnderline(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringLeftWrapped(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringCentred(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringCentredClipped(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringCentredRaw(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t linebreakCount,
             AdvancedColour colour,
@@ -112,60 +110,60 @@ namespace OpenLoco::Gfx
             = 0;
 
         virtual Ui::Point drawStringCentredWrapped(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringRight(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args = nullptr)
             = 0;
 
         virtual Ui::Point drawStringRightUnderline(
-            const RenderTarget& rt,
+            Gfx::RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
-            FormatArgumentsView args = {})
+            const void* args)
             = 0;
 
-        virtual void drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets) = 0;
+        virtual void drawStringYOffsets(Gfx::RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const void* args, const int8_t* yOffsets) = 0;
 
-        virtual void drawStringTicker(const RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
+        virtual void drawStringTicker(Gfx::RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width) = 0;
 
         virtual uint16_t getStringWidthNewLined(const char* buffer) = 0;
 
         virtual std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth) = 0;
 
-        virtual void fillRect(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags) = 0;
+        virtual void fillRect(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags) = 0;
 
-        virtual void drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags) = 0;
+        virtual void drawRect(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags) = 0;
 
-        virtual void fillRectInset(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags) = 0;
+        virtual void fillRectInset(Gfx::RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags) = 0;
 
-        virtual void drawRectInset(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
+        virtual void drawRectInset(Gfx::RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags) = 0;
 
-        virtual void drawLine(const RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) = 0;
+        virtual void drawLine(Gfx::RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour) = 0;
 
-        virtual void drawImage(const RenderTarget* rt, int16_t x, int16_t y, uint32_t image) = 0;
+        virtual void drawImage(Gfx::RenderTarget* rt, int16_t x, int16_t y, uint32_t image) = 0;
 
-        virtual void drawImage(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image) = 0;
+        virtual void drawImage(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image) = 0;
 
-        virtual void drawImageMasked(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) = 0;
+        virtual void drawImageMasked(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage) = 0;
 
-        virtual void drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) = 0;
+        virtual void drawImageSolid(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex) = 0;
 
-        virtual void drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage) = 0;
+        virtual void drawImagePaletteSet(Gfx::RenderTarget& rt, const Ui::Point& pos, const ImageId& image, Gfx::PaletteMap::View palette, const Gfx::G1Element* noiseImage) = 0;
 
-        virtual Font getCurrentFont() = 0;
+        virtual int16_t getCurrentFontSpriteBase() = 0;
 
-        virtual void setCurrentFont(Font base) = 0;
+        virtual void setCurrentFontSpriteBase(int16_t base) = 0;
     };
 }

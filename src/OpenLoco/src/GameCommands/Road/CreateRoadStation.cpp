@@ -102,7 +102,7 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elRoad->unkDirection() != rotation)
+            if (elRoad->rotation() != rotation)
             {
                 continue;
             }
@@ -145,7 +145,7 @@ namespace OpenLoco::GameCommands
             {
                 return true;
             }
-            if ((elRoad->unkDirection() - rotation) & 0b01)
+            if ((elRoad->rotation() - rotation) & 0b01)
             {
                 return true;
             }
@@ -388,7 +388,7 @@ namespace OpenLoco::GameCommands
                 }
                 else
                 { // Connect flags validation
-                    const auto connectFlags = piece.connectFlags[elRoad->unkDirection()];
+                    const auto connectFlags = piece.connectFlags[elRoad->rotation()];
                     auto tile = World::TileManager::get(roadLoc);
                     for (auto& el : tile)
                     {
@@ -410,7 +410,7 @@ namespace OpenLoco::GameCommands
                             continue;
                         }
                         auto& connectPiece = World::TrackData::getRoadPiece(elConnectRoad->roadId())[elConnectRoad->sequenceIndex()];
-                        if (connectFlags & connectPiece.connectFlags[elConnectRoad->unkDirection()])
+                        if (connectFlags & connectPiece.connectFlags[elConnectRoad->rotation()])
                         {
                             setErrorText(StringIds::station_cannot_be_built_on_a_junction);
                             return FAILURE;
@@ -623,10 +623,10 @@ namespace OpenLoco::GameCommands
                         elRoads[0] = elRoad;
                     }
                 }
-                newStationElement->setRotation(elRoads[1]->unkDirection());
+                newStationElement->setRotation(elRoads[1]->rotation());
                 newStationElement->setGhost(flags & Flags::ghost);
                 newStationElement->setAiAllocated(flags & Flags::aiAllocated);
-                newStationElement->setMultiTileIndex(0);
+                newStationElement->setSequenceIndex(0);
                 newStationElement->setUnk4SLR4(0);
                 newStationElement->setStationType(StationType::roadStation);
                 newStationElement->setUnk7SLR2(0);

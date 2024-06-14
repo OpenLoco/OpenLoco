@@ -25,6 +25,4 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    void removePort(registers& regs);
 }

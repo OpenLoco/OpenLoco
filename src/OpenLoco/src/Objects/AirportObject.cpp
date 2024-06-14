@@ -66,12 +66,12 @@ namespace OpenLoco
             remainingData = remainingData.subspan(ptr - var_1C[i]);
         }
 
-        buildingParts = reinterpret_cast<const AirportBuilding*>(remainingData.data());
+        var_9C = reinterpret_cast<const uint32_t*>(remainingData.data());
         auto* ptr = reinterpret_cast<const uint8_t*>(remainingData.data());
         while (*ptr != 0xFF)
             ptr += 4;
         ptr++;
-        remainingData = remainingData.subspan(ptr - reinterpret_cast<const uint8_t*>(buildingParts));
+        remainingData = remainingData.subspan(ptr - reinterpret_cast<const uint8_t*>(var_9C));
 
         movementNodes = reinterpret_cast<const MovementNode*>(remainingData.data());
         remainingData = remainingData.subspan(numMovementNodes * sizeof(MovementNode));
@@ -99,7 +99,7 @@ namespace OpenLoco
 
         std::fill(std::begin(var_1C), std::end(var_1C), nullptr);
 
-        buildingParts = nullptr;
+        var_9C = nullptr;
 
         movementNodes = nullptr;
         movementEdges = nullptr;
@@ -126,16 +126,5 @@ namespace OpenLoco
             std::swap(minPos.y, maxPos.y);
         }
         return std::make_pair(minPos, maxPos);
-    }
-
-    std::span<const AirportBuilding> AirportObject::getBuildingParts() const
-    {
-        const auto* firstPartPtr = buildingParts;
-        auto* endPartPtr = firstPartPtr;
-
-        while (endPartPtr->index != 0xFF)
-            endPartPtr++;
-
-        return std::span<const AirportBuilding>(firstPartPtr, endPartPtr);
     }
 }

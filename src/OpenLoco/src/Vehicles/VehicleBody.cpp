@@ -986,7 +986,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->trackId() != frontBogie->trackAndDirection.track.id())
                     continue;
-                if (track->unkDirection() != frontBogie->trackAndDirection.track.cardinalDirection())
+                if (track->rotation() != frontBogie->trackAndDirection.track.cardinalDirection())
                     continue;
                 if (!track->hasStationElement())
                     continue;

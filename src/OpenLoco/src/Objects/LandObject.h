@@ -23,8 +23,6 @@ namespace OpenLoco
         unk1 = 1U << 1,
         isDesert = 1U << 2,
         noTrees = 1U << 3,
-        unk4 = 1U << 4,
-        unk5 = 1U << 5,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(LandObjectFlags);
 
@@ -37,14 +35,14 @@ namespace OpenLoco
         uint8_t costIndex; // 0x02
         uint8_t var_03;
         uint8_t var_04;
-        LandObjectFlags flags;    // 0x05
-        uint8_t cliffEdgeHeader1; // 0x06
-        uint8_t cliffEdgeHeader2; // 0x07
-        int8_t costFactor;        // 0x08
+        LandObjectFlags flags; // 0x05
+        uint8_t cliffEdgeHeader1;
+        uint8_t cliffEdgeHeader2;
+        int8_t costFactor; // 0x08
         uint8_t pad_09;
         uint32_t image; // 0x0A
         uint32_t var_0E;
-        uint32_t cliffEdgeImage;     // 0x12
+        uint32_t cliffEdgeImage;
         uint32_t mapPixelImage;      // 0x16
         uint8_t distributionPattern; // 0x1A
         uint8_t numVariations;       // 0x1B

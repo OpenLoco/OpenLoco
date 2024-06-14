@@ -863,10 +863,8 @@ namespace OpenLoco::World::TileManager
         switch (el.type())
         {
             case ElementType::surface:
-            {
-                auto& elSurface = el.get<SurfaceElement>();
-                return updateSurface(elSurface, loc);
-            }
+                call(0x004691FA, regs);
+                break;
             case ElementType::building:
             {
                 auto& elBuilding = el.get<BuildingElement>();
@@ -987,7 +985,7 @@ namespace OpenLoco::World::TileManager
             }
         }
 
-        if (elBuilding.multiTileIndex() == 0)
+        if (elBuilding.sequenceIndex() == 0)
         {
             if (!elBuilding.isGhost())
             {

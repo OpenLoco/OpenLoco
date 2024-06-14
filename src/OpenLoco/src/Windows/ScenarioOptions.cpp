@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             OpenLoco::Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
 
             point.y += 10;
-            drawingCtx.drawStringLeftWrapped(*rt, point, window.width - 10, Colour::black, StringIds::challenge_value, args);
+            drawingCtx.drawStringLeftWrapped(*rt, point, window.width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
         static const StringId objectiveTypeLabelIds[] = {
@@ -1026,7 +1026,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 int16_t width = widgets[widx::change_name_btn].left - 20;
 
                 auto point = Point(xPos, yPos);
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::scenario_name_stringid, args);
+                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::scenario_name_stringid, &args);
             }
 
             {
@@ -1062,7 +1062,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 auto& target = window.widgets[widx::change_details_btn];
                 auto point = Point(window.x + 16, window.y + 12 + target.top);
-                drawingCtx.drawStringLeftWrapped(*rt, point, target.left - 26, Colour::black, StringIds::black_stringid, args);
+                drawingCtx.drawStringLeftWrapped(*rt, point, target.left - 26, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -1145,16 +1145,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self.widgets[widx::scenario_group].text = scenarioGroupLabelIds[S5::getOptions().difficulty];
         }
 
-        static void unloadScenarioTextObjects()
-        {
-            if (ObjectManager::get<ScenarioTextObject>() == nullptr)
-                return;
-
-            LoadedObjectHandle handle = { ObjectType::scenarioText, 0 };
-            auto header = ObjectManager::getHeader(handle);
-            ObjectManager::unload(header);
-        }
-
         // 0x0043F156
         static void textInput(Window& self, WidgetIndex_t callingWidget, const char* input)
         {
@@ -1164,7 +1154,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     strncpy(S5::getOptions().scenarioName, input, sizeof(S5::Options::scenarioName) - 1);
                     S5::getOptions().scenarioName[sizeof(S5::Options::scenarioName) - 1] = '\0';
-                    unloadScenarioTextObjects();
                     self.invalidate();
                     break;
                 }
@@ -1173,7 +1162,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     strncpy(S5::getOptions().scenarioDetails, input, sizeof(S5::Options::scenarioDetails) - 1);
                     S5::getOptions().scenarioDetails[sizeof(S5::Options::scenarioDetails) - 1] = '\0';
-                    unloadScenarioTextObjects();
                     self.invalidate();
                     break;
                 }
