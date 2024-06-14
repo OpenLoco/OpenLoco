@@ -496,7 +496,7 @@ namespace OpenLoco::Input
                             const auto* building = tileElement->as<World::BuildingElement>();
                             if (building != nullptr)
                             {
-                                auto index = building->multiTileIndex();
+                                auto index = building->sequenceIndex();
                                 const auto firstTile = interaction.pos - World::kOffsets[index];
                                 const Pos3 pos = { firstTile.x,
                                                    firstTile.y,

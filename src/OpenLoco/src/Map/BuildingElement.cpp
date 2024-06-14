@@ -60,7 +60,7 @@ namespace OpenLoco::World
     bool BuildingElement::update(const World::Pos2& loc)
     {
         // Only update from tile index 0 of multi tile buildings
-        if (multiTileIndex())
+        if (sequenceIndex())
         {
             return true;
         }
@@ -213,7 +213,7 @@ namespace OpenLoco::World
             return true;
         }
         // Animations are controlled from index 0
-        if (elBuilding->multiTileIndex() != 0)
+        if (elBuilding->sequenceIndex() != 0)
         {
             return true;
         }

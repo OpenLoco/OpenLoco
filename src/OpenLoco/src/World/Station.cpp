@@ -377,7 +377,7 @@ namespace OpenLoco
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
                                 if (obj->hasFlags(BuildingObjectFlags::largeTile))
                                 {
-                                    auto index = buildingEl.multiTileIndex();
+                                    auto index = buildingEl.sequenceIndex();
                                     tile_coord_t xPos = (pos.x - World::kOffsets[index].x) / kTileSize;
                                     tile_coord_t yPos = (pos.y - World::kOffsets[index].y) / kTileSize;
 

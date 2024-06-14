@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
         const auto& targetPiece = World::TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
         const auto& newPiece = World::TrackData::getTrackPiece(args.trackId)[args.index];
 
-        const auto targetConnectFlags = targetPiece.connectFlags[elTrack.unkDirection()];
+        const auto targetConnectFlags = targetPiece.connectFlags[elTrack.rotation()];
         const auto newConnectFlags = newPiece.connectFlags[args.rotation];
         if (!(targetConnectFlags & newConnectFlags))
         {
@@ -132,7 +132,7 @@ namespace OpenLoco::GameCommands
             return World::TileClearance::ClearFuncResult::collisionErrorSet;
         }
 
-        if (!((args.rotation ^ elTrack.unkDirection()) & 0b1))
+        if (!((args.rotation ^ elTrack.rotation()) & 0b1))
         {
             if (((World::TrackData::getTrackMiscData(elTrack.trackId()).flags ^ World::TrackData::getTrackMiscData(args.trackId).flags) & CommonTraitFlags::oneSided) != CommonTraitFlags::none)
             {
@@ -161,7 +161,7 @@ namespace OpenLoco::GameCommands
         {
             if (elTrack.trackId() == args.trackId)
             {
-                if (elTrack.unkDirection() == args.rotation)
+                if (elTrack.rotation() == args.rotation)
                 {
                     if (elTrack.sequenceIndex() == args.index)
                     {
@@ -173,7 +173,7 @@ namespace OpenLoco::GameCommands
             // This is working out reversed elements
             if (World::TrackData::getTrackMiscData(elTrack.trackId()).reverseTrackId == args.trackId)
             {
-                if (((World::TrackData::getTrackMiscData(elTrack.trackId()).reverseRotation + elTrack.unkDirection()) & 0x3) == args.rotation)
+                if (((World::TrackData::getTrackMiscData(elTrack.trackId()).reverseRotation + elTrack.rotation()) & 0x3) == args.rotation)
                 {
                     if (args.isLastIndex && elTrack.sequenceIndex() == 0)
                     {
@@ -255,7 +255,7 @@ namespace OpenLoco::GameCommands
 
         if (elRoad.roadId() != 0
             || args.trackId != 0
-            || !((elRoad.unkDirection() - args.rotation) & 0b1)
+            || !((elRoad.rotation() - args.rotation) & 0b1)
             || elRoad.baseHeight() != args.pos.z)
         {
             setErrorText(StringIds::level_crossing_only_possible_with_straight_road_and_track_at_same_level);

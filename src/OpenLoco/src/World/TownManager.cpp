@@ -99,7 +99,7 @@ namespace OpenLoco::TownManager
                 if (building->has_40())
                     continue;
 
-                if (building->multiTileIndex() != 0)
+                if (building->sequenceIndex() != 0)
                     continue;
 
                 auto objectId = building->objectId();

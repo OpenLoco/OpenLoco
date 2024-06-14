@@ -2866,12 +2866,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& trackPiece = World::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
-                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->unkDirection());
+                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->rotation());
                     auto firstTilePos = args.pos - offsetToFirstTile;
                     const auto tPos = World::toTileSpace(firstTilePos);
                     height -= trackPart.z;
 
-                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->rotation(), trackId);
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
@@ -2912,12 +2912,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& roadPiece = World::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
-                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->unkDirection());
+                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->rotation());
                     auto firstTilePos = args.pos - offsetToFirstTile;
                     const auto tPos = World::toTileSpace(firstTilePos);
                     height -= roadPart.z;
 
-                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->unkDirection(), roadId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->rotation(), roadId);
                     Audio::playSound(Audio::SoundId::waypoint, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
@@ -3566,12 +3566,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             continue;
                         }
 
-                        if (elStation->multiTileIndex() != 0)
+                        if (elStation->sequenceIndex() != 0)
                         {
                             continue;
                         }
 
-                        auto firstTile = loc - World::kOffsets[elStation->multiTileIndex()];
+                        auto firstTile = loc - World::kOffsets[elStation->sequenceIndex()];
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
                         auto boatLoc = firstTile + World::toWorldSpace(TilePos2{ 1, 1 }) + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
 
@@ -3785,12 +3785,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement.roadId());
             const auto& roadData = roadDataArr[roadElement.sequenceIndex()];
-            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
+            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement.rotation());
             auto roadOffset = World::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
 
             // Get the movement info for this specific road id
-            uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
+            uint16_t trackAndDirection = roadElement.rotation() | (roadElement.roadId() << 3);
             const auto moveInfoArr = World::TrackData::getRoadPlacementSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the road that is as close as possible
@@ -3829,14 +3829,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& roadDataArr = World::TrackData::getRoadPiece(roadElement->roadId());
             const auto& roadData = roadDataArr[roadElement->sequenceIndex()];
-            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
+            auto roadOffset2 = Math::Vector::rotate(World::Pos2(roadData.x, roadData.y), roadElement->rotation());
             auto roadOffset = World::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
 
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = roadFirstTile;
             placementArgs.trackProgress = progress;
-            placementArgs.trackAndDirection = roadElement->unkDirection() | (roadElement->roadId() << 3);
+            placementArgs.trackAndDirection = roadElement->rotation() | (roadElement->roadId() << 3);
             return { placementArgs };
         }
 
@@ -3885,12 +3885,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile track
             const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement.trackId());
             const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
-            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
+            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement.rotation());
             auto trackOffset = World::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
 
             // Get the movement info for this specific track id
-            uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
+            uint16_t trackAndDirection = trackElement.rotation() | (trackElement.trackId() << 3);
             const auto moveInfoArr = World::TrackData::getTrackSubPositon(trackAndDirection);
 
             // This iterates the movement info trying to find the distance along the track that is as close as possible
@@ -3929,14 +3929,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Get the coordinates of the first tile of the possibly multi-tile road
             const auto& trackDataArr = World::TrackData::getTrackPiece(trackElement->trackId());
             const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
-            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
+            auto trackOffset2 = Math::Vector::rotate(World::Pos2(trackData.x, trackData.y), trackElement->rotation());
             auto trackOffset = World::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
 
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = trackFirstTile;
             placementArgs.trackProgress = progress;
-            placementArgs.trackAndDirection = trackElement->unkDirection() | (trackElement->trackId() << 3);
+            placementArgs.trackAndDirection = trackElement->rotation() | (trackElement->trackId() << 3);
             return { placementArgs };
         }
 

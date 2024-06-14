@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             GameCommands::RoadRemovalArgs args;
             args.pos = loc2;
             args.sequenceIndex = roadPiece[i].index;
-            args.unkDirection = trackAndDirection2 & 0x3;
+            args.rotation = trackAndDirection2 & 0x3;
             args.roadId = trackAndDirection2 >> 3;
             args.objectId = _trackType & ~(1 << 7);
 
@@ -2098,7 +2098,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 GameCommands::RoadRemovalArgs args;
                 args.pos = _ghostRemovalTrackPos;
                 args.pos.z += TrackData::getRoadPiece(_ghostRemovalTrackId)[0].z;
-                args.unkDirection = _ghostRemovalTrackRotation & 3;
+                args.rotation = _ghostRemovalTrackRotation & 3;
                 args.sequenceIndex = 0;
                 args.roadId = _ghostRemovalTrackId;
                 args.objectId = _ghostRemovalTrackObjectId & ~(1 << 7);

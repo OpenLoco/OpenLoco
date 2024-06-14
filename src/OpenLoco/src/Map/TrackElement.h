@@ -33,7 +33,7 @@ namespace OpenLoco::World
             _type &= ~0x40;
             _type |= state ? 0x40 : 0;
         }
-        uint8_t unkDirection() const { return _type & 0x03; }
+        uint8_t rotation() const { return _type & 0x03; }
         void setRotation(uint8_t rotation)
         {
             _type &= ~0x3;

@@ -16,7 +16,7 @@ namespace OpenLoco::World
         uint8_t _7;
 
     public:
-        uint8_t unkDirection() const { return _type & 0x03; }
+        uint8_t rotation() const { return _type & 0x03; }
         uint8_t roadId() const { return _4 & 0xF; } // _4l
         bool hasBridge() const { return (_4 & 0x80) != 0; }
         uint8_t unk4u() const { return (_4 & 0x30) >> 4; }

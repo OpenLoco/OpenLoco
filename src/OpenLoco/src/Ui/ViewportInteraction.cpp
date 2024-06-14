@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        const auto index = buildingTile->multiTileIndex();
+        const auto index = buildingTile->sequenceIndex();
         const auto firstTile = interaction.pos - World::kOffsets[index];
         const World::Pos3 pos = { firstTile.x, firstTile.y, buildingTile->baseZ() };
 
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        auto firstTile = interaction.pos - World::kOffsets[building->multiTileIndex()];
+        auto firstTile = interaction.pos - World::kOffsets[building->sequenceIndex()];
         auto height = building->baseZ();
         for (auto& company : CompanyManager::companies())
         {
@@ -1035,7 +1035,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         GameCommands::SignalRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-        args.rotation = track->unkDirection();
+        args.rotation = track->rotation();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
         args.trackObjType = track->trackObjectId();
@@ -1066,7 +1066,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::TrainStationRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, track->baseHeight());
-        args.rotation = track->unkDirection();
+        args.rotation = track->rotation();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
         args.type = track->trackObjectId();
@@ -1088,7 +1088,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::RoadStationRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, road->baseHeight());
-        args.rotation = road->unkDirection();
+        args.rotation = road->rotation();
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();
         args.roadObjectId = road->roadObjectId();
@@ -1125,7 +1125,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
         GameCommands::PortRemovalArgs args;
-        Pos2 firstTile = pos - World::kOffsets[station->multiTileIndex()];
+        Pos2 firstTile = pos - World::kOffsets[station->sequenceIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseHeight());
         if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
@@ -1149,7 +1149,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::BuildingRemovalArgs args;
-        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
+        Pos2 firstTile = pos - World::kOffsets[building->sequenceIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
@@ -1169,7 +1169,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::HeadquarterRemovalArgs args;
-        Pos2 firstTile = pos - World::kOffsets[building->multiTileIndex()];
+        Pos2 firstTile = pos - World::kOffsets[building->sequenceIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseHeight());
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }

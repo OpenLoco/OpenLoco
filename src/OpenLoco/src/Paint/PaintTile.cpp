@@ -121,7 +121,7 @@ namespace OpenLoco::Paint
     {
         registers regs;
         regs.esi = X86Pointer(&elRoad);
-        regs.ecx = (session.getRotation() + elRoad.unkDirection()) & 0x3;
+        regs.ecx = (session.getRotation() + elRoad.rotation()) & 0x3;
         regs.dx = elRoad.baseHeight();
         call(0x004759A6, regs);
     }

@@ -619,11 +619,11 @@ namespace OpenLoco::Ui::Windows::Construction
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const World::Pos2& pos)
         {
             const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
-            const auto firstTileOffset = Math::Vector::rotate(World::Pos2(piece.x, piece.y), elTrack.unkDirection());
+            const auto firstTileOffset = Math::Vector::rotate(World::Pos2(piece.x, piece.y), elTrack.rotation());
             const auto firstTile = World::Pos3(pos.x, pos.y, elTrack.baseHeight()) - World::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 
             // Get coordinates of the next tile after the end of the track piece
-            const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
+            const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.rotation();
             const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
             const auto nextTile = firstTile + trackSize.pos;
             _nextTile = nextTile;
@@ -643,11 +643,11 @@ namespace OpenLoco::Ui::Windows::Construction
         void setNextAndPreviousRoadTile(const RoadElement& elRoad, const World::Pos2& pos)
         {
             const auto& piece = TrackData::getRoadPiece(elRoad.roadId())[elRoad.sequenceIndex()];
-            const auto firstTileOffset = Math::Vector::rotate(World::Pos2(piece.x, piece.y), elRoad.unkDirection());
+            const auto firstTileOffset = Math::Vector::rotate(World::Pos2(piece.x, piece.y), elRoad.rotation());
             const auto firstTile = World::Pos3(pos.x, pos.y, elRoad.baseHeight()) - World::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
 
             // Get coordinates of the next tile after the end of the track piece
-            const auto trackAndDirection = (elRoad.roadId() << 3) | elRoad.unkDirection();
+            const auto trackAndDirection = (elRoad.roadId() << 3) | elRoad.rotation();
             const auto& trackSize = TrackData::getUnkRoad(trackAndDirection);
             const auto nextTile = firstTile + trackSize.pos;
             _nextTile = nextTile;

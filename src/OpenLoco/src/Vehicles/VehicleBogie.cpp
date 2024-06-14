@@ -206,7 +206,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elTrack->unkDirection() != bogie.trackAndDirection.track.cardinalDirection())
+            if (elTrack->rotation() != bogie.trackAndDirection.track.cardinalDirection())
             {
                 continue;
             }
@@ -260,7 +260,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elRoad->unkDirection() != bogie.trackAndDirection.road.cardinalDirection())
+            if (elRoad->rotation() != bogie.trackAndDirection.road.cardinalDirection())
             {
                 continue;
             }

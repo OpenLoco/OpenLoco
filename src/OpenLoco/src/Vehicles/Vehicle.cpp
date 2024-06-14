@@ -150,7 +150,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elRoad->unkDirection() != trackAndDirection.cardinalDirection())
+            if (elRoad->rotation() != trackAndDirection.cardinalDirection())
             {
                 continue;
             }
