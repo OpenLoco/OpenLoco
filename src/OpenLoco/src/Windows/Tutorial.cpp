@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -66,6 +67,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
         };
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
 
@@ -74,10 +76,10 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto& widget = self.widgets[Widx::frame];
         auto point = Point(self.x + widget.midX(), self.y + widget.top + 4);
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_text, args);
+        tr.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_text, args);
 
         point.y += 10;
-        drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_control);
+        tr.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_control);
     }
 
     static constexpr WindowEventList kEvents = {

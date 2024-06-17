@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -435,6 +436,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, shade);
@@ -475,7 +477,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push<uint16_t>(getTransportIconsFromStationFlags(station->flags));
 
                 auto point = Point(0, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
             }
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -487,7 +489,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push(StringIds::buffer_1250);
 
                 auto point = Point(200, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
             }
 
             // Total units waiting.
@@ -501,7 +503,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push<uint32_t>(totalUnits);
 
                 auto point = Point(400, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 88, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(rt, point, 88, Colour::black, text_colour_id, args);
             }
 
             // And, finally, what goods the station accepts.
@@ -526,7 +528,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push(StringIds::buffer_1250);
 
                 auto point = Point(490, yPos);
-                drawingCtx.drawStringLeftClipped(rt, point, 118, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(rt, point, 118, Colour::black, text_colour_id, args);
             }
 
             yPos += kRowHeight;
@@ -550,6 +552,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets and tabs.
         window.draw(rt);
@@ -573,7 +576,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::black_stringid, args);
+        tr.drawStringLeft(*rt, origin, Colour::black, StringIds::black_stringid, args);
     }
 
     // 0x004917BB

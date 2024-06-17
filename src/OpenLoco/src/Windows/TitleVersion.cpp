@@ -1,5 +1,6 @@
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "OpenLoco.h"
 #include "Ui.h"
 #include "Ui/Widget.h"
@@ -36,10 +37,11 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto versionInfo = getVersionInfo();
         auto point = Point(window.x, window.y);
-        drawingCtx.drawString(*rt, point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
+        tr.drawString(*rt, point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
     }
 
     static constexpr WindowEventList kEvents = {

@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
@@ -96,19 +97,20 @@ namespace OpenLoco::Ui::Windows::Error
         if (buffer != &_errorText[0])
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
             int16_t strWidth;
             {
-                strWidth = drawingCtx.getStringWidthNewLined(&_errorText[0]);
+                strWidth = tr.getStringWidthNewLined(&_errorText[0]);
             }
 
             strWidth = std::min<int16_t>(strWidth, 196);
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
             {
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = drawingCtx.wrapString(&_errorText[0], strWidth);
+                std::tie(strWidth, breakLineCount) = tr.wrapString(&_errorText[0], strWidth);
                 _linebreakCount = breakLineCount;
             }
 
@@ -219,13 +221,14 @@ namespace OpenLoco::Ui::Windows::Error
         // 0x00431C05
         static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
         {
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             uint16_t x = self.x;
             uint16_t y = self.y;
             uint16_t width = self.width;
             uint16_t height = self.height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->errorColour;
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
             drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
             drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(skin)), Gfx::RectFlags::transparent);
 
@@ -242,7 +245,7 @@ namespace OpenLoco::Ui::Windows::Error
             if (_errorCompetitorId == CompanyId::null)
             {
                 auto point = Point(((width + 1) / 2) + x - 1, y + 1);
-                drawingCtx.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
+                tr.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
             }
             else
             {
@@ -264,7 +267,7 @@ namespace OpenLoco::Ui::Windows::Error
                 }
 
                 auto point = Point(self.x + 156, self.y + 20);
-                drawingCtx.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
+                tr.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
             }
         }
 

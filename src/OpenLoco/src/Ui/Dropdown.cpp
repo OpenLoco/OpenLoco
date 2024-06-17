@@ -2,6 +2,7 @@
 #include "Engine/Limits.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -190,13 +191,15 @@ namespace OpenLoco::Ui::Dropdown
             StringManager::formatString(_byte_112CC04, stringId, args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
-            drawingCtx.clipString(width, _byte_112CC04);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
 
-            drawingCtx.setCurrentFont(Gfx::Font::m1);
+            tr.clipString(width, _byte_112CC04);
 
-            drawingCtx.drawString(*rt, Point(x, y), colour, _byte_112CC04);
+            tr.setCurrentFont(Gfx::Font::m1);
+
+            tr.drawString(*rt, Point(x, y), colour, _byte_112CC04);
         }
 
         // 0x004CD00E
@@ -354,6 +357,7 @@ namespace OpenLoco::Ui::Dropdown
         static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, AdvancedColour colour, size_t count, uint8_t flags)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             _dropdownColumnCount = 1;
             _dropdownItemWidth = 0;
@@ -375,9 +379,9 @@ namespace OpenLoco::Ui::Dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], args);
 
-                drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+                tr.setCurrentFont(Gfx::Font::medium_bold);
 
-                auto stringWidth = drawingCtx.getMaxStringWidth(_byte_112CC04);
+                auto stringWidth = tr.getMaxStringWidth(_byte_112CC04);
 
                 maxStringWidth = std::max(maxStringWidth, stringWidth);
             }

@@ -14,6 +14,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "HillShapesObject.h"
 #include "IndustryObject.h"
 #include "InterfaceSkinObject.h"
@@ -907,12 +908,13 @@ namespace OpenLoco::ObjectManager
     void drawGenericDescription(Gfx::RenderTarget& rt, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         if (designed != 0)
         {
             FormatArguments args{};
             args.push(designed);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_designed, args);
+            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_designed, args);
             rowPosition.y += kDescriptionRowHeight;
         }
 
@@ -920,7 +922,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(obsolete);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_obsolete, args);
+            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_obsolete, args);
             rowPosition.y += kDescriptionRowHeight;
         }
     }

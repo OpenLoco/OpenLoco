@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -220,6 +221,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         window.draw(rt);
 
@@ -228,7 +230,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Ui::Point position = Point(window.x + window.width / 2, window.y + 30);
-        drawingCtx.drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
+        tr.drawStringCentredWrapped(*rt, position, window.width - 8, Colour::black, StringIds::wcolour2_stringid, FormatArguments::common());
 
         auto widget = &_widgets[Widx::input];
         auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget->left + 1 + window.x, widget->top + 1 + window.y, widget->width() - 2, widget->height() - 2));
@@ -245,7 +247,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             args.push(StringIds::buffer_2039);
 
             position = { inputSession.xOffset, 1 };
-            drawingCtx.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
         }
 
         const uint16_t numCharacters = static_cast<uint16_t>(inputSession.cursorPosition);
@@ -258,7 +260,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
             widget = &_widgets[Widx::ok];
             auto point = Point(window.x + widget->left - 5, window.y + widget->top + 1);
-            drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::num_characters_left_int_int, args);
+            tr.drawStringRight(*rt, point, Colour::black, StringIds::num_characters_left_int_int, args);
         }
 
         if ((inputSession.cursorFrame % 32) >= 16)
@@ -271,7 +273,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         if (Input::isFocused(window.type, window.number, Widx::input))
         {
-            auto width = drawingCtx.getStringWidth(drawnBuffer);
+            auto width = tr.getStringWidth(drawnBuffer);
             auto cursorPos = Point(inputSession.xOffset + width, 1);
             drawingCtx.fillRect(*clipped, cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + 9, Colours::getShade(window.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }

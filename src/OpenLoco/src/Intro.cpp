@@ -4,6 +4,7 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/RenderTarget.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Gui.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
@@ -170,18 +171,19 @@ namespace OpenLoco::Intro
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& rt = drawingEngine.getScreenRT();
         auto& drawContext = drawingEngine.getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawContext);
 
         drawContext.clearSingle(rt, PaletteIndex::index_0A);
 
         const auto pos = Ui::Point(Ui::width() / 2, Ui::height() / 2);
 
-        drawContext.drawStringCentredWrapped(rt, pos + Ui::Point(0, -80), Ui::width(), Colour::black, StringIds::intro_notice_0);
-        drawContext.drawStringCentredWrapped(rt, pos, Ui::width(), Colour::black, StringIds::intro_notice_1);
+        tr.drawStringCentredWrapped(rt, pos + Ui::Point(0, -80), Ui::width(), Colour::black, StringIds::intro_notice_0);
+        tr.drawStringCentredWrapped(rt, pos, Ui::width(), Colour::black, StringIds::intro_notice_1);
 
         auto noticePos = pos + Ui::Point(0, 80);
         for (auto& noticeId : kIntroNoticeStrings)
         {
-            drawContext.drawStringCentred(rt, noticePos, Colour::black, noticeId);
+            tr.drawStringCentred(rt, noticePos, Colour::black, noticeId);
             noticePos += Ui::Point(0, 10);
         }
 

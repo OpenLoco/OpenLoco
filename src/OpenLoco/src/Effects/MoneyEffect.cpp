@@ -1,6 +1,7 @@
 #include "MoneyEffect.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -124,8 +125,9 @@ namespace OpenLoco
             StringManager::formatString(buffer, strFormat, args);
 
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-            m->offsetX = -drawingCtx.getStringWidth(buffer) / 2;
+            auto tr = Gfx::TextRenderer(drawingCtx);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
+            m->offsetX = -tr.getStringWidth(buffer) / 2;
             m->wiggle = 0;
         }
         return m;

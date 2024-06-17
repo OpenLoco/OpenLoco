@@ -2,6 +2,7 @@
 #include "GameState.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -385,6 +386,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
         i = 1;
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
         for (auto& unk : _displayFrames)
         {
             auto order = Vehicles::OrderRingView(unk.orderOffset, 0).begin();
@@ -395,7 +397,7 @@ namespace OpenLoco::Vehicles::OrderManager
 
             auto [loc, str] = generateOrderUiStringAndLoc(order->getOffset(), i);
             const auto pos = World::gameToScreen(loc, Ui::WindowManager::getCurrentRotation());
-            auto stringWidth = drawingCtx.getStringWidth(str.c_str());
+            auto stringWidth = tr.getStringWidth(str.c_str());
             for (auto zoom = 0; zoom < 4; ++zoom)
             {
                 // The first line of the label will always be at the centre

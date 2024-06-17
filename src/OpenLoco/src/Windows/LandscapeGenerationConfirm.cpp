@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -39,6 +40,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     static void draw(Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         window.draw(rt);
 
@@ -49,7 +51,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             args.push(StringIds::prompt_confirm_random_landscape);
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        drawingCtx.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
+        tr.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
     // 0x004C18E4

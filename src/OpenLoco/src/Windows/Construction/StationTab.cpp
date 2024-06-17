@@ -11,6 +11,7 @@
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -923,6 +924,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(rt);
         Common::drawTabs(&self, rt);
@@ -985,7 +987,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             FormatArguments args{};
             args.push<uint32_t>(_stationCost);
 
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            tr.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
         }
 
         xPos = self.x + 3;
@@ -1015,17 +1017,17 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
-        drawingCtx.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::new_station_buffer, args);
+        tr.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::new_station_buffer, args);
 
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 29;
 
         origin = Point(xPos, yPos);
-        origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_accepts);
+        origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
+            origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -1050,11 +1052,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = Point(xPos, yPos);
 
-        origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_produces);
+        origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            origin = drawingCtx.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
+            origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {

@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
@@ -50,32 +51,34 @@ namespace OpenLoco
     // 0x004B8C9D
     void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const
     {
-        Ui::Point rowPosition = { x, y };
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(rt, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {
             FormatArguments args{};
             args.push(power);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_power, args);
+            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_power, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_length, args);
+            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_length, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_weight, args);
+            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_weight, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            drawingCtx.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_max_speed, args);
+            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_max_speed, args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -85,7 +88,7 @@ namespace OpenLoco
 
         if (StringManager::locoStrlen(buffer) != 0)
         {
-            drawingCtx.drawStringLeftWrapped(rt, rowPosition, width - 4, Colour::black, StringIds::buffer_1250);
+            tr.drawStringLeftWrapped(rt, rowPosition, width - 4, Colour::black, StringIds::buffer_1250);
         }
     }
 

@@ -16,6 +16,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Gui.h"
 #include "Input.h"
 #include "Localisation/Formatting.h"
@@ -705,8 +706,9 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
             auto point = Ui::Point(regs.cx, regs.dx);
-            drawingCtx.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
+            tr.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
             regs = backup;
 
             return 0;
