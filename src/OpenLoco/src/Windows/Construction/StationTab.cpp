@@ -757,7 +757,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::RoadStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseHeight());
-        placementArgs.rotation = elRoad->unkDirection();
+        placementArgs.rotation = elRoad->rotation();
         placementArgs.roadId = elRoad->roadId();
         placementArgs.index = elRoad->sequenceIndex();
         placementArgs.roadObjectId = elRoad->roadObjectId();
@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         GameCommands::TrainStationPlacementArgs placementArgs;
         placementArgs.pos = World::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseHeight());
-        placementArgs.rotation = elTrack->unkDirection();
+        placementArgs.rotation = elTrack->rotation();
         placementArgs.trackId = elTrack->trackId();
         placementArgs.index = elTrack->sequenceIndex();
         placementArgs.trackObjectId = elTrack->trackObjectId();

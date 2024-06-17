@@ -531,19 +531,19 @@ namespace OpenLoco::Vehicles::OrderManager
                         {
 
                             waypointOrder->setTrackId(trackElement->trackId());
-                            waypointOrder->setDirection(trackElement->unkDirection());
+                            waypointOrder->setDirection(trackElement->rotation());
 
                             fixed = true;
-                            Logging::info("Fixed corrupt routing order: inferred trackId {} and direction {}", trackElement->trackId(), trackElement->unkDirection());
+                            Logging::info("Fixed corrupt routing order: inferred trackId {} and direction {}", trackElement->trackId(), trackElement->rotation());
                             break;
                         }
                         else if (roadElement != nullptr)
                         {
                             waypointOrder->setTrackId(roadElement->roadId());
-                            waypointOrder->setDirection(roadElement->unkDirection());
+                            waypointOrder->setDirection(roadElement->rotation());
 
                             fixed = true;
-                            Logging::info("Fixed corrupt routing order: inferred roadId {} and direction {}", roadElement->roadId(), roadElement->unkDirection());
+                            Logging::info("Fixed corrupt routing order: inferred roadId {} and direction {}", roadElement->roadId(), roadElement->rotation());
                             break;
                         }
                     }

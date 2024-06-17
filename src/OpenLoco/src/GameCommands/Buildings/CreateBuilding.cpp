@@ -240,7 +240,7 @@ namespace OpenLoco::GameCommands
                     World::AnimationManager::createAnimation(5, World::toWorldSpace(tilePos), elBuilding->baseZ());
                 }
                 elBuilding->setObjectId(args.type);
-                elBuilding->setMultiTileIndex(offset.index);
+                elBuilding->setSequenceIndex(offset.index);
                 elBuilding->setUnk5u(0);
                 elBuilding->setColour(args.colour);
                 elBuilding->setVariation(args.variation);

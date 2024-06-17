@@ -30,7 +30,7 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->unkDirection() != args.rotation)
+            if (elTrack->rotation() != args.rotation)
             {
                 continue;
             }
@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
                 setErrorText(StringIds::signals_cannot_be_built_in_stations);
                 return false;
             }
-            const auto connectFlags = piece.connectFlags[pieceElTrack->unkDirection()];
+            const auto connectFlags = piece.connectFlags[pieceElTrack->rotation()];
             auto tile = World::TileManager::get(trackLoc);
             for (auto& el : tile)
             {
@@ -88,7 +88,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                const auto otherConnectFlags = World::TrackData::getTrackPiece(otherElTrack->trackId())[otherElTrack->sequenceIndex()].connectFlags[otherElTrack->unkDirection()];
+                const auto otherConnectFlags = World::TrackData::getTrackPiece(otherElTrack->trackId())[otherElTrack->sequenceIndex()].connectFlags[otherElTrack->rotation()];
                 if (otherConnectFlags & connectFlags)
                 {
                     setErrorText(StringIds::signals_cannot_be_built_on_a_junction);
@@ -240,7 +240,7 @@ namespace OpenLoco::GameCommands
                     {
                         return FAILURE;
                     }
-                    newSignal->setRotation(pieceElTrack->unkDirection());
+                    newSignal->setRotation(pieceElTrack->rotation());
                     newSignal->setGhost(flags & Flags::ghost);
                     newSignal->setAiAllocated(flags & Flags::aiAllocated);
                     newSignal->setClearZ(pieceElTrack->clearZ());

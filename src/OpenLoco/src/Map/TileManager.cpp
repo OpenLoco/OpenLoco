@@ -987,7 +987,7 @@ namespace OpenLoco::World::TileManager
             }
         }
 
-        if (elBuilding.multiTileIndex() == 0)
+        if (elBuilding.sequenceIndex() == 0)
         {
             if (!elBuilding.isGhost())
             {

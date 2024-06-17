@@ -202,7 +202,7 @@ namespace OpenLoco::Vehicles
                 continue;
             }
 
-            if (elTrack->unkDirection() != trackAndDirection.cardinalDirection())
+            if (elTrack->rotation() != trackAndDirection.cardinalDirection())
             {
                 continue;
             }
@@ -541,14 +541,14 @@ namespace OpenLoco::Vehicles
                 }
 
                 const auto& targetPiece = World::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
-                const auto targetConnectFlags = targetPiece.connectFlags[elTrack->unkDirection()];
+                const auto targetConnectFlags = targetPiece.connectFlags[elTrack->rotation()];
                 if ((targetConnectFlags & connectFlags) == 0)
                 {
                     continue;
                 }
 
                 // If identical then no need to keep checking
-                if (elTrack->unkDirection() == tad.cardinalDirection()
+                if (elTrack->rotation() == tad.cardinalDirection()
                     && elTrack->sequenceIndex() == piece.index
                     && elTrack->trackObjectId() == interest.trackType
                     && elTrack->trackId() == tad.id())
@@ -556,9 +556,9 @@ namespace OpenLoco::Vehicles
                     continue;
                 }
 
-                const auto startTargetPos2 = World::Pos2{ pieceLoc } - Math::Vector::rotate(World::Pos2{ targetPiece.x, targetPiece.y }, elTrack->unkDirection());
+                const auto startTargetPos2 = World::Pos2{ pieceLoc } - Math::Vector::rotate(World::Pos2{ targetPiece.x, targetPiece.y }, elTrack->rotation());
                 const auto startTargetPos = World::Pos3{ startTargetPos2, static_cast<int16_t>(elTrack->baseHeight() - targetPiece.z) };
-                TrackAndDirection::_TrackAndDirection tad2(elTrack->trackId(), elTrack->unkDirection());
+                TrackAndDirection::_TrackAndDirection tad2(elTrack->trackId(), elTrack->rotation());
                 LocationOfInterest newInterest{ startTargetPos, tad2._data, elTrack->owner(), elTrack->trackObjectId() };
 
                 if (hashMap.tryAdd(newInterest))
@@ -798,7 +798,7 @@ namespace OpenLoco::Vehicles
                     {
                         continue;
                     }
-                    if (elTrack->unkDirection() != tad.cardinalDirection())
+                    if (elTrack->rotation() != tad.cardinalDirection())
                     {
                         continue;
                     }
@@ -939,7 +939,7 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                if (elTrack->unkDirection() != tad.cardinalDirection())
+                if (elTrack->rotation() != tad.cardinalDirection())
                 {
                     continue;
                 }

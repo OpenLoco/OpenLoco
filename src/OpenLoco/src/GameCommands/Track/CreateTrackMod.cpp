@@ -32,7 +32,7 @@ namespace OpenLoco::GameCommands
                     continue;
                 }
 
-                if (elTrack->unkDirection() != args.rotation)
+                if (elTrack->rotation() != args.rotation)
                 {
                     continue;
                 }
@@ -69,11 +69,11 @@ namespace OpenLoco::GameCommands
 
         const auto& piece = World::TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()];
         const auto offsetToFirstTile = World::Pos3{
-            Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, elTrack->unkDirection()),
+            Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, elTrack->rotation()),
             piece.z
         };
         const auto firstTilePos = args.pos - offsetToFirstTile;
-        const auto tad = Vehicles::TrackAndDirection::_TrackAndDirection(elTrack->trackId(), elTrack->unkDirection());
+        const auto tad = Vehicles::TrackAndDirection::_TrackAndDirection(elTrack->trackId(), elTrack->rotation());
 
         auto result = Vehicles::applyTrackModsToTrackNetwork(firstTilePos, tad, elTrack->owner(), args.trackObjType, flags, args.modSection, args.type);
         if (result.allPlacementsFailed)

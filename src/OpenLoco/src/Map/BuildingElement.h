@@ -43,8 +43,8 @@ namespace OpenLoco::World
         uint8_t objectId() const { return _4; }
         void setObjectId(uint8_t id) { _4 = id; }
         const BuildingObject* getObject() const;
-        uint8_t multiTileIndex() const { return _5 & 3; }
-        void setMultiTileIndex(uint8_t index)
+        uint8_t sequenceIndex() const { return _5 & 3; }
+        void setSequenceIndex(uint8_t index)
         {
             _5 &= ~0x03;
             _5 |= index & 0x3;

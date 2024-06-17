@@ -1142,7 +1142,7 @@ namespace OpenLoco
                     GameCommands::TrackRemovalArgs args{};
                     args.pos = World::Pos3(World::toWorldSpace(tilePos), elTrack->baseHeight());
                     args.index = elTrack->sequenceIndex();
-                    args.rotation = elTrack->unkDirection();
+                    args.rotation = elTrack->rotation();
                     args.trackId = elTrack->trackId();
                     args.trackObjectId = elTrack->trackObjectId();
                     auto aiPreviewFlag = elTrack->isAiAllocated() ? GameCommands::Flags::aiAllocated : 0;
@@ -1160,7 +1160,7 @@ namespace OpenLoco
                     GameCommands::RoadRemovalArgs args{};
                     args.pos = World::Pos3(World::toWorldSpace(tilePos), elRoad->baseHeight());
                     args.sequenceIndex = elRoad->sequenceIndex();
-                    args.unkDirection = elRoad->unkDirection();
+                    args.rotation = elRoad->rotation();
                     args.roadId = elRoad->roadId();
                     args.objectId = elRoad->roadObjectId();
                     auto aiPreviewFlag = elRoad->isAiAllocated() ? GameCommands::Flags::aiAllocated : 0;

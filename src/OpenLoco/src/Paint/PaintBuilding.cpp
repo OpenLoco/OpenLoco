@@ -209,7 +209,7 @@ namespace OpenLoco::Paint
 
         if (isMultiTile)
         {
-            const auto sequenceIndex = elBuilding.multiTileIndex();
+            const auto sequenceIndex = elBuilding.sequenceIndex();
             // Only the front of the 2x2 area will draw. Images are sized to overlap into the other tiles.
             if ((sequenceIndex ^ (1 << 1)) == ((-session.getRotation()) & 0x3))
             {

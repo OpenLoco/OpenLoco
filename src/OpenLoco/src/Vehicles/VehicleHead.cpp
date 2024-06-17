@@ -3652,7 +3652,7 @@ namespace OpenLoco::Vehicles
                 if (elTrack->isGhost() || elTrack->isAiAllocated())
                     continue;
 
-                if (elTrack->unkDirection() != veh->trackAndDirection.track.cardinalDirection())
+                if (elTrack->rotation() != veh->trackAndDirection.track.cardinalDirection())
                     continue;
 
                 if (elTrack->trackId() != veh->trackAndDirection.track.id())

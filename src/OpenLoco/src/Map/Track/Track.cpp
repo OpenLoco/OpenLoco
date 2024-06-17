@@ -86,7 +86,7 @@ namespace OpenLoco::World::Track
 
             if (elRoad->sequenceIndex() == 0)
             {
-                auto trackAndDirection2 = (elRoad->roadId() << 3) | elRoad->unkDirection();
+                auto trackAndDirection2 = (elRoad->roadId() << 3) | elRoad->rotation();
                 if (nextRotation == TrackData::getUnkRoad(trackAndDirection2).rotationBegin)
                 {
                     const auto& roadPiece = TrackData::getRoadPiece(elRoad->roadId());
@@ -105,7 +105,7 @@ namespace OpenLoco::World::Track
 
                         if (elRoad->hasStationElement())
                         {
-                            auto* elStation = tile.roadStation(elRoad->roadId(), elRoad->unkDirection(), elRoad->baseZ());
+                            auto* elStation = tile.roadStation(elRoad->roadId(), elRoad->rotation(), elRoad->baseZ());
                             if (elStation == nullptr)
                             {
                                 continue;
@@ -129,7 +129,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            auto trackAndDirection2 = (elRoad->roadId() << 3) | (1 << 2) | elRoad->unkDirection();
+            auto trackAndDirection2 = (elRoad->roadId() << 3) | (1 << 2) | elRoad->rotation();
             if (nextRotation != TrackData::getUnkRoad(trackAndDirection2).rotationBegin)
             {
                 continue;
@@ -152,7 +152,7 @@ namespace OpenLoco::World::Track
 
             if (elRoad->hasStationElement())
             {
-                auto* elStation = tile.roadStation(elRoad->roadId(), elRoad->unkDirection(), elRoad->baseZ());
+                auto* elStation = tile.roadStation(elRoad->roadId(), elRoad->rotation(), elRoad->baseZ());
                 if (elStation == nullptr)
                 {
                     continue;
@@ -216,7 +216,7 @@ namespace OpenLoco::World::Track
 
             if (elTrack->sequenceIndex() == 0)
             {
-                auto trackAndDirection2 = (elTrack->trackId() << 3) | elTrack->unkDirection();
+                auto trackAndDirection2 = (elTrack->trackId() << 3) | elTrack->rotation();
                 if (nextRotation == TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
                 {
                     const auto& trackPiece = TrackData::getTrackPiece(elTrack->trackId());
@@ -275,7 +275,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            auto trackAndDirection2 = (elTrack->trackId() << 3) | (1 << 2) | elTrack->unkDirection();
+            auto trackAndDirection2 = (elTrack->trackId() << 3) | (1 << 2) | elTrack->rotation();
             if (nextRotation != TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
             {
                 continue;
