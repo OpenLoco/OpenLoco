@@ -708,7 +708,27 @@ namespace OpenLoco::World::TileManager
     // 0x00461393
     bool checkFreeElementsAndReorganise()
     {
-        return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
+        if (numFreeElements() > kMaxElementsOnOneTile)
+        {
+            return true;
+        }
+        // First try a basic defrag multiple times
+        for (auto i = 0U; i < 1000; ++i)
+        {
+            defragmentTilePeriodic();
+        }
+        if (numFreeElements() > kMaxElementsOnOneTile)
+        {
+            return true;
+        }
+        // Now try a full defrag
+        reorganise();
+        if (numFreeElements() > kMaxElementsOnOneTile)
+        {
+            return true;
+        }
+        GameCommands::setErrorText(StringIds::landscape_data_area_full);
+        return false;
     }
 
     CompanyId getTileOwner(const World::TileElement& el)
