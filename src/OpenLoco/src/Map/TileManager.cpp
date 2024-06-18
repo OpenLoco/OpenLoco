@@ -74,7 +74,7 @@ namespace OpenLoco::World::TileManager
     // 0x004BF476
     void allocateMapElements()
     {
-        TileElement* elements = reinterpret_cast<TileElement*>(malloc(kMaxElements));
+        TileElement* elements = reinterpret_cast<TileElement*>(malloc(kMaxElements * sizeof(TileElement)));
         if (elements == nullptr)
         {
             exitWithError(StringIds::game_init_failure, StringIds::unable_to_allocate_enough_memory);

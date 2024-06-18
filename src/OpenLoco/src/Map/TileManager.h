@@ -17,8 +17,8 @@ namespace OpenLoco::World
 
 namespace OpenLoco::World::TileManager
 {
-    constexpr size_t kMaxElements = 24 * kMapColumns * kMapRows;
-    constexpr size_t kMaxElementsOnOneTile = 8192; // If you exceed this then the game may buffer overflow in certain situations
+    constexpr size_t kMaxElements = 3 * kMapColumns * kMapRows;
+    constexpr size_t kMaxElementsOnOneTile = 1024; // If you exceed this then the game may buffer overflow in certain situations
     constexpr size_t kMaxUsableElements = kMaxElements - kMaxElementsOnOneTile;
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
 
