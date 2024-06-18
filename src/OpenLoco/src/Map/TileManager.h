@@ -17,7 +17,7 @@ namespace OpenLoco::World
 
 namespace OpenLoco::World::TileManager
 {
-    constexpr size_t maxElements = 0x6C000;
+    constexpr size_t kMaxElements = 3 * kMapColumns * kMapRows;
     const TileElement* const kInvalidTile = reinterpret_cast<const TileElement*>(static_cast<intptr_t>(-1));
 
     enum class ElementPositionFlags : uint8_t
@@ -69,6 +69,8 @@ namespace OpenLoco::World::TileManager
     SmallZ getSurfaceCornerHeight(const SurfaceElement& surface);
     SmallZ getSurfaceCornerDownHeight(const SurfaceElement& surface, const uint8_t cornerMask);
     void updateTilePointers();
+    // Only disables first call to defrag
+    void disablePeriodicDefrag();
     // Fully defragment the tile element array
     void reorganise();
     // Defragments singular tile (chosen tile updates each call)

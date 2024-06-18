@@ -785,7 +785,7 @@ namespace OpenLoco::S5
             {
                 ScenarioManager::setScenarioTicks(ScenarioManager::getScenarioTicks() - 1);
                 ScenarioManager::setScenarioTicks2(ScenarioManager::getScenarioTicks2() - 1);
-                addr<0x0050BF6C, uint8_t>() = 1;
+                World::TileManager::disablePeriodicDefrag();
             }
 
             Ui::ProgressBar::end();
