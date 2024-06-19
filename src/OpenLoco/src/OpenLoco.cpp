@@ -619,7 +619,7 @@ namespace OpenLoco
         Network::processGameCommands(ScenarioManager::getScenarioTicks());
 
         recordTickStartPrng();
-        call(0x004613F0); // Map::TileManager::reorg?
+        World::TileManager::defragmentTilePeriodic();
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
         World::TileManager::update();

@@ -502,7 +502,7 @@ namespace OpenLoco::World::MapGenerator
             const auto randDensity = (gPrng1().randNext(15) * std::max(options.maxForestDensity - options.minForestDensity, 0)) / 15 + options.minForestDensity;
             placeTreeCluster(randLoc, randRadius, randDensity, std::nullopt);
 
-            if (TileManager::numFreeElements() < 0x36000)
+            if (TileManager::numFreeElements() < 0x1B000)
             {
                 break;
             }

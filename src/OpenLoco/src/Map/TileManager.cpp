@@ -47,11 +47,18 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::World::TileManager
 {
+    constexpr auto kNumTiles = kMapPitch * kMapColumns;
     static loco_global<TileElement*, 0x005230C8> _elements;
-    static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
+    static loco_global<TileElement* [kNumTiles], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
     static loco_global<const TileElement*, 0x00F00158> _F00158;
-    static loco_global<uint32_t, 0x00F00168> _F00168;
+    static loco_global<uint32_t, 0x00F00168> _periodicDefragStartTile;
+    static loco_global<bool, 0x0050BF6C> _disablePeriodicDefrag;
+
+    void disablePeriodicDefrag()
+    {
+        _disablePeriodicDefrag = true;
+    }
 
     // 0x0046902E
     void removeSurfaceIndustry(const Pos2& pos)
@@ -67,7 +74,7 @@ namespace OpenLoco::World::TileManager
     // 0x004BF476
     void allocateMapElements()
     {
-        TileElement* elements = reinterpret_cast<TileElement*>(malloc(0x360000));
+        TileElement* elements = reinterpret_cast<TileElement*>(malloc(kMaxElements * sizeof(TileElement)));
         if (elements == nullptr)
         {
             exitWithError(StringIds::game_init_failure, StringIds::unable_to_allocate_enough_memory);
@@ -80,7 +87,7 @@ namespace OpenLoco::World::TileManager
     // 0x00461179
     void initialise()
     {
-        _F00168 = 0;
+        _periodicDefragStartTile = 0;
         getGameState().tileUpdateStartLocation = World::Pos2(0, 0);
         const auto landType = getGameState().lastLandOption == 0xFF ? 0 : getGameState().lastLandOption;
 
@@ -110,13 +117,13 @@ namespace OpenLoco::World::TileManager
 
     uint32_t numFreeElements()
     {
-        return maxElements - (_elementsEnd - _elements);
+        return kMaxElements - (_elementsEnd - _elements);
     }
 
     void setElements(std::span<TileElement> elements)
     {
         TileElement* dst = _elements;
-        std::memset(dst, 0, maxElements * sizeof(TileElement));
+        std::memset(dst, 0, kMaxElements * sizeof(TileElement));
         std::memcpy(dst, elements.data(), elements.size_bytes());
         TileManager::updateTilePointers();
     }
@@ -604,7 +611,7 @@ namespace OpenLoco::World::TileManager
         {
             // Allocate a temporary buffer and tightly pack all the tile elements in the map
             std::vector<TileElement> tempBuffer;
-            tempBuffer.resize(maxElements);
+            tempBuffer.resize(kMaxElements);
 
             size_t numElements = 0;
             for (tile_coord_t y = 0; y < kMapRows; y++)
@@ -624,7 +631,7 @@ namespace OpenLoco::World::TileManager
             std::memcpy(_elements, tempBuffer.data(), numElements * sizeof(TileElement));
 
             // Zero all unused elements
-            auto remainingElements = maxElements - numElements;
+            auto remainingElements = kMaxElements - numElements;
             std::memset(_elements + numElements, 0, remainingElements * sizeof(TileElement));
 
             updateTilePointers();
@@ -639,10 +646,89 @@ namespace OpenLoco::World::TileManager
         Ui::setCursor(curCursor);
     }
 
+    // 0x004613F0
+    void defragmentTilePeriodic()
+    {
+        if (!Game::hasFlags(GameStateFlags::tileManagerLoaded))
+        {
+            return;
+        }
+        if (_disablePeriodicDefrag)
+        {
+            _disablePeriodicDefrag = false;
+            return;
+        }
+        _disablePeriodicDefrag = false;
+
+        const uint32_t searchStart = _periodicDefragStartTile + 1;
+        for (auto i = 0U; i < kNumTiles; ++i)
+        {
+            const auto j = (i + searchStart) % kNumTiles;
+            if (_tiles[j] != kInvalidTile)
+            {
+                _periodicDefragStartTile = j;
+                break;
+            }
+        }
+
+        auto* firstTile = _tiles[_periodicDefragStartTile];
+        auto* emptyTile = firstTile - 1;
+        while (emptyTile != &_elements[0] && emptyTile->baseZ() == 0xFFU)
+        {
+            emptyTile--;
+        }
+        emptyTile++;
+        if (emptyTile == firstTile)
+        {
+            return;
+        }
+
+        _tiles[_periodicDefragStartTile] = emptyTile;
+        {
+            auto* dest = emptyTile;
+            auto* source = firstTile;
+            do
+            {
+                *dest = *source;
+                source->setBaseZ(0xFFU);
+                source++;
+            } while (!dest++->isLast());
+        }
+
+        // Its possible we have freed up elements at the end so this
+        // looks to see if we should move the element end
+        auto* newEnd = _elementsEnd - 1;
+        while (newEnd->baseZ() == 0xFFU)
+        {
+            newEnd--;
+        }
+        _elementsEnd = newEnd + 1;
+    }
+
     // 0x00461393
     bool checkFreeElementsAndReorganise()
     {
-        return !(call(0x00461393) & Interop::X86_FLAG_CARRY);
+        if (numFreeElements() > kMaxElementsOnOneTile)
+        {
+            return true;
+        }
+        // First try a basic defrag multiple times
+        for (auto i = 0U; i < 1000; ++i)
+        {
+            defragmentTilePeriodic();
+        }
+        if (numFreeElements() > kMaxElementsOnOneTile)
+        {
+            return true;
+        }
+        // Now try a full defrag
+        reorganise();
+        if (numFreeElements() > kMaxElementsOnOneTile)
+        {
+            return true;
+        }
+        GameCommands::setErrorText(StringIds::landscape_data_area_full);
+        return false;
     }
 
     CompanyId getTileOwner(const World::TileElement& el)
