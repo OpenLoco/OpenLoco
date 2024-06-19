@@ -776,7 +776,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            
+
             Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             auto rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
 
@@ -953,7 +953,7 @@ void OpenLoco::Interop::registerHooks()
         0x00448C79,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            
+
             Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             drawingCtx.pushRenderTarget(*rt);
