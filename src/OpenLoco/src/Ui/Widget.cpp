@@ -989,7 +989,6 @@ namespace OpenLoco::Ui
             cropped.x -= l - scroll_area->contentOffsetX;
             cropped.y -= t - scroll_area->contentOffsetY;
 
-
             drawingCtx.pushRenderTarget(cropped);
 
             window->callDrawScroll(drawingCtx, widgetState.scrollviewIndex);

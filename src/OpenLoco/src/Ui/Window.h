@@ -382,7 +382,7 @@ namespace OpenLoco::Ui
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
         void callDraw(Gfx::DrawingContext& ctx);                                                       // 27
-        void callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex);                              // 28
+        void callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex);                    // 28
         bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                           // 29
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

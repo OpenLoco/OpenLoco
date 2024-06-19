@@ -989,7 +989,7 @@ namespace OpenLoco::Gfx
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawLine( const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour)
+    void SoftwareDrawingContext::drawLine(const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour)
     {
         auto& rt = currentRenderTarget();
         return Impl::drawLine(rt, a, b, colour);

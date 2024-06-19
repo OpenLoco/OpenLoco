@@ -761,7 +761,6 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (self->currentTab == widx::tab_station - widx::tab_construction)
                         height++;
 
-
                     const auto& rt = drawingCtx.currentRenderTarget();
                     auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
                     if (clipped)
@@ -776,7 +775,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                         auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
                         auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-                        drawingCtx.drawImage( -4, -10, imageId);
+                        drawingCtx.drawImage(-4, -10, imageId);
                         auto colour = Colours::getTranslucent(companyColour);
                         if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
                         {
@@ -920,7 +919,6 @@ namespace OpenLoco::Ui::Windows::Construction
                     auto height = 25;
                     if (self->currentTab == widx::tab_station - widx::tab_construction)
                         height++;
-
 
                     const auto& rt = drawingCtx.currentRenderTarget();
                     auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
