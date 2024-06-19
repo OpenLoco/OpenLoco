@@ -1138,7 +1138,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C5FC8
-    void drawSingle(Gfx::DrawingContext& drawingCtx, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    static void drawSingle(Gfx::DrawingContext& drawingCtx, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy rt so we can crop it
         Gfx::RenderTarget rt = drawingCtx.currentRenderTarget();
@@ -2124,7 +2124,7 @@ namespace OpenLoco::Ui::WindowManager
             return;
 
         // Draw the window in this region
-        Ui::WindowManager::drawSingle(ctx, w, left, top, right, bottom);
+        drawSingle(ctx, w, left, top, right, bottom);
 
         for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
