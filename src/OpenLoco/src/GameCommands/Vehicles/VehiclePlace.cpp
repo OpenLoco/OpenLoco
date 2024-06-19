@@ -1,5 +1,6 @@
 #include "VehiclePlace.h"
 #include "Economy/Expenditures.h"
+#include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
@@ -88,7 +89,81 @@ namespace OpenLoco::GameCommands
                         }
                     }
                     pos.z += World::TrackData::getRoadPiece(rtad.id())[0].z;
-                    // TODO:...
+
+                    auto* elRoad = [&pos, &train, &rtad]() -> const World::RoadElement* {
+                        const auto tile = World::TileManager::get(pos);
+                        for (auto& el : tile)
+                        {
+                            auto* elRoad = el.as<World::RoadElement>();
+                            if (elRoad == nullptr)
+                            {
+                                continue;
+                            }
+                            if (elRoad->baseHeight() != pos.z)
+                            {
+                                continue;
+                            }
+                            if (elRoad->isAiAllocated() || elRoad->isGhost())
+                            {
+                                continue;
+                            }
+                            if (elRoad->roadObjectId() != train.head->trackType)
+                            {
+                                if (train.head->trackType != 0xFF)
+                                {
+                                    continue;
+                                }
+                                if (!(getGameState().roadObjectIdIsTram & (1 << elRoad->roadObjectId())))
+                                {
+                                    continue;
+                                }
+                            }
+                            if (elRoad->roadId() != rtad.id())
+                            {
+                                continue;
+                            }
+                            if (elRoad->rotation() != rtad.cardinalDirection())
+                            {
+                                continue;
+                            }
+                            return elRoad;
+                        }
+                        return nullptr;
+                    }();
+
+                    if (elRoad == nullptr)
+                    {
+                        if (train.head->trackType != 0xFFU)
+                        {
+                            auto* trackObj = ObjectManager::get<RoadObject>(train.head->trackType);
+                            FormatArguments::common(trackObj->name);
+                        }
+                        else
+                        {
+                            FormatArguments::common(StringIds::road);
+                        }
+                        setErrorText(StringIds::can_only_be_placed_on_stringid);
+                        return FAILURE;
+                    }
+
+                    if (!(getGameState().roadObjectIdIsFlag7 & (1 << elRoad->roadObjectId())))
+                    {
+                        if (!sub_431E6A(elRoad->owner(), reinterpret_cast<const World::TileElement*>(elRoad)))
+                        {
+                            return FAILURE;
+                        }
+                    }
+
+                    if ((elRoad->mods() & train.head->var_53) != train.head->var_53)
+                    {
+                        const auto missingMods = (~elRoad->mods()) & train.head->var_53;
+                        const auto firstMissing = Numerics::bitScanForward(missingMods);
+                        auto* roadObj = ObjectManager::get<RoadObject>(elRoad->roadObjectId());
+                        auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[firstMissing]);
+                        FormatArguments::common(roadExtraObj->name);
+                        setErrorText(StringIds::this_vehicle_requires_stringid);
+                        return FAILURE;
+                    }
                 }
                 else
                 {
