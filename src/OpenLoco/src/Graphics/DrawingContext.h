@@ -38,6 +38,12 @@ namespace OpenLoco::Gfx
     public:
         virtual ~DrawingContext() = default;
 
+        virtual void pushRenderTarget(const RenderTarget& rt) = 0;
+
+        virtual void popRenderTarget() = 0;
+
+        virtual const RenderTarget& currentRenderTarget() const = 0;
+
         virtual void clear(const RenderTarget& rt, uint32_t fill) = 0;
 
         virtual void clearSingle(const RenderTarget& rt, uint8_t paletteId) = 0;

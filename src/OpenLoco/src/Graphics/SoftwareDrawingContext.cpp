@@ -12,6 +12,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
+#include <stack>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
@@ -19,6 +20,11 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Gfx
 {
+    struct SoftwareDrawingContextState
+    {
+        std::stack<RenderTarget> rtStack;
+    };
+
     namespace Impl
     {
         // TODO: Move them into RenderContext once everything is implemented.
@@ -937,6 +943,16 @@ namespace OpenLoco::Gfx
         }
     }
 
+    SoftwareDrawingContext::SoftwareDrawingContext()
+        : _state{ std::make_unique<SoftwareDrawingContextState>() }
+    {
+    }
+
+    SoftwareDrawingContext::~SoftwareDrawingContext()
+    {
+        // Need to keep the empty destructor to allow for unique_ptr to delete the actual type.
+    }
+
     void SoftwareDrawingContext::clear(const RenderTarget& rt, uint32_t fill)
     {
         return Impl::clear(rt, fill);
@@ -995,6 +1011,21 @@ namespace OpenLoco::Gfx
     void SoftwareDrawingContext::drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage)
     {
         return Impl::drawImagePaletteSet(rt, pos, image, palette, noiseImage);
+    }
+
+    void SoftwareDrawingContext::pushRenderTarget(const RenderTarget& rt)
+    {
+        _state->rtStack.push(rt);
+    }
+
+    void SoftwareDrawingContext::popRenderTarget()
+    {
+        _state->rtStack.pop();
+    }
+
+    const RenderTarget& SoftwareDrawingContext::currentRenderTarget() const
+    {
+        return _state->rtStack.top();
     }
 
 }

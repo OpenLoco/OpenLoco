@@ -7,12 +7,24 @@
 #include "Types.hpp"
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <cstdint>
+#include <memory>
 
 namespace OpenLoco::Gfx
 {
+    struct SoftwareDrawingContextState;
+
     class SoftwareDrawingContext final : public DrawingContext
     {
+    private:
+        std::unique_ptr<SoftwareDrawingContextState> _state;
+
     public:
+        SoftwareDrawingContext();
+        ~SoftwareDrawingContext();
+
+        void pushRenderTarget(const RenderTarget& rt) override;
+        void popRenderTarget() override;
+        const RenderTarget& currentRenderTarget() const override;
         void clear(const RenderTarget& rt, uint32_t fill) override;
         void clearSingle(const RenderTarget& rt, uint8_t paletteId) override;
         void fillRect(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags) override;

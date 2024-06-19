@@ -256,10 +256,16 @@ namespace OpenLoco::Gfx
         rt.pitch = _screenRT->width + _screenRT->pitch - rect.width();
         rt.zoomLevel = 0;
 
+        // Set the render target to the screen rt.
+        _ctx.pushRenderTarget(rt);
+
         // TODO: Remove main window and draw that independent from UI.
 
         // Draw UI.
         Ui::WindowManager::render(rt, rect);
+
+        // Restore state.
+        _ctx.popRenderTarget();
     }
 
     void SoftwareDrawingEngine::present()
