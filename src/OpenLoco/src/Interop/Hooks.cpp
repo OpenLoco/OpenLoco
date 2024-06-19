@@ -705,11 +705,13 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
+            // TODO: Fix me or remove this, maybe not needed.
+            /*
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
             auto point = Ui::Point(regs.cx, regs.dx);
-            // TODO: Fix me or remove this, maybe not needed.
-            // tr.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
+            tr.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
+            */
             regs = backup;
 
             return 0;
