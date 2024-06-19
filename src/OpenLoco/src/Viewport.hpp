@@ -7,6 +7,11 @@
 #include <OpenLoco/Engine/World.hpp>
 #include <algorithm>
 
+namespace OpenLoco::Gfx
+{
+    class DrawingContext;
+}
+
 namespace OpenLoco::Ui
 {
     struct SavedViewSimple;
@@ -159,7 +164,7 @@ namespace OpenLoco::Ui
             return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
         }
 
-        void render(Gfx::RenderTarget* rt);
+        void render(Gfx::DrawingContext& drawingCtx);
         viewport_pos centre2dCoordinates(const World::Pos3& loc);
         SavedViewSimple toSavedView() const;
 
@@ -174,7 +179,7 @@ namespace OpenLoco::Ui
         }
 
     private:
-        void paint(Gfx::RenderTarget* rt, const Ui::Rect& rect);
+        void paint(Gfx::DrawingContext& drawingCtx, const Ui::Rect& rect);
     };
     static_assert(sizeof(Viewport) == 0x14);
 

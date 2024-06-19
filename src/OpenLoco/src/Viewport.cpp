@@ -39,9 +39,11 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A0E7
-    void Viewport::render(Gfx::RenderTarget* rt)
+    void Viewport::render(Gfx::DrawingContext& drawingCtx)
     {
-        auto uiRect = rt->getUiRect();
+        const auto& rt = drawingCtx.currentRenderTarget();
+
+        auto uiRect = rt.getUiRect();
         auto viewRect = getUiRect();
 
         if (!uiRect.intersects(viewRect))
@@ -49,7 +51,7 @@ namespace OpenLoco::Ui
             return;
         }
         auto intersection = uiRect.intersection(viewRect);
-        paint(rt, screenToViewport(intersection));
+        paint(drawingCtx, screenToViewport(intersection));
     }
 
     struct StationBorder
@@ -89,8 +91,9 @@ namespace OpenLoco::Ui
     };
 
     // 0x0048DF4D, 0x0048E13B
-    static void drawStationName(Gfx::RenderTarget& unZoomedRt, const Station& station, uint8_t zoom, bool isHovered)
+    static void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered)
     {
+        const Gfx::RenderTarget& unZoomedRt = drawingCtx.currentRenderTarget();
         if (!station.labelFrame.contains(unZoomedRt.getDrawableRect(), zoom))
         {
             return;
@@ -115,16 +118,15 @@ namespace OpenLoco::Ui
         Ui::Point bottomRight = { station.labelFrame.right[zoom],
                                   station.labelFrame.bottom[zoom] };
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
-        drawingCtx.drawImage(unZoomedRt, topLeft, ImageId(borderImages.left).withTranslucency(colour));
+        drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(colour));
 
         Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width), topLeft.y };
-        drawingCtx.drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
-        drawingCtx.drawImage(unZoomedRt, topRight, ImageId(borderImages.right).withTranslucency(colour));
+        drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(colour));
 
-        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(unZoomedRt, topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(colour), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(colour), Gfx::RectFlags::transparent);
 
         char buffer[512]{};
 
@@ -139,18 +141,22 @@ namespace OpenLoco::Ui
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(kZoomToStationFonts[zoom]);
         auto point = topLeft + Point(borderImages.width, 0);
-        tr.drawString(unZoomedRt, point, Colour::black, buffer);
+        tr.drawString(point, Colour::black, buffer);
     }
 
     // 0x0048DE97
-    static void drawStationNames(Gfx::RenderTarget& rt)
+    static void drawStationNames(Gfx::DrawingContext& drawingCtx)
     {
+        const auto& rt = drawingCtx.currentRenderTarget();
+
         Gfx::RenderTarget unZoomedRt = rt;
         unZoomedRt.zoomLevel = 0;
         unZoomedRt.x >>= rt.zoomLevel;
         unZoomedRt.y >>= rt.zoomLevel;
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
+
+        drawingCtx.pushRenderTarget(unZoomedRt);
 
         for (const auto& station : StationManager::stations())
         {
@@ -162,8 +168,10 @@ namespace OpenLoco::Ui
             bool isHovered = (World::hasMapSelectionFlag(World::MapSelectionFlags::hoveringOverStation))
                 && (station.id() == Input::getHoveredStationId());
 
-            drawStationName(unZoomedRt, station, rt.zoomLevel, isHovered);
+            drawStationName(drawingCtx, station, rt.zoomLevel, isHovered);
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     static constexpr std::array<Gfx::Font, 4> kZoomToTownFonts = {
@@ -174,8 +182,10 @@ namespace OpenLoco::Ui
     };
 
     // 0x004977E5
-    static void drawTownNames(Gfx::RenderTarget& rt)
+    static void drawTownNames(Gfx::DrawingContext& drawingCtx)
     {
+        const auto& rt = drawingCtx.currentRenderTarget();
+
         Gfx::RenderTarget unZoomedRt = rt;
         unZoomedRt.zoomLevel = 0;
         unZoomedRt.x >>= rt.zoomLevel;
@@ -183,7 +193,8 @@ namespace OpenLoco::Ui
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.pushRenderTarget(unZoomedRt);
+
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         char buffer[512]{};
@@ -198,17 +209,21 @@ namespace OpenLoco::Ui
             tr.setCurrentFont(kZoomToTownFonts[rt.zoomLevel]);
 
             auto point = Point(town.labelFrame.left[rt.zoomLevel] + 1, town.labelFrame.top[rt.zoomLevel] + 1);
-            tr.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), buffer);
+            tr.drawString(point, AdvancedColour(Colour::white).outline(), buffer);
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     // 0x00470A62
-    static void drawRoutingNumbers(Gfx::RenderTarget& rt)
+    static void drawRoutingNumbers(Gfx::DrawingContext& drawingCtx)
     {
         if (!World::hasMapSelectionFlag(World::MapSelectionFlags::unk_04))
         {
             return;
         }
+
+        const auto& rt = drawingCtx.currentRenderTarget();
 
         Gfx::RenderTarget unZoomedRt = rt;
         unZoomedRt.zoomLevel = 0;
@@ -217,7 +232,8 @@ namespace OpenLoco::Ui
         unZoomedRt.width >>= rt.zoomLevel;
         unZoomedRt.height >>= rt.zoomLevel;
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.pushRenderTarget(unZoomedRt);
+
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto orderNum = 0;
@@ -244,13 +260,17 @@ namespace OpenLoco::Ui
             tr.setCurrentFont(Gfx::Font::medium_normal);
 
             auto point = Point(orderFrame.frame.left[rt.zoomLevel] + 1, orderFrame.frame.top[rt.zoomLevel]);
-            tr.drawString(unZoomedRt, point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
+            tr.drawString(point, AdvancedColour(Colour::white).outline(), const_cast<char*>(orderString.c_str()));
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     // 0x0045A1A4
-    void Viewport::paint(Gfx::RenderTarget* rt, const Rect& rect)
+    void Viewport::paint(Gfx::DrawingContext& drawingCtx, const Rect& rect)
     {
+        const auto& rt = drawingCtx.currentRenderTarget();
+
         Paint::SessionOptions options{};
         if (hasFlags(ViewportFlags::seeThroughScenery | ViewportFlags::seeThroughTracks))
         {
@@ -283,11 +303,9 @@ namespace OpenLoco::Ui
 
         auto unkY = ((zoomViewRt.y - static_cast<int32_t>(viewY & bitmask)) >> zoom) + y;
 
-        zoomViewRt.pitch = rt->width + rt->pitch - (zoomViewRt.width >> zoom);
-        zoomViewRt.bits = rt->bits + (unkX - rt->x) + ((unkY - rt->y) * (rt->width + rt->pitch));
+        zoomViewRt.pitch = rt.width + rt.pitch - (zoomViewRt.width >> zoom);
+        zoomViewRt.bits = rt.bits + (unkX - rt.x) + ((unkY - rt.y) * (rt.width + rt.pitch));
         zoomViewRt.zoomLevel = zoom;
-
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         // make sure, the compare operation is done in int32_t to avoid the loop becoming an infinite loop.
         // this as well as the [x += 32] in the loop causes signed integer overflow -> undefined behaviour.
@@ -320,30 +338,36 @@ namespace OpenLoco::Ui
 
             columnRt.width = paintRight - columnRt.x;
 
-            drawingCtx.clearSingle(columnRt, fillColour);
-            auto* sess = Paint::allocateSession(columnRt, options);
-            sess->generate();
-            sess->arrangeStructs();
-            sess->drawStructs();
-            // Climate code used to draw here.
+            drawingCtx.pushRenderTarget(columnRt);
 
-            if (!isTitleMode())
             {
-                if (!options.hasFlags(ViewportFlags::station_names_displayed))
+                drawingCtx.clearSingle(fillColour);
+                auto* sess = Paint::allocateSession(columnRt, options);
+                sess->generate();
+                sess->arrangeStructs();
+                sess->drawStructs(drawingCtx);
+                // Climate code used to draw here.
+
+                if (!isTitleMode())
                 {
-                    if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
+                    if (!options.hasFlags(ViewportFlags::station_names_displayed))
                     {
-                        drawStationNames(columnRt);
+                        if (columnRt.zoomLevel <= Config::get().old.stationNamesMinScale)
+                        {
+                            drawStationNames(drawingCtx);
+                        }
+                    }
+                    if (!options.hasFlags(ViewportFlags::town_names_displayed))
+                    {
+                        drawTownNames(drawingCtx);
                     }
                 }
-                if (!options.hasFlags(ViewportFlags::town_names_displayed))
-                {
-                    drawTownNames(columnRt);
-                }
+
+                sess->drawStringStructs(drawingCtx);
+                drawRoutingNumbers(drawingCtx);
             }
 
-            sess->drawStringStructs();
-            drawRoutingNumbers(columnRt);
+            drawingCtx.popRenderTarget();
         }
     }
 

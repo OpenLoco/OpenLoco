@@ -249,15 +249,14 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435003
-    static void draw(Window& self, Gfx::RenderTarget* const rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        self.draw(rt);
+        self.draw(drawingCtx);
         if (self.rowHover == -1)
         {
             return;
         }
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         {
@@ -266,11 +265,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto t = self.y + 1 + self.widgets[widx::face_frame].top;
             const auto r = self.x - 1 + self.widgets[widx::face_frame].right;
             const auto b = self.y - 1 + self.widgets[widx::face_frame].bottom;
-            drawingCtx.fillRect(*rt, l, t, r, b, colour, Gfx::RectFlags::none);
+            drawingCtx.fillRect(l, t, r, b, colour, Gfx::RectFlags::none);
 
             const CompetitorObject* competitor = reinterpret_cast<CompetitorObject*>(ObjectManager::getTemporaryObject());
             uint32_t img = Gfx::recolour(competitor->images[0] + 1, Colour::black);
-            drawingCtx.drawImage(rt, l, t, img);
+            drawingCtx.drawImage(l, t, img);
         }
 
         {
@@ -282,7 +281,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
 
-            tr.drawStringCentredClipped(*rt, Point(x, y), width, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredClipped(Point(x, y), width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -290,12 +289,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435152
-    static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
@@ -316,7 +315,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (index == self.rowHover)
             {
                 inlineColour = ControlCodes::windowColour2;
-                drawingCtx.fillRect(rt, 0, y, self.width, y + 9, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                drawingCtx.fillRect(0, y, self.width, y + 9, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
             }
 
             std::string name(object.second._name);
@@ -330,7 +329,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
 
-            tr.drawString(rt, Point(0, y - 1), stringColour, const_cast<char*>(name.c_str()));
+            tr.drawString(Point(0, y - 1), stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

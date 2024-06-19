@@ -171,9 +171,8 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9397
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         uint16_t x = window.x;
@@ -181,21 +180,21 @@ namespace OpenLoco::Ui::Windows::ToolTip
         uint16_t width = window.width;
         uint16_t height = window.height;
 
-        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->tooltipColour)), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->tooltipColour)), Gfx::RectFlags::transparent);
 
-        drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
-        drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-        drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
         auto point = Point(((width + 1) / 2) + x - 1, y + 1);
-        tr.drawStringCentredRaw(*rt, point, _lineBreakCount, Colour::black, _text);
+        tr.drawStringCentredRaw(point, _lineBreakCount, Colour::black, _text);
     }
 
     // 0x004C94F7

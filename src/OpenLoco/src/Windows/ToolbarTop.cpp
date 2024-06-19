@@ -749,11 +749,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x00439DE4
-    static void draw(Window& window, Gfx::RenderTarget* rt)
+    static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
-        Common::draw(window, rt);
+        Common::draw(window, drawingCtx);
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
@@ -787,10 +785,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 bg_image++;
             }
 
-            drawingCtx.drawImage(rt, x, y, fg_image);
+            drawingCtx.drawImage(x, y, fg_image);
 
             y = window.widgets[Common::Widx::railroad_menu].top + window.y;
-            drawingCtx.drawImage(rt, x, y, bg_image);
+            drawingCtx.drawImage(x, y, bg_image);
         }
 
         {
@@ -817,10 +815,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 bg_image++;
             }
 
-            drawingCtx.drawImage(rt, x, y, fg_image);
+            drawingCtx.drawImage(x, y, fg_image);
 
             y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
-            drawingCtx.drawImage(rt, x, y, bg_image);
+            drawingCtx.drawImage(x, y, bg_image);
         }
 
         {
@@ -843,7 +841,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, window.number, Common::Widx::build_vehicles_menu))
                 fg_image++;
 
-            drawingCtx.drawImage(rt, x, y, fg_image);
+            drawingCtx.drawImage(x, y, fg_image);
         }
     }
 

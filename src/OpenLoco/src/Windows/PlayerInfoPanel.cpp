@@ -183,23 +183,22 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x43944B
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& frame = window.widgets[Widx::outer_frame];
-        drawingCtx.drawRect(*rt, window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(window.x + frame.left, window.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
         // Draw widgets.
-        window.draw(rt);
+        window.draw(drawingCtx);
 
-        drawingCtx.drawRectInset(*rt, window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(window.x + frame.left + 1, window.y + frame.top + 1, frame.width() - 2, frame.height() - 2, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitorId);
         auto image = Gfx::recolour(competitor->images[enumValue(playerCompany->ownerEmotion)], playerCompany->mainColours.primary);
-        drawingCtx.drawImage(rt, window.x + frame.left + 2, window.y + frame.top + 2, image);
+        drawingCtx.drawImage(window.x + frame.left + 2, window.y + frame.top + 2, image);
 
         auto x = window.x + frame.width() / 2 + 12;
         {
@@ -226,7 +225,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->cash.var_04);
 
             auto point = Point(x, window.y + frame.top + 2);
-            tr.drawStringCentred(*rt, point, colour, companyValueString, args);
+            tr.drawStringCentred(point, colour, companyValueString, args);
         }
 
         {
@@ -251,7 +250,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             args.push(playerCompany->performanceIndex);
 
             auto point = Point(x, window.y + frame.top + 14);
-            tr.drawStringCentred(*rt, point, colour, performanceString, args);
+            tr.drawStringCentred(point, colour, performanceString, args);
         }
     }
 

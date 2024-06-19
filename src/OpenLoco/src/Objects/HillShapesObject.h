@@ -13,7 +13,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
 
     enum class HillShapeFlags : uint16_t

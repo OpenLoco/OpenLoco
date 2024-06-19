@@ -433,13 +433,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049157F
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(rt, shade);
+        drawingCtx.clearSingle(shade);
 
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window.var_83C; i++)
@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::Windows::StationList
             // Highlight selection.
             if (stationId == StationId(window.rowHover))
             {
-                drawingCtx.drawRect(rt, 0, yPos, window.width, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                drawingCtx.drawRect(0, yPos, window.width, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push<uint16_t>(getTransportIconsFromStationFlags(station->flags));
 
                 auto point = Point(0, yPos);
-                tr.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(point, 198, Colour::black, text_colour_id, args);
             }
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push(StringIds::buffer_1250);
 
                 auto point = Point(200, yPos);
-                tr.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(point, 198, Colour::black, text_colour_id, args);
             }
 
             // Total units waiting.
@@ -503,7 +503,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push<uint32_t>(totalUnits);
 
                 auto point = Point(400, yPos);
-                tr.drawStringLeftClipped(rt, point, 88, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(point, 88, Colour::black, text_colour_id, args);
             }
 
             // And, finally, what goods the station accepts.
@@ -528,7 +528,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 args.push(StringIds::buffer_1250);
 
                 auto point = Point(490, yPos);
-                tr.drawStringLeftClipped(rt, point, 118, Colour::black, text_colour_id, args);
+                tr.drawStringLeftClipped(point, 118, Colour::black, text_colour_id, args);
             }
 
             yPos += kRowHeight;
@@ -536,7 +536,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 00491A76
-    static void drawTabs(Ui::Window* window, Gfx::RenderTarget* rt)
+    static void drawTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(CompanyId(window->number));
@@ -544,19 +544,18 @@ namespace OpenLoco::Ui::Windows::StationList
         for (const auto& tab : tabInformationByType)
         {
             uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
-            Widget::drawTab(window, rt, image, tab.widgetIndex);
+            Widget::drawTab(window, drawingCtx, image, tab.widgetIndex);
         }
     }
 
     // 0x004914D8
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets and tabs.
-        window.draw(rt);
-        drawTabs(&window, rt);
+        window.draw(drawingCtx);
+        drawTabs(&window, drawingCtx);
 
         // Draw company owner image.
         auto company = CompanyManager::get(CompanyId(window.number));
@@ -564,7 +563,7 @@ namespace OpenLoco::Ui::Windows::StationList
         uint32_t image = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
         uint16_t x = window.x + window.widgets[widx::company_select].left + 1;
         uint16_t y = window.y + window.widgets[widx::company_select].top + 1;
-        drawingCtx.drawImage(rt, x, y, image);
+        drawingCtx.drawImage(x, y, image);
 
         // TODO: locale-based pluralisation.
         auto args = FormatArguments{};
@@ -576,7 +575,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw number of stations.
         auto origin = Ui::Point(window.x + 4, window.y + window.height - 12);
-        tr.drawStringLeft(*rt, origin, Colour::black, StringIds::black_stringid, args);
+        tr.drawStringLeft(origin, Colour::black, StringIds::black_stringid, args);
     }
 
     // 0x004917BB

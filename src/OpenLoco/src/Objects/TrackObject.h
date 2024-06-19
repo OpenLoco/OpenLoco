@@ -15,7 +15,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
 
     enum class TrackObjectFlags : uint16_t

@@ -22,8 +22,6 @@ namespace OpenLoco
     // 0x00434D5B
     void CompetitorObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
         drawingCtx.drawRect(0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Gfx::RectFlags::none);
 
         auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);

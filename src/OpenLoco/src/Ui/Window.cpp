@@ -1182,12 +1182,12 @@ namespace OpenLoco::Ui
         eventHandlers->draw(*this, ctx);
     }
 
-    void Window::callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex)
+    void Window::callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex)
     {
         if (eventHandlers->drawScroll == nullptr)
             return;
 
-        eventHandlers->drawScroll(*this, *rt, scrollIndex);
+        eventHandlers->drawScroll(*this, drawingCtx, scrollIndex);
     }
 
     bool Window::callKeyUp(uint32_t charCode, uint32_t keyCode)
@@ -1203,7 +1203,7 @@ namespace OpenLoco::Ui
     {
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
-            drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.fillRect(this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
 
         uint64_t pressedWidget = 0;
@@ -1238,13 +1238,12 @@ namespace OpenLoco::Ui
                 break;
             }
 
-            widget->draw(rt, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
+            widget->draw(drawingCtx, this, pressedWidget, tool_widget, hovered_widget, scrollviewIndex);
         }
 
         if (this->hasFlags(WindowFlags::whiteBorderMask))
         {
             drawingCtx.fillRectInset(
-                *rt,
                 this->x,
                 this->y,
                 this->x + this->width - 1,

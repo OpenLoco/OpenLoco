@@ -14,7 +14,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
 
     enum class WallObjectFlags : uint8_t

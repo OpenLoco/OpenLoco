@@ -100,17 +100,16 @@ namespace OpenLoco::Ui::Windows::NetworkStatus
         StringManager::setString(StringIds::buffer_1250, _text.c_str());
     }
 
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         auto origin = Point(self.x + (self.width / 2), self.y + (self.height / 2));
         auto width = self.width;
 
-        tr.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::buffer_1250);
+        tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::buffer_1250);
     }
 
     static constexpr WindowEventList kEvents = {

@@ -708,7 +708,8 @@ void OpenLoco::Interop::registerHooks()
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
             auto point = Ui::Point(regs.cx, regs.dx);
-            tr.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
+            // TODO: Fix me or remove this, maybe not needed.
+            // tr.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
             regs = backup;
 
             return 0;
@@ -769,9 +770,12 @@ void OpenLoco::Interop::registerHooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
+            // TODO: Fix me or remove this, maybe not needed.
+            /*
             Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             auto rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
             window->draw(rt);
+            */
             regs = backup;
             return 0;
         });
@@ -938,10 +942,12 @@ void OpenLoco::Interop::registerHooks()
         0x00448C79,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
+            // TODO: Fix me or remove this, maybe not needed.
+            /*
             Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
-
+            drawingCtx.drawImage({ regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
+            */
             regs = backup;
             return 0;
         });

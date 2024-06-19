@@ -37,10 +37,9 @@ namespace OpenLoco::Intro
         _state = state;
     }
 
-    static void updateEnd()
+    static void updateEnd(Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        drawingEngine.getDrawingContext().clearSingle(drawingEngine.getScreenRT(), PaletteIndex::index_0A);
+        drawingCtx.clearSingle(PaletteIndex::index_0A);
         if (!_50C196)
         {
             // Audio::stopIntro(); Note: There is no sound!
@@ -50,7 +49,7 @@ namespace OpenLoco::Intro
         _50C190 = 0;
     }
 
-    static void updateEnd2()
+    static void updateEnd2([[maybe_unused]] Gfx::DrawingContext& drawingCtx)
     {
         _state = State::none;
         Gfx::loadDefaultPalette();
@@ -61,39 +60,35 @@ namespace OpenLoco::Intro
         Title::reset();
     }
 
-    static void updateNone() {}
+    static void updateNone([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
 
-    static void updateDisplayNoticeBegin()
+    static void updateDisplayNoticeBegin([[maybe_unused]] Gfx::DrawingContext& drawingCtx)
     {
         Gfx::loadPalette(ImageIds::default_palette, 0);
         _state = State::displayNoticeBeginReset;
     }
 
-    static void updateBegin()
+    static void updateBegin(Gfx::DrawingContext& drawingCtx)
     {
         if (MultiPlayer::hasFlag(MultiPlayer::flag_8) || MultiPlayer::hasFlag(MultiPlayer::flag_9))
         {
-            updateDisplayNoticeBegin();
+            updateDisplayNoticeBegin(drawingCtx);
             return;
         }
 
         Gfx::loadPalette(ImageIds::atari_intro_palette, 0);
 
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        auto& rt = drawingEngine.getScreenRT();
-        auto& drawContext = drawingEngine.getDrawingContext();
-
-        drawContext.clearSingle(rt, PaletteIndex::index_3F);
+        drawingCtx.clearSingle(PaletteIndex::index_3F);
 
         const auto pos = Ui::Point(Ui::width() / 2 - 216, Ui::height() / 2 - 54);
-        drawContext.drawImage(rt, pos, ImageId(ImageIds::atari_logo_intro_left));
-        drawContext.drawImage(rt, pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
+        drawingCtx.drawImage(pos, ImageId(ImageIds::atari_logo_intro_left));
+        drawingCtx.drawImage(pos + Ui::Point(216, 0), ImageId(ImageIds::atari_logo_intro_right));
         _50C190 = -24;
         _50C196 = false;
         _state = State::displayAtari;
     }
 
-    static void updateDisplayAtari()
+    static void updateDisplayAtari(Gfx::DrawingContext& drawingCtx)
     {
         _50C190++;
         uint8_t modifier = 0;
@@ -113,21 +108,17 @@ namespace OpenLoco::Intro
         {
             Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, 0);
 
-            auto& drawingEngine = Gfx::getDrawingEngine();
-            auto& rt = drawingEngine.getScreenRT();
-            auto& drawContext = drawingEngine.getDrawingContext();
-
-            drawContext.clearSingle(rt, PaletteIndex::index_0A);
+            drawingCtx.clearSingle(PaletteIndex::index_0A);
 
             const auto pos = Ui::Point(Ui::width() / 2 - 320 + 70, Ui::height() / 2 - 58);
-            drawContext.drawImage(rt, pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
-            drawContext.drawImage(rt, pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
+            drawingCtx.drawImage(pos, ImageId(ImageIds::chris_sawyer_logo_intro_left));
+            drawingCtx.drawImage(pos + Ui::Point(250, 0), ImageId(ImageIds::chris_sawyer_logo_intro_right));
 
             _50C190 = 0;
             _state = State::displayCS;
         }
     }
-    static void updateDisplayCS()
+    static void updateDisplayCS(Gfx::DrawingContext& drawingCtx)
     {
         _50C190++;
         uint8_t modifier = 0;
@@ -144,19 +135,15 @@ namespace OpenLoco::Intro
         Gfx::loadPalette(ImageIds::chris_sawyer_intro_palette, modifier);
         if (_50C190 >= 100)
         {
-            auto& drawingEngine = Gfx::getDrawingEngine();
-            auto& rt = drawingEngine.getScreenRT();
-            auto& drawContext = drawingEngine.getDrawingContext();
-
-            drawContext.clearSingle(rt, PaletteIndex::index_0A);
+            drawingCtx.clearSingle(PaletteIndex::index_0A);
 
             _state = State::displayNoticeBegin;
         }
     }
-    static void updateState4() {}
-    static void updateState5() {}
-    static void updateState6() {}
-    static void updateState7() {}
+    static void updateState4([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
+    static void updateState5([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
+    static void updateState6([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
+    static void updateState7([[maybe_unused]] Gfx::DrawingContext& drawingCtx) {}
 
     constexpr std::array<StringId, 5> kIntroNoticeStrings = {
         StringIds::intro_vehicle_notice_0,
@@ -166,24 +153,21 @@ namespace OpenLoco::Intro
         StringIds::intro_vehicle_notice_4,
     };
 
-    static void updateDisplayNotice()
+    static void updateDisplayNotice(Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        auto& rt = drawingEngine.getScreenRT();
-        auto& drawContext = drawingEngine.getDrawingContext();
-        auto tr = Gfx::TextRenderer(drawContext);
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawContext.clearSingle(rt, PaletteIndex::index_0A);
+        drawingCtx.clearSingle(PaletteIndex::index_0A);
 
         const auto pos = Ui::Point(Ui::width() / 2, Ui::height() / 2);
 
-        tr.drawStringCentredWrapped(rt, pos + Ui::Point(0, -80), Ui::width(), Colour::black, StringIds::intro_notice_0);
-        tr.drawStringCentredWrapped(rt, pos, Ui::width(), Colour::black, StringIds::intro_notice_1);
+        tr.drawStringCentredWrapped(pos + Ui::Point(0, -80), Ui::width(), Colour::black, StringIds::intro_notice_0);
+        tr.drawStringCentredWrapped(pos, Ui::width(), Colour::black, StringIds::intro_notice_1);
 
         auto noticePos = pos + Ui::Point(0, 80);
         for (auto& noticeId : kIntroNoticeStrings)
         {
-            tr.drawStringCentred(rt, noticePos, Colour::black, noticeId);
+            tr.drawStringCentred(noticePos, Colour::black, noticeId);
             noticePos += Ui::Point(0, 10);
         }
 
@@ -208,14 +192,14 @@ namespace OpenLoco::Intro
             }
         }
     }
-    static void updateDisplayNoticeBeginReset()
+    static void updateDisplayNoticeBeginReset(Gfx::DrawingContext& drawingCtx)
     {
         _50C190 = 0;
         _state = State::displayNotice;
-        updateDisplayNotice();
+        updateDisplayNotice(drawingCtx);
     }
 
-    constexpr std::array<void (*)(), 11> kUpdateFunctions = {
+    constexpr std::array<void (*)(Gfx::DrawingContext&), 11> kUpdateFunctions = {
         updateNone,
         updateBegin,
         updateDisplayAtari,
@@ -232,19 +216,26 @@ namespace OpenLoco::Intro
     // 0x0046AE0C
     void update()
     {
+        auto& drawingEngine = Gfx::getDrawingEngine();
+
+        auto& drawingCtx = drawingEngine.getDrawingContext();
+        drawingCtx.pushRenderTarget(drawingEngine.getScreenRT());
+
         addr<0x0005252E0, int32_t>() = 1;
         if (_state == State::end)
         {
-            updateEnd();
+            updateEnd(drawingCtx);
         }
         else if (_state == State::end2)
         {
-            updateEnd2();
+            updateEnd2(drawingCtx);
         }
         else if (enumValue(*_state) < std::size(kUpdateFunctions))
         {
-            kUpdateFunctions[enumValue(*_state)]();
+            kUpdateFunctions[enumValue(*_state)](drawingCtx);
         }
         sub_431695(0);
+
+        drawingCtx.popRenderTarget();
     }
 }

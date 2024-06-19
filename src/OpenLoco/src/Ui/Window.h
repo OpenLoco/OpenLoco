@@ -97,7 +97,7 @@ namespace OpenLoco::Ui
         void (*onMove)(Window&, const int16_t x, const int16_t y) = nullptr;
         void (*prepareDraw)(Window&) = nullptr;
         void (*draw)(Window&, Gfx::DrawingContext&) = nullptr;
-        void (*drawScroll)(Window&, Gfx::RenderTarget&, const uint32_t scrollIndex) = nullptr;
+        void (*drawScroll)(Window&, Gfx::DrawingContext&, const uint32_t scrollIndex) = nullptr;
         bool (*keyUp)(Window&, uint32_t charCode, uint32_t keyCode) = nullptr;
     };
 
@@ -382,7 +382,7 @@ namespace OpenLoco::Ui
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
         void callDraw(Gfx::DrawingContext& ctx);                                                       // 27
-        void callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex);                              // 28
+        void callDrawScroll(Gfx::DrawingContext& drawingCtx, uint32_t scrollIndex);                              // 28
         bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                           // 29
 
         WidgetIndex_t firstActivatedWidgetInRange(WidgetIndex_t minIndex, WidgetIndex_t maxIndex);

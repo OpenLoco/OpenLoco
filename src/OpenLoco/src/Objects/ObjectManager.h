@@ -12,7 +12,7 @@ namespace OpenLoco
 
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
 
     struct Object;

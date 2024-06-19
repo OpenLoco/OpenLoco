@@ -9,6 +9,8 @@
 namespace OpenLoco::Gfx
 {
     enum class RectInsetFlags : uint8_t;
+
+    class DrawingContext;
 }
 
 namespace OpenLoco::Ui
@@ -97,13 +99,13 @@ namespace OpenLoco::Ui
         uint16_t height() const;
 
         // TODO: Make tabs actual widgets.
-        static void drawTab(Window* w, Gfx::RenderTarget* ctx, uint32_t imageId, WidgetIndex_t index);
+        static void drawTab(Window* w, Gfx::DrawingContext& drawingCtx, uint32_t imageId, WidgetIndex_t index);
 
         // typical tab width, to be used in most (all?) cases
         static constexpr uint16_t kDefaultTabWidth = 30;
         static void leftAlignTabs(Window& window, uint8_t firstTabIndex, uint8_t lastTabIndex, uint16_t tabWidth = kDefaultTabWidth);
 
-        void draw(Gfx::RenderTarget* rt, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
+        void draw(Gfx::DrawingContext& drawingCtx, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
     };
 #pragma pack(pop)
     //static_assert(sizeof(Widget) == 0x10);

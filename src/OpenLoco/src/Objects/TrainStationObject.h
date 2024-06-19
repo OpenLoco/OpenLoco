@@ -18,7 +18,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
     enum class TrainStationFlags : uint8_t
     {

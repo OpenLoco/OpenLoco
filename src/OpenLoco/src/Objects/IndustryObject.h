@@ -14,7 +14,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
 
     enum class IndustryObjectFlags : uint32_t

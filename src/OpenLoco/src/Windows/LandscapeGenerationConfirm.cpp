@@ -37,12 +37,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     };
 
     // 0x004C18A5
-    static void draw(Window& window, Gfx::RenderTarget* rt)
+    static void draw(Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        window.draw(rt);
+        window.draw(drawingCtx);
 
         FormatArguments args{};
         if (window.var_846 == 0)
@@ -51,7 +50,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             args.push(StringIds::prompt_confirm_random_landscape);
 
         auto origin = Ui::Point(window.x + (window.width / 2), window.y + 41);
-        tr.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
+        tr.drawStringCentredWrapped(origin, window.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
     // 0x004C18E4

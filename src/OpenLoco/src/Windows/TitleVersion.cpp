@@ -34,14 +34,13 @@ namespace OpenLoco::Ui::Windows::TitleVersion
     }
 
     // 0x00439236
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto versionInfo = getVersionInfo();
         auto point = Point(window.x, window.y);
-        tr.drawString(*rt, point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
+        tr.drawString(point, AdvancedColour(Colour::white).outline(), versionInfo.c_str());
     }
 
     static constexpr WindowEventList kEvents = {

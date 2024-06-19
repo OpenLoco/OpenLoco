@@ -17,7 +17,7 @@ namespace OpenLoco
 
     namespace Gfx
     {
-        struct DrawingContext;
+        class DrawingContext;
     }
     enum class TownSize : uint8_t;
 

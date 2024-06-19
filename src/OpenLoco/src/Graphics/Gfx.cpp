@@ -367,12 +367,15 @@ namespace OpenLoco::Gfx
         };
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.pushRenderTarget(rt);
 
         // Draw all the images on top of the one bitmap
         for (size_t i = 0; i < numImages; ++i)
         {
-            drawingCtx.drawImage(rt, { 0, 0 }, baseImageId.withIndexOffset(i));
+            drawingCtx.drawImage({ 0, 0 }, baseImageId.withIndexOffset(i));
         }
+
+        drawingCtx.popRenderTarget();
 
         // Explore the bitmap to find the extents of the images drawn
         int32_t spriteWidth = -1;

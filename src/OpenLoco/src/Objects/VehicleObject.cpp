@@ -55,7 +55,7 @@ namespace OpenLoco
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designed, obsolete);
+        ObjectManager::drawGenericDescription(drawingCtx, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {
             FormatArguments args{};

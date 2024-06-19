@@ -127,18 +127,17 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470AA
-    static void draw(Window& self, Gfx::RenderTarget* const rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
         auto origin = Ui::Point(self.x + self.width / 2, self.y + 41);
-        tr.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, args);
+        tr.drawStringCentredWrapped(origin, self.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
     static constexpr WindowEventList kEvents = {

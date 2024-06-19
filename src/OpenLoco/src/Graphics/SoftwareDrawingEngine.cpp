@@ -1,5 +1,6 @@
 #include "SoftwareDrawingEngine.h"
 #include "Config.h"
+#include "Graphics/FPSCounter.h"
 #include "Logging.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
@@ -65,6 +66,9 @@ namespace OpenLoco::Gfx
         }
         _window = window;
         createPalette();
+
+        // The screen render target is always on top.
+        _ctx.pushRenderTarget(_screenRT);
     }
 
     void SoftwareDrawingEngine::resize(const int32_t width, const int32_t height)
@@ -263,6 +267,12 @@ namespace OpenLoco::Gfx
 
         // Draw UI.
         Ui::WindowManager::render(_ctx, rect);
+
+        // Draw FPS counter?
+        if (Config::get().showFPS)
+        {
+            Gfx::drawFPS(_ctx);
+        }
 
         // Restore state.
         _ctx.popRenderTarget();

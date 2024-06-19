@@ -1138,10 +1138,10 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C5FC8
-    void drawSingle(Gfx::DrawingContext& ctx, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void drawSingle(Gfx::DrawingContext& drawingCtx, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy rt so we can crop it
-        Gfx::RenderTarget rt = ctx.currentRenderTarget();
+        Gfx::RenderTarget rt = drawingCtx.currentRenderTarget();
 
         // Clamp left to 0
         int32_t overflow = left - rt.x;
@@ -1205,12 +1205,12 @@ namespace OpenLoco::Ui::WindowManager
         setWindowColours(2, w->getColour(WindowColour::tertiary).opaque());
         setWindowColours(3, w->getColour(WindowColour::quaternary).opaque());
 
-        ctx.pushRenderTarget(rt);
+        drawingCtx.pushRenderTarget(rt);
 
         w->callPrepareDraw();
-        w->callDraw(&rt);
+        w->callDraw(drawingCtx);
 
-        ctx.popRenderTarget();
+        drawingCtx.popRenderTarget();
     }
 
     // 0x004CD3D0
@@ -2091,9 +2091,9 @@ namespace OpenLoco::Ui::WindowManager
         return ((getVehiclePreviewRotationFrame() + 2) / 4) & 0x3F;
     }
 
-    static void windowDraw(Gfx::RenderTarget* rt, Ui::Window* w, Rect rect);
-    static void windowDraw(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, Rect rect);
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     /**
      * 0x004C5EA9
@@ -2203,7 +2203,7 @@ namespace OpenLoco::Ui::WindowManager
         return false;
     }
 
-    void render(Gfx::DrawingContext& ctx, const Rect& rect)
+    void render(Gfx::DrawingContext& drawingCtx, const Rect& rect)
     {
         for (auto& w : _windows)
         {
@@ -2216,7 +2216,7 @@ namespace OpenLoco::Ui::WindowManager
             if (rect.left() >= w.x + w.width || rect.top() >= w.y + w.height)
                 continue;
 
-            windowDraw(&rt, &w, rect);
+            windowDraw(drawingCtx, &w, rect);
         }
     }
 }

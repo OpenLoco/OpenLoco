@@ -186,11 +186,10 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6([[maybe_unused]] Window* self, Gfx::RenderTarget* rt, StringId stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
+        static void sub_494BF6([[maybe_unused]] Window* self, Gfx::DrawingContext& drawingCtx, StringId stringId, int16_t x, int16_t y, int16_t width, AdvancedColour colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, args);
 
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             tr.setCurrentFont(Gfx::Font::medium_bold);
@@ -199,13 +198,13 @@ namespace OpenLoco::Ui::Dropdown
 
             tr.setCurrentFont(Gfx::Font::m1);
 
-            tr.drawString(*rt, Point(x, y), colour, _byte_112CC04);
+            tr.drawString(Point(x, y), colour, _byte_112CC04);
         }
 
         // 0x004CD00E
-        static void draw([[maybe_unused]] Window& self, Gfx::DrawingContext& ctx)
+        static void draw([[maybe_unused]] Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            self.draw(ctx);
+            self.draw(drawingCtx);
             _windowDropdownOnpaintCellX = 0;
             _windowDropdownOnpaintCellY = 0;
 
@@ -217,7 +216,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 2;
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+                        drawingCtx.drawRect(x, y, _dropdownItemWidth, _dropdownItemHeight, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
                     }
 
                     auto args = FormatArguments();
@@ -256,7 +255,7 @@ namespace OpenLoco::Ui::Dropdown
                             auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self.x + 2;
                             auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self.y + 1;
                             auto width = self.width - 5;
-                            sub_494BF6(&self, rt, dropdownItemFormat, x, y, width, colour, args);
+                            sub_494BF6(&self, drawingCtx, dropdownItemFormat, x, y, width, colour, args);
                         }
                     }
 
@@ -270,7 +269,7 @@ namespace OpenLoco::Ui::Dropdown
                         {
                             imageId++;
                         }
-                        drawingCtx.drawImage(rt, x, y, imageId);
+                        drawingCtx.drawImage(x, y, imageId);
                     }
                 }
                 else
@@ -280,16 +279,16 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (!self.getColour(WindowColour::primary).isTranslucent())
                     {
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3), Gfx::RectFlags::none);
-                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7), Gfx::RectFlags::none);
+                        drawingCtx.drawRect(x, y, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 3), Gfx::RectFlags::none);
+                        drawingCtx.drawRect(x, y + 1, _dropdownItemWidth - 1, 1, Colours::getShade(self.getColour(WindowColour::primary).c(), 7), Gfx::RectFlags::none);
                     }
                     else
                     {
                         uint32_t colour = enumValue(Colours::getTranslucent(self.getColour(WindowColour::primary).c()));
                         colour++; // Gets ExtColour::translucentXXX2 highlight
-                        drawingCtx.drawRect(*rt, x, y, _dropdownItemWidth - 1, 1, colour, Gfx::RectFlags::transparent);
+                        drawingCtx.drawRect(x, y, _dropdownItemWidth - 1, 1, colour, Gfx::RectFlags::transparent);
                         colour++; // Gets ExtColour::translucentXXX0 shadow
-                        drawingCtx.drawRect(*rt, x, y + 1, _dropdownItemWidth - 1, 1, colour, Gfx::RectFlags::transparent);
+                        drawingCtx.drawRect(x, y + 1, _dropdownItemWidth - 1, 1, colour, Gfx::RectFlags::transparent);
                     }
                 }
 
