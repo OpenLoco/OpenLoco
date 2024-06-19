@@ -13,7 +13,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        struct DrawingContext;
     }
 
 #pragma pack(push, 1)
@@ -30,7 +30,7 @@ namespace OpenLoco
         uint32_t image;                            // 0x0A
         uint32_t var_0E;
 
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();

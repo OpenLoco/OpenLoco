@@ -262,7 +262,7 @@ namespace OpenLoco::Gfx
         // TODO: Remove main window and draw that independent from UI.
 
         // Draw UI.
-        Ui::WindowManager::render(rt, rect);
+        Ui::WindowManager::render(_ctx, rect);
 
         // Restore state.
         _ctx.popRenderTarget();

@@ -18,7 +18,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        struct DrawingContext;
     }
     enum class TrainStationFlags : uint8_t
     {
@@ -54,8 +54,8 @@ namespace OpenLoco
         const std::byte* cargoOffsetBytes[4][4]; // 0x2E
         const std::byte* manualPower[16];
 
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();

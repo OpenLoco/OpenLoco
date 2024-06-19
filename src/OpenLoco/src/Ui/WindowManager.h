@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::WindowManager
     uint8_t getVehiclePreviewRotationFrameUnk1();
     uint8_t getVehiclePreviewRotationFrameUnk2();
 
-    void render(Gfx::RenderTarget& rt, const Rect& rect);
+    void render(Gfx::DrawingContext& ctx, const Rect& rect);
 }
 
 namespace OpenLoco::Vehicles

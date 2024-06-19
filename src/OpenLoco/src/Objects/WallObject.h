@@ -14,7 +14,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        struct DrawingContext;
     }
 
     enum class WallObjectFlags : uint8_t
@@ -47,7 +47,7 @@ namespace OpenLoco
         bool validate() const { return true; }
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(WallObject) == 0xA);

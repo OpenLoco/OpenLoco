@@ -10,19 +10,17 @@
 namespace OpenLoco
 {
     // 0x00490F14
-    void DockObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void DockObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
-
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x - 34, y - 34, colourImage);
+        drawingCtx.drawImage(x - 34, y - 34, colourImage);
     }
 
     // 0x00490F2C
-    void DockObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void DockObject::drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
+        ObjectManager::drawGenericDescription(drawingCtx, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x00490EED

@@ -20,20 +20,19 @@ namespace OpenLoco
     static constexpr Ui::Size kObjectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
-    void CompetitorObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void CompetitorObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
-        drawingCtx.drawRect(rt, 0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Gfx::RectFlags::none);
+        drawingCtx.drawRect(0, 0, kObjectPreviewSize.width, kObjectPreviewSize.height, Colours::getShade(Colour::mutedSeaGreen, 1), Gfx::RectFlags::none);
 
         auto image = Gfx::recolour(images[0] + 1, Colour::mutedSeaGreen);
-        drawingCtx.drawImage(&rt, x - 32, y - 32, image);
+        drawingCtx.drawImage(x - 32, y - 32, image);
     }
 
     // 0x00434DA7
-    void CompetitorObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void CompetitorObject::drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Ui::Point rowPosition = { x, y };
@@ -42,7 +41,7 @@ namespace OpenLoco
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_intelligence, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::company_details_intelligence, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
@@ -50,7 +49,7 @@ namespace OpenLoco
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_aggressiveness, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::company_details_aggressiveness, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
@@ -58,7 +57,7 @@ namespace OpenLoco
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::company_details_competitiveness, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::company_details_competitiveness, args);
         }
     }
 

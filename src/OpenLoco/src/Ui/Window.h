@@ -18,6 +18,11 @@
 #include <optional>
 #include <sfl/small_vector.hpp>
 
+namespace OpenLoco::Gfx
+{
+    class DrawingContext;
+}
+
 namespace OpenLoco::Ui
 {
     using WindowNumber_t = uint16_t;
@@ -91,7 +96,7 @@ namespace OpenLoco::Ui
         Ui::CursorId (*cursor)(Window&, int16_t, int16_t, int16_t, Ui::CursorId) = nullptr;
         void (*onMove)(Window&, const int16_t x, const int16_t y) = nullptr;
         void (*prepareDraw)(Window&) = nullptr;
-        void (*draw)(Window&, Gfx::RenderTarget*) = nullptr;
+        void (*draw)(Window&, Gfx::DrawingContext&) = nullptr;
         void (*drawScroll)(Window&, Gfx::RenderTarget&, const uint32_t scrollIndex) = nullptr;
         bool (*keyUp)(Window&, uint32_t charCode, uint32_t keyCode) = nullptr;
     };
@@ -348,7 +353,7 @@ namespace OpenLoco::Ui
         void moveInsideScreenEdges();
         bool moveToCentre();
         WidgetIndex_t findWidgetAt(int16_t xPos, int16_t yPos);
-        void draw(OpenLoco::Gfx::RenderTarget* rt);
+        void draw(Gfx::DrawingContext& drawingCtx);
 
         void callClose();                                                                              // 0
         void callOnMouseUp(WidgetIndex_t widgetIndex);                                                 // 1
@@ -376,7 +381,7 @@ namespace OpenLoco::Ui
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
-        void callDraw(Gfx::RenderTarget* rt);                                                          // 27
+        void callDraw(Gfx::DrawingContext& ctx);                                                       // 27
         void callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex);                              // 28
         bool callKeyUp(uint32_t charCode, uint32_t keyCode);                                           // 29
 

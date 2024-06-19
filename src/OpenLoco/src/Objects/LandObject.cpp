@@ -94,10 +94,9 @@ namespace OpenLoco
     }
 
     // 0x004699A8
-    void LandObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void LandObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         uint32_t imageId = image + (var_03 - 1) * var_0E;
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x, y, imageId);
+        drawingCtx.drawImage(x, y, imageId);
     }
 }

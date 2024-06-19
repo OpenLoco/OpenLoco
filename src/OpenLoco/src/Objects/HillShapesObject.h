@@ -13,7 +13,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        struct DrawingContext;
     }
 
     enum class HillShapeFlags : uint16_t
@@ -35,7 +35,7 @@ namespace OpenLoco
         uint32_t imageHills;            // 0x08
         HillShapeFlags flags;           // 0x0C
 
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         // 0x00463BB3
         bool validate() const { return true; }
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);

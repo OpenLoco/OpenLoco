@@ -14,7 +14,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        struct DrawingContext;
     }
 
     enum class IndustryObjectFlags : uint32_t
@@ -124,8 +124,8 @@ namespace OpenLoco
         bool producesCargo() const;
         char* getProducedCargoString(const char* buffer) const;
         char* getRequiredCargoString(const char* buffer) const;
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
-        void drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
+        void drawIndustry(Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();

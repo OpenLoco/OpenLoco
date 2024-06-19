@@ -10,12 +10,11 @@
 namespace OpenLoco
 {
     // 0x00490C17
-    void RoadStationObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void RoadStationObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x - 34, y - 34, colourImage);
+        drawingCtx.drawImage(x - 34, y - 34, colourImage);
 
         auto colour = ExtColour::translucentMutedDarkRed1;
         if (!hasFlags(RoadStationFlags::recolourable))
@@ -25,14 +24,14 @@ namespace OpenLoco
 
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
 
-        drawingCtx.drawImage(&rt, x - 34, y - 34, translucentImage);
+        drawingCtx.drawImage(x - 34, y - 34, translucentImage);
     }
 
     // 0x00490C59
-    void RoadStationObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void RoadStationObject::drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
+        ObjectManager::drawGenericDescription(drawingCtx, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x00490BD8

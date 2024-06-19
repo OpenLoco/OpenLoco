@@ -13,7 +13,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        struct DrawingContext;
     }
 
 #pragma pack(push, 1)
@@ -26,7 +26,7 @@ namespace OpenLoco
         uint16_t segmentHeights[3]; // 0x06
         uint16_t roofHeights[3];    // 0x0C
 
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         // 0x0042DF0B
         bool validate() const { return true; }
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);

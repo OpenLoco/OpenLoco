@@ -39,20 +39,17 @@ namespace OpenLoco::Gfx
         uint16_t getMaxStringWidth(const char* buffer);
 
         Ui::Point drawString(
-            const RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             const char* str);
 
         Ui::Point drawStringLeft(
-            const RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             FormatArgumentsView args = {});
 
         Ui::Point drawStringLeftClipped(
-            const RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
@@ -60,14 +57,12 @@ namespace OpenLoco::Gfx
             FormatArgumentsView args = {});
 
         Ui::Point drawStringLeftUnderline(
-            const RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             FormatArgumentsView args = {});
 
         Ui::Point drawStringLeftWrapped(
-            const RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
@@ -75,14 +70,12 @@ namespace OpenLoco::Gfx
             FormatArgumentsView args = {});
 
         Ui::Point drawStringCentred(
-            const RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             FormatArgumentsView args = {});
 
         Ui::Point drawStringCentredClipped(
-            const RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
@@ -90,14 +83,12 @@ namespace OpenLoco::Gfx
             FormatArgumentsView args = {});
 
         Ui::Point drawStringCentredRaw(
-            const RenderTarget& rt,
             Ui::Point origin,
             uint16_t linebreakCount,
             AdvancedColour colour,
             const char* wrappedStr);
 
         Ui::Point drawStringCentredWrapped(
-            const RenderTarget& rt,
             Ui::Point origin,
             uint16_t width,
             AdvancedColour colour,
@@ -105,21 +96,19 @@ namespace OpenLoco::Gfx
             FormatArgumentsView args = {});
 
         Ui::Point drawStringRight(
-            const RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             FormatArgumentsView args = {});
 
         Ui::Point drawStringRightUnderline(
-            const RenderTarget& rt,
             Ui::Point origin,
             AdvancedColour colour,
             StringId stringId,
             FormatArgumentsView args = {});
 
-        void drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets);
-        void drawStringTicker(const RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width);
+        void drawStringYOffsets(Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets);
+        void drawStringTicker(Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width);
         uint16_t getStringWidthNewLined(const char* buffer);
         std::pair<uint16_t, uint16_t> wrapString(char* buffer, uint16_t stringWidth);
     };

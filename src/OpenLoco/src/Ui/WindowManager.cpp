@@ -1138,10 +1138,10 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C5FC8
-    void drawSingle(Gfx::RenderTarget* _rt, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void drawSingle(Gfx::DrawingContext& ctx, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy rt so we can crop it
-        auto rt = *_rt;
+        Gfx::RenderTarget rt = ctx.currentRenderTarget();
 
         // Clamp left to 0
         int32_t overflow = left - rt.x;
@@ -1205,8 +1205,12 @@ namespace OpenLoco::Ui::WindowManager
         setWindowColours(2, w->getColour(WindowColour::tertiary).opaque());
         setWindowColours(3, w->getColour(WindowColour::quaternary).opaque());
 
+        ctx.pushRenderTarget(rt);
+
         w->callPrepareDraw();
         w->callDraw(&rt);
+
+        ctx.popRenderTarget();
     }
 
     // 0x004CD3D0
@@ -2100,13 +2104,13 @@ namespace OpenLoco::Ui::WindowManager
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         if (!w->isVisible())
             return;
 
         // Split window into only the regions that require drawing
-        if (windowDrawSplit(rt, w, left, top, right, bottom))
+        if (windowDrawSplit(ctx, w, left, top, right, bottom))
             return;
 
         // Clamp region
@@ -2120,7 +2124,7 @@ namespace OpenLoco::Ui::WindowManager
             return;
 
         // Draw the window in this region
-        Ui::WindowManager::drawSingle(rt, w, left, top, right, bottom);
+        Ui::WindowManager::drawSingle(ctx, w, left, top, right, bottom);
 
         for (uint32_t index = indexOf(*w) + 1; index < count(); index++)
         {
@@ -2130,13 +2134,13 @@ namespace OpenLoco::Ui::WindowManager
             if (!v->hasFlags(WindowFlags::transparent))
                 continue;
 
-            drawSingle(rt, v, left, top, right, bottom);
+            drawSingle(ctx, v, left, top, right, bottom);
         }
     }
 
-    static void windowDraw(Gfx::RenderTarget* rt, Window* w, Rect rect)
+    static void windowDraw(Gfx::DrawingContext& ctx, Window* w, Rect rect)
     {
-        windowDraw(rt, w, rect.left(), rect.top(), rect.right(), rect.bottom());
+        windowDraw(ctx, w, rect.left(), rect.top(), rect.right(), rect.bottom());
     }
 
     /**
@@ -2150,7 +2154,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::RenderTarget* rt, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::DrawingContext& ctx, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (size_t index = indexOf(*w) + 1; index < count(); index++)
@@ -2169,26 +2173,26 @@ namespace OpenLoco::Ui::WindowManager
             if (topwindow->x > left)
             {
                 // Split draw at topwindow.left
-                windowDraw(rt, w, left, top, topwindow->x, bottom);
-                windowDraw(rt, w, topwindow->x, top, right, bottom);
+                windowDraw(ctx, w, left, top, topwindow->x, bottom);
+                windowDraw(ctx, w, topwindow->x, top, right, bottom);
             }
             else if (topwindow->x + topwindow->width < right)
             {
                 // Split draw at topwindow.right
-                windowDraw(rt, w, left, top, topwindow->x + topwindow->width, bottom);
-                windowDraw(rt, w, topwindow->x + topwindow->width, top, right, bottom);
+                windowDraw(ctx, w, left, top, topwindow->x + topwindow->width, bottom);
+                windowDraw(ctx, w, topwindow->x + topwindow->width, top, right, bottom);
             }
             else if (topwindow->y > top)
             {
                 // Split draw at topwindow.top
-                windowDraw(rt, w, left, top, right, topwindow->y);
-                windowDraw(rt, w, left, topwindow->y, right, bottom);
+                windowDraw(ctx, w, left, top, right, topwindow->y);
+                windowDraw(ctx, w, left, topwindow->y, right, bottom);
             }
             else if (topwindow->y + topwindow->height < bottom)
             {
                 // Split draw at topwindow.bottom
-                windowDraw(rt, w, left, top, right, topwindow->y + topwindow->height);
-                windowDraw(rt, w, left, topwindow->y + topwindow->height, right, bottom);
+                windowDraw(ctx, w, left, top, right, topwindow->y + topwindow->height);
+                windowDraw(ctx, w, left, topwindow->y + topwindow->height, right, bottom);
             }
 
             // Drawing for this region should be done now, exit
@@ -2199,7 +2203,7 @@ namespace OpenLoco::Ui::WindowManager
         return false;
     }
 
-    void render(Gfx::RenderTarget& rt, const Rect& rect)
+    void render(Gfx::DrawingContext& ctx, const Rect& rect)
     {
         for (auto& w : _windows)
         {

@@ -203,11 +203,9 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CD00E
-        static void draw([[maybe_unused]] Window& self, Gfx::RenderTarget* rt)
+        static void draw([[maybe_unused]] Window& self, Gfx::DrawingContext& ctx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
-            self.draw(rt);
+            self.draw(ctx);
             _windowDropdownOnpaintCellX = 0;
             _windowDropdownOnpaintCellY = 0;
 

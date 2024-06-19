@@ -953,63 +953,75 @@ namespace OpenLoco::Gfx
         // Need to keep the empty destructor to allow for unique_ptr to delete the actual type.
     }
 
-    void SoftwareDrawingContext::clear(const RenderTarget& rt, uint32_t fill)
+    void SoftwareDrawingContext::clear(uint32_t fill)
     {
+        auto& rt = currentRenderTarget();
         return Impl::clear(rt, fill);
     }
 
-    void SoftwareDrawingContext::clearSingle(const RenderTarget& rt, uint8_t paletteId)
+    void SoftwareDrawingContext::clearSingle(uint8_t paletteId)
     {
+        auto& rt = currentRenderTarget();
         return Impl::clearSingle(rt, paletteId);
     }
 
-    void SoftwareDrawingContext::fillRect(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
+    void SoftwareDrawingContext::fillRect(int16_t left, int16_t top, int16_t right, int16_t bottom, uint8_t colour, RectFlags flags)
     {
+        auto& rt = currentRenderTarget();
         return Impl::fillRect(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRect(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
+    void SoftwareDrawingContext::drawRect(int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint8_t colour, RectFlags flags)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawRect(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::fillRectInset(const RenderTarget& rt, int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
+    void SoftwareDrawingContext::fillRectInset(int16_t left, int16_t top, int16_t right, int16_t bottom, AdvancedColour colour, RectInsetFlags flags)
     {
+        auto& rt = currentRenderTarget();
         return Impl::fillRectInset(rt, left, top, right, bottom, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawRectInset(const RenderTarget& rt, int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags)
+    void SoftwareDrawingContext::drawRectInset(int16_t x, int16_t y, uint16_t dx, uint16_t dy, AdvancedColour colour, RectInsetFlags flags)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawRectInset(rt, x, y, dx, dy, colour, flags);
     }
 
-    void SoftwareDrawingContext::drawLine(const RenderTarget& rt, const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour)
+    void SoftwareDrawingContext::drawLine( const Ui::Point& a, const Ui::Point& b, PaletteIndex_t colour)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawLine(rt, a, b, colour);
     }
 
-    void SoftwareDrawingContext::drawImage(const RenderTarget* rt, int16_t x, int16_t y, uint32_t image)
+    void SoftwareDrawingContext::drawImage(int16_t x, int16_t y, uint32_t image)
     {
-        return Impl::drawImage(rt, x, y, image);
+        auto& rt = currentRenderTarget();
+        return Impl::drawImage(&rt, x, y, image);
     }
 
-    void SoftwareDrawingContext::drawImage(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image)
+    void SoftwareDrawingContext::drawImage(const Ui::Point& pos, const ImageId& image)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawImage(rt, pos, image);
     }
 
-    void SoftwareDrawingContext::drawImageMasked(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
+    void SoftwareDrawingContext::drawImageMasked(const Ui::Point& pos, const ImageId& image, const ImageId& maskImage)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawImageMasked(rt, pos, image, maskImage);
     }
 
-    void SoftwareDrawingContext::drawImageSolid(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
+    void SoftwareDrawingContext::drawImageSolid(const Ui::Point& pos, const ImageId& image, PaletteIndex_t paletteIndex)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawImageSolid(rt, pos, image, paletteIndex);
     }
 
-    void SoftwareDrawingContext::drawImagePaletteSet(const RenderTarget& rt, const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage)
+    void SoftwareDrawingContext::drawImagePaletteSet(const Ui::Point& pos, const ImageId& image, PaletteMap::View palette, const G1Element* noiseImage)
     {
+        auto& rt = currentRenderTarget();
         return Impl::drawImagePaletteSet(rt, pos, image, palette, noiseImage);
     }
 

@@ -1174,12 +1174,12 @@ namespace OpenLoco::Ui
         eventHandlers->prepareDraw(*this);
     }
 
-    void Window::callDraw(Gfx::RenderTarget* rt)
+    void Window::callDraw(Gfx::DrawingContext& ctx)
     {
         if (eventHandlers->draw == nullptr)
             return;
 
-        eventHandlers->draw(*this, rt);
+        eventHandlers->draw(*this, ctx);
     }
 
     void Window::callDrawScroll(Gfx::RenderTarget* rt, uint32_t scrollIndex)
@@ -1199,10 +1199,8 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA4DF
-    void Window::draw(Gfx::RenderTarget* rt)
+    void Window::draw(Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
         if (this->hasFlags(WindowFlags::transparent) && !this->hasFlags(WindowFlags::noBackground))
         {
             drawingCtx.fillRect(*rt, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);

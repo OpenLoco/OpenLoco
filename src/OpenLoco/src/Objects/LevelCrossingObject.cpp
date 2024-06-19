@@ -62,7 +62,7 @@ namespace OpenLoco
     }
 
     // 0x00478156
-    void LevelCrossingObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void LevelCrossingObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto imageId = (closedFrames + 1) * 8;
         auto frameCount = (closingFrames - 1);
@@ -71,17 +71,16 @@ namespace OpenLoco
         imageId += frameIndex;
         imageId += image;
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x, y, imageId);
-        drawingCtx.drawImage(&rt, x, y, imageId + 1);
-        drawingCtx.drawImage(&rt, x, y, imageId + 2);
-        drawingCtx.drawImage(&rt, x, y, imageId + 3);
+        drawingCtx.drawImage(x, y, imageId);
+        drawingCtx.drawImage(x, y, imageId + 1);
+        drawingCtx.drawImage(x, y, imageId + 2);
+        drawingCtx.drawImage(x, y, imageId + 3);
     }
 
     // 0x004781A4
-    void LevelCrossingObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void LevelCrossingObject::drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, 0xFFFF);
+        ObjectManager::drawGenericDescription(drawingCtx, rowPosition, designedYear, 0xFFFF);
     }
 }
