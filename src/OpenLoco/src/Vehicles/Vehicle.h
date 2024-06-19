@@ -159,6 +159,11 @@ namespace OpenLoco::Vehicles
             constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
             // Used by road and tram vehicles to indicate side
             constexpr bool isReversed() const { return _data & (1 << 2); }
+            constexpr void setReversed(bool state)
+            {
+                _data &= ~(1 << 2);
+                _data |= state ? (1 << 2) : 0;
+            }
             // Road vehicles are briefly back to front when reaching dead ends
             // Trams can stay back to front
             constexpr bool isBackToFront() const { return _data & (1 << 7); }

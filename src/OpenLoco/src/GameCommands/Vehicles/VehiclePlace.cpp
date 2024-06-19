@@ -1,0 +1,205 @@
+#include "VehiclePlace.h"
+#include "Economy/Expenditures.h"
+#include "Map/RoadElement.h"
+#include "Map/TileManager.h"
+#include "Map/Track/TrackData.h"
+#include "Map/TrackElement.h"
+#include "Objects/RoadExtraObject.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackExtraObject.h"
+#include "Objects/TrackObject.h"
+#include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
+#include "ViewportManager.h"
+#include <OpenLoco/Core/Numerics.hpp>
+
+namespace OpenLoco::GameCommands
+{
+    // 0x004B01B6
+    static currency32_t vehiclePlace(const VehiclePlacementArgs& args, const uint8_t flags)
+    {
+        if (args.head == EntityId::null)
+        {
+            return FAILURE;
+        }
+
+        try
+        {
+            Vehicles::Vehicle train(args.head);
+            // TODO: Deduplicate
+            constexpr std::array<ExpenditureType, 6> vehTypeToCost = {
+                ExpenditureType::TrainRunningCosts,
+                ExpenditureType::BusRunningCosts,
+                ExpenditureType::TruckRunningCosts,
+                ExpenditureType::TramRunningCosts,
+                ExpenditureType::AircraftRunningCosts,
+                ExpenditureType::ShipRunningCosts,
+            };
+            setExpenditureType(vehTypeToCost[enumValue(train.head->vehicleType)]);
+            setPosition(args.pos);
+
+            if (!sub_431E6A(train.head->owner))
+            {
+                return FAILURE;
+            }
+            if (!args.convertGhost)
+            {
+                if (train.head->tileX != -1)
+                {
+                    setErrorText(StringIds::empty);
+                    return FAILURE;
+                }
+                if (train.cars.empty())
+                {
+                    setErrorText(StringIds::empty);
+                    return FAILURE;
+                }
+            }
+
+            if (!(flags & Flags::apply))
+            {
+                return 0;
+            }
+
+            if (args.convertGhost)
+            {
+                train.applyToComponents([](auto& component) {
+                    component.var_38 &= ~Vehicles::Flags38::isGhost;
+                    Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
+                });
+            }
+            else
+            {
+                World::Pos3 pos = args.pos;
+
+                if (train.head->mode == TransportMode::road)
+                {
+                    Vehicles::TrackAndDirection::_RoadAndDirection rtad(0, 0);
+                    rtad._data = args.trackAndDirection;
+
+                    if (rtad.isReversed())
+                    {
+                        rtad.setReversed(false);
+                        auto& roadSize = World::TrackData::getUnkRoad(rtad._data);
+                        pos -= roadSize.pos;
+                        if (roadSize.rotationEnd < 12)
+                        {
+                            pos += World::Pos3{ World::kRotationOffset[roadSize.rotationEnd], 0 };
+                        }
+                    }
+                    pos.z += World::TrackData::getRoadPiece(rtad.id())[0].z;
+                    // TODO:...
+                }
+                else
+                {
+                    Vehicles::TrackAndDirection::_TrackAndDirection ttad(0, 0);
+                    ttad._data = args.trackAndDirection;
+
+                    if (ttad.isReversed())
+                    {
+                        ttad.setReversed(false);
+                        auto& trackSize = World::TrackData::getUnkTrack(ttad._data);
+                        pos -= trackSize.pos;
+                        if (trackSize.rotationEnd < 12)
+                        {
+                            pos += World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+                        }
+                    }
+                    pos.z += World::TrackData::getTrackPiece(ttad.id())[0].z;
+
+                    auto* elTrack = [&pos, &train, &ttad]() -> const World::TrackElement* {
+                        const auto tile = World::TileManager::get(pos);
+                        for (auto& el : tile)
+                        {
+                            auto* elTrack = el.as<World::TrackElement>();
+                            if (elTrack == nullptr)
+                            {
+                                continue;
+                            }
+                            if (elTrack->baseHeight() != pos.z)
+                            {
+                                continue;
+                            }
+                            if (elTrack->isAiAllocated() || elTrack->isGhost())
+                            {
+                                continue;
+                            }
+                            if (elTrack->trackObjectId() != train.head->trackType)
+                            {
+                                continue;
+                            }
+                            if (elTrack->trackId() != ttad.id())
+                            {
+                                continue;
+                            }
+                            if (elTrack->rotation() != ttad.cardinalDirection())
+                            {
+                                continue;
+                            }
+                            return elTrack;
+                        }
+                        return nullptr;
+                    }();
+
+                    if (elTrack == nullptr)
+                    {
+                        auto* trackObj = ObjectManager::get<TrackObject>(train.head->trackType);
+                        FormatArguments::common(trackObj->name);
+                        setErrorText(StringIds::can_only_be_placed_on_stringid);
+                        return FAILURE;
+                    }
+
+                    if (!sub_431E6A(elTrack->owner(), reinterpret_cast<const World::TileElement*>(elTrack)))
+                    {
+                        return FAILURE;
+                    }
+
+                    if ((elTrack->mods() & train.head->var_53) != train.head->var_53)
+                    {
+                        const auto missingMods = (~elTrack->mods()) & train.head->var_53;
+                        const auto firstMissing = Numerics::bitScanForward(missingMods);
+                        auto* trackObj = ObjectManager::get<TrackObject>(elTrack->trackObjectId());
+                        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[firstMissing]);
+                        FormatArguments::common(trackExtraObj->name);
+                        setErrorText(StringIds::this_vehicle_requires_stringid);
+                        return FAILURE;
+                    }
+                }
+                Vehicles::TrackAndDirection tad(0, 0);
+                tad.track._data = args.trackAndDirection;
+                const auto res = VehicleManager::placeDownVehicle(train.head, args.pos.x, args.pos.y, args.pos.z / World::kSmallZStep, tad, args.trackProgress);
+                if (res != VehicleManager::PlaceDownResult::Okay)
+                {
+                    setErrorText(
+                        res == VehicleManager::PlaceDownResult::Unk0
+                            ? StringIds::not_enough_space_or_vehicle_in_the_way
+                            : StringIds::vehicle_approaching_or_in_the_way);
+                    return FAILURE;
+                }
+
+                train.head->vehicleFlags |= VehicleFlags::commandStop;
+                train.head->manualPower = -40;
+                if (flags & Flags::ghost)
+                {
+                    train.applyToComponents([](auto& component) {
+                        component.var_38 |= Vehicles::Flags38::isGhost;
+                    });
+                }
+            }
+        }
+        catch (Exception::RuntimeError&)
+        {
+            return FAILURE;
+        }
+        if ((flags & Flags::apply) && !(flags & Flags::ghost))
+        {
+            Vehicles::playPlacedownSound(args.pos);
+        }
+        return 0;
+    }
+
+    void vehiclePlace(registers& regs)
+    {
+        regs.ebx = vehiclePlace(VehiclePlacementArgs(regs), regs.bl);
+    }
+}

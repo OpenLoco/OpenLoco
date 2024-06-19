@@ -120,7 +120,7 @@ namespace OpenLoco::VehicleManager
     }
 
     // 0x004B05E4
-    void placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
+    PlaceDownResult placeDownVehicle(Vehicles::VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const Vehicles::TrackAndDirection& unk1, const uint16_t unk2)
     {
         registers regs{};
         regs.esi = X86Pointer(head);
@@ -129,7 +129,12 @@ namespace OpenLoco::VehicleManager
         regs.bx = unk2;
         regs.dl = baseZ;
         regs.ebp = unk1.track._data;
-        call(0x004B05E4, regs);
+        bool hasFailed = call(0x004B05E4, regs) & X86_FLAG_CARRY;
+        if (hasFailed)
+        {
+            return regs.al == 0 ? PlaceDownResult::Unk0 : PlaceDownResult::Unk1;
+        }
+        return PlaceDownResult::Okay;
     }
 
     // 0x004B93DC
