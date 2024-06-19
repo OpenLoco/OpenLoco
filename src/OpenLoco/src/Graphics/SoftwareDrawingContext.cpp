@@ -12,6 +12,7 @@
 #include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <algorithm>
+#include <cassert>
 #include <stack>
 
 using namespace OpenLoco::Interop;
@@ -1028,16 +1029,27 @@ namespace OpenLoco::Gfx
     void SoftwareDrawingContext::pushRenderTarget(const RenderTarget& rt)
     {
         _state->rtStack.push(rt);
+
+        // In case this leaks it will trigger an assert, the stack should ordinarily be really small.
+        assert(_state->rtStack.size() < 10);
     }
 
     void SoftwareDrawingContext::popRenderTarget()
     {
+        // Should not be empty before pop.
+        assert(_state->rtStack.empty() == false);
+
         _state->rtStack.pop();
+
+        // Should not be empty after pop
+        assert(_state->rtStack.empty() == false);
     }
 
     const RenderTarget& SoftwareDrawingContext::currentRenderTarget() const
     {
+        // Should not be empty.
+        assert(_state->rtStack.empty() == false);
+
         return _state->rtStack.top();
     }
-
 }
