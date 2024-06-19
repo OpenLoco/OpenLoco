@@ -20,7 +20,7 @@ namespace OpenLoco::Gfx
 
     public:
         SoftwareDrawingContext();
-        ~SoftwareDrawingContext();
+        ~SoftwareDrawingContext() override;
 
         void pushRenderTarget(const RenderTarget& rt) override;
         void popRenderTarget() override;
