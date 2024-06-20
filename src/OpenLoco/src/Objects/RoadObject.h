@@ -58,10 +58,10 @@ namespace OpenLoco
         uint8_t numMods;                         // 0x25
         uint8_t mods[2];                         // 0x26
         uint8_t numCompatible;                   // 0x28
-        uint8_t pad_29;
-        uint16_t compatibleRoads;  // 0x2A
-        uint16_t compatibleTracks; // 0x2C
-        TownSize targetTownSize;   // 0x2E
+        uint8_t displayOffset;                   // 0x29
+        uint16_t compatibleRoads;                // 0x2A
+        uint16_t compatibleTracks;               // 0x2C
+        TownSize targetTownSize;                 // 0x2E
         uint8_t pad_2F;
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;

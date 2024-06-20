@@ -6,7 +6,9 @@
 #include "Paint.h"
 #include "Ui/ViewportInteraction.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleDraw.h"
 #include "World/CompanyManager.h"
+#include <OpenLoco/Math/Trigonometry.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Vehicles;
@@ -28,11 +30,6 @@ namespace OpenLoco::Paint
         Pitch::up10deg,
         Pitch::down20deg,
         Pitch::up20deg,
-    };
-
-    // 0x00503F20
-    const uint8_t _503F20[8]{
-        4, 3, 2, 1, 0, 0, 0, 0
     };
 
     // 0x004B0CFC
@@ -173,165 +170,10 @@ namespace OpenLoco::Paint
         }
     }
 
-    static uint32_t paintBodyPitchDefault(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
-        {
-            yaw &= 0x1F;
-        }
-        uint32_t imageIndex = (yaw >> _503F20[sprite.flatYawAccuracy]) * sprite.numFramesPerRotation;
-        imageIndex += sprite.flatImageId;
-        return imageIndex;
-    }
-
-    static uint32_t paintBodyPitchUp12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
-        {
-            return paintBodyPitchDefault(sprite, yaw);
-        }
-        auto imageOffset = sprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 4 : 8;
-        uint32_t imageIndex = ((yaw >> _503F20[sprite.slopedYawAccuracy]) + imageOffset) * sprite.numFramesPerRotation;
-        imageIndex += sprite.gentleImageId;
-        return imageIndex;
-    }
-
-    static uint32_t paintBodyPitchDown12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
-        {
-            return paintBodyPitchDefault(sprite, yaw);
-        }
-
-        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
-        {
-            yaw ^= (1 << 5);
-        }
-        else
-        {
-            yaw += (1 << 6);
-        }
-
-        return paintBodyPitchUp12Deg(sprite, yaw);
-    }
-
-    static uint32_t paintBodyPitchUp6Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
-        {
-            return paintBodyPitchDefault(sprite, yaw);
-        }
-        yaw += 7;
-        yaw >>= 4;
-        yaw &= 0x3;
-
-        return yaw * sprite.numFramesPerRotation + sprite.gentleImageId;
-    }
-
-    static uint32_t paintBodyPitchDown6Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasGentleSprites))
-        {
-            return paintBodyPitchDefault(sprite, yaw);
-        }
-        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
-        {
-            yaw ^= (1 << 5);
-            return paintBodyPitchUp6Deg(sprite, yaw);
-        }
-        else
-        {
-            yaw += 7;
-            yaw >>= 4;
-            yaw &= 0x3;
-            yaw += 4;
-
-            return yaw * sprite.numFramesPerRotation + sprite.gentleImageId;
-        }
-    }
-    static uint32_t paintBodyPitchUp25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
-        {
-            return paintBodyPitchUp12Deg(sprite, yaw);
-        }
-        auto imageOffset = sprite.hasFlags(BodySpriteFlags::rotationalSymmetry) ? 4 : 8;
-        uint32_t imageIndex = ((yaw >> _503F20[sprite.slopedYawAccuracy]) + imageOffset) * sprite.numFramesPerRotation;
-        imageIndex += sprite.steepImageId;
-        return imageIndex;
-    }
-
-    static uint32_t paintBodyPitchDown25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
-        {
-            return paintBodyPitchDown12Deg(sprite, yaw);
-        }
-
-        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
-        {
-            yaw ^= (1 << 5);
-        }
-        else
-        {
-            yaw += (1 << 6);
-        }
-
-        return paintBodyPitchUp25Deg(sprite, yaw);
-    }
-
-    static uint32_t paintBodyPitchUp18Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
-        {
-            return paintBodyPitchUp12Deg(sprite, yaw);
-        }
-        yaw += 7;
-        yaw >>= 4;
-        yaw &= 0x3;
-
-        return yaw * sprite.numFramesPerRotation + sprite.steepImageId;
-    }
-
-    static uint32_t paintBodyPitchDown18Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
-    {
-        if (!sprite.hasFlags(BodySpriteFlags::hasSteepSprites))
-        {
-            return paintBodyPitchDown12Deg(sprite, yaw);
-        }
-        if (sprite.hasFlags(BodySpriteFlags::rotationalSymmetry))
-        {
-            yaw ^= (1 << 5);
-            return paintBodyPitchUp18Deg(sprite, yaw);
-        }
-        else
-        {
-            yaw += 7;
-            yaw >>= 4;
-            yaw &= 0x3;
-            yaw += 4;
-
-            return yaw * sprite.numFramesPerRotation + sprite.steepImageId;
-        }
-    }
-
-    // Adds roll/animation and cargo
-    static uint32_t getBodyImageIndex(const uint32_t imageIndex, const VehicleBody* body)
-    {
-        return imageIndex + body->var_46 + body->var_47;
-    }
-
-    static uint32_t getBrakingImageIndex(const uint32_t imageIndex, const VehicleObjectBodySprite& sprite)
-    {
-        // Braking image is the last frame for a rotation
-        return imageIndex + sprite.numFramesPerRotation - 1;
-    }
-
     // 0x004B103C
     static void paintBody(PaintSession& session, VehicleBody* body)
     {
-        static loco_global<World::Pos2[64], 0x00503B6A> _503B6A; // also used in vehicle.cpp
-        static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4;  // array of 4 byte structures
+        static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4; // array of 4 byte structures
 
         auto* vehObject = ObjectManager::get<VehicleObject>(body->objectId);
         if (body->objectSpriteType == SpriteIndex::null)
@@ -350,47 +192,12 @@ namespace OpenLoco::Paint
             pitch = kReversePitch[static_cast<uint8_t>(body->spritePitch)];
         }
 
-        uint32_t pitchImageIndex;
-        switch (pitch)
-        {
-            case Pitch::flat:
-                pitchImageIndex = paintBodyPitchDefault(sprite, yaw);
-                break;
-            case Pitch::up12deg:
-                pitchImageIndex = paintBodyPitchUp12Deg(sprite, yaw);
-                break;
-            case Pitch::down12deg:
-                pitchImageIndex = paintBodyPitchDown12Deg(sprite, yaw);
-                break;
-            case Pitch::up6deg:
-                pitchImageIndex = paintBodyPitchUp6Deg(sprite, yaw);
-                break;
-            case Pitch::down6deg:
-                pitchImageIndex = paintBodyPitchDown6Deg(sprite, yaw);
-                break;
-            case Pitch::up25deg:
-                pitchImageIndex = paintBodyPitchUp25Deg(sprite, yaw);
-                break;
-            case Pitch::down25deg:
-                pitchImageIndex = paintBodyPitchDown25Deg(sprite, yaw);
-                break;
-            case Pitch::up18deg:
-                pitchImageIndex = paintBodyPitchUp18Deg(sprite, yaw);
-                break;
-            case Pitch::down18deg:
-                pitchImageIndex = paintBodyPitchDown18Deg(sprite, yaw);
-                break;
-            default:
-                pitchImageIndex = paintBodyPitchDefault(sprite, yaw);
-                break;
-        }
-
-        uint32_t bodyImageIndex = getBodyImageIndex(pitchImageIndex, body);
+        uint32_t bodyImageIndex = getBodyImageIndex(sprite, pitch, yaw, body->var_46, body->var_47);
 
         std::optional<uint32_t> brakingImageIndex = {};
         if (sprite.hasFlags(BodySpriteFlags::hasBrakingLights))
         {
-            brakingImageIndex = getBrakingImageIndex(pitchImageIndex, sprite);
+            brakingImageIndex = getBrakingImageIndex(sprite, pitch, yaw);
         }
 
         World::Pos3 offsets = { 0, 0, body->position.z };
@@ -415,8 +222,9 @@ namespace OpenLoco::Paint
                 offsetModifier = -offsetModifier;
             }
 
-            boundBoxOffsets.x = (_503B6A[originalYaw].x * offsetModifier) >> 11;
-            boundBoxOffsets.y = (_503B6A[originalYaw].y * offsetModifier) >> 11;
+            const auto unk1 = Math::Trigonometry::computeXYVector(offsetModifier, originalYaw) / 2;
+            boundBoxOffsets.x = unk1.x;
+            boundBoxOffsets.y = unk1.y;
             offsetModifier = sprite.bogeyPosition * 2 - 4;
             originalYaw &= 0x1F;
             boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;

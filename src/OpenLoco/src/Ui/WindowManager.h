@@ -96,8 +96,8 @@ namespace OpenLoco::Ui::WindowManager
     uint16_t getVehiclePreviewRotationFrame();
     void setVehiclePreviewRotationFrame(uint16_t);
 
-    uint8_t getVehiclePreviewRotationFrameUnk1();
-    uint8_t getVehiclePreviewRotationFrameUnk2();
+    uint8_t getVehiclePreviewRotationFrameYaw();
+    uint8_t getVehiclePreviewRotationFrameRoll();
 
     void render(Gfx::DrawingContext& ctx, const Rect& rect);
 }
@@ -124,7 +124,6 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open(uint32_t vehicle, uint32_t flags);
         void sub_4B92A5(Ui::Window* window);
-        void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
         void registerHooks();
     }
 

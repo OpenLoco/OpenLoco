@@ -17,6 +17,7 @@
 #include "Ui/Widget.h"
 #include "Ui/Window.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleDraw.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
@@ -494,20 +495,20 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 {
                     const auto x = self->x + viewWidget.left;
                     const auto y = self->y + viewWidget.top;
+
                     const auto& rt = drawingCtx.currentRenderTarget();
                     auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x + 1, y + 1, viewWidget.width() - 2, viewWidget.height() - 2));
                     if (clipped)
                     {
                         drawingCtx.pushRenderTarget(*clipped);
 
-                        const auto frame = Ui::WindowManager::getVehiclePreviewRotationFrame();
-                        Windows::BuildVehicle::drawVehicleOverview(
+                        drawVehicleOverview(
                             drawingCtx,
+                            { viewWidget.midX(), 35 },
                             itemSubject,
-                            CompanyManager::getControllingId(),
-                            frame & 0x3F,
-                            ((frame + 2) / 4) & 0x3F,
-                            { viewWidget.midX(), 35 });
+                            Ui::WindowManager::getVehiclePreviewRotationFrameYaw(),
+                            Ui::WindowManager::getVehiclePreviewRotationFrameRoll(),
+                            CompanyManager::getControllingId());
 
                         drawingCtx.popRenderTarget();
                     }

@@ -29,11 +29,13 @@
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleDraw.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Numerics.hpp>
 #include <OpenLoco/Engine/World.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Trigonometry.hpp>
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -1511,10 +1513,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     break;
                 }
 
-                // Rotation
-                uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
-                uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
-                drawVehicleOverview(drawingCtx, window.rowHover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
+                uint8_t yaw = Ui::WindowManager::getVehiclePreviewRotationFrameYaw();
+                uint8_t roll = Ui::WindowManager::getVehiclePreviewRotationFrameRoll();
+                drawVehicleOverview(drawingCtx, { 90, 37 }, window.rowHover, yaw, roll, CompanyManager::getControllingId());
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(window.rowHover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -1774,22 +1775,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             Widget::drawTab(window, drawingCtx, img, tab + widx::tab_track_type_0);
         }
-    }
-
-    // 0x4B7741
-    void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset)
-    {
-        const auto& rt = drawingCtx.currentRenderTarget();
-
-        registers regs;
-        regs.cx = offset.x;
-        regs.dx = offset.y;
-        regs.eax = eax;
-        regs.esi = esi;
-        regs.ebx = enumValue(company);
-        regs.ebp = vehicleTypeIdx;
-        regs.edi = X86Pointer(&rt);
-        call(0x4B7741, regs);
     }
 
     // 0x4B7711
