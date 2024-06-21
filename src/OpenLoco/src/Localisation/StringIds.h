@@ -115,7 +115,7 @@ namespace OpenLoco::StringIds
     constexpr StringId screenshot_saved_as = 109;
     constexpr StringId screenshot_failed = 110;
     constexpr StringId landscape_data_area_full = 111;
-    
+
     constexpr StringId cant_build_partly_above_partly_below_ground = 112;
     constexpr StringId stringid_2 = 113;
     constexpr StringId tooltip_left_hand_curve = 114;
