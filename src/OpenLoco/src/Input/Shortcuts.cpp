@@ -416,7 +416,13 @@ namespace OpenLoco::Input::Shortcuts
 
         Windows::MessageWindow::open();
     }
-
+    
+    static void showOptionsMenu()
+    {
+    	if(isEditorMode())
+    	   return;
+    	Windows::Options::open();
+    }
     // 0x004BF3AB
     static void makeScreenshot()
     {
@@ -552,6 +558,9 @@ namespace OpenLoco::Input::Shortcuts
         ShortcutManager::add(Shortcut::closeAllFloatingWindows,         StringIds::shortcut_close_all_floating_windows,         closeAllFloatingWindows,        "closeAllFloatingWindows",          "Left Shift+Backspace");
         ShortcutManager::add(Shortcut::cancelConstructionMode,          StringIds::shortcut_cancel_construction_mode,           cancelConstructionMode,         "cancelConstructionMode",           "Escape");
         ShortcutManager::add(Shortcut::pauseUnpauseGame,                StringIds::shortcut_pause_unpause_game,                 pauseUnpauseGame,               "pauseUnpauseGame",                 "Pause");
+        ShortcutManager::add(Shortcut::showOptionsMenu,
+StringIds::shortcut_show_options_menu, showOptionsMenu,
+"showOptionsMenu","O");
         ShortcutManager::add(Shortcut::zoomViewOut,                     StringIds::shortcut_zoom_view_out,                      zoomViewOut,                    "zoomViewOut",                      "PageUp");
         ShortcutManager::add(Shortcut::zoomViewIn,                      StringIds::shortcut_zoom_view_in,                       zoomViewIn,                     "zoomViewIn",                       "PageDown");
         ShortcutManager::add(Shortcut::rotateView,                      StringIds::shortcut_rotate_view,                        rotateView,                     "rotateView",                       "Return");

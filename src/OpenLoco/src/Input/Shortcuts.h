@@ -41,6 +41,7 @@ namespace OpenLoco::Input
         showCompanyInformation,
         showFinances,
         showAnnouncementsList,
+        showOptionsMenu,
         screenshot,
         toggleLastAnnouncement,
         sendMessage,
