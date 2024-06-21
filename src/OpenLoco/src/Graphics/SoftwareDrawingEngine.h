@@ -53,7 +53,7 @@ namespace OpenLoco::Gfx
         SDL_Palette* getPalette() { return _palette; }
         void updatePalette(const PaletteEntry* entries, int32_t index, int32_t count);
 
-        SoftwareDrawingContext& getDrawingContext();
+        DrawingContext& getDrawingContext();
 
         const RenderTarget& getScreenRT();
 

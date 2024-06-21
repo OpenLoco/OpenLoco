@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -129,6 +130,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     static void draw(Window& self, Gfx::RenderTarget* const rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(rt);
 
@@ -136,7 +138,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         args.push(StringIds::buffer_2039);
 
         auto origin = Ui::Point(self.x + self.width / 2, self.y + 41);
-        drawingCtx.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, args);
+        tr.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::wcolour2_stringid, args);
     }
 
     static constexpr WindowEventList kEvents = {

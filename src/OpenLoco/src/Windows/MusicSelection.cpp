@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Objects/InterfaceSkinObject.h"
@@ -78,6 +79,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
         drawingCtx.clearSingle(rt, shade);
@@ -117,7 +119,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
                 args.push(StringIds::checkmark);
-                drawingCtx.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, args);
+                tr.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, args);
             }
 
             // Draw track name.
@@ -128,7 +130,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
                 args.push(music_title_id);
-                drawingCtx.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), text_colour_id, args);
+                tr.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), text_colour_id, args);
             }
 
             y += kRowHeight;

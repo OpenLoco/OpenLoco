@@ -7,6 +7,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Gui.h"
 #include "Input.h"
 #include "Intro.h"
@@ -205,6 +206,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets.
         window.draw(rt);
@@ -291,7 +293,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
                 string = StringIds::two_player_mode_connected;
             }
 
-            drawingCtx.drawStringCentredClipped(*rt, point, kWW - 4, Colour::black, string, args);
+            tr.drawStringCentredClipped(*rt, point, kWW - 4, Colour::black, string, args);
         }
     }
 

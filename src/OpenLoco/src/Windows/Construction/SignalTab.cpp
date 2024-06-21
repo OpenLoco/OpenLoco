@@ -5,6 +5,7 @@
 #include "GameCommands/Track/RemoveSignal.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -302,6 +303,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     static void draw(Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(rt);
         Common::drawTabs(&self, rt);
@@ -317,7 +319,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push(trainSignalObject->description);
 
             auto point = Point(xPos, yPos);
-            drawingCtx.drawStringLeftWrapped(*rt, point, width, Colour::black, StringIds::signal_black, args);
+            tr.drawStringLeftWrapped(*rt, point, width, Colour::black, StringIds::signal_black, args);
         }
 
         auto imageId = trainSignalObject->image;
@@ -340,7 +342,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push<uint32_t>(_signalCost);
 
             auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
-            drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            tr.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
         }
     }
 

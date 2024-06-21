@@ -8,6 +8,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -144,6 +145,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -156,7 +158,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             args.push(self.var_83C);
 
             auto point = Point(self.x + 4, self.y + self.height - 12);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x00457EC4
@@ -437,6 +439,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto shade = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
             drawingCtx.clearSingle(rt, shade);
@@ -473,7 +476,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(industry->town);
 
                     auto point = Point(0, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
+                    tr.drawStringLeftClipped(rt, point, 198, Colour::black, text_colour_id, args);
                 }
                 // Industry Status
                 {
@@ -484,7 +487,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(StringIds::buffer_1250);
 
                     auto point = Point(200, yPos);
-                    drawingCtx.drawStringLeftClipped(rt, point, 238, Colour::black, text_colour_id, args);
+                    tr.drawStringLeftClipped(rt, point, 238, Colour::black, text_colour_id, args);
                 }
                 if (industry->canProduceCargo())
                 {
@@ -496,7 +499,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         args.push<uint16_t>(productionTransported);
 
                         auto point = Point(440, yPos);
-                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::production_transported_percent, args);
+                        tr.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::production_transported_percent, args);
                     }
                     // Industry Production Last Month
                     {
@@ -507,7 +510,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                         args.push<uint32_t>(productionTransported.first);
 
                         auto point = Point(600, yPos);
-                        drawingCtx.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::black_stringid, args);
+                        tr.drawStringLeftClipped(rt, point, 138, Colour::black, StringIds::black_stringid, args);
                     }
                 }
 
@@ -714,6 +717,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -722,7 +726,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19;
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::no_industry_available);
+                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::no_industry_available);
                 return;
             }
 
@@ -757,7 +761,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto point = Point(self.x + 3 + self.width - 19, self.y + self.height - 13);
                 widthOffset = 138;
 
-                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
+                tr.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
             }
 
             {
@@ -767,7 +771,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - widthOffset;
 
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
+                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
             }
         }
 

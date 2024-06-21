@@ -5,6 +5,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -257,6 +258,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         {
             const auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
@@ -280,7 +282,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             auto objectPtr = self.object;
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
 
-            drawingCtx.drawStringCentredClipped(*rt, Point(x, y), width, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredClipped(*rt, Point(x, y), width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -291,6 +293,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static void drawScroll(Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         auto index = 0;
@@ -318,15 +322,15 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             std::string name(object.second._name);
             name.insert(0, 1, inlineColour);
 
-            drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+            tr.setCurrentFont(Gfx::Font::medium_bold);
             AdvancedColour stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
-                drawingCtx.setCurrentFont(Gfx::Font::m1);
+                tr.setCurrentFont(Gfx::Font::m1);
                 stringColour = self.getColour(WindowColour::secondary).opaque().inset();
             }
 
-            drawingCtx.drawString(rt, Point(0, y - 1), stringColour, const_cast<char*>(name.c_str()));
+            tr.drawString(rt, Point(0, y - 1), stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

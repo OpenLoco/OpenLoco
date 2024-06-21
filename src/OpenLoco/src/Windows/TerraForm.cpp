@@ -15,6 +15,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/FormatArguments.hpp"
@@ -706,6 +707,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -740,7 +742,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.push<uint32_t>(treeCost);
 
                 auto point = Point(self.x + 3 + self.width - 17, self.y + self.height - 13);
-                drawingCtx.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
+                tr.drawStringRight(*rt, point, Colour::black, StringIds::build_cost, args);
             }
 
             {
@@ -749,7 +751,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 auto point = Point(self.x + 3, self.y + self.height - 13);
                 auto width = self.width - 19 - point.x;
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
+                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
             }
         }
 
@@ -1079,6 +1081,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -1094,7 +1097,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
-                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
+                tr.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
             if (_raiseLandCost == 0x80000000)
@@ -1111,7 +1114,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 FormatArguments args{};
                 args.push<uint32_t>(_raiseLandCost);
 
-                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::clear_land_cost, args);
+                tr.drawStringCentred(*rt, point, Colour::black, StringIds::clear_land_cost, args);
             }
         }
 
@@ -1664,6 +1667,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
+
             self.draw(rt);
 
             Common::drawTabs(&self, rt);
@@ -1713,7 +1718,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
-                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
+                tr.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
             auto xPos = toolArea.midX() + self.x;
@@ -1727,7 +1732,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     args.push<uint32_t>(_raiseLandCost);
 
                     auto point = Point(xPos, yPos);
-                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::increase_height_cost, args);
+                    tr.drawStringCentred(*rt, point, Colour::black, StringIds::increase_height_cost, args);
                 }
             }
 
@@ -1741,7 +1746,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     args.push<uint32_t>(_lowerLandCost);
 
                     auto point = Point(xPos, yPos);
-                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::decrease_height_cost, args);
+                    tr.drawStringCentred(*rt, point, Colour::black, StringIds::decrease_height_cost, args);
                 }
             }
         }
@@ -2013,6 +2018,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2028,7 +2034,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 FormatArguments args{};
                 args.push<uint16_t>(_adjustToolSize);
-                drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
+                tr.drawStringCentred(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
             }
 
             auto xPos = toolArea.midX() + self.x;
@@ -2042,7 +2048,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     args.push<uint32_t>(_raiseWaterCost);
 
                     auto point = Point(xPos, yPos);
-                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::increase_height_cost, args);
+                    tr.drawStringCentred(*rt, point, Colour::black, StringIds::increase_height_cost, args);
                 }
             }
 
@@ -2056,7 +2062,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     args.push<uint32_t>(_lowerWaterCost);
 
                     auto point = Point(xPos, yPos);
-                    drawingCtx.drawStringCentred(*rt, point, Colour::black, StringIds::decrease_height_cost, args);
+                    tr.drawStringCentred(*rt, point, Colour::black, StringIds::decrease_height_cost, args);
                 }
             }
         }
@@ -2470,6 +2476,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void draw(Window& self, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             self.draw(rt);
             Common::drawTabs(&self, rt);
@@ -2491,7 +2498,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             FormatArguments args{};
             args.push(wallObj->name);
 
-            drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x004BC11C

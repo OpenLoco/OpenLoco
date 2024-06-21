@@ -3,6 +3,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -191,17 +192,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 5, window.y + widgets[widx::check_time_limit].bottom + 10);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_label);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::challenge_label);
 
             FormatArguments args{};
             OpenLoco::Scenario::formatChallengeArguments(Scenario::getObjective(), Scenario::getObjectiveProgress(), args);
 
             point.y += 10;
-            drawingCtx.drawStringLeftWrapped(*rt, point, window.width - 10, Colour::black, StringIds::challenge_value, args);
+            tr.drawStringLeftWrapped(*rt, point, window.width - 10, Colour::black, StringIds::challenge_value, args);
         }
 
         static const StringId objectiveTypeLabelIds[] = {
@@ -604,23 +606,24 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + widgets[widx::max_competing_companies].top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::max_competing_companies);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::max_competing_companies);
 
             point.y = window.y + widgets[widx::delay_before_competing_companies_start].top + 1;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::delay_before_competing_companies_start);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::delay_before_competing_companies_start);
 
             point.y = window.y + widgets[widx::preferred_intelligence].top + 1;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_intelligence);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_intelligence);
 
             point.y = window.y + widgets[widx::preferred_aggressiveness].top + 1;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_aggressiveness);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_aggressiveness);
 
             point.y = window.y + widgets[widx::preferred_competitiveness].top + 1;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_competitiveness);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::preferred_competitiveness);
         }
 
         static StringId preferenceLabelIds[] = {
@@ -861,17 +864,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
             auto point = Point(window.x + 10, window.y + widgets[widx::starting_loan].top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::starting_loan);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::starting_loan);
 
             point.y = window.y + widgets[widx::max_loan_size].top + 1;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::max_loan_size);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::max_loan_size);
 
             point.y = window.y + widgets[widx::loan_interest_rate].top + 1;
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::loan_interest_rate);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::loan_interest_rate);
         }
 
         static void onMouseDown(Window& self, WidgetIndex_t widgetIndex)
@@ -1003,6 +1007,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
         {
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            auto tr = Gfx::TextRenderer(drawingCtx);
 
             Common::draw(window, rt);
 
@@ -1026,7 +1031,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 int16_t width = widgets[widx::change_name_btn].left - 20;
 
                 auto point = Point(xPos, yPos);
-                drawingCtx.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::scenario_name_stringid, args);
+                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::scenario_name_stringid, args);
             }
 
             {
@@ -1034,7 +1039,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 int16_t yPos = window.y + widgets[widx::scenario_group].top + 1;
 
                 auto point = Point(xPos, yPos);
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scenario_group);
+                tr.drawStringLeft(*rt, point, Colour::black, StringIds::scenario_group);
             }
 
             {
@@ -1042,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 int16_t yPos = window.y + widgets[widx::change_details_btn].top + 1;
 
                 auto point = Point(xPos, yPos);
-                drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::scenario_details);
+                tr.drawStringLeft(*rt, point, Colour::black, StringIds::scenario_details);
             }
 
             {
@@ -1062,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 auto& target = window.widgets[widx::change_details_btn];
                 auto point = Point(window.x + 16, window.y + 12 + target.top);
-                drawingCtx.drawStringLeftWrapped(*rt, point, target.left - 26, Colour::black, StringIds::black_stringid, args);
+                tr.drawStringLeftWrapped(*rt, point, target.left - 26, Colour::black, StringIds::black_stringid, args);
             }
         }
 

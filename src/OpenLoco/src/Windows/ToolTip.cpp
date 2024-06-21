@@ -1,6 +1,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -67,16 +68,17 @@ namespace OpenLoco::Ui::Windows::ToolTip
     static void common([[maybe_unused]] const Window* window, [[maybe_unused]] int32_t widgetIndex, StringId stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         StringManager::formatString(_text, stringId, args);
 
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        int16_t strWidth = drawingCtx.getStringWidthNewLined(_text);
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        int16_t strWidth = tr.getStringWidthNewLined(_text);
         strWidth = std::min<int16_t>(strWidth, 196);
 
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
+        tr.setCurrentFont(Gfx::Font::medium_bold);
 
-        auto [wrappedWidth, breakCount] = drawingCtx.wrapString(_text, strWidth + 1);
+        auto [wrappedWidth, breakCount] = tr.wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;
 
         int width = wrappedWidth + 3;
@@ -171,12 +173,13 @@ namespace OpenLoco::Ui::Windows::ToolTip
     // 0x004C9397
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         uint16_t x = window.x;
         uint16_t y = window.y;
         uint16_t width = window.width;
         uint16_t height = window.height;
-
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
 
         drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
         drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(ObjectManager::get<InterfaceSkinObject>()->tooltipColour)), Gfx::RectFlags::transparent);
@@ -192,7 +195,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
         drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
         auto point = Point(((width + 1) / 2) + x - 1, y + 1);
-        drawingCtx.drawStringCentredRaw(*rt, point, _lineBreakCount, Colour::black, _text);
+        tr.drawStringCentredRaw(*rt, point, _lineBreakCount, Colour::black, _text);
     }
 
     // 0x004C94F7

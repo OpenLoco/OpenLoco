@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -140,24 +141,24 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets.
         self.draw(rt);
-
         // Coord X/Y labels
         {
             FormatArguments args{};
             args.push(StringIds::tile_inspector_x_coord);
             auto& widget = self.widgets[widx::xPos];
             auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
         }
         {
             FormatArguments args{};
             args.push(StringIds::tile_inspector_y_coord);
             auto& widget = self.widgets[widx::yPos];
             auto point = Point(self.x + widget.left - 15, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         // Coord X/Y values
@@ -166,14 +167,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push<int16_t>(_currentPosition.x);
             auto& widget = self.widgets[widx::xPos];
             auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
         }
         {
             FormatArguments args{};
             args.push<int16_t>(_currentPosition.y);
             auto& widget = self.widgets[widx::yPos];
             auto point = Point(self.x + widget.left + 2, self.y + widget.top + 1);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::tile_inspector_coord, args);
         }
 
         // Selected element details
@@ -188,7 +189,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             auto widget = self.widgets[widx::detailsGroup];
             auto point = Point(self.x + widget.left + 7, self.y + widget.top + 14);
-            drawingCtx.drawString(*rt, point, Colour::black, buffer);
+            tr.drawString(*rt, point, Colour::black, buffer);
         }
     }
 
@@ -329,6 +330,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto tile = TileManager::get(_currentPosition);
         auto yPos = 0;
@@ -385,7 +387,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             // Draw name and type
             auto* widget = &self.widgets[widx::nameTypeHeader];
             auto point = Point(0, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
+            tr.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw base height
             widget = &self.widgets[widx::baseHeightHeader];
@@ -393,7 +395,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.baseZ());
             point = Point(widget->left - 4, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
+            tr.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw clear height
             widget = &self.widgets[widx::clearHeightHeader];
@@ -401,7 +403,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.clearZ());
             point = Point(widget->left - 4, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
+            tr.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw direction
             widget = &self.widgets[widx::directionHeader];
@@ -409,7 +411,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push(StringIds::uint16_raw);
             args.push<uint16_t>(element.data()[0] & 0x03);
             point = Point(widget->left - 4, yPos);
-            drawingCtx.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
+            tr.drawStringLeftClipped(rt, point, widget->width(), Colour::black, formatString, args);
 
             // Draw ghost flag
             widget = &self.widgets[widx::ghostHeader];
@@ -417,7 +419,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             {
                 static constexpr char strCheckmark[] = "\xAC";
                 point = Point(widget->left - 4, yPos);
-                drawingCtx.drawString(rt, point, Colour::white, strCheckmark);
+                tr.drawString(rt, point, Colour::white, strCheckmark);
             }
 
             rowNum++;

@@ -1,5 +1,6 @@
 #include "Ui/TextInput.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
@@ -89,9 +90,11 @@ namespace OpenLoco::Ui::TextInput
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        auto stringWidth = drawingCtx.getStringWidth(buffer.c_str());
-        auto cursorX = drawingCtx.getStringWidth(cursorStr.c_str());
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        auto stringWidth = tr.getStringWidth(buffer.c_str());
+        auto cursorX = tr.getStringWidth(cursorStr.c_str());
 
         int x = xOffset + cursorX;
 
@@ -117,9 +120,11 @@ namespace OpenLoco::Ui::TextInput
         std::string cursorStr = buffer.substr(0, cursorPosition);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        auto stringWidth = drawingCtx.getStringWidth(buffer.c_str());
-        auto cursorX = drawingCtx.getStringWidth(cursorStr.c_str());
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        auto stringWidth = tr.getStringWidth(buffer.c_str());
+        auto cursorX = tr.getStringWidth(cursorStr.c_str());
 
         auto midX = containerWidth / 2;
 

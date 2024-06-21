@@ -4,6 +4,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Localisation/Conversion.h"
 #include "Localisation/FormatArguments.hpp"
@@ -348,15 +349,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         StringManager::formatString(folderBuffer, StringIds::window_browse_folder, args);
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.setCurrentFont(Gfx::Font::medium_bold);
-        const auto folderLabelWidth = drawingCtx.getStringWidth(folderBuffer);
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        tr.setCurrentFont(Gfx::Font::medium_bold);
+        const auto folderLabelWidth = tr.getStringWidth(folderBuffer);
 
         // We'll ensure the folder width does not reach the parent button.
         const uint16_t maxWidth = self.widgets[widx::parent_button].left - folderLabelWidth - 10;
         auto nameBuffer = _currentDirectory.u8string();
         nameBuffer = Localisation::convertUnicodeToLoco(nameBuffer);
         strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
-        uint16_t folderWidth = drawingCtx.getStringWidth(_displayFolderBuffer);
+        uint16_t folderWidth = tr.getStringWidth(_displayFolderBuffer);
 
         // If the folder already fits, we're done.
         if (folderWidth <= maxWidth)
@@ -378,7 +381,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
             // Prepare for the next pass, if needed.
             relativeDirectory++;
-        } while (drawingCtx.getStringWidth(_displayFolderBuffer) > maxWidth);
+        } while (tr.getStringWidth(_displayFolderBuffer) > maxWidth);
     }
 
     static FormatArguments getStringPtrFormatArgs(const char* buffer)
@@ -393,6 +396,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         window.draw(rt);
 
@@ -400,7 +404,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto folder = &_displayFolderBuffer[0];
             auto args = getStringPtrFormatArgs(folder);
             auto point = Point(window.x + 3, window.y + window.widgets[widx::parent_button].top + 6);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_folder, args);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_folder, args);
         }
 
         auto selectedIndex = window.var_85A;
@@ -420,7 +424,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
                 auto args = getStringPtrFormatArgs(nameBuffer.c_str());
                 auto point = Point(x + (width / 2), y);
-                drawingCtx.drawStringCentredClipped(
+                tr.drawStringCentredClipped(
                     *rt,
                     point,
                     width,
@@ -452,7 +456,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             // Draw filename label
             auto point = Point(window.x + 3, window.y + filenameBox.top + 2);
-            drawingCtx.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_filename);
+            tr.drawStringLeft(*rt, point, Colour::black, StringIds::window_browse_filename);
 
             // Clip to text box
             auto context2 = Gfx::clipRenderTarget(*rt, Ui::Rect(window.x + filenameBox.left + 1, window.y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
@@ -467,6 +471,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawSavePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto imageId = 0;
@@ -490,13 +496,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Company
         {
             auto args = getStringPtrFormatArgs(saveInfo.company);
-            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_company, args);
+            point = tr.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_company, args);
         }
 
         // Owner
         {
             auto args = getStringPtrFormatArgs(saveInfo.owner);
-            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::owner_label, args);
+            point = tr.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::owner_label, args);
         }
 
         // Date
@@ -504,7 +510,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto argsBuf = FormatArgumentsBuffer{};
             auto args = FormatArguments{ argsBuf };
             args.push(saveInfo.date);
-            point = drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_date, args);
+            point = tr.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, StringIds::window_browse_date, args);
         }
 
         // Challenge progress
@@ -526,13 +532,15 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto argsBuf = FormatArgumentsBuffer{};
             auto args = FormatArguments{ argsBuf };
             args.push(progress);
-            drawingCtx.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, stringId, args);
+            tr.drawStringLeftWrapped(rt, point, maxWidth, Colour::black, stringId, args);
         }
     }
 
     static void drawLandscapePreview(Ui::Window& window, Gfx::RenderTarget& rt, int32_t x, int32_t y, int32_t width, int32_t height)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
         drawingCtx.fillRectInset(rt, x, y, x + width, y + height, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         if ((_previewScenarioOptions->scenarioFlags & Scenario::ScenarioFlags::landscapeGenerationDone) != Scenario::ScenarioFlags::none)
@@ -560,19 +568,20 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto imageId = Gfx::recolour(ImageIds::random_map_watermark, window.getColour(WindowColour::secondary).c());
             drawingCtx.drawImage(&rt, x, y, imageId);
             auto origin = Ui::Point(x + 64, y + 60);
-            drawingCtx.drawStringCentredWrapped(rt, origin, 128, Colour::black, StringIds::randomly_generated_landscape);
+            tr.drawStringCentredWrapped(rt, origin, 128, Colour::black, StringIds::randomly_generated_landscape);
         }
     }
 
     static void drawTextInput(Ui::Window* window, Gfx::RenderTarget& rt, const char* text, int32_t caret, bool showCaret)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw text box text
         Ui::Point origin = { 0, 1 };
         {
             auto args = getStringPtrFormatArgs(text);
-            drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, args);
         }
 
         if (showCaret)
@@ -580,7 +589,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             if (caret == -1)
             {
                 // Draw horizontal caret
-                drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::window_browse_input_caret);
+                tr.drawStringLeft(rt, origin, Colour::black, StringIds::window_browse_input_caret);
             }
             else
             {
@@ -589,7 +598,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const std::string gbuffer = std::string(text, caret);
                 auto args = getStringPtrFormatArgs(gbuffer.c_str());
                 origin = { 0, 1 };
-                origin = drawingCtx.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, args);
+                origin = tr.drawStringLeft(rt, origin, Colour::black, StringIds::black_stringid, args);
 
                 // Draw vertical caret
                 drawingCtx.drawRect(rt, origin.x, origin.y, 1, 9, Colours::getShade(window->getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
@@ -606,6 +615,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Background
         drawingCtx.clearSingle(rt, Colours::getShade(window.getColour(WindowColour::secondary).c(), 4));
@@ -650,7 +660,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             // Draw the name
             auto args = getStringPtrFormatArgs(nameBuffer.c_str());
             auto point = Point(x, y);
-            drawingCtx.drawStringLeft(rt, point, Colour::black, stringId, args);
+            tr.drawStringLeft(rt, point, Colour::black, stringId, args);
 
             y += lineHeight;
             i++;

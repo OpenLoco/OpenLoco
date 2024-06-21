@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Graphics/Colour.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringIds.h"
 #include "Message.h"
@@ -167,7 +168,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }
 
-        auto drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
         drawingCtx.clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
@@ -212,7 +214,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         }
 
         auto point = Point(55, 0);
-        drawingCtx.drawStringTicker(*clipped, point, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
+        tr.drawStringTicker(*clipped, point, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
     }
 
     static constexpr WindowEventList kEvents = {

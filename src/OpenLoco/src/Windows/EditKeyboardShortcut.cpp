@@ -2,6 +2,7 @@
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input/Shortcuts.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -65,13 +66,14 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         self.draw(rt);
 
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
         auto point = Ui::Point(self.x + 140, self.y + 32);
-        drawingCtx.drawStringCentredWrapped(*rt, point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
+        tr.drawStringCentredWrapped(*rt, point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
     }
 
     // 0x004BE821

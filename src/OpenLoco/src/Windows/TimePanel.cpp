@@ -6,6 +6,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "Input.h"
 #include "Intro.h"
 #include "Localisation/FormatArguments.hpp"
@@ -151,6 +152,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
     {
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& frame = self.widgets[Widx::outer_frame];
         drawingCtx.drawRect(*rt, self.x + frame.left, self.y + frame.top, frame.width(), frame.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
@@ -181,7 +183,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             auto& widget = _widgets[Widx::date_btn];
             auto point = Point(self.x + widget.midX(), self.y + widget.top + 1);
-            drawingCtx.drawStringCentred(*rt, point, c, format, args);
+            tr.drawStringCentred(*rt, point, c, format, args);
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
