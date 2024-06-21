@@ -682,7 +682,7 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_send_message = 739;
     constexpr StringId shortcut_key_base = 740;
     constexpr StringId shortcut_show_options_menu = 741;
-    
+
     constexpr StringId keyboard_backspace = 748;
     constexpr StringId keyboard_tab = 749;
     constexpr StringId keyboard_return = 753;
