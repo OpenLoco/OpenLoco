@@ -106,7 +106,7 @@ namespace OpenLoco::World::MapGenerator
                             total += copyHeight[TilePos2(x + xx, y + yy)];
                         }
                     }
-                    heightMap[TilePos2( x, y )] = total / 9;
+                    heightMap[TilePos2(x, y)] = total / 9;
                 }
             }
 
