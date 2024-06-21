@@ -90,7 +90,7 @@ namespace OpenLoco::World::MapGenerator
             for (auto i = 0; i < featureHeight; ++i)
             {
                 const auto data = *src++;
-                heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2( x, y )]);
                 y--;
                 y &= 0x1FF;
             }
@@ -109,7 +109,7 @@ namespace OpenLoco::World::MapGenerator
             for (auto i = 0; i < featureHeight; ++i)
             {
                 const auto data = *src++;
-                heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                heightMap[TilePos2(x, y)] = std::max(data, heightMap[TilePos2(x, y)]);
                 y++;
                 y &= 0x1FF;
             }
@@ -128,7 +128,7 @@ namespace OpenLoco::World::MapGenerator
             for (auto i = 0; i < featureWidth; ++i)
             {
                 const auto data = *src++;
-                heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                heightMap[TilePos2( x, y )] = std::max(data, heightMap[TilePos2( x, y )]);
                 x--;
                 x &= 0x1FF;
             }
@@ -148,7 +148,7 @@ namespace OpenLoco::World::MapGenerator
             {
                 const auto data = *src++;
 
-                heightMap[Point{ x, y }] = std::max(data, heightMap[Point{ x, y }]);
+                heightMap[TilePos2( x, y )] = std::max(data, heightMap[TilePos2( x, y )]);
 
                 x++;
                 x &= 0x1FF;

@@ -78,7 +78,7 @@ namespace OpenLoco::World::MapGenerator
                 auto noiseValue = std::clamp(noiseFractal(perm, x, y, freq, settings.octaves, 2.0f, 0.65f), -1.0f, 1.0f);
                 auto normalisedNoiseValue = (noiseValue + 1.0f) / 2.0f;
                 auto height = settings.low + static_cast<int32_t>(normalisedNoiseValue * settings.high);
-                heightMap[{ x, y }] = height;
+                heightMap[TilePos2(x, y)] = height;
             }
         }
     }
@@ -103,10 +103,10 @@ namespace OpenLoco::World::MapGenerator
                     {
                         for (int32_t xx = -1; xx <= 1; xx++)
                         {
-                            total += copyHeight[{ x + xx, y + yy }];
+                            total += copyHeight[TilePos2(x + xx, y + yy)];
                         }
                     }
-                    heightMap[{ x, y }] = total / 9;
+                    heightMap[TilePos2( x, y )] = total / 9;
                 }
             }
 

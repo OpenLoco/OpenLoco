@@ -43,7 +43,7 @@ namespace OpenLoco::World::MapGenerator
                 pngImage->getPixel(x, y, red, green, blue, alpha);
 
                 auto imgHeight = std::max({ red, green, blue });
-                heightMap[{ y, x }] += imgHeight * scalingFactor; // this must be { y, x } otherwise the heightmap is mirrored
+                heightMap[{ TilePos2(y, x) }] += imgHeight * scalingFactor; // this must be { y, x } otherwise the heightmap is mirrored
             }
         }
     }
