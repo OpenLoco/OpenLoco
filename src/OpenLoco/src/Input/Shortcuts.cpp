@@ -416,12 +416,12 @@ namespace OpenLoco::Input::Shortcuts
 
         Windows::MessageWindow::open();
     }
-    
+
     static void showOptionsMenu()
     {
-    	if(isEditorMode())
-    	   return;
-    	Windows::Options::open();
+        if (isEditorMode())
+            return;
+        Windows::Options::open();
     }
     // 0x004BF3AB
     static void makeScreenshot()
