@@ -1,14 +1,14 @@
 #pragma once
 
+#include <OpenLoco/Engine/World.hpp>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <vector>
-#include <OpenLoco/Engine/World.hpp>
 namespace OpenLoco::World::MapGenerator
 {
-    
-    using TilePos2 = OpenLoco::World::TilePos2; 
+
+    using TilePos2 = OpenLoco::World::TilePos2;
     class HeightMap
     {
     private:
