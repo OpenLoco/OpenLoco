@@ -115,7 +115,6 @@ namespace OpenLoco::StringIds
     constexpr StringId screenshot_saved_as = 109;
     constexpr StringId screenshot_failed = 110;
     constexpr StringId landscape_data_area_full = 111;
-
     constexpr StringId cant_build_partly_above_partly_below_ground = 112;
     constexpr StringId stringid_2 = 113;
     constexpr StringId tooltip_left_hand_curve = 114;
@@ -682,7 +681,7 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_toggle_last_announcement = 738;
     constexpr StringId shortcut_send_message = 739;
     constexpr StringId shortcut_key_base = 740;
-    constexpr StringId shortcut_show_options_menu = 741;
+    constexpr StringId shortcut_show_options_window = 741;
 
     constexpr StringId keyboard_backspace = 748;
     constexpr StringId keyboard_tab = 749;
