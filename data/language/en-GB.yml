@@ -760,9 +760,9 @@ strings:
   737: Screenshot
   738: Cancel or Show Last Announcement
   739: Send Message (2-player mode)
-  741: Show Options Window
   # Virtual-Key Codes
   740: ???
+  741: ???
   742: ???
   743: ???
   744: ???
@@ -2400,3 +2400,4 @@ strings:
   2346: "{COLOUR BLACK}Production Last Month"
   2347: "{COLOUR BLACK}Production Last Month ▼"
   2348: "{SMALLFONT}{COLOUR BLACK}Sort list by production last month"
+  2349: "Show Options Window"

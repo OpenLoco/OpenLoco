@@ -681,7 +681,6 @@ namespace OpenLoco::StringIds
     constexpr StringId shortcut_toggle_last_announcement = 738;
     constexpr StringId shortcut_send_message = 739;
     constexpr StringId shortcut_key_base = 740;
-    constexpr StringId shortcut_show_options_window = 741;
 
     constexpr StringId keyboard_backspace = 748;
     constexpr StringId keyboard_tab = 749;
@@ -1983,6 +1982,7 @@ namespace OpenLoco::StringIds
     constexpr StringId industry_table_header_production_last_month = 2346;
     constexpr StringId industry_table_header_production_last_month_desc = 2347;
     constexpr StringId sort_industry_production_last_month = 2348;
+    constexpr StringId shortcut_show_options_window = 2349;
 
     constexpr StringId temporary_object_load_str_0 = 8192;
     constexpr StringId temporary_object_load_str_1 = 8193;
