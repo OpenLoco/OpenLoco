@@ -33,7 +33,6 @@
 #include "Game.h"
 #include "GameCommands/GameCommands.h"
 #include "GameCommands/General/LoadSaveQuit.h"
-#include "Graphics/FPSCounter.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"
@@ -405,12 +404,6 @@ namespace OpenLoco::Ui
         if (!Intro::isActive())
         {
             drawingEngine.render();
-        }
-
-        // Draw FPS counter?
-        if (Config::get().showFPS)
-        {
-            Gfx::drawFPS();
         }
 
         drawingEngine.present();

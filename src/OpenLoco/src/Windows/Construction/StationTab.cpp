@@ -921,13 +921,12 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DE40
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        self.draw(rt);
-        Common::drawTabs(&self, rt);
+        self.draw(drawingCtx);
+        Common::drawTabs(&self, drawingCtx);
 
         auto company = CompanyManager::getPlayerCompany();
         auto companyColour = company->mainColours.primary;
@@ -938,20 +937,20 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
             auto imageId = Gfx::recolour(airportObj->image, companyColour);
-            drawingCtx.drawImage(rt, xPos, yPos, imageId);
+            drawingCtx.drawImage(xPos, yPos, imageId);
         }
         else if (_byte_1136063 & (1 << 6))
         {
             auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
             auto imageId = Gfx::recolour(dockObj->image, companyColour);
-            drawingCtx.drawImage(rt, xPos, yPos, imageId);
+            drawingCtx.drawImage(xPos, yPos, imageId);
         }
         else if (_trackType & (1 << 7))
         {
             auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->image + RoadStation::ImageIds::preview_image, companyColour);
-            drawingCtx.drawImage(rt, xPos, yPos, imageId);
+            drawingCtx.drawImage(xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
             if (!roadStationObj->hasFlags(RoadStationFlags::recolourable))
@@ -960,14 +959,14 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
-            drawingCtx.drawImage(rt, xPos, yPos, imageId);
+            drawingCtx.drawImage(xPos, yPos, imageId);
         }
         else
         {
             auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-            drawingCtx.drawImage(rt, xPos, yPos, imageId);
+            drawingCtx.drawImage(xPos, yPos, imageId);
 
             auto colour = Colours::getTranslucent(companyColour);
             if (!trainStationObj->hasFlags(TrainStationFlags::recolourable))
@@ -976,7 +975,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-            drawingCtx.drawImage(rt, xPos, yPos, imageId);
+            drawingCtx.drawImage(xPos, yPos, imageId);
         }
 
         if (_stationCost != 0x80000000 && _stationCost != 0)
@@ -987,13 +986,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             FormatArguments args{};
             args.push<uint32_t>(_stationCost);
 
-            tr.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
 
         xPos = self.x + 3;
         yPos = self.widgets[widx::image].bottom + self.y + 16;
         auto width = self.width - 4;
-        drawingCtx.drawRectInset(*rt, xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
+        drawingCtx.drawRectInset(xPos, yPos, width, 1, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset);
 
         if ((_ghostVisibilityFlags & GhostVisibilityFlags::station) == GhostVisibilityFlags::none)
             return;
@@ -1017,17 +1016,17 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         auto origin = Point(xPos, yPos);
         width = self.width - 4;
-        tr.drawStringCentredClipped(*rt, origin, width, Colour::black, StringIds::new_station_buffer, args);
+        tr.drawStringCentredClipped(origin, width, Colour::black, StringIds::new_station_buffer, args);
 
         xPos = self.x + 2;
         yPos = self.widgets[widx::image].bottom + self.y + 29;
 
         origin = Point(xPos, yPos);
-        origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_accepts);
+        origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
+            origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -1041,7 +1040,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
 
-                        drawingCtx.drawImage(rt, origin.x, origin.y, cargoObj->unitInlineSprite);
+                        drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
                         origin.x += 10;
                     }
                 }
@@ -1052,11 +1051,11 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         yPos = self.widgets[widx::image].bottom + self.y + 49;
         origin = Point(xPos, yPos);
 
-        origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_produces);
+        origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            origin = tr.drawStringLeft(*rt, origin, Colour::black, StringIds::catchment_area_nothing);
+            origin = tr.drawStringLeft(origin, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -1070,7 +1069,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     {
                         auto cargoObj = ObjectManager::get<CargoObject>(i);
 
-                        drawingCtx.drawImage(rt, origin.x, origin.y, cargoObj->unitInlineSprite);
+                        drawingCtx.drawImage(origin.x, origin.y, cargoObj->unitInlineSprite);
                         origin.x += 10;
                     }
                 }

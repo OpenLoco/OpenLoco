@@ -13,34 +13,33 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     // 0x0042DE40
-    void BuildingObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void BuildingObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto bit = Numerics::bitScanReverse(colours);
 
         const auto colour = (bit == -1) ? Colour::black : static_cast<Colour>(bit);
 
-        drawBuilding(&rt, 1, x, y + 40, colour);
+        drawBuilding(drawingCtx, 1, x, y + 40, colour);
     }
 
     // 0x0042DB95
-    void BuildingObject::drawBuilding(Gfx::RenderTarget* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
+    void BuildingObject::drawBuilding(Gfx::DrawingContext& drawingCtx, uint8_t buildingRotation, int16_t x, int16_t y, Colour colour) const
     {
         ImageId baseImage(image, colour);
         Ui::Point pos{ x, y };
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto part : getBuildingParts(0))
         {
             auto partImage = baseImage.withIndexOffset(part * 4 + buildingRotation);
-            drawingCtx.drawImage(*clipped, pos, partImage);
+            drawingCtx.drawImage(pos, partImage);
             pos.y -= partHeights[part];
         }
     }
 
     // 0x0042DE82
-    void BuildingObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void BuildingObject::drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designedYear, obsoleteYear);
+        ObjectManager::drawGenericDescription(drawingCtx, rowPosition, designedYear, obsoleteYear);
     }
 
     // 0x0042DE1E

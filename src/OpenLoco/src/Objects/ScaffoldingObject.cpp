@@ -11,14 +11,13 @@
 namespace OpenLoco
 {
     // 0x0042DF15
-    void ScaffoldingObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void ScaffoldingObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::yellow);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
-        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
-        drawingCtx.drawImage(&rt, x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
+        drawingCtx.drawImage(x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentBack);
+        drawingCtx.drawImage(x, y + 23, colourImage + Scaffolding::ImageIds::type21x1SegmentFront);
+        drawingCtx.drawImage(x, y + 23, colourImage + Scaffolding::ImageIds::type21x1RoofSE);
     }
 
     // 0x0042DED8

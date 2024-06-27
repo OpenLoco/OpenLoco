@@ -11,16 +11,15 @@
 namespace OpenLoco
 {
     // 0x00477EB9
-    void RoadExtraObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void RoadExtraObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x, y, colourImage + 36);
-        drawingCtx.drawImage(&rt, x, y, colourImage + 37);
-        drawingCtx.drawImage(&rt, x, y, colourImage);
-        drawingCtx.drawImage(&rt, x, y, colourImage + 33);
-        drawingCtx.drawImage(&rt, x, y, colourImage + 32);
+        drawingCtx.drawImage(x, y, colourImage + 36);
+        drawingCtx.drawImage(x, y, colourImage + 37);
+        drawingCtx.drawImage(x, y, colourImage);
+        drawingCtx.drawImage(x, y, colourImage + 33);
+        drawingCtx.drawImage(x, y, colourImage + 32);
     }
 
     // 0x00477E92

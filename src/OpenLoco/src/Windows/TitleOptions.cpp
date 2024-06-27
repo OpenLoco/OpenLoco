@@ -52,13 +52,12 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         return window;
     }
 
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets.
-        window.draw(rt);
+        window.draw(drawingCtx);
 
         int16_t x = window.x + window.width / 2;
         int16_t y = window.y + window.widgets[Widx::options_button].top + 2;
@@ -68,7 +67,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         auto args = FormatArguments{ argsBuf };
         args.push(StringIds::options);
 
-        tr.drawStringCentredWrapped(*rt, origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, args);
+        tr.drawStringCentredWrapped(origin, window.width, Colour::white, StringIds::outlined_wcolour2_stringid, args);
     }
 
     static void onMouseUp([[maybe_unused]] Window& window, WidgetIndex_t widgetIndex)

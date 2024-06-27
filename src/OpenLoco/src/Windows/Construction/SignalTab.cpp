@@ -300,13 +300,12 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E501
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        self.draw(rt);
-        Common::drawTabs(&self, rt);
+        self.draw(drawingCtx);
+        Common::drawTabs(&self, drawingCtx);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
@@ -319,7 +318,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push(trainSignalObject->description);
 
             auto point = Point(xPos, yPos);
-            tr.drawStringLeftWrapped(*rt, point, width, Colour::black, StringIds::signal_black, args);
+            tr.drawStringLeftWrapped(point, width, Colour::black, StringIds::signal_black, args);
         }
 
         auto imageId = trainSignalObject->image;
@@ -327,14 +326,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         xPos = self.widgets[widx::both_directions].midX() + self.x;
         yPos = self.widgets[widx::both_directions].bottom + self.y - 4;
 
-        drawingCtx.drawImage(rt, xPos - 8, yPos, imageId);
+        drawingCtx.drawImage(xPos - 8, yPos, imageId);
 
-        drawingCtx.drawImage(rt, xPos + 8, yPos, imageId + 4);
+        drawingCtx.drawImage(xPos + 8, yPos, imageId + 4);
 
         xPos = self.widgets[widx::single_direction].midX() + self.x;
         yPos = self.widgets[widx::single_direction].bottom + self.y - 4;
 
-        drawingCtx.drawImage(rt, xPos, yPos, imageId);
+        drawingCtx.drawImage(xPos, yPos, imageId);
 
         if (_signalCost != 0x80000000 && _signalCost != 0)
         {
@@ -342,7 +341,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             args.push<uint32_t>(_signalCost);
 
             auto point = Point(self.x + 69, self.widgets[widx::single_direction].bottom + self.y + 5);
-            tr.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }
 

@@ -36,12 +36,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     static loco_global<uint8_t[18], 0x0050A006> _availableObjects;
 
     // 0x00439DE4
-    void draw(Window& self, Gfx::RenderTarget* rt)
+    void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
         // Draw widgets.
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         const auto companyColour = CompanyManager::getPlayerCompanyColour();
 
@@ -76,10 +74,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
                 bgImage++;
             }
 
-            drawingCtx.drawImage(rt, x, y, fgImage);
+            drawingCtx.drawImage(x, y, fgImage);
 
             y = self.widgets[Widx::road_menu].top + self.y;
-            drawingCtx.drawImage(rt, x, y, bgImage);
+            drawingCtx.drawImage(x, y, bgImage);
         }
     }
 

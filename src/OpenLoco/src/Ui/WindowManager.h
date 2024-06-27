@@ -71,7 +71,6 @@ namespace OpenLoco::Ui::WindowManager
     Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindowCentred(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
     Window* createWindow(WindowType type, Ui::Size size, WindowFlags flags, const WindowEventList& events);
-    void drawSingle(Gfx::RenderTarget* rt, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
@@ -100,7 +99,7 @@ namespace OpenLoco::Ui::WindowManager
     uint8_t getVehiclePreviewRotationFrameUnk1();
     uint8_t getVehiclePreviewRotationFrameUnk2();
 
-    void render(Gfx::RenderTarget& rt, const Rect& rect);
+    void render(Gfx::DrawingContext& ctx, const Rect& rect);
 }
 
 namespace OpenLoco::Vehicles
@@ -125,7 +124,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open(uint32_t vehicle, uint32_t flags);
         void sub_4B92A5(Ui::Window* window);
-        void drawVehicleOverview(Gfx::RenderTarget* rt, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
+        void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, CompanyId company, uint8_t eax, uint8_t esi, Ui::Point offset);
         void registerHooks();
     }
 
@@ -463,7 +462,7 @@ namespace OpenLoco::Ui::Windows
         }
         namespace Common
         {
-            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::RenderTarget* const pDrawpixelinfo);
+            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::DrawingContext* drawingCtx);
         }
         bool rotate();
         bool cancelVehicleTools();

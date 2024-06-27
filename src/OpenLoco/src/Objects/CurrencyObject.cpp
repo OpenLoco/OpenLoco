@@ -64,9 +64,8 @@ namespace OpenLoco
     }
 
     // 0x0046DFC3
-    void CurrencyObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void CurrencyObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto currencyIndex = objectIcon + 3;
@@ -80,7 +79,7 @@ namespace OpenLoco
         auto defaultWidth = Gfx::getCharacterWidth(Gfx::Font::large, 131);
         Gfx::setCharacterWidth(Gfx::Font::large, 131, currencyElement->width + 1);
 
-        tr.drawStringCentred(rt, Ui::Point(x, y - 9), Colour::black, StringIds::object_currency_big_font);
+        tr.drawStringCentred(Ui::Point(x, y - 9), Colour::black, StringIds::object_currency_big_font);
 
         Gfx::setCharacterWidth(Gfx::Font::large, 131, defaultWidth);
         *defaultElement = backupElement;

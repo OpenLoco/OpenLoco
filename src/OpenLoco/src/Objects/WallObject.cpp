@@ -35,7 +35,7 @@ namespace OpenLoco
     }
 
     // 0x004C4B0B
-    void WallObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void WallObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto image = sprite + WallObj::ImageIds::kFlatSE;
         if ((flags & WallObjectFlags::hasSecondaryColour) != WallObjectFlags::none)
@@ -47,11 +47,10 @@ namespace OpenLoco
             image = Gfx::recolour(sprite + WallObj::ImageIds::kFlatSE, Colour::mutedDarkRed);
         }
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), image);
+        drawingCtx.drawImage(x + 14, y + 16 + (height * 2), image);
         if ((flags & WallObjectFlags::hasGlass) != WallObjectFlags::none)
         {
-            drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), Gfx::recolourTranslucent(sprite + WallObj::ImageIds::kGlassFlatSE, ExtColour::unk8C));
+            drawingCtx.drawImage(x + 14, y + 16 + (height * 2), Gfx::recolourTranslucent(sprite + WallObj::ImageIds::kGlassFlatSE, ExtColour::unk8C));
         }
         else
         {
@@ -59,7 +58,7 @@ namespace OpenLoco
             // TODO: delete
             if ((flags & WallObjectFlags::unk4) != WallObjectFlags::none)
             {
-                drawingCtx.drawImage(&rt, x + 14, y + 16 + (height * 2), image + WallObj::ImageIds::kFlatNE);
+                drawingCtx.drawImage(x + 14, y + 16 + (height * 2), image + WallObj::ImageIds::kFlatNE);
             }
         }
     }

@@ -63,17 +63,16 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE8DF
-    static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(*_editingShortcutIndex)));
         auto point = Ui::Point(self.x + 140, self.y + 32);
-        tr.drawStringCentredWrapped(*rt, point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
+        tr.drawStringCentredWrapped(point, 272, Colour::black, StringIds::change_keyboard_shortcut_desc, args);
     }
 
     // 0x004BE821

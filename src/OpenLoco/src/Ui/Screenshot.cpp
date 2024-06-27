@@ -227,7 +227,15 @@ namespace OpenLoco::Ui
         rt.pitch = 0;
         rt.zoomLevel = 0;
 
-        viewport.render(&rt);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& drawingCtx = drawingEngine.getDrawingContext();
+
+        drawingCtx.pushRenderTarget(rt);
+
+        viewport.render(drawingCtx);
+
+        drawingCtx.popRenderTarget();
+
         auto fileName = prepareSaveScreenshot(rt);
         free(rt.bits);
 

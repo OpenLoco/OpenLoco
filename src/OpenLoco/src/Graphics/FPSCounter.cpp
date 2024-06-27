@@ -35,10 +35,8 @@ namespace OpenLoco::Gfx
         return _currentFPS;
     }
 
-    void drawFPS()
+    void drawFPS(DrawingContext& drawingCtx)
     {
-        auto& drawingEngine = getDrawingEngine();
-        auto& drawingCtx = drawingEngine.getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Measure FPS
@@ -53,12 +51,10 @@ namespace OpenLoco::Gfx
         const char* formatString = (_currentFPS >= 10.0f ? "%.0f" : "%.1f");
         snprintf(&buffer[3], std::size(buffer) - 3, formatString, fps);
 
-        auto& rt = drawingEngine.getScreenRT();
-
         // Draw text
         const int stringWidth = tr.getStringWidth(buffer);
         auto point = Ui::Point(Ui::width() / 2 - (stringWidth / 2), 2);
-        tr.drawString(rt, point, Colour::black, buffer);
+        tr.drawString(point, Colour::black, buffer);
 
         // Make area dirty so the text doesn't get drawn over the last
         invalidateRegion(point.x - 16, point.y - 4, point.x + 16, 16);

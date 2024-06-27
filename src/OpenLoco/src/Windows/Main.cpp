@@ -53,9 +53,9 @@ namespace OpenLoco::Ui::Windows::Main
     }
 
     // 0x0043B2E4
-    static void draw([[maybe_unused]] Ui::Window& window, [[maybe_unused]] Gfx::RenderTarget* const rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        window.draw(rt);
+        window.draw(drawingCtx);
     }
 
     // 0x00468FD3

@@ -11,20 +11,19 @@
 namespace OpenLoco
 {
     // 0x004A6D5F
-    void TrackExtraObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void TrackExtraObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::mutedDarkRed);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         if (paintStyle == 0)
         {
-            drawingCtx.drawImage(&rt, x, y, colourImage);
+            drawingCtx.drawImage(x, y, colourImage);
         }
         else
         {
-            drawingCtx.drawImage(&rt, x, y, colourImage);
-            drawingCtx.drawImage(&rt, x, y, colourImage + 97);
-            drawingCtx.drawImage(&rt, x, y, colourImage + 96);
+            drawingCtx.drawImage(x, y, colourImage);
+            drawingCtx.drawImage(x, y, colourImage + 97);
+            drawingCtx.drawImage(x, y, colourImage + 96);
         }
     }
 

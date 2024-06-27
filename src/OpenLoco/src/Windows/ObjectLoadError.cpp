@@ -78,16 +78,15 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         return window;
     }
 
-    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         // Draw widgets
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         // Draw explanatory text
         auto point = Point(self.x + 3, self.y + 19);
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
-        tr.drawStringLeftWrapped(*rt, point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
+        tr.drawStringLeftWrapped(point, self.width - 6, self.getColour(WindowColour::secondary), StringIds::objectErrorExplanation);
     }
 
     static StringId objectTypeToString(ObjectType type)
@@ -167,13 +166,13 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         }
     }
 
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         const auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(rt, shade);
+        drawingCtx.clearSingle(shade);
 
         // Acquire string buffer
         auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -200,7 +199,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
             // Draw hover rectangle
             if (i == window.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                drawingCtx.drawRect(0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 textColourId = StringIds::wcolour2_stringid;
             }
 
@@ -215,7 +214,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object name
             namePos.y = y;
-            tr.drawStringLeft(rt, namePos, window.getColour(WindowColour::secondary), textColourId, args);
+            tr.drawStringLeft(namePos, window.getColour(WindowColour::secondary), textColourId, args);
 
             // Copy object checksum to buffer
             const auto checksum = fmt::format("{:08X}", header.checksum);
@@ -224,7 +223,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object checksum
             checksumPos.y = y;
-            tr.drawStringLeft(rt, checksumPos, window.getColour(WindowColour::secondary), textColourId, args);
+            tr.drawStringLeft(checksumPos, window.getColour(WindowColour::secondary), textColourId, args);
 
             // Prepare object type for drawing
             args.rewind();
@@ -232,7 +231,7 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
 
             // Draw object type
             typePos.y = y;
-            tr.drawStringLeftWrapped(rt, typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, args);
+            tr.drawStringLeftWrapped(typePos, typeWidth, window.getColour(WindowColour::secondary), textColourId, args);
 
             y += kRowHeight;
         }

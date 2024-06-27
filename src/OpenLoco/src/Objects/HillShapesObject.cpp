@@ -10,12 +10,10 @@
 namespace OpenLoco
 {
     // 0x00463BBD
-    void HillShapesObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void HillShapesObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto imageId = image + hillHeightMapCount + mountainHeightMapCount;
-
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(&rt, x, y, imageId);
+        drawingCtx.drawImage(x, y, imageId);
     }
 
     // 0x00463B70

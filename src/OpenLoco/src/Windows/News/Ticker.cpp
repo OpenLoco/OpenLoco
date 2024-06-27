@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         if (self.var_852 != 0)
             return;
@@ -155,10 +155,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto width = self.width;
         auto height = self.height;
 
-        auto clipped = Gfx::clipRenderTarget(*rt, { x, y, width, height });
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, { x, y, width, height });
 
         if (!clipped)
             return;
+
+        drawingCtx.pushRenderTarget(*clipped);
 
         auto colour = Colours::getShade(Colour::white, 5);
         const auto& mtd = getMessageTypeDescriptor(news->type);
@@ -168,9 +171,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
             colour = Colours::getShade(Colour::mutedDarkRed, 5);
         }
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
-        drawingCtx.clearSingle(*clipped, colour);
+        drawingCtx.clearSingle(colour);
 
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -214,7 +216,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         }
 
         auto point = Point(55, 0);
-        tr.drawStringTicker(*clipped, point, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
+        tr.drawStringTicker(point, StringIds::buffer_2039, Colour::black, 4, ((_word_525CE0 & ~(1 << 15)) >> 2), 109);
+
+        drawingCtx.popRenderTarget();
     }
 
     static constexpr WindowEventList kEvents = {

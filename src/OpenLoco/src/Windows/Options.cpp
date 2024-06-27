@@ -89,10 +89,10 @@ namespace OpenLoco::Ui::Windows::Options
             miscellaneous,
         };
 
-        static void drawTabs(Window* w, Gfx::RenderTarget* rt)
+        static void drawTabs(Window* w, Gfx::DrawingContext& drawingCtx)
         {
-            Widget::drawTab(w, rt, ImageIds::tab_display, Widx::tab_display);
-            Widget::drawTab(w, rt, ImageIds::tab_sound, Widx::tab_sound);
+            Widget::drawTab(w, drawingCtx, ImageIds::tab_display, Widx::tab_display);
+            Widget::drawTab(w, drawingCtx, ImageIds::tab_sound, Widx::tab_sound);
 
             static constexpr uint32_t music_tab_ids[] = {
                 ImageIds::tab_music_0,
@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     imageId = music_tab_ids[(w->frameNo / 4) % 16];
                 }
-                Widget::drawTab(w, rt, imageId, Widx::tab_music);
+                Widget::drawTab(w, drawingCtx, imageId, Widx::tab_music);
             }
 
             static constexpr uint32_t globe_tab_ids[] = {
@@ -165,17 +165,17 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     imageId = globe_tab_ids[(w->frameNo / 2) % 32];
                 }
-                Widget::drawTab(w, rt, imageId, Widx::tab_regional);
+                Widget::drawTab(w, drawingCtx, imageId, Widx::tab_regional);
             }
 
-            Widget::drawTab(w, rt, ImageIds::tab_control, Widx::tab_controls);
-            Widget::drawTab(w, rt, ImageIds::tab_miscellaneous, Widx::tab_miscellaneous);
+            Widget::drawTab(w, drawingCtx, ImageIds::tab_control, Widx::tab_controls);
+            Widget::drawTab(w, drawingCtx, ImageIds::tab_miscellaneous, Widx::tab_miscellaneous);
 
             // Company tab
             {
                 auto skin = ObjectManager::get<InterfaceSkinObject>();
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                Widget::drawTab(w, rt, imageId, Widx::tab_company);
+                Widget::drawTab(w, drawingCtx, imageId, Widx::tab_company);
             }
         }
 
@@ -671,40 +671,39 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004BFAF9
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             // Draw widgets.
-            w.draw(rt);
+            w.draw(drawingCtx);
 
-            Common::drawTabs(&w, rt);
+            Common::drawTabs(&w, drawingCtx);
 
             auto point = Point(w.x + 10, w.y + Display::_widgets[Display::Widx::screen_mode].top + 1);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::options_screen_mode);
+            tr.drawStringLeft(point, Colour::black, StringIds::options_screen_mode);
 
             point.y = w.y + Display::_widgets[Display::Widx::display_resolution].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::display_resolution);
+            tr.drawStringLeft(point, Colour::black, StringIds::display_resolution);
 
             point.y = w.y + Display::_widgets[Display::Widx::construction_marker].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::construction_marker);
+            tr.drawStringLeft(point, Colour::black, StringIds::construction_marker);
 
             point.y = w.y + Display::_widgets[Display::Widx::vehicles_min_scale].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::vehicles_min_scale);
+            tr.drawStringLeft(point, Colour::black, StringIds::vehicles_min_scale);
 
             point.y = w.y + Display::_widgets[Display::Widx::station_names_min_scale].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::station_names_min_scale);
+            tr.drawStringLeft(point, Colour::black, StringIds::station_names_min_scale);
 
             point.y = w.y + Display::_widgets[Display::Widx::display_scale].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::window_scale_factor);
+            tr.drawStringLeft(point, Colour::black, StringIds::window_scale_factor);
 
             FormatArguments args{};
             args.push<int32_t>(Config::get().scaleFactor * 100);
 
             auto& scaleWidget = w.widgets[Widx::display_scale];
             point = Point(w.x + scaleWidget.left + 1, w.y + scaleWidget.top + 1);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::scale_formatted, args);
+            tr.drawStringLeft(point, Colour::black, StringIds::scale_formatted, args);
         }
 
         static void applyScreenModeRestrictions(Window* w)
@@ -799,12 +798,12 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C02F5
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
             // Draw widgets.
-            w.draw(rt);
+            w.draw(drawingCtx);
 
-            Common::drawTabs(&w, rt);
+            Common::drawTabs(&w, drawingCtx);
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi)
@@ -1036,30 +1035,29 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C05F9
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             // Draw widgets.
-            w.draw(rt);
+            w.draw(drawingCtx);
 
-            Common::drawTabs(&w, rt);
+            Common::drawTabs(&w, drawingCtx);
 
             {
                 auto point = Point(w.x + 10, w.y + w.widgets[Widx::currently_playing_btn].top);
-                tr.drawStringLeft(*rt, point, Colour::black, StringIds::currently_playing);
+                tr.drawStringLeft(point, Colour::black, StringIds::currently_playing);
             }
 
             {
                 auto point = Point(w.x + 183, w.y + w.widgets[Widx::volume].top + 7);
-                tr.drawStringLeft(*rt, point, Colour::black, StringIds::volume);
+                tr.drawStringLeft(point, Colour::black, StringIds::volume);
             }
 
-            drawingCtx.drawImage(rt, w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_track, w.getColour(WindowColour::secondary).c()));
 
             int16_t x = 90 + (Config::get().old.volume / 32);
-            drawingCtx.drawImage(rt, w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
+            drawingCtx.drawImage(w.x + w.widgets[Widx::volume].left + x, w.y + w.widgets[Widx::volume].top, Gfx::recolour(ImageIds::volume_slider_thumb, w.getColour(WindowColour::secondary).c()));
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi)
@@ -1466,29 +1464,28 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C0B5B
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             // Draw widgets.
-            w.draw(rt);
-            Common::drawTabs(&w, rt);
+            w.draw(drawingCtx);
+            Common::drawTabs(&w, drawingCtx);
 
             auto point = Point(w.x + 10, w.y + w.widgets[Widx::language].top + 1);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::options_language);
+            tr.drawStringLeft(point, Colour::black, StringIds::options_language);
 
             point.y = w.y + w.widgets[Widx::distance_speed].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::distance_and_speed);
+            tr.drawStringLeft(point, Colour::black, StringIds::distance_and_speed);
 
             point.y = w.y + w.widgets[Widx::heights].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::heights);
+            tr.drawStringLeft(point, Colour::black, StringIds::heights);
 
             point.y = w.y + w.widgets[Widx::currency].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::current_game_currency);
+            tr.drawStringLeft(point, Colour::black, StringIds::current_game_currency);
 
             point.y = w.y + w.widgets[Widx::preferred_currency].top + 1;
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::new_game_currency);
+            tr.drawStringLeft(point, Colour::black, StringIds::new_game_currency);
         }
 
         static void onMouseUp(Window& w, WidgetIndex_t wi)
@@ -1899,10 +1896,10 @@ namespace OpenLoco::Ui::Windows::Options
         }
 
         // 0x004C113F
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            w.draw(rt);
-            Common::drawTabs(&w, rt);
+            w.draw(drawingCtx);
+            Common::drawTabs(&w, drawingCtx);
         }
 
         // 0x004C114A
@@ -2125,13 +2122,12 @@ namespace OpenLoco::Ui::Windows::Options
             loadPreferredFace(w);
         }
 
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            w.draw(rt);
-            Common::drawTabs(&w, rt);
+            w.draw(drawingCtx);
+            Common::drawTabs(&w, drawingCtx);
 
             // Draw preferred owner name
             {
@@ -2145,7 +2141,7 @@ namespace OpenLoco::Ui::Windows::Options
 
                 auto width = w.widgets[Widx::changeOwnerNameBtn].left - 24;
                 auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerNameBtn].top + 1);
-                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, args);
+                tr.drawStringLeftClipped(point, width, Colour::black, StringIds::wcolour2_preferred_owner_name, args);
             }
 
             // Draw competitor name and face
@@ -2157,13 +2153,13 @@ namespace OpenLoco::Ui::Windows::Options
                 args.push(competitor->name);
                 const auto width = w.widgets[Widx::changeOwnerFaceBtn].left - 24;
                 auto point = Point(w.x + 24, w.y + w.widgets[Widx::changeOwnerFaceBtn].top + 1);
-                tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::currentPreferredFace, args);
+                tr.drawStringLeftClipped(point, width, Colour::black, StringIds::currentPreferredFace, args);
 
                 const auto& widget = w.widgets[Widx::ownerFacePreview];
                 auto placeForImage = Ui::Point(w.x + widget.left + 1, w.y + widget.top + 1);
 
                 auto image = ImageId(competitor->images[0]).withIndexOffset(1).withPrimary(Colour::black);
-                drawingCtx.drawImage(rt, placeForImage.x, placeForImage.y, image.toUInt32());
+                drawingCtx.drawImage(placeForImage.x, placeForImage.y, image.toUInt32());
             }
         }
 
@@ -2440,9 +2436,8 @@ namespace OpenLoco::Ui::Windows::Options
             sub_4C13BE(&w);
         }
 
-        static void drawDropdownContent(Window* w, Gfx::RenderTarget* rt, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
+        static void drawDropdownContent(Window* w, Gfx::DrawingContext& drawingCtx, WidgetIndex_t widgetIndex, StringId stringId, int32_t value)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto& widget = w->widgets[widgetIndex];
@@ -2451,21 +2446,20 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(value);
 
             auto point = Point(w->x + widget.left + 1, w->y + widget.top + 1);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::black_stringid, args);
+            tr.drawStringLeft(point, Colour::black, StringIds::black_stringid, args);
         }
 
         // 0x004C1282
-        static void draw(Window& w, Gfx::RenderTarget* rt)
+        static void draw(Window& w, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            w.draw(rt);
-            Common::drawTabs(&w, rt);
+            w.draw(drawingCtx);
+            Common::drawTabs(&w, drawingCtx);
 
             // Label for autosave frequency
             auto point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_frequency].top);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_frequency);
+            tr.drawStringLeft(point, Colour::black, StringIds::autosave_frequency);
 
             // Value for autosave frequency
             auto freq = Config::get().autosaveFrequency;
@@ -2482,15 +2476,15 @@ namespace OpenLoco::Ui::Windows::Options
                     stringId = StringIds::autosave_every_x_months;
                     break;
             }
-            drawDropdownContent(&w, rt, Widx::autosave_frequency, stringId, freq);
+            drawDropdownContent(&w, drawingCtx, Widx::autosave_frequency, stringId, freq);
 
             // Label for autosave amount
             point = Point(w.x + 10, w.y + w.widgets[Widx::autosave_amount].top);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::autosave_amount);
+            tr.drawStringLeft(point, Colour::black, StringIds::autosave_amount);
 
             // Value for autosave amount
             auto scale = Config::get().autosaveAmount;
-            drawDropdownContent(&w, rt, Widx::autosave_amount, StringIds::int_32, scale);
+            drawDropdownContent(&w, drawingCtx, Widx::autosave_amount, StringIds::int_32, scale);
         }
 
         static void changeAutosaveAmount(Window* w, int32_t delta)

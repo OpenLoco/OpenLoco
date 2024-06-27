@@ -52,11 +52,10 @@ namespace OpenLoco
     }
 
     // 0x004C56D3
-    void WaterObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void WaterObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         auto colourImage = ImageId(image).withIndexOffset(35).withBlend(ExtColour::water);
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-        drawingCtx.drawImage(rt, Ui::Point{ x, y }, colourImage);
-        drawingCtx.drawImage(rt, Ui::Point{ x, y }, ImageId(image).withIndexOffset(30));
+        drawingCtx.drawImage(Ui::Point{ x, y }, colourImage);
+        drawingCtx.drawImage(Ui::Point{ x, y }, ImageId(image).withIndexOffset(30));
     }
 }

@@ -705,10 +705,17 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
+
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            const auto& rt = *X86Pointer<Gfx::RenderTarget>(regs.edi);
+            drawingCtx.pushRenderTarget(rt);
+
             auto tr = Gfx::TextRenderer(drawingCtx);
             auto point = Ui::Point(regs.cx, regs.dx);
-            tr.drawString(*X86Pointer<Gfx::RenderTarget>(regs.edi), point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
+            tr.drawString(point, static_cast<Colour>(regs.al), X86Pointer<const char>(regs.esi));
+
+            drawingCtx.popRenderTarget();
+
             regs = backup;
 
             return 0;
@@ -769,9 +776,17 @@ void OpenLoco::Interop::registerHooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
+
             Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             auto rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
-            window->draw(rt);
+
+            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            drawingCtx.pushRenderTarget(*rt);
+
+            window->draw(drawingCtx);
+
+            drawingCtx.popRenderTarget();
+
             regs = backup;
             return 0;
         });
@@ -938,9 +953,12 @@ void OpenLoco::Interop::registerHooks()
         0x00448C79,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
+
             Gfx::RenderTarget* rt = X86Pointer<Gfx::RenderTarget>(regs.edi);
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-            drawingCtx.drawImage(*rt, { regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
+            drawingCtx.pushRenderTarget(*rt);
+            drawingCtx.drawImage({ regs.cx, regs.dx }, ImageId::fromUInt32(regs.ebx));
+            drawingCtx.popRenderTarget();
 
             regs = backup;
             return 0;

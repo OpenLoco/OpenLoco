@@ -14,7 +14,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        class DrawingContext;
     }
 
     enum class TreeObjectFlags : uint16_t
@@ -57,7 +57,7 @@ namespace OpenLoco
         int16_t rating;                  // 0x48
         int16_t demolishRatingReduction; // 0x4A
 
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         uint8_t getTreeGrowthDisplayOffset() const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);

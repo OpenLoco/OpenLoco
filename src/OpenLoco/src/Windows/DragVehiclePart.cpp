@@ -1,3 +1,4 @@
+#include "Graphics/DrawingContext.h"
 #include "Input.h"
 #include "OpenLoco.h"
 #include "Ui/Widget.h"
@@ -70,12 +71,17 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B6197
-    static void draw(Ui::Window& self, Gfx::RenderTarget* const rt)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(self.x, self.y, self.width, self.height));
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y, self.width, self.height));
         if (clipped)
         {
-            Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, &*clipped);
+            drawingCtx.pushRenderTarget(*clipped);
+
+            Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, &drawingCtx);
+
+            drawingCtx.popRenderTarget();
         }
     }
 

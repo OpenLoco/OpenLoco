@@ -69,20 +69,20 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C165D
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
         // Draw widgets.
-        window.draw(rt);
+        window.draw(drawingCtx);
     }
 
     // 0x004C1663
-    static void drawScroll(Ui::Window& window, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto shade = Colours::getShade(window.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(rt, shade);
+        drawingCtx.clearSingle(shade);
 
         const auto& config = Config::get().old;
 
@@ -104,12 +104,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw hovered track
             if (i == window.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                drawingCtx.drawRect(0, y, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
             // Draw checkbox.
-            drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset);
+            drawingCtx.fillRectInset(2, y, 11, y + 10, window.getColour(WindowColour::secondary), Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset);
 
             // Draw checkmark if track is enabled.
             if (config.enabledMusic[i])
@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
                 args.push(StringIds::checkmark);
-                tr.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, args);
+                tr.drawStringLeft(point, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, args);
             }
 
             // Draw track name.
@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
                 auto argsBuf = FormatArgumentsBuffer{};
                 auto args = FormatArguments{ argsBuf };
                 args.push(music_title_id);
-                tr.drawStringLeft(rt, point, window.getColour(WindowColour::secondary), text_colour_id, args);
+                tr.drawStringLeft(point, window.getColour(WindowColour::secondary), text_colour_id, args);
             }
 
             y += kRowHeight;

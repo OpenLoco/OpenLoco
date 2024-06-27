@@ -75,10 +75,10 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
     {
         // Draw widgets.
-        self.draw(rt);
+        self.draw(drawingCtx);
     }
 
     static void getBindingString(uint32_t keyCode, char* buffer, const size_t bufferLength)
@@ -134,14 +134,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE72C
-    static void drawScroll(Ui::Window& self, Gfx::RenderTarget& rt, [[maybe_unused]] const uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto colour = self.getColour(WindowColour::secondary).c();
         auto shade = Colours::getShade(colour, 4);
-        drawingCtx.clearSingle(rt, shade);
+        drawingCtx.clearSingle(shade);
 
         const auto& shortcutDefs = ShortcutManager::getList();
         const auto& shortcuts = Config::get().shortcuts;
@@ -161,7 +161,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             StringId format = StringIds::black_stringid;
             if (i == self.rowHover)
             {
-                drawingCtx.drawRect(rt, 0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                drawingCtx.drawRect(0, yPos, 800, kRowHeight, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 format = StringIds::wcolour2_stringid;
             }
 
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(buffer);
 
             auto point = Point(0, yPos - 1);
-            tr.drawStringLeft(rt, point, Colour::black, format, formatter);
+            tr.drawStringLeft(point, Colour::black, format, formatter);
             yPos += kRowHeight;
         }
     }

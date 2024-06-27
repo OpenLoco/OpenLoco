@@ -2,5 +2,7 @@
 
 namespace OpenLoco::Gfx
 {
-    void drawFPS();
+    class DrawingContext;
+
+    void drawFPS(DrawingContext& drawingCtx);
 }

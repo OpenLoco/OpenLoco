@@ -14,7 +14,7 @@ namespace OpenLoco
     }
     namespace Gfx
     {
-        struct RenderTarget;
+        class DrawingContext;
     }
 
     enum class TrainSignalObjectFlags : uint16_t
@@ -55,7 +55,7 @@ namespace OpenLoco
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         constexpr bool hasFlags(TrainSignalObjectFlags flagsToTest) const
         {
             return (flags & flagsToTest) != TrainSignalObjectFlags::none;

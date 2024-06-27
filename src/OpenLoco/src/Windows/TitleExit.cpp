@@ -69,18 +69,17 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439236
-    static void draw(Ui::Window& window, Gfx::RenderTarget* rt)
+    static void draw(Ui::Window& window, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw widgets.
-        window.draw(rt);
+        window.draw(drawingCtx);
 
         int16_t x = window.x + window.width / 2;
         int16_t y = window.y + window.widgets[Widx::exit_button].top + 8;
         Ui::Point origin = { x, y };
-        tr.drawStringCentredWrapped(*rt, origin, window.width, Colour::black, StringIds::title_exit_game);
+        tr.drawStringCentredWrapped(origin, window.width, Colour::black, StringIds::title_exit_game);
     }
 
     // 0x00439268

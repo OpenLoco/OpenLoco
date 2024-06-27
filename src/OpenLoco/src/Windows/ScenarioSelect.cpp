@@ -154,15 +154,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x004439AF
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.drawRectInset(*rt, self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        drawingCtx.drawRectInset(self.x, self.y + 20, self.width, 41, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
 
         // Draw widgets.
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         static const StringId scenarioGroupIds[] = {
             StringIds::scenario_group_beginner,
@@ -186,7 +185,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto argsBuf = FormatArgumentsBuffer{};
             auto args = FormatArguments{ argsBuf };
             args.push(caption);
-            tr.drawStringCentredWrapped(*rt, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringCentredWrapped(origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         // Scenario selected?
@@ -237,7 +236,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             x += colWidth / 2;
 
-            tr.drawStringCentredClipped(*rt, Point(x, y), 170, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringCentredClipped(Point(x, y), 170, Colour::black, StringIds::wcolour2_stringid, args);
 
             y += 14;
         }
@@ -245,7 +244,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            drawingCtx.drawRectInset(*rt, x, y, 130, 130, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+            drawingCtx.drawRectInset(x, y, 130, 130, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
             x += 1;
             y += 1;
@@ -266,11 +265,11 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 g1->height = 128;
 
                 // Draw preview image and restore original G1 image.
-                drawingCtx.drawImage(rt, x, y, imageId);
+                drawingCtx.drawImage(x, y, imageId);
                 *g1 = backupG1;
 
                 // Draw compass
-                drawingCtx.drawImage(rt, x, y, ImageIds::height_map_compass);
+                drawingCtx.drawImage(x, y, ImageIds::height_map_compass);
             }
         }
         else
@@ -280,7 +279,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // No preview image -- a placeholder will have to do.
             auto image = Gfx::recolour(ImageIds::random_map_watermark, self.getColour(WindowColour::secondary).c());
-            drawingCtx.drawImage(rt, x, y, image);
+            drawingCtx.drawImage(x, y, image);
 
             x += 64;
             y += 59;
@@ -289,7 +288,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push(StringIds::randomly_generated_landscape);
 
             // Overlay random map note.
-            tr.drawStringCentredWrapped(*rt, Point(x, y), 128, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringCentredWrapped(Point(x, y), 128, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         {
@@ -303,12 +302,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             FormatArguments args{};
             args.push(StringIds::buffer_2039);
 
-            auto point = tr.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::black_stringid, args);
+            auto point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::black_stringid, args);
             y = point.y;
 
             // Challenge header
             y += 5;
-            tr.drawStringLeft(*rt, Point(x, y), Colour::black, StringIds::challenge_label);
+            tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_label);
 
             // Challenge text
             str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -318,7 +317,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push(StringIds::buffer_1250);
 
-            point = tr.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, StringIds::challenge_value, args);
+            point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, StringIds::challenge_value, args);
             y = point.y;
 
             // Start year
@@ -326,7 +325,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push(scenarioInfo->startYear);
 
-            tr.drawStringLeft(*rt, Point(x, y), Colour::black, StringIds::challenge_start_date, args);
+            tr.drawStringLeft(Point(x, y), Colour::black, StringIds::challenge_start_date, args);
 
             // Competing companies
             y += 10;
@@ -334,7 +333,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
             StringId competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
 
-            point = tr.drawStringLeftWrapped(*rt, Point(x, y), 170, Colour::black, competitionStringId, args);
+            point = tr.drawStringLeftWrapped(Point(x, y), 170, Colour::black, competitionStringId, args);
             y = point.y;
 
             if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
@@ -344,18 +343,18 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args = FormatArguments();
             args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
             competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
-            tr.drawStringLeft(*rt, Point(x, y), Colour::black, competitionStringId, args);
+            tr.drawStringLeft(Point(x, y), Colour::black, competitionStringId, args);
         }
     }
 
     // 0x00443D02
-    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
+    static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, const uint32_t)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 4);
-        drawingCtx.clearSingle(rt, colour);
+        drawingCtx.clearSingle(colour);
 
         using namespace ScenarioManager;
         auto scenarioCount = getScenarioCountByCategory(self.currentTab);
@@ -381,7 +380,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto formatStringId = StringIds::black_stringid;
             if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self.info))
             {
-                drawingCtx.drawRect(rt, 0, y, self.width, kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                drawingCtx.drawRect(0, y, self.width, kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 
@@ -394,7 +393,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push(StringIds::buffer_2039);
 
                 auto point = Point(210, y + 1);
-                tr.drawStringCentred(rt, point, Colour::black, formatStringId, args);
+                tr.drawStringCentred(point, Colour::black, formatStringId, args);
             }
 
             // Completed?
@@ -405,7 +404,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             // Draw checkmark to indicate completion
-            drawingCtx.drawImage(&rt, self.widgets[widx::list].width() - ScrollView::barWidth - 25, y + 1, ImageIds::scenario_completed_tick);
+            drawingCtx.drawImage(self.widgets[widx::list].width() - ScrollView::barWidth - 25, y + 1, ImageIds::scenario_completed_tick);
 
             // 'Completed by' info
             {
@@ -419,7 +418,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push<uint16_t>(scenarioInfo->completedMonths % 12);
 
                 auto point = Point((self.widgets[widx::list].width() - ScrollView::barWidth) / 2, y + 10);
-                tr.drawStringCentred(rt, point, Colour::black, formatStringId, args);
+                tr.drawStringCentred(point, Colour::black, formatStringId, args);
             }
 
             y += kRowHeight;

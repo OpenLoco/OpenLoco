@@ -562,10 +562,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr uint8_t kRowOffsetY = 24;
 
     // 0x0047328D
-    static void drawTabs(Window* self, Gfx::RenderTarget* rt)
+    static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
-
         auto y = self->widgets[widx::panel].top + self->y - 26;
         auto x = self->x + 3;
 
@@ -582,25 +580,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (_tabPositions[index].index == self->currentTab)
                 {
                     image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary).c());
-                    drawingCtx.drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
-                    drawingCtx.drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(xPos, yPos, image);
                 }
                 else
                 {
-                    drawingCtx.drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabPositions[index].index].image, Colour::mutedSeaGreen);
-                    drawingCtx.drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, ExtColour::unk33);
-                    drawingCtx.drawImage(rt, xPos, yPos, image);
+                    drawingCtx.drawImage(xPos, yPos, image);
 
                     if (row < 1)
                     {
                         auto colour = Colours::getShade(self->getColour(WindowColour::secondary).c(), 7);
-                        drawingCtx.drawRect(*rt, xPos, yPos + 26, 31, 1, colour, Gfx::RectFlags::none);
+                        drawingCtx.drawRect(xPos, yPos + 26, 31, 1, colour, Gfx::RectFlags::none);
                     }
                 }
                 xPos += 31;
@@ -623,7 +621,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         VehicleTabData{ InterfaceSkin::ImageIds::tab_vehicle_ship_frame0, 3 },
     };
 
-    static void drawVehicleTabs(Window* self, Gfx::RenderTarget* rt)
+    static void drawVehicleTabs(Window* self, Gfx::DrawingContext& drawingCtx)
     {
         const auto& tabFlags = _tabDisplayInfo[self->currentTab].flags;
         const bool showSecondaryTabs = (tabFlags & ObjectTabFlags::filterByVehicleType) != ObjectTabFlags::none;
@@ -646,7 +644,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             auto image = Gfx::recolour(skin->img + tabData.image + frame, CompanyManager::getCompanyColour(CompanyId::neutral));
-            Widget::drawTab(self, rt, image, i);
+            Widget::drawTab(self, drawingCtx, image, i);
         }
     }
 
@@ -655,209 +653,223 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static constexpr uint8_t kDescriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::RenderTarget& rt, const Ui::Point& drawingOffset, Object* objectPtr)
+    static void callDrawPreviewImage(Gfx::DrawingContext& drawingCtx, const Ui::Point& drawingOffset, Object* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
-        object->drawPreviewImage(rt, drawingOffset.x, drawingOffset.y);
+        object->drawPreviewImage(drawingCtx, drawingOffset.x, drawingOffset.y);
     }
 
     // 0x00473579
-    static void drawPreviewImage(ObjectHeader* header, Gfx::RenderTarget* rt, int16_t x, int16_t y, Object* objectPtr)
+    static void drawPreviewImage(ObjectHeader* header, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
     {
         auto type = header->getType();
 
         // Clip the draw area to simplify image draw
         Ui::Point drawAreaPos = Ui::Point{ x, y } - kObjectPreviewOffset;
-        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width, kObjectPreviewSize.height));
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(drawAreaPos.x, drawAreaPos.y, kObjectPreviewSize.width, kObjectPreviewSize.height));
         if (!clipped)
             return;
+
+        drawingCtx.pushRenderTarget(*clipped);
 
         switch (type)
         {
             case ObjectType::interfaceSkin:
-                callDrawPreviewImage<InterfaceSkinObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<InterfaceSkinObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::currency:
-                callDrawPreviewImage<CurrencyObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<CurrencyObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::cliffEdge:
-                callDrawPreviewImage<CliffEdgeObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<CliffEdgeObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::water:
-                callDrawPreviewImage<WaterObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<WaterObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::land:
-                callDrawPreviewImage<LandObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<LandObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::wall:
-                callDrawPreviewImage<WallObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<WallObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::trackSignal:
-                callDrawPreviewImage<TrainSignalObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<TrainSignalObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::levelCrossing:
-                callDrawPreviewImage<LevelCrossingObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<LevelCrossingObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::streetLight:
-                callDrawPreviewImage<StreetLightObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<StreetLightObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::tunnel:
-                callDrawPreviewImage<TunnelObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<TunnelObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::bridge:
-                callDrawPreviewImage<BridgeObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<BridgeObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::trainStation:
-                callDrawPreviewImage<TrainStationObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<TrainStationObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::trackExtra:
-                callDrawPreviewImage<TrackExtraObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<TrackExtraObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::track:
-                callDrawPreviewImage<TrackObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<TrackObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::roadStation:
-                callDrawPreviewImage<RoadStationObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<RoadStationObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::roadExtra:
-                callDrawPreviewImage<RoadExtraObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<RoadExtraObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::road:
-                callDrawPreviewImage<RoadObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<RoadObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::airport:
-                callDrawPreviewImage<AirportObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<AirportObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::dock:
-                callDrawPreviewImage<DockObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<DockObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::vehicle:
-                callDrawPreviewImage<VehicleObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<VehicleObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::tree:
-                callDrawPreviewImage<TreeObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<TreeObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::snow:
-                callDrawPreviewImage<SnowObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<SnowObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::hillShapes:
-                callDrawPreviewImage<HillShapesObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<HillShapesObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::building:
-                callDrawPreviewImage<BuildingObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<BuildingObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::scaffolding:
-                callDrawPreviewImage<ScaffoldingObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<ScaffoldingObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::industry:
-                callDrawPreviewImage<IndustryObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<IndustryObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::region:
-                callDrawPreviewImage<RegionObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<RegionObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             case ObjectType::competitor:
-                callDrawPreviewImage<CompetitorObject>(*clipped, kObjectPreviewOffset, objectPtr);
+                callDrawPreviewImage<CompetitorObject>(drawingCtx, kObjectPreviewOffset, objectPtr);
                 break;
 
             default:
                 // null
                 break;
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     template<typename T>
-    static void callDrawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width, Object* objectPtr)
+    static void callDrawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, const int16_t width, Object* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
-        object->drawDescription(rt, x, y, width);
+        object->drawDescription(drawingCtx, x, y, width);
     }
 
-    static void drawDescription(ObjectHeader* header, Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y, Object* objectPtr)
+    static void drawDescription(ObjectHeader* header, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y, Object* objectPtr)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
+
         // Clip the draw area to simplify image draw
-        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
         if (!clipped)
             return;
+
+        drawingCtx.pushRenderTarget(*clipped);
 
         switch (header->getType())
         {
             case ObjectType::levelCrossing:
-                callDrawDescription<LevelCrossingObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<LevelCrossingObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::trainStation:
-                callDrawDescription<TrainStationObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<TrainStationObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::roadStation:
-                callDrawDescription<RoadStationObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<RoadStationObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::airport:
-                callDrawDescription<AirportObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<AirportObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::dock:
-                callDrawDescription<DockObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<DockObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::vehicle:
-                callDrawDescription<VehicleObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<VehicleObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::building:
-                callDrawDescription<BuildingObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<BuildingObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             case ObjectType::competitor:
-                callDrawDescription<CompetitorObject>(*clipped, 0, 0, width, objectPtr);
+                callDrawDescription<CompetitorObject>(drawingCtx, 0, 0, width, objectPtr);
                 break;
 
             default:
                 // null
                 break;
         }
+
+        drawingCtx.popRenderTarget();
     }
 
-    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::RenderTarget* rt, int16_t x, int16_t y)
+    static void drawDatDetails(const ObjectManager::ObjectIndexEntry& indexEntry, Window* self, Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y)
     {
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
+
         // Clip the draw area to simplify image draw
-        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(x, y, width, height));
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(x, y, width, height));
         if (!clipped)
             return;
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.pushRenderTarget(*clipped);
+
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         {
@@ -868,29 +880,33 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             args.push<StringId>(StringIds::buffer_1250);
 
             auto point = Point(18, height - kDescriptionRowHeight * 3 - 4);
-            tr.drawStringLeft(*clipped, point, Colour::black, StringIds::object_selection_filename, args);
+            tr.drawStringLeft(point, Colour::black, StringIds::object_selection_filename, args);
         }
+
+        drawingCtx.popRenderTarget();
     }
 
-    static void drawSearchBox(Window& self, Gfx::RenderTarget* rt)
+    static void drawSearchBox(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         char* textBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strncpy(textBuffer, inputSession.buffer.c_str(), 256);
 
         auto& widget = widgets[widx::textInput];
-        auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
+        const auto& rt = drawingCtx.currentRenderTarget();
+        auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(widget.left + 1 + self.x, widget.top + 1 + self.y, widget.width() - 2, widget.height() - 2));
         if (!clipped)
             return;
+
+        drawingCtx.pushRenderTarget(*clipped);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         // Draw search box input buffer
         Ui::Point position = { inputSession.xOffset, 1 };
-        tr.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
+        tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
 
         // Draw search box cursor, blinking
         if (Input::isFocused(self.type, self.number, widx::textInput) && (inputSession.cursorFrame % 32) < 16)
@@ -898,23 +914,24 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             // We draw the string again to figure out where the cursor should go; position.x will be adjusted
             textBuffer[inputSession.cursorPosition] = '\0';
             position = { inputSession.xOffset, 1 };
-            position = tr.drawStringLeft(*clipped, position, Colour::black, StringIds::black_stringid, args);
-            drawingCtx.fillRect(*clipped, position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
+            position = tr.drawStringLeft(position, Colour::black, StringIds::black_stringid, args);
+            drawingCtx.fillRect(position.x, position.y, position.x, position.y + 9, Colours::getShade(self.getColour(WindowColour::secondary).c(), 9), Gfx::RectFlags::none);
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     // 0x004733F5
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.fillRectInset(*rt, self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
-        self.draw(rt);
+        drawingCtx.fillRectInset(self.x, self.y + 20, self.x + self.width - 1, self.y + 20 + 60, self.getColour(WindowColour::primary), Gfx::RectInsetFlags::none);
+        self.draw(drawingCtx);
 
-        drawTabs(&self, rt);
-        drawVehicleTabs(&self, rt);
-        drawSearchBox(self, rt);
+        drawTabs(&self, drawingCtx);
+        drawVehicleTabs(&self, drawingCtx);
+        drawSearchBox(self, drawingCtx);
 
         {
             static constexpr std::array<StringId, 3> levelStringIds = {
@@ -930,7 +947,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto point = Point(self.x + widget.left, self.y + widget.top);
 
             // Draw current level on combobox
-            tr.drawStringLeftClipped(*rt, point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
+            tr.drawStringLeftClipped(point, widget.width() - 15, Colour::black, StringIds::wcolour2_stringid, args);
         }
 
         bool doDefault = true;
@@ -948,13 +965,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 5);
-            drawingCtx.drawRect(*rt, self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
+            drawingCtx.drawRect(self.x + widget.left, self.y + widget.top, widget.width(), widget.height(), colour, Gfx::RectFlags::none);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colours::getShade(self.getColour(WindowColour::secondary).c(), 0);
-            drawingCtx.drawRect(*rt, self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
+            drawingCtx.drawRect(self.x + widget.left + 1, self.y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour, Gfx::RectFlags::none);
         }
 
         auto type = self.currentTab;
@@ -965,7 +982,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         {
             auto point = Point(self.x + 3, self.y + self.height - 12);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::num_selected_num_max, args);
+            tr.drawStringLeft(point, Colour::black, StringIds::num_selected_num_max, args);
         }
 
         if (self.rowHover == -1)
@@ -981,7 +998,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             drawPreviewImage(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
-                rt,
+                drawingCtx,
                 widgets[widx::objectImage].midX() + 1 + self.x,
                 widgets[widx::objectImage].midY() + 1 + self.y,
                 temporaryObject);
@@ -1000,7 +1017,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(buffer, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name, 510);
 
             auto point = Point(x, y);
-            tr.drawStringCentredClipped(*rt, point, width, Colour::black, StringIds::buffer_2039);
+            tr.drawStringCentredClipped(point, width, Colour::black, StringIds::buffer_2039);
         }
 
         {
@@ -1009,7 +1026,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawDescription(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
                 &self,
-                rt,
+                drawingCtx,
                 self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight,
                 temporaryObject);
@@ -1021,19 +1038,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawDatDetails(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr),
                 &self,
-                rt,
+                drawingCtx,
                 self.widgets[widx::scrollview].right + self.x + 4,
                 y + kDescriptionRowHeight);
         }
     }
 
     // 0x0047361D
-    static void drawScroll(Window& self, Gfx::RenderTarget& rt, const uint32_t)
+    static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, const uint32_t)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const auto& rt = drawingCtx.currentRenderTarget();
+
         auto tr = Gfx::TextRenderer(drawingCtx);
 
-        drawingCtx.clearSingle(rt, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
+        drawingCtx.clearSingle(Colours::getShade(self.getColour(WindowColour::secondary).c(), 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
@@ -1056,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             Gfx::RectInsetFlags flags = Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::fillDarker | Gfx::RectInsetFlags::borderInset;
-            drawingCtx.fillRectInset(rt, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
+            drawingCtx.fillRectInset(2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
             uint8_t textColour = ControlCodes::Colour::black;
 
@@ -1066,7 +1084,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (entry.object._name == windowObjectName)
                 {
-                    drawingCtx.fillRect(rt, 0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
+                    drawingCtx.fillRect(0, y, self.width, y + kRowHeight - 1, enumValue(ExtColour::unk30), Gfx::RectFlags::transparent);
                     textColour = ControlCodes::windowColour2;
                 }
             }
@@ -1092,7 +1110,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                 static constexpr char strCheckmark[] = "\xAC";
                 auto point = Point(x, y);
-                tr.drawString(rt, point, checkColour, strCheckmark);
+                tr.drawString(point, checkColour, strCheckmark);
             }
 
             char buffer[512]{};
@@ -1101,7 +1119,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             tr.setCurrentFont(Gfx::Font::medium_bold);
 
             auto point = Point(15, y);
-            tr.drawString(rt, point, Colour::black, buffer);
+            tr.drawString(point, Colour::black, buffer);
             y += kRowHeight;
         }
     }
