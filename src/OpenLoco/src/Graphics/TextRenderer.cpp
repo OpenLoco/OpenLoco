@@ -4,13 +4,13 @@
 #include "Graphics/ImageIds.h"
 #include "Localisation/Formatting.h"
 #include "RenderTarget.h"
+#include "Ui/WindowManager.h"
 
 namespace OpenLoco::Gfx
 {
     // TODO: Move them into RenderContext once everything is implemented.
     static loco_global<TextDrawFlags, 0x112C824> _currentFontFlags;
     static loco_global<Font, 0x0112C876> _currentFontSpriteBase;
-    static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
 
     namespace Impl
     {
@@ -159,25 +159,25 @@ namespace OpenLoco::Gfx
                         break;
                     case ControlCodes::windowColour1:
                     {
-                        auto hue = _windowColours[0].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
                         setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
-                        auto hue = _windowColours[1].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
-                        auto hue = _windowColours[2].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
-                        auto hue = _windowColours[3].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
@@ -902,25 +902,25 @@ namespace OpenLoco::Gfx
                         break;
                     case ControlCodes::windowColour1:
                     {
-                        auto hue = _windowColours[0].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
                         setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
-                        auto hue = _windowColours[1].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
-                        auto hue = _windowColours[2].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
-                        auto hue = _windowColours[3].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
@@ -1144,25 +1144,25 @@ namespace OpenLoco::Gfx
                         break;
                     case ControlCodes::windowColour1:
                     {
-                        auto hue = _windowColours[0].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::primary).c();
                         setTextColours(Colours::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour2:
                     {
-                        auto hue = _windowColours[1].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::secondary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour3:
                     {
-                        auto hue = _windowColours[2].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::tertiary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }
                     case ControlCodes::windowColour4:
                     {
-                        auto hue = _windowColours[3].c();
+                        auto hue = Ui::WindowManager::getWindowColour(Ui::WindowColour::quaternary).c();
                         setTextColours(Colours::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                         break;
                     }

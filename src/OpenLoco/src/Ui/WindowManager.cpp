@@ -28,6 +28,7 @@
 #include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <algorithm>
+#include <array>
 #include <cinttypes>
 #include <memory>
 #include <sfl/static_vector.hpp>
@@ -55,7 +56,7 @@ namespace OpenLoco::Ui::WindowManager
 
     static sfl::static_vector<Window, kMaxWindows> _windows;
 
-    loco_global<AdvancedColour[4], 0x1136594> _windowColours;
+    static std::array<AdvancedColour, enumValue(WindowColour::count)> _windowColours;
 
     static void viewportRedrawAfterShift(Window* window, Viewport* viewport, int16_t x, int16_t y);
 
@@ -500,10 +501,18 @@ namespace OpenLoco::Ui::WindowManager
         return _windows.size();
     }
 
-    void setWindowColours(uint8_t i, AdvancedColour colour)
+    void setWindowColours(WindowColour slot, AdvancedColour colour)
     {
-        assert(i < 4);
-        _windowColours[i] = colour;
+        const auto index = static_cast<size_t>(slot);
+        assert(index < _windowColours.size());
+        _windowColours[index] = colour;
+    }
+
+    AdvancedColour getWindowColour(WindowColour slot)
+    {
+        const auto index = static_cast<size_t>(slot);
+        assert(index < _windowColours.size());
+        return _windowColours[index];
     }
 
     WindowType getCurrentModalType()
@@ -1200,10 +1209,10 @@ namespace OpenLoco::Ui::WindowManager
         addr<0x1136F9E, int16_t>() = w->y;
 
         // Text colouring
-        setWindowColours(0, w->getColour(WindowColour::primary).opaque());
-        setWindowColours(1, w->getColour(WindowColour::secondary).opaque());
-        setWindowColours(2, w->getColour(WindowColour::tertiary).opaque());
-        setWindowColours(3, w->getColour(WindowColour::quaternary).opaque());
+        setWindowColours(WindowColour::primary, w->getColour(WindowColour::primary).opaque());
+        setWindowColours(WindowColour::secondary, w->getColour(WindowColour::secondary).opaque());
+        setWindowColours(WindowColour::tertiary, w->getColour(WindowColour::tertiary).opaque());
+        setWindowColours(WindowColour::quaternary, w->getColour(WindowColour::quaternary).opaque());
 
         drawingCtx.pushRenderTarget(rt);
 
