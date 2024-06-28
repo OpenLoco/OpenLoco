@@ -173,6 +173,7 @@ namespace OpenLoco::Gfx
             Font offset;
             int8_t widthFudge;
         };
+
         constexpr std::array<FontEntry, 4> fonts = {
             FontEntry{ Font::medium_normal, -1 },
             FontEntry{ Font::medium_bold, -1 },
@@ -324,7 +325,7 @@ namespace OpenLoco::Gfx
             return;
         }
 
-        const auto loadCurrencySymbol = [](const auto font, const auto imageId, const auto dstImageId) {
+        const auto loadCurrencySymbol = [](const auto font, const auto imageId, const auto dstImageId, int offsetWidth) {
             const auto* image = getG1Element(imageId);
             if (image == nullptr)
             {
@@ -337,14 +338,14 @@ namespace OpenLoco::Gfx
                 return;
             }
 
-            Gfx::setCharacterWidth(font, 131, image->width - 1);
+            Gfx::setCharacterWidth(font, U'£', image->width + offsetWidth);
             *currencyElement = *image;
         };
 
-        loadCurrencySymbol(Gfx::Font::small, currencyObject->objectIcon, ImageIds::characters_small_currency_sign);
-        loadCurrencySymbol(Gfx::Font::medium_normal, currencyObject->objectIcon + 1, ImageIds::characters_medium_normal_currency_sign);
-        loadCurrencySymbol(Gfx::Font::medium_bold, currencyObject->objectIcon + 2, ImageIds::characters_medium_bold_currency_sign);
-        loadCurrencySymbol(Gfx::Font::large, currencyObject->objectIcon + 3, ImageIds::characters_large_currency_sign);
+        loadCurrencySymbol(Gfx::Font::small, currencyObject->objectIcon, ImageIds::characters_small_currency_sign, -1);
+        loadCurrencySymbol(Gfx::Font::medium_normal, currencyObject->objectIcon + 1, ImageIds::characters_medium_normal_currency_sign, -1);
+        loadCurrencySymbol(Gfx::Font::medium_bold, currencyObject->objectIcon + 2, ImageIds::characters_medium_bold_currency_sign, -1);
+        loadCurrencySymbol(Gfx::Font::large, currencyObject->objectIcon + 3, ImageIds::characters_large_currency_sign, 1);
 
         invalidateScreen();
     }
@@ -476,17 +477,17 @@ namespace OpenLoco::Gfx
         return ImageExtents{ static_cast<uint8_t>(spriteWidth), static_cast<uint8_t>(spriteHeightNegative), static_cast<uint8_t>(spriteHeightPositive) };
     }
 
-    int16_t getCharacterWidth(Font font, uint8_t character)
+    int16_t getCharacterWidth(Font font, char32_t character)
     {
         return _characterWidths[getFontBaseIndex(font) + character - 32];
     }
 
-    void setCharacterWidth(Font font, uint8_t character, int16_t width)
+    void setCharacterWidth(Font font, char32_t character, int16_t width)
     {
         _characterWidths[getFontBaseIndex(font) + character - 32] = width;
     }
 
-    ImageId getImageForCharacter(Font font, uint8_t character)
+    ImageId getImageForCharacter(Font font, char32_t character)
     {
         const auto imageId = getImageIdForCharacter(font, character);
         return ImageId(imageId);
