@@ -60,9 +60,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     }
 
     // 0x0043CE65
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Widget& previous = self.widgets[widx::previous_frame];
@@ -70,24 +69,24 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRect(*rt, previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(previous.left + self.x, previous.top + self.y, previous.width(), previous.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
         }
-        drawingCtx.drawRect(*rt, next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(next.left + self.x, next.top + self.y, next.width(), next.height(), enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
 
-        self.draw(rt);
+        self.draw(drawingCtx);
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawRectInset(*rt, previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+            drawingCtx.drawRectInset(previous.left + self.x + 1, previous.top + self.y + 1, previous.width() - 2, previous.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
         }
-        drawingCtx.drawRectInset(*rt, next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
+        drawingCtx.drawRectInset(next.left + self.x + 1, next.top + self.y + 1, next.width() - 2, next.height() - 2, self.getColour(WindowColour::secondary), Gfx::RectInsetFlags::borderInset | Gfx::RectInsetFlags::fillNone);
 
         auto point = Point((previous.right + next.left) / 2 + self.x, self.y + self.height - 12);
-        tr.drawStringCentred(*rt, point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
+        tr.drawStringCentred(point, self.getColour(WindowColour::tertiary).opaque().outline(), _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {
-            drawingCtx.drawImage(rt, self.x + previous.left + 6, self.y + previous.top + 6, ImageIds::step_back);
+            drawingCtx.drawImage(self.x + previous.left + 6, self.y + previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
             auto textColour = self.getColour(WindowColour::secondary).opaque();
@@ -97,12 +96,12 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             }
 
             point = Point(self.x + x, self.y + y);
-            tr.drawStringCentred(*rt, point, textColour, StringIds::editor_previous_step);
+            tr.drawStringCentred(point, textColour, StringIds::editor_previous_step);
 
             point = Point(self.x + x, self.y + y + 10);
-            tr.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getPreviousStep()]);
+            tr.drawStringCentred(point, textColour, _stepNames[EditorController::getPreviousStep()]);
         }
-        drawingCtx.drawImage(rt, self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
+        drawingCtx.drawImage(self.x + next.right - 29, self.y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
         auto textColour = self.getColour(WindowColour::secondary).opaque();
@@ -112,10 +111,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
 
         point = Point(self.x + x, self.y + y);
-        tr.drawStringCentred(*rt, point, textColour, StringIds::editor_next_step);
+        tr.drawStringCentred(point, textColour, StringIds::editor_next_step);
 
         point = Point(self.x + x, self.y + y + 10);
-        tr.drawStringCentred(*rt, point, textColour, _stepNames[EditorController::getNextStep()]);
+        tr.drawStringCentred(point, textColour, _stepNames[EditorController::getNextStep()]);
     }
 
     // 0x0043D0ED

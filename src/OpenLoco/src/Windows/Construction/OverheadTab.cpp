@@ -477,19 +477,23 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EA3E
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        self.draw(rt);
-        Common::drawTabs(&self, rt);
+        self.draw(drawingCtx);
+        Common::drawTabs(&self, drawingCtx);
         if (_lastSelectedMods & 0xF)
         {
             auto xPos = self.x + self.widgets[widx::image].left + 1;
             auto yPos = self.y + self.widgets[widx::image].top + 1;
             auto width = self.widgets[widx::image].width();
             auto height = self.widgets[widx::image].height();
-            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(xPos, yPos, width, height));
+
+            const auto& rt = drawingCtx.currentRenderTarget();
+            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos, yPos, width, height));
             if (clipped)
             {
+                drawingCtx.pushRenderTarget(*clipped);
+
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;
 
@@ -508,13 +512,15 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 if (_trackType & (1 << 7))
                 {
                     uint8_t trackType = _trackType & ~(1 << 7);
-                    Construction::drawRoad(previewPos, _lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), *clipped);
+                    Construction::drawRoad(previewPos, _lastSelectedMods, trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
                 }
                 else
                 {
-                    Construction::drawTrack(previewPos, _lastSelectedMods, _trackType, 0, WindowManager::getCurrentRotation(), *clipped);
+                    Construction::drawTrack(previewPos, _lastSelectedMods, _trackType, 0, WindowManager::getCurrentRotation(), drawingCtx);
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
+
+                drawingCtx.popRenderTarget();
             }
         }
 
@@ -523,11 +529,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             FormatArguments args{};
             args.push<uint32_t>(_modCost);
 
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             auto point = Point(self.x + 69, self.widgets[widx::image].bottom + self.y + 4);
-            tr.drawStringCentred(*rt, point, Colour::black, StringIds::build_cost, args);
+            tr.drawStringCentred(point, Colour::black, StringIds::build_cost, args);
         }
     }
 

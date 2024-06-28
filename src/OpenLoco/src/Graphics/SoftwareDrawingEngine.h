@@ -6,6 +6,7 @@
 #include <OpenLoco/Engine/Ui/Rect.hpp>
 #include <algorithm>
 #include <cstddef>
+#include <memory>
 
 struct SDL_Palette;
 struct SDL_Surface;
@@ -70,7 +71,7 @@ namespace OpenLoco::Gfx
 
         SDL_Texture* _screenRGBATexture{};
 
-        SoftwareDrawingContext _ctx;
+        std::unique_ptr<SoftwareDrawingContext> _ctx;
         InvalidationGrid _invalidationGrid;
     };
 }

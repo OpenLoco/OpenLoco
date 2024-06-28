@@ -325,7 +325,7 @@ namespace OpenLoco::Paint
         return attached;
     }
 
-    void PaintSession::init(Gfx::RenderTarget& rt, const SessionOptions& options)
+    void PaintSession::init(const Gfx::RenderTarget& rt, const SessionOptions& options)
     {
         _renderTarget = &rt;
         _nextFreePaintStruct = &_paintEntries[0];
@@ -348,7 +348,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045A6CA
-    PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options)
+    PaintSession* allocateSession(const Gfx::RenderTarget& rt, const SessionOptions& options)
     {
         _session.init(rt, options);
         return &_session;
@@ -620,7 +620,7 @@ namespace OpenLoco::Paint
     };
 
     template<uint8_t rotation>
-    GenerationParameters generateParameters(Gfx::RenderTarget* rt)
+    GenerationParameters generateParameters(const Gfx::RenderTarget* rt)
     {
         // TODO: Work out what these constants represent
         uint16_t numVerticalQuadrants = (rt->height + (rotation == 0 ? 1040 : 1056)) >> 5;
@@ -1089,7 +1089,7 @@ namespace OpenLoco::Paint
         return false;
     }
 
-    static void drawStruct(Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
+    static void drawStruct(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const bool shouldCull)
     {
         auto imageId = ps.imageId;
 
@@ -1120,15 +1120,15 @@ namespace OpenLoco::Paint
         }
         if ((ps.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
-            drawingCtx.drawImageMasked(rt, imagePos, imageId, ps.maskedImageId);
+            drawingCtx.drawImageMasked(imagePos, imageId, ps.maskedImageId);
         }
         else
         {
-            drawingCtx.drawImage(rt, imagePos, imageId);
+            drawingCtx.drawImage(imagePos, imageId);
         }
     }
 
-    static void drawAttachStruct(Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
+    static void drawAttachStruct(const Gfx::RenderTarget& rt, Gfx::DrawingContext& drawingCtx, const PaintStruct& ps, const AttachedPaintStruct& attachPs, const bool shouldCull)
     {
         auto imageId = attachPs.imageId;
 
@@ -1145,19 +1145,18 @@ namespace OpenLoco::Paint
 
         if ((attachPs.flags & PaintStructFlags::hasMaskedImage) != PaintStructFlags::none)
         {
-            drawingCtx.drawImageMasked(rt, imagePos, imageId, attachPs.maskedImageId);
+            drawingCtx.drawImageMasked(imagePos, imageId, attachPs.maskedImageId);
         }
         else
         {
-            drawingCtx.drawImage(rt, imagePos, imageId);
+            drawingCtx.drawImage(imagePos, imageId);
         }
     }
 
     // 0x0045EA23
-    void PaintSession::drawStructs()
+    void PaintSession::drawStructs(Gfx::DrawingContext& drawingCtx)
     {
-        Gfx::RenderTarget& rt = **_renderTarget;
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        const Gfx::RenderTarget& rt = drawingCtx.currentRenderTarget();
 
         for (const auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
@@ -1207,7 +1206,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045A60E
-    void PaintSession::drawStringStructs()
+    void PaintSession::drawStringStructs(Gfx::DrawingContext& drawingCtx)
     {
         PaintStringStruct* psString = _paintStringHead;
         if (psString == nullptr)
@@ -1215,8 +1214,8 @@ namespace OpenLoco::Paint
             return;
         }
 
-        Gfx::RenderTarget unZoomedRt = **(_renderTarget);
-        const auto zoom = (*_renderTarget)->zoomLevel;
+        Gfx::RenderTarget unZoomedRt = drawingCtx.currentRenderTarget();
+        const auto zoom = unZoomedRt.zoomLevel;
 
         unZoomedRt.zoomLevel = 0;
         unZoomedRt.x >>= zoom;
@@ -1224,7 +1223,8 @@ namespace OpenLoco::Paint
         unZoomedRt.width >>= zoom;
         unZoomedRt.height >>= zoom;
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        drawingCtx.pushRenderTarget(unZoomedRt);
+
         auto tr = Gfx::TextRenderer(drawingCtx);
         tr.setCurrentFont(zoom == 0 ? Gfx::Font::medium_bold : Gfx::Font::small);
 
@@ -1241,12 +1241,14 @@ namespace OpenLoco::Paint
             Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
             Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));
 
-            tr.drawStringYOffsets(unZoomedRt, loc, Colour::black, buffer, psString->yOffsets);
+            tr.drawStringYOffsets(loc, Colour::black, buffer, psString->yOffsets);
         }
+
+        drawingCtx.popRenderTarget();
     }
 
     // 0x00447A5F
-    static bool isSpriteInteractedWithPaletteSet(Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(const Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
         static loco_global<bool, 0x00E40114> _interactionResult;
@@ -1261,7 +1263,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A0E
-    static bool isSpriteInteractedWith(Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords)
+    static bool isSpriteInteractedWith(const Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords)
     {
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;

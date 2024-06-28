@@ -7,6 +7,8 @@
 #include "Game.h"
 #include "GameException.hpp"
 #include "GameStateFlags.h"
+#include "Graphics/DrawingContext.h"
+#include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "LastGameOptionManager.h"
 #include "Localisation/Formatting.h"
@@ -139,7 +141,12 @@ namespace OpenLoco::S5
         rt.pitch = 0;
         rt.zoomLevel = saveVp.zoom;
 
-        saveVp.render(&rt);
+        auto& drawingEngine = Gfx::getDrawingEngine();
+        auto& drawingCtx = drawingEngine.getDrawingContext();
+
+        drawingCtx.pushRenderTarget(rt);
+        saveVp.render(drawingCtx);
+        drawingCtx.popRenderTarget();
     }
 
     // 0x004471A4

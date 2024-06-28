@@ -17,7 +17,7 @@ namespace OpenLoco
 
     namespace Gfx
     {
-        struct RenderTarget;
+        class DrawingContext;
     }
     enum class TownSize : uint8_t;
 
@@ -64,7 +64,7 @@ namespace OpenLoco
         TownSize targetTownSize;   // 0x2E
         uint8_t pad_2F;
 
-        void drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects* dependencies);
         void unload();

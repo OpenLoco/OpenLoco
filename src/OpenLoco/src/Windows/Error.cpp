@@ -219,9 +219,8 @@ namespace OpenLoco::Ui::Windows::Error
     namespace Common
     {
         // 0x00431C05
-        static void draw(Ui::Window& self, Gfx::RenderTarget* rt)
+        static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
             uint16_t x = self.x;
@@ -229,23 +228,23 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t width = self.width;
             uint16_t height = self.height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->errorColour;
-            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(skin)), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(skin)), Gfx::RectFlags::transparent);
 
-            drawingCtx.drawRect(*rt, x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
-            drawingCtx.drawRect(*rt, x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(*rt, x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            drawingCtx.drawRect(x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
 
             if (_errorCompetitorId == CompanyId::null)
             {
                 auto point = Point(((width + 1) / 2) + x - 1, y + 1);
-                tr.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
+                tr.drawStringCentredRaw(point, _linebreakCount, Colour::black, &_errorText[0]);
             }
             else
             {
@@ -259,15 +258,15 @@ namespace OpenLoco::Ui::Windows::Error
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
-                drawingCtx.drawImage(rt, xPos, yPos, imageId);
+                drawingCtx.drawImage(xPos, yPos, imageId);
 
                 if (company->jailStatus != 0)
                 {
-                    drawingCtx.drawImage(rt, xPos, yPos, ImageIds::owner_jailed);
+                    drawingCtx.drawImage(xPos, yPos, ImageIds::owner_jailed);
                 }
 
                 auto point = Point(self.x + 156, self.y + 20);
-                tr.drawStringCentredRaw(*rt, point, _linebreakCount, Colour::black, &_errorText[0]);
+                tr.drawStringCentredRaw(point, _linebreakCount, Colour::black, &_errorText[0]);
             }
         }
 

@@ -20,7 +20,7 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco
 {
     // 0x004B7733
-    static void drawVehicle(Gfx::RenderTarget* rt, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
+    static void drawVehicle(const Gfx::RenderTarget* rt, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         // Eventually calls 0x4B777B part of 0x4B7741
         registers regs;
@@ -36,12 +36,13 @@ namespace OpenLoco
     }
 
     // 0x004B8C52
-    void VehicleObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void VehicleObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         // Rotation
         uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
         uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
 
+        auto& rt = drawingCtx.currentRenderTarget();
         drawVehicle(&rt, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
     }
 
@@ -49,36 +50,35 @@ namespace OpenLoco
     static constexpr uint8_t kDescriptionRowHeight = 10;
 
     // 0x004B8C9D
-    void VehicleObject::drawDescription(Gfx::RenderTarget& rt, const int16_t x, const int16_t y, const int16_t width) const
+    void VehicleObject::drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, const int16_t width) const
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         Ui::Point rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(rt, rowPosition, designed, obsolete);
+        ObjectManager::drawGenericDescription(drawingCtx, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {
             FormatArguments args{};
             args.push(power);
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_power, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::object_selection_power, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push<uint32_t>(StringManager::internalLengthToComma1DP(getLength()));
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_length, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::object_selection_length, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(weight);
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_weight, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::object_selection_weight, args);
             rowPosition.y += kDescriptionRowHeight;
         }
         {
             FormatArguments args{};
             args.push(speed);
-            tr.drawStringLeft(rt, rowPosition, Colour::black, StringIds::object_selection_max_speed, args);
+            tr.drawStringLeft(rowPosition, Colour::black, StringIds::object_selection_max_speed, args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         // Clear buffer
@@ -88,7 +88,7 @@ namespace OpenLoco
 
         if (StringManager::locoStrlen(buffer) != 0)
         {
-            tr.drawStringLeftWrapped(rt, rowPosition, width - 4, Colour::black, StringIds::buffer_1250);
+            tr.drawStringLeftWrapped(rowPosition, width - 4, Colour::black, StringIds::buffer_1250);
         }
     }
 

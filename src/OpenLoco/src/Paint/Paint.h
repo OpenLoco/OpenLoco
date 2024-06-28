@@ -252,13 +252,13 @@ namespace OpenLoco::Paint
     public:
         void generate();
         void arrangeStructs();
-        void drawStructs();
-        void drawStringStructs();
-        void init(Gfx::RenderTarget& rt, const SessionOptions& options);
+        void drawStructs(Gfx::DrawingContext& drawingCtx);
+        void drawStringStructs(Gfx::DrawingContext& drawingCtx);
+        void init(const Gfx::RenderTarget& rt, const SessionOptions& options);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const Ui::ViewportInteraction::InteractionItemFlags flags);
-        Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
+        const Gfx::RenderTarget* getRenderTarget() { return _renderTarget; }
         uint8_t getRotation() { return currentRotation; }
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
         int16_t getMaxHeight() { return _maxHeight; }
@@ -434,7 +434,7 @@ namespace OpenLoco::Paint
         void generateTilesAndEntities(GenerationParameters&& p);
         void finaliseOrdering(std::span<PaintStruct*> paintStructs);
 
-        inline static Interop::loco_global<Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
+        inline static Interop::loco_global<const Gfx::RenderTarget*, 0x00E0C3E0> _renderTarget;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
@@ -536,7 +536,7 @@ namespace OpenLoco::Paint
         PaintStruct* createNormalPaintStruct(ImageId imageId, const World::Pos3& offset, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
     };
 
-    PaintSession* allocateSession(Gfx::RenderTarget& rt, const SessionOptions& options);
+    PaintSession* allocateSession(const Gfx::RenderTarget& rt, const SessionOptions& options);
 
     void registerHooks();
 }

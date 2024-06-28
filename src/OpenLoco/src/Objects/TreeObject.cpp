@@ -11,7 +11,7 @@
 namespace OpenLoco
 {
     // 0x004BE2A2
-    void TreeObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void TreeObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
         uint32_t image = getTreeGrowthDisplayOffset() * numRotations;
         auto rotation = (numRotations - 1) & 2;
@@ -29,7 +29,6 @@ namespace OpenLoco
             image = Gfx::recolour(image, colour);
         }
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         Ui::Point treePos = Ui::Point{ x, y } + Ui::Point{ 0, 48 };
 
         if (hasFlags(TreeObjectFlags::hasSnowVariation))
@@ -47,10 +46,10 @@ namespace OpenLoco
                 snowImage = Gfx::recolour(snowImage, colour);
             }
             treePos.x = x + 28;
-            drawingCtx.drawImage(&rt, treePos.x, treePos.y, snowImage);
+            drawingCtx.drawImage(treePos.x, treePos.y, snowImage);
             treePos.x = 28;
         }
-        drawingCtx.drawImage(&rt, treePos.x, treePos.y, image);
+        drawingCtx.drawImage(treePos.x, treePos.y, image);
     }
 
     // 0x00500775

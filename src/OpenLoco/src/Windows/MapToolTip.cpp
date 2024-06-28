@@ -111,9 +111,8 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     }
 
     // 0x004CF010
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto args = FormatArguments::mapToolTip();
@@ -127,25 +126,25 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
             Ui::Point origin(self.x + self.width / 2, self.y + self.height / 2 - 5);
-            tr.drawStringCentredWrapped(*rt, origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, args);
+            tr.drawStringCentredWrapped(origin, self.width, Colour::black, StringIds::outlined_wcolour2_stringid, args);
         }
         else
         {
             Ui::Point origin(self.x + self.width / 2 + 13, self.y + self.height / 2 - 5);
-            tr.drawStringCentredWrapped(*rt, origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
+            tr.drawStringCentredWrapped(origin, self.width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, args);
 
             auto left = self.width / 2 + self.x + 13 - self.width / 2 - 28;
             auto top = self.height / 2 - 13 + self.y;
             auto right = left + 25;
             auto bottom = top + 25;
 
-            drawingCtx.fillRect(*rt, left, top, right, bottom, PaletteIndex::index_0A, Gfx::RectFlags::none);
+            drawingCtx.fillRect(left, top, right, bottom, PaletteIndex::index_0A, Gfx::RectFlags::none);
 
             auto* company = CompanyManager::get(_mapTooltipOwner);
             auto* competitor = ObjectManager::get<CompetitorObject>(company->competitorId);
             auto imageId = Gfx::recolour(competitor->images[enumValue(company->ownerEmotion)], company->mainColours.primary);
 
-            drawingCtx.drawImage(rt, left + 1, top + 1, imageId);
+            drawingCtx.drawImage(left + 1, top + 1, imageId);
         }
     }
 

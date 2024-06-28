@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     }
 
     // 0x00439B4A
-    static void draw(Window& self, Gfx::RenderTarget* rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
         static constexpr StringId titleStringIds[] = {
             StringIds::tutorial_1_title,
@@ -66,7 +66,6 @@ namespace OpenLoco::Ui::Windows::Tutorial
             StringIds::tutorial_3_title,
         };
 
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         auto tr = Gfx::TextRenderer(drawingCtx);
 
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
@@ -76,10 +75,10 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto& widget = self.widgets[Widx::frame];
         auto point = Point(self.x + widget.midX(), self.y + widget.top + 4);
-        tr.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_text, args);
+        tr.drawStringCentred(point, Colour::black, StringIds::tutorial_text, args);
 
         point.y += 10;
-        tr.drawStringCentred(*rt, point, Colour::black, StringIds::tutorial_control);
+        tr.drawStringCentred(point, Colour::black, StringIds::tutorial_control);
     }
 
     static constexpr WindowEventList kEvents = {

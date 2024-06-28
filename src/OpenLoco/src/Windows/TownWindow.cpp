@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void update(Window& self);
         static void renameTownPrompt(Window* self, WidgetIndex_t widgetIndex);
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
-        static void drawTabs(Window* self, Gfx::RenderTarget* rt);
+        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx);
     }
 
     namespace Town
@@ -128,13 +128,12 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x00498FFE
-        static void draw(Window& self, Gfx::RenderTarget* rt)
+        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            self.draw(rt);
-            Common::drawTabs(&self, rt);
+            self.draw(drawingCtx);
+            Common::drawTabs(&self, drawingCtx);
 
             auto town = TownManager::get(TownId(self.number));
 
@@ -145,7 +144,7 @@ namespace OpenLoco::Ui::Windows::Town
             const auto& widget = self.widgets[widx::status_bar];
             const auto width = widget.width() - 1;
             auto point = Point(self.x + widget.left - 1, self.y + widget.top - 1);
-            tr.drawStringLeftClipped(*rt, point, width, Colour::black, StringIds::status_town_population, args);
+            tr.drawStringLeftClipped(point, width, Colour::black, StringIds::status_town_population, args);
         }
 
         // 0x00499079
@@ -393,17 +392,20 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004994F9
-        static void draw(Window& self, Gfx::RenderTarget* rt)
+        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+            const auto& rt = drawingCtx.currentRenderTarget();
+
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            self.draw(rt);
-            Common::drawTabs(&self, rt);
+            self.draw(drawingCtx);
+            Common::drawTabs(&self, drawingCtx);
 
-            auto clipped = Gfx::clipRenderTarget(*rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
+            auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(self.x, self.y + 44, self.width, self.height - 44));
             if (!clipped)
                 return;
+
+            drawingCtx.pushRenderTarget(*clipped);
 
             auto town = TownManager::get(TownId(self.number));
 
@@ -415,10 +417,10 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                drawingCtx.drawRect(*clipped, xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
+                drawingCtx.drawRect(xPos, yPos, 241, 1, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
 
                 auto point = Point(xPos, yPos - 6);
-                tr.drawStringRight(*clipped, point, Colour::black, StringIds::population_graph_people, args);
+                tr.drawStringRight(point, Colour::black, StringIds::population_graph_people, args);
 
                 yTick += 1000;
             }
@@ -441,10 +443,10 @@ namespace OpenLoco::Ui::Windows::Town
                         args.push(year);
 
                         auto point = Point(xPos, yPos);
-                        tr.drawStringCentred(*clipped, point, Colour::black, StringIds::population_graph_year, args);
+                        tr.drawStringCentred(point, Colour::black, StringIds::population_graph_year, args);
                     }
 
-                    drawingCtx.drawRect(*clipped, xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
+                    drawingCtx.drawRect(xPos, 11, 1, self.height - 66, Colours::getShade(self.getColour(WindowColour::secondary).c(), 4), Gfx::RectFlags::none);
                 }
 
                 // Draw population graph
@@ -453,7 +455,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->historySize - 1)
-                    drawingCtx.drawLine(*clipped, Ui::Point(xPos, yPos1), Ui::Point(xPos + 1, yPos2), Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
+                    drawingCtx.drawLine(Ui::Point(xPos, yPos1), Ui::Point(xPos + 1, yPos2), Colours::getShade(self.getColour(WindowColour::secondary).c(), 7));
 
                 month--;
                 if (month < 0)
@@ -466,6 +468,8 @@ namespace OpenLoco::Ui::Windows::Town
                         yearSkip = 0;
                 }
             }
+
+            drawingCtx.popRenderTarget();
         }
 
         // 0x004996AC
@@ -526,16 +530,15 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004997F1
-        static void draw(Window& self, Gfx::RenderTarget* rt)
+        static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
         {
-            auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
-            self.draw(rt);
-            Common::drawTabs(&self, rt);
+            self.draw(drawingCtx);
+            Common::drawTabs(&self, drawingCtx);
 
             auto point = Point(self.x + 4, self.y + 46);
-            tr.drawStringLeft(*rt, point, Colour::black, StringIds::local_authority_ratings_transport_companies);
+            tr.drawStringLeft(point, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             point.x += 4;
             point.y += 14;
@@ -564,7 +567,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(rating);
                 args.push(rank);
 
-                tr.drawStringLeftClipped(*rt, point, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, args);
+                tr.drawStringLeftClipped(point, self.width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, args);
 
                 point.y += 10;
             }
@@ -738,14 +741,14 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // 0x004999E1
-        static void drawTabs(Window* self, Gfx::RenderTarget* rt)
+        static void drawTabs(Window* self, Gfx::DrawingContext& drawingCtx)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Town tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::drawTab(self, rt, imageId, widx::tab_town);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_town);
             }
 
             // Population tab
@@ -767,7 +770,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += populationTabImageIds[0];
 
-                Widget::drawTab(self, rt, imageId, widx::tab_population);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_population);
             }
 
             // Company ratings tab
@@ -797,7 +800,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += ratingsTabImageIds[0];
 
-                Widget::drawTab(self, rt, imageId, widx::tab_company_ratings);
+                Widget::drawTab(self, drawingCtx, imageId, widx::tab_company_ratings);
             }
         }
     }

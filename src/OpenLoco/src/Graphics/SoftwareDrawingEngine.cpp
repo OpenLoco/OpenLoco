@@ -1,5 +1,6 @@
 #include "SoftwareDrawingEngine.h"
 #include "Config.h"
+#include "Graphics/FPSCounter.h"
 #include "Logging.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
@@ -189,6 +190,12 @@ namespace OpenLoco::Gfx
         int16_t blockHeight = 1 << heightShift;
 
         _invalidationGrid.reset(scaledWidth, scaledHeight, blockWidth, blockHeight);
+
+        // Create a new drawing context.
+        _ctx = std::make_unique<SoftwareDrawingContext>();
+
+        // Push the screen render target so that by default we render to that.
+        _ctx->pushRenderTarget(rt);
     }
 
     /**
@@ -237,9 +244,16 @@ namespace OpenLoco::Gfx
     // 0x004C5CFA
     void SoftwareDrawingEngine::render()
     {
+        // Draw all dirty regions.
         _invalidationGrid.traverseDirtyCells([this](int32_t left, int32_t top, int32_t right, int32_t bottom) {
             this->render(Rect::fromLTRB(left, top, right, bottom));
         });
+
+        // Draw FPS counter.
+        if (Config::get().showFPS)
+        {
+            Gfx::drawFPS(*_ctx);
+        }
     }
 
     void SoftwareDrawingEngine::render(const Rect& _rect)
@@ -256,10 +270,16 @@ namespace OpenLoco::Gfx
         rt.pitch = _screenRT->width + _screenRT->pitch - rect.width();
         rt.zoomLevel = 0;
 
+        // Set the render target to the screen rt.
+        _ctx->pushRenderTarget(rt);
+
         // TODO: Remove main window and draw that independent from UI.
 
         // Draw UI.
-        Ui::WindowManager::render(rt, rect);
+        Ui::WindowManager::render(*_ctx, rect);
+
+        // Restore state.
+        _ctx->popRenderTarget();
     }
 
     void SoftwareDrawingEngine::present()
@@ -321,7 +341,9 @@ namespace OpenLoco::Gfx
 
     DrawingContext& SoftwareDrawingEngine::getDrawingContext()
     {
-        return _ctx;
+        assert(_ctx != nullptr);
+
+        return *_ctx;
     }
 
     bool SoftwareDrawingEngine::isInitialized() const

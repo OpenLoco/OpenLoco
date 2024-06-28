@@ -305,7 +305,7 @@ namespace OpenLoco
         Gfx::loadDefaultPalette();
         auto& drawingEngine = Gfx::getDrawingEngine();
         auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.clearSingle(drawingEngine.getScreenRT(), PaletteIndex::index_0A);
+        drawingCtx.clearSingle(PaletteIndex::index_0A);
 
         setScreenFlag(ScreenFlags::initialised);
 
@@ -426,7 +426,7 @@ namespace OpenLoco
                 Config::get().old.var_72 = 16;
                 const auto cursor = Ui::getCursorPosScaled();
                 addr<0x00F2538C, Ui::Point32>() = cursor;
-                drawingCtx.clear(drawingEngine.getScreenRT(), 0);
+                drawingCtx.clear(0);
                 addr<0x00F2539C, int32_t>() = 0;
             }
             else

@@ -66,7 +66,10 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->flags |= Ui::WindowFlags::transparent;
 
             setPauseFlag(1 << 1);
-            Audio::pauseSound();
+            if (!isTitleMode())
+            {
+                Audio::pauseSound();
+            }
             WindowManager::invalidate(WindowType::timeToolbar);
         }
 
@@ -101,9 +104,9 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         return window;
     }
 
-    static void draw(Window& self, Gfx::RenderTarget* const rt)
+    static void draw(Window& self, Gfx::DrawingContext& drawingCtx)
     {
-        self.draw(rt);
+        self.draw(drawingCtx);
     }
 
     // 0x0043C3F4

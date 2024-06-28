@@ -92,24 +92,23 @@ namespace OpenLoco
     }
 
     // 0x0045932D
-    void IndustryObject::drawPreviewImage(Gfx::RenderTarget& rt, const int16_t x, const int16_t y) const
+    void IndustryObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        drawIndustry(&rt, x, y + 40);
+        drawIndustry(drawingCtx, x, y + 40);
     }
 
     // 0x00458C7F
-    void IndustryObject::drawIndustry(Gfx::RenderTarget* clipped, int16_t x, int16_t y) const
+    void IndustryObject::drawIndustry(Gfx::DrawingContext& drawingCtx, int16_t x, int16_t y) const
     {
         auto firstColour = Numerics::bitScanReverse(availableColours);
         Colour c = firstColour != -1 ? static_cast<Colour>(firstColour)
                                      : Colour::black;
         ImageId baseImage(var_12, c);
         Ui::Point pos{ x, y };
-        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
         for (const auto part : getBuildingParts(0))
         {
             auto image = baseImage.withIndexOffset(part * 4 + 1);
-            drawingCtx.drawImage(*clipped, pos, image);
+            drawingCtx.drawImage(pos, image);
             pos.y -= buildingPartHeights[part];
         }
     }

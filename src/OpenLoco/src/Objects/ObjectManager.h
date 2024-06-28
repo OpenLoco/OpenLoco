@@ -12,7 +12,7 @@ namespace OpenLoco
 
     namespace Gfx
     {
-        struct RenderTarget;
+        class DrawingContext;
     }
 
     struct Object;
@@ -186,7 +186,7 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(const LoadedObjectHandle& handle);
 
-    void drawGenericDescription(Gfx::RenderTarget& rt, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
+    void drawGenericDescription(Gfx::DrawingContext& drawingCtx, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 
     void updateDefaultLevelCrossingType();
     void updateYearly2();

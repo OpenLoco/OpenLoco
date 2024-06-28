@@ -190,12 +190,12 @@ namespace OpenLoco::Gfx
 
                         if ((_currentFontFlags & TextDrawFlags::inset) != TextDrawFlags::none)
                         {
-                            ctx.drawImageSolid(*rt, pos, imageId, _textColours[3]);
-                            ctx.drawImageSolid(*rt, pos + Ui::Point{ 1, 1 }, imageId, _textColours[1]);
+                            ctx.drawImageSolid(pos, imageId, _textColours[3]);
+                            ctx.drawImageSolid(pos + Ui::Point{ 1, 1 }, imageId, _textColours[1]);
                         }
                         else
                         {
-                            ctx.drawImage(rt, pos.x, pos.y, image);
+                            ctx.drawImage(pos.x, pos.y, image);
                         }
 
                         pos.x += getG1Element(imageId.getIndex())->width;
@@ -266,7 +266,7 @@ namespace OpenLoco::Gfx
                             {
                                 const auto chrImage = getImageForCharacter(getCurrentFont(), chr);
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
-                                ctx.drawImagePaletteSet(*rt, pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                ctx.drawImagePaletteSet(pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
                                 pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
                             }
                             else
@@ -571,9 +571,9 @@ namespace OpenLoco::Gfx
             drawString(ctx, rt, point, colour, buffer);
 
             // Draw underline
-            ctx.drawRect(rt, point.x, point.y + 11, width, 1, _textColours[1], RectFlags::none);
+            ctx.drawRect(point.x, point.y + 11, width, 1, _textColours[1], RectFlags::none);
             if (_textColours[2] != 0)
-                ctx.drawRect(rt, point.x, point.y + 12, width, 1, _textColours[2], RectFlags::none);
+                ctx.drawRect(point.x, point.y + 12, width, 1, _textColours[2], RectFlags::none);
 
             return point;
         }
@@ -602,9 +602,9 @@ namespace OpenLoco::Gfx
             auto point = drawString(ctx, rt, origin, colour, buffer);
 
             // Draw underline
-            ctx.drawRect(rt, origin.x, origin.y + 11, width, 1, _textColours[1], RectFlags::none);
+            ctx.drawRect(origin.x, origin.y + 11, width, 1, _textColours[1], RectFlags::none);
             if (_textColours[2] != 0)
-                ctx.drawRect(rt, origin.x, origin.y + 12, width, 1, _textColours[2], RectFlags::none);
+                ctx.drawRect(origin.x, origin.y + 12, width, 1, _textColours[2], RectFlags::none);
 
             return point;
         }
@@ -1007,7 +1007,7 @@ namespace OpenLoco::Gfx
                                 {
                                     // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
                                     const auto chrImage = getImageForCharacter(getCurrentFont(), chr);
-                                    ctx.drawImagePaletteSet(rt, pos + Ui::Point(0, *yOffsets), chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                    ctx.drawImagePaletteSet(pos + Ui::Point(0, *yOffsets), chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
                                     pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
                                     yOffsets++;
                                 }
@@ -1173,7 +1173,7 @@ namespace OpenLoco::Gfx
                         ImageId imageId{ image & 0x7FFFF };
                         str += 4;
 
-                        ctx.drawImage(&rt, pos.x, pos.y, image);
+                        ctx.drawImage(pos.x, pos.y, image);
 
                         // For some reason the wrapStringTicker doesn't do this??
                         numChars--;
@@ -1249,7 +1249,7 @@ namespace OpenLoco::Gfx
                             {
                                 // Use withPrimary to set imageId flag to use the correct palette code (Colour::black is not actually used)
                                 const auto chrImage = getImageForCharacter(getCurrentFont(), chr);
-                                ctx.drawImagePaletteSet(rt, pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
+                                ctx.drawImagePaletteSet(pos, chrImage.withPrimary(Colour::black), PaletteMap::View{ _textColours }, {});
                                 pos.x += Gfx::getCharacterWidth(getCurrentFont(), chr);
                             }
                             else
@@ -1973,68 +1973,81 @@ namespace OpenLoco::Gfx
         return Impl::getMaxStringWidth(buffer);
     }
 
-    Ui::Point TextRenderer::drawString(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, const char* str)
+    Ui::Point TextRenderer::drawString(Ui::Point origin, AdvancedColour colour, const char* str)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawString(_ctx, rt, origin, colour, str);
     }
 
-    Ui::Point TextRenderer::drawStringLeft(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringLeft(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringLeft(_ctx, rt, origin, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringLeftClipped(const RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringLeftClipped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringLeftClipped(_ctx, rt, origin, width, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringLeftUnderline(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringLeftUnderline(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringLeftUnderline(_ctx, rt, origin, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringLeftWrapped(const RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringLeftWrapped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringLeftWrapped(_ctx, rt, origin, width, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringCentred(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringCentred(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringCentred(_ctx, rt, origin, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringCentredClipped(const RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringCentredClipped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringCentredClipped(_ctx, rt, origin, width, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringCentredRaw(const RenderTarget& rt, Ui::Point origin, uint16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
+    Ui::Point TextRenderer::drawStringCentredRaw(Ui::Point origin, uint16_t linebreakCount, AdvancedColour colour, const char* wrappedStr)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringCentredRaw(_ctx, rt, origin, linebreakCount, colour, wrappedStr);
     }
 
-    Ui::Point TextRenderer::drawStringCentredWrapped(const RenderTarget& rt, Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringCentredWrapped(Ui::Point origin, uint16_t width, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringCentredWrapped(_ctx, rt, origin, width, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringRight(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringRight(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringRight(_ctx, rt, origin, colour, stringId, args);
     }
 
-    Ui::Point TextRenderer::drawStringRightUnderline(const RenderTarget& rt, Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
+    Ui::Point TextRenderer::drawStringRightUnderline(Ui::Point origin, AdvancedColour colour, StringId stringId, FormatArgumentsView args /* = {}*/)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringRightUnderline(_ctx, rt, origin, colour, stringId, args);
     }
 
-    void TextRenderer::drawStringYOffsets(const RenderTarget& rt, Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
+    void TextRenderer::drawStringYOffsets(Ui::Point loc, AdvancedColour colour, const char* str, const int8_t* yOffsets)
     {
+        auto& rt = _ctx.currentRenderTarget();
         return Impl::drawStringYOffsets(_ctx, rt, loc, colour, str, yOffsets);
     }
 
-    void TextRenderer::drawStringTicker(const RenderTarget& rt, Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
+    void TextRenderer::drawStringTicker(Ui::Point origin, StringId stringId, Colour colour, uint8_t numLinesToDisplay, uint16_t numCharactersToDisplay, uint16_t width)
     {
+        auto& rt = _ctx.currentRenderTarget();
         Impl::drawStringTicker(_ctx, rt, origin, stringId, colour, numLinesToDisplay, numCharactersToDisplay, width);
     }
 
