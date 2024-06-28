@@ -326,15 +326,19 @@ namespace OpenLoco::Gfx
 
         const auto loadCurrencySymbol = [](const auto font, const auto imageId, const auto dstImageId) {
             const auto* image = getG1Element(imageId);
-            Gfx::setCharacterWidth(font, 131, image->width - 1);
+            if (image == nullptr)
+            {
+                return;
+            }
 
             auto* currencyElement = getG1Element(dstImageId);
-            currencyElement->offset = image->offset;
-            currencyElement->width = image->width;
-            currencyElement->height = image->height;
-            currencyElement->flags = image->flags;
-            currencyElement->xOffset = image->xOffset;
-            currencyElement->yOffset = image->yOffset;
+            if (currencyElement == nullptr)
+            {
+                return;
+            }
+
+            Gfx::setCharacterWidth(font, 131, image->width - 1);
+            *currencyElement = *image;
         };
 
         loadCurrencySymbol(Gfx::Font::small, currencyObject->objectIcon, ImageIds::characters_small_currency_sign);
