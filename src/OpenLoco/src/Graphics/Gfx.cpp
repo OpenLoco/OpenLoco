@@ -337,10 +337,10 @@ namespace OpenLoco::Gfx
             currencyElement->yOffset = image->yOffset;
         };
 
-        loadCurrencySymbol(Gfx::Font::small, currencyObject->objectIcon, ImageIds::characters_small_pound_sterling_sign);
-        loadCurrencySymbol(Gfx::Font::medium_normal, currencyObject->objectIcon + 1, ImageIds::characters_medium_normal_pound_sterling_sign);
-        loadCurrencySymbol(Gfx::Font::medium_bold, currencyObject->objectIcon + 2, ImageIds::characters_medium_bold_pound_sterling_sign);
-        loadCurrencySymbol(Gfx::Font::large, currencyObject->objectIcon + 3, ImageIds::characters_large_pound_sterling_sign);
+        loadCurrencySymbol(Gfx::Font::small, currencyObject->objectIcon, ImageIds::characters_small_currency_sign);
+        loadCurrencySymbol(Gfx::Font::medium_normal, currencyObject->objectIcon + 1, ImageIds::characters_medium_normal_currency_sign);
+        loadCurrencySymbol(Gfx::Font::medium_bold, currencyObject->objectIcon + 2, ImageIds::characters_medium_bold_currency_sign);
+        loadCurrencySymbol(Gfx::Font::large, currencyObject->objectIcon + 3, ImageIds::characters_large_currency_sign);
 
         invalidateScreen();
     }

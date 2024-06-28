@@ -265,7 +265,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t characters_medium_normal_up_arrow = 1244;
     constexpr uint32_t characters_medium_normal_inverted_exclamation_mark = 1245;
     constexpr uint32_t characters_medium_normal_capital_c_acute = 1246;
-    constexpr uint32_t characters_medium_normal_pound_sterling_sign = 1247;
+    constexpr uint32_t characters_medium_normal_currency_sign = 1247;
     constexpr uint32_t characters_medium_normal_general_currency_sign = 1248;
     constexpr uint32_t characters_medium_normal_yen_sign = 1249;
     constexpr uint32_t characters_medium_normal_capital_e_ogonek = 1250;
@@ -489,7 +489,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t characters_medium_bold_up_arrow = 1468;
     constexpr uint32_t characters_medium_bold_inverted_exclamation_mark = 1469;
     constexpr uint32_t characters_medium_bold_capital_c_acute = 1470;
-    constexpr uint32_t characters_medium_bold_pound_sterling_sign = 1471;
+    constexpr uint32_t characters_medium_bold_currency_sign = 1471;
     constexpr uint32_t characters_medium_bold_general_currency_sign = 1472;
     constexpr uint32_t characters_medium_bold_yen_sign = 1473;
     constexpr uint32_t characters_medium_bold_capital_e_ogonek = 1474;
@@ -713,7 +713,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t characters_small_up_arrow = 1692;
     constexpr uint32_t characters_small_inverted_exclamation_mark = 1693;
     constexpr uint32_t characters_small_capital_c_acute = 1694;
-    constexpr uint32_t characters_small_pound_sterling_sign = 1695;
+    constexpr uint32_t characters_small_currency_sign = 1695;
     constexpr uint32_t characters_small_general_currency_sign = 1696;
     constexpr uint32_t characters_small_yen_sign = 1697;
     constexpr uint32_t characters_small_capital_e_ogonek = 1698;
@@ -937,7 +937,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t characters_large_up_arrow = 1916;
     constexpr uint32_t characters_large_inverted_exclamation_mark = 1917;
     constexpr uint32_t characters_large_capital_c_acute = 1918;
-    constexpr uint32_t characters_large_pound_sterling_sign = 1919;
+    constexpr uint32_t characters_large_currency_sign = 1919;
     constexpr uint32_t characters_large_general_currency_sign = 1920;
     constexpr uint32_t characters_large_yen_sign = 1921;
     constexpr uint32_t characters_large_capital_e_ogonek = 1922;
@@ -1031,7 +1031,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t characters_large_small_z_acute = 2010;
     constexpr uint32_t characters_large_small_255 = 2011;
 
-    constexpr uint32_t currency_symbol = characters_large_pound_sterling_sign;
+    constexpr uint32_t currency_symbol = characters_large_currency_sign;
 
     constexpr uint32_t text_palette = 2169;
 
