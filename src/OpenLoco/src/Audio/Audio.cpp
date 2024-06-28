@@ -1100,7 +1100,7 @@ namespace OpenLoco::Audio
     void playBackgroundMusic()
     {
         auto& cfg = Config::get().old;
-        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode())
+        if (cfg.musicPlaying == 0 || isTitleMode() || isEditorMode() || isPaused())
         {
             return;
         }
@@ -1131,7 +1131,7 @@ namespace OpenLoco::Audio
 
             // Load info on the song to play.
             const auto& mi = kMusicInfo[_currentSong];
-            cfg.musicPlaying = playMusic(mi.pathId, cfg.volume, false);
+            playMusic(mi.pathId, cfg.volume, false);
 
             WindowManager::invalidate(WindowType::options);
         }
@@ -1141,17 +1141,17 @@ namespace OpenLoco::Audio
 
     // 0x0048AC66
     // previously called void playTitleScreenMusic()
-    bool playMusic(PathId sample, int32_t volume, bool loop)
+    void playMusic(PathId sample, int32_t volume, bool loop)
     {
         auto* channel = getChannel(ChannelId::music);
         if (!_audioInitialised || _audioIsPaused || !_audioIsEnabled || channel == nullptr)
         {
-            return false;
+            return;
         }
 
         if (currentTrackPathId == sample)
         {
-            return true;
+            return;
         }
 
         currentTrackPathId = sample;
@@ -1161,10 +1161,8 @@ namespace OpenLoco::Audio
         if (channel->load(*musicSample))
         {
             channel->setVolume(volume);
-            return channel->play(loop);
+            channel->play(loop);
         }
-
-        return false;
     }
 
     // 0x0048AAD2
