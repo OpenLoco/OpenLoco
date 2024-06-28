@@ -11,6 +11,8 @@
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/StringManager.h"
 #include "Logging.h"
+#include "Objects/CurrencyObject.h"
+#include "Objects/ObjectManager.h"
 #include "PaletteMap.h"
 #include "Ui.h"
 #include "Ui/WindowManager.h"
@@ -316,7 +318,31 @@ namespace OpenLoco::Gfx
     // 0x0046E07B
     void loadCurrency()
     {
-        call(0x0046E07B);
+        const auto* currencyObject = ObjectManager::get<CurrencyObject>();
+        if (currencyObject == nullptr)
+        {
+            return;
+        }
+
+        const auto loadCurrencySymbol = [](const auto font, const auto imageId, const auto dstImageId) {
+            const auto* image = getG1Element(imageId);
+            Gfx::setCharacterWidth(font, 131, image->width - 1);
+
+            auto* currencyElement = getG1Element(dstImageId);
+            currencyElement->offset = image->offset;
+            currencyElement->width = image->width;
+            currencyElement->height = image->height;
+            currencyElement->flags = image->flags;
+            currencyElement->xOffset = image->xOffset;
+            currencyElement->yOffset = image->yOffset;
+        };
+
+        loadCurrencySymbol(Gfx::Font::small, currencyObject->objectIcon, ImageIds::characters_small_pound_sterling_sign);
+        loadCurrencySymbol(Gfx::Font::medium_normal, currencyObject->objectIcon + 1, ImageIds::characters_medium_normal_pound_sterling_sign);
+        loadCurrencySymbol(Gfx::Font::medium_bold, currencyObject->objectIcon + 2, ImageIds::characters_medium_bold_pound_sterling_sign);
+        loadCurrencySymbol(Gfx::Font::large, currencyObject->objectIcon + 3, ImageIds::characters_large_pound_sterling_sign);
+
+        invalidateScreen();
     }
 
     // 0x00452457
