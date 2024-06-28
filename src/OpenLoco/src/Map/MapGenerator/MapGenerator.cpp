@@ -25,6 +25,7 @@
 #include "SimplexTerrainGenerator.h"
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
+#include "World/TownManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <cassert>
 #include <cstdint>
@@ -41,6 +42,8 @@ namespace OpenLoco::World::MapGenerator
 {
     static constexpr auto kCliffTerrainHeightDiff = 4;
     static constexpr auto kMountainTerrainHeight = 26;
+
+    static loco_global<World::Pos2[16], 0x00503C6C> _503C6C;
 
     static loco_global<uint8_t*, 0x00F00160> _heightMap;
 
@@ -745,14 +748,99 @@ namespace OpenLoco::World::MapGenerator
         });
     }
 
+    static World::Pos2 placeBuildingsAlongLine(World::Pos2 origin, uint8_t numTilesBetween, const size_t buildingId, int16_t remainingTilesDistance, uint8_t rotation)
+    {
+        // We'll be placing buildings along the line and return the final location.
+
+        World::Pos2 targetPos = origin;
+        // 0x0042E945
+        for (remainingTilesDistance -= numTilesBetween; remainingTilesDistance > 0; remainingTilesDistance -= numTilesBetween)
+        {
+            // 0x0042E956
+            auto offset = _503C6C[rotation] * numTilesBetween;
+            targetPos += offset;
+            if (!drawableCoords(targetPos))
+            {
+                break;
+            }
+
+            // 0x0042E98A
+            auto tile = TileManager::get(targetPos);
+            auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                break;
+            }
+
+            auto height = TileManager::getSurfaceCornerHeight(*surface);
+
+            GameCommands::BuildingPlacementArgs buildArgs{};
+            buildArgs.pos = World::Pos3(targetPos, height * World::kSmallZStep);
+            buildArgs.rotation = rotation;
+            buildArgs.type = static_cast<uint8_t>(buildingId);
+            buildArgs.variation = 0;
+            buildArgs.colour = Colour::black;
+            buildArgs.buildImmediately = true;
+
+            // NB: return is ignored (it doesn't matter if some pylons missing)
+            GameCommands::doCommand(buildArgs, GameCommands::Flags::apply);
+        }
+
+        return targetPos;
+    }
+
     // 0x0042E893
     // Example: 'Electricity Pylon' building object
+    // Only used by 'Coal-Fired Power Station' in vanilla
     static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
-        registers regs;
-        regs.ebp = X86Pointer(buildingObj);
-        regs.ebx = id;
-        call(0x0042E893, regs);
+        for (auto& industry : IndustryManager::industries())
+        {
+            auto* industryObj = ObjectManager::get<IndustryObject>(industry.objectId);
+            if (!industryObj->hasFlags(IndustryObjectFlags::requiresElectricityPylons))
+                continue;
+
+            auto numTownsLeft = 3;
+            for (auto& town : TownManager::towns())
+            {
+                // Figure out distance and rotation (angle) between town and industry
+                auto rotationBL = 2;
+                auto xDist = town.x - industry.x; // ax
+                if (xDist < 0)
+                {
+                    xDist = -xDist;
+                    rotationBL = 0;
+                }
+
+                auto rotationBH = 1;
+                auto yDist = town.y - industry.y; // dx
+                if (yDist < 0)
+                {
+                    yDist = -yDist;
+                    rotationBH = 3;
+                }
+
+                auto manhattanDistance = xDist + yDist; // bp
+                if (manhattanDistance < 800 || manhattanDistance > 2240)
+                    continue;
+
+                // Order distances such that the longest edge is in xDist
+                if (yDist > xDist)
+                {
+                    std::swap(xDist, yDist);
+                    std::swap(rotationBL, rotationBH);
+                }
+
+                auto origin = World::Pos2(industry.x, industry.y);
+                const auto lineEnd = placeBuildingsAlongLine(origin, buildingObj->averageNumberOnMap, id, xDist / kTileSize, rotationBL);
+                placeBuildingsAlongLine(lineEnd, buildingObj->averageNumberOnMap, id, yDist / kTileSize, rotationBH);
+
+                // 0x0042E9FF
+                numTownsLeft--;
+                if (!numTownsLeft)
+                    break;
+            }
+        }
     }
 
     // 0x0042EA29
