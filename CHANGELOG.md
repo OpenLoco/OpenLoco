@@ -1,4 +1,4 @@
-24.05.1+ (???)
+24.06 (2024-06-28)
 ------------------------------------------------------------------------
 - Change: [#2473] Progress bars no longer pop up for autosaves.
 - Change: [#2509] The options window can now be opened with a keyboard shortcut (unassigned by default).
