@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Change: [#2473] Progress bars no longer pop up for autosaves.
 - Change: [#2509] The options window can now be opened with a keyboard shortcut (unassigned by default).
+- Fix: [#2180] In-game music does not restart when the game is resumed from pause.
 - Fix: [#2463] Allow removing protected structures (e.g. electricity pylons) when sandbox mode is enabled.
 
 24.05.1 (2024-05-09)
