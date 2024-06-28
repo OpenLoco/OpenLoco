@@ -791,7 +791,7 @@ namespace OpenLoco::World::MapGenerator
 
     // 0x0042E893
     // Example: 'Electricity Pylon' building object
-    // Only used required by 'Coal-Fired Power Station' in vanilla
+    // Only used by 'Coal-Fired Power Station' in vanilla
     static void generateMiscBuildingType1(const BuildingObject* buildingObj, const size_t id)
     {
         for (auto& industry : IndustryManager::industries())
