@@ -2627,7 +2627,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x00478F1F
-    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
+    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t roadType, uint8_t roadPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
     {
         const ViewportFlags backupViewFlags = addr<0x00E3F0BC, ViewportFlags>(); // After all users of 0x00E3F0BC implemented this is not required
         Paint::SessionOptions options{};
@@ -2646,21 +2646,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _constructionArrowDirection = direction;
         }
 
-        const auto* roadObj = ObjectManager::get<RoadObject>(trackType);
-        // Remove any none compatible track mods
+        const auto* roadObj = ObjectManager::get<RoadObject>(roadType);
+        // Remove any none compatible road mods
         for (auto mod = 0; mod < 2; ++mod)
         {
             if (selectedMods & (1 << mod))
             {
                 const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
-                if ((roadExtraObj->roadPieces & TrackData::getRoadMiscData(trackPieceId).compatibleFlags) != TrackData::getRoadMiscData(trackPieceId).compatibleFlags)
+                if ((roadExtraObj->roadPieces & TrackData::getRoadMiscData(roadPieceId).compatibleFlags) != TrackData::getRoadMiscData(roadPieceId).compatibleFlags)
                 {
                     selectedMods &= ~(1 << mod);
                 }
             }
         }
 
-        const auto& roadPieces = TrackData::getRoadPiece(trackPieceId);
+        const auto& roadPieces = TrackData::getRoadPiece(roadPieceId);
         const auto roadDirection = direction & 3;
 
         World::TileElement backupTileElements[5] = {};
@@ -2682,21 +2682,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             const auto northTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[3]);
             const auto southTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[3]);
 
-            // Copy map elements which will be replaced with temporary ones containing track
+            // Copy map elements which will be replaced with temporary ones containing road
             backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];
             backupTileElements[1] = *World::TileManager::get(eastTileCoords)[0];
             backupTileElements[2] = *World::TileManager::get(westTileCoords)[0];
             backupTileElements[3] = *World::TileManager::get(northTileCoords)[0];
             backupTileElements[4] = *World::TileManager::get(southTileCoords)[0];
 
-            // Set the temporary track element
+            // Set the temporary road element
             World::RoadElement newRoadEl{};
             newRoadEl.setType(World::ElementType::road);
             newRoadEl.setBaseZ(baseZ);
             newRoadEl.setClearZ(clearZ);
             newRoadEl.setSequenceIndex(roadPiece.index);
-            newRoadEl.setRoadObjectId(trackType);
-            newRoadEl.setRoadId(trackPieceId);
+            newRoadEl.setRoadObjectId(roadType);
+            newRoadEl.setRoadId(roadPieceId);
             newRoadEl.setMods(selectedMods);
             newRoadEl.setOccupiedQuarter(quarterTile.getBaseQuarterOccupied());
             newRoadEl.setOwner(CompanyManager::getControllingId());
