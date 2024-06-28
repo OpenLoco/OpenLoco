@@ -41,7 +41,10 @@ namespace OpenLoco::Ui::WindowManager
 
     void init();
     void registerHooks();
-    void setWindowColours(uint8_t i, AdvancedColour colour);
+
+    void setWindowColours(WindowColour slot, AdvancedColour colour);
+    AdvancedColour getWindowColour(WindowColour slot);
+
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
     Window* get(size_t index);

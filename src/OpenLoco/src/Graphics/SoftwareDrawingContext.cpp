@@ -28,9 +28,6 @@ namespace OpenLoco::Gfx
 
     namespace Impl
     {
-        // TODO: Move them into RenderContext once everything is implemented.
-        static loco_global<AdvancedColour[4], 0x1136594> _windowColours;
-
         // 0x009DA3E0
         // Originally 0x009DA3E0 was an array of the image data pointers setup within 0x00452336
         // We have removed that step and instead work directly on the images.

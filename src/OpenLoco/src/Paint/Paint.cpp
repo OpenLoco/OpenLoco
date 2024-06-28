@@ -1238,8 +1238,8 @@ namespace OpenLoco::Paint
             Ui::Point loc(psString->vpPos.x >> zoom, psString->vpPos.y >> zoom);
             StringManager::formatString(buffer, psString->stringId, args);
 
-            Ui::WindowManager::setWindowColours(0, AdvancedColour(static_cast<Colour>(psString->colour)));
-            Ui::WindowManager::setWindowColours(1, AdvancedColour(static_cast<Colour>(psString->colour)));
+            Ui::WindowManager::setWindowColours(Ui::WindowColour::primary, AdvancedColour(static_cast<Colour>(psString->colour)));
+            Ui::WindowManager::setWindowColours(Ui::WindowColour::secondary, AdvancedColour(static_cast<Colour>(psString->colour)));
 
             tr.drawStringYOffsets(loc, Colour::black, buffer, psString->yOffsets);
         }
