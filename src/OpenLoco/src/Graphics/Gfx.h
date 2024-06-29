@@ -171,7 +171,7 @@ namespace OpenLoco::Gfx
 
     ImageExtents getImagesMaxExtent(const ImageId baseImageId, const size_t numImages);
 
-    int16_t getCharacterWidth(Font font, uint8_t character);
-    void setCharacterWidth(Font font, uint8_t character, int16_t width);
-    ImageId getImageForCharacter(Font font, uint8_t character);
+    int16_t getCharacterWidth(Font font, char32_t character);
+    void setCharacterWidth(Font font, char32_t character, int16_t width);
+    ImageId getImageForCharacter(Font font, char32_t character);
 }

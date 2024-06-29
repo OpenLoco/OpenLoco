@@ -76,12 +76,12 @@ namespace OpenLoco
 
         *defaultElement = *currencyElement;
 
-        auto defaultWidth = Gfx::getCharacterWidth(Gfx::Font::large, 131);
-        Gfx::setCharacterWidth(Gfx::Font::large, 131, currencyElement->width + 1);
+        auto defaultWidth = Gfx::getCharacterWidth(Gfx::Font::large, U'£');
+        Gfx::setCharacterWidth(Gfx::Font::large, U'£', currencyElement->width + 1);
 
         tr.drawStringCentred(Ui::Point(x, y - 9), Colour::black, StringIds::object_currency_big_font);
 
-        Gfx::setCharacterWidth(Gfx::Font::large, 131, defaultWidth);
+        Gfx::setCharacterWidth(Gfx::Font::large, U'£', defaultWidth);
         *defaultElement = backupElement;
     }
 }
