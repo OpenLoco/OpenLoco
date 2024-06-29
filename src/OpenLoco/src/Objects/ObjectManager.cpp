@@ -997,6 +997,10 @@ namespace OpenLoco::ObjectManager
             {
                 _landObjectFlags[i] = landObj->flags;
             }
+            else
+            {
+                _landObjectFlags[i] = LandObjectFlags::none;
+            }
         }
     }
 
