@@ -1023,7 +1023,6 @@ namespace OpenLoco::ObjectManager
         updateLandObjectFlags();
         // determine trafficHandedness
         call(0x0047D9F2);
-        // set water palette map
         updateWaterPalette();
         call(0x00469F90);
     }
