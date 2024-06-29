@@ -12,6 +12,7 @@
 #include "ObjectManager.h"
 #include "ObjectStringTable.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/VehicleDraw.h"
 #include <OpenLoco/Core/Numerics.hpp>
 
 using namespace OpenLoco::Interop;
@@ -19,31 +20,14 @@ using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco
 {
-    // 0x004B7733
-    static void drawVehicle(const Gfx::RenderTarget* rt, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
-    {
-        // Eventually calls 0x4B777B part of 0x4B7741
-        registers regs;
-        regs.cx = offset.x;
-        regs.dx = offset.y;
-        regs.eax = eax;
-        regs.esi = esi;
-        regs.bl = enumValue(Colour::mutedSeaGreen);
-        regs.bh = 2;
-        regs.ebp = X86Pointer(vehicleObject);
-        regs.edi = X86Pointer(rt);
-        call(0x4B7733, regs);
-    }
-
     // 0x004B8C52
     void VehicleObject::drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const
     {
-        // Rotation
-        uint8_t unk1 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk1();
-        uint8_t unk2 = Ui::WindowManager::getVehiclePreviewRotationFrameUnk2();
+        uint8_t yaw = Ui::WindowManager::getVehiclePreviewRotationFrameYaw();
+        uint8_t roll = Ui::WindowManager::getVehiclePreviewRotationFrameRoll();
 
-        auto& rt = drawingCtx.currentRenderTarget();
-        drawVehicle(&rt, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
+        ColourScheme colour{ Colour::mutedSeaGreen, Colour::white };
+        drawVehicleOverview(drawingCtx, Ui::Point{ x, y } + Ui::Point{ 0, 19 }, *this, yaw, roll, colour);
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow

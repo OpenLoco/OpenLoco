@@ -2091,11 +2091,11 @@ namespace OpenLoco::Ui::WindowManager
         getGameState().vehiclePreviewRotationFrame = vehiclePreviewRotationFrame;
     }
 
-    uint8_t getVehiclePreviewRotationFrameUnk1()
+    uint8_t getVehiclePreviewRotationFrameYaw()
     {
         return getVehiclePreviewRotationFrame() & 0x3F;
     }
-    uint8_t getVehiclePreviewRotationFrameUnk2()
+    uint8_t getVehiclePreviewRotationFrameRoll()
     {
         return ((getVehiclePreviewRotationFrame() + 2) / 4) & 0x3F;
     }
