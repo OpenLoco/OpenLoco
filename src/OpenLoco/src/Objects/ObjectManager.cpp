@@ -984,10 +984,26 @@ namespace OpenLoco::ObjectManager
         call(0x004C3A9E);
     }
 
+    // TODO: Refactor this, variable is also defined in PaintSurface.cpp.
+    static loco_global<LandObjectFlags[getMaxObjects(ObjectType::land)], 0x00F003D3> _landObjectFlags;
+
+    // 0x004697A1
+    static void updateLandObjectFlags()
+    {
+        for (size_t i = 0; i < getMaxObjects(ObjectType::land); i++)
+        {
+            auto* landObj = get<LandObject>(i);
+            if (landObj != nullptr)
+            {
+                _landObjectFlags[i] = landObj->flags;
+            }
+        }
+    }
+
     // 0x004748FA
     void sub_4748FA()
     {
-        call(0x004697A1);
+        updateLandObjectFlags();
         // determine trafficHandedness
         call(0x0047D9F2);
         // set water palette map
