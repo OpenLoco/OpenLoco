@@ -427,7 +427,7 @@ namespace OpenLoco::GameSaveCompare
         foundDivergence |= isLoggedDivergentGameStateField("lastLandOption", 0, gameState1.lastLandOption, gameState2.lastLandOption);
         foundDivergence |= isLoggedDivergentGameStateField("maxCompetingCompanies", 0, gameState1.maxCompetingCompanies, gameState2.maxCompetingCompanies);
         foundDivergence |= isLoggedDivergentGameStateField("orderTableLength", 0, gameState1.orderTableLength, gameState2.orderTableLength);
-        foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsTram", 0, gameState1.roadObjectIdIsTram, gameState2.roadObjectIdIsTram);
+        foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsNotTram", 0, gameState1.roadObjectIdIsNotTram, gameState2.roadObjectIdIsNotTram);
         foundDivergence |= isLoggedDivergentGameStateField("roadObjectIdIsFlag7", 0, gameState1.roadObjectIdIsFlag7, gameState2.roadObjectIdIsFlag7);
         foundDivergence |= isLoggedDivergentGameStateField("currentDefaultLevelCrossingType", 0, gameState1.currentDefaultLevelCrossingType, gameState2.currentDefaultLevelCrossingType);
         foundDivergence |= isLoggedDivergentGameStateField("lastTrackTypeOption", 0, gameState1.lastTrackTypeOption, gameState2.lastTrackTypeOption);

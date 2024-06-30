@@ -1981,7 +1981,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const auto company = CompanyManager::get(CompanyId(self.number));
 
             uint32_t curYear = getCurrentYear();
-            uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
+            uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureYears, kExpenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
             int16_t x = 132 - self.widgets[widx::scrollview].left + expenditureColumnWidth;
@@ -2119,7 +2119,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, [[maybe_unused]] uint16_t* scrollHeight)
         {
             const auto& company = CompanyManager::get(CompanyId(self.number));
-            *scrollWidth = company->numExpenditureMonths * expenditureColumnWidth;
+            *scrollWidth = company->numExpenditureYears * expenditureColumnWidth;
         }
 
         // 0x00433887
