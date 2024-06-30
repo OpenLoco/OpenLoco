@@ -36,14 +36,14 @@ namespace OpenLoco::World::MapGenerator
         {
         }
 
-        uint8_t& operator[](Point pos)
+        uint8_t& operator[](TilePos2 pos)
         {
             pos.x += _minX;
             pos.y += _minY;
             return _heightMap[pos];
         }
 
-        const uint8_t& operator[](Point pos) const
+        const uint8_t& operator[](TilePos2 pos) const
         {
             pos.x += _minX;
             pos.y += _minY;

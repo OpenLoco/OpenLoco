@@ -74,10 +74,10 @@ namespace OpenLoco::World::MapGenerator
     {
         for (auto& pos : World::getDrawableTileRange())
         {
-            const MicroZ q00 = heightMap[{ pos.x - 1, pos.y - 1 }];
-            const MicroZ q01 = heightMap[{ pos.x + 0, pos.y - 1 }];
-            const MicroZ q10 = heightMap[{ pos.x - 1, pos.y + 0 }];
-            const MicroZ q11 = heightMap[{ pos.x + 0, pos.y + 0 }];
+            const MicroZ q00 = heightMap[pos + TilePos2{ -1, -1 }];
+            const MicroZ q01 = heightMap[pos + TilePos2{ 0, -1 }];
+            const MicroZ q10 = heightMap[pos + TilePos2{ -1, 0 }];
+            const MicroZ q11 = heightMap[pos + TilePos2{ 0, 0 }];
 
             const auto tile = TileManager::get(pos);
             auto* surfaceElement = tile.surface();
@@ -327,14 +327,14 @@ namespace OpenLoco::World::MapGenerator
         // Mark tiles with sudden height changes in the next row
         for (auto pos : getWorldRange())
         {
-            auto heightA = heightMap.getHeight({ pos.x + 0, pos.y });
-            auto heightB = heightMap.getHeight({ pos.x + 1, pos.y });
+            auto heightA = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+            auto heightB = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
 
             // Find no cliff between A and B?
             if (std::abs(heightB - heightA) < kCliffTerrainHeightDiff)
             {
-                auto heightC = heightMap.getHeight({ pos.x + 0, pos.y + 1 });
-                auto heightD = heightMap.getHeight({ pos.x + 1, pos.y + 1 });
+                auto heightC = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
+                auto heightD = heightMap.getHeight({ pos + TilePos2{ 0, 1 } });
 
                 // Find no cliff between C and D?
                 if (std::abs(heightD - heightC) < kCliffTerrainHeightDiff)
