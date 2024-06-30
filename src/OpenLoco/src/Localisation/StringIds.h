@@ -883,11 +883,12 @@ namespace OpenLoco::StringIds
     constexpr StringId vehicle_has_crashed = 1158;
     constexpr StringId vehicle_has_broken_down = 1159;
     constexpr StringId vehicle_is_stuck = 1160;
-
+    constexpr StringId not_enough_space_or_vehicle_in_the_way = 1161;
     constexpr StringId vehicle_approaching_or_in_the_way = 1162;
     constexpr StringId cant_place_string_id_here = 1163;
     constexpr StringId cant_remove_string_id = 1164;
     constexpr StringId cant_pass_signal_at_danger = 1165;
+    constexpr StringId this_vehicle_requires_stringid = 1166;
 
     constexpr StringId cargo_from = 1170;
     constexpr StringId cargo_empty = 1171;
@@ -964,7 +965,7 @@ namespace OpenLoco::StringIds
     constexpr StringId build_trams = 1243;
     constexpr StringId build_aircraft = 1244;
     constexpr StringId build_ships = 1245;
-
+    constexpr StringId can_only_be_placed_on_stringid = 1246;
     constexpr StringId road = 1247;
     constexpr StringId no_vehicles_available = 1248;
     constexpr StringId no_compatible_vehicles_available = 1249;
