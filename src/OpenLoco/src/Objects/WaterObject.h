@@ -38,6 +38,7 @@ namespace OpenLoco
 
     namespace Water::ImageIds
     {
+        static constexpr uint32_t kColourPalette = 41;
         static constexpr uint32_t kToolbarTerraformWater = 42;
     }
 }

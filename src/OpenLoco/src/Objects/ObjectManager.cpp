@@ -1004,14 +1004,26 @@ namespace OpenLoco::ObjectManager
         }
     }
 
+    // 0x004C57A6
+    static void updateWaterPalette()
+    {
+        const auto* waterObj = get<WaterObject>();
+        if (waterObj == nullptr)
+        {
+            return;
+        }
+
+        const auto paletteImageId = waterObj->image + Water::ImageIds::kColourPalette;
+        Gfx::PaletteMap::setEntryImage(ExtColour::water, paletteImageId);
+    }
+
     // 0x004748FA
     void sub_4748FA()
     {
         updateLandObjectFlags();
         // determine trafficHandedness
         call(0x0047D9F2);
-        // set water palette map
-        call(0x004C57A6);
+        updateWaterPalette();
         call(0x00469F90);
     }
 

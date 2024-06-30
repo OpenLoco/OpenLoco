@@ -107,4 +107,11 @@ namespace OpenLoco::Gfx::PaletteMap
         }
     }
 
+    void setEntryImage(ExtColour paletteId, uint32_t imageId)
+    {
+        assert(enumValue(paletteId) < std::size(_paletteToG1Offset));
+
+        _paletteToG1Offset[enumValue(paletteId)] = imageId;
+    }
+
 }
