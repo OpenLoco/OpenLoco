@@ -3,8 +3,13 @@
 #include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
+#include "Map/Track/SubpositionData.h"
+#include "Map/Track/Track.h"
+#include "Map/Track/TrackData.h"
 #include "Objects/ObjectManager.h"
+#include "RoutingManager.h"
 #include "Ui/WindowManager.h"
+#include "ViewportManager.h"
 #include <OpenLoco/Core/Exception.hpp>
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -13,6 +18,10 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
+    static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
+    static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
+    static loco_global<uint8_t, 0x0113607D> _113607D;
+
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
@@ -89,6 +98,12 @@ namespace OpenLoco::Vehicles
         return veh->head;
     }
 
+    uint32_t VehicleBase::getRemainingDistance() const
+    {
+        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
+        return veh->remainingDistance;
+    }
+
     void VehicleBase::setNextCar(const EntityId newNextCar)
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
@@ -115,14 +130,199 @@ namespace OpenLoco::Vehicles
         call(0x004AA464, regs);
     }
 
+    template<typename T>
+    bool updateTrackMotionNewTrackPiece(T& component)
+    {
+        auto newRoutingHandle = component.routingHandle;
+        auto newIndex = newRoutingHandle.getIndex() + 1;
+        newRoutingHandle.setIndex(newIndex);
+        const auto routing = RoutingManager::getRouting(newRoutingHandle);
+        if (routing != /* kAllocatedButFreeRoutingStation */ 0xFFFEU)
+        {
+            Vehicle train(component.head);
+            if (_vehicleUpdate_var_1136114 & (1U << 15))
+            {
+                if (train.veh1->routingHandle == component.routingHandle)
+                {
+                    _vehicleUpdate_var_1136114 |= (1U << 15);
+                    return false;
+                }
+            }
+            World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
+
+            World::Track::TrackConnections connections;
+            auto [nextPos, nextRot] = World::Track::getTrackConnectionEnd(pos, component.trackAndDirection.track._data);
+            World::Track::getTrackConnections(nextPos, nextRot, connections, component.owner, component.trackType);
+            if (_113607D & (1U << 0))
+            {
+                // level crossing
+                _vehicleUpdate_var_1136114 |= (1U << 4);
+            }
+            bool routingFound = false;
+            for (auto i = 0U; i < connections.size; ++i)
+            {
+                if ((connections.data[i] & 0x1FF) == (routing & 0x1FF))
+                {
+                    routingFound = true;
+                    break;
+                }
+            }
+            if (!routingFound)
+            {
+                _vehicleUpdate_var_1136114 |= (1U << 1);
+                return false;
+            }
+            component.routingHandle = newRoutingHandle;
+            const auto oldTaD = component.trackAndDirection.track._data;
+            component.trackAndDirection.track._data = routing & 0x1FF;
+            pos += World::TrackData::getUnkTrack(oldTaD).pos;
+            component.tileX = pos.x;
+            component.tileY = pos.y;
+            component.tileBaseZ = pos.z / World::kSmallZStep;
+            return true;
+        }
+
+        return false;
+    }
+
+    constexpr uint8_t getMovementNibble(const World::Pos3& pos1, const World::Pos3& pos2)
+    {
+        uint8_t nibble = 0;
+        if (pos1.x != pos2.x)
+        {
+            nibble |= (1U << 0);
+        }
+        if (pos1.y != pos2.y)
+        {
+            nibble |= (1U << 1);
+        }
+        if (pos1.z != pos2.z)
+        {
+            nibble |= (1U << 2);
+        }
+        return nibble;
+    }
+
+    // 0x00500120
+    constexpr std::array<uint32_t, 8> movementNibbleToDistance = {
+        0,
+        0x220C,
+        0x220C,
+        0x3027,
+        0x199A,
+        0x2A99,
+        0x2A99,
+        0x3689,
+    };
+
+    // 0x004B1876
+    template<typename T>
+    std::optional<EntityId> checkForCollisions(T& component, World::Pos3& loc)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(&component);
+        regs.ax = loc.x;
+        regs.cx = loc.y;
+        regs.dx = loc.z;
+        auto res = call(0x004B1876, regs) & X86_FLAG_CARRY;
+        if (res)
+        {
+            return static_cast<EntityId>(regs.bp);
+        }
+        return std::nullopt;
+    }
+
+    template<typename T>
+    uint32_t updateTrackMotionT(T& component, uint32_t distance)
+    {
+        if (component.mode == TransportMode::road)
+        {
+            registers regs;
+            regs.eax = distance;
+            regs.esi = X86Pointer(&component);
+            call(0x004B15FF, regs);
+            return regs.eax;
+        }
+        else if (component.mode == TransportMode::rail)
+        {
+            component.remainingDistance = distance + component.remainingDistance;
+            bool hasMoved = false;
+            auto returnValue = 0;
+            auto intermediatePosition = component.position;
+            while (component.remainingDistance >= 0x368A)
+            {
+                hasMoved = true;
+                auto newSubPosition = component.subPosition + 1U;
+                const auto subPositionDataSize = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data).size();
+                // This means we have moved forward by a track piece
+                if (newSubPosition >= subPositionDataSize)
+                {
+                    if (!updateTrackMotionNewTrackPiece(component))
+                    {
+                        returnValue = component.remainingDistance - 0x3689;
+                        component.remainingDistance = 0x3689;
+                        _vehicleUpdate_var_1136114 |= (1U << 0);
+                        break;
+                    }
+                    else
+                    {
+                        newSubPosition = 0;
+                    }
+                }
+                // 0x004B1761
+                component.subPosition = newSubPosition;
+                const auto moveData = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data)[newSubPosition];
+                const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
+                component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+                intermediatePosition = nextNewPosition;
+                component.spriteYaw = moveData.yaw;
+                component.spritePitch = moveData.pitch;
+                if (component.getSubType() == VehicleEntityType::bogie)
+                {
+                    // collision checks
+                    auto collideResult = checkForCollisions(component, intermediatePosition);
+                    if (collideResult.has_value())
+                    {
+                        _vehicleUpdate_var_1136114 |= (1U << 2);
+                        _vehicleUpdate_collisionCarComponent = collideResult.value();
+                    }
+                }
+            }
+            if (hasMoved)
+            {
+                Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
+                component.moveTo(intermediatePosition);
+                Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
+            }
+            return returnValue;
+        }
+        else
+        {
+            assert(false);
+            return 0;
+        }
+    }
+
     // 0x004B15FF
     uint32_t VehicleBase::updateTrackMotion(uint32_t unk1)
     {
-        registers regs;
-        regs.eax = unk1;
-        regs.esi = X86Pointer(this);
-        call(0x004B15FF, regs);
-        return regs.eax;
+        switch (getSubType())
+        {
+            case VehicleEntityType::head:
+                return updateTrackMotionT(*reinterpret_cast<VehicleHead*>(this), unk1);
+            case VehicleEntityType::vehicle_1:
+                return updateTrackMotionT(*reinterpret_cast<Vehicle1*>(this), unk1);
+            case VehicleEntityType::vehicle_2:
+                return updateTrackMotionT(*reinterpret_cast<Vehicle2*>(this), unk1);
+            case VehicleEntityType::bogie:
+                return updateTrackMotionT(*reinterpret_cast<VehicleBogie*>(this), unk1);
+            case VehicleEntityType::body_start:
+            case VehicleEntityType::body_continued:
+                return updateTrackMotionT(*reinterpret_cast<VehicleBody*>(this), unk1);
+            case VehicleEntityType::tail:
+                return updateTrackMotionT(*reinterpret_cast<VehicleTail*>(this), unk1);
+        }
+        return 0;
     }
 
     // 0x0047D959
