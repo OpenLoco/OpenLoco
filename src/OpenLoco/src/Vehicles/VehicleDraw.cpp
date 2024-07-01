@@ -244,36 +244,17 @@ namespace OpenLoco
         drawingCtx.drawImage(offset + Ui::Point(p1.x, p1.y), item.image);
     }
 
-    // 0x004B777B
-    void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, Ui::Point offset, const VehicleObject& vehObject, const uint8_t yaw, const uint8_t roll, const ColourScheme colourScheme)
+    struct DrawItems
     {
-        const auto unk11360E8 = kUnk500264[roll & 0x7];
-        auto trackType = vehObject.trackType;
-        if (vehObject.mode == TransportMode::road)
-        {
-            if (trackType != 0xFFU)
-            {
-                offset.y += ObjectManager::get<RoadObject>(trackType)->displayOffset;
-            }
-        }
-        else
-        {
-            if (trackType == 0xFFU)
-            {
-                offset.y += 3;
-            }
-            else
-            {
-                offset.y += ObjectManager::get<TrackObject>(trackType)->displayOffset;
-            }
-        }
-        // 0x01136152 stores offset.x
-        // 0x01136154 stores offset.y
-
         // Max num items is kMaxBodySprites * (2 bogies + 1 body)
-        sfl::static_vector<DrawItem, VehicleObject::kMaxBodySprites*(2 + 1)> drawItems;
+        sfl::static_vector<DrawItem, VehicleObject::kMaxBodySprites * (2 + 1)> items;
+        int32_t totalDistance;
+    };
 
-        auto totalDist = 0;
+    static DrawItems getDrawItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const uint8_t roll, const ColourScheme colourScheme)
+    {
+        DrawItems drawItems{};
+        const auto unk11360E8 = kUnk500264[roll & 0x7];
         for (auto i = 0; i < vehObject.var_04; ++i)
         {
             if (vehObject.hasFlags(VehicleObjectFlags::flag_02) && i == 0)
@@ -306,11 +287,11 @@ namespace OpenLoco
 
                 const auto rollIndex = (bogieSprites.numRollSprites - 1) & roll;
                 auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
-                drawItems.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), totalDist + unkDist, false });
+                drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), drawItems.totalDistance + unkDist, false });
             }
 
             auto unk1136170 = 0;
-            auto backBogieDist = totalDist;
+            auto backBogieDist = drawItems.totalDistance;
             if (v24.bodySpriteInd != SpriteIndex::null)
             {
                 auto& bodySprites = vehObject.bodySprites[v24.bodySpriteInd & ~(1U << 7)];
@@ -337,10 +318,10 @@ namespace OpenLoco
 
                 const auto rollIndex = (bogieSprites.numRollSprites - 1) & roll;
                 auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
-                drawItems.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), backBogieDist, false });
+                drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), backBogieDist, false });
             }
 
-            auto bodyDist = totalDist + (unkDist + unk1136170 - unk1136174) / 2;
+            auto bodyDist = drawItems.totalDistance + (unkDist + unk1136170 - unk1136174) / 2;
             if (v24.bodySpriteInd != SpriteIndex::null)
             {
                 auto& bodySprites = vehObject.bodySprites[v24.bodySpriteInd & ~SpriteIndex::flag_unk7];
@@ -363,15 +344,51 @@ namespace OpenLoco
 
                 auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
 
-                drawItems.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), bodyDist, true });
+                drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, colourScheme), bodyDist, true });
             }
-            totalDist += unk1136170;
+            drawItems.totalDistance += unk1136170;
         }
+        return drawItems;
+    }
 
-        const auto midDist = totalDist / 2;
+    static int32_t getVehicleObjectYDisplayOffset(const VehicleObject& vehObject)
+    {
+        auto trackType = vehObject.trackType;
+        if (vehObject.mode == TransportMode::road)
+        {
+            if (trackType != 0xFFU)
+            {
+                return ObjectManager::get<RoadObject>(trackType)->displayOffset;
+            }
+        }
+        else
+        {
+            if (trackType == 0xFFU)
+            {
+                return 3;
+            }
+            else
+            {
+                return ObjectManager::get<TrackObject>(trackType)->displayOffset;
+            }
+        }
+        return 0;
+    }
+
+    // 0x004B777B
+    void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, Ui::Point offset, const VehicleObject& vehObject, const uint8_t yaw, const uint8_t roll, const ColourScheme colourScheme)
+    {
+        offset.y += getVehicleObjectYDisplayOffset(vehObject);
+
+        // 0x01136152 stores offset.x
+        // 0x01136154 stores offset.y
+
+        const auto drawItems = getDrawItemsForVehicle(vehObject, yaw, roll, colourScheme);
+
+        const auto midDist = drawItems.totalDistance / 2;
 
         // First draw all the bogies
-        for (auto& item : drawItems)
+        for (auto& item : drawItems.items)
         {
             if (!item.isBody)
             {
@@ -382,7 +399,7 @@ namespace OpenLoco
         // Then draw the bodies forward/backward depending on where we are in the rotation
         if (yaw >= 8 && yaw < 40)
         {
-            for (auto iter = drawItems.rbegin(); iter != drawItems.rend(); ++iter)
+            for (auto iter = drawItems.items.rbegin(); iter != drawItems.items.rend(); ++iter)
             {
                 auto& item = *iter;
                 if (item.isBody)
@@ -393,7 +410,7 @@ namespace OpenLoco
         }
         else
         {
-            for (auto& item : drawItems)
+            for (auto& item : drawItems.items)
             {
                 if (item.isBody)
                 {
@@ -403,18 +420,70 @@ namespace OpenLoco
         }
     }
 
+    static ColourScheme getCompanyVehicleColourScheme(CompanyId companyId, const VehicleObject& vehObject)
+    {
+        auto* company = CompanyManager::get(companyId);
+
+        auto colourScheme = company->mainColours;
+        if (company->customVehicleColoursSet & (1 << vehObject.colourType))
+        {
+            colourScheme = company->vehicleColours[vehObject.colourType - 1];
+        }
+        return colourScheme;
+    }
+
     // 0x004B7741
     void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, Ui::Point offset, int16_t vehicleTypeIdx, uint8_t yaw, uint8_t roll, CompanyId companyId)
     {
         auto* vehObject = ObjectManager::get<VehicleObject>(vehicleTypeIdx);
-        auto* company = CompanyManager::get(companyId);
 
-        auto colourScheme = company->mainColours;
-        if (company->customVehicleColoursSet & (1 << vehObject->colourType))
-        {
-            colourScheme = company->vehicleColours[vehObject->colourType - 1];
-        }
+        auto colourScheme = getCompanyVehicleColourScheme(companyId, *vehObject);
 
         drawVehicleOverview(drawingCtx, offset, *vehObject, yaw, roll, colourScheme);
+    }
+
+    static DrawItems toScreenDistDrawItems(const DrawItems& drawItems, const uint8_t yaw)
+    {
+        DrawItems screenDistDrawItems{};
+
+        const auto getScreenDistance = [](int32_t gameDist, uint8_t yaw) {
+            const auto unk1 = Math::Trigonometry::computeXYVector(gameDist, yaw) / 4;
+
+            const auto p1 = World::gameToScreen(World::Pos3(unk1.x, unk1.y, 0), 0);
+            return -p1.x;
+        };
+
+        screenDistDrawItems.totalDistance = getScreenDistance(drawItems.totalDistance, yaw);
+
+        for (auto& item : drawItems.items)
+        {
+            screenDistDrawItems.items.push_back(DrawItem{ item.image, getScreenDistance(item.dist, yaw), item.isBody });
+        }
+        return screenDistDrawItems;
+    }
+
+    // 0x004B7711 & 0x004B745B
+    int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, CompanyId company, Ui::Point loc)
+    {
+        // This has been simplified from vanilla.
+
+        loc.y += 19;
+        auto* vehObject = ObjectManager::get<VehicleObject>(vehicleTypeIdx);
+
+        loc.y += getVehicleObjectYDisplayOffset(*vehObject);
+
+        auto colourScheme = getCompanyVehicleColourScheme(company, *vehObject);
+
+        const auto yaw = 40;
+
+        const auto drawItems = getDrawItemsForVehicle(*vehObject, yaw, 0, colourScheme);
+
+        auto screenDistDrawItems = toScreenDistDrawItems(drawItems, yaw);
+
+        for (auto& item : screenDistDrawItems.items)
+        {
+            drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
+        }
+        return screenDistDrawItems.totalDistance;
     }
 }

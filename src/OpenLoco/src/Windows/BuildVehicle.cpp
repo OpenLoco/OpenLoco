@@ -295,7 +295,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void setTrackTypeTabs(Ui::Window* window);
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
-    static int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc);
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx);
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::DrawingContext& drawingCtx);
 
@@ -1489,7 +1488,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         }
 
                         int16_t half = (window.rowHeight - 22) / 2;
-                        auto x = drawVehicleInline(drawingCtx, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
+                        auto x = drawVehicleInline(drawingCtx, vehicleType, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicleObj = ObjectManager::get<VehicleObject>(vehicleType);
                         FormatArguments args{};
@@ -1775,23 +1774,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
             Widget::drawTab(window, drawingCtx, img, tab + widx::tab_track_type_0);
         }
-    }
-
-    // 0x4B7711
-    static int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId company, Ui::Point loc)
-    {
-        const auto& rt = drawingCtx.currentRenderTarget();
-
-        registers regs;
-        regs.al = unk_1;
-        regs.ebx = enumValue(company);
-        regs.cx = loc.x;
-        regs.dx = loc.y;
-        regs.edi = X86Pointer(&rt);
-        regs.ebp = vehicleTypeIdx;
-        call(0x4B7711, regs);
-        // Returns right coordinate of the drawing
-        return regs.cx;
     }
 
     static bool keyUp(Window& w, uint32_t charCode, uint32_t keyCode)
