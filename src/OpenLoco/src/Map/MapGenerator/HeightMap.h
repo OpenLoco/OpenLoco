@@ -1,5 +1,6 @@
 #pragma once
 
+#include <OpenLoco/Engine/World.hpp>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -7,12 +8,6 @@
 
 namespace OpenLoco::World::MapGenerator
 {
-    struct Point
-    {
-        int32_t x{};
-        int32_t y{};
-    };
-
     class HeightMap
     {
     private:
@@ -39,13 +34,13 @@ namespace OpenLoco::World::MapGenerator
         {
         }
 
-        uint8_t& operator[](Point pos)
+        uint8_t& operator[](TilePos2 pos)
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
             return _height[pos.y * pitch + pos.x];
         }
 
-        const uint8_t& operator[](Point pos) const
+        const uint8_t& operator[](TilePos2 pos) const
         {
             assert(pos.x >= 0 || pos.y >= 0 || pos.x < width || pos.y < height);
             return _height[pos.y * pitch + pos.x];
@@ -66,10 +61,10 @@ namespace OpenLoco::World::MapGenerator
             return _height.size();
         }
 
-        uint8_t getHeight(Point pos) const;
+        uint8_t getHeight(TilePos2 pos) const;
         void resetMarkerFlags();
-        bool isMarkerSet(Point pos) const;
-        void setMarker(Point pos);
-        void unsetMarker(Point pos);
+        bool isMarkerSet(TilePos2 pos) const;
+        void setMarker(TilePos2 pos);
+        void unsetMarker(TilePos2 pos);
     };
 }

@@ -10,22 +10,22 @@ namespace OpenLoco::World::MapGenerator
         std::for_each_n(data(), size(), [](uint8_t& value) { value &= ~kHeightmapMarkedFlag; });
     }
 
-    uint8_t HeightMap::getHeight(Point pos) const
+    uint8_t HeightMap::getHeight(TilePos2 pos) const
     {
         return (*this)[pos] & ~kHeightmapMarkedFlag;
     }
 
-    bool HeightMap::isMarkerSet(Point pos) const
+    bool HeightMap::isMarkerSet(TilePos2 pos) const
     {
         return (*this)[pos] & kHeightmapMarkedFlag;
     }
 
-    void HeightMap::setMarker(Point pos)
+    void HeightMap::setMarker(TilePos2 pos)
     {
         (*this)[pos] |= kHeightmapMarkedFlag;
     }
 
-    void HeightMap::unsetMarker(Point pos)
+    void HeightMap::unsetMarker(TilePos2 pos)
     {
         (*this)[pos] &= ~kHeightmapMarkedFlag;
     }
