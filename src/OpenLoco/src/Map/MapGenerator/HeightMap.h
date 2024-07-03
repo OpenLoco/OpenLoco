@@ -5,10 +5,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+
 namespace OpenLoco::World::MapGenerator
 {
-
-    using TilePos2 = OpenLoco::World::TilePos2;
     class HeightMap
     {
     private:
