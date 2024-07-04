@@ -748,6 +748,7 @@ namespace OpenLoco
             auto freq = Config::get().autosaveFrequency;
             if (freq > 0 && _monthsSinceLastAutosave >= freq)
             {
+                _monthsSinceLastAutosave = 0;
                 autosave();
                 autosaveClean();
             }
