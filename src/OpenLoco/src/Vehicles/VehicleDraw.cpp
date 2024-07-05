@@ -9,6 +9,7 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "Objects/VehicleObject.h"
+#include "Vehicle.h"
 #include "Viewport.hpp"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Engine/Ui/Point.hpp>
@@ -351,6 +352,106 @@ namespace OpenLoco
         return drawItems;
     }
 
+    static DrawItems getDrawItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car, const uint8_t flags)
+    {
+        Vehicles::Vehicle train(car.front->head);
+        DrawItems drawItems{};
+        const auto isReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
+        uint8_t componentIndex = isReversed ? vehObject.var_04 - 1 : 0;
+        for (auto& carComponent : car)
+        {
+            auto& v24 = vehObject.var_24[componentIndex];
+            // 0x01136172
+            auto unkDist = isReversed ? v24.var_01 : v24.length;
+
+            if (carComponent.front->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
+            {
+                auto unk = yaw;
+                if (isReversed)
+                {
+                    unk ^= 1U << 5;
+                }
+                unk /= 2;
+
+                auto& bogieSprites = vehObject.bogieSprites[carComponent.front->objectSpriteType];
+                if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
+                {
+                    unk &= 0xFU;
+                }
+
+                const auto rollIndex = flags & (1U << 6) ? carComponent.front->var_46 : 0;
+                auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
+                drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.front->colourScheme), drawItems.totalDistance + unkDist, false });
+            }
+
+            auto unk1136170 = 0;
+            auto backBogieDist = drawItems.totalDistance;
+            if (v24.bodySpriteInd != SpriteIndex::null)
+            {
+                auto& bodySprites = vehObject.bodySprites[v24.bodySpriteInd & ~(1U << 7)];
+                unk1136170 = bodySprites.bogeyPosition * 2;
+                backBogieDist += unk1136170;
+            }
+            auto unk1136174 = isReversed ? v24.length : v24.var_01;
+            backBogieDist -= unk1136174;
+
+            if (carComponent.back->objectSpriteType != SpriteIndex::null && (vehObject.mode == TransportMode::rail || vehObject.mode == TransportMode::road))
+            {
+                auto unk = yaw;
+                if (!isReversed)
+                {
+                    unk ^= 1U << 5;
+                }
+                unk /= 2;
+
+                auto& bogieSprites = vehObject.bogieSprites[carComponent.back->objectSpriteType];
+                if (bogieSprites.hasFlags(BogieSpriteFlags::rotationalSymmetry))
+                {
+                    unk &= 0xFU;
+                }
+
+                const auto rollIndex = flags & (1U << 6) ? carComponent.back->var_46 : 0;
+                auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
+                drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.back->colourScheme), backBogieDist, false });
+            }
+
+            auto bodyDist = drawItems.totalDistance + (unkDist + unk1136170 - unk1136174) / 2;
+            if (carComponent.body->objectSpriteType != SpriteIndex::null)
+            {
+                auto& bodySprites = vehObject.bodySprites[carComponent.body->objectSpriteType];
+
+                auto unk = yaw;
+                if (isReversed)
+                {
+                    unk ^= 1U << 5;
+                }
+
+                auto rollIndex = flags & (1U << 6) ? carComponent.body->var_46 : 0;
+                rollIndex += carComponent.body->var_47;
+
+                auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
+                drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.body->colourScheme), bodyDist, true });
+                if (flags & (1U << 6)
+                    && bodySprites.hasFlags(BodySpriteFlags::hasBrakingLights)
+                    && train.veh2->var_5B != 0)
+                {
+                    const auto brakingImageIndex = getBrakingImageIndex(bodySprites, Pitch::flat, yaw);
+                    drawItems.items.push_back(DrawItem{ ImageId(brakingImageIndex, carComponent.body->colourScheme), bodyDist, true });
+                }
+            }
+            drawItems.totalDistance += unk1136170;
+            if (isReversed)
+            {
+                componentIndex--;
+            }
+            else
+            {
+                componentIndex++;
+            }
+        }
+        return drawItems;
+    }
+
     static int32_t getVehicleObjectYDisplayOffset(const VehicleObject& vehObject)
     {
         auto trackType = vehObject.trackType;
@@ -485,5 +586,53 @@ namespace OpenLoco
             drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
         }
         return screenDistDrawItems.totalDistance;
+    }
+
+    // 0x004B6D93
+    int16_t drawVehicleInline(Gfx::DrawingContext* drawingCtx, const Vehicles::Car& car, Ui::Point loc, uint8_t flags, Colour disableColour)
+    {
+        // This has been simplified from vanilla.
+
+        loc.y += 19;
+        auto* vehObject = ObjectManager::get<VehicleObject>(car.front->objectId);
+
+        loc.y += getVehicleObjectYDisplayOffset(*vehObject);
+
+        const auto yaw = 40;
+
+        const auto drawItems = getDrawItemsForVehicle(*vehObject, yaw, car, flags);
+
+        auto screenDistDrawItems = toScreenDistDrawItems(drawItems, yaw);
+
+        if (!(flags & (1U << 0)) && drawingCtx != nullptr)
+        {
+            for (auto& item : screenDistDrawItems.items)
+            {
+                if (flags & (1U << 2))
+                {
+                    bool lighterShade = flags & (1U << 3);
+                    const auto shade1 = Colours::getShade(disableColour, lighterShade ? 5 : 6);
+                    const auto shade2 = Colours::getShade(disableColour, lighterShade ? 3 : 4);
+                    drawingCtx->drawImageSolid(loc + Ui::Point(item.dist, 0) + Ui::Point(1, 1), item.image, shade1);
+                    drawingCtx->drawImageSolid(loc + Ui::Point(item.dist, 0), item.image, shade2);
+                }
+                else
+                {
+                    drawingCtx->drawImage(loc + Ui::Point(item.dist, 0), item.image);
+                }
+            }
+        }
+        return screenDistDrawItems.totalDistance;
+    }
+
+    // 0x004B6D43
+    int16_t drawTrainInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Vehicle& train, Ui::Point loc)
+    {
+        // Vanilla does this slightly differently draw bogie then draw body
+        for (auto& car : train.cars)
+        {
+            loc.x += drawVehicleInline(&drawingCtx, car, loc, (1U << 6), Colour::black);
+        }
+        return loc.x;
     }
 }

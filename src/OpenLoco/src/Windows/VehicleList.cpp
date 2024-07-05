@@ -21,6 +21,7 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleDraw.h"
 #include "Vehicles/VehicleManager.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
@@ -714,20 +715,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
     }
 
-    // 0x004B6D43
-    static void drawVehicle(VehicleHead* vehicle, Gfx::DrawingContext& drawingCtx, uint16_t yPos)
-    {
-        auto rt = drawingCtx.currentRenderTarget();
-
-        registers regs;
-        regs.esi = X86Pointer(vehicle);
-        regs.edi = X86Pointer(&rt);
-        regs.al = 0x40;
-        regs.cx = 0;
-        regs.dx = yPos;
-        call(0x004B6D43, regs);
-    }
-
     // 0x004C21CD
     static void drawScroll(Window& self, Gfx::DrawingContext& drawingCtx, [[maybe_unused]] const uint32_t scrollIndex)
     {
@@ -763,8 +750,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (head->id == EntityId(self.rowHover))
                 drawingCtx.drawRect(0, yPos, self.width, self.rowHeight, Colours::getShade(self.getColour(WindowColour::secondary).c(), 0), Gfx::RectFlags::none);
 
+            auto vehicle = Vehicles::Vehicle(*head);
             // Draw vehicle at the bottom of the row.
-            drawVehicle(head, drawingCtx, yPos + (self.rowHeight - 28) / 2 + 6);
+            drawTrainInline(drawingCtx, vehicle, Ui::Point(0, yPos + (self.rowHeight - 28) / 2 + 6));
 
             // Draw vehicle status
             {
@@ -787,8 +775,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 auto point = Point(1, yPos);
                 tr.drawStringLeftClipped(point, 308, AdvancedColour(Colour::black).outline(), format, args);
             }
-
-            auto vehicle = Vehicles::Vehicle(*head);
 
             // Vehicle profit
             {

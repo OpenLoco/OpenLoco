@@ -60,6 +60,7 @@
 #include "Ui/WindowManager.h"
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/Orders.h"
+#include "Vehicles/VehicleDraw.h"
 #include "Vehicles/VehicleManager.h"
 #include "ViewportManager.h"
 #include "World/CompanyManager.h"
@@ -1613,13 +1614,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 int16_t y = pos.y + (self.rowHeight - 22) / 2;
                 uint8_t al = 0;
-                uint8_t ah = 0;
                 if (car.front == _dragCarComponent)
                 {
                     al = 12;
-                    ah = self.getColour(WindowColour::secondary).u8();
                 }
-                auto x = Common::sub_4B743B(al, ah, 0, y, car.front, &drawingCtx);
+                auto x = drawVehicleInline(&drawingCtx, car, { 0, y }, al, self.getColour(WindowColour::secondary).c());
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
                 FormatArguments args{};
@@ -1948,9 +1947,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
-                auto width = Common::sub_4B743B(1, 0, 0, y, front, &drawingCtx);
+                auto width = drawVehicleInline(&drawingCtx, car, { 0, y }, (1U << 0), Colour::black);
                 // Actually draw it
-                width = Common::sub_4B743B(0, 0, 24 - width, (self.rowHeight - 22) / 2 + y, car.front, &drawingCtx);
+                width = drawVehicleInline(&drawingCtx, car, Ui::Point(24 - width, (self.rowHeight - 22) / 2 + y), 0, Colour::black);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
@@ -4406,27 +4405,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             return train.cars.size();
-        }
-
-        // TODO: Move to a more appropriate file used by many windows
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::DrawingContext* drawingCtx)
-        {
-            X86Pointer<const Gfx::RenderTarget> rtPtr(nullptr);
-            if (drawingCtx != nullptr)
-            {
-                const auto& rt = drawingCtx->currentRenderTarget();
-                rtPtr = X86Pointer<const Gfx::RenderTarget>(&rt);
-            }
-
-            registers regs{};
-            regs.al = al;
-            regs.ah = ah;
-            regs.cx = cx;
-            regs.dx = dx;
-            regs.esi = X86Pointer(vehicle);
-            regs.edi = rtPtr;
-            call(0x004B743B, regs);
-            return regs.cx;
         }
 
         // 0x004B5CC1
