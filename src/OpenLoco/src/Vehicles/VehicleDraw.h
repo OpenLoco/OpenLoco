@@ -1,5 +1,6 @@
 #include "Types.hpp"
 #include <OpenLoco/Engine/Ui/Point.hpp>
+#include <optional>
 
 namespace OpenLoco
 {
@@ -24,6 +25,12 @@ namespace OpenLoco
     void drawVehicleOverview(Gfx::DrawingContext& drawingCtx, Ui::Point offset, int16_t vehicleTypeIdx, uint8_t yaw, uint8_t roll, CompanyId companyId);
 
     int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, int16_t vehicleTypeIdx, CompanyId company, Ui::Point loc);
-    int16_t drawVehicleInline(Gfx::DrawingContext* drawingCtx, const Vehicles::Car& car, Ui::Point loc, uint8_t flags, Colour disableColour);
+    enum class VehicleInlineMode : bool
+    {
+        basic,
+        animated
+    };
+    int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Car& car, Ui::Point loc, VehicleInlineMode mode, std::optional<Colour> disabled = std::nullopt);
+    int16_t getWidthVehicleInline(const Vehicles::Car& car);
     int16_t drawTrainInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Vehicle& train, Ui::Point loc);
 }

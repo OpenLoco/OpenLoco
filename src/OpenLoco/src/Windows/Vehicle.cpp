@@ -1613,12 +1613,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 int16_t y = pos.y + (self.rowHeight - 22) / 2;
-                uint8_t al = 0;
-                if (car.front == _dragCarComponent)
-                {
-                    al = 12;
-                }
-                auto x = drawVehicleInline(&drawingCtx, car, { 0, y }, al, self.getColour(WindowColour::secondary).c());
+                const auto disableColour = car.front == _dragCarComponent
+                    ? std::make_optional(self.getColour(WindowColour::secondary).c())
+                    : std::nullopt;
+                auto x = drawVehicleInline(drawingCtx, car, { 0, y }, VehicleInlineMode::basic, disableColour);
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
                 FormatArguments args{};
@@ -1947,9 +1945,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
-                auto width = drawVehicleInline(&drawingCtx, car, { 0, y }, (1U << 0), Colour::black);
+                auto width = getWidthVehicleInline(car);
                 // Actually draw it
-                width = drawVehicleInline(&drawingCtx, car, Ui::Point(24 - width, (self.rowHeight - 22) / 2 + y), 0, Colour::black);
+                width = drawVehicleInline(drawingCtx, car, Ui::Point(24 - width, (self.rowHeight - 22) / 2 + y), VehicleInlineMode::basic);
 
                 if (body->primaryCargo.type != 0xFF)
                 {

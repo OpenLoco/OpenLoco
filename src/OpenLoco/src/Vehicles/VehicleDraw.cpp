@@ -352,11 +352,12 @@ namespace OpenLoco
         return drawItems;
     }
 
-    static DrawItems getDrawItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car, const uint8_t flags)
+    static DrawItems getDrawItemsForVehicle(const VehicleObject& vehObject, const uint8_t yaw, const Vehicles::Car& car, const VehicleInlineMode mode)
     {
         Vehicles::Vehicle train(car.front->head);
         DrawItems drawItems{};
         const auto isReversed = car.body->has38Flags(Vehicles::Flags38::isReversed);
+        const auto isAnimated = mode == VehicleInlineMode::animated;
         uint8_t componentIndex = isReversed ? vehObject.var_04 - 1 : 0;
         for (auto& carComponent : car)
         {
@@ -379,7 +380,7 @@ namespace OpenLoco
                     unk &= 0xFU;
                 }
 
-                const auto rollIndex = flags & (1U << 6) ? carComponent.front->var_46 : 0;
+                const auto rollIndex = isAnimated ? carComponent.front->var_46 : 0;
                 auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.front->colourScheme), drawItems.totalDistance + unkDist, false });
             }
@@ -410,7 +411,7 @@ namespace OpenLoco
                     unk &= 0xFU;
                 }
 
-                const auto rollIndex = flags & (1U << 6) ? carComponent.back->var_46 : 0;
+                const auto rollIndex = isAnimated ? carComponent.back->var_46 : 0;
                 auto spriteIndex = bogieSprites.numRollSprites * unk + rollIndex + bogieSprites.flatImageIds;
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.back->colourScheme), backBogieDist, false });
             }
@@ -426,12 +427,12 @@ namespace OpenLoco
                     unk ^= 1U << 5;
                 }
 
-                auto rollIndex = flags & (1U << 6) ? carComponent.body->var_46 : 0;
+                auto rollIndex = isAnimated ? carComponent.body->var_46 : 0;
                 rollIndex += carComponent.body->var_47;
 
                 auto spriteIndex = getBodyImageIndex(bodySprites, Pitch::flat, unk, rollIndex, 0);
                 drawItems.items.push_back(DrawItem{ ImageId(spriteIndex, carComponent.body->colourScheme), bodyDist, true });
-                if (flags & (1U << 6)
+                if (isAnimated
                     && bodySprites.hasFlags(BodySpriteFlags::hasBrakingLights)
                     && train.veh2->var_5B != 0)
                 {
@@ -589,7 +590,7 @@ namespace OpenLoco
     }
 
     // 0x004B6D93
-    int16_t drawVehicleInline(Gfx::DrawingContext* drawingCtx, const Vehicles::Car& car, Ui::Point loc, uint8_t flags, Colour disableColour)
+    int16_t drawVehicleInline(Gfx::DrawingContext& drawingCtx, const Vehicles::Car& car, Ui::Point loc, VehicleInlineMode mode, std::optional<Colour> disabled)
     {
         // This has been simplified from vanilla.
 
@@ -600,28 +601,37 @@ namespace OpenLoco
 
         const auto yaw = 40;
 
-        const auto drawItems = getDrawItemsForVehicle(*vehObject, yaw, car, flags);
+        const auto drawItems = getDrawItemsForVehicle(*vehObject, yaw, car, mode);
 
         auto screenDistDrawItems = toScreenDistDrawItems(drawItems, yaw);
 
-        if (!(flags & (1U << 0)) && drawingCtx != nullptr)
+        for (auto& item : screenDistDrawItems.items)
         {
-            for (auto& item : screenDistDrawItems.items)
+            if (disabled.has_value())
             {
-                if (flags & (1U << 2))
-                {
-                    bool lighterShade = flags & (1U << 3);
-                    const auto shade1 = Colours::getShade(disableColour, lighterShade ? 5 : 6);
-                    const auto shade2 = Colours::getShade(disableColour, lighterShade ? 3 : 4);
-                    drawingCtx->drawImageSolid(loc + Ui::Point(item.dist, 0) + Ui::Point(1, 1), item.image, shade1);
-                    drawingCtx->drawImageSolid(loc + Ui::Point(item.dist, 0), item.image, shade2);
-                }
-                else
-                {
-                    drawingCtx->drawImage(loc + Ui::Point(item.dist, 0), item.image);
-                }
+                const auto shade1 = Colours::getShade(disabled.value(), 5);
+                const auto shade2 = Colours::getShade(disabled.value(), 3);
+                drawingCtx.drawImageSolid(loc + Ui::Point(item.dist, 0) + Ui::Point(1, 1), item.image, shade1);
+                drawingCtx.drawImageSolid(loc + Ui::Point(item.dist, 0), item.image, shade2);
+            }
+            else
+            {
+                drawingCtx.drawImage(loc + Ui::Point(item.dist, 0), item.image);
             }
         }
+        return screenDistDrawItems.totalDistance;
+    }
+
+    int16_t getWidthVehicleInline(const Vehicles::Car& car)
+    {
+        auto* vehObject = ObjectManager::get<VehicleObject>(car.front->objectId);
+
+        const auto yaw = 40;
+
+        const auto drawItems = getDrawItemsForVehicle(*vehObject, yaw, car, VehicleInlineMode::basic);
+
+        auto screenDistDrawItems = toScreenDistDrawItems(drawItems, yaw);
+
         return screenDistDrawItems.totalDistance;
     }
 
@@ -631,7 +641,7 @@ namespace OpenLoco
         // Vanilla does this slightly differently draw bogie then draw body
         for (auto& car : train.cars)
         {
-            loc.x += drawVehicleInline(&drawingCtx, car, loc, (1U << 6), Colour::black);
+            loc.x += drawVehicleInline(drawingCtx, car, loc, VehicleInlineMode::animated);
         }
         return loc.x;
     }

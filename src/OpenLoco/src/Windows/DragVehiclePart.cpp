@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         _dragVehicleHead = car.front->head;
         WindowManager::invalidate(WindowType::vehicle, enumValue(car.front->head));
 
-        uint16_t width = drawVehicleInline(nullptr, car, { 0, 0 }, 1U << 0, Colour::black);
+        uint16_t width = getWidthVehicleInline(car);
         auto pos = Input::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
             {
                 if (car.front == _dragCarComponent)
                 {
-                    drawVehicleInline(&drawingCtx, car, { 0, 19 }, 0, Colour::black);
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic);
                     break;
                 }
             }
