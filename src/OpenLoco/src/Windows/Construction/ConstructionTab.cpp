@@ -2690,10 +2690,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             backupTileElements[4] = *World::TileManager::get(southTileCoords)[0];
 
             // Set the temporary road element
-            World::RoadElement newRoadEl{};
-            newRoadEl.setType(World::ElementType::road);
-            newRoadEl.setBaseZ(baseZ);
-            newRoadEl.setClearZ(clearZ);
+            World::RoadElement newRoadEl(baseZ, clearZ);
             newRoadEl.setSequenceIndex(roadPiece.index);
             newRoadEl.setRoadObjectId(roadType);
             newRoadEl.setRoadId(roadPieceId);

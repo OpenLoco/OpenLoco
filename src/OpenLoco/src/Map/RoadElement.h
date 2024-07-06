@@ -16,6 +16,9 @@ namespace OpenLoco::World
         uint8_t _7;
 
     public:
+        RoadElement() = default;
+        RoadElement(World::SmallZ baseZ, World::SmallZ clearZ);
+
         uint8_t rotation() const { return _type & 0x03; }
         void setRotation(uint8_t rotation)
         {
