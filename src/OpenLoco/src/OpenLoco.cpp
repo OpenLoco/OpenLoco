@@ -750,6 +750,7 @@ namespace OpenLoco
             {
                 autosave();
                 autosaveClean();
+                autosaveReset();
             }
         }
     }
