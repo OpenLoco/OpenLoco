@@ -368,7 +368,7 @@ namespace OpenLoco::Audio
         _audioIsPaused = false;
     }
 
-    static SoundObject* getSoundObject(SoundId id)
+    static const SoundObject* getSoundObject(SoundId id)
     {
         auto idx = (int32_t)id & ~0x8000;
         return ObjectManager::get<SoundObject>(idx);

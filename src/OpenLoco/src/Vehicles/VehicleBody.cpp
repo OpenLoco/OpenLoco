@@ -956,7 +956,7 @@ namespace OpenLoco::Vehicles
             return;
 
         var_55++;
-        SteamObject* steamObj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].objectId);
+        const SteamObject* steamObj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].objectId);
         if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
         {
             var_55 = 0;
