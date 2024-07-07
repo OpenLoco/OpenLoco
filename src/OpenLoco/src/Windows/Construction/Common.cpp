@@ -1232,13 +1232,13 @@ namespace OpenLoco::Ui::Windows::Construction
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::roadStation); i++)
             {
                 uint8_t numCompatible;
-                uint8_t* mods;
+                const uint8_t* mods;
                 uint16_t designedYear;
                 uint16_t obsoleteYear;
 
                 if (transportMode == TransportMode::road)
                 {
-                    auto roadStationObj = ObjectManager::get<RoadStationObject>(i);
+                    const auto* roadStationObj = ObjectManager::get<RoadStationObject>(i);
 
                     if (roadStationObj == nullptr)
                         continue;
@@ -1338,7 +1338,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     continue;
 
                 uint8_t numCompatible;
-                uint8_t* mods;
+                const uint8_t* mods;
 
                 if (transportMode == TransportMode::road)
                 {

@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
-        static void drawTreeThumb(TreeObject* treeObj, Gfx::DrawingContext& drawingCtx)
+        static void drawTreeThumb(const TreeObject* treeObj, Gfx::DrawingContext& drawingCtx)
         {
             uint32_t image = treeObj->getTreeGrowthDisplayOffset() * treeObj->numRotations;
             auto rotation = (treeObj->numRotations - 1) & _treeRotation;
@@ -802,7 +802,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     drawingCtx.drawRectInset(xPos, yPos, 65, kRowHeight - 1, self.getColour(WindowColour::secondary), (Gfx::RectInsetFlags::colourLight | Gfx::RectInsetFlags::borderInset));
                 }
 
-                auto treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
+                const auto* treeObj = ObjectManager::get<TreeObject>(self.rowInfo[i]);
                 auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos + 1, yPos + 1, 64, kRowHeight - 2));
                 if (clipped)
                 {

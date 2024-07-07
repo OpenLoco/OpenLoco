@@ -453,7 +453,7 @@ namespace OpenLoco::Scenario
             case Scenario::ObjectiveType::cargoDelivery:
             {
                 args.push(StringIds::deliver);
-                CargoObject* cargoObject = reinterpret_cast<CargoObject*>(ObjectManager::getTemporaryObject());
+                const CargoObject* cargoObject = reinterpret_cast<CargoObject*>(ObjectManager::getTemporaryObject());
                 if (objective.deliveredCargoType != 0xFF)
                 {
                     cargoObject = ObjectManager::get<CargoObject>(objective.deliveredCargoType);

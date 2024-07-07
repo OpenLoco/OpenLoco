@@ -108,14 +108,14 @@ namespace OpenLoco::ObjectManager
     Object* getAny(const LoadedObjectHandle& handle);
 
     template<typename T>
-    T* get()
+    const T* get()
     {
         static_assert(getMaxObjects(T::kObjectType) == 1);
         return reinterpret_cast<T*>(getAny({ T::kObjectType, 0 }));
     }
 
     template<typename T>
-    T* get(size_t id)
+    const T* get(size_t id)
     {
         static_assert(getMaxObjects(T::kObjectType) != 1);
         return reinterpret_cast<T*>(getAny({ T::kObjectType, static_cast<LoadedObjectId>(id) }));

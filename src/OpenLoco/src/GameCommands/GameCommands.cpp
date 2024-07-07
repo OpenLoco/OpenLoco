@@ -479,7 +479,7 @@ namespace OpenLoco::GameCommands
                 {
                     auto& trackElement = tile->get<TrackElement>();
 
-                    TrackObject* pObject = ObjectManager::get<TrackObject>(trackElement.trackObjectId());
+                    const TrackObject* pObject = ObjectManager::get<TrackObject>(trackElement.trackObjectId());
                     if (pObject == nullptr)
                         break;
 
@@ -494,7 +494,7 @@ namespace OpenLoco::GameCommands
                 {
                     auto& roadElement = tile->get<RoadElement>();
 
-                    RoadObject* pObject = ObjectManager::get<RoadObject>(roadElement.roadObjectId());
+                    const RoadObject* pObject = ObjectManager::get<RoadObject>(roadElement.roadObjectId());
                     if (pObject == nullptr)
                         break;
 
@@ -509,7 +509,7 @@ namespace OpenLoco::GameCommands
                 {
                     auto& stationElement = tile->get<StationElement>();
 
-                    Station* pStation = StationManager::get(stationElement.stationId());
+                    const Station* pStation = StationManager::get(stationElement.stationId());
                     if (pStation == nullptr)
                         break;
 

@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             {
                 auto& signal = element.get<SignalElement>();
 
-                TrainSignalObject* object = nullptr;
+                const TrainSignalObject* object = nullptr;
                 if (signal.getLeft().hasSignal())
                     object = ObjectManager::get<TrainSignalObject>(signal.getLeft().signalObjectId());
                 else if (signal.getRight().hasSignal())

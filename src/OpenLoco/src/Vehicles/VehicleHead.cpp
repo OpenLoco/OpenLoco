@@ -637,7 +637,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A88F7
-    void VehicleHead::updateDrivingSoundFriction(Vehicle2or6* vehType2or6, VehicleObjectFrictionSound* snd)
+    void VehicleHead::updateDrivingSoundFriction(Vehicle2or6* vehType2or6, const VehicleObjectFrictionSound* snd)
     {
         Vehicle2* vehType2_2 = _vehicleUpdate_2;
         if (vehType2_2->currentSpeed < snd->minSpeed)
@@ -656,7 +656,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8937
-    void VehicleHead::updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, VehicleObjectEngine1Sound* snd)
+    void VehicleHead::updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, const VehicleObjectEngine1Sound* snd)
     {
         Vehicle train(head);
         if (vehType2or6->isVehicle2())
@@ -749,7 +749,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8A39
-    void VehicleHead::updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, VehicleObjectEngine2Sound* snd)
+    void VehicleHead::updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, const VehicleObjectEngine2Sound* snd)
     {
         Vehicle train(head);
         if (vehType2or6->isVehicle2())
