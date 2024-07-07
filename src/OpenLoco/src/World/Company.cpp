@@ -373,6 +373,112 @@ namespace OpenLoco
         setHeadquartersVariation(getHeadquarterPerformanceVariation());
     }
 
+    // 0x00437C8C
+    static int16_t calculatePerformanceIndex(const Company& company) {}
+
+    // 0x00437D79
+    static currency48_t calculateCompanyValue(const Company& company) {}
+
+    void Company::updateMonthly1()
+    {
+        std::rotate(std::begin(cargoUnitsDeliveredHistory), std::end(cargoUnitsDeliveredHistory) - 1, std::end(cargoUnitsDeliveredHistory));
+        cargoUnitsDeliveredHistory[0] = cargoUnitsTotalDelivered;
+        cargoUnitsTotalDelivered = 0;
+
+        std::rotate(std::begin(cargoUnitsDistanceHistory), std::end(cargoUnitsDistanceHistory) - 1, std::end(cargoUnitsDistanceHistory));
+        cargoUnitsDistanceHistory[0] = cargoUnitsTotalDistance;
+        cargoUnitsTotalDistance = 0;
+
+        if (historySize >= 2)
+        {
+            if (cargoUnitsDeliveredHistory[0] < cargoUnitsDeliveredHistory[1]
+                && cargoUnitsDeliveredHistory[1] < cargoUnitsDeliveredHistory[2])
+            {
+                companyEmotionEvent(id(), Emotion::angry);
+            }
+        }
+
+        const auto newPerformance = calculatePerformanceIndex(*this);
+        challengeFlags &= ~(CompanyFlags::increasedPerformance | CompanyFlags::decreasedPerformance);
+        if (newPerformance != performanceIndex)
+        {
+            if (newPerformance < performanceIndex)
+            {
+                challengeFlags |= CompanyFlags::decreasedPerformance;
+            }
+            else
+            {
+
+                challengeFlags |= CompanyFlags::increasedPerformance;
+            }
+        }
+
+        std::rotate(std::begin(performanceIndexHistory), std::end(performanceIndexHistory) - 1, std::end(performanceIndexHistory));
+        performanceIndexHistory[0] = newPerformance;
+        performanceIndex = newPerformance;
+
+        const auto rating = performanceToRating(newPerformance);
+        if (rating > currentRating)
+        {
+            currentRating = rating;
+            if (CompanyManager::getControllingId() == id())
+            {
+                MessageManager::post(MessageType::companyPromoted, CompanyId::null, enumValue(id()), enumValue(rating));
+            }
+        }
+
+        if ((challengeFlags & CompanyFlags::increasedPerformance) != CompanyFlags::none)
+        {
+            companyEmotionEvent(id(), Emotion::happy);
+        }
+        if ((challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
+        {
+            companyEmotionEvent(id(), Emotion::scared);
+        }
+
+        const auto newCompanyValue = calculateCompanyValue(*this);
+        std::rotate(std::begin(companyValueHistory), std::end(companyValueHistory) - 1, std::end(companyValueHistory));
+        companyValueHistory[0] = newCompanyValue;
+        vehicleProfit = newCompanyValue;
+
+        historySize++;
+        if (historySize > 120)
+        {
+            historySize = 120;
+        }
+
+        if (!CompanyManager::isPlayerCompany(id()))
+        {
+            // Auto pay loan
+            while (currentLoan > 1000)
+            {
+                if (cash <= 1000)
+                {
+                    break;
+                }
+                currentLoan -= 1000;
+                cash -= 1000;
+            }
+        }
+
+        const auto monthlyInterest = (currentLoan * getGameState().loanInterestRate) / 1200;
+
+        const auto prevUpdateCompany = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(id());
+        registers regs2;
+        regs2.ebp = monthlyInterest + 1;
+        call(0x0046DD06, regs2);
+
+        CompanyManager::applyPaymentToCompany(id(), monthlyInterest, ExpenditureType::LoanInterest);
+
+        GameCommands::setUpdatingCompanyId(prevUpdateCompany);
+        if (cash <= 0)
+        {
+            companyEmotionEvent(id(), Emotion::worried);
+        }
+        // 0x00430586
+    }
+
     void Company::updateLoanAutorepay()
     {
         if (currentLoan > 0 && cash > 0 && ((challengeFlags & CompanyFlags::autopayLoan) != CompanyFlags::none))
