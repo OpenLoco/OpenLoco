@@ -1,3 +1,7 @@
+24.06+ (???)
+------------------------------------------------------------------------
+- Fix: [#2523] Autosaves are generated monthly regardless of frequency setting.
+
 24.06 (2024-06-28)
 ------------------------------------------------------------------------
 - Change: [#2473] Progress bars no longer pop up for autosaves.
