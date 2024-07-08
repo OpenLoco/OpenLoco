@@ -379,6 +379,9 @@ namespace OpenLoco
     // 0x00437D79
     static currency48_t calculateCompanyValue(const Company& company) {}
 
+    // 0x004389CC
+    static void stopAllCompanyVehicles(const Company& company) {}
+
     void Company::updateMonthly1()
     {
         std::rotate(std::begin(cargoUnitsDeliveredHistory), std::end(cargoUnitsDeliveredHistory) - 1, std::end(cargoUnitsDeliveredHistory));
@@ -476,7 +479,46 @@ namespace OpenLoco
         {
             companyEmotionEvent(id(), Emotion::worried);
         }
-        // 0x00430586
+
+        if ((challengeFlags & CompanyFlags::bankrupt) == CompanyFlags::none)
+        {
+            if (cash < 0)
+            {
+
+                numMonthsInTheRed++;
+                if (numMonthsInTheRed == 9)
+                {
+                    const auto message = CompanyManager::getUpdatingCompanyId() == id() ? MessageType::bankruptcyDeclared2 : MessageType::bankruptcyDeclared;
+                    MessageManager::post(message, id(), enumValue(id()), 0xFFFFU);
+
+                    challengeFlags |= CompanyFlags::bankrupt;
+                    if ((challengeFlags & (CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted)) == CompanyFlags::none)
+                    {
+                        challengeFlags |= CompanyFlags::challengeFailed;
+                    }
+
+                    companyEmotionEvent(id(), Emotion::dejected);
+                    stopAllCompanyVehicles(*this);
+                }
+                if (id() == CompanyManager::getUpdatingCompanyId())
+                {
+                    if (numMonthsInTheRed == 3)
+                    {
+                        MessageManager::post(MessageType::bankruptcyWarning3Months, id(), enumValue(id()), 0xFFFFU);
+                        companyEmotionEvent(id(), Emotion::scared);
+                    }
+                    else if (numMonthsInTheRed == 6)
+                    {
+                        MessageManager::post(MessageType::bankruptcyWarning6Months, id(), enumValue(id()), 0xFFFFU);
+                        companyEmotionEvent(id(), Emotion::scared);
+                    }
+                }
+            }
+            else
+            {
+                numMonthsInTheRed = 0;
+            }
+        }
     }
 
     void Company::updateLoanAutorepay()

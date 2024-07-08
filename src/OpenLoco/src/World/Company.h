@@ -210,9 +210,9 @@ namespace OpenLoco
         uint16_t observationTimeout;              // 0x8BC4
         OwnerStatus ownerStatus;                  // 0x8BC6
         uint8_t pad_8BCA[0x8BCE - 0x8BCA];
-        uint32_t cargoDelivered[32]; // 0x8BCE;
-        uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
-        uint8_t pad_8C4F;
+        uint32_t cargoDelivered[32];             // 0x8BCE;
+        uint8_t challengeProgress;               // 0x8C4E - percent completed on challenge
+        uint8_t numMonthsInTheRed;               // 0x8C4F
         uint32_t cargoUnitsTotalDistance;        // 0x8C50
         uint32_t cargoUnitsDistanceHistory[120]; // 0x8C54
         uint16_t jailStatus;                     // 0x8E34
