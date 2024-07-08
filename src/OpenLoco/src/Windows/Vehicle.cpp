@@ -1048,6 +1048,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return self;
         }
 
+        // ???
+        static void close(Window& self)
+        {
+            if (ToolManager::isToolActive(WindowType::vehicle, self.number))
+            {
+                ToolManager::toolCancel();
+            }
+        }
+
         static void cloneVehicle(Window* self)
         {
             static loco_global<EntityId, 0x0113642A> _113642A;
@@ -1640,6 +1649,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         static constexpr WindowEventList kEvents = {
+            .onClose = close,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
