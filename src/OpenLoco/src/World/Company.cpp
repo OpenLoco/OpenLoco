@@ -3,6 +3,7 @@
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/ChangeLoan.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
@@ -380,7 +381,31 @@ namespace OpenLoco
     static currency48_t calculateCompanyValue(const Company& company) {}
 
     // 0x004389CC
-    static void stopAllCompanyVehicles(const Company& company) {}
+    static void stopAllCompanyVehicles(const CompanyId companyId)
+    {
+        const auto prevUpdateCompany = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(companyId);
+
+        for (auto head : VehicleManager::VehicleList())
+        {
+            if (head->owner != companyId)
+            {
+                continue;
+            }
+
+            if (head->has38Flags(Vehicles::Flags38::isGhost))
+            {
+                continue;
+            }
+            GameCommands::VehicleChangeRunningModeArgs args{};
+            args.head = head->id;
+            args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::stopVehicle;
+            // This used to call the command directly
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+
+        GameCommands::setUpdatingCompanyId(prevUpdateCompany);
+    }
 
     void Company::updateMonthly1()
     {
@@ -498,7 +523,7 @@ namespace OpenLoco
                     }
 
                     companyEmotionEvent(id(), Emotion::dejected);
-                    stopAllCompanyVehicles(*this);
+                    stopAllCompanyVehicles(id());
                 }
                 if (id() == CompanyManager::getUpdatingCompanyId())
                 {
