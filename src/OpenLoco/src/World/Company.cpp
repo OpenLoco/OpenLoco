@@ -1,5 +1,6 @@
 #include "Company.h"
 #include "CompanyManager.h"
+#include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/ChangeLoan.h"
 #include "GameCommands/GameCommands.h"
@@ -375,10 +376,87 @@ namespace OpenLoco
     }
 
     // 0x00437C8C
-    static int16_t calculatePerformanceIndex(const Company& company) {}
+    static int16_t calculatePerformanceIndex(const Company& company)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 0;
+        }
 
+        currency32_t totalProfit = 0;
+        for (auto head : VehicleManager::VehicleList())
+        {
+            if (head->owner != company.id())
+            {
+                continue;
+            }
+
+            Vehicles::Vehicle train(*head);
+            // Unsure why /2
+            currency32_t trainProfit = train.veh2->totalRecentProfit() / 2;
+            if (static_cast<int64_t>(totalProfit) + trainProfit < std::numeric_limits<currency32_t>::max())
+            {
+                totalProfit += trainProfit;
+            }
+        }
+        totalProfit = std::max(0, totalProfit);
+
+        const auto partialProfitFactor = Math::Vector::fastSquareRoot(totalProfit) * 75;
+        const auto ecoFactor = Math::Vector::fastSquareRoot(Economy::getCurrencyMultiplicationFactor(0));
+
+        uint16_t profitFactor = 500;
+        if (partialProfitFactor < ecoFactor * 500)
+        {
+            profitFactor = partialProfitFactor / ecoFactor;
+        }
+        const auto cargoFactor = std::min<uint16_t>(500, Math::Vector::fastSquareRoot(company.cargoUnitsDistanceHistory[0] / 4));
+
+        return profitFactor + cargoFactor;
+    }
+
+    struct ProfitAndValue
+    {
+        currency48_t vehicleProfit;
+        currency48_t companyValue;
+    };
     // 0x00437D79
-    static currency48_t calculateCompanyValue(const Company& company) {}
+    static ProfitAndValue calculateCompanyValue(const Company& company)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return { 0, 0 };
+        }
+
+        currency48_t totalValue = company.cash;
+        totalValue -= company.currentLoan;
+
+        currency48_t totalVehicleProfit = 0;
+        for (auto head : VehicleManager::VehicleList())
+        {
+            if (head->owner != company.id())
+            {
+                continue;
+            }
+            if (head->has38Flags(Vehicles::Flags38::isGhost))
+            {
+                continue;
+            }
+
+            Vehicles::Vehicle train(*head);
+            currency32_t trainProfit = train.veh2->totalRecentProfit();
+            // Unsure why /2
+            totalVehicleProfit += trainProfit / 2;
+
+            totalValue += trainProfit * 8;
+
+            for (auto& car : train.cars)
+            {
+                totalValue += car.front->refundCost;
+            }
+        }
+        totalValue = std::max<currency48_t>(0, totalValue);
+        return { totalVehicleProfit, totalValue };
+    }
 
     // 0x004389CC
     static void stopAllCompanyVehicles(const CompanyId companyId)
@@ -464,10 +542,10 @@ namespace OpenLoco
             companyEmotionEvent(id(), Emotion::scared);
         }
 
-        const auto newCompanyValue = calculateCompanyValue(*this);
+        const auto newValue = calculateCompanyValue(*this);
         std::rotate(std::begin(companyValueHistory), std::end(companyValueHistory) - 1, std::end(companyValueHistory));
-        companyValueHistory[0] = newCompanyValue;
-        vehicleProfit = newCompanyValue;
+        companyValueHistory[0] = newValue.companyValue;
+        vehicleProfit = newValue.vehicleProfit;
 
         historySize++;
         if (historySize > 120)

@@ -78,6 +78,11 @@ namespace OpenLoco::Economy
         }
     }
 
+    uint32_t getCurrencyMultiplicationFactor(uint8_t costIndex)
+    {
+        return currencyMultiplicationFactors()[costIndex];
+    }
+
     // 0x0046E239
     // NB: called in sub_46E2C0 below, as well in openloco::date_tick.
     void updateMonthly()
