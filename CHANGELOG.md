@@ -1,6 +1,7 @@
 24.06+ (???)
 ------------------------------------------------------------------------
 - Fix: [#2523] Autosaves are generated monthly regardless of frequency setting.
+- Fix: [#2527] Ghost vehicles stay placed down when placement is interrupted.
 
 24.06 (2024-06-28)
 ------------------------------------------------------------------------

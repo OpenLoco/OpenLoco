@@ -115,6 +115,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return veh;
         }
 
+        static void onClose(Window& self);
         static void setActiveTabs(Window* const self);
         static void textInput(Window& self, const WidgetIndex_t callingWidget, const char* const input);
         static void renameVehicle(Window* const self, const WidgetIndex_t widgetIndex);
@@ -1014,6 +1015,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         static constexpr WindowEventList kEvents = {
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
@@ -1640,6 +1642,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         static constexpr WindowEventList kEvents = {
+            .onClose = Common::onClose,
             .onMouseUp = onMouseUp,
             .onResize = onResize,
             .onMouseDown = onMouseDown,
@@ -3484,6 +3487,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
             return std::make_pair(image, tooltip);
+        }
+
+        // NB: not a vanilla function
+        static void onClose(Window& self)
+        {
+            if (ToolManager::isToolActive(WindowType::vehicle, self.number))
+            {
+                ToolManager::toolCancel();
+            }
         }
 
         // 0x004B26C0
