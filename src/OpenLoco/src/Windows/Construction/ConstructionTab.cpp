@@ -2691,6 +2691,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             // Set the temporary road element
             World::RoadElement newRoadEl(baseZ, clearZ);
+            newRoadEl.setRotation(roadDirection);
             newRoadEl.setSequenceIndex(roadPiece.index);
             newRoadEl.setRoadObjectId(roadType);
             newRoadEl.setRoadId(roadPieceId);
