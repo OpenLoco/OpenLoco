@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#2523] Autosaves are generated monthly regardless of frequency setting.
 - Fix: [#2527] Ghost vehicles stay placed down when placement is interrupted.
+- Fix: [#2529] Overhead preview image is empty.
 
 24.06 (2024-06-28)
 ------------------------------------------------------------------------

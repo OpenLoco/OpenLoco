@@ -492,8 +492,6 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto clipped = Gfx::clipRenderTarget(rt, Ui::Rect(xPos, yPos, width, height));
             if (clipped)
             {
-                drawingCtx.pushRenderTarget(*clipped);
-
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;
 
@@ -504,6 +502,8 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 screenPos.y -= ((self.widgets[widx::image].width() / 2) + 16);
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
+
+                drawingCtx.pushRenderTarget(*clipped);
 
                 const auto previewPos = World::Pos3(256 * World::kTileSize, 256 * World::kTileSize, 116 * World::kSmallZStep);
 
