@@ -20,6 +20,7 @@
 #include "Map/TrackElement.h"
 #include "Objects/BridgeObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
@@ -2626,19 +2627,108 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x00478F1F
-    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t trackType, uint8_t trackPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
+    void drawRoad(const World::Pos3& pos, uint16_t selectedMods, uint8_t roadType, uint8_t roadPieceId, uint8_t direction, Gfx::DrawingContext& drawingCtx)
     {
-        const auto& rt = drawingCtx.currentRenderTarget();
+        const ViewportFlags backupViewFlags = addr<0x00E3F0BC, ViewportFlags>(); // After all users of 0x00E3F0BC implemented this is not required
+        Paint::SessionOptions options{};
+        options.rotation = WindowManager::getCurrentRotation(); // This shouldn't be needed...
+        auto* session = Paint::allocateSession(drawingCtx.currentRenderTarget(), options);
 
-        static loco_global<const Gfx::RenderTarget*, 0x00E0C3E0> _dword_E0C3E0;
-        _dword_E0C3E0 = &rt;
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.edi = selectedMods << 16 | pos.z;
-        regs.bh = direction;
-        regs.edx = trackPieceId << 8 | trackType;
-        call(0x00478F1F, regs);
+        const auto backupSelectionFlags = World::getMapSelectionFlags();
+        const World::Pos3 backupConstructionArrowPos = _constructionArrowPos;
+        const uint8_t backupConstructionArrowDir = _constructionArrowDirection;
+
+        World::resetMapSelectionFlag(World::MapSelectionFlags::enableConstructionArrow);
+        if (_byte_522095 & (1 << 1))
+        {
+            World::setMapSelectionFlags(World::MapSelectionFlags::enableConstructionArrow);
+            _constructionArrowPos = pos;
+            _constructionArrowDirection = direction;
+        }
+
+        const auto* roadObj = ObjectManager::get<RoadObject>(roadType);
+        // Remove any none compatible road mods
+        for (auto mod = 0; mod < 2; ++mod)
+        {
+            if (selectedMods & (1 << mod))
+            {
+                const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
+                if ((roadExtraObj->roadPieces & TrackData::getRoadMiscData(roadPieceId).compatibleFlags) != TrackData::getRoadMiscData(roadPieceId).compatibleFlags)
+                {
+                    selectedMods &= ~(1 << mod);
+                }
+            }
+        }
+
+        const auto& roadPieces = TrackData::getRoadPiece(roadPieceId);
+        const auto roadDirection = direction & 3;
+
+        World::TileElement backupTileElements[5] = {};
+
+        World::SurfaceElement previewSideSurfaceTileElement{ 255, 255, 0xF, true };
+        previewSideSurfaceTileElement.setLastFlag(true);
+
+        for (const auto& roadPiece : roadPieces)
+        {
+            const auto pieceOffset = World::Pos3{ Math::Vector::rotate(World::Pos2{ roadPiece.x, roadPiece.y }, roadDirection), roadPiece.z };
+            const auto quarterTile = roadPiece.subTileClearance.rotate(roadDirection);
+            const auto trackPos = pos + pieceOffset;
+            const auto baseZ = trackPos.z / kSmallZStep;
+            const auto clearZ = baseZ + (roadPiece.clearZ + 32) / kSmallZStep;
+
+            const auto centreTileCoords = World::toTileSpace(trackPos);
+            const auto eastTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[1]);
+            const auto westTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[1]);
+            const auto northTileCoords = centreTileCoords + World::toTileSpace(World::kOffsets[3]);
+            const auto southTileCoords = centreTileCoords - World::toTileSpace(World::kOffsets[3]);
+
+            // Copy map elements which will be replaced with temporary ones containing road
+            backupTileElements[0] = *World::TileManager::get(centreTileCoords)[0];
+            backupTileElements[1] = *World::TileManager::get(eastTileCoords)[0];
+            backupTileElements[2] = *World::TileManager::get(westTileCoords)[0];
+            backupTileElements[3] = *World::TileManager::get(northTileCoords)[0];
+            backupTileElements[4] = *World::TileManager::get(southTileCoords)[0];
+
+            // Set the temporary road element
+            World::RoadElement newRoadEl(baseZ, clearZ);
+            newRoadEl.setRotation(roadDirection);
+            newRoadEl.setSequenceIndex(roadPiece.index);
+            newRoadEl.setRoadObjectId(roadType);
+            newRoadEl.setRoadId(roadPieceId);
+            newRoadEl.setMods(selectedMods);
+            newRoadEl.setOccupiedQuarter(quarterTile.getBaseQuarterOccupied());
+            newRoadEl.setOwner(CompanyManager::getControllingId());
+            newRoadEl.setLastFlag(true);
+
+            // Replace map elements with temp ones
+            *World::TileManager::get(centreTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&newRoadEl);
+            *World::TileManager::get(eastTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(westTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(northTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+            *World::TileManager::get(southTileCoords)[0] = *reinterpret_cast<World::TileElement*>(&previewSideSurfaceTileElement);
+
+            // Draw this map tile
+            Paint::paintTileElements(*session, trackPos);
+
+            // Restore map elements
+            *World::TileManager::get(centreTileCoords)[0] = backupTileElements[0];
+            *World::TileManager::get(eastTileCoords)[0] = backupTileElements[1];
+            *World::TileManager::get(westTileCoords)[0] = backupTileElements[2];
+            *World::TileManager::get(northTileCoords)[0] = backupTileElements[3];
+            *World::TileManager::get(southTileCoords)[0] = backupTileElements[4];
+        }
+
+        session->arrangeStructs();
+        session->drawStructs(drawingCtx);
+
+        // setMapSelectionFlags OR's flags so reset them to zero to set the backup
+        World::resetMapSelectionFlags();
+        World::setMapSelectionFlags(backupSelectionFlags);
+        _constructionArrowPos = backupConstructionArrowPos;
+        _constructionArrowDirection = backupConstructionArrowDir;
+
+        options.viewFlags = backupViewFlags;
+        Paint::allocateSession(drawingCtx.currentRenderTarget(), options); // After all users of 0x00E3F0BC implemented this is not required
     }
 
     // 0x0049D38A and 0x0049D16B

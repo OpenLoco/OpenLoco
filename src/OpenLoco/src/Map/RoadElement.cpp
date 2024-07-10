@@ -12,6 +12,19 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World
 {
+    RoadElement::RoadElement(World::SmallZ baseZ, World::SmallZ clearZ)
+        : _4(0)
+        , _5(0)
+        , _6(0)
+        , _7(0)
+    {
+        _type = 0;
+        _flags = 0;
+        setType(World::ElementType::road);
+        setBaseZ(baseZ);
+        setClearZ(clearZ);
+    }
+
     // 0x00477FC2
     bool RoadElement::update(const World::Pos2& loc)
     {
