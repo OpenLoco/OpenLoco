@@ -290,8 +290,7 @@ namespace OpenLoco
         startupChecks();
 
         Gfx::loadG1();
-        Gfx::initialiseCharacterWidths();
-        Gfx::initialiseNoiseMaskMap();
+        Gfx::initialise();
 
         Ui::initialise();
         Ui::initialiseCursors();
@@ -301,11 +300,6 @@ namespace OpenLoco
         MessageManager::reset();
         call(0x004969DA); // getLocalTime not used (dead code?)
         Scenario::reset();
-
-        Gfx::loadDefaultPalette();
-        auto& drawingEngine = Gfx::getDrawingEngine();
-        auto& drawingCtx = drawingEngine.getDrawingContext();
-        drawingCtx.clearSingle(PaletteIndex::index_0A);
 
         setScreenFlag(ScreenFlags::initialised);
 

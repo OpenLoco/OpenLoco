@@ -24,6 +24,14 @@ namespace OpenLoco::Gfx
 
     loco_global<SetPaletteFunc, 0x0052524C> _setPaletteCallback;
 
+    SoftwareDrawingEngine::SoftwareDrawingEngine()
+    {
+        RenderTarget rtDummy{};
+
+        _ctx = std::make_unique<SoftwareDrawingContext>();
+        _ctx->pushRenderTarget(rtDummy);
+    }
+
     SoftwareDrawingEngine::~SoftwareDrawingEngine()
     {
         if (_palette != nullptr)
@@ -355,4 +363,5 @@ namespace OpenLoco::Gfx
     {
         return _screenRT;
     }
+
 }

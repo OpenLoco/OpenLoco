@@ -166,7 +166,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x004949BC
-    void initialiseCharacterWidths()
+    static void initialiseCharacterWidths()
     {
         struct FontEntry
         {
@@ -206,9 +206,21 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00452336
-    void initialiseNoiseMaskMap()
+    static void initialiseNoiseMaskMap()
     {
         call(0x00452336);
+    }
+
+    void initialise()
+    {
+        initialiseCharacterWidths();
+        initialiseNoiseMaskMap();
+
+        loadDefaultPalette();
+
+        auto& drawingEngine = getDrawingEngine();
+        auto& drawingCtx = drawingEngine.getDrawingContext();
+        drawingCtx.clearSingle(PaletteIndex::index_0A);
     }
 
     // 0x004CD406

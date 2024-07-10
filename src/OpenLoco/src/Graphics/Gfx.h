@@ -109,8 +109,7 @@ namespace OpenLoco::Gfx
     }
 
     void loadG1();
-    void initialiseCharacterWidths();
-    void initialiseNoiseMaskMap();
+    void initialise();
 
     // TODO: Move the recolour functions into Colour.h
     [[nodiscard]] constexpr uint32_t recolour(uint32_t image)
