@@ -30,6 +30,7 @@ namespace OpenLoco::Gfx
     class SoftwareDrawingEngine
     {
     public:
+        SoftwareDrawingEngine();
         ~SoftwareDrawingEngine();
 
         void initialize(SDL_Window* window);
