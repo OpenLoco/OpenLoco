@@ -549,10 +549,12 @@ namespace OpenLoco
         DrawItems screenDistDrawItems{};
 
         const auto getScreenDistance = [](int32_t gameDist, uint8_t yaw) {
-            const auto unk1 = Math::Trigonometry::computeXYVector(gameDist, yaw) / 4;
+            const auto unk1 = Math::Trigonometry::computeXYVector(gameDist, yaw);
 
             const auto p1 = World::gameToScreen(World::Pos3(unk1.x, unk1.y, 0), 0);
-            return -p1.x;
+            // This /4 is meant to be after the compute but we need to carry it to here
+            // to keep precision high
+            return -p1.x / 4;
         };
 
         screenDistDrawItems.totalDistance = getScreenDistance(drawItems.totalDistance, yaw);
