@@ -63,7 +63,7 @@ namespace OpenLoco::World::AnimationManager
             case 1:
                 return call(0x00479413, regs) & X86_FLAG_CARRY;
             case 2:
-                return call(0x004BD528, regs) & X86_FLAG_CARRY;
+                return false;
             case 3:
                 return updateIndustryAnimation1(anim);
             case 4:
