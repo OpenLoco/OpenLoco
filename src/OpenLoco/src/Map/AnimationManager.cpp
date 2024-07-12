@@ -5,6 +5,7 @@
 #include "GameState.h"
 #include "GameStateFlags.h"
 #include "IndustryElement.h"
+#include "StationElement.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <array>
 
@@ -74,7 +75,7 @@ namespace OpenLoco::World::AnimationManager
             case 7:
                 return call(0x004939ED, regs) & X86_FLAG_CARRY;
             case 8:
-                return call(0x004944B6, regs) & X86_FLAG_CARRY;
+                return updateDockStationAnimation(anim);
         }
         assert(false);
         return false;

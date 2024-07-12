@@ -52,13 +52,13 @@ namespace OpenLoco
         var_14 = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(numAux01);
 
-        var_18 = reinterpret_cast<const uint16_t*>(remainingData.data());
+        buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
         remainingData = remainingData.subspan(numAux01 * sizeof(uint16_t));
 
-        // Load unk2?
+        // Load building variation parts
         for (auto i = 0U; i < numAux02Ent; ++i)
         {
-            var_1C[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
+            buildingVariationParts[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
             {
                 remainingData = remainingData.subspan(1);
@@ -85,7 +85,17 @@ namespace OpenLoco
         image = 0;
         var_0C = 0;
         var_14 = nullptr;
-        var_18 = nullptr;
-        std::fill(std::begin(var_1C), std::end(var_1C), nullptr);
+        buildingPartAnimations = nullptr;
+        std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
+    }
+
+    std::span<const std::uint8_t> DockObject::getBuildingParts(const uint8_t buildingType) const
+    {
+        const auto* partsPointer = buildingVariationParts[buildingType];
+        auto* end = partsPointer;
+        while (*end != 0xFF)
+            end++;
+
+        return std::span<const std::uint8_t>(partsPointer, end);
     }
 }

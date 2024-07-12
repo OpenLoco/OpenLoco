@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BuildingCommon.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -40,17 +41,19 @@ namespace OpenLoco
         uint8_t numAux01;      // 0x12
         uint8_t numAux02Ent;   // 0x13 must be 1 or 0
         const uint8_t* var_14;
-        const uint16_t* var_18;
-        const uint8_t* var_1C[1]; // odd that this is size 1 but that is how its used
-        uint16_t designedYear;    // 0x20
-        uint16_t obsoleteYear;    // 0x22
-        World::Pos2 boatPosition; // 0x24
+        const BuildingPartAnimation* buildingPartAnimations; // 0x18
+        const uint8_t* buildingVariationParts[1];            // 0x1C odd that this is size 1 but that is how its used
+        uint16_t designedYear;                               // 0x20
+        uint16_t obsoleteYear;                               // 0x22
+        World::Pos2 boatPosition;                            // 0x24
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
         bool validate() const;
         void load(const LoadedObjectHandle& handle, std::span<const std::byte> data, ObjectManager::DependentObjects*);
         void unload();
+
+        std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
     };
 #pragma pack(pop)
 

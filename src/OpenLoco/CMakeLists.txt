@@ -180,6 +180,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapGenerator/SimplexTerrainGenerator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/MapSelection.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/RoadElement.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/StationElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/SurfaceData.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/SurfaceElement.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Map/Tile.cpp"
