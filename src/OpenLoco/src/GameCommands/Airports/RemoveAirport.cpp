@@ -136,15 +136,15 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        for (auto& part : airportObj->getBuildingParts())
+        for (auto& building : airportObj->getBuildingPositions())
         {
             // 0x004937FA
-            auto offset = World::TilePos2(part.x, part.y);
+            auto offset = World::TilePos2(building.x, building.y);
             offset = Math::Vector::rotate(offset, rotation);
 
             auto worldPos = World::Pos3(World::toWorldSpace(offset), 0);
 
-            if ((airportObj->largeTiles & (1 << part.index)) != 0)
+            if ((airportObj->largeTiles & (1 << building.index)) != 0)
             {
                 worldPos.x += kLargeTileOffsets[rotation].x;
                 worldPos.y += kLargeTileOffsets[rotation].y;
@@ -152,7 +152,7 @@ namespace OpenLoco::GameCommands
 
             worldPos += pos;
 
-            if (!removeAirportTileElement(worldPos, airportObj, part.index, flags))
+            if (!removeAirportTileElement(worldPos, airportObj, building.index, flags))
             {
                 return FAILURE;
             }

@@ -73,7 +73,7 @@ namespace OpenLoco::World::AnimationManager
             case 6:
                 return updateBuildingAnimation2(anim);
             case 7:
-                return call(0x004939ED, regs) & X86_FLAG_CARRY;
+                return updateAirportStationAnimation(anim);
             case 8:
                 return updateDockStationAnimation(anim);
         }

@@ -74,4 +74,5 @@ namespace OpenLoco::World
     static_assert(sizeof(StationElement) == kTileElementSize);
 
     bool updateDockStationAnimation(const Animation& anim);
+    bool updateAirportStationAnimation(const Animation& anim);
 }
