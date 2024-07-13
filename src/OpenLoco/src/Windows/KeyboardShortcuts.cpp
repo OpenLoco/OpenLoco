@@ -20,7 +20,7 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
-    static const int kRowHeight = 10; // CJK: 13
+    static constexpr int kRowHeight = 10; // CJK: 13
 
     static constexpr Widget _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
