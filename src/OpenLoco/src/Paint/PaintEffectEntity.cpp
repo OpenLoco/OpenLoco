@@ -179,7 +179,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 28> kSplashImageIds = {
+        static constexpr std::array<uint32_t, 28> kSplashImageIds = {
             ImageIds::splash_00,
             ImageIds::splash_01,
             ImageIds::splash_02,
@@ -224,7 +224,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 31> kFireballImageIds = {
+        static constexpr std::array<uint32_t, 31> kFireballImageIds = {
             ImageIds::fireball_00,
             ImageIds::fireball_01,
             ImageIds::fireball_02,
@@ -272,7 +272,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 10> kExplosionSmokeImageIds = {
+        static constexpr std::array<uint32_t, 10> kExplosionSmokeImageIds = {
             ImageIds::explosion_smoke_00,
             ImageIds::explosion_smoke_01,
             ImageIds::explosion_smoke_02,
@@ -299,7 +299,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 12> kSmokeImageIds = {
+        static constexpr std::array<uint32_t, 12> kSmokeImageIds = {
             ImageIds::smoke_00,
             ImageIds::smoke_01,
             ImageIds::smoke_02,
