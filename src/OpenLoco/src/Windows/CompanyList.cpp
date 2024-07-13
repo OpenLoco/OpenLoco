@@ -1510,7 +1510,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Performance Index Tab
             {
-                static const uint32_t performanceImageIds[] = {
+                static constexpr uint32_t performanceImageIds[] = {
                     InterfaceSkin::ImageIds::tab_performance_index_frame0,
                     InterfaceSkin::ImageIds::tab_performance_index_frame1,
                     InterfaceSkin::ImageIds::tab_performance_index_frame2,
@@ -1534,7 +1534,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Cargo Unit Tab
             {
-                static const uint32_t cargoUnitsImageIds[] = {
+                static constexpr uint32_t cargoUnitsImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cargo_units_frame0,
                     InterfaceSkin::ImageIds::tab_cargo_units_frame1,
                     InterfaceSkin::ImageIds::tab_cargo_units_frame2,
@@ -1558,7 +1558,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Cargo Distance Tab
             {
-                static const uint32_t cargoDistanceImageIds[] = {
+                static constexpr uint32_t cargoDistanceImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cargo_distance_frame0,
                     InterfaceSkin::ImageIds::tab_cargo_distance_frame1,
                     InterfaceSkin::ImageIds::tab_cargo_distance_frame2,
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Company Values Tab
             {
-                static const uint32_t companyValuesImageIds[] = {
+                static constexpr uint32_t companyValuesImageIds[] = {
                     InterfaceSkin::ImageIds::tab_production_frame0,
                     InterfaceSkin::ImageIds::tab_production_frame1,
                     InterfaceSkin::ImageIds::tab_production_frame2,
