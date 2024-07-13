@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Vehicles tab
             {
-                static const uint32_t vehiclesTabImageIds[] = {
+                static constexpr uint32_t vehiclesTabImageIds[] = {
                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
                     InterfaceSkin::ImageIds::vehicle_train_frame_1,
                     InterfaceSkin::ImageIds::vehicle_train_frame_2,
