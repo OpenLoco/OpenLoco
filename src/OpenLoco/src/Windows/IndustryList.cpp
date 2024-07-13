@@ -1386,7 +1386,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             // Fund New Industries Tab
             {
-                static const uint32_t fundNewIndustriesImageIds[] = {
+                static constexpr uint32_t fundNewIndustriesImageIds[] = {
                     InterfaceSkin::ImageIds::build_industry_frame_0,
                     InterfaceSkin::ImageIds::build_industry_frame_1,
                     InterfaceSkin::ImageIds::build_industry_frame_2,
