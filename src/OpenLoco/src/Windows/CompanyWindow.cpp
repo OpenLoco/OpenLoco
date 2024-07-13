@@ -1360,7 +1360,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             };
 
             // clang-format off
-            static const ColourSchemeTuple tuples[] =
+            static constexpr ColourSchemeTuple tuples[] =
             {
                 { widx::check_steam_locomotives,     widx::main_colour_steam_locomotives,     widx::secondary_colour_steam_locomotives },
                 { widx::check_diesel_locomotives,    widx::main_colour_diesel_locomotives,    widx::secondary_colour_diesel_locomotives },
@@ -2666,7 +2666,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->setWidgets(newWidgets);
             // self->initScrollWidgets();
 
-            static const widx tabWidgetIdxByTabId[] = {
+            static constexpr widx tabWidgetIdxByTabId[] = {
                 tab_status,
                 tab_details,
                 tab_colour_scheme,
@@ -2784,7 +2784,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Colour scheme tab
             {
-                static const uint32_t colourSchemeTabImageIds[] = {
+                static constexpr uint32_t colourSchemeTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_colour_scheme_frame0,
                     InterfaceSkin::ImageIds::tab_colour_scheme_frame1,
                     InterfaceSkin::ImageIds::tab_colour_scheme_frame2,
@@ -2806,7 +2806,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Finances tab
             {
-                static const uint32_t financesTabImageIds[] = {
+                static constexpr uint32_t financesTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_finances_frame0,
                     InterfaceSkin::ImageIds::tab_finances_frame1,
                     InterfaceSkin::ImageIds::tab_finances_frame2,
@@ -2836,7 +2836,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Cargo delivered tab
             {
-                static const uint32_t cargoDeliveredTabImageIds[] = {
+                static constexpr uint32_t cargoDeliveredTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cargo_delivered_frame0,
                     InterfaceSkin::ImageIds::tab_cargo_delivered_frame1,
                     InterfaceSkin::ImageIds::tab_cargo_delivered_frame2,
@@ -2854,7 +2854,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Challenge tab
             {
-                static const uint32_t challengeTabImageIds[] = {
+                static constexpr uint32_t challengeTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cup_frame0,
                     InterfaceSkin::ImageIds::tab_cup_frame1,
                     InterfaceSkin::ImageIds::tab_cup_frame2,
