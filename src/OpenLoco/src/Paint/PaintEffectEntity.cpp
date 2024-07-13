@@ -27,7 +27,7 @@ namespace OpenLoco::Paint
     // 004FAAC8
     // This is an array of 22 signed int8 elements which are repeating 20 times, can be optimized after C++ implementation of 0x004FD120 - addToStringPlotList
     // clang-format off
-    static const int8_t kWiggleYOffsets[440] = {
+    static constexpr int8_t kWiggleYOffsets[440] = {
         0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
         0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
         0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
@@ -144,7 +144,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 18> kExplosionCloudImageIds = {
+        static constexpr std::array<uint32_t, 18> kExplosionCloudImageIds = {
             ImageIds::explosion_cloud_00,
             ImageIds::explosion_cloud_01,
             ImageIds::explosion_cloud_02,
