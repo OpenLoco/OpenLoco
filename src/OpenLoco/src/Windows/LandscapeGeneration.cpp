@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Options tab
             {
-                static const uint32_t optionTabImageIds[] = {
+                static constexpr uint32_t optionTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cogs_frame0,
                     InterfaceSkin::ImageIds::tab_cogs_frame1,
                     InterfaceSkin::ImageIds::tab_cogs_frame2,
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static const StringId generatorIds[] = {
+        static constexpr StringId generatorIds[] = {
             StringIds::generator_original,
             StringIds::generator_simplex,
             StringIds::generator_png_heightmap,
@@ -634,7 +634,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::hill_density);
         }
 
-        static const StringId landDistributionLabelIds[] = {
+        static constexpr StringId landDistributionLabelIds[] = {
             StringIds::land_distribution_everywhere,
             StringIds::land_distribution_nowhere,
             StringIds::land_distribution_far_from_water,
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static const StringId topographyStyleIds[] = {
+        static constexpr StringId topographyStyleIds[] = {
             StringIds::flat_land,
             StringIds::small_hills,
             StringIds::mountains,
@@ -1318,7 +1318,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::max_town_size);
         }
 
-        static const StringId townSizeLabels[] = {
+        static constexpr StringId townSizeLabels[] = {
             StringIds::town_size_1,
             StringIds::town_size_2,
             StringIds::town_size_3,
@@ -1444,7 +1444,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 StringIds::number_of_industries);
         }
 
-        static const StringId numIndustriesLabels[] = {
+        static constexpr StringId numIndustriesLabels[] = {
             StringIds::industry_size_low,
             StringIds::industry_size_medium,
             StringIds::industry_size_high,
@@ -1537,7 +1537,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->setWidgets(newWidgets);
             window->initScrollWidgets();
 
-            static const widx tabWidgetIdxByTabId[] = {
+            static constexpr widx tabWidgetIdxByTabId[] = {
                 tab_options,
                 tab_land,
                 tab_water,
