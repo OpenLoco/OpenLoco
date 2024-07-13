@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
             // Finances tab
             {
-                static const uint32_t financesTabImageIds[] = {
+                static constexpr uint32_t financesTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_finances_frame0,
                     InterfaceSkin::ImageIds::tab_finances_frame1,
                     InterfaceSkin::ImageIds::tab_finances_frame2,
