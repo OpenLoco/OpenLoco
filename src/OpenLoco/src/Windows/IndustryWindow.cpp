@@ -812,7 +812,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void drawProductionTab(Window* self, Gfx::DrawingContext& drawingCtx, uint8_t productionTabNumber)
         {
-            static const uint32_t productionTabImageIds[] = {
+            static constexpr uint32_t productionTabImageIds[] = {
                 InterfaceSkin::ImageIds::tab_production_frame0,
                 InterfaceSkin::ImageIds::tab_production_frame1,
                 InterfaceSkin::ImageIds::tab_production_frame2,
@@ -827,7 +827,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
-            static const uint32_t productionTabIds[] = {
+            static constexpr uint32_t productionTabIds[] = {
                 widx::tab_production,
                 widx::tab_production_2,
             };
@@ -881,7 +881,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Transported Tab
             {
-                static const uint32_t transportedTabImageIds[] = {
+                static constexpr uint32_t transportedTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_transported_frame0,
                     InterfaceSkin::ImageIds::tab_transported_frame1,
                     InterfaceSkin::ImageIds::tab_transported_frame2,

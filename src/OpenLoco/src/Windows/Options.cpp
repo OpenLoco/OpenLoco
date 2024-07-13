@@ -1002,7 +1002,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             {
-                static const StringId playlist_string_ids[] = {
+                static constexpr StringId playlist_string_ids[] = {
                     StringIds::play_only_music_from_current_era,
                     StringIds::play_all_music,
                     StringIds::play_custom_music_selection,

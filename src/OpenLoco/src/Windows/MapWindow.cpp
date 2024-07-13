@@ -1145,7 +1145,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             if (!(self->disabledWidgets & (1 << widx::tabVehicles)))
             {
-                static const uint32_t vehicleImageIds[] = {
+                static constexpr uint32_t vehicleImageIds[] = {
                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
                     InterfaceSkin::ImageIds::vehicle_train_frame_1,
                     InterfaceSkin::ImageIds::vehicle_train_frame_2,
@@ -1188,7 +1188,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             if (!(self->disabledWidgets & (1 << widx::tabRoutes)))
             {
-                static const uint32_t routeImageIds[] = {
+                static constexpr uint32_t routeImageIds[] = {
                     InterfaceSkin::ImageIds::tab_routes_frame_0,
                     InterfaceSkin::ImageIds::tab_routes_frame_1,
                     InterfaceSkin::ImageIds::tab_routes_frame_2,
@@ -1220,7 +1220,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D273
     static void drawGraphKeyOverall(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
-        static const PaletteIndex_t overallColours[] = {
+        static constexpr PaletteIndex_t overallColours[] = {
             PaletteIndex::index_41,
             PaletteIndex::index_7D,
             PaletteIndex::index_0C,
@@ -1229,7 +1229,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             PaletteIndex::index_64,
         };
 
-        static const StringId lineNames[] = {
+        static constexpr StringId lineNames[] = {
             StringIds::map_key_towns,
             StringIds::map_key_industries,
             StringIds::map_key_roads,
@@ -1266,7 +1266,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x004FDD62
-    static const PaletteIndex_t vehicleTypeColours[] = {
+    static constexpr PaletteIndex_t vehicleTypeColours[] = {
         PaletteIndex::index_AD,
         PaletteIndex::index_67,
         PaletteIndex::index_A2,
@@ -1278,7 +1278,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D379
     static void drawGraphKeyVehicles(Window* self, Gfx::DrawingContext& drawingCtx, uint16_t x, uint16_t& y)
     {
-        static const StringId lineNames[] = {
+        static constexpr StringId lineNames[] = {
             StringIds::forbid_trains,
             StringIds::forbid_buses,
             StringIds::forbid_trucks,
@@ -1439,7 +1439,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D81F
     static void formatVehicleString(Window* self, FormatArguments& args)
     {
-        static const StringId vehicleStringSingular[] = {
+        static constexpr StringId vehicleStringSingular[] = {
             StringIds::num_trains_singular,
             StringIds::num_buses_singular,
             StringIds::num_trucks_singular,
@@ -1448,7 +1448,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             StringIds::num_ships_singular,
         };
 
-        static const StringId vehicleStringPlural[] = {
+        static constexpr StringId vehicleStringPlural[] = {
             StringIds::num_trains_plural,
             StringIds::num_buses_plural,
             StringIds::num_trucks_plural,

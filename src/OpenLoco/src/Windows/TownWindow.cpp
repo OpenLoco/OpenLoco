@@ -753,7 +753,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             // Population tab
             {
-                static const uint32_t populationTabImageIds[] = {
+                static constexpr uint32_t populationTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_population_frame0,
                     InterfaceSkin::ImageIds::tab_population_frame1,
                     InterfaceSkin::ImageIds::tab_population_frame2,
@@ -775,7 +775,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             // Company ratings tab
             {
-                static const uint32_t ratingsTabImageIds[] = {
+                static constexpr uint32_t ratingsTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_ratings_frame0,
                     InterfaceSkin::ImageIds::tab_ratings_frame1,
                     InterfaceSkin::ImageIds::tab_ratings_frame2,

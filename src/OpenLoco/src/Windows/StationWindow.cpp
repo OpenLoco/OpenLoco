@@ -960,7 +960,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             // Cargo tab
             {
-                static const uint32_t cargoTabImageIds[] = {
+                static constexpr uint32_t cargoTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cargo_delivered_frame0,
                     InterfaceSkin::ImageIds::tab_cargo_delivered_frame1,
                     InterfaceSkin::ImageIds::tab_cargo_delivered_frame2,

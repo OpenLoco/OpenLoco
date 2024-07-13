@@ -1550,7 +1550,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // Build New Towns Tab
             {
-                static const uint32_t buildNewTownsImageIds[] = {
+                static constexpr uint32_t buildNewTownsImageIds[] = {
                     InterfaceSkin::ImageIds::build_town_frame_0,
                     InterfaceSkin::ImageIds::build_town_frame_1,
                     InterfaceSkin::ImageIds::build_town_frame_2,
@@ -1579,7 +1579,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // Build New Buildings Tab
             {
-                static const uint32_t buildBuildingsImageIds[] = {
+                static constexpr uint32_t buildBuildingsImageIds[] = {
                     InterfaceSkin::ImageIds::build_buildings_frame_0,
                     InterfaceSkin::ImageIds::build_buildings_frame_1,
                     InterfaceSkin::ImageIds::build_buildings_frame_2,
@@ -1608,7 +1608,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             // Build New Misc Buildings Tab
             {
-                static const uint32_t buildMiscBuildingsImageIds[] = {
+                static constexpr uint32_t buildMiscBuildingsImageIds[] = {
                     InterfaceSkin::ImageIds::build_misc_buildings_frame_0,
                     InterfaceSkin::ImageIds::build_misc_buildings_frame_1,
                     InterfaceSkin::ImageIds::build_misc_buildings_frame_2,

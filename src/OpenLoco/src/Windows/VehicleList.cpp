@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         transportingCargo,
     };
 
-    static const uint8_t row_heights[] = {
+    static constexpr uint8_t row_heights[] = {
         28,
         28,
         28,

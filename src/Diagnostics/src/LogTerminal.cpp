@@ -6,10 +6,10 @@
 
 namespace OpenLoco::Diagnostics::Logging
 {
-    static const auto kColourInfo = fmt::fg(fmt::color::light_gray);
-    static const auto kColourWarning = fmt::fg(fmt::color::yellow);
-    static const auto kColourError = fmt::fg(fmt::color::red);
-    static const auto kColourVerbose = fmt::fg(fmt::color::gray);
+    static constexpr auto kColourInfo = fmt::fg(fmt::color::light_gray);
+    static constexpr auto kColourWarning = fmt::fg(fmt::color::yellow);
+    static constexpr auto kColourError = fmt::fg(fmt::color::red);
+    static constexpr auto kColourVerbose = fmt::fg(fmt::color::gray);
 
     LogTerminal::LogTerminal()
     {

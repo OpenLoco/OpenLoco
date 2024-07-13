@@ -371,7 +371,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static const uint16_t rowHeights[vehicleTypeCount] = {
+        static constexpr uint16_t rowHeights[vehicleTypeCount] = {
             22,
             22,
             22,
@@ -677,7 +677,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            static const std::pair<StringId, VehicleChangeRunningModeArgs::Mode> itemToGameCommandInfo[3] = {
+            static constexpr std::pair<StringId, VehicleChangeRunningModeArgs::Mode> itemToGameCommandInfo[3] = {
                 { StringIds::cant_stop_string_id, VehicleChangeRunningModeArgs::Mode::stopVehicle },
                 { StringIds::cant_start_string_id, VehicleChangeRunningModeArgs::Mode::startVehicle },
                 { StringIds::cant_select_manual_mode_string_id, VehicleChangeRunningModeArgs::Mode::driveManually },
