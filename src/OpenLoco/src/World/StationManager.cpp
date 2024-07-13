@@ -346,7 +346,7 @@ namespace OpenLoco::StationManager
         }
 
         // Additional names to try
-        static const std::pair<const StationName, const StringId> additionalNamePairs[] = {
+        static constexpr std::pair<const StationName, const StringId> additionalNamePairs[] = {
             { StationName::townTransfer, StringIds::station_town_transfer },
             { StationName::townHalt, StringIds::station_town_halt },
             { StationName::townAnnexe, StringIds::station_town_annexe },
@@ -364,7 +364,7 @@ namespace OpenLoco::StationManager
         }
 
         // Ordinal names to try
-        static const std::pair<const StationName, const StringId> ordinalNamePairs[] = {
+        static constexpr std::pair<const StationName, const StringId> ordinalNamePairs[] = {
             { StationName::townOrd1, StringIds::station_town_ord_1 },
             { StationName::townOrd2, StringIds::station_town_ord_2 },
             { StationName::townOrd3, StringIds::station_town_ord_3 },
