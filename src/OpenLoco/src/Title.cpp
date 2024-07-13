@@ -51,7 +51,7 @@ namespace OpenLoco::Title
     using TitleStep = std::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
     using TitleSequence = std::vector<TitleStep>;
 
-    static constexpr TitleSequence _titleSequence = {
+    static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },
         WaitStep{ 368 },
         MoveStep{ 93, 59 },
