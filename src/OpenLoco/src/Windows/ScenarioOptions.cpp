@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             // Challenge tab
             {
-                static const uint32_t challengeTabImageIds[] = {
+                static constexpr uint32_t challengeTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_cup_frame0,
                     InterfaceSkin::ImageIds::tab_cup_frame1,
                     InterfaceSkin::ImageIds::tab_cup_frame2,
@@ -107,7 +107,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             // Finances tab
             {
-                static const uint32_t financesTabImageIds[] = {
+                static constexpr uint32_t financesTabImageIds[] = {
                     InterfaceSkin::ImageIds::tab_finances_frame0,
                     InterfaceSkin::ImageIds::tab_finances_frame1,
                     InterfaceSkin::ImageIds::tab_finances_frame2,
@@ -205,7 +205,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             tr.drawStringLeftWrapped(point, window.width - 10, Colour::black, StringIds::challenge_value, args);
         }
 
-        static const StringId objectiveTypeLabelIds[] = {
+        static constexpr StringId objectiveTypeLabelIds[] = {
             StringIds::objective_achieve_a_certain_company_value,
             StringIds::objective_achieve_a_certain_monthly_profit_from_vehicles,
             StringIds::objective_achieve_a_certain_performance_index,
