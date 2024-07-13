@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // TODO: use same list as top toolbar
-    static const uint32_t map_sprites_by_rotation[] = {
+    static constexpr uint32_t map_sprites_by_rotation[] = {
         InterfaceSkin::ImageIds::toolbar_menu_map_north,
         InterfaceSkin::ImageIds::toolbar_menu_map_west,
         InterfaceSkin::ImageIds::toolbar_menu_map_south,
