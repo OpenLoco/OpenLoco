@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t x = window.widgets[Common::Widx::vehicles_menu].left + window.x;
             uint32_t y = window.widgets[Common::Widx::vehicles_menu].top + window.y;
 
-            static const uint32_t button_face_image_ids[] = {
+            static constexpr uint32_t button_face_image_ids[] = {
                 InterfaceSkin::ImageIds::vehicle_train_frame_0,
                 InterfaceSkin::ImageIds::vehicle_buses_frame_0,
                 InterfaceSkin::ImageIds::vehicle_trucks_frame_0,
@@ -825,7 +825,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t x = window.widgets[Common::Widx::build_vehicles_menu].left + window.x;
             uint32_t y = window.widgets[Common::Widx::build_vehicles_menu].top + window.y;
 
-            static const uint32_t build_vehicle_images[] = {
+            static constexpr uint32_t build_vehicle_images[] = {
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_train,
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_bus,
                 InterfaceSkin::ImageIds::toolbar_build_vehicle_truck,
