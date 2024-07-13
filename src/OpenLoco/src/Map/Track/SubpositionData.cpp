@@ -18504,7 +18504,7 @@ namespace OpenLoco::World::TrackData
     };
 
     // 0x004D9DE4
-    static const std::array<std::array<std::array<std::span<const MoveInfo>, 10 * 8>, 2>, 2> _rightHand4D9DE4 = {
+    static constexpr std::array<std::array<std::array<std::span<const MoveInfo>, 10 * 8>, 2>, 2> _rightHand4D9DE4 = {
         std::array<std::array<std::span<const MoveInfo>, 10 * 8>, 2>{
             std::array<std::span<const MoveInfo>, 10 * 8>{
                 moveInfoTA0L1T0R0D0,
