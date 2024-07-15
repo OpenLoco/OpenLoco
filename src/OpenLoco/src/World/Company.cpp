@@ -497,6 +497,9 @@ namespace OpenLoco
 
         if (historySize >= 2)
         {
+            // Note: At this point cargoUnitsDeliveredHistory already has historySize + 1
+            // valid entries inside of it. This is why it is safe to access cargoUnitsDeliveredHistory[2]
+            // after the if (historySize >= 2)
             if (cargoUnitsDeliveredHistory[0] < cargoUnitsDeliveredHistory[1]
                 && cargoUnitsDeliveredHistory[1] < cargoUnitsDeliveredHistory[2])
             {
