@@ -392,8 +392,9 @@ namespace OpenLoco
             }
 
             Vehicles::Vehicle train(*head);
-            // Unsure why /2
-            currency32_t trainProfit = train.veh2->totalRecentProfit() / 2;
+            // Unsure why >> 1, /2
+            // Note: To match vanilla using >> 1. Use /2 when diverging allowed.
+            currency32_t trainProfit = train.veh2->totalRecentProfit() >> 1;
             if (static_cast<int64_t>(totalProfit) + trainProfit < std::numeric_limits<currency32_t>::max())
             {
                 totalProfit += trainProfit;
@@ -444,8 +445,9 @@ namespace OpenLoco
 
             Vehicles::Vehicle train(*head);
             currency32_t trainProfit = train.veh2->totalRecentProfit();
-            // Unsure why /2
-            totalVehicleProfit += trainProfit / 2;
+            // Unsure why >>2, /4
+            // Note: To match vanilla using >> 2. Use /4 when diverging allowed.
+            totalVehicleProfit += trainProfit >> 2;
 
             totalValue += trainProfit * 8;
 
@@ -559,9 +561,9 @@ namespace OpenLoco
         if (!CompanyManager::isPlayerCompany(id()))
         {
             // Auto pay loan
-            while (currentLoan > 1000)
+            while (currentLoan >= 1000)
             {
-                if (cash <= 1000)
+                if (cash < 1000)
                 {
                     break;
                 }
