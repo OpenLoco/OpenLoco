@@ -92,19 +92,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     constexpr Widget widgets[] = {
         commonWidgets(138, 276, StringIds::stringid_2),
+        makeWidget({ 57, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_straight, StringIds::tooltip_straight),
+        makeWidget({ 69, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
+        makeWidget({ 91, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),        
+        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
+        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
+        makeWidget({ 105, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
+        makeWidget({ 81, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
+        makeWidget({ 33, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
+        makeWidget({ 9, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
         makeWidget({ 3, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
         makeWidget({ 25, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
         makeWidget({ 47, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_left_hand_curve_large, StringIds::tooltip_left_hand_curve_large),
-        makeWidget({ 69, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
-        makeWidget({ 91, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),
-        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
-        makeWidget({ 113, 45 }, { 22, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
-        makeWidget({ 9, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
-        makeWidget({ 33, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
-        makeWidget({ 57, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_straight, StringIds::tooltip_straight),
-        makeWidget({ 81, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
-        makeWidget({ 105, 69 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
         makeWidget({ 9, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_steep_slope_down, StringIds::tooltip_steep_slope_down),
         makeWidget({ 33, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_slope_down, StringIds::tooltip_slope_down),
         makeWidget({ 57, 96 }, { 24, 24 }, WidgetType::buttonWithImage, WindowColour::secondary, ImageIds::construction_level, StringIds::tooltip_level),
@@ -2979,14 +2979,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
     void previousTrackPiece(Window* self)
     {
-        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        WidgetIndex_t prev = self->prevAvailableWidgetInRange(widx::straight, widx::left_hand_curve_large);
         if (prev != -1)
             self->callOnMouseDown(prev);
     }
 
     void nextTrackPiece(Window* self)
     {
-        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::left_hand_curve_very_small, widx::s_bend_dual_track_right);
+        WidgetIndex_t next = self->nextAvailableWidgetInRange(widx::straight, widx::left_hand_curve_large);
         if (next != -1)
             self->callOnMouseDown(next);
     }
