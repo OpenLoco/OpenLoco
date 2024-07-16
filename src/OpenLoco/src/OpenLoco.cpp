@@ -168,11 +168,6 @@ namespace OpenLoco
         call(0x004058F5);
     }
 
-    static void sub_4062E0()
-    {
-        call(0x004062E0); // getTime unused Dead code
-    }
-
     static bool sub_4034FC(int32_t& a, int32_t& b)
     {
         auto result = ((int32_t(*)(int32_t&, int32_t&))(0x004034FC))(a, b);
@@ -281,7 +276,6 @@ namespace OpenLoco
 
         std::srand(std::time(nullptr));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
-        call(0x004078BE); // getSystemTime unused dead code?
 
         World::TileManager::allocateMapElements();
         Environment::resolvePaths();
@@ -298,7 +292,6 @@ namespace OpenLoco
         Gui::init();
 
         MessageManager::reset();
-        call(0x004969DA); // getLocalTime not used (dead code?)
         Scenario::reset();
 
         setScreenFlag(ScreenFlags::initialised);
@@ -760,7 +753,6 @@ namespace OpenLoco
                 VehicleManager::updateDaily();
                 IndustryManager::updateDaily();
                 MessageManager::updateDaily();
-                call(0x004969DA); // nop this sets the real time not used
                 WindowManager::updateDaily();
 
                 auto yesterday = calcDate(getCurrentDay() - 1);
@@ -916,7 +908,6 @@ namespace OpenLoco
             {
                 sub_4058F5();
             }
-            sub_4062E0();
             update();
         }
         sub_40567E();

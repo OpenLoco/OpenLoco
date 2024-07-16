@@ -205,16 +205,9 @@ namespace OpenLoco::Gfx
         // Vanilla setup scrolling text related globals here (unused)
     }
 
-    // 0x00452336
-    static void initialiseNoiseMaskMap()
-    {
-        call(0x00452336);
-    }
-
     void initialise()
     {
         initialiseCharacterWidths();
-        initialiseNoiseMaskMap();
 
         loadDefaultPalette();
 
