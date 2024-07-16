@@ -4,6 +4,8 @@
 
 namespace OpenLoco::World
 {
+    struct Animation;
+
 #pragma pack(push, 1)
     struct RoadElement : public TileElementBase
     {
@@ -62,6 +64,7 @@ namespace OpenLoco::World
             _5 |= (levelCrossingObjectId & 0x3) << 2;
         }
         uint8_t streetLightStyle() const { return (_5 >> 2) & 0x3; } // _5l 0b0000_1100 NOTE: Shared with level crossing object id 0 = no street light
+        uint8_t unk6l() const { return _6 & 0xF; }
         void setUnk6l(uint8_t value)
         {
             _6 &= ~0xF;
@@ -116,4 +119,6 @@ namespace OpenLoco::World
     };
 #pragma pack(pop)
     static_assert(sizeof(RoadElement) == kTileElementSize);
+
+    bool updateLevelCrossingAnimation(const Animation& anim);
 }

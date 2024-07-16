@@ -41,6 +41,7 @@ namespace OpenLoco::World
         }
         return res;
     }
+
     // 0x0048950F
     bool updateSignalAnimation(const Animation& anim)
     {
