@@ -58,12 +58,12 @@ namespace OpenLoco::World
             _stationId &= ~0x3FF;
             _stationId |= enumValue(id) & 0x3FF;
         }
-        // ((_6 & 0xFC00) >> 10) Note: Only none 0 for airports
+        // ((_6 & 0xFC00) >> 10) Note: Only non-zero for airports
         uint8_t buildingType() const
         {
             return (_stationId & 0xFC00) >> 10;
         }
-        // ((_6 & 0xFC00) >> 10) Note: Only none 0 for airports
+        // ((_6 & 0xFC00) >> 10) Note: Only non-zero for airports
         void setBuildingType(uint8_t type)
         {
             _stationId &= ~0xFC00;
