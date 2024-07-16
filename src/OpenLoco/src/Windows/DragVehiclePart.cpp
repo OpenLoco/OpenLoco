@@ -4,6 +4,7 @@
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleDraw.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 using namespace OpenLoco::Interop;
@@ -35,7 +36,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         _dragVehicleHead = car.front->head;
         WindowManager::invalidate(WindowType::vehicle, enumValue(car.front->head));
 
-        uint16_t width = Vehicle::Common::sub_4B743B(1, 0, 0, 0, car.front, nullptr);
+        uint16_t width = getWidthVehicleInline(car);
         auto pos = Input::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
@@ -79,8 +80,15 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         {
             drawingCtx.pushRenderTarget(*clipped);
 
-            Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, &drawingCtx);
-
+            Vehicles::Vehicle train(_dragVehicleHead);
+            for (auto& car : train.cars)
+            {
+                if (car.front == _dragCarComponent)
+                {
+                    drawVehicleInline(drawingCtx, car, { 0, 19 }, VehicleInlineMode::basic);
+                    break;
+                }
+            }
             drawingCtx.popRenderTarget();
         }
     }

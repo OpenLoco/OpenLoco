@@ -462,10 +462,6 @@ namespace OpenLoco::Ui::Windows
             void scrollDrag(const Ui::Point& pos);
             void scrollDragEnd(const Ui::Point& pos);
         }
-        namespace Common
-        {
-            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::DrawingContext* drawingCtx);
-        }
         bool rotate();
         bool cancelVehicleTools();
     }
