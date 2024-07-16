@@ -35,7 +35,6 @@ namespace OpenLoco::Ui::Windows::Options
     static void tabOnMouseUp(Window* w, WidgetIndex_t wi);
     static void sub_4C13BE(Window* w);
     static void setPreferredCurrencyNameBuffer();
-    static void sub_4BF935();
 
     static loco_global<uint32_t, 0x0050D430> _songProgress;
     static loco_global<int8_t, 0x0050D434> _currentSong;
@@ -1656,7 +1655,7 @@ namespace OpenLoco::Ui::Windows::Options
                     ObjectManager::load(*object.second._header);
                     ObjectManager::reloadAll();
                     Gfx::loadCurrency();
-                    sub_4BF935();
+                    ObjectManager::markOnlyLoadedObjects(selectedObjectFlags);
 
                     break;
                 }
@@ -1703,7 +1702,7 @@ namespace OpenLoco::Ui::Windows::Options
                     setPreferredCurrencyNameBuffer();
                     Config::write();
                     Scenario::loadPreferredCurrencyAlways();
-                    sub_4BF935();
+                    ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
 
                     break;
                 }
@@ -1730,7 +1729,7 @@ namespace OpenLoco::Ui::Windows::Options
             Config::write();
 
             Scenario::loadPreferredCurrencyAlways();
-            sub_4BF935();
+            ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
 
             w->invalidate();
         }
@@ -2739,13 +2738,7 @@ namespace OpenLoco::Ui::Windows::Options
         // TODO: reimplement nullptr check?
 
         __11364A0 = ptr;
-        sub_4BF935();
-    }
-
-    static void sub_4BF935()
-    {
-        // TODO: implement simplified ObjectManager::markInUseObjects that doesn't do the inUse part only the loaded part
-        call(0x004BF935);
+        ObjectManager::markOnlyLoadedObjects(getLoadedSelectedObjectFlags());
     }
 
     static void sub_4C13BE(Window* w)
