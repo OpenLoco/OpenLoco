@@ -12,7 +12,6 @@ namespace OpenLoco::Ui::ProgressBar
 {
     static bool _isInternalWindow = false;
 
-
     void begin(std::string_view caption)
     {
         if (isInitialised())
