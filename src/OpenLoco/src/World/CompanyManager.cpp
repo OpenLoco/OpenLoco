@@ -622,6 +622,67 @@ namespace OpenLoco::CompanyManager
         company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
     }
 
+    // 0x0046DD06
+    // id : updatingCompanyId global var
+    // payment : ebp
+    // return : ebp == 0x80000000 for false
+    bool ensureCompanyFunding(const CompanyId id, const currency32_t payment)
+    {
+        if (payment <= 0)
+        {
+            return true;
+        }
+        if (isEditorMode())
+        {
+            return true;
+        }
+        if (id == CompanyId::neutral)
+        {
+            return true;
+        }
+
+        auto* company = get(id);
+        if (isPlayerCompany(id))
+        {
+            if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+            {
+                GameCommands::setErrorText(StringIds::company_is_bankrupt);
+                return false;
+            }
+            if (company->cash < payment)
+            {
+                FormatArguments::common(payment);
+                GameCommands::setErrorText(StringIds::not_enough_cash_requires_currency32);
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            if (company->cash < payment)
+            {
+                const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
+                auto additionalFunds = 0;
+
+                while (company->cash + additionalFunds < payment)
+                {
+                    if (company->currentLoan + additionalFunds > maxLoan)
+                    {
+                        FormatArguments::common(payment);
+                        GameCommands::setErrorText(StringIds::not_enough_cash_requires_currency32);
+                        return false;
+                    }
+                    additionalFunds += 1000;
+                }
+                company->currentLoan += additionalFunds;
+                company->cash += additionalFunds;
+                Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id));
+            }
+            return true;
+        }
+        return false;
+    }
+
     // 0x004302EF
     void updateColours()
     {

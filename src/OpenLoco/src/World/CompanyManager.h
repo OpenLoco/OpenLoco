@@ -53,6 +53,8 @@ namespace OpenLoco::CompanyManager
 
     void spendMoneyEffect(const World::Pos3& loc, const CompanyId company, const currency32_t amount);
     void applyPaymentToCompany(const CompanyId id, const currency32_t payment, const ExpenditureType type);
+    bool ensureCompanyFunding(const CompanyId id, const currency32_t payment);
+
     uint32_t competingColourMask(CompanyId companyId);
     uint32_t competingColourMask();
 
