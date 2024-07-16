@@ -14,7 +14,7 @@ namespace OpenLoco::GameCommands
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
             , head(EntityId(regs.di))
-            , convertGhost((regs.ebx >> 16) == 0xFFFF)
+            , convertGhost((regs.ebx & 0xFFFF0000) == 0xFFFF0000)
         {
         }
 
@@ -36,4 +36,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void vehiclePlace(registers& regs);
 }

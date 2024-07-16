@@ -133,6 +133,7 @@ set(OLOCO_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePickup.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePickupAir.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePickupWater.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlace.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlaceAir.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehiclePlaceWater.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/GameCommands/Vehicles/VehicleRearrange.cpp"
