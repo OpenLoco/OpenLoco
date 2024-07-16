@@ -335,6 +335,20 @@ namespace OpenLoco
         company->observationTimeout = 5;
     }
 
+    // 0x004312D2
+    void updateYearly(Company& company)
+    {
+        for (auto type = 0U; type < ExpenditureType::Count; ++type)
+        {
+            currency32_t lastExpend = 0;
+            for (auto i = 0U; i < kExpenditureHistoryCapacity; ++i)
+            {
+                std::swap(lastExpend, company.expenditures[i][type]);
+            }
+        }
+        company.numExpenditureYears = std::min<uint8_t>(company.numExpenditureYears + 1, kExpenditureHistoryCapacity);
+    }
+
     bool Company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
     {
         return unlockedVehicles[vehicleIndex];

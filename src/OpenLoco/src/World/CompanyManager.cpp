@@ -287,7 +287,11 @@ namespace OpenLoco::CompanyManager
     // 0x004312C7
     void updateYearly()
     {
-        call(0x004312C7);
+        for (auto& company : companies())
+        {
+            updateYearly(company);
+        }
+        WindowManager::invalidate(Ui::WindowType::company);
     }
 
     // 0x0042F9CB

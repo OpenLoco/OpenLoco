@@ -121,7 +121,7 @@ namespace OpenLoco
 
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 
-    constexpr size_t expenditureHistoryCapacity = 16;
+    constexpr size_t kExpenditureHistoryCapacity = 16;
 
 #pragma pack(push, 1)
     struct Company
@@ -149,9 +149,9 @@ namespace OpenLoco
         BitSet<224> unlockedVehicles;     // 0x34
         uint16_t availableVehicles;       // 0x50
         uint8_t pad_52[0x57 - 0x52];
-        uint8_t numExpenditureMonths;                                                  // 0x57
-        currency32_t expenditures[expenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
-        uint32_t startedDate;                                                          // 0x0498
+        uint8_t numExpenditureYears;                                                    // 0x57
+        currency32_t expenditures[kExpenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
+        uint32_t startedDate;                                                           // 0x0498
         uint32_t var_49C;
         uint32_t var_4A0;
         AiThinkState var_4A4; // 0x04A4
@@ -259,4 +259,5 @@ namespace OpenLoco
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
     void companyEmotionEvent(CompanyId companyId, Emotion emotion);
     void companySetObservation(CompanyId id, ObservationStatus status, World::Pos2 pos, EntityId entity, uint16_t object);
+    void updateYearly(Company& company);
 }
