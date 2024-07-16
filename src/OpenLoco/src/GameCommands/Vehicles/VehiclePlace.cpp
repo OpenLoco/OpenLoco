@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
                     {
                         continue;
                     }
-                    if (!(getGameState().roadObjectIdIsTram & (1 << elRoad->roadObjectId())))
+                    if (!(getGameState().roadObjectIdIsNotTram & (1 << elRoad->roadObjectId())))
                     {
                         continue;
                     }
