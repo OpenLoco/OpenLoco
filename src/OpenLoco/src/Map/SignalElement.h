@@ -4,6 +4,8 @@
 
 namespace OpenLoco::World
 {
+    struct Animation;
+
 #pragma pack(push, 1)
     struct SignalElement : public TileElementBase
     {
@@ -28,10 +30,16 @@ namespace OpenLoco::World
                 _4 &= ~(1 << 6);
                 _4 |= newState ? (1 << 6) : 0;
             }
+            // _4: 0b0011_0000 ?maybe targetState/state?
             void setUnk4(uint8_t newUnk4)
             {
                 _4 &= ~0x30;
                 _4 |= (newUnk4 & 0x3) << 4;
+            }
+            // _4: 0b0011_0000 ?maybe targetState/state?
+            uint8_t getUnk4() const
+            {
+                return (_4 >> 4) & 0x3;
             }
             uint8_t signalObjectId() const { return _4 & 0xF; } // _4l
             void setSignalObjectId(uint8_t signalObjectId)
@@ -86,4 +94,6 @@ namespace OpenLoco::World
     };
 #pragma pack(pop)
     static_assert(sizeof(SignalElement) == kTileElementSize);
+
+    bool updateSignalAnimation(const Animation& anim);
 }

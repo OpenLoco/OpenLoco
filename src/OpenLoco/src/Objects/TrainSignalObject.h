@@ -22,6 +22,7 @@ namespace OpenLoco
         none = 0U,
         isLeft = 1U << 0,
         hasLights = 1U << 1,
+        unk2 = 1U << 2,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(TrainSignalObjectFlags);
 
