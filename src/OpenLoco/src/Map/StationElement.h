@@ -8,6 +8,7 @@ namespace OpenLoco
 
 namespace OpenLoco::World
 {
+    struct Animation;
 
 #pragma pack(push, 1)
     struct StationElement : public TileElementBase
@@ -57,12 +58,21 @@ namespace OpenLoco::World
             _stationId &= ~0x3FF;
             _stationId |= enumValue(id) & 0x3FF;
         }
-        void setUnk7SLR2(uint8_t val)
+        // ((_6 & 0xFC00) >> 10) Note: Only non-zero for airports
+        uint8_t buildingType() const
+        {
+            return (_stationId & 0xFC00) >> 10;
+        }
+        // ((_6 & 0xFC00) >> 10) Note: Only non-zero for airports
+        void setBuildingType(uint8_t type)
         {
             _stationId &= ~0xFC00;
-            _stationId |= (val & 0x3F) << 2;
+            _stationId |= (type & 0x3F) << 10;
         }
     };
 #pragma pack(pop)
     static_assert(sizeof(StationElement) == kTileElementSize);
+
+    bool updateDockStationAnimation(const Animation& anim);
+    bool updateAirportStationAnimation(const Animation& anim);
 }

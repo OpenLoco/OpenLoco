@@ -629,7 +629,7 @@ namespace OpenLoco::GameCommands
                 newStationElement->setSequenceIndex(0);
                 newStationElement->setUnk4SLR4(0);
                 newStationElement->setStationType(StationType::roadStation);
-                newStationElement->setUnk7SLR2(0);
+                newStationElement->setBuildingType(0);
                 if (!(flags & Flags::ghost))
                 {
                     newStationElement->setStationId(_lastPlacedTrackStationId);

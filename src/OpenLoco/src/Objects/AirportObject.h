@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BuildingCommon.h"
 #include "Object.h"
 #include "Types.hpp"
 #include <OpenLoco/Core/EnumFlags.hpp>
@@ -79,20 +80,20 @@ namespace OpenLoco
         uint8_t numSpriteSets;      // 0x12
         uint8_t numTiles;           // 0x13
         const uint8_t* var_14;
-        const uint16_t* var_18;
-        const uint8_t* var_1C[32];
-        const AirportBuilding* buildingParts; // 0x9C
-        uint32_t largeTiles;                  // 0xA0
-        int8_t minX;                          // 0xA4
-        int8_t minY;                          // 0xA5
-        int8_t maxX;                          // 0xA6
-        int8_t maxY;                          // 0xA7
-        uint16_t designedYear;                // 0xA8
-        uint16_t obsoleteYear;                // 0xAA
-        uint8_t numMovementNodes;             // 0xAC
-        uint8_t numMovementEdges;             // 0xAD
-        const MovementNode* movementNodes;    // 0xAE
-        const MovementEdge* movementEdges;    // 0xB2
+        const BuildingPartAnimation* buildingPartAnimations; // 0x18
+        const uint8_t* buildingVariationParts[32];           // 0x1C
+        const AirportBuilding* buildingPositions;            // 0x9C
+        uint32_t largeTiles;                                 // 0xA0
+        int8_t minX;                                         // 0xA4
+        int8_t minY;                                         // 0xA5
+        int8_t maxX;                                         // 0xA6
+        int8_t maxY;                                         // 0xA7
+        uint16_t designedYear;                               // 0xA8
+        uint16_t obsoleteYear;                               // 0xAA
+        uint8_t numMovementNodes;                            // 0xAC
+        uint8_t numMovementEdges;                            // 0xAD
+        const MovementNode* movementNodes;                   // 0xAE
+        const MovementEdge* movementEdges;                   // 0xB2
         uint32_t var_B6;
 
         void drawPreviewImage(Gfx::DrawingContext& drawingCtx, const int16_t x, const int16_t y) const;
@@ -102,7 +103,8 @@ namespace OpenLoco
         void unload();
 
         std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const;
-        std::span<const AirportBuilding> getBuildingParts() const;
+        std::span<const AirportBuilding> getBuildingPositions() const;
+        std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
     };
 #pragma pack(pop)
 
