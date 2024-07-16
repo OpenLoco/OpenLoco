@@ -35,6 +35,7 @@
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Bound.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -244,7 +245,25 @@ namespace OpenLoco::CompanyManager
     // 0x0043037B
     void updateMonthly1()
     {
-        call(0x0043037B);
+        setCompetitorStartDelay(Math::Bound::sub(getCompetitorStartDelay(), 1U));
+
+        for (auto& company : companies())
+        {
+            company.updateMonthly1();
+        }
+        Ui::WindowManager::invalidate(Ui::WindowType::company);
+        Ui::WindowManager::invalidate(Ui::WindowType::companyList);
+        Ui::WindowManager::invalidate(Ui::WindowType::playerInfoToolbar);
+
+        uint8_t numActiveCompanies = std::distance(std::begin(companies()), std::end(companies()));
+
+        auto minPerformance = std::min_element(std::begin(companies()), std::end(companies()), [](const Company& lhs, const Company& rhs) {
+            return lhs.performanceIndex < rhs.performanceIndex;
+        });
+        if (minPerformance != std::end(companies()) && numActiveCompanies != 1)
+        {
+            companyEmotionEvent((*minPerformance).id(), Emotion::dejected);
+        }
     }
 
     // 0x0042F213

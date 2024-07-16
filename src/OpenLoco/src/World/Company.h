@@ -31,7 +31,7 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(CompanyFlags);
 
-    enum class CorporateRating
+    enum class CorporateRating : uint8_t
     {
         platelayer,           // 0 - 9.9%
         engineer,             // 10 - 19.9%
@@ -165,7 +165,8 @@ namespace OpenLoco
         coord_t headquartersY;       // 0x257C
         uint8_t pad_257E[0x259E - 0x257E];
         uint32_t var_259E;
-        uint8_t pad_25A2[0x25C0 - 0x25A2];
+        uint8_t pad_25A2[0x25BF - 0x25A2];
+        CorporateRating currentRating;          // 0x25BF
         Unk25C0HashTableEntry var_25C0[0x1000]; // 0x25C0 Hash table entries
         uint16_t var_25C0_length;               // 0x85C0 Hash table length
         uint8_t var_85C2;
@@ -209,9 +210,9 @@ namespace OpenLoco
         uint16_t observationTimeout;              // 0x8BC4
         OwnerStatus ownerStatus;                  // 0x8BC6
         uint8_t pad_8BCA[0x8BCE - 0x8BCA];
-        uint32_t cargoDelivered[32]; // 0x8BCE;
-        uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
-        uint8_t pad_8C4F;
+        uint32_t cargoDelivered[32];             // 0x8BCE;
+        uint8_t challengeProgress;               // 0x8C4E - percent completed on challenge
+        uint8_t numMonthsInTheRed;               // 0x8C4F
         uint32_t cargoUnitsTotalDistance;        // 0x8C50
         uint32_t cargoUnitsDistanceHistory[120]; // 0x8C54
         uint16_t jailStatus;                     // 0x8E34
@@ -228,6 +229,7 @@ namespace OpenLoco
         void evaluateChallengeProgress();
         void updateDailyControllingPlayer();
         void updateMonthlyHeadquarters();
+        void updateMonthly1();
         void updateLoanAutorepay();
         void updateQuarterly();
         void updateVehicleColours();

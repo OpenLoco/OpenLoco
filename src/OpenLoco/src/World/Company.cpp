@@ -1,8 +1,10 @@
 #include "Company.h"
 #include "CompanyManager.h"
+#include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "GameCommands/Company/ChangeLoan.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Vehicles/VehicleChangeRunningMode.h"
 #include "GameState.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
@@ -371,6 +373,260 @@ namespace OpenLoco
     void Company::updateMonthlyHeadquarters()
     {
         setHeadquartersVariation(getHeadquarterPerformanceVariation());
+    }
+
+    // 0x00437C8C
+    static int16_t calculatePerformanceIndex(const Company& company)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return 0;
+        }
+
+        currency32_t totalProfit = 0;
+        for (auto head : VehicleManager::VehicleList())
+        {
+            if (head->owner != company.id())
+            {
+                continue;
+            }
+
+            Vehicles::Vehicle train(*head);
+            // Unsure why >> 1, /2
+            // Note: To match vanilla using >> 1. Use /2 when diverging allowed.
+            currency32_t trainProfit = train.veh2->totalRecentProfit() >> 1;
+            if (static_cast<int64_t>(totalProfit) + trainProfit < std::numeric_limits<currency32_t>::max())
+            {
+                totalProfit += trainProfit;
+            }
+        }
+        totalProfit = std::max(0, totalProfit);
+
+        const auto partialProfitFactor = Math::Vector::fastSquareRoot(totalProfit) * 75;
+        const auto ecoFactor = Math::Vector::fastSquareRoot(Economy::getCurrencyMultiplicationFactor(0));
+
+        uint16_t profitFactor = 500;
+        if (partialProfitFactor < ecoFactor * 500)
+        {
+            profitFactor = partialProfitFactor / ecoFactor;
+        }
+        const auto cargoFactor = std::min<uint16_t>(500, Math::Vector::fastSquareRoot(company.cargoUnitsDistanceHistory[0] / 4));
+
+        return profitFactor + cargoFactor;
+    }
+
+    struct ProfitAndValue
+    {
+        currency48_t vehicleProfit;
+        currency48_t companyValue;
+    };
+    // 0x00437D79
+    static ProfitAndValue calculateCompanyValue(const Company& company)
+    {
+        if ((company.challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+        {
+            return { 0, 0 };
+        }
+
+        currency48_t totalValue = company.cash;
+        totalValue -= company.currentLoan;
+
+        currency48_t totalVehicleProfit = 0;
+        for (auto head : VehicleManager::VehicleList())
+        {
+            if (head->owner != company.id())
+            {
+                continue;
+            }
+            if (head->has38Flags(Vehicles::Flags38::isGhost))
+            {
+                continue;
+            }
+
+            Vehicles::Vehicle train(*head);
+            currency32_t trainProfit = train.veh2->totalRecentProfit();
+            // Unsure why >>2, /4
+            // Note: To match vanilla using >> 2. Use /4 when diverging allowed.
+            totalVehicleProfit += trainProfit >> 2;
+
+            totalValue += trainProfit * 8;
+
+            for (auto& car : train.cars)
+            {
+                totalValue += car.front->refundCost;
+            }
+        }
+        totalValue = std::max<currency48_t>(0, totalValue);
+        return { totalVehicleProfit, totalValue };
+    }
+
+    // 0x004389CC
+    static void stopAllCompanyVehicles(const CompanyId companyId)
+    {
+        const auto prevUpdateCompany = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(companyId);
+
+        for (auto head : VehicleManager::VehicleList())
+        {
+            if (head->owner != companyId)
+            {
+                continue;
+            }
+
+            if (head->has38Flags(Vehicles::Flags38::isGhost))
+            {
+                continue;
+            }
+            GameCommands::VehicleChangeRunningModeArgs args{};
+            args.head = head->id;
+            args.mode = GameCommands::VehicleChangeRunningModeArgs::Mode::stopVehicle;
+            // This used to call the command directly
+            GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+
+        GameCommands::setUpdatingCompanyId(prevUpdateCompany);
+    }
+
+    void Company::updateMonthly1()
+    {
+        std::rotate(std::begin(cargoUnitsDeliveredHistory), std::end(cargoUnitsDeliveredHistory) - 1, std::end(cargoUnitsDeliveredHistory));
+        cargoUnitsDeliveredHistory[0] = cargoUnitsTotalDelivered;
+        cargoUnitsTotalDelivered = 0;
+
+        std::rotate(std::begin(cargoUnitsDistanceHistory), std::end(cargoUnitsDistanceHistory) - 1, std::end(cargoUnitsDistanceHistory));
+        cargoUnitsDistanceHistory[0] = cargoUnitsTotalDistance;
+        cargoUnitsTotalDistance = 0;
+
+        if (historySize >= 2)
+        {
+            // Note: At this point cargoUnitsDeliveredHistory already has historySize + 1
+            // valid entries inside of it. This is why it is safe to access cargoUnitsDeliveredHistory[2]
+            // after the if (historySize >= 2)
+            if (cargoUnitsDeliveredHistory[0] < cargoUnitsDeliveredHistory[1]
+                && cargoUnitsDeliveredHistory[1] < cargoUnitsDeliveredHistory[2])
+            {
+                companyEmotionEvent(id(), Emotion::angry);
+            }
+        }
+
+        const auto newPerformance = calculatePerformanceIndex(*this);
+        challengeFlags &= ~(CompanyFlags::increasedPerformance | CompanyFlags::decreasedPerformance);
+        if (newPerformance != performanceIndex)
+        {
+            if (newPerformance < performanceIndex)
+            {
+                challengeFlags |= CompanyFlags::decreasedPerformance;
+            }
+            else
+            {
+
+                challengeFlags |= CompanyFlags::increasedPerformance;
+            }
+        }
+
+        std::rotate(std::begin(performanceIndexHistory), std::end(performanceIndexHistory) - 1, std::end(performanceIndexHistory));
+        performanceIndexHistory[0] = newPerformance;
+        performanceIndex = newPerformance;
+
+        const auto rating = performanceToRating(newPerformance);
+        if (rating > currentRating)
+        {
+            currentRating = rating;
+            if (CompanyManager::getControllingId() == id())
+            {
+                MessageManager::post(MessageType::companyPromoted, CompanyId::null, enumValue(id()), enumValue(rating));
+            }
+        }
+
+        if ((challengeFlags & CompanyFlags::increasedPerformance) != CompanyFlags::none)
+        {
+            companyEmotionEvent(id(), Emotion::happy);
+        }
+        if ((challengeFlags & CompanyFlags::decreasedPerformance) != CompanyFlags::none)
+        {
+            companyEmotionEvent(id(), Emotion::scared);
+        }
+
+        const auto newValue = calculateCompanyValue(*this);
+        std::rotate(std::begin(companyValueHistory), std::end(companyValueHistory) - 1, std::end(companyValueHistory));
+        companyValueHistory[0] = newValue.companyValue;
+        vehicleProfit = newValue.vehicleProfit;
+
+        historySize++;
+        if (historySize > 120)
+        {
+            historySize = 120;
+        }
+
+        if (!CompanyManager::isPlayerCompany(id()))
+        {
+            // Auto pay loan
+            while (currentLoan >= 1000)
+            {
+                if (cash < 1000)
+                {
+                    break;
+                }
+                currentLoan -= 1000;
+                cash -= 1000;
+            }
+        }
+
+        const auto monthlyInterest = (currentLoan * getGameState().loanInterestRate) / 1200;
+
+        const auto prevUpdateCompany = GameCommands::getUpdatingCompanyId();
+        GameCommands::setUpdatingCompanyId(id());
+        registers regs2;
+        regs2.ebp = monthlyInterest + 1;
+        call(0x0046DD06, regs2);
+
+        CompanyManager::applyPaymentToCompany(id(), monthlyInterest, ExpenditureType::LoanInterest);
+
+        GameCommands::setUpdatingCompanyId(prevUpdateCompany);
+        if (cash <= 0)
+        {
+            companyEmotionEvent(id(), Emotion::worried);
+        }
+
+        if ((challengeFlags & CompanyFlags::bankrupt) == CompanyFlags::none)
+        {
+            if (cash < 0)
+            {
+
+                numMonthsInTheRed++;
+                if (numMonthsInTheRed == 9)
+                {
+                    const auto message = CompanyManager::getUpdatingCompanyId() == id() ? MessageType::bankruptcyDeclared2 : MessageType::bankruptcyDeclared;
+                    MessageManager::post(message, id(), enumValue(id()), 0xFFFFU);
+
+                    challengeFlags |= CompanyFlags::bankrupt;
+                    if ((challengeFlags & (CompanyFlags::challengeBeatenByOpponent | CompanyFlags::challengeCompleted)) == CompanyFlags::none)
+                    {
+                        challengeFlags |= CompanyFlags::challengeFailed;
+                    }
+
+                    companyEmotionEvent(id(), Emotion::dejected);
+                    stopAllCompanyVehicles(id());
+                }
+                if (id() == CompanyManager::getUpdatingCompanyId())
+                {
+                    if (numMonthsInTheRed == 3)
+                    {
+                        MessageManager::post(MessageType::bankruptcyWarning3Months, id(), enumValue(id()), 0xFFFFU);
+                        companyEmotionEvent(id(), Emotion::scared);
+                    }
+                    else if (numMonthsInTheRed == 6)
+                    {
+                        MessageManager::post(MessageType::bankruptcyWarning6Months, id(), enumValue(id()), 0xFFFFU);
+                        companyEmotionEvent(id(), Emotion::scared);
+                    }
+                }
+            }
+            else
+            {
+                numMonthsInTheRed = 0;
+            }
+        }
     }
 
     void Company::updateLoanAutorepay()
