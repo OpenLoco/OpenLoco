@@ -3,6 +3,7 @@
 #include "Graphics/Gfx.h"
 #include "Graphics/SoftwareDrawingContext.h"
 #include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -805,11 +806,11 @@ namespace OpenLoco
     }
 
     // TODO: Deduplicate
-    static constexpr std::array<int16_t, 4> kZoomToStationFonts = {
-        Font::medium_bold,
-        Font::medium_bold,
-        Font::small,
-        Font::small,
+    static constexpr std::array<Gfx::Font, 4> kZoomToStationFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
+        Gfx::Font::small,
+        Gfx::Font::small,
     };
 
     static constexpr std::array<int16_t, 4> kZoomToBorder = {
@@ -842,6 +843,7 @@ namespace OpenLoco
         StringManager::formatString(strEnd, remainingLength, getTransportIconsFromStationFlags(flags));
 
         auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
 
         for (auto zoom = 0U; zoom < 4; ++zoom)
         {
@@ -851,8 +853,8 @@ namespace OpenLoco
             const auto labelCenter = World::Pos3{ x, y, z };
             const auto vpPos = World::gameToScreen(labelCenter, WindowManager::getCurrentRotation());
 
-            drawingCtx.setCurrentFontSpriteBase(kZoomToStationFonts[zoom]);
-            const auto width = drawingCtx.getStringWidth(buffer) + kZoomToBorder[zoom];
+            tr.setCurrentFont(kZoomToStationFonts[zoom]);
+            const auto width = tr.getStringWidth(buffer) + kZoomToBorder[zoom];
             const auto height = kZoomToTextHeight[zoom];
 
             const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
