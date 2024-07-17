@@ -12,18 +12,6 @@ namespace OpenLoco::Ui::ProgressBar
 {
     static bool _isInternalWindow = false;
 
-    // 0x004CF5DA
-    static void loadingWindowCreate(std::string_view caption)
-    {
-        // TODO: platform-specific implementation?
-        static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
-        memset(_stringFormatBuffer, 0, 512);
-        caption.copy(_stringFormatBuffer, caption.size());
-
-        registers regs;
-        call(0x004CF5EE, regs);
-    }
-
     void begin(std::string_view caption)
     {
         if (isInitialised())
@@ -33,7 +21,8 @@ namespace OpenLoco::Ui::ProgressBar
         }
         else
         {
-            loadingWindowCreate(caption);
+            // Used to be the native progress bar
+            assert(false);
         }
     }
 
@@ -49,15 +38,6 @@ namespace OpenLoco::Ui::ProgressBar
         begin(_captionBuffer);
     }
 
-    // 0x004CF631
-    // TODO: platform-specific implementation?
-    static void updateLoadingWindow(uint8_t value)
-    {
-        registers regs;
-        regs.eax = value;
-        call(0x004CF631, regs);
-    }
-
     // 0x004CF621
     // eax: value
     void setProgress(int32_t value)
@@ -68,15 +48,9 @@ namespace OpenLoco::Ui::ProgressBar
         }
         else
         {
-            updateLoadingWindow(value);
+            // Used to be the native progress bar
+            assert(false);
         }
-    }
-
-    // 0x00408163
-    // TODO: platform-specific implementation?
-    static void destroyLoadingWindow()
-    {
-        call(0x00408163);
     }
 
     // 0x004CF60B
@@ -88,7 +62,8 @@ namespace OpenLoco::Ui::ProgressBar
         }
         else
         {
-            destroyLoadingWindow();
+            // Used to be the native progress bar
+            assert(false);
         }
     }
 
