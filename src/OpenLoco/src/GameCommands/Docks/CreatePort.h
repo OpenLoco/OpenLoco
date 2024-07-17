@@ -31,4 +31,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
+
+    void createPort(registers& regs);
 }

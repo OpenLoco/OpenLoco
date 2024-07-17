@@ -1211,7 +1211,7 @@ namespace OpenLoco::StringIds
     constexpr StringId currently_in_use_by_at_least_one_vehicle = 1531;
     constexpr StringId refit_vehicle_tip = 1532;
     constexpr StringId cant_refit_vehicle = 1533;
-
+    constexpr StringId requires_water_in_front_of_dock = 1534;
     constexpr StringId currently_playing = 1535;
     constexpr StringId music_controls_stop_tip = 1536;
     constexpr StringId music_controls_play_tip = 1537;
