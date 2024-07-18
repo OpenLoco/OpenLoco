@@ -12,7 +12,15 @@ namespace OpenLoco::World
     {
         bool hasAnimation = false;
         bool shouldInvalidate = false;
+
+        constexpr AnimResult& operator|=(const AnimResult& rhs)
+        {
+            hasAnimation |= rhs.hasAnimation;
+            shouldInvalidate |= rhs.shouldInvalidate;
+            return *this;
+        }
     };
+
     static AnimResult updateSignalAnimationSide(SignalElement::Side& side)
     {
         AnimResult res{};
@@ -45,7 +53,10 @@ namespace OpenLoco::World
     // 0x0048950F
     bool updateSignalAnimation(const Animation& anim)
     {
+        AnimResult result{};
         auto tile = TileManager::get(anim.pos);
+        // It's possible to have multiple signal elements on the same tile/baseZ ???
+        // Unsure why
         for (auto& el : tile)
         {
             auto* elSignal = el.as<SignalElement>();
@@ -57,16 +68,15 @@ namespace OpenLoco::World
             {
                 continue;
             }
-            auto leftRes = updateSignalAnimationSide(elSignal->getLeft());
-            auto rightRes = updateSignalAnimationSide(elSignal->getRight());
-
-            if (leftRes.shouldInvalidate || rightRes.shouldInvalidate)
-            {
-                Ui::ViewportManager::invalidate(anim.pos, el.baseHeight(), el.clearHeight(), ZoomLevel::half);
-            }
-
-            return !(leftRes.hasAnimation || rightRes.hasAnimation);
+            result |= updateSignalAnimationSide(elSignal->getLeft());
+            result |= updateSignalAnimationSide(elSignal->getRight());
         }
-        return true;
+
+        if (result.shouldInvalidate)
+        {
+            Ui::ViewportManager::invalidate(anim.pos, anim.baseZ * kSmallZStep, anim.baseZ * kSmallZStep + 32, ZoomLevel::half);
+        }
+
+        return !result.hasAnimation;
     }
 }
