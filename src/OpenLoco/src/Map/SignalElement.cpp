@@ -23,7 +23,7 @@ namespace OpenLoco::World
             if (side.frame() != targetFrame)
             {
                 res.hasAnimation = true;
-                if (ScenarioManager::getScenarioTicks() & signalObj->animationSpeed)
+                if (!(ScenarioManager::getScenarioTicks() & signalObj->animationSpeed))
                 {
                     uint8_t newFrame = side.frame() + 1;
                     if (side.frame() >= targetFrame)
@@ -31,7 +31,7 @@ namespace OpenLoco::World
                         newFrame = side.frame() - 1;
                         if (signalObj->hasFlags(TrainSignalObjectFlags::unk2))
                         {
-                            newFrame = std::max<uint8_t>(newFrame, 1U);
+                            newFrame = std::min<uint8_t>(newFrame, 1U);
                         }
                     }
                     side.setFrame(newFrame);

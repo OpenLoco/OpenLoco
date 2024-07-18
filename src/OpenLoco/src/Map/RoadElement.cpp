@@ -97,6 +97,7 @@ namespace OpenLoco::World
         return false;
     }
 
+    // 0x00479413
     bool updateLevelCrossingAnimation(const Animation& anim)
     {
         auto tile = TileManager::get(anim.pos);
