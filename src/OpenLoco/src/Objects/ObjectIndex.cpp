@@ -954,6 +954,8 @@ namespace OpenLoco::ObjectManager
         auto ptr = (std::byte*)_installedObjectList;
         for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
         {
+            objectFlags[i] &= ~(SelectedObjectsFlags::inUse | SelectedObjectsFlags::selected);
+
             auto entry = ObjectIndexEntry::read(&ptr);
 
             auto objHandle = findObjectHandle(*entry._header);
