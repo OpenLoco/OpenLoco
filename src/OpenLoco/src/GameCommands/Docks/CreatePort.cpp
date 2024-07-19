@@ -2,11 +2,16 @@
 #include "Economy/Economy.h"
 #include "Economy/Expenditures.h"
 #include "Localisation/StringIds.h"
+#include "Map/AnimationManager.h"
+#include "Map/IndustryElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "Objects/DockObject.h"
+#include "Objects/IndustryObject.h"
 #include "Objects/ObjectManager.h"
+#include "S5/S5.h"
+#include "ViewportManager.h"
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/StationManager.h"
@@ -101,6 +106,185 @@ namespace OpenLoco::GameCommands
             }
         }
         return std::make_pair(NearbyStationValidation::okay, nearbyStation.id);
+    }
+
+    // 0x004FEBD0
+    // Where P is the port
+    // X represents the border offsets
+    //    X X
+    //  X P P X
+    //  X P P X
+    //    X X
+    static constexpr std::array<World::Pos2, 8> kPortBorderOffsets = {
+        World::Pos2{ -32, 0 },
+        World::Pos2{ -32, 32 },
+        World::Pos2{ 0, 64 },
+        World::Pos2{ 32, 64 },
+        World::Pos2{ 64, 32 },
+        World::Pos2{ 64, 0 },
+        World::Pos2{ 32, -32 },
+        World::Pos2{ 0, -32 },
+    };
+
+    static bool isValidWaterIndustryPort(World::Pos2 pos)
+    {
+        for (auto& offset : kPortBorderOffsets)
+        {
+            const auto testPos = pos + offset;
+            if (!World::validCoords(testPos))
+            {
+                continue;
+            }
+
+            auto tile = World::TileManager::get(testPos);
+            for (auto& el : tile)
+            {
+                auto* elIndustry = el.as<World::IndustryElement>();
+                if (elIndustry == nullptr)
+                {
+                    continue;
+                }
+                if (elIndustry->isGhost())
+                {
+                    continue;
+                }
+                auto* industry = elIndustry->industry();
+                auto* industryObj = ObjectManager::get<IndustryObject>(industry->objectId);
+                if (industryObj->hasFlags(IndustryObjectFlags::builtOnWater))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // 0x00493F0E
+    static currency32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t buildingType)
+    {
+        // 0x00112C80B
+        bool isWaterIndustryPort = false;
+        if (!World::validCoords(args.pos))
+        {
+            auto* elSurface = World::TileManager::get(args.pos).surface();
+            if (elSurface->water())
+            {
+                isWaterIndustryPort = isValidWaterIndustryPort(args.pos);
+                if (!isWaterIndustryPort)
+                {
+                    setErrorText(StringIds::can_only_be_built_on_water_next_to_water_based_industry);
+                    return FAILURE;
+                }
+            }
+        }
+
+        auto* dockObj = ObjectManager::get<DockObject>(args.type);
+        // This is identical to createIndustry but with a BuildingObject
+        // TODO: look into making some sort of common version
+        auto clearHeight = 0;
+        for (auto part : dockObj->getBuildingParts(buildingType))
+        {
+            clearHeight += dockObj->partHeights[part];
+        }
+        // ceil to 4
+        clearHeight += 3;
+        clearHeight &= ~3;
+
+        const auto buildingFootprint = getBuildingTileOffsets(true);
+        for (auto& offset : buildingFootprint)
+        {
+            const auto tilePos = World::toTileSpace(World::Pos2(args.pos) + offset.pos);
+            if (!World::validCoords(tilePos))
+            {
+                setErrorText(StringIds::off_edge_of_map);
+                return FAILURE;
+            }
+
+            if ((flags & Flags::apply) && !(flags & Flags::ghost))
+            {
+                World::TileManager::removeAllWallsOnTileBelow(tilePos, (args.pos.z + clearHeight) / World::kSmallZStep);
+            }
+
+            if (isWaterIndustryPort)
+            {
+            }
+            else
+            {
+            }
+
+            // Flatten surfaces (also checks if other elements will cause issues due to the flattening of the surface)
+            if (!(flags & Flags::ghost))
+            {
+                auto tile = World::TileManager::get(tilePos);
+                auto* surface = tile.surface();
+
+                // TODO: This is identical to CreateIndustry
+                if (surface->slope() || args.pos.z != surface->baseHeight())
+                {
+                    if (args.pos.z < surface->baseHeight())
+                    {
+                    }
+                    if (flags & Flags::apply)
+                    {
+                        World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
+                        surface->setBaseZ(args.pos.z / World::kSmallZStep);
+                        surface->setClearZ(args.pos.z / World::kSmallZStep);
+                        surface->setSlope(0);
+                        surface->setSnowCoverage(0);
+                        surface->setVar6SLR5(0);
+                    }
+                }
+            }
+
+            // Create new tile
+            if (flags & Flags::apply)
+            {
+                if (!(flags & Flags::ghost))
+                {
+                    World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
+                    World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
+                }
+                auto* elBuilding = World::TileManager::insertElement<World::BuildingElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
+                if (elBuilding == nullptr)
+                {
+                    return FAILURE;
+                }
+                elBuilding->setClearZ((clearHeight / World::kSmallZStep) + elBuilding->baseZ());
+                elBuilding->setRotation(args.rotation);
+                elBuilding->setConstructed(args.buildImmediately);
+                if (args.buildImmediately && offset.index == 0 && buildingObj->numElevatorSequences != 0)
+                {
+                    World::AnimationManager::createAnimation(5, World::toWorldSpace(tilePos), elBuilding->baseZ());
+                }
+                elBuilding->setObjectId(args.type);
+                elBuilding->setSequenceIndex(offset.index);
+                elBuilding->setUnk5u(0);
+                elBuilding->setColour(args.colour);
+                elBuilding->setVariation(args.variation);
+                elBuilding->setAge(0);
+                if (buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+                {
+                    elBuilding->setHas40(true);
+                }
+
+                bool hasFrames = false;
+                for (auto part : buildingObj->getBuildingParts(args.variation))
+                {
+                    if (buildingObj->partAnimations[part].numFrames > 1)
+                    {
+                        hasFrames = true;
+                    }
+                }
+                if (hasFrames)
+                {
+                    World::AnimationManager::createAnimation(6, World::toWorldSpace(tilePos), elBuilding->baseZ());
+                }
+
+                elBuilding->setGhost(flags & Flags::ghost);
+                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding->baseHeight(), elBuilding->clearHeight());
+                S5::getOptions().madeAnyChanges = 1;
+            }
+        }
     }
 
     // 0x004FEB80 & 0x004FEB90
@@ -230,7 +414,7 @@ namespace OpenLoco::GameCommands
         currency32_t totalCost = Economy::getInflationAdjustedCost(dockObj->buildCostFactor, dockObj->costIndex, 7);
 
         std::set<World::Pos3, World::LessThanPos3> removedBuildings{};
-        const auto buildingCost = createBuilding(args, flags, removedBuildings);
+        const auto buildingCost = createBuilding(args, flags, removedBuildings, 0);
         if (buildingCost == FAILURE)
         {
             return FAILURE;
@@ -251,7 +435,7 @@ namespace OpenLoco::GameCommands
         }
         if (!(flags & Flags::ghost | Flags::aiAllocated) && (flags & Flags::apply))
         {
-            playPlacementSound(args.pos);
+            // playPlacementSound(args.pos); TODO NEED TO MOVE FUNCTION
         }
 
         // Vanilla did this check wrong
