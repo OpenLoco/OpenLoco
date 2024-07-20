@@ -164,7 +164,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x00493F0E
-    static currency32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t buildingType)
+    static uint32_t createBuilding(const PortPlacementArgs& args, const uint8_t flags, std::set<World::Pos3, World::LessThanPos3>& removedBuildings, const uint8_t buildingType)
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
@@ -481,7 +481,7 @@ namespace OpenLoco::GameCommands
             station->invalidate();
             sub_48D794(*station);
         }
-        if (!(flags & Flags::ghost | Flags::aiAllocated) && (flags & Flags::apply))
+        if (!(flags & (Flags::ghost | Flags::aiAllocated)) && (flags & Flags::apply))
         {
             // playPlacementSound(args.pos); TODO NEED TO MOVE FUNCTION
         }
