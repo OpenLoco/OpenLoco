@@ -949,6 +949,32 @@ namespace OpenLoco::ObjectManager
         });
     }
 
+    static void applyLoadedObjectMarkToIndex(std::span<SelectedObjectsFlags> objectFlags, const std::array<std::span<uint8_t>, kMaxObjectTypes>& loadedObjectFlags)
+    {
+        auto ptr = (std::byte*)_installedObjectList;
+        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
+        {
+            objectFlags[i] &= ~(SelectedObjectsFlags::inUse | SelectedObjectsFlags::selected);
+
+            auto entry = ObjectIndexEntry::read(&ptr);
+
+            auto objHandle = findObjectHandle(*entry._header);
+            if (!objHandle.has_value())
+            {
+                continue;
+            }
+            const auto loadedFlags = loadedObjectFlags[enumValue(objHandle->type)][objHandle->id];
+            if (loadedFlags & (1 << 0))
+            {
+                objectFlags[i] |= SelectedObjectsFlags::selected | SelectedObjectsFlags::inUse;
+            }
+            if (loadedFlags & (1 << 1))
+            {
+                objectFlags[i] |= SelectedObjectsFlags::selected;
+            }
+        }
+    }
+
     // 0x00472D3F
     static void markInUseObjects(std::span<SelectedObjectsFlags> objectFlags)
     {
@@ -975,26 +1001,7 @@ namespace OpenLoco::ObjectManager
         markInUseCompetitorObjects(loadedObjectFlags[enumValue(ObjectType::competitor)]);
 
         // Copy results over to objectFlags
-        auto ptr = (std::byte*)_installedObjectList;
-        for (ObjectIndexId i = 0; i < _installedObjectCount; i++)
-        {
-            auto entry = ObjectIndexEntry::read(&ptr);
-
-            auto objHandle = findObjectHandle(*entry._header);
-            if (!objHandle.has_value())
-            {
-                continue;
-            }
-            const auto loadedFlags = loadedObjectFlags[enumValue(objHandle->type)][objHandle->id];
-            if (loadedFlags & (1 << 0))
-            {
-                objectFlags[i] |= SelectedObjectsFlags::selected | SelectedObjectsFlags::inUse;
-            }
-            if (loadedFlags & (1 << 1))
-            {
-                objectFlags[i] |= SelectedObjectsFlags::selected;
-            }
-        }
+        applyLoadedObjectMarkToIndex(objectFlags, loadedObjectFlags);
     }
 
     // 0x00472CFD
@@ -1062,6 +1069,25 @@ namespace OpenLoco::ObjectManager
             delete[] _50D144;
             _50D144 = nullptr;
         }
+    }
+
+    // 0x004BF935
+    void markOnlyLoadedObjects(std::span<SelectedObjectsFlags> objectFlags)
+    {
+        std::array<uint8_t, kMaxObjects> allLoadedObjectFlags{};
+        std::array<std::span<uint8_t>, kMaxObjectTypes> loadedObjectFlags;
+        auto count = 0;
+        for (uint8_t i = 0; i < kMaxObjectTypes; ++i)
+        {
+            const auto type = static_cast<ObjectType>(i);
+            loadedObjectFlags[i] = std::span<uint8_t>(allLoadedObjectFlags.begin() + count, getMaxObjects(type));
+            count += getMaxObjects(type);
+        }
+
+        markLoadedObjects(loadedObjectFlags);
+
+        // Copy results over to objectFlags
+        applyLoadedObjectMarkToIndex(objectFlags, loadedObjectFlags);
     }
 
     // 0x00474874

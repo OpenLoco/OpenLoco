@@ -76,6 +76,7 @@ namespace OpenLoco::ObjectManager
     bool selectObjectFromIndex(SelectObjectModes mode, const ObjectHeader& objHeader, std::span<SelectedObjectsFlags> objectFlags, ObjectSelectionMeta& selectionMetaData);
     void prepareSelectionList(bool markInUse);
     void freeSelectionList();
+    void markOnlyLoadedObjects(std::span<SelectedObjectsFlags> objectFlags);
     void loadSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags);
     void unloadUnselectedSelectionListObjects(std::span<SelectedObjectsFlags> objectFlags);
     std::optional<ObjectType> validateObjectSelection(std::span<SelectedObjectsFlags> objectFlags);
