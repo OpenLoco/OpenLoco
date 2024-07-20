@@ -6,9 +6,11 @@
 #include "Map/IndustryElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
+#include "Map/TileClearance.h"
 #include "Map/TileManager.h"
 #include "Objects/DockObject.h"
 #include "Objects/IndustryObject.h"
+#include "Objects/LandObject.h"
 #include "Objects/ObjectManager.h"
 #include "S5/S5.h"
 #include "ViewportManager.h"
@@ -109,8 +111,10 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004FEBD0
-    // Where P is the port
-    // X represents the border offsets
+    // Where:
+    // - P is the port
+    // - X represents the border offsets
+    //
     //    X X
     //  X P P X
     //  X P P X
@@ -179,7 +183,7 @@ namespace OpenLoco::GameCommands
         }
 
         auto* dockObj = ObjectManager::get<DockObject>(args.type);
-        // This is identical to createIndustry but with a BuildingObject
+        // This is identical to createIndustry but with a DockObject
         // TODO: look into making some sort of common version
         auto clearHeight = 0;
         for (auto part : dockObj->getBuildingParts(buildingType))
@@ -190,6 +194,7 @@ namespace OpenLoco::GameCommands
         clearHeight += 3;
         clearHeight &= ~3;
 
+        currency32_t totalCost = 0;
         const auto buildingFootprint = getBuildingTileOffsets(true);
         for (auto& offset : buildingFootprint)
         {
@@ -205,33 +210,83 @@ namespace OpenLoco::GameCommands
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, (args.pos.z + clearHeight) / World::kSmallZStep);
             }
 
-            if (isWaterIndustryPort)
-            {
-            }
-            else
-            {
-            }
+            // This is similar but not the same as createIndustry/createBuilding
 
-            // Flatten surfaces (also checks if other elements will cause issues due to the flattening of the surface)
-            if (!(flags & Flags::ghost))
+            auto clearFunc = [pos = args.pos, &removedBuildings, flags, &totalCost](World::TileElement& el) {
+                return World::TileClearance::clearWithDefaultCollision(el, pos, removedBuildings, flags, totalCost);
+            };
+            if (isWaterIndustryPort)
             {
                 auto tile = World::TileManager::get(tilePos);
                 auto* surface = tile.surface();
-
-                // TODO: This is identical to CreateIndustry
-                if (surface->slope() || args.pos.z != surface->baseHeight())
+                if (surface->waterHeight() != args.pos.z)
                 {
-                    if (args.pos.z < surface->baseHeight())
+                    // TODO: Give a better message
+                    setErrorText(StringIds::empty);
+                    return FAILURE;
+                }
+                if (surface->hasType6Flag())
+                {
+                    setErrorText(StringIds::water_channel_currently_needed_by_ships);
+                    return FAILURE;
+                }
+                const auto baseZ = args.pos.z / World::kSmallZStep;
+                const auto clearZ = (args.pos.z + clearHeight) / World::kSmallZStep;
+
+                World::QuarterTile qt(0xF, 0xF);
+                if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
+                {
+                    return FAILURE;
+                }
+            }
+            else
+            {
+                auto tile = World::TileManager::get(tilePos);
+                auto* surface = tile.surface();
+                const auto argBaseZ = args.pos.z / World::kSmallZStep;
+                const auto argClearZ = (args.pos.z + clearHeight) / World::kSmallZStep;
+                const auto minBaseZ = std::min<World::SmallZ>(surface->baseZ(), argBaseZ);
+                const auto maxBaseZ = std::max<World::SmallZ>(surface->baseZ(), argBaseZ);
+                const auto baseZ = std::min<World::SmallZ>(minBaseZ, argClearZ);
+                const auto clearZ = std::max<World::SmallZ>(maxBaseZ, argClearZ);
+
+                World::QuarterTile qt(0xF, 0xF);
+                if (!World::TileClearance::applyClearAtStandardHeight(World::toWorldSpace(tilePos), baseZ, clearZ, qt, clearFunc))
+                {
+                    return FAILURE;
+                }
+            }
+
+            if (!isWaterIndustryPort)
+            {
+                auto tile = World::TileManager::get(tilePos);
+                auto* surface = tile.surface();
+                auto baseZDiff = std::abs((args.pos.z / World::kSmallZStep) - surface->baseZ());
+                if (surface->slope())
+                {
+                    baseZDiff++;
+                }
+
+                auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+                totalCost += Economy::getInflationAdjustedCost(landObj->costFactor, landObj->costIndex, 10) * baseZDiff;
+                // Flatten surfaces
+                if (!(flags & Flags::ghost) && (flags & Flags::apply))
+                {
+                    if (surface->slope() || args.pos.z != surface->baseHeight())
                     {
-                    }
-                    if (flags & Flags::apply)
-                    {
-                        World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
-                        surface->setBaseZ(args.pos.z / World::kSmallZStep);
-                        surface->setClearZ(args.pos.z / World::kSmallZStep);
-                        surface->setSlope(0);
-                        surface->setSnowCoverage(0);
-                        surface->setVar6SLR5(0);
+                        if (flags & Flags::aiAllocated)
+                        {
+                            surface->setAiAllocated(true);
+                        }
+                        else
+                        {
+                            World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
+                            surface->setBaseZ(args.pos.z / World::kSmallZStep);
+                            surface->setClearZ(args.pos.z / World::kSmallZStep);
+                            surface->setSlope(0);
+                            surface->setSnowCoverage(0);
+                            surface->setVar6SLR5(0);
+                        }
                     }
                 }
             }
@@ -244,47 +299,40 @@ namespace OpenLoco::GameCommands
                     World::TileManager::removeSurfaceIndustry(World::toWorldSpace(tilePos));
                     World::TileManager::setTerrainStyleAsCleared(World::toWorldSpace(tilePos));
                 }
-                auto* elBuilding = World::TileManager::insertElement<World::BuildingElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
-                if (elBuilding == nullptr)
+                auto* elStation = World::TileManager::insertElement<World::StationElement>(World::toWorldSpace(tilePos), args.pos.z / World::kSmallZStep, 0xF);
+                if (elStation == nullptr)
                 {
                     return FAILURE;
                 }
-                elBuilding->setClearZ((clearHeight / World::kSmallZStep) + elBuilding->baseZ());
-                elBuilding->setRotation(args.rotation);
-                elBuilding->setConstructed(args.buildImmediately);
-                if (args.buildImmediately && offset.index == 0 && buildingObj->numElevatorSequences != 0)
+                elStation->setClearZ((clearHeight / World::kSmallZStep) + elStation->baseZ());
+                elStation->setRotation(args.rotation);
+                elStation->setObjectId(args.type);
+                elStation->setStationType(StationType::docks);
+                elStation->setOwner(getUpdatingCompanyId());
+                elStation->setUnk4SLR4(0);
+                elStation->setBuildingType(buildingType);
+                if (!(flags & Flags::ghost))
                 {
-                    World::AnimationManager::createAnimation(5, World::toWorldSpace(tilePos), elBuilding->baseZ());
+                    elStation->setStationId(_lastPlacedDockStationId);
                 }
-                elBuilding->setObjectId(args.type);
-                elBuilding->setSequenceIndex(offset.index);
-                elBuilding->setUnk5u(0);
-                elBuilding->setColour(args.colour);
-                elBuilding->setVariation(args.variation);
-                elBuilding->setAge(0);
-                if (buildingObj->hasFlags(BuildingObjectFlags::miscBuilding))
+                else
                 {
-                    elBuilding->setHas40(true);
+                    elStation->setStationId(static_cast<StationId>(0));
+                }
+                elStation->setGhost(flags & Flags::ghost);
+                elStation->setSequenceIndex(offset.index);
+                World::AnimationManager::createAnimation(8, World::toWorldSpace(tilePos), elStation->baseZ());
+
+                elStation->setAiAllocated(flags & Flags::aiAllocated);
+                if (!(flags & Flags::aiAllocated))
+                {
+                    World::TileManager::mapInvalidateTileFull(World::toWorldSpace(tilePos));
                 }
 
-                bool hasFrames = false;
-                for (auto part : buildingObj->getBuildingParts(args.variation))
-                {
-                    if (buildingObj->partAnimations[part].numFrames > 1)
-                    {
-                        hasFrames = true;
-                    }
-                }
-                if (hasFrames)
-                {
-                    World::AnimationManager::createAnimation(6, World::toWorldSpace(tilePos), elBuilding->baseZ());
-                }
-
-                elBuilding->setGhost(flags & Flags::ghost);
-                Ui::ViewportManager::invalidate(World::toWorldSpace(tilePos), elBuilding->baseHeight(), elBuilding->clearHeight());
                 S5::getOptions().madeAnyChanges = 1;
             }
         }
+        return totalCost;
     }
 
     // 0x004FEB80 & 0x004FEB90
