@@ -148,11 +148,6 @@ namespace OpenLoco
     }
 #endif // _NO_LOCO_WIN32_
 
-    static void sub_4062D1()
-    {
-        call(0x004062D1); // calls getTime then sub_4062E0 unused Dead code
-    }
-
     static void sub_406417(void* ptr)
     {
         ((void (*)(void*))0x00406417)(ptr);
@@ -832,7 +827,6 @@ namespace OpenLoco
 #ifdef _WIN32
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 #endif
-        sub_4062D1();
         sub_406417(nullptr);
 
         initialise();
