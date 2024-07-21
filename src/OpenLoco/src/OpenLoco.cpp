@@ -148,11 +148,6 @@ namespace OpenLoco
     }
 #endif // _NO_LOCO_WIN32_
 
-    static void sub_406417(void* ptr)
-    {
-        ((void (*)(void*))0x00406417)(ptr);
-    }
-
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
@@ -827,8 +822,6 @@ namespace OpenLoco
 #ifdef _WIN32
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 #endif
-        sub_406417(nullptr);
-
         initialise();
 
         while (Ui::processMessages())
