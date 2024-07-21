@@ -158,11 +158,6 @@ namespace OpenLoco
         ((void (*)(void*))0x00406417)(ptr);
     }
 
-    static void sub_40567E()
-    {
-        call(0x0040567E);
-    }
-
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
@@ -846,7 +841,6 @@ namespace OpenLoco
         {
             update();
         }
-        sub_40567E();
 
 #ifdef _WIN32
         CoUninitialize();
