@@ -38,7 +38,6 @@
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Input.h"
 #include "Input/Shortcuts.h"
