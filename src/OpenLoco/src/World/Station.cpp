@@ -1,5 +1,10 @@
 #include "Station.h"
 #include "CompanyManager.h"
+#include "Graphics/Gfx.h"
+#include "Graphics/ImageIds.h"
+#include "Graphics/SoftwareDrawingContext.h"
+#include "Graphics/SoftwareDrawingEngine.h"
+#include "Graphics/TextRenderer.h"
 #include "IndustryManager.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
@@ -801,12 +806,146 @@ namespace OpenLoco
         }
     }
 
+    struct StationBorder
+    {
+        uint32_t left;
+        uint32_t right;
+        uint16_t width;
+        uint16_t height;
+    };
+    static constexpr std::array<StationBorder, 4> kZoomToStationBorder = {
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+            11,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_medium,
+            ImageIds::curved_border_right_medium,
+            3,
+            11,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_small,
+            ImageIds::curved_border_right_small,
+            1,
+            7,
+        },
+        StationBorder{
+            ImageIds::curved_border_left_small,
+            ImageIds::curved_border_right_small,
+            1,
+            7,
+        },
+    };
+
+    static constexpr std::array<Gfx::Font, 4> kZoomToStationFonts = {
+        Gfx::Font::medium_bold,
+        Gfx::Font::medium_bold,
+        Gfx::Font::small,
+        Gfx::Font::small,
+    };
+
+    // 0x0048DF4D, 0x0048E13B
+    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered)
+    {
+        const Gfx::RenderTarget& unZoomedRt = drawingCtx.currentRenderTarget();
+        if (!station.labelFrame.contains(unZoomedRt.getDrawableRect(), zoom))
+        {
+            return;
+        }
+
+        auto& borderImages = kZoomToStationBorder[zoom];
+
+        const auto companyColour = [&station]() {
+            if (station.owner == CompanyId::null)
+            {
+                return Colour::grey;
+            }
+            else
+            {
+                return CompanyManager::getCompanyColour(station.owner);
+            }
+        }();
+        const auto colour = Colours::getTranslucent(companyColour, isHovered ? 0 : 1);
+
+        Ui::Point topLeft = { station.labelFrame.left[zoom],
+                              station.labelFrame.top[zoom] };
+        Ui::Point bottomRight = { station.labelFrame.right[zoom],
+                                  station.labelFrame.bottom[zoom] };
+
+        drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(topLeft, ImageId(borderImages.left).withTranslucency(colour));
+
+        Ui::Point topRight = { static_cast<int16_t>(bottomRight.x - borderImages.width), topLeft.y };
+        drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(ExtColour::unk34));
+        drawingCtx.drawImage(topRight, ImageId(borderImages.right).withTranslucency(colour));
+
+        drawingCtx.drawRect(topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(ExtColour::unk34), Gfx::RectFlags::transparent);
+        drawingCtx.drawRect(topLeft.x + borderImages.width + 1, topLeft.y, bottomRight.x - topLeft.x - 2 * borderImages.width, bottomRight.y - topLeft.y + 1, enumValue(colour), Gfx::RectFlags::transparent);
+
+        char buffer[512]{};
+
+        FormatArguments args;
+        args.push<uint16_t>(enumValue(station.town));
+        auto* str = buffer;
+        *str++ = ControlCodes::Colour::black;
+        str = StringManager::formatString(str, station.name, args);
+        *str++ = ' ';
+        StringManager::formatString(str, getTransportIconsFromStationFlags(station.flags));
+
+        auto tr = Gfx::TextRenderer(drawingCtx);
+        tr.setCurrentFont(kZoomToStationFonts[zoom]);
+        auto point = topLeft + Point(borderImages.width, 0);
+        tr.drawString(point, Colour::black, buffer);
+    }
+
     // 0x0048DCA5
     void Station::updateLabel()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        call(0x0048DCA5, regs);
+        // duplicate of drawStationName in Viewport.cpp
+        char buffer[256]{};
+        FormatArguments args{};
+        args.push(town);
+        auto* strEnd = StringManager::formatString(buffer, 256, name, args);
+
+        *strEnd++ = ' ';
+        *strEnd = '\0';
+
+        const auto remainingLength = strEnd - buffer;
+        StringManager::formatString(strEnd, remainingLength, getTransportIconsFromStationFlags(flags));
+
+        auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
+        auto tr = Gfx::TextRenderer(drawingCtx);
+
+        for (auto zoom = 0U; zoom < 4; ++zoom)
+        {
+            Ui::Viewport virtualVp{};
+            virtualVp.zoom = zoom;
+
+            const auto labelCenter = World::Pos3{ x, y, z };
+            const auto vpPos = World::gameToScreen(labelCenter, WindowManager::getCurrentRotation());
+
+            tr.setCurrentFont(kZoomToStationFonts[zoom]);
+            const auto width = tr.getStringWidth(buffer) + kZoomToStationBorder[zoom].width * 2;
+            const auto height = kZoomToStationBorder[zoom].height;
+
+            const auto [zoomWidth, zoomHeight] = ScreenToViewport::scaleTransform(Ui::Point(width, height), virtualVp);
+
+            const auto left = vpPos.x - zoomWidth / 2;
+            const auto right = left + zoomWidth;
+            const auto top = vpPos.y - zoomHeight / 2 - 32;
+            const auto bottom = top + zoomHeight;
+
+            const auto [uiLeft, uiTop] = ViewportToScreen::scaleTransform(Ui::Point(left, top), virtualVp);
+            const auto [uiRight, uiBottom] = ViewportToScreen::scaleTransform(Ui::Point(right, bottom), virtualVp);
+
+            labelFrame.left[zoom] = uiLeft;
+            labelFrame.right[zoom] = uiRight;
+            labelFrame.top[zoom] = uiTop;
+            labelFrame.bottom[zoom] = uiBottom;
+        }
     }
 
     // 0x004CBA2D

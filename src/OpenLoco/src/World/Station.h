@@ -13,6 +13,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        class DrawingContext;
+    }
+
     namespace World
     {
         struct StationElement;
@@ -164,4 +169,6 @@ namespace OpenLoco
     std::optional<World::Pos3> getAirportMovementNodeLoc(const StationId stationId, uint8_t node);
 
     void sub_48D794(const Station& station);
+
+    void drawStationName(Gfx::DrawingContext& drawingCtx, const Station& station, uint8_t zoom, bool isHovered);
 }
