@@ -168,12 +168,6 @@ namespace OpenLoco
         call(0x004058F5);
     }
 
-    static bool sub_4034FC(int32_t& a, int32_t& b)
-    {
-        auto result = ((int32_t(*)(int32_t&, int32_t&))(0x004034FC))(a, b);
-        return result != 0;
-    }
-
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
@@ -383,9 +377,6 @@ namespace OpenLoco
     {
         try
         {
-            auto& drawingEngine = Gfx::getDrawingEngine();
-            auto& drawingCtx = drawingEngine.getDrawingContext();
-
             addr<0x00113E87C, int32_t>() = 0;
             addr<0x0005252E0, int32_t>() = 0;
 
@@ -408,46 +399,8 @@ namespace OpenLoco
             addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
             addr<0x0114084C, int32_t>() = 0;
             addr<0x01140840, int32_t>() = 0;
-            if (Config::get().old.var_72 == 0)
-            {
-                Config::get().old.var_72 = 16;
-                const auto cursor = Ui::getCursorPosScaled();
-                addr<0x00F2538C, Ui::Point32>() = cursor;
-                drawingCtx.clear(0);
-                addr<0x00F2539C, int32_t>() = 0;
-            }
-            else
-            {
-                if (Config::get().old.var_72 >= 16)
-                {
-                    Config::get().old.var_72++;
-                    if (Config::get().old.var_72 >= 48)
-                    {
-                        if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
-                        {
-                            uintptr_t esi = addr<0x00F25390, int32_t>() + 4;
-                            esi *= addr<0x00F25398, int32_t>();
-                            esi += addr<0x00F2538C, int32_t>();
-                            esi += 2;
-                            esi += addr<0x00F25394, int32_t>();
-                            addr<0x00F2539C, int32_t>() |= *((int32_t*)esi);
-                            call(0x00403575); // ddrwaUnlockPSurface
-                        }
-                    }
-                    Ui::setCursorPosScaled(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                    Gfx::invalidateScreen();
-                    if (Config::get().old.var_72 != 96)
-                    {
-                        return;
-                    }
-                    Config::get().old.var_72 = 1;
-                    if (addr<0x00F2539C, int32_t>() != 0)
-                    {
-                        Config::get().old.var_72 = 2;
-                    }
-                    Config::write();
-                }
 
+            {
                 call(0x00452D1A); // nop redrawPeepAndRain
                 call(0x00440DEC); // install scenario from 0x0050C18C ptr??
 
@@ -565,14 +518,6 @@ namespace OpenLoco
                             Config::write();
                         }
                     }
-                }
-
-                if (Config::get().old.var_72 == 2)
-                {
-                    addr<0x005252DC, int32_t>() = 1;
-                    const auto cursor = Ui::getCursorPosScaled();
-                    addr<0x00F2538C, Ui::Point32>() = cursor;
-                    Ui::setCursorPosScaled(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 }
             }
         }
