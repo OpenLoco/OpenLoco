@@ -27,7 +27,8 @@ namespace OpenLoco
         uint8_t animationSpeed; // 0x07
         uint8_t closingFrames;  // 0x08
         uint8_t closedFrames;   // 0x09
-        uint8_t pad_0A[0x0C - 0x0A];
+        uint8_t var_0A;         // 0x0A
+        uint8_t pad_0B;
         uint16_t designedYear; // 0x0C
         uint32_t image;        // 0x0E
 
