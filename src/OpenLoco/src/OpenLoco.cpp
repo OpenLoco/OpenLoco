@@ -163,11 +163,6 @@ namespace OpenLoco
         call(0x0040567E);
     }
 
-    static void sub_4058F5()
-    {
-        call(0x004058F5);
-    }
-
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
@@ -849,10 +844,6 @@ namespace OpenLoco
 
         while (Ui::processMessages())
         {
-            if (addr<0x005252AC, uint32_t>() != 0)
-            {
-                sub_4058F5();
-            }
             update();
         }
         sub_40567E();
