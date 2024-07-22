@@ -281,11 +281,6 @@ namespace OpenLoco::Gfx
             Ui::processMessages();
         }
 
-        if (addr<0x005252AC, uint32_t>() != 0)
-        {
-            //            sub_4058F5();
-        }
-
         std::memcpy(_byte_112CC04, backup1, 512);
         std::memcpy(_byte_112CE04, backup2, 512);
     }
