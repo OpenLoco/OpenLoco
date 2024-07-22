@@ -3,11 +3,13 @@
 #include "Economy/Expenditures.h"
 #include "Localisation/StringIds.h"
 #include "Map/AnimationManager.h"
+#include "Map/BuildingElement.h"
 #include "Map/IndustryElement.h"
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileClearance.h"
 #include "Map/TileManager.h"
+#include "Map/TreeElement.h"
 #include "Objects/DockObject.h"
 #include "Objects/IndustryObject.h"
 #include "Objects/LandObject.h"
@@ -168,7 +170,7 @@ namespace OpenLoco::GameCommands
     {
         // 0x00112C80B
         bool isWaterIndustryPort = false;
-        if (!World::validCoords(args.pos))
+        if (World::validCoords(args.pos))
         {
             auto* elSurface = World::TileManager::get(args.pos).surface();
             if (elSurface->water())
@@ -210,11 +212,34 @@ namespace OpenLoco::GameCommands
                 World::TileManager::removeAllWallsOnTileBelow(tilePos, (args.pos.z + clearHeight) / World::kSmallZStep);
             }
 
-            // This is similar but not the same as createIndustry/createBuilding
-
+            // 0x0049434F same as TileClearance::tileClearFunction but collides on surfaces as well
             auto clearFunc = [pos = args.pos, &removedBuildings, flags, &totalCost](World::TileElement& el) {
-                return World::TileClearance::clearWithDefaultCollision(el, pos, removedBuildings, flags, totalCost);
+                switch (el.type())
+                {
+                    case World::ElementType::tree:
+                    {
+                        auto* elTree = el.as<World::TreeElement>();
+                        if (elTree == nullptr)
+                        {
+                            return World::TileClearance::ClearFuncResult::noCollision;
+                        }
+                        return World::TileClearance::clearTreeCollision(*elTree, pos, flags, totalCost);
+                    }
+                    case World::ElementType::building:
+                    {
+                        auto* elBuilding = el.as<World::BuildingElement>();
+                        if (elBuilding == nullptr)
+                        {
+                            return World::TileClearance::ClearFuncResult::noCollision;
+                        }
+                        return World::TileClearance::clearBuildingCollision(*elBuilding, pos, removedBuildings, flags, totalCost);
+                    }
+                    default:
+                        return World::TileClearance::ClearFuncResult::collision;
+                }
             };
+
+            // This is similar but not the same as createIndustry/createBuilding
             if (isWaterIndustryPort)
             {
                 auto tile = World::TileManager::get(tilePos);
