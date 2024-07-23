@@ -4,7 +4,9 @@
 #include "Map/StationElement.h"
 #include "Map/SurfaceElement.h"
 #include "Map/TileClearance.h"
+#include "Map/TileLoop.hpp"
 #include "Map/TileManager.h"
+#include "Map/Track/Track.h"
 #include "Map/Track/TrackData.h"
 #include "Map/TrackElement.h"
 #include "Objects/ObjectManager.h"
@@ -25,20 +27,113 @@ namespace OpenLoco::GameCommands
         bool isPhysicallyAttached;
     };
 
+    // 0x004901B0
+    static NearbyStation findNearbyStation(World::Pos3 pos)
+    {
+        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(2, 2);
+        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(2, 2);
+
+        auto minDistanceStation = StationId::null;
+        auto minDistance = std::numeric_limits<int16_t>::max();
+        bool isPhysicallyAttached = false;
+        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        {
+            const auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->isGhost())
+                {
+                    continue;
+                }
+                auto* station = StationManager::get(elStation->stationId());
+                if (station->owner != getUpdatingCompanyId())
+                {
+                    continue;
+                }
+                auto distDiff = World::toWorldSpace(tilePos) - pos;
+                distDiff.x = std::abs(distDiff.x);
+                distDiff.y = std::abs(distDiff.y);
+                const auto distance = std::max(distDiff.x, distDiff.y);
+                if (distance < minDistance)
+                {
+                    auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
+                    if (distDiffZ > 64)
+                    {
+                        continue;
+                    }
+                    minDistance = distance + distDiffZ / 2;
+                    if (minDistance <= 64)
+                    {
+                        isPhysicallyAttached = true;
+                    }
+                    minDistanceStation = elStation->stationId();
+                }
+            }
+        }
+
+        for (auto& station : StationManager::stations())
+        {
+            if (station.owner != getUpdatingCompanyId())
+            {
+                continue;
+            }
+            auto distDiff = World::Pos2{ station.x, station.y } - pos;
+            distDiff.x = std::abs(distDiff.x);
+            distDiff.y = std::abs(distDiff.y);
+            const auto distance = std::max(distDiff.x, distDiff.y);
+
+            auto distDiffZ = std::abs(station.z - pos.z);
+            if (distDiffZ > 64)
+            {
+                continue;
+            }
+            if (distance > 64)
+            {
+                continue;
+            }
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minDistanceStation = station.id();
+            }
+        }
+        return NearbyStation{ minDistanceStation, isPhysicallyAttached };
+    }
+
     // 0x0048FF36
     static NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bp = tad;
-        regs.bh = trackObjectId;
-        call(0x0048FF36, regs);
-        NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        {
+            auto [nextPos, nextRotation] = World::Track::getTrackConnectionEnd(pos, tad);
+            const auto tc = World::Track::getTrackConnections(nextPos, nextRotation, getUpdatingCompanyId(), trackObjectId, 0, 0);
+            if (tc.stationId != StationId::null)
+            {
+                return NearbyStation{ tc.stationId, true };
+            }
+        }
+        {
+            auto tailTaD = tad;
+            const auto& trackSize = World::TrackData::getUnkTrack(tailTaD);
+            auto tailPos = pos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                tailPos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = World::Track::getTrackConnectionEnd(tailPos, tailTaD);
+            const auto tailTc = World::Track::getTrackConnections(nextTailPos, nextTailRotation, getUpdatingCompanyId(), trackObjectId, 0, 0);
+            if (tailTc.stationId != StationId::null)
+            {
+                return NearbyStation{ tailTc.stationId, true };
+            }
+        }
+
+        return findNearbyStation(pos);
     }
 
     // 0x0048FFF7
