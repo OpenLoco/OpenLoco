@@ -22,7 +22,7 @@
                 },
                 "VCPKG_TARGET_TRIPLET": {
                     "type": "STRING",
-                    "value": "x86-windows"
+                    "value": "x86-windows-static"
                 }
             },
             "toolset": {

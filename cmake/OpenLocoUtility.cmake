@@ -48,6 +48,8 @@ function(loco_thirdparty_target_compile_link_flags TARGET)
     target_compile_options(${TARGET} PUBLIC ${COMMON_COMPILE_OPTIONS})
     target_link_options(${TARGET} PUBLIC ${COMMON_LINK_OPTIONS})
     target_compile_features(${TARGET} PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    set_property(TARGET ${TARGET} PROPERTY
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # Statically link the MSVC++ Runtime
     set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
 endfunction()
 
@@ -133,8 +135,9 @@ function(loco_target_compile_link_flags TARGET)
     target_compile_options(${TARGET} PUBLIC ${COMMON_COMPILE_OPTIONS})
     target_link_options(${TARGET} PUBLIC ${COMMON_LINK_OPTIONS})
     target_compile_features(${TARGET} PUBLIC cxx_std_${CMAKE_CXX_STANDARD})
+    set_property(TARGET ${TARGET} PROPERTY
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>") # Statically link the MSVC++ Runtime
     set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE OFF) # Due to the way the linking works we must have no pie (remove when fully implemented)
-    set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endfunction()
 
 function(_loco_add_target TARGET TYPE)
@@ -172,6 +175,7 @@ function(_loco_add_target TARGET TYPE)
                     "${CMAKE_CURRENT_SOURCE_DIR}/include/OpenLoco/${TARGET}")
         endif()
         loco_target_compile_link_flags(${TARGET})
+        set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_EXECUTABLE)
         add_executable(${TARGET}
             ${_PRIVATE_FILES}
@@ -183,6 +187,7 @@ function(_loco_add_target TARGET TYPE)
                 ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
         loco_target_compile_link_flags(${TARGET})
+        set_property(TARGET ${TARGET} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     elseif(_INTERFACE)
         # We want to add the headers to the interface library so that it displays
         # nicely wihtin IDEs
@@ -243,6 +248,8 @@ function(_loco_add_target TARGET TYPE)
         
         # Tell each target about the project directory.
         target_compile_definitions(${TEST_TARGET} PRIVATE OPENLOCO_PROJECT_PATH="${OPENLOCO_PROJECT_PATH}")
+
+        loco_target_compile_link_flags(${TEST_TARGET})
     endif()
     
     # Tell each target about the project directory.

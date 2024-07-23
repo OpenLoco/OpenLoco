@@ -43,6 +43,7 @@ else ()
 endif()
 
 find_package(PNG REQUIRED)
+find_package(ZLIB REQUIRED) # Dependency of PNG not really required but vcpkg not mapping static png dependencies
 if (NOT APPLE AND NOT MSVC)
     find_package(OpenAL CONFIG)
     if (OpenAL_FOUND)
