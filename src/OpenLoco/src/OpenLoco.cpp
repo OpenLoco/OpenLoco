@@ -103,8 +103,6 @@ namespace OpenLoco
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
 
@@ -300,7 +298,7 @@ namespace OpenLoco
 
     void sub_431695(uint16_t var_F253A0)
     {
-        _updatingCompanyId = CompanyManager::getControllingId();
+        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
         for (auto i = 0; i < var_F253A0; i++)
         {
             MessageManager::sub_428E47();
