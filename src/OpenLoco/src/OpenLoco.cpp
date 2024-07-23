@@ -95,16 +95,11 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    loco_global<char[256], 0x005060D0> _gCDKey;
-
     loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> _last_tick_time;
     loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-
-    static loco_global<char[256], 0x011367A0> _11367A0;
-    static loco_global<char[256], 0x011368A0> _11368A0;
 
     static int32_t _monthsSinceLastAutosave;
 
@@ -202,9 +197,6 @@ namespace OpenLoco
         _52336E = 0;
 
         Ui::Windows::TextInput::cancel();
-
-        StringManager::formatString(_11367A0, StringIds::label_button_ok);
-        StringManager::formatString(_11368A0, StringIds::label_button_cancel);
 
         // TODO Move this to a more generic, initialise game state function when
         //      we have one hooked / implemented.
