@@ -1,4 +1,4 @@
-24.06+ (???)
+24.07 (2024-07-23)
 ------------------------------------------------------------------------
 - Fix: [#2514] Crash when running OpenLoco with older VC++ runtime files.
 - Fix: [#2523] Autosaves are generated monthly regardless of frequency setting.
