@@ -101,7 +101,6 @@ namespace OpenLoco
     loco_global<uint32_t, 0x0050C19E> _last_tick_time;
     loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
-    static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
 
     static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
@@ -200,9 +199,6 @@ namespace OpenLoco
 
         Input::init();
         Input::initMouse();
-
-        // rain-related
-        _52339C = -1;
 
         // tooltip-related
         _52336E = 0;
@@ -354,7 +350,6 @@ namespace OpenLoco
             addr<0x01140840, int32_t>() = 0;
 
             {
-                call(0x00452D1A); // nop redrawPeepAndRain
                 call(0x00440DEC); // install scenario from 0x0050C18C ptr??
 
                 if (addr<0x00525340, int32_t>() == 1)
@@ -461,7 +456,6 @@ namespace OpenLoco
                     }
 
                     sub_431695(var_F253A0);
-                    call(0x00452B5F); // nop was updateRainAnimation
 
                     if (Config::get().old.countdown != 0xFF)
                     {
