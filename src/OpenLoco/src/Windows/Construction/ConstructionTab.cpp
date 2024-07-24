@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
-    static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
+    static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
     // 0x004A012E
@@ -360,14 +360,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _113601A[1] = 0;
         _113609C->size = 0;
         auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
-        World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, _113609C, CompanyManager::getControllingId(), _trackType);
-
-        if (_113609C->size == 0)
+        auto tc = World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, CompanyManager::getControllingId(), _trackType);
+        World::Track::toLegacyConnections(tc, _113609C); // Unsure if still needed
+        if (tc.connections.empty())
         {
             return;
         }
 
-        const auto trackAndDirection2 = (_113609C->data[_113609C->size - 1] & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
+        const auto trackAndDirection2 = (tc.connections.back() & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
         World::Pos3 loc2(_x, _y, _constructionZ);
         loc2 -= TrackData::getUnkTrack(trackAndDirection2).pos;
         if (trackAndDirection2 & (1 << 2))

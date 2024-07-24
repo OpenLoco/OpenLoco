@@ -2,11 +2,12 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <sfl/static_vector.hpp>
 #include <utility>
 
 namespace OpenLoco::World::Track
 {
-    struct TrackConnections
+    struct LegacyTrackConnections
     {
         uint32_t size;
         uint16_t data[16];
@@ -16,7 +17,7 @@ namespace OpenLoco::World::Track
             return data[--size];
         }
     };
-    static_assert(sizeof(TrackConnections) == 0x24);
+    static_assert(sizeof(LegacyTrackConnections) == 0x24);
 
     namespace AdditionalTaDFlags
     {
@@ -28,7 +29,7 @@ namespace OpenLoco::World::Track
         constexpr uint16_t basicTaDWithSignalMask = basicTaDMask | hasSignal;
     }
 
-    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId);
+    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, LegacyTrackConnections& data, const CompanyId company, const uint8_t roadObjectId);
 
     struct ConnectionEnd
     {
@@ -37,6 +38,15 @@ namespace OpenLoco::World::Track
     };
 
     ConnectionEnd getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
-    void getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId);
+
+    struct TrackConnections
+    {
+        sfl::static_vector<uint16_t, 16> connections;
+        bool hasLevelCrossing = false;
+        StationId stationId = StationId::null;
+    };
+    void toLegacyConnections(const TrackConnections& src, LegacyTrackConnections& data);
+
+    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId);
     ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
 }

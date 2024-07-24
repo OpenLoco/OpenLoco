@@ -596,19 +596,17 @@ namespace OpenLoco::Vehicles
     template<typename FilterFunction>
     static void findAllUsableTrackInNetwork(std::vector<LocationOfInterest>& additionalTrackToCheck, const LocationOfInterest& initialInterest, FilterFunction&& filterFunction, LocationOfInterestHashMap& hashMap)
     {
-        World::Track::TrackConnections connections{};
         _113601A[0] = 0;
         _113601A[1] = 0;
-        connections.size = 0;
 
         const auto [trackEndLoc, trackEndRotation] = World::Track::getTrackConnectionEnd(initialInterest.loc, initialInterest.tad()._data);
-        World::Track::getTrackConnections(trackEndLoc, trackEndRotation, connections, initialInterest.company, initialInterest.trackType);
+        auto tc = World::Track::getTrackConnections(trackEndLoc, trackEndRotation, initialInterest.company, initialInterest.trackType);
 
-        if (connections.size != 0)
+        if (!tc.connections.empty())
         {
-            for (size_t i = 0; i < connections.size; ++i)
+            for (auto c : tc.connections)
             {
-                uint16_t trackAndDirection2 = connections.data[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 LocationOfInterest interest{ trackEndLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
                 if (hashMap.tryAdd(interest))
                 {
@@ -636,12 +634,11 @@ namespace OpenLoco::Vehicles
                 nextLoc -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
             }
 
-            connections.size = 0;
             const auto rotation = World::kReverseRotation[trackSize.rotationEnd];
-            World::Track::getTrackConnections(nextLoc, rotation, connections, initialInterest.company, initialInterest.trackType);
-            for (size_t i = 0; i < connections.size; ++i)
+            auto tc2 = World::Track::getTrackConnections(nextLoc, rotation, initialInterest.company, initialInterest.trackType);
+            for (auto c : tc2.connections)
             {
-                uint16_t trackAndDirection2 = connections.data[i] & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
+                uint16_t trackAndDirection2 = c & World::Track::AdditionalTaDFlags::basicTaDWithSignalMask;
                 LocationOfInterest interest{ nextLoc, trackAndDirection2, initialInterest.company, initialInterest.trackType };
                 if (hashMap.tryAdd(interest))
                 {
