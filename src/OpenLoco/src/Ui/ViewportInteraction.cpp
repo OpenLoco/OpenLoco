@@ -1261,7 +1261,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* track = tileElement->as<TrackElement>();
                 if (track != nullptr)
                 {
-                    Ui::Windows::Construction::setToTrackExtra(*window, track, interaction.modId, interaction.pos);
+                    Ui::Windows::Construction::setToTrackExtra(track, interaction.modId, interaction.pos);
                 }
                 break;
             }
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* road = tileElement->as<RoadElement>();
                 if (road != nullptr)
                 {
-                    Ui::Windows::Construction::setToRoadExtra(*window, road, interaction.modId, interaction.pos);
+                    Ui::Windows::Construction::setToRoadExtra(road, interaction.modId, interaction.pos);
                 }
                 break;
             }

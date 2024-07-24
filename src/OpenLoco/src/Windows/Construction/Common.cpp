@@ -1,6 +1,9 @@
+#include "Audio/Audio.h"
 #include "Construction.h"
 #include "Date.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/RemoveRoadMod.h"
+#include "GameCommands/Track/RemoveTrackMod.h"
 #include "Graphics/Colour.h"
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
@@ -392,27 +395,67 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A1303
-    void setToTrackExtra(const Window& main, TrackElement* track, const uint8_t bh, const Pos2 pos)
+    void setToTrackExtra(TrackElement* track, const uint8_t bh, const Pos2 pos)
     {
-        registers regs{};
-        regs.esi = X86Pointer(&main);
-        regs.edx = X86Pointer(track);
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A1303, regs);
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            removeConstructionGhosts();
+        }
+
+        GameCommands::TrackModsRemovalArgs args{};
+        args.pos = World::Pos3(pos, track->baseHeight());
+        args.rotation = track->rotation();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.trackObjType = track->trackObjectId();
+        args.type = 1U << bh;
+        args.modSection = 0;
+
+        auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjType);
+        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[bh]);
+        auto fArgs = FormatArguments::common();
+        fArgs.skip(6);
+        fArgs.push(trackExtraObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_remove_pop3_string);
+
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A13C1
-    void setToRoadExtra(const Window& main, RoadElement* road, const uint8_t bh, const Pos2 pos)
+    void setToRoadExtra(RoadElement* road, const uint8_t bh, const Pos2 pos)
     {
-        registers regs{};
-        regs.esi = X86Pointer(&main);
-        regs.edx = X86Pointer(road);
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A13C1, regs);
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            removeConstructionGhosts();
+        }
+
+        GameCommands::RoadModsRemovalArgs args{};
+        args.pos = World::Pos3(pos, road->baseHeight());
+        args.rotation = road->rotation();
+        args.roadId = road->roadId();
+        args.index = road->sequenceIndex();
+        args.roadObjType = road->roadObjectId();
+        args.type = 1U << bh;
+        args.modSection = 0;
+
+        auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjType);
+        auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[bh]);
+        auto fArgs = FormatArguments::common();
+        fArgs.skip(6);
+        fArgs.push(roadExtraObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_remove_pop3_string);
+
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A3B0D
