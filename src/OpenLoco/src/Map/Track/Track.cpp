@@ -24,7 +24,6 @@ namespace OpenLoco::World::Track
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
     static loco_global<StationId, 0x01135FAE> _1135FAE;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x01136087> _1136087;
     static loco_global<uint8_t, 0x0113607D> _113607D;
 
@@ -38,7 +37,7 @@ namespace OpenLoco::World::Track
     }
 
     // 0x004788C8
-    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, LegacyTrackConnections& data, const CompanyId company, const uint8_t roadObjectId)
+    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, LegacyTrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
         _1135FAE = StationId::null; // stationId
 
@@ -74,7 +73,7 @@ namespace OpenLoco::World::Track
                 }
             }
 
-            if ((elRoad->mods() & _113601A[0]) != _113601A[0])
+            if ((elRoad->mods() & requiredMods) != requiredMods)
             {
                 continue;
             }
@@ -98,7 +97,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if ((_113601A[1] & elRoad->mods()) != 0)
+                        if ((queryMods & elRoad->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -145,7 +144,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if ((_113601A[1] & elRoad->mods()) != 0)
+            if ((queryMods & elRoad->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }

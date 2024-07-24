@@ -322,7 +322,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
     // 0x004A012E
     static void removeTrack()
@@ -416,11 +415,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         World::Pos3 loc(_x, _y, _constructionZ);
         uint32_t trackAndDirection = (1 << 2) | (_constructionRotation & 0x3);
-        _113601A[0] = 0;
-        _113601A[1] = 0;
         _113609C->size = 0;
         const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
-        World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7));
+        World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), 0, 0);
 
         if (_113609C->size == 0)
         {

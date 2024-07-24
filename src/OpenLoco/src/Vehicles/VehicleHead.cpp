@@ -3414,12 +3414,12 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        _113601A[0] = head.var_53;
-        _113601A[1] = train.veh1->var_49;
+        _113601A[0] = head.var_53;        // TODO: Remove after sub_47DFD0
+        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_47DFD0
         {
             Track::LegacyTrackConnections connections{};
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
-            World::Track::getRoadConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
+            World::Track::getRoadConnections(nextPos, nextRotation, connections, head.owner, head.trackType, head.var_53, train.veh1->var_49);
             if (connections.size == 0)
             {
                 return false;
@@ -3434,7 +3434,7 @@ namespace OpenLoco::Vehicles
             const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
             tailTaD ^= (1U << 2); // Reverse
             auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
-            World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+            World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType, head.var_53, train.veh1->var_49);
 
             if (tailConnections.size == 0)
             {
