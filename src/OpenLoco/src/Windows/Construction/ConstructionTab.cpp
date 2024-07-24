@@ -356,11 +356,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             loc += World::Pos3{ World::kRotationOffset[_constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_constructionRotation & 0x3);
-        _113601A[0] = 0;
-        _113601A[1] = 0;
         _113609C->size = 0;
         auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
-        auto tc = World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, CompanyManager::getControllingId(), _trackType);
+        auto tc = World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, CompanyManager::getControllingId(), _trackType, 0, 0);
         World::Track::toLegacyConnections(tc, _113609C); // Unsure if still needed
         if (tc.connections.empty())
         {

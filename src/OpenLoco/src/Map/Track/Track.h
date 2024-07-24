@@ -42,11 +42,20 @@ namespace OpenLoco::World::Track
     struct TrackConnections
     {
         sfl::static_vector<uint16_t, 16> connections;
-        bool hasLevelCrossing = false;
-        StationId stationId = StationId::null;
+        bool hasLevelCrossing = false;         // 0x0113607D
+        StationId stationId = StationId::null; // 0x01135FAE
     };
     void toLegacyConnections(const TrackConnections& src, LegacyTrackConnections& data);
 
-    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId);
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    //
+    // if set requiredMods must exist on connections to be added to connection list
+    //  e.g. if required mods is `0b10` then tracks with mods `0b10` and `0b11` can connect
+    //  but `0b00` and `0b01` cannot
+    // if requiredMods == 0 then mods ignored
+    //
+    // queryMods sets AdditionalTaDFlags::hasMods of connection if connection has the queryMods
+    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods);
     ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
 }

@@ -188,7 +188,7 @@ namespace OpenLoco::World::Track
     }
 
     // 0x004A2638, 0x004A2601
-    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId)
+    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
         TrackConnections result{};
 
@@ -213,7 +213,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if ((elTrack->mods() & _113601A[0]) != _113601A[0])
+            if ((elTrack->mods() & requiredMods) != requiredMods)
             {
                 continue;
             }
@@ -237,7 +237,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if ((_113601A[1] & elTrack->mods()) != 0)
+                        if ((queryMods & elTrack->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -302,7 +302,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if ((_113601A[1] & elTrack->mods()) != 0)
+            if ((queryMods & elTrack->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }

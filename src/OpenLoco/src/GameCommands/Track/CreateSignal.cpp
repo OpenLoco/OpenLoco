@@ -293,7 +293,7 @@ namespace OpenLoco::GameCommands
                 const uint16_t tad = args.rotation | (args.trackId << 3);
                 {
                     auto [nextLoc, nextRotation] = World::Track::getTrackConnectionEnd(args.pos, tad);
-                    auto tc = World::Track::getTrackConnections(nextLoc, nextRotation, getUpdatingCompanyId(), args.trackObjType);
+                    auto tc = World::Track::getTrackConnections(nextLoc, nextRotation, getUpdatingCompanyId(), args.trackObjType, 0, 0);
                     if (!tc.connections.empty())
                     {
                         Vehicles::TrackAndDirection::_TrackAndDirection tad2{ 0, 0 };
@@ -309,7 +309,7 @@ namespace OpenLoco::GameCommands
                     nextTrackStart -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
                 }
 
-                auto tc = World::Track::getTrackConnections(nextTrackStart, World::kReverseRotation[trackSize.rotationEnd], getUpdatingCompanyId(), args.trackObjType);
+                auto tc = World::Track::getTrackConnections(nextTrackStart, World::kReverseRotation[trackSize.rotationEnd], getUpdatingCompanyId(), args.trackObjType, 0, 0);
                 if (!tc.connections.empty())
                 {
                     Vehicles::TrackAndDirection::_TrackAndDirection tad2{ 0, 0 };
