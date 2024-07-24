@@ -38,7 +38,6 @@
 #include "GameStateFlags.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
-#include "Graphics/SoftwareDrawingEngine.h"
 #include "Gui.h"
 #include "Input.h"
 #include "Input/Shortcuts.h"
@@ -96,19 +95,11 @@ namespace OpenLoco
     static Timepoint _lastUpdate = Clock::now();
     static CrashHandler::Handle _exHandler = nullptr;
 
-    loco_global<char[256], 0x005060D0> _gCDKey;
-
     loco_global<uint16_t, 0x0050C19C> _time_since_last_tick;
     loco_global<uint32_t, 0x0050C19E> _last_tick_time;
     loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<StringId, 0x0050A018> _mapTooltipFormatArguments;
-    static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-
-    static loco_global<CompanyId, 0x009C68EB> _updatingCompanyId;
-
-    static loco_global<char[256], 0x011367A0> _11367A0;
-    static loco_global<char[256], 0x011368A0> _11368A0;
 
     static int32_t _monthsSinceLastAutosave;
 
@@ -120,58 +111,6 @@ namespace OpenLoco
     std::string getVersionInfo()
     {
         return version;
-    }
-
-#ifdef _NO_LOCO_WIN32_
-    /**
-     * Use this to allocate memory that will be freed in vanilla code or via loco_free.
-     */
-    [[maybe_unused]] static void* malloc(size_t size)
-    {
-        return ((void* (*)(size_t))0x004D1401)(size);
-    }
-
-    /**
-     * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
-     */
-    [[maybe_unused]] static void* realloc(void* address, size_t size)
-    {
-        return ((void* (*)(void*, size_t))0x004D1B28)(address, size);
-    }
-
-    /**
-     * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
-     */
-    [[maybe_unused]] static void free(void* address)
-    {
-        ((void (*)(void*))0x004D1355)(address);
-    }
-#endif // _NO_LOCO_WIN32_
-
-    static void sub_4062D1()
-    {
-        call(0x004062D1); // calls getTime then sub_4062E0 unused Dead code
-    }
-
-    static void sub_406417(void* ptr)
-    {
-        ((void (*)(void*))0x00406417)(ptr);
-    }
-
-    static void sub_40567E()
-    {
-        call(0x0040567E);
-    }
-
-    static void sub_4058F5()
-    {
-        call(0x004058F5);
-    }
-
-    static bool sub_4034FC(int32_t& a, int32_t& b)
-    {
-        auto result = ((int32_t(*)(int32_t&, int32_t&))(0x004034FC))(a, b);
-        return result != 0;
     }
 
     // 0x00407FFD
@@ -254,16 +193,10 @@ namespace OpenLoco
         Input::init();
         Input::initMouse();
 
-        // rain-related
-        _52339C = -1;
-
         // tooltip-related
         _52336E = 0;
 
         Ui::Windows::TextInput::cancel();
-
-        StringManager::formatString(_11367A0, StringIds::label_button_ok);
-        StringManager::formatString(_11368A0, StringIds::label_button_cancel);
 
         // TODO Move this to a more generic, initialise game state function when
         //      we have one hooked / implemented.
@@ -357,7 +290,7 @@ namespace OpenLoco
 
     void sub_431695(uint16_t var_F253A0)
     {
-        _updatingCompanyId = CompanyManager::getControllingId();
+        CompanyManager::setUpdatingCompanyId(CompanyManager::getControllingId());
         for (auto i = 0; i < var_F253A0; i++)
         {
             MessageManager::sub_428E47();
@@ -383,9 +316,6 @@ namespace OpenLoco
     {
         try
         {
-            auto& drawingEngine = Gfx::getDrawingEngine();
-            auto& drawingCtx = drawingEngine.getDrawingContext();
-
             addr<0x00113E87C, int32_t>() = 0;
             addr<0x0005252E0, int32_t>() = 0;
 
@@ -408,47 +338,8 @@ namespace OpenLoco
             addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
             addr<0x0114084C, int32_t>() = 0;
             addr<0x01140840, int32_t>() = 0;
-            if (Config::get().old.var_72 == 0)
-            {
-                Config::get().old.var_72 = 16;
-                const auto cursor = Ui::getCursorPosScaled();
-                addr<0x00F2538C, Ui::Point32>() = cursor;
-                drawingCtx.clear(0);
-                addr<0x00F2539C, int32_t>() = 0;
-            }
-            else
-            {
-                if (Config::get().old.var_72 >= 16)
-                {
-                    Config::get().old.var_72++;
-                    if (Config::get().old.var_72 >= 48)
-                    {
-                        if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
-                        {
-                            uintptr_t esi = addr<0x00F25390, int32_t>() + 4;
-                            esi *= addr<0x00F25398, int32_t>();
-                            esi += addr<0x00F2538C, int32_t>();
-                            esi += 2;
-                            esi += addr<0x00F25394, int32_t>();
-                            addr<0x00F2539C, int32_t>() |= *((int32_t*)esi);
-                            call(0x00403575); // ddrwaUnlockPSurface
-                        }
-                    }
-                    Ui::setCursorPosScaled(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                    Gfx::invalidateScreen();
-                    if (Config::get().old.var_72 != 96)
-                    {
-                        return;
-                    }
-                    Config::get().old.var_72 = 1;
-                    if (addr<0x00F2539C, int32_t>() != 0)
-                    {
-                        Config::get().old.var_72 = 2;
-                    }
-                    Config::write();
-                }
 
-                call(0x00452D1A); // nop redrawPeepAndRain
+            {
                 call(0x00440DEC); // install scenario from 0x0050C18C ptr??
 
                 if (addr<0x00525340, int32_t>() == 1)
@@ -555,7 +446,6 @@ namespace OpenLoco
                     }
 
                     sub_431695(var_F253A0);
-                    call(0x00452B5F); // nop was updateRainAnimation
 
                     if (Config::get().old.countdown != 0xFF)
                     {
@@ -565,14 +455,6 @@ namespace OpenLoco
                             Config::write();
                         }
                     }
-                }
-
-                if (Config::get().old.var_72 == 2)
-                {
-                    addr<0x005252DC, int32_t>() = 1;
-                    const auto cursor = Ui::getCursorPosScaled();
-                    addr<0x00F2538C, Ui::Point32>() = cursor;
-                    Ui::setCursorPosScaled(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 }
             }
         }
@@ -897,20 +779,12 @@ namespace OpenLoco
 #ifdef _WIN32
         CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 #endif
-        sub_4062D1();
-        sub_406417(nullptr);
-
         initialise();
 
         while (Ui::processMessages())
         {
-            if (addr<0x005252AC, uint32_t>() != 0)
-            {
-                sub_4058F5();
-            }
             update();
         }
-        sub_40567E();
 
 #ifdef _WIN32
         CoUninitialize();
