@@ -214,18 +214,16 @@ namespace OpenLoco::GameCommands
             {
                 const uint16_t tad = (0 << 3) | args.rotation;
                 const auto roadEnd = World::Track::getRoadConnectionEnd(args.pos, tad);
-                World::Track::LegacyTrackConnections connections{};
-                World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, connections, getUpdatingCompanyId(), args.roadObjectId, 0, 0);
+                const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, getUpdatingCompanyId(), args.roadObjectId, 0, 0);
 
-                if (connections.size > 0)
+                if (!rc.connections.empty())
                 {
                     // Check other side of road
                     const uint16_t tad2 = (1 << 2) | args.rotation;
                     const auto roadEnd2 = World::Track::getRoadConnectionEnd(args.pos, tad2);
-                    World::Track::LegacyTrackConnections connections2{};
-                    World::Track::getRoadConnections(roadEnd2.nextPos, roadEnd2.nextRotation, connections2, getUpdatingCompanyId(), args.roadObjectId, 0, 0);
+                    const auto rc2 = World::Track::getRoadConnections(roadEnd2.nextPos, roadEnd2.nextRotation, getUpdatingCompanyId(), args.roadObjectId, 0, 0);
 
-                    if (connections2.size > 0)
+                    if (!rc2.connections.empty())
                     {
                         setErrorText(StringIds::station_type_can_only_be_built_at_road_ends);
                         return FAILURE;

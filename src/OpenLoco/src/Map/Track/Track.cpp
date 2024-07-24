@@ -37,9 +37,9 @@ namespace OpenLoco::World::Track
     }
 
     // 0x004788C8
-    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, LegacyTrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
-        _1135FAE = StationId::null; // stationId
+        RoadConnections result{};
 
         uint8_t baseZ = nextTrackPos.z / 4;
         _112C2EE = nextRotation;
@@ -112,13 +112,13 @@ namespace OpenLoco::World::Track
 
                             if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
-                                _1135FAE = elStation->stationId();
-                                _1136087 = elStation->objectId();
+                                result.stationId = elStation->stationId();
+                                result.stationObjectId = elStation->objectId();
                             }
                         }
 
-                        _112C2ED = elRoad->roadObjectId();
-                        data.push_back(trackAndDirection2);
+                        result.roadObjectId = elRoad->roadObjectId();
+                        result.connections.push_back(trackAndDirection2);
                     }
                 }
             }
@@ -159,12 +159,13 @@ namespace OpenLoco::World::Track
 
                 if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
-                    _1135FAE = elStation->stationId();
-                    _1136087 = elStation->objectId();
+                    result.stationId = elStation->stationId();
+                    result.stationObjectId = elStation->objectId();
                 }
             }
-            data.push_back(trackAndDirection2);
+            result.connections.push_back(trackAndDirection2);
         }
+        return result;
     }
 
     // Part of 0x004A2604
@@ -184,6 +185,17 @@ namespace OpenLoco::World::Track
         }
         _1135FAE = src.stationId;
         _113607D = src.hasLevelCrossing ? 1 : 0;
+    }
+
+    void toLegacyConnections(const RoadConnections& src, LegacyTrackConnections& data)
+    {
+        for (auto& c : src.connections)
+        {
+            data.push_back(c);
+        }
+        _1135FAE = src.stationId;
+        _112C2ED = src.roadObjectId;
+        _1136087 = src.stationObjectId;
     }
 
     // 0x004A2638, 0x004A2601

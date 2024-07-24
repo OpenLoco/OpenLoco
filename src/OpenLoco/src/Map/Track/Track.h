@@ -32,8 +32,9 @@ namespace OpenLoco::World::Track
     struct RoadConnections
     {
         sfl::static_vector<uint16_t, 16> connections;
-        bool hasLevelCrossing = false;         // 0x0113607D
         StationId stationId = StationId::null; // 0x01135FAE
+        uint8_t stationObjectId = 0U;          // 0x01136087
+        uint8_t roadObjectId = 0U;             // 0x0112C2ED (I wouldn't trust this to be correct which connection!)
     };
 
     // requiredMods : 0x0113601A
@@ -45,7 +46,7 @@ namespace OpenLoco::World::Track
     // if requiredMods == 0 then mods ignored
     //
     // queryMods sets AdditionalTaDFlags::hasMods of connection if connection has the queryMods
-    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, LegacyTrackConnections& data, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods);
+    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods);
 
     struct ConnectionEnd
     {
@@ -62,6 +63,7 @@ namespace OpenLoco::World::Track
         StationId stationId = StationId::null; // 0x01135FAE
     };
     void toLegacyConnections(const TrackConnections& src, LegacyTrackConnections& data);
+    void toLegacyConnections(const RoadConnections& src, LegacyTrackConnections& data);
 
     // requiredMods : 0x0113601A
     // queryMods : 0x0113601B

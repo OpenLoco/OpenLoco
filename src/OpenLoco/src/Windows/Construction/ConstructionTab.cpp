@@ -417,33 +417,32 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         uint32_t trackAndDirection = (1 << 2) | (_constructionRotation & 0x3);
         _113609C->size = 0;
         const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
-        World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), 0, 0);
+        auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyManager::getControllingId(), _trackType & ~(1 << 7), 0, 0);
 
-        if (_113609C->size == 0)
+        if (rc.connections.empty())
         {
             return;
         }
 
-        for (size_t i = 0; i < _113609C->size; ++i)
+        for (auto& c : rc.connections)
         {
             // If trackId is zero
-            if ((_113609C->data[i] & 0x1F8) == 0)
+            if ((c & 0x1F8) == 0)
             {
-                std::swap(_113609C->data[0], _113609C->data[i]);
+                std::swap(c, rc.connections[0]);
             }
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
         if (!roadObj->hasFlags(RoadObjectFlags::unk_02))
         {
-            _113609C->size = 1;
-            _113609C->data[1] = 0xFFFF;
+            rc.connections.resize(1);
         }
 
         uint16_t trackAndDirection2 = 0;
-        while (_113609C->size != 0)
+        for (auto c : rc.connections)
         {
-            trackAndDirection2 = (_113609C->pop_back() & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
+            trackAndDirection2 = (c & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
             World::Pos3 loc2(_x, _y, _constructionZ);
             loc2 -= TrackData::getUnkRoad(trackAndDirection2).pos;
             if (trackAndDirection2 & (1 << 2))
