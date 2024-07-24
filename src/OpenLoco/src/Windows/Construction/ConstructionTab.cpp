@@ -360,7 +360,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _113601A[1] = 0;
         _113609C->size = 0;
         auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
-        World::Track::getTrackConnections(trackEnd.first, trackEnd.second, _113609C, CompanyManager::getControllingId(), _trackType);
+        World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, _113609C, CompanyManager::getControllingId(), _trackType);
 
         if (_113609C->size == 0)
         {
@@ -422,7 +422,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _113601A[1] = 0;
         _113609C->size = 0;
         const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
-        World::Track::getRoadConnections(roadEnd.first, roadEnd.second, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7));
+        World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7));
 
         if (_113609C->size == 0)
         {

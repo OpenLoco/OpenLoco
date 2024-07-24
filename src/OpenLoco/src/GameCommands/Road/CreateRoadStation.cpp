@@ -218,7 +218,7 @@ namespace OpenLoco::GameCommands
                 _113601A[1] = 0;
                 const auto roadEnd = World::Track::getRoadConnectionEnd(args.pos, tad);
                 World::Track::TrackConnections connections{};
-                World::Track::getRoadConnections(roadEnd.first, roadEnd.second, connections, getUpdatingCompanyId(), args.roadObjectId);
+                World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, connections, getUpdatingCompanyId(), args.roadObjectId);
 
                 if (connections.size > 0)
                 {
@@ -228,7 +228,7 @@ namespace OpenLoco::GameCommands
                     _113601A[1] = 0;
                     const auto roadEnd2 = World::Track::getRoadConnectionEnd(args.pos, tad2);
                     World::Track::TrackConnections connections2{};
-                    World::Track::getRoadConnections(roadEnd2.first, roadEnd2.second, connections2, getUpdatingCompanyId(), args.roadObjectId);
+                    World::Track::getRoadConnections(roadEnd2.nextPos, roadEnd2.nextRotation, connections2, getUpdatingCompanyId(), args.roadObjectId);
 
                     if (connections2.size > 0)
                     {

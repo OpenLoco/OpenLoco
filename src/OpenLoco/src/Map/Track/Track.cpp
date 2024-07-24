@@ -30,11 +30,11 @@ namespace OpenLoco::World::Track
 
     // Part of 0x00478895
     // For 0x00478895 call this followed by getRoadConnections
-    std::pair<World::Pos3, uint8_t> getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
+    ConnectionEnd getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
         const auto& roadData = TrackData::getUnkRoad(trackAndDirection);
 
-        return std::make_pair(pos + roadData.pos, roadData.rotationEnd);
+        return ConnectionEnd{ pos + roadData.pos, roadData.rotationEnd };
     }
 
     // 0x004788C8
@@ -170,11 +170,11 @@ namespace OpenLoco::World::Track
 
     // Part of 0x004A2604
     // For 0x004A2604 call this followed by getTrackConnections
-    std::pair<World::Pos3, uint8_t> getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
+    ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
         const auto& trackData = TrackData::getUnkTrack(trackAndDirection);
 
-        return std::make_pair(pos + trackData.pos, trackData.rotationEnd);
+        return ConnectionEnd{ pos + trackData.pos, trackData.rotationEnd };
     }
 
     // 0x004A2638, 0x004A2601
