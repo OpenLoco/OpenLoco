@@ -26,6 +26,10 @@ namespace OpenLoco::Ui::Windows::Error
     static uint16_t _linebreakCount;     // 0x009C66B3
     static CompanyId _errorCompetitorId; // 0x009C68EC
 
+    static constexpr auto kMinWidth = 70;
+    static constexpr auto kMaxWidth = 250;
+    static constexpr auto kPadding = 4;
+
     namespace Common
     {
         static const WindowEventList& getEvents();
@@ -39,7 +43,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
 
         static constexpr Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::wt_3, WindowColour::primary),
+            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::panel, WindowColour::primary),
             widgetEnd(),
         };
     }
@@ -53,7 +57,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
 
         static constexpr Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 250, 70 }, WidgetType::wt_3, WindowColour::primary),
+            makeWidget({ 0, 0 }, { 250, 70 }, WidgetType::panel, WindowColour::primary),
             makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, WindowColour::secondary),
             widgetEnd(),
         };
@@ -61,8 +65,8 @@ namespace OpenLoco::Ui::Windows::Error
 
     static char* formatErrorString(StringId title, StringId message, FormatArguments args, char* buffer)
     {
-        char* ptr = (char*)buffer;
-        ptr[0] = ControlCodes::Colour::black;
+        char* ptr = buffer;
+        ptr[0] = ControlCodes::Colour::white;
         ptr++;
 
         if (title != StringIds::null)
@@ -99,53 +103,41 @@ namespace OpenLoco::Ui::Windows::Error
             auto& drawingCtx = Gfx::getDrawingEngine().getDrawingContext();
             auto tr = Gfx::TextRenderer(drawingCtx);
 
+            // How wide is the error string?
             tr.setCurrentFont(Gfx::Font::medium_bold);
-            int16_t strWidth;
-            {
-                strWidth = tr.getStringWidthNewLined(&_errorText[0]);
-            }
+            uint16_t strWidth = tr.getStringWidthNewLined(&_errorText[0]);
+            strWidth = std::clamp<uint16_t>(strWidth, kMinWidth, kMaxWidth);
 
-            strWidth = std::min<int16_t>(strWidth, 196);
-
-            tr.setCurrentFont(Gfx::Font::medium_bold);
+            // How many linebreaks?
             {
+                tr.setCurrentFont(Gfx::Font::medium_bold);
                 uint16_t breakLineCount = 0;
-                std::tie(strWidth, breakLineCount) = tr.wrapString(&_errorText[0], strWidth);
+                std::tie(strWidth, breakLineCount) = tr.wrapString(&_errorText[0], strWidth + kPadding);
                 _linebreakCount = breakLineCount;
             }
 
-            uint16_t frameWidth = strWidth + 3;
-            uint16_t frameHeight = (_linebreakCount + 1) * 10 + 4;
-            uint16_t width = frameWidth;
-            uint16_t height = frameHeight;
+            // Calculate frame size
+            uint16_t width = strWidth + 2 * kPadding;
+            uint16_t height = (_linebreakCount + 1) * 10 + 2 * kPadding;
+            uint16_t frameWidth = width - 1;
+            uint16_t frameHeight = height - 1;
 
             if (_errorCompetitorId != CompanyId::null)
             {
-                width = 250;
+                width = kMaxWidth;
                 height = 70;
             }
 
-            int x, y;
-
+            // Position error message around the cursor
             auto mousePos = Input::getMouseLocation();
-            int maxY = Ui::height() - height;
-            y = mousePos.y + 26; // Normally, we'd display the tooltip 26 lower
-            if (y > maxY)
-            {
-                // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
-                // so we'll subtract a bit more
-                y -= height + 40;
-            }
-            y = std::clamp(y, 22, maxY);
-
-            x = std::clamp(mousePos.x - (width / 2), 0, Ui::width() - width);
-
-            Ui::Size windowSize = { width, height };
+            Ui::Point windowPosition = mousePos + Ui::Point(-width / 2, 26);
+            windowPosition.x = std::clamp<int16_t>(windowPosition.x, 0, Ui::width() - width - 40);
+            windowPosition.y = std::clamp<int16_t>(windowPosition.y, 22, Ui::height() - height - 40);
 
             auto error = WindowManager::createWindow(
                 WindowType::error,
-                Ui::Point(x, y),
-                windowSize,
+                windowPosition,
+                Ui::Size(width, height),
                 WindowFlags::stickToFront | WindowFlags::transparent | WindowFlags::flag_7,
                 Common::getEvents());
 
@@ -157,6 +149,9 @@ namespace OpenLoco::Ui::Windows::Error
             {
                 error->setWidgets(Error::widgets);
             }
+
+            error->setColour(WindowColour::primary, AdvancedColour(Colour::mutedDarkRed).translucent());
+            error->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedDarkRed).translucent());
 
             error->widgets[Error::widx::frame].right = frameWidth;
             error->widgets[Error::widx::frame].bottom = frameHeight;
@@ -222,35 +217,22 @@ namespace OpenLoco::Ui::Windows::Error
         // 0x00431C05
         static void draw(Ui::Window& self, Gfx::DrawingContext& drawingCtx)
         {
+            self.draw(drawingCtx);
+
             auto tr = Gfx::TextRenderer(drawingCtx);
-
-            uint16_t x = self.x;
-            uint16_t y = self.y;
-            uint16_t width = self.width;
-            uint16_t height = self.height;
-            auto skin = ObjectManager::get<InterfaceSkinObject>()->errorColour;
-            drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, enumValue(ExtColour::unk2D), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + 1, y + 1, width - 2, height - 2, (enumValue(ExtColour::unk74) + enumValue(skin)), Gfx::RectFlags::transparent);
-
-            drawingCtx.drawRect(x, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + width - 1, y + 2, 1, height - 4, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + 2, y + height - 1, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + 2, y, width - 4, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-
-            drawingCtx.drawRect(x + 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + width - 1 - 1, y + 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
-            drawingCtx.drawRect(x + width - 1 - 1, y + height - 1 - 1, 1, 1, enumValue(ExtColour::unk2E), Gfx::RectFlags::transparent);
+            auto colour = AdvancedColour(Colour::white).translucent(); //self.colours[0];
 
             if (_errorCompetitorId == CompanyId::null)
             {
-                auto point = Point(((width + 1) / 2) + x - 1, y + 1);
-                tr.drawStringCentredRaw(point, _linebreakCount, Colour::black, &_errorText[0]);
+                uint16_t xPos = self.x + self.width / 2;
+                uint16_t yPos = self.y + kPadding;
+
+                tr.drawStringCentredRaw(Point(xPos, yPos), _linebreakCount, colour, &_errorText[0]);
             }
             else
             {
-                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x;
-                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y;
+                auto xPos = self.widgets[ErrorCompetitor::widx::innerFrame].left + self.x + kPadding;
+                auto yPos = self.widgets[ErrorCompetitor::widx::innerFrame].top + self.y + kPadding;
 
                 auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<CompetitorObject>(company->competitorId);
@@ -267,7 +249,7 @@ namespace OpenLoco::Ui::Windows::Error
                 }
 
                 auto point = Point(self.x + 156, self.y + 20);
-                tr.drawStringCentredRaw(point, _linebreakCount, Colour::black, &_errorText[0]);
+                tr.drawStringCentredRaw(point, _linebreakCount, colour, &_errorText[0]);
             }
         }
 
