@@ -22,6 +22,7 @@
 #include "Vehicles/OrderManager.h"
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
+#include <OpenLoco/Math/Vector.hpp>
 
 #include <bitset>
 #include <numeric>
@@ -664,10 +665,8 @@ namespace OpenLoco::StationManager
                 {
                     continue;
                 }
-                auto distDiff = World::toWorldSpace(tilePos) - pos;
-                distDiff.x = std::abs(distDiff.x);
-                distDiff.y = std::abs(distDiff.y);
-                const auto distance = std::max(distDiff.x, distDiff.y);
+
+                const auto distance = Math::Vector::chebyshevDistance2D(World::toWorldSpace(tilePos), pos);
                 if (distance < minDistance)
                 {
                     auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
@@ -691,10 +690,7 @@ namespace OpenLoco::StationManager
             {
                 continue;
             }
-            auto distDiff = World::Pos2{ station.x, station.y } - pos;
-            distDiff.x = std::abs(distDiff.x);
-            distDiff.y = std::abs(distDiff.y);
-            const auto distance = std::max(distDiff.x, distDiff.y);
+            const auto distance = Math::Vector::chebyshevDistance2D(World::Pos2{ station.x, station.y }, pos);
 
             auto distDiffZ = std::abs(station.z - pos.z);
             if (distDiffZ > 64)
