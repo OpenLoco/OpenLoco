@@ -64,7 +64,7 @@ namespace OpenLoco::StringIds
     constexpr StringId close_window_cross = 56;
     constexpr StringId chosen_name_in_use = 57;
     constexpr StringId too_many_names_in_use = 58;
-
+    constexpr StringId not_enough_cash_requires_currency32 = 59;
     constexpr StringId tooltip_close_window = 60;
     constexpr StringId game_init_failure = 61;
 
@@ -378,7 +378,7 @@ namespace OpenLoco::StringIds
 
     // String below is unused
     constexpr StringId menu_hide_foreground_scenery_buildings = 372;
-    constexpr StringId can_only_be_built_on_water = 372;
+    constexpr StringId can_only_be_built_on_water = 373;
 
     constexpr StringId title_name_vehicle = 375;
     constexpr StringId prompt_enter_new_vehicle_name = 376;
@@ -1544,7 +1544,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cargo_delivered = 1867;
     constexpr StringId cargo_delivered_none = 1868;
     constexpr StringId title_exit_game = 1869;
-
+    constexpr StringId company_is_bankrupt = 1870;
     constexpr StringId allow_industries_to_close_down_during_game = 1871;
     constexpr StringId allow_new_industries_to_start_up_during_game = 1872;
 

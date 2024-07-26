@@ -588,15 +588,9 @@ namespace OpenLoco
 
         const auto monthlyInterest = (currentLoan * getGameState().loanInterestRate) / 1200;
 
-        const auto prevUpdateCompany = GameCommands::getUpdatingCompanyId();
-        GameCommands::setUpdatingCompanyId(id());
-        registers regs2;
-        regs2.ebp = monthlyInterest + 1;
-        call(0x0046DD06, regs2);
-
+        CompanyManager::ensureCompanyFunding(id(), monthlyInterest + 1);
         CompanyManager::applyPaymentToCompany(id(), monthlyInterest, ExpenditureType::LoanInterest);
 
-        GameCommands::setUpdatingCompanyId(prevUpdateCompany);
         if (cash <= 0)
         {
             companyEmotionEvent(id(), Emotion::worried);
