@@ -22,7 +22,6 @@ namespace OpenLoco::GameCommands
     static loco_global<bool, 0x0112C7A9> _112C7A9;
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
 
     struct NearbyStation
     {
@@ -214,23 +213,17 @@ namespace OpenLoco::GameCommands
             if (stationObj->hasFlags(RoadStationFlags::roadEnd))
             {
                 const uint16_t tad = (0 << 3) | args.rotation;
-                _113601A[0] = 0;
-                _113601A[1] = 0;
                 const auto roadEnd = World::Track::getRoadConnectionEnd(args.pos, tad);
-                World::Track::TrackConnections connections{};
-                World::Track::getRoadConnections(roadEnd.first, roadEnd.second, connections, getUpdatingCompanyId(), args.roadObjectId);
+                const auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, getUpdatingCompanyId(), args.roadObjectId, 0, 0);
 
-                if (connections.size > 0)
+                if (!rc.connections.empty())
                 {
                     // Check other side of road
                     const uint16_t tad2 = (1 << 2) | args.rotation;
-                    _113601A[0] = 0;
-                    _113601A[1] = 0;
                     const auto roadEnd2 = World::Track::getRoadConnectionEnd(args.pos, tad2);
-                    World::Track::TrackConnections connections2{};
-                    World::Track::getRoadConnections(roadEnd2.first, roadEnd2.second, connections2, getUpdatingCompanyId(), args.roadObjectId);
+                    const auto rc2 = World::Track::getRoadConnections(roadEnd2.nextPos, roadEnd2.nextRotation, getUpdatingCompanyId(), args.roadObjectId, 0, 0);
 
-                    if (connections2.size > 0)
+                    if (!rc2.connections.empty())
                     {
                         setErrorText(StringIds::station_type_can_only_be_built_at_road_ends);
                         return FAILURE;

@@ -3268,15 +3268,13 @@ namespace OpenLoco::Vehicles
     // 0x004AC1C2
     bool VehicleHead::sub_4AC1C2()
     {
-        Track::TrackConnections connections{};
-        connections.size = 0;
         const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
-        World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
-        if (connections.size != 1)
+        auto tc = World::Track::getTrackConnections(nextPos, rotation, owner, trackType, 0, 0);
+        if (tc.connections.size() != 1)
         {
             return false;
         }
-        TrackAndDirection::_TrackAndDirection tad((connections.data[0] & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, connections.data[0] & 0x7);
+        TrackAndDirection::_TrackAndDirection tad((tc.connections.front() & World::Track::AdditionalTaDFlags::basicTaDMask) >> 3, tc.connections.front() & 0x7);
         return sub_4A2A58(nextPos, tad, owner, trackType) & (1 << 1);
     }
 
@@ -3286,27 +3284,24 @@ namespace OpenLoco::Vehicles
         // Works out if there is an opposing train in the tile 2 ahead (i.e. waiting at a signal)
         // The train could be on any of the multiple connections on that tile.
 
-        Track::TrackConnections connections{};
-        connections.size = 0;
         const auto [nextPos, rotation] = World::Track::getTrackConnectionEnd(getTrackLoc(), trackAndDirection.track._data);
-        World::Track::getTrackConnections(nextPos, rotation, connections, owner, trackType);
-        if (connections.size != 1)
+        auto tc1 = World::Track::getTrackConnections(nextPos, rotation, owner, trackType, 0, 0);
+        if (tc1.connections.size() != 1)
         {
             return false;
         }
 
-        const auto [nextNextPos, nextRotation] = World::Track::getTrackConnectionEnd(nextPos, connections.data[0] & Track::AdditionalTaDFlags::basicTaDMask);
-        connections = Track::TrackConnections{};
-        World::Track::getTrackConnections(nextNextPos, nextRotation, connections, owner, trackType);
-        if (connections.size == 0)
+        const auto [nextNextPos, nextRotation] = World::Track::getTrackConnectionEnd(nextPos, tc1.connections.front() & Track::AdditionalTaDFlags::basicTaDMask);
+        auto tc2 = World::Track::getTrackConnections(nextNextPos, nextRotation, owner, trackType, 0, 0);
+        if (tc2.connections.empty())
         {
             return false;
         }
 
-        for (auto i = 0U; i < connections.size; ++i)
+        for (auto c : tc2.connections)
         {
             TrackAndDirection::_TrackAndDirection tad{ 0, 0 };
-            tad._data = connections.data[i] & Track::AdditionalTaDFlags::basicTaDMask;
+            tad._data = c & Track::AdditionalTaDFlags::basicTaDMask;
             auto& trackSize = World::TrackData::getUnkTrack(tad._data);
             auto pos = nextNextPos + trackSize.pos;
             if (trackSize.rotationEnd < 12)
@@ -3334,10 +3329,10 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0047DFD0
-    static void sub_47DFD0(VehicleHead& head, World::Pos3 pos, Track::TrackConnections& connections, bool unk)
+    static void sub_47DFD0(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
     {
         // ROAD only
-        static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
+        static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
         _113609C = connections;
 
         registers regs;
@@ -3349,10 +3344,10 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC3D3
-    static void sub_4AC3D3(VehicleHead& head, World::Pos3 pos, Track::TrackConnections& connections, bool unk)
+    static void sub_4AC3D3(VehicleHead& head, World::Pos3 pos, Track::LegacyTrackConnections& connections, bool unk)
     {
         // TRACK only
-        static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
+        static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
         _113609C = connections;
 
         registers regs;
@@ -3368,21 +3363,20 @@ namespace OpenLoco::Vehicles
     {
         auto train = Vehicle(head);
 
-        _113601A[0] = head.var_53;
-        _113601A[1] = train.veh1->var_49;
+        _113601A[0] = head.var_53;        // TODO: Remove after sub_4AC3D3
+        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_4AC3D3
         {
-            Track::TrackConnections connections{};
             auto [nextPos, nextRotation] = Track::getTrackConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.track._data);
-            World::Track::getTrackConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
-            if (connections.size == 0)
+            auto tc = World::Track::getTrackConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
+            if (tc.connections.empty())
             {
                 return false;
             }
-
-            sub_4AC3D3(head, nextPos, connections, false);
+            Track::LegacyTrackConnections legacyTc{};
+            Track::toLegacyConnections(tc, legacyTc);
+            sub_4AC3D3(head, nextPos, legacyTc, false);
         }
         {
-            Track::TrackConnections tailConnections{};
             auto tailTaD = train.tail->trackAndDirection.track._data;
             const auto& trackSize = TrackData::getUnkTrack(tailTaD);
             auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
@@ -3392,15 +3386,17 @@ namespace OpenLoco::Vehicles
             }
             tailTaD ^= (1U << 2); // Reverse
             auto [nextTailPos, nextTailRotation] = Track::getTrackConnectionEnd(pos, tailTaD);
-            World::Track::getTrackConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+            auto tailTc = World::Track::getTrackConnections(nextTailPos, nextTailRotation, train.tail->owner, train.tail->trackType, head.var_53, train.veh1->var_49);
 
-            if (tailConnections.size == 0)
+            if (tailTc.connections.empty())
             {
                 return false;
             }
 
             _1136458 = 0;
-            sub_4AC3D3(head, nextTailPos, tailConnections, true);
+            Track::LegacyTrackConnections legacyTc{};
+            Track::toLegacyConnections(tailTc, legacyTc);
+            sub_4AC3D3(head, nextTailPos, legacyTc, true);
             return _1136458 != 0;
         }
     }
@@ -3418,33 +3414,35 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        _113601A[0] = head.var_53;
-        _113601A[1] = train.veh1->var_49;
+        _113601A[0] = head.var_53;        // TODO: Remove after sub_47DFD0
+        _113601A[1] = train.veh1->var_49; // TODO: Remove after sub_47DFD0
         {
-            Track::TrackConnections connections{};
             auto [nextPos, nextRotation] = Track::getRoadConnectionEnd(World::Pos3(head.tileX, head.tileY, head.tileBaseZ * World::kSmallZStep), head.trackAndDirection.road._data & 0x7F);
-            World::Track::getRoadConnections(nextPos, nextRotation, connections, head.owner, head.trackType);
-            if (connections.size == 0)
+            const auto rc = World::Track::getRoadConnections(nextPos, nextRotation, head.owner, head.trackType, head.var_53, train.veh1->var_49);
+            if (rc.connections.empty())
             {
                 return false;
             }
+            Track::LegacyTrackConnections connections{};
+            Track::toLegacyConnections(rc, connections);
 
             sub_47DFD0(head, nextPos, connections, false);
         }
         {
-            Track::TrackConnections tailConnections{};
             auto tailTaD = train.tail->trackAndDirection.road._data & 0x7F;
             const auto& trackSize = TrackData::getUnkRoad(tailTaD);
             const auto pos = World::Pos3(train.tail->tileX, train.tail->tileY, train.tail->tileBaseZ * World::kSmallZStep) + trackSize.pos;
             tailTaD ^= (1U << 2); // Reverse
             auto [nextTailPos, nextTailRotation] = Track::getRoadConnectionEnd(pos, tailTaD);
-            World::Track::getRoadConnections(nextTailPos, nextTailRotation, tailConnections, train.tail->owner, train.tail->trackType);
+            const auto tailRc = World::Track::getRoadConnections(nextTailPos, nextTailRotation, train.tail->owner, train.tail->trackType, head.var_53, train.veh1->var_49);
 
-            if (tailConnections.size == 0)
+            if (tailRc.connections.empty())
             {
                 return false;
             }
 
+            Track::LegacyTrackConnections tailConnections{};
+            Track::toLegacyConnections(tailRc, tailConnections);
             _1136458 = 0;
             sub_47DFD0(head, nextTailPos, tailConnections, true);
             return _1136458 != 0;

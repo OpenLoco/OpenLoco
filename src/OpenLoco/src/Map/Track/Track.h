@@ -2,11 +2,12 @@
 
 #include "Types.hpp"
 #include <OpenLoco/Engine/World.hpp>
+#include <sfl/static_vector.hpp>
 #include <utility>
 
 namespace OpenLoco::World::Track
 {
-    struct TrackConnections
+    struct LegacyTrackConnections
     {
         uint32_t size;
         uint16_t data[16];
@@ -16,7 +17,7 @@ namespace OpenLoco::World::Track
             return data[--size];
         }
     };
-    static_assert(sizeof(TrackConnections) == 0x24);
+    static_assert(sizeof(LegacyTrackConnections) == 0x24);
 
     namespace AdditionalTaDFlags
     {
@@ -28,8 +29,51 @@ namespace OpenLoco::World::Track
         constexpr uint16_t basicTaDWithSignalMask = basicTaDMask | hasSignal;
     }
 
-    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId);
-    std::pair<World::Pos3, uint8_t> getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
-    void getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId);
-    std::pair<World::Pos3, uint8_t> getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
+    struct RoadConnections
+    {
+        sfl::static_vector<uint16_t, 16> connections;
+        StationId stationId = StationId::null; // 0x01135FAE
+        uint8_t stationObjectId = 0U;          // 0x01136087
+        uint8_t roadObjectId = 0U;             // 0x0112C2ED (I wouldn't trust this to be correct which connection!)
+    };
+
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    //
+    // if set requiredMods must exist on connections to be added to connection list
+    //  e.g. if required mods is `0b10` then tracks with mods `0b10` and `0b11` can connect
+    //  but `0b00` and `0b01` cannot
+    // if requiredMods == 0 then mods ignored
+    //
+    // queryMods sets AdditionalTaDFlags::hasMods of connection if connection has the queryMods
+    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods);
+
+    struct ConnectionEnd
+    {
+        World::Pos3 nextPos;
+        uint8_t nextRotation;
+    };
+
+    ConnectionEnd getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
+
+    struct TrackConnections
+    {
+        sfl::static_vector<uint16_t, 16> connections;
+        bool hasLevelCrossing = false;         // 0x0113607D
+        StationId stationId = StationId::null; // 0x01135FAE
+    };
+    void toLegacyConnections(const TrackConnections& src, LegacyTrackConnections& data);
+    void toLegacyConnections(const RoadConnections& src, LegacyTrackConnections& data);
+
+    // requiredMods : 0x0113601A
+    // queryMods : 0x0113601B
+    //
+    // if set requiredMods must exist on connections to be added to connection list
+    //  e.g. if required mods is `0b10` then tracks with mods `0b10` and `0b11` can connect
+    //  but `0b00` and `0b01` cannot
+    // if requiredMods == 0 then mods ignored
+    //
+    // queryMods sets AdditionalTaDFlags::hasMods of connection if connection has the queryMods
+    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods);
+    ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
 }

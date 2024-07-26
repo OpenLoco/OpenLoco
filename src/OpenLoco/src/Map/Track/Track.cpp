@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::World::Track
 {
-    void TrackConnections::push_back(uint16_t value)
+    void LegacyTrackConnections::push_back(uint16_t value)
     {
         if (size + 1 < std::size(data))
         {
@@ -24,23 +24,22 @@ namespace OpenLoco::World::Track
     static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
     static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
     static loco_global<StationId, 0x01135FAE> _1135FAE;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
     static loco_global<uint16_t, 0x01136087> _1136087;
     static loco_global<uint8_t, 0x0113607D> _113607D;
 
     // Part of 0x00478895
     // For 0x00478895 call this followed by getRoadConnections
-    std::pair<World::Pos3, uint8_t> getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
+    ConnectionEnd getRoadConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
         const auto& roadData = TrackData::getUnkRoad(trackAndDirection);
 
-        return std::make_pair(pos + roadData.pos, roadData.rotationEnd);
+        return ConnectionEnd{ pos + roadData.pos, roadData.rotationEnd };
     }
 
     // 0x004788C8
-    void getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t roadObjectId)
+    RoadConnections getRoadConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t roadObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
-        _1135FAE = StationId::null; // stationId
+        RoadConnections result{};
 
         uint8_t baseZ = nextTrackPos.z / 4;
         _112C2EE = nextRotation;
@@ -74,7 +73,7 @@ namespace OpenLoco::World::Track
                 }
             }
 
-            if ((elRoad->mods() & _113601A[0]) != _113601A[0])
+            if ((elRoad->mods() & requiredMods) != requiredMods)
             {
                 continue;
             }
@@ -98,7 +97,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if ((_113601A[1] & elRoad->mods()) != 0)
+                        if ((queryMods & elRoad->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -113,13 +112,13 @@ namespace OpenLoco::World::Track
 
                             if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
-                                _1135FAE = elStation->stationId();
-                                _1136087 = elStation->objectId();
+                                result.stationId = elStation->stationId();
+                                result.stationObjectId = elStation->objectId();
                             }
                         }
 
-                        _112C2ED = elRoad->roadObjectId();
-                        data.push_back(trackAndDirection2);
+                        result.roadObjectId = elRoad->roadObjectId();
+                        result.connections.push_back(trackAndDirection2);
                     }
                 }
             }
@@ -145,7 +144,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if ((_113601A[1] & elRoad->mods()) != 0)
+            if ((queryMods & elRoad->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
@@ -160,28 +159,49 @@ namespace OpenLoco::World::Track
 
                 if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
-                    _1135FAE = elStation->stationId();
-                    _1136087 = elStation->objectId();
+                    result.stationId = elStation->stationId();
+                    result.stationObjectId = elStation->objectId();
                 }
             }
-            data.push_back(trackAndDirection2);
+            result.connections.push_back(trackAndDirection2);
         }
+        return result;
     }
 
     // Part of 0x004A2604
     // For 0x004A2604 call this followed by getTrackConnections
-    std::pair<World::Pos3, uint8_t> getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
+    ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection)
     {
         const auto& trackData = TrackData::getUnkTrack(trackAndDirection);
 
-        return std::make_pair(pos + trackData.pos, trackData.rotationEnd);
+        return ConnectionEnd{ pos + trackData.pos, trackData.rotationEnd };
+    }
+
+    void toLegacyConnections(const TrackConnections& src, LegacyTrackConnections& data)
+    {
+        for (auto& c : src.connections)
+        {
+            data.push_back(c);
+        }
+        _1135FAE = src.stationId;
+        _113607D = src.hasLevelCrossing ? 1 : 0;
+    }
+
+    void toLegacyConnections(const RoadConnections& src, LegacyTrackConnections& data)
+    {
+        for (auto& c : src.connections)
+        {
+            data.push_back(c);
+        }
+        _1135FAE = src.stationId;
+        _112C2ED = src.roadObjectId;
+        _1136087 = src.stationObjectId;
     }
 
     // 0x004A2638, 0x004A2601
-    void getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, TrackConnections& data, const CompanyId company, const uint8_t trackObjectId)
+    TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
-        _1135FAE = StationId::null; // stationId
-        _113607D = 0;
+        TrackConnections result{};
 
         uint8_t baseZ = nextTrackPos.z / 4;
 
@@ -204,7 +224,7 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if ((elTrack->mods() & _113601A[0]) != _113601A[0])
+            if ((elTrack->mods() & requiredMods) != requiredMods)
             {
                 continue;
             }
@@ -228,7 +248,7 @@ namespace OpenLoco::World::Track
                             trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
                         }
 
-                        if ((_113601A[1] & elTrack->mods()) != 0)
+                        if ((queryMods & elTrack->mods()) != 0)
                         {
                             trackAndDirection2 |= AdditionalTaDFlags::hasMods;
                         }
@@ -243,13 +263,13 @@ namespace OpenLoco::World::Track
 
                             if (!elStation->isAiAllocated() && !elStation->isGhost())
                             {
-                                _1135FAE = elStation->stationId();
+                                result.stationId = elStation->stationId();
                             }
                         }
 
                         if (elTrack->hasLevelCrossing())
                         {
-                            _113607D = 1;
+                            result.hasLevelCrossing = 1;
                         }
 
                         if (elTrack->hasSignal())
@@ -265,7 +285,7 @@ namespace OpenLoco::World::Track
                                 trackAndDirection2 |= (1 << 15);
                             }
                         }
-                        data.push_back(trackAndDirection2);
+                        result.connections.push_back(trackAndDirection2);
                     }
                 }
             }
@@ -293,7 +313,7 @@ namespace OpenLoco::World::Track
                 trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
             }
 
-            if ((_113601A[1] & elTrack->mods()) != 0)
+            if ((queryMods & elTrack->mods()) != 0)
             {
                 trackAndDirection2 |= AdditionalTaDFlags::hasMods;
             }
@@ -308,13 +328,13 @@ namespace OpenLoco::World::Track
 
                 if (!elStation->isAiAllocated() && !elStation->isGhost())
                 {
-                    _1135FAE = elStation->stationId();
+                    result.stationId = elStation->stationId();
                 }
             }
 
             if (elTrack->hasLevelCrossing())
             {
-                _113607D = 1;
+                result.hasLevelCrossing = 1;
             }
 
             if (elTrack->hasSignal())
@@ -330,8 +350,9 @@ namespace OpenLoco::World::Track
                     trackAndDirection2 |= (1 << 15);
                 }
             }
-            data.push_back(trackAndDirection2);
+            result.connections.push_back(trackAndDirection2);
         }
+        return result;
     }
 }
 

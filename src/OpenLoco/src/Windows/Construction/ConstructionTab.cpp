@@ -321,8 +321,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
-    static loco_global<World::Track::TrackConnections, 0x0113609C> _113609C;
-    static loco_global<uint8_t[2], 0x0113601A> _113601A;
+    static loco_global<World::Track::LegacyTrackConnections, 0x0113609C> _113609C;
 
     // 0x004A012E
     static void removeTrack()
@@ -356,18 +355,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             loc += World::Pos3{ World::kRotationOffset[_constructionRotation], 0 };
         }
         trackAndDirection |= (1 << 2) | (_constructionRotation & 0x3);
-        _113601A[0] = 0;
-        _113601A[1] = 0;
         _113609C->size = 0;
         auto trackEnd = World::Track::getTrackConnectionEnd(loc, trackAndDirection);
-        World::Track::getTrackConnections(trackEnd.first, trackEnd.second, _113609C, CompanyManager::getControllingId(), _trackType);
-
-        if (_113609C->size == 0)
+        auto tc = World::Track::getTrackConnections(trackEnd.nextPos, trackEnd.nextRotation, CompanyManager::getControllingId(), _trackType, 0, 0);
+        World::Track::toLegacyConnections(tc, _113609C); // Unsure if still needed
+        if (tc.connections.empty())
         {
             return;
         }
 
-        const auto trackAndDirection2 = (_113609C->data[_113609C->size - 1] & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
+        const auto trackAndDirection2 = (tc.connections.back() & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
         World::Pos3 loc2(_x, _y, _constructionZ);
         loc2 -= TrackData::getUnkTrack(trackAndDirection2).pos;
         if (trackAndDirection2 & (1 << 2))
@@ -418,37 +415,34 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         World::Pos3 loc(_x, _y, _constructionZ);
         uint32_t trackAndDirection = (1 << 2) | (_constructionRotation & 0x3);
-        _113601A[0] = 0;
-        _113601A[1] = 0;
         _113609C->size = 0;
         const auto roadEnd = World::Track::getRoadConnectionEnd(loc, trackAndDirection);
-        World::Track::getRoadConnections(roadEnd.first, roadEnd.second, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7));
+        auto rc = World::Track::getRoadConnections(roadEnd.nextPos, roadEnd.nextRotation, CompanyManager::getControllingId(), _trackType & ~(1 << 7), 0, 0);
 
-        if (_113609C->size == 0)
+        if (rc.connections.empty())
         {
             return;
         }
 
-        for (size_t i = 0; i < _113609C->size; ++i)
+        for (auto& c : rc.connections)
         {
             // If trackId is zero
-            if ((_113609C->data[i] & 0x1F8) == 0)
+            if ((c & 0x1F8) == 0)
             {
-                std::swap(_113609C->data[0], _113609C->data[i]);
+                std::swap(c, rc.connections[0]);
             }
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
         if (!roadObj->hasFlags(RoadObjectFlags::unk_02))
         {
-            _113609C->size = 1;
-            _113609C->data[1] = 0xFFFF;
+            rc.connections.resize(1);
         }
 
         uint16_t trackAndDirection2 = 0;
-        while (_113609C->size != 0)
+        for (auto c : rc.connections)
         {
-            trackAndDirection2 = (_113609C->pop_back() & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
+            trackAndDirection2 = (c & World::Track::AdditionalTaDFlags::basicTaDMask) ^ (1 << 2);
             World::Pos3 loc2(_x, _y, _constructionZ);
             loc2 -= TrackData::getUnkRoad(trackAndDirection2).pos;
             if (trackAndDirection2 & (1 << 2))
