@@ -636,6 +636,84 @@ namespace OpenLoco::StationManager
         station->name = StringIds::null;
     }
 
+    // 0x004901B0
+    NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId)
+    {
+        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(2, 2);
+        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(2, 2);
+
+        auto minDistanceStation = StationId::null;
+        auto minDistance = std::numeric_limits<int16_t>::max();
+        bool isPhysicallyAttached = false;
+        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
+        {
+            const auto tile = World::TileManager::get(tilePos);
+            for (auto& el : tile)
+            {
+                auto* elStation = el.as<World::StationElement>();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+                if (elStation->isGhost())
+                {
+                    continue;
+                }
+                auto* station = StationManager::get(elStation->stationId());
+                if (station->owner != companyId)
+                {
+                    continue;
+                }
+                auto distDiff = World::toWorldSpace(tilePos) - pos;
+                distDiff.x = std::abs(distDiff.x);
+                distDiff.y = std::abs(distDiff.y);
+                const auto distance = std::max(distDiff.x, distDiff.y);
+                if (distance < minDistance)
+                {
+                    auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
+                    if (distDiffZ > 64)
+                    {
+                        continue;
+                    }
+                    minDistance = distance + distDiffZ / 2;
+                    if (minDistance <= 64)
+                    {
+                        isPhysicallyAttached = true;
+                    }
+                    minDistanceStation = elStation->stationId();
+                }
+            }
+        }
+
+        for (auto& station : StationManager::stations())
+        {
+            if (station.owner != companyId)
+            {
+                continue;
+            }
+            auto distDiff = World::Pos2{ station.x, station.y } - pos;
+            distDiff.x = std::abs(distDiff.x);
+            distDiff.y = std::abs(distDiff.y);
+            const auto distance = std::max(distDiff.x, distDiff.y);
+
+            auto distDiffZ = std::abs(station.z - pos.z);
+            if (distDiffZ > 64)
+            {
+                continue;
+            }
+            if (distance > 64)
+            {
+                continue;
+            }
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minDistanceStation = station.id();
+            }
+        }
+        return NearbyStation{ minDistanceStation, isPhysicallyAttached };
+    }
+
     void registerHooks()
     {
         // Can be removed once the createStation function has been implemented (used by place.*Station game commands)

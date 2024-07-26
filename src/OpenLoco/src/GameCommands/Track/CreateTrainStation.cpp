@@ -21,99 +21,15 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
-    struct NearbyStation
-    {
-        StationId id;
-        bool isPhysicallyAttached;
-    };
-
-    // 0x004901B0
-    static NearbyStation findNearbyStation(World::Pos3 pos)
-    {
-        const auto tilePosA = World::toTileSpace(pos) - World::TilePos2(2, 2);
-        const auto tilePosB = World::toTileSpace(pos) + World::TilePos2(2, 2);
-
-        auto minDistanceStation = StationId::null;
-        auto minDistance = std::numeric_limits<int16_t>::max();
-        bool isPhysicallyAttached = false;
-        for (const auto tilePos : World::getClampedRange(tilePosA, tilePosB))
-        {
-            const auto tile = World::TileManager::get(tilePos);
-            for (auto& el : tile)
-            {
-                auto* elStation = el.as<World::StationElement>();
-                if (elStation == nullptr)
-                {
-                    continue;
-                }
-                if (elStation->isGhost())
-                {
-                    continue;
-                }
-                auto* station = StationManager::get(elStation->stationId());
-                if (station->owner != getUpdatingCompanyId())
-                {
-                    continue;
-                }
-                auto distDiff = World::toWorldSpace(tilePos) - pos;
-                distDiff.x = std::abs(distDiff.x);
-                distDiff.y = std::abs(distDiff.y);
-                const auto distance = std::max(distDiff.x, distDiff.y);
-                if (distance < minDistance)
-                {
-                    auto distDiffZ = std::abs(elStation->baseHeight() - pos.z);
-                    if (distDiffZ > 64)
-                    {
-                        continue;
-                    }
-                    minDistance = distance + distDiffZ / 2;
-                    if (minDistance <= 64)
-                    {
-                        isPhysicallyAttached = true;
-                    }
-                    minDistanceStation = elStation->stationId();
-                }
-            }
-        }
-
-        for (auto& station : StationManager::stations())
-        {
-            if (station.owner != getUpdatingCompanyId())
-            {
-                continue;
-            }
-            auto distDiff = World::Pos2{ station.x, station.y } - pos;
-            distDiff.x = std::abs(distDiff.x);
-            distDiff.y = std::abs(distDiff.y);
-            const auto distance = std::max(distDiff.x, distDiff.y);
-
-            auto distDiffZ = std::abs(station.z - pos.z);
-            if (distDiffZ > 64)
-            {
-                continue;
-            }
-            if (distance > 64)
-            {
-                continue;
-            }
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                minDistanceStation = station.id();
-            }
-        }
-        return NearbyStation{ minDistanceStation, isPhysicallyAttached };
-    }
-
     // 0x0048FF36
-    static NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
+    static StationManager::NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
         {
             auto [nextPos, nextRotation] = World::Track::getTrackConnectionEnd(pos, tad);
             const auto tc = World::Track::getTrackConnections(nextPos, nextRotation, getUpdatingCompanyId(), trackObjectId, 0, 0);
             if (tc.stationId != StationId::null)
             {
-                return NearbyStation{ tc.stationId, true };
+                return StationManager::NearbyStation{ tc.stationId, true };
             }
         }
         {
@@ -129,15 +45,15 @@ namespace OpenLoco::GameCommands
             const auto tailTc = World::Track::getTrackConnections(nextTailPos, nextTailRotation, getUpdatingCompanyId(), trackObjectId, 0, 0);
             if (tailTc.stationId != StationId::null)
             {
-                return NearbyStation{ tailTc.stationId, true };
+                return StationManager::NearbyStation{ tailTc.stationId, true };
             }
         }
 
-        return findNearbyStation(pos);
+        return StationManager::findNearbyStation(pos, getUpdatingCompanyId());
     }
 
     // 0x0048FFF7
-    static NearbyStation sub_48FFF7(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
+    static StationManager::NearbyStation sub_48FFF7(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
         // This one is for ai preview allocated track
         registers regs;
@@ -147,7 +63,7 @@ namespace OpenLoco::GameCommands
         regs.bp = tad;
         regs.bh = trackObjectId;
         call(0x0048FFF7, regs);
-        NearbyStation result{};
+        StationManager::NearbyStation result{};
         result.id = static_cast<StationId>(regs.bx);
         result.isPhysicallyAttached = regs.eax & (1U << 31);
         return result;
