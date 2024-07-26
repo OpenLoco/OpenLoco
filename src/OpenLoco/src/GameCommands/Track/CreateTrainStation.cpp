@@ -22,7 +22,7 @@ namespace OpenLoco::GameCommands
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
     // 0x0048FF36
-    static StationManager::NearbyStation sub_48FF36(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
+    static StationManager::NearbyStation findNearbyStationOnTrack(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
         {
             auto [nextPos, nextRotation] = World::Track::getTrackConnectionEnd(pos, tad);
@@ -53,20 +53,34 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0048FFF7
-    static StationManager::NearbyStation sub_48FFF7(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
+    static StationManager::NearbyStation findNearbyStationOnTrackAi(World::Pos3 pos, uint16_t tad, uint8_t trackObjectId)
     {
-        // This one is for ai preview allocated track
-        registers regs;
-        regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        regs.bp = tad;
-        regs.bh = trackObjectId;
-        call(0x0048FFF7, regs);
-        StationManager::NearbyStation result{};
-        result.id = static_cast<StationId>(regs.bx);
-        result.isPhysicallyAttached = regs.eax & (1U << 31);
-        return result;
+        {
+            auto [nextPos, nextRotation] = World::Track::getTrackConnectionEnd(pos, tad);
+            const auto tc = World::Track::getTrackConnectionsAi(nextPos, nextRotation, getUpdatingCompanyId(), trackObjectId, 0, 0);
+            if (tc.stationId != StationId::null)
+            {
+                return StationManager::NearbyStation{ tc.stationId, true };
+            }
+        }
+        {
+            auto tailTaD = tad;
+            const auto& trackSize = World::TrackData::getUnkTrack(tailTaD);
+            auto tailPos = pos + trackSize.pos;
+            if (trackSize.rotationEnd < 12)
+            {
+                tailPos -= World::Pos3{ World::kRotationOffset[trackSize.rotationEnd], 0 };
+            }
+            tailTaD ^= (1U << 2); // Reverse
+            auto [nextTailPos, nextTailRotation] = World::Track::getTrackConnectionEnd(tailPos, tailTaD);
+            const auto tailTc = World::Track::getTrackConnectionsAi(nextTailPos, nextTailRotation, getUpdatingCompanyId(), trackObjectId, 0, 0);
+            if (tailTc.stationId != StationId::null)
+            {
+                return StationManager::NearbyStation{ tailTc.stationId, true };
+            }
+        }
+
+        return StationManager::findNearbyStation(pos, getUpdatingCompanyId());
     }
 
     enum class NearbyStationValidation
@@ -79,7 +93,7 @@ namespace OpenLoco::GameCommands
     // 0x0048BDCE & 0x0048BD40
     static std::pair<NearbyStationValidation, StationId> validateNearbyStation(const World::Pos3 pos, const uint16_t tad, const uint8_t trackObjectId, const uint8_t flags)
     {
-        auto func = (flags & Flags::aiAllocated) ? &sub_48FFF7 : &sub_48FF36;
+        auto func = (flags & Flags::aiAllocated) ? &findNearbyStationOnTrackAi : &findNearbyStationOnTrack;
         auto nearbyStation = func(pos, tad, trackObjectId);
         if (nearbyStation.id == StationId::null)
         {
@@ -245,7 +259,7 @@ namespace OpenLoco::GameCommands
         {
             _lastConstructedAdjoiningStationCentrePos = trackStart;
             uint16_t tad = (args.trackId << 3) | args.rotation;
-            auto nearbyStation = sub_48FF36(trackStart, tad, args.trackObjectId);
+            auto nearbyStation = findNearbyStationOnTrack(trackStart, tad, args.trackObjectId);
             _lastConstructedAdjoiningStationId = static_cast<int16_t>(nearbyStation.id);
         }
 
