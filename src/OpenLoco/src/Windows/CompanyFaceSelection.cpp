@@ -27,7 +27,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     static loco_global<CompanyId, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
-    static loco_global<int32_t, 0x0113E72C> _cursorX;
 
     static WindowType _callingWindowType;
 
@@ -174,7 +173,9 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return;
         }
         self.invalidate();
-        Audio::playSound(Audio::SoundId::clickDown, _cursorX);
+
+        auto mousePos = Input::getMouseLocation();
+        Audio::playSound(Audio::SoundId::clickDown, mousePos.x);
 
         if (_callingWindowType == WindowType::company)
         {
