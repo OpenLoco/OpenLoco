@@ -11,11 +11,9 @@
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Engine/Input/ShortcutManager.h>
-#include <OpenLoco/Interop/Interop.hpp>
 #include <SDL2/SDL.h>
 #include <unordered_map>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::KeyboardShortcuts
