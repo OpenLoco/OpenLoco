@@ -29,20 +29,17 @@
 #include "Ui/WindowManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
-    static loco_global<currency32_t, 0x00E0C39C> _dword_E0C39C;
-    static loco_global<bool, 0x00E0C3D9> _industryGhostPlaced;
-    static loco_global<World::Pos2, 0x00E0C3C2> _industryGhostPos;
-    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
-    static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
-    static loco_global<IndustryId, 0x00E0C3DB> _industryGhostId;
-    static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
-    static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
+    static currency32_t _dword_E0C39C;       // 0x00E0C39C
+    static bool _industryGhostPlaced;        // 0x00E0C3D9
+    static World::Pos2 _industryGhostPos;    // 0x00E0C3C2
+    static IndustryId _industryLastPlacedId; // 0x00E0C3C9
+    static uint8_t _industryGhostType;       // 0x00E0C3DA
+    static IndustryId _industryGhostId;      // 0x00E0C3DB
+    static uint32_t _dword_E0C394;           // 0x00E0C394
+    static uint32_t _dword_E0C398;           // 0x00E0C398
 
     namespace Common
     {
@@ -1126,7 +1123,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if (_industryGhostPlaced)
             {
-                if (*_industryGhostPos == placementArgs->pos && _industryGhostType == placementArgs->type)
+                if (_industryGhostPos == placementArgs->pos && _industryGhostType == placementArgs->type)
                 {
                     return;
                 }
