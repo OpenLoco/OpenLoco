@@ -10,14 +10,11 @@
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MapToolTip
 {
-    static loco_global<CompanyId, 0x0050A040> _mapTooltipOwner;
-    static loco_global<uint16_t, 0x00523348> _mapTooltipTimeout;
+    static CompanyId _mapTooltipOwner;  // 0x0050A040
+    static uint16_t _mapTooltipTimeout; // 0x00523348
 
     enum widx
     {
