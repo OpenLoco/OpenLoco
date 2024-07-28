@@ -3,6 +3,7 @@
 #include "Graphics/ImageIds.h"
 #include "Graphics/SoftwareDrawingEngine.h"
 #include "Graphics/TextRenderer.h"
+#include "Input.h"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/Formatting.h"
 #include "Localisation/StringManager.h"
@@ -20,11 +21,10 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::Error
 {
     static loco_global<bool, 0x00508F09> _suppressErrorSound;
-    static loco_global<char[512], 0x009C64B3> _errorText;
-    static loco_global<uint16_t, 0x009C66B3> _linebreakCount;
-    static loco_global<CompanyId, 0x009C68EC> _errorCompetitorId;
-    static loco_global<int32_t, 0x0113E72C> _cursorX;
-    static loco_global<int32_t, 0x0113E730> _cursorY;
+
+    static char _errorText[512];         // 0x009C64B3
+    static uint16_t _linebreakCount;     // 0x009C66B3
+    static CompanyId _errorCompetitorId; // 0x009C68EC
 
     namespace Common
     {
@@ -127,8 +127,9 @@ namespace OpenLoco::Ui::Windows::Error
 
             int x, y;
 
+            auto mousePos = Input::getMouseLocation();
             int maxY = Ui::height() - height;
-            y = _cursorY + 26; // Normally, we'd display the tooltip 26 lower
+            y = mousePos.y + 26; // Normally, we'd display the tooltip 26 lower
             if (y > maxY)
             {
                 // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
@@ -137,7 +138,7 @@ namespace OpenLoco::Ui::Windows::Error
             }
             y = std::clamp(y, 22, maxY);
 
-            x = std::clamp(_cursorX - (width / 2), 0, Ui::width() - width);
+            x = std::clamp(mousePos.x - (width / 2), 0, Ui::width() - width);
 
             Ui::Size windowSize = { width, height };
 
