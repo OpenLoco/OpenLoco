@@ -1441,7 +1441,7 @@ namespace OpenLoco::Paint
             const auto markerHeight = World::TileManager::getHeight(markerPos).landHeight + 3;
             const auto markerImageIndex = getHeightMarkerImage(markerHeight);
 
-            const auto imageId = ImageId{ getHeightMarkerImage(markerImageIndex), Colour::mutedAvocadoGreen };
+            const auto imageId = ImageId{ markerImageIndex, Colour::mutedAvocadoGreen };
             const World::Pos3 offset(16, 16, markerHeight);
             const World::Pos3 bbSize(1, 1, 0);
             session.addToPlotListAsParent(imageId, offset, bbSize);
