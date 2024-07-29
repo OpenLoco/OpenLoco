@@ -213,7 +213,7 @@ namespace OpenLoco::GameCommands
             }
 
             // 0x0049434F same as TileClearance::tileClearFunction but collides on surfaces as well
-            auto clearFunc = [pos = args.pos, &removedBuildings, flags, &totalCost](World::TileElement& el) {
+            auto clearFunc = [pos = World::toWorldSpace(tilePos), &removedBuildings, flags, &totalCost](World::TileElement& el) {
                 switch (el.type())
                 {
                     case World::ElementType::tree:
