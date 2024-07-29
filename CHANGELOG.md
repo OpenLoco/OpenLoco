@@ -1,5 +1,6 @@
 24.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#2555] Crash when setting preferred currency or preferred company to an object that no longer exists.
 - Fix: [#2556] Incorrect height markers on surfaces.
 - Fix: [#2557] Unable to change the fullscreen resolution.
 
