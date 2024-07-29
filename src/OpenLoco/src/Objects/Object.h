@@ -126,7 +126,7 @@ namespace OpenLoco
     /**
      * Represents an undefined index / ID for a specific object type.
      */
-    static constexpr LoadedObjectId NullObjectId = std::numeric_limits<LoadedObjectId>::max();
+    static constexpr LoadedObjectId kNullObjectId = std::numeric_limits<LoadedObjectId>::max();
 
     struct LoadedObjectHandle
     {
