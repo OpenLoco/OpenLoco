@@ -33,6 +33,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Random.h"
 #include "Road/CreateRoad.h"
 #include "Road/CreateRoadMod.h"
 #include "Road/CreateRoadStation.h"
@@ -608,5 +609,13 @@ namespace OpenLoco::GameCommands
     uint8_t getCommandNestLevel()
     {
         return _gameCommandNestLevel;
+    }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    // 0x0048B013
+    void playConstructionPlacementSound(World::Pos3 pos)
+    {
+        const auto frequency = gPrng1().randNext(17955, 26146);
+        Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
     }
 }

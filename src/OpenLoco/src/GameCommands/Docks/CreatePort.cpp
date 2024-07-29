@@ -508,7 +508,7 @@ namespace OpenLoco::GameCommands
         }
         if (!(flags & (Flags::ghost | Flags::aiAllocated)) && (flags & Flags::apply))
         {
-            // playPlacementSound(args.pos); TODO NEED TO MOVE FUNCTION
+            playConstructionPlacementSound(args.pos);
         }
 
         // Vanilla did this check wrong

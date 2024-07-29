@@ -19,7 +19,6 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
-#include "Random.h"
 #include "World/CompanyManager.h"
 #include "World/StationManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
@@ -33,14 +32,6 @@ namespace OpenLoco::GameCommands
     static loco_global<uint8_t, 0x01136073> _byte_1136073;
     static loco_global<World::MicroZ, 0x01136074> _byte_1136074;
     static loco_global<uint8_t, 0x01136075> _byte_1136075; // bridgeType of any overlapping track
-
-    // TODO: Move this somewhere else used by multiple game commands
-    // 0x0048B013
-    static void playPlacementSound(World::Pos3 pos)
-    {
-        const auto frequency = gPrng1().randNext(17955, 26146);
-        Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
-    }
 
     static bool isBridgeRequired(const World::SmallZ baseZ, const World::SurfaceElement& elSurface, const World::TrackData::PreviewTrack& piece, const uint8_t unk)
     {
@@ -616,7 +607,7 @@ namespace OpenLoco::GameCommands
 
         if ((flags & Flags::apply) && !(flags & (Flags::aiAllocated | Flags::ghost)))
         {
-            playPlacementSound(getPosition());
+            playConstructionPlacementSound(getPosition());
         }
         return totalCost;
     }
