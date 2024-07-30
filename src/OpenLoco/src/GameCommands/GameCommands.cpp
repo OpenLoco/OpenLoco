@@ -33,6 +33,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
+#include "Random.h"
 #include "Road/CreateRoad.h"
 #include "Road/CreateRoadMod.h"
 #include "Road/CreateRoadStation.h"
@@ -182,7 +183,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::removeAirport,                removeAirport,             0x00493559, true  },
         { GameCommand::vehiclePlaceAir,              vehiclePlaceAir,           0x004267BE, true  },
         { GameCommand::vehiclePickupAir,             vehiclePickupAir,          0x00426B29, true  },
-        { GameCommand::createPort,                   nullptr,                   0x00493AA7, true  },
+        { GameCommand::createPort,                   createPort,                0x00493AA7, true  },
         { GameCommand::removePort,                   removePort,                0x00494570, true  },
         { GameCommand::vehiclePlaceWater,            vehiclePlaceWater,         0x0042773C, true  },
         { GameCommand::vehiclePickupWater,           vehiclePickupWater,        0x004279CC, true  },
@@ -608,5 +609,13 @@ namespace OpenLoco::GameCommands
     uint8_t getCommandNestLevel()
     {
         return _gameCommandNestLevel;
+    }
+
+    // TODO: Maybe move this somewhere else used by multiple game commands
+    // 0x0048B013
+    void playConstructionPlacementSound(World::Pos3 pos)
+    {
+        const auto frequency = gPrng1().randNext(17955, 26146);
+        Audio::playSound(Audio::SoundId::construct, pos, 0, frequency);
     }
 }

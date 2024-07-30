@@ -48,15 +48,15 @@ namespace OpenLoco
         name = strRes.str;
         remainingData = remainingData.subspan(strRes.tableLength);
 
-        // Load unk?
-        var_14 = reinterpret_cast<const uint8_t*>(remainingData.data());
-        remainingData = remainingData.subspan(numAux01);
+        // Load part heights
+        partHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
+        remainingData = remainingData.subspan(numBuildingParts);
 
         buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
-        remainingData = remainingData.subspan(numAux01 * sizeof(uint16_t));
+        remainingData = remainingData.subspan(numBuildingParts * sizeof(uint16_t));
 
         // Load building variation parts
-        for (auto i = 0U; i < numAux02Ent; ++i)
+        for (auto i = 0U; i < numBuildingVariations; ++i)
         {
             buildingVariationParts[i] = reinterpret_cast<const uint8_t*>(remainingData.data());
             while (*remainingData.data() != static_cast<std::byte>(0xFF))
@@ -70,10 +70,10 @@ namespace OpenLoco
         image = imgRes.imageOffset;
 
         // Related to unk2?
-        const auto offset = (flags & DockObjectFlags::unk01) != DockObjectFlags::none ? numAux02Ent * 4 : 1;
+        const auto offset = (flags & DockObjectFlags::unk01) != DockObjectFlags::none ? numBuildingVariations * 4 : 1;
         var_0C = imgRes.imageOffset + offset;
 
-        // Unused code numAux01 related
+        // Unused code numBuildingParts related
 
         assert(remainingData.size() == imgRes.tableLength);
     }
@@ -84,7 +84,7 @@ namespace OpenLoco
         name = 0;
         image = 0;
         var_0C = 0;
-        var_14 = nullptr;
+        partHeights = nullptr;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
     }

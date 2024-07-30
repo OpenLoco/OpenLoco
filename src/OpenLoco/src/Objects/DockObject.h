@@ -37,10 +37,10 @@ namespace OpenLoco
         uint8_t var_07;
         uint32_t image; // 0x08
         uint32_t var_0C;
-        DockObjectFlags flags; // 0x10
-        uint8_t numAux01;      // 0x12
-        uint8_t numAux02Ent;   // 0x13 must be 1 or 0
-        const uint8_t* var_14;
+        DockObjectFlags flags;                               // 0x10
+        uint8_t numBuildingParts;                            // 0x12
+        uint8_t numBuildingVariations;                       // 0x13 must be 1 or 0
+        const uint8_t* partHeights;                          // 0x14
         const BuildingPartAnimation* buildingPartAnimations; // 0x18
         const uint8_t* buildingVariationParts[1];            // 0x1C odd that this is size 1 but that is how its used
         uint16_t designedYear;                               // 0x20
