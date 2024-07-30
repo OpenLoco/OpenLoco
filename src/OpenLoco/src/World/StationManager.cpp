@@ -602,9 +602,18 @@ namespace OpenLoco::StationManager
     // 0x0048F850
     static void removeStationFromCargoStats(const StationId stationId)
     {
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x0048F850, regs);
+        for (auto& station : stations())
+        {
+            for (auto& stats : station.cargoStats)
+            {
+                if (stats.origin == stationId)
+                {
+                    stats.origin = StationId::null;
+                    stats.quantity = 0;
+                    Ui::WindowManager::invalidate(Ui::WindowType::station, enumValue(station.id()));
+                }
+            }
+        }
     }
 
     // 0x0048F7D1
