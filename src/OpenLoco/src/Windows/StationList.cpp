@@ -267,9 +267,18 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004910AB
     void removeStationFromList(const StationId stationId)
     {
-        registers regs;
-        regs.ebx = enumValue(stationId);
-        call(0x004910AB, regs);
+        auto* station = StationManager::get(stationId);
+        auto* window = WindowManager::find(WindowType::stationList, enumValue(station->owner));
+        if (window != nullptr)
+        {
+            for (uint16_t i = 0; i < window->var_83C; i++)
+            {
+                if (stationId == StationId(window->rowInfo[i]))
+                {
+                    window->rowInfo[i] = enumValue(StationId::null);
+                }
+            }
+        }
     }
 
     static const WindowEventList& getEvents();
