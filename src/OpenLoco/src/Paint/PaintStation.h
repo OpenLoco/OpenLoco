@@ -13,10 +13,5 @@ namespace OpenLoco::Paint
 
     void paintStation(PaintSession& session, const World::StationElement& elStation);
 
-    void paintAirport(PaintSession& session, const World::StationElement& elStation);
-    void paintDocks(PaintSession& session, const World::StationElement& elStation);
-    void paintRoadStation(PaintSession& session, const World::StationElement& elStation);
-    void paintTrainStation(PaintSession& session, const World::StationElement& elStation);
-
     void paintStationCargo(PaintSession& session, const World::StationElement& elStation, const uint8_t flags, const uint32_t cargoTypes, const std::vector<std::array<World::Pos3, 2>>& cargoOffsets, const int16_t offsetZ, const World::Pos3& boundBoxOffset, const World::Pos3& boundBoxSize);
 }

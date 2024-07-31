@@ -1,3 +1,4 @@
+#include "PaintRoadStation.h"
 #include "Map/StationElement.h"
 #include "Paint.h"
 #include "PaintStation.h"

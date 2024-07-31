@@ -1,3 +1,4 @@
+#include "PaintTrainStation.h"
 #include "Map/StationElement.h"
 #include "Map/TileElement.h"
 #include "Map/TrackElement.h"

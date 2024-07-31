@@ -1,6 +1,6 @@
+#include "PaintAirport.h"
 #include "Map/StationElement.h"
 #include "Paint.h"
-#include "PaintStation.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
 namespace OpenLoco::Paint
