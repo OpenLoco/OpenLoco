@@ -6,10 +6,12 @@
 #include "GameCommands/Company/RemoveCompanyHeadquarters.h"
 #include "GameCommands/Docks/RemovePort.h"
 #include "GameCommands/GameCommands.h"
+#include "GameCommands/Road/RemoveRoadMod.h"
 #include "GameCommands/Road/RemoveRoadStation.h"
 #include "GameCommands/Terraform/RemoveTree.h"
 #include "GameCommands/Terraform/RemoveWall.h"
 #include "GameCommands/Track/RemoveSignal.h"
+#include "GameCommands/Track/RemoveTrackMod.h"
 #include "GameCommands/Track/RemoveTrainStation.h"
 #include "Input.h"
 #include "Localisation/FormatArguments.hpp"
@@ -30,6 +32,7 @@
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ObjectManager.h"
+#include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Objects/TrackExtraObject.h"
 #include "Objects/TrackObject.h"
@@ -1174,6 +1177,70 @@ namespace OpenLoco::Ui::ViewportInteraction
         GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
+    // 0x004A1303
+    static void rightReleasedTrackExtra(TrackElement* track, const uint8_t bh, const Pos2 pos)
+    {
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            Windows::Construction::removeConstructionGhosts();
+        }
+
+        GameCommands::TrackModsRemovalArgs args{};
+        args.pos = World::Pos3(pos, track->baseHeight());
+        args.rotation = track->rotation();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.trackObjType = track->trackObjectId();
+        args.type = 1U << bh;
+        args.modSection = 0;
+
+        auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjType);
+        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[bh]);
+        auto fArgs = FormatArguments::common();
+        fArgs.skip(6);
+        fArgs.push(trackExtraObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_remove_pop3_string);
+
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
+    // 0x004A13C1
+    static void rightReleaseRoadExtra(RoadElement* road, const uint8_t bh, const Pos2 pos)
+    {
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            Windows::Construction::removeConstructionGhosts();
+        }
+
+        GameCommands::RoadModsRemovalArgs args{};
+        args.pos = World::Pos3(pos, road->baseHeight());
+        args.rotation = road->rotation();
+        args.roadId = road->roadId();
+        args.index = road->sequenceIndex();
+        args.roadObjType = road->roadObjectId();
+        args.type = 1U << bh;
+        args.modSection = 0;
+
+        auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjType);
+        auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[bh]);
+        auto fArgs = FormatArguments::common();
+        fArgs.skip(6);
+        fArgs.push(roadExtraObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_remove_pop3_string);
+
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
+    }
+
     void handleRightReleased(Window* window, int16_t xPos, int16_t yPos)
     {
         auto interaction = ViewportInteraction::rightOver(xPos, yPos);
@@ -1261,7 +1328,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* track = tileElement->as<TrackElement>();
                 if (track != nullptr)
                 {
-                    Ui::Windows::Construction::setToTrackExtra(track, interaction.modId, interaction.pos);
+                    rightReleasedTrackExtra(track, interaction.modId, interaction.pos);
                 }
                 break;
             }
@@ -1270,7 +1337,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 auto* road = tileElement->as<RoadElement>();
                 if (road != nullptr)
                 {
-                    Ui::Windows::Construction::setToRoadExtra(road, interaction.modId, interaction.pos);
+                    rightReleaseRoadExtra(road, interaction.modId, interaction.pos);
                 }
                 break;
             }
