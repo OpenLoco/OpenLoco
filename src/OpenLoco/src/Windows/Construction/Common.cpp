@@ -391,30 +391,6 @@ namespace OpenLoco::Ui::Windows::Construction
         return window;
     }
 
-    // 0x004A1303
-    void setToTrackExtra(const Window& main, TrackElement* track, const uint8_t bh, const Pos2 pos)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(&main);
-        regs.edx = X86Pointer(track);
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A1303, regs);
-    }
-
-    // 0x004A13C1
-    void setToRoadExtra(const Window& main, RoadElement* road, const uint8_t bh, const Pos2 pos)
-    {
-        registers regs{};
-        regs.esi = X86Pointer(&main);
-        regs.edx = X86Pointer(road);
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A13C1, regs);
-    }
-
     // 0x004A3B0D
     Window* openWithFlags(const uint32_t flags)
     {

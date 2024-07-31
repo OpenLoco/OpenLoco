@@ -145,7 +145,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cant_build_signal_here = 139;
     constexpr StringId cant_build_signals_here = 140;
     constexpr StringId cant_remove_signal = 141;
-
+    constexpr StringId cant_remove_pop3_string = 142;
     constexpr StringId cant_build_pop3_string = 143;
     constexpr StringId raise_or_lower_land_first = 144;
     constexpr StringId menu_underground_view = 145;
