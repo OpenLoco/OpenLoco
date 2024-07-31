@@ -168,6 +168,7 @@ namespace OpenLoco::Ui::Windows
         void removeConstructionGhosts();
         void registerHooks();
         uint16_t getLastSelectedMods();
+        uint16_t getLastSelectedTrackModSection();
     }
 
     namespace DragVehiclePart

@@ -1194,7 +1194,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.index = track->sequenceIndex();
         args.trackObjType = track->trackObjectId();
         args.type = 1U << bh;
-        args.modSection = 0;
+        args.modSection = Windows::Construction::getLastSelectedTrackModSection();
 
         auto* trackObj = ObjectManager::get<TrackObject>(args.trackObjType);
         auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[bh]);
