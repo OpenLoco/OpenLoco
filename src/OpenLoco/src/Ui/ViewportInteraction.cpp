@@ -1226,7 +1226,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.index = road->sequenceIndex();
         args.roadObjType = road->roadObjectId();
         args.type = 1U << bh;
-        args.modSection = 0;
+        args.modSection = Windows::Construction::getLastSelectedTrackModSection();
 
         auto* roadObj = ObjectManager::get<RoadObject>(args.roadObjType);
         auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[bh]);
