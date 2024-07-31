@@ -642,6 +642,19 @@ namespace OpenLoco::Ui
         }
         SDL_SetWindowSize(window, newResolution.width, newResolution.height);
 
+        SDL_DisplayMode dpMode;
+        // NOTE: Should use the value from the enumeration but we are not really dealing with such systems.
+        dpMode.format = SDL_PIXELFORMAT_ARGB8888;
+        dpMode.w = newResolution.width;
+        dpMode.h = newResolution.height;
+        dpMode.refresh_rate = 0;
+        dpMode.driverdata = nullptr;
+        if (SDL_SetWindowDisplayMode(window, &dpMode) != 0)
+        {
+            Logging::error("SDL_SetWindowDisplayMode failed: {}", SDL_GetError());
+            return false;
+        }
+
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
