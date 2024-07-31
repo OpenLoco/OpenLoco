@@ -198,6 +198,87 @@ namespace OpenLoco::World::Track
         _1136087 = src.stationObjectId;
     }
 
+    constexpr uint16_t kNullTad = 0xFFFFU;
+
+    static uint16_t getElTrackConnection(const World::TrackElement& elTrack, uint8_t nextRotation, uint8_t baseZ, uint8_t queryMods)
+    {
+        if (elTrack.sequenceIndex() == 0)
+        {
+            auto trackAndDirection2 = (elTrack.trackId() << 3) | elTrack.rotation();
+            if (nextRotation == TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
+            {
+                const auto& trackPiece = TrackData::getTrackPiece(elTrack.trackId());
+                if (baseZ == (elTrack.baseZ() - trackPiece[0].z / 4))
+                {
+                    if (elTrack.hasBridge())
+                    {
+                        trackAndDirection2 |= elTrack.bridge() << 9;
+                        trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
+                    }
+
+                    if ((queryMods & elTrack.mods()) != 0)
+                    {
+                        trackAndDirection2 |= AdditionalTaDFlags::hasMods;
+                    }
+
+                    if (elTrack.hasSignal())
+                    {
+                        auto* elSignal = elTrack.next()->as<SignalElement>();
+                        if (elSignal != nullptr)
+                        {
+                            if (!elSignal->isAiAllocated() && !elSignal->isGhost())
+                            {
+                                trackAndDirection2 |= (1 << 15);
+                            }
+                        }
+                    }
+                    return trackAndDirection2;
+                }
+            }
+        }
+
+        if (!elTrack.isFlag6())
+        {
+            return kNullTad;
+        }
+
+        auto trackAndDirection2 = (elTrack.trackId() << 3) | (1 << 2) | elTrack.rotation();
+        if (nextRotation != TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
+        {
+            return kNullTad;
+        }
+
+        const auto previousBaseZ = elTrack.baseZ() - (TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()].z + TrackData::getUnkTrack(trackAndDirection2).pos.z) / 4;
+        if (previousBaseZ != baseZ)
+        {
+            return kNullTad;
+        }
+
+        if (elTrack.hasBridge())
+        {
+            trackAndDirection2 |= elTrack.bridge() << 9;
+            trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
+        }
+
+        if ((queryMods & elTrack.mods()) != 0)
+        {
+            trackAndDirection2 |= AdditionalTaDFlags::hasMods;
+        }
+
+        if (elTrack.hasSignal())
+        {
+            auto* elSignal = elTrack.next()->as<SignalElement>();
+            if (elSignal != nullptr)
+            {
+                if (!elSignal->isAiAllocated() && !elSignal->isGhost())
+                {
+                    trackAndDirection2 |= (1 << 15);
+                }
+            }
+        }
+        return trackAndDirection2;
+    }
+
     // 0x004A2638, 0x004A2601
     TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods)
     {
@@ -234,100 +315,85 @@ namespace OpenLoco::World::Track
                 continue;
             }
 
-            if (elTrack->sequenceIndex() == 0)
+            const auto connection = getElTrackConnection(*elTrack, nextRotation, baseZ, queryMods);
+            if (connection == kNullTad)
             {
-                auto trackAndDirection2 = (elTrack->trackId() << 3) | elTrack->rotation();
-                if (nextRotation == TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
+                continue;
+            }
+
+            result.connections.push_back(connection);
+            if (elTrack->hasStationElement())
+            {
+                auto* elStation = elTrack->next()->as<StationElement>();
+                if (elStation != nullptr)
                 {
-                    const auto& trackPiece = TrackData::getTrackPiece(elTrack->trackId());
-                    if (baseZ == (elTrack->baseZ() - trackPiece[0].z / 4))
+                    if (!elStation->isAiAllocated() && !elStation->isGhost())
                     {
-                        if (elTrack->hasBridge())
-                        {
-                            trackAndDirection2 |= elTrack->bridge() << 9;
-                            trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
-                        }
-
-                        if ((queryMods & elTrack->mods()) != 0)
-                        {
-                            trackAndDirection2 |= AdditionalTaDFlags::hasMods;
-                        }
-
-                        if (elTrack->hasStationElement())
-                        {
-                            auto* elStation = elTrack->next()->as<StationElement>();
-                            if (elStation == nullptr)
-                            {
-                                continue;
-                            }
-
-                            if (!elStation->isAiAllocated() && !elStation->isGhost())
-                            {
-                                result.stationId = elStation->stationId();
-                            }
-                        }
-
-                        if (elTrack->hasLevelCrossing())
-                        {
-                            result.hasLevelCrossing = 1;
-                        }
-
-                        if (elTrack->hasSignal())
-                        {
-                            auto* elSignal = elTrack->next()->as<SignalElement>();
-                            if (elSignal == nullptr)
-                            {
-                                continue;
-                            }
-
-                            if (!elSignal->isAiAllocated() && !elSignal->isGhost())
-                            {
-                                trackAndDirection2 |= (1 << 15);
-                            }
-                        }
-                        result.connections.push_back(trackAndDirection2);
+                        result.stationId = elStation->stationId();
                     }
                 }
             }
 
-            if (!elTrack->isFlag6())
+            if (elTrack->hasLevelCrossing())
+            {
+                result.hasLevelCrossing = 1;
+            }
+        }
+        return result;
+    }
+
+    // 0x004A2820, 0x004A2854
+    // For 0x004A2820 call getTrackConnectionEnd first then this
+    TrackConnections getTrackConnectionsAi(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods)
+    {
+        // Same as getTrackConnections but for aiAllocated preview track
+        // i.e. can find connections on track that isn't visible yet.
+        TrackConnections result{};
+
+        uint8_t baseZ = nextTrackPos.z / 4;
+
+        const auto tile = World::TileManager::get(nextTrackPos);
+        for (const auto& el : tile)
+        {
+            auto* elTrack = el.as<TrackElement>();
+            if (elTrack == nullptr)
             {
                 continue;
             }
 
-            auto trackAndDirection2 = (elTrack->trackId() << 3) | (1 << 2) | elTrack->rotation();
-            if (nextRotation != TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
+            if (elTrack->owner() != company)
             {
                 continue;
             }
 
-            const auto previousBaseZ = elTrack->baseZ() - (TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()].z + TrackData::getUnkTrack(trackAndDirection2).pos.z) / 4;
-            if (previousBaseZ != baseZ)
+            if (elTrack->trackObjectId() != trackObjectId)
             {
                 continue;
             }
 
-            if (elTrack->hasBridge())
+            if ((elTrack->mods() & requiredMods) != requiredMods)
             {
-                trackAndDirection2 |= elTrack->bridge() << 9;
-                trackAndDirection2 |= AdditionalTaDFlags::hasBridge;
+                continue;
             }
 
-            if ((queryMods & elTrack->mods()) != 0)
+            if (!elTrack->isAiAllocated())
             {
-                trackAndDirection2 |= AdditionalTaDFlags::hasMods;
+                continue;
             }
 
+            const auto connection = getElTrackConnection(*elTrack, nextRotation, baseZ, queryMods);
+            if (connection == kNullTad)
+            {
+                continue;
+            }
+
+            result.connections.push_back(connection);
             if (elTrack->hasStationElement())
             {
                 auto* elStation = elTrack->next()->as<StationElement>();
-                if (elStation == nullptr)
+                if (elStation != nullptr)
                 {
-                    continue;
-                }
-
-                if (!elStation->isAiAllocated() && !elStation->isGhost())
-                {
+                    // No need to consider aiAllocated or ghost flags
                     result.stationId = elStation->stationId();
                 }
             }
@@ -336,21 +402,6 @@ namespace OpenLoco::World::Track
             {
                 result.hasLevelCrossing = 1;
             }
-
-            if (elTrack->hasSignal())
-            {
-                auto* elSignal = elTrack->next()->as<SignalElement>();
-                if (elSignal == nullptr)
-                {
-                    continue;
-                }
-
-                if (!elSignal->isAiAllocated() && !elSignal->isGhost())
-                {
-                    trackAndDirection2 |= (1 << 15);
-                }
-            }
-            result.connections.push_back(trackAndDirection2);
         }
         return result;
     }

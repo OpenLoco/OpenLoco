@@ -75,5 +75,6 @@ namespace OpenLoco::World::Track
     //
     // queryMods sets AdditionalTaDFlags::hasMods of connection if connection has the queryMods
     TrackConnections getTrackConnections(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods);
+    TrackConnections getTrackConnectionsAi(const World::Pos3& nextTrackPos, const uint8_t nextRotation, const CompanyId company, const uint8_t trackObjectId, const uint8_t requiredMods, const uint8_t queryMods);
     ConnectionEnd getTrackConnectionEnd(const World::Pos3& pos, const uint16_t trackAndDirection);
 }

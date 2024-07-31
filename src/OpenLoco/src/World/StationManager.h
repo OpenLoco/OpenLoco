@@ -23,4 +23,12 @@ namespace OpenLoco::StationManager
     bool exceedsStationSize(Station& station, World::Pos3 pos);
     StationId allocateNewStation(const World::Pos3 pos, const CompanyId owner, const uint8_t mode);
     void deallocateStation(const StationId stationId);
+
+    struct NearbyStation
+    {
+        StationId id;
+        bool isPhysicallyAttached;
+    };
+
+    NearbyStation findNearbyStation(World::Pos3 pos, CompanyId companyId);
 }

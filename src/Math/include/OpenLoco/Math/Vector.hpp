@@ -195,16 +195,32 @@ namespace OpenLoco::Math::Vector
         return res;
     }
 
+    // AKA taxicab distance
     template<typename T, typename TTypeTag>
     static constexpr auto manhattanDistance2D(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
     }
 
+    // AKA taxicab distance
     template<typename T, typename TTypeTag>
     static constexpr auto manhattanDistance3D(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y) + std::abs(lhs.z - rhs.z);
+    }
+
+    // AKA maximum metric, chessboard distance
+    template<typename T, typename TTypeTag>
+    static constexpr auto chebyshevDistance2D(const TVector2<T, TTypeTag>& lhs, const TVector2<T, TTypeTag>& rhs) noexcept
+    {
+        return std::max(std::abs(lhs.x - rhs.x), std::abs(lhs.y - rhs.y));
+    }
+
+    // AKA maximum metric, chessboard distance
+    template<typename T, typename TTypeTag>
+    static constexpr auto chebyshevDistance3D(const TVector3<T, TTypeTag>& lhs, const TVector3<T, TTypeTag>& rhs) noexcept
+    {
+        return std::max({ std::abs(lhs.x - rhs.x), std::abs(lhs.y - rhs.y), std::abs(lhs.z - rhs.z) });
     }
 
     template<typename T, typename TTypeTag>
