@@ -1247,19 +1247,111 @@ namespace OpenLoco::Paint
         drawingCtx.popRenderTarget();
     }
 
-    // 0x00447A5F
-    static bool isSpriteInteractedWithPaletteSet(const Gfx::RenderTarget* rt, uint32_t imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
+    // 0x00447C21
+    static bool isPixelPresentBMP(
+        const ImageId image, const Gfx::G1Element& g1, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
     {
-        static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
-        static loco_global<bool, 0x00E40114> _interactionResult;
-        _paletteMap = paletteMap.data();
-        registers regs{};
-        regs.ebx = imageId;
-        regs.edi = X86Pointer(rt);
-        regs.cx = coords.x;
-        regs.dx = coords.y;
-        call(0x00447A5F, regs);
-        return _interactionResult;
+        const auto* index = g1.offset + (coords.y * g1.width) + coords.x;
+
+        // Needs investigation as it has no consideration for pure BMP maps.
+        if (!g1.hasFlags(Gfx::G1ElementFlags::hasTransparency))
+        {
+            return false;
+        }
+
+        if (image.hasPrimary())
+        {
+            return paletteMap[*index] != 0;
+        }
+
+        if (image.isBlended())
+        {
+            return false;
+        }
+
+        return (*index != 0);
+    }
+
+    // 0x00447D26
+    static bool isPixelPresentRLE(const Gfx::G1Element& g1, const Ui::Point& coords)
+    {
+        const uint16_t* data16 = reinterpret_cast<const uint16_t*>(g1.offset);
+        uint16_t startOffset = data16[coords.y];
+        const uint8_t* data8 = static_cast<const uint8_t*>(g1.offset) + startOffset;
+
+        bool lastDataLine = false;
+        while (!lastDataLine)
+        {
+            int32_t numPixels = *data8++;
+            uint8_t pixelRunStart = *data8++;
+            lastDataLine = numPixels & 0x80;
+            numPixels &= 0x7F;
+            data8 += numPixels;
+
+            if (pixelRunStart <= coords.x && coords.x < pixelRunStart + numPixels)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 0x00447A5F
+    static bool isSpriteInteractedWithPaletteSet(const Gfx::RenderTarget* rt, ImageId imageId, const Ui::Point& coords, const Gfx::PaletteMap::View paletteMap)
+    {
+        const auto* g1 = Gfx::getG1Element(imageId.getIndex());
+        if (g1 == nullptr)
+        {
+            return false;
+        }
+
+        auto zoomLevel = rt->zoomLevel;
+        Ui::Point interactionPoint{ rt->x, rt->y };
+        Ui::Point origin = coords;
+
+        if (zoomLevel > 0)
+        {
+            if (g1->hasFlags(Gfx::G1ElementFlags::noZoomDraw))
+            {
+                return false;
+            }
+
+            while (g1->hasFlags(Gfx::G1ElementFlags::hasZoomSprites) && zoomLevel > 0)
+            {
+                imageId = ImageId(imageId.getIndex() - g1->zoomOffset);
+                g1 = Gfx::getG1Element(imageId.getIndex());
+                if (g1 == nullptr || g1->hasFlags(Gfx::G1ElementFlags::noZoomDraw))
+                {
+                    return false;
+                }
+                zoomLevel = zoomLevel - 1;
+                interactionPoint.x >>= 1;
+                interactionPoint.y >>= 1;
+                origin.x >>= 1;
+                origin.y >>= 1;
+            }
+        }
+
+        origin.x += g1->xOffset;
+        origin.y += g1->yOffset;
+        interactionPoint -= origin;
+
+        if (interactionPoint.x < 0 || interactionPoint.y < 0 || interactionPoint.x >= g1->width || interactionPoint.y >= g1->height)
+        {
+            return false;
+        }
+
+        if (g1->hasFlags(Gfx::G1ElementFlags::isRLECompressed))
+        {
+            return isPixelPresentRLE(*g1, interactionPoint);
+        }
+
+        if (!g1->hasFlags(Gfx::G1ElementFlags::unk1))
+        {
+            return isPixelPresentBMP(imageId, *g1, interactionPoint, paletteMap);
+        }
+
+        return false;
     }
 
     // 0x00447A0E
@@ -1282,7 +1374,7 @@ namespace OpenLoco::Paint
         {
             _interactionFlags = 0;
         }
-        return isSpriteInteractedWithPaletteSet(rt, imageId.getIndex(), coords, paletteMap);
+        return isSpriteInteractedWithPaletteSet(rt, imageId, coords, paletteMap);
     }
 
     // 0x0045EDFC
