@@ -133,6 +133,12 @@ namespace OpenLoco::Audio
             return;
         }
 
+        if (!v->isVehicle2Or6())
+        {
+            stop();
+            return;
+        }
+
         auto* veh26 = v->asVehicle2Or6();
         if (veh26 == nullptr || ((veh26->soundFlags & Vehicles::SoundFlags::flag0) == Vehicles::SoundFlags::none))
         {
