@@ -16,6 +16,7 @@
 #include "Paint.h"
 #include "PaintBuilding.h"
 #include "PaintIndustry.h"
+#include "PaintRoad.h"
 #include "PaintSignal.h"
 #include "PaintStation.h"
 #include "PaintSurface.h"
@@ -114,16 +115,6 @@ namespace OpenLoco::Paint
         registers regs;
         call(0x0042AC9C, regs);
         return regs.al != 0;
-    }
-
-    // 0x004759A6
-    static void paintRoad([[maybe_unused]] PaintSession& session, World::RoadElement& elRoad)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elRoad);
-        regs.ecx = (session.getRotation() + elRoad.rotation()) & 0x3;
-        regs.dx = elRoad.baseHeight();
-        call(0x004759A6, regs);
     }
 
     // Returns std::nullopt on no need to paint
