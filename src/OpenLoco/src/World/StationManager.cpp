@@ -600,13 +600,13 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0048F850
-    static void removeStationFromCargoStats(const StationId stationId)
+    static void removeStationFromCargoStats(const StationId removedStationId)
     {
         for (auto& station : stations())
         {
             for (auto& stats : station.cargoStats)
             {
-                if (stats.origin == stationId)
+                if (stats.origin == removedStationId)
                 {
                     stats.origin = StationId::null;
                     stats.quantity = 0;
