@@ -1,5 +1,6 @@
 #include "RemoveTrack.h"
 #include "Economy/Economy.h"
+#include "Map/RoadElement.h"
 #include "Map/SignalElement.h"
 #include "Map/TileManager.h"
 #include "Map/Track/TrackData.h"
@@ -79,14 +80,83 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x004795D1
-    // Shared with removeRoad. Not investigated.
-    static void sub_4795D1(const World::Pos3 pos)
+    static void setLevelCrossingFlags(const World::Pos3 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dl = pos.z;
-        call(0x004795D1, regs);
+        int8_t dh = (1 << 1) | (1 << 0);
+
+        while (true)
+        {
+            auto tile = World::TileManager::get(pos);
+            for (auto& el : tile)
+            {
+                if (el.baseZ() > pos.z)
+                {
+                    continue;
+                }
+
+                if (el.isAiAllocated())
+                {
+                    continue;
+                }
+
+                auto* trackEl = el.as<World::TrackElement>();
+                if (trackEl != nullptr)
+                {
+                    if (trackEl->trackId() == 0)
+                    {
+                        if (dh >= 0)
+                        {
+                            if (trackEl->hasLevelCrossing())
+                            {
+                                dh &= ~(1 << 0);
+                            }
+                        }
+                        else
+                        {
+                            trackEl->setHasLevelCrossing(false);
+                        }
+                    }
+
+                    continue;
+                }
+
+                auto* roadEl = el.as<World::RoadElement>();
+                if (roadEl != nullptr)
+                {
+                    if (roadEl->roadId() == 0)
+                    {
+                        if (dh >= 0)
+                        {
+                            if (roadEl->hasLevelCrossing())
+                            {
+                                dh &= ~(1 << 1);
+                            }
+                        }
+                        else
+                        {
+                            roadEl->setUnk7_10(false);
+                            roadEl->setHasLevelCrossing(false);
+                            roadEl->setLevelCrossingObjectId(0);
+                        }
+                    }
+                }
+            }
+
+            if (dh < 0 || dh == 3)
+            {
+                break;
+            }
+
+            dh = -dh;
+            if ((dh & (1 << 0)) == 0)
+            {
+                continue;
+            }
+            if ((dh & (1 << 1)) == 0)
+            {
+                continue;
+            }
+        }
     }
 
     // 0x0048B04E
@@ -195,10 +265,6 @@ namespace OpenLoco::GameCommands
 
         // NB: moved out of the loop below (was at 0x0049CC1B)
         const currency32_t pieceRemovalCost = trackRemoveCost(args, trackPieces[0], trackStart, trackFlags);
-        if (static_cast<uint32_t>(pieceRemovalCost) == FAILURE)
-        {
-            return FAILURE;
-        }
 
         bool trackHadBridge = false; // 0x0113605B
         int8_t trackBridgeId = -1;   // 0x0113605C
@@ -232,8 +298,9 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
+            auto baseZ = pieceElTrack->baseZ();
             World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(pieceElTrack));
-            sub_4795D1(trackLoc);
+            setLevelCrossingFlags(World::Pos3{ piece.x, piece.y, baseZ });
         }
 
         totalRemovalCost += pieceRemovalCost;
