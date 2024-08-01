@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         std::array<PaletteIndex_t, 256> colours;
 
         std::fill(colours.begin(), colours.end(), PaletteIndex::index_0A);
-        std::fill(&colours[11], &colours[15], PaletteIndex::index_15);
+        std::fill(colours.begin() + 11, colours.begin() + 15, PaletteIndex::index_15);
 
         return colours;
     }(); // 0x004FDC5C
