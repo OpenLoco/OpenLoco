@@ -1,6 +1,7 @@
 24.07+ (???)
 ------------------------------------------------------------------------
 - Fix: [#1668] Crash when setting preferred currency to an object that no longer exists. (original bug)
+- Fix: [#2520] Crash when loading certain saves from the title screen.
 - Fix: [#2555] Crash when setting preferred company to an object that no longer exists.
 - Fix: [#2556] Incorrect height markers on surfaces.
 - Fix: [#2557] Unable to change the fullscreen resolution.
