@@ -592,7 +592,7 @@ namespace OpenLoco::ObjectManager
             index -= count;
             objectType++;
         }
-        return NullObjectId;
+        return kNullObjectId;
     }
 
     LoadObjectsResult loadAll(std::span<ObjectHeader> objects)

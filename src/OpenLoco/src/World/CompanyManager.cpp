@@ -336,6 +336,11 @@ namespace OpenLoco::CompanyManager
         }
 
         auto competitorId = selectNewCompetitor(preferredOwner);
+        // This might happen if a preferredOwner object header does not exist anymore.
+        if (competitorId == kNullObjectId)
+        {
+            competitorId = selectNewCompetitor(nullptr);
+        }
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
         sub_4A6DA9();
@@ -345,7 +350,7 @@ namespace OpenLoco::CompanyManager
     static void createAiCompany()
     {
         auto competitorId = selectNewCompetitor();
-        if (competitorId != NullObjectId)
+        if (competitorId != kNullObjectId)
         {
             createCompany(competitorId, false);
         }
