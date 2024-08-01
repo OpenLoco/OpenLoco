@@ -68,8 +68,11 @@ namespace OpenLoco::GameCommands
         // Check mod removal costs
         for (auto i = 0U; i < 4; i++)
         {
-            const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
-            totalCost += Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
+            if (pieceElTrack->hasMod(i))
+            {
+                const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
+                totalCost += Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
+            }
         }
 
         return totalCost;
