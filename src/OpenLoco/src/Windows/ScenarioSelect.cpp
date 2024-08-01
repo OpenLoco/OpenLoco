@@ -17,9 +17,7 @@
 #include "Ui/ScrollView.h"
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Diagnostics;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
