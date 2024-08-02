@@ -549,7 +549,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
     uint16_t getLastSelectedTrackModSection()
     {
-        return _lastSelectedTrackModSection;
+        if (WindowManager::find(WindowType::construction) != nullptr)
+        {
+            return _lastSelectedTrackModSection;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     namespace Common
