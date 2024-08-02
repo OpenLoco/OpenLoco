@@ -50,7 +50,7 @@ namespace OpenLoco
             remainingData = remainingData.subspan(strRes.tableLength);
         }
 
-        var_14 = reinterpret_cast<const uint8_t*>(remainingData.data());
+        buildingPartHeights = reinterpret_cast<const uint8_t*>(remainingData.data());
         remainingData = remainingData.subspan(numSpriteSets * sizeof(uint8_t));
         buildingPartAnimations = reinterpret_cast<const BuildingPartAnimation*>(remainingData.data());
         remainingData = remainingData.subspan(numSpriteSets * sizeof(uint16_t));
@@ -81,11 +81,11 @@ namespace OpenLoco
         assert(remainingData.size() == imgRes.tableLength);
 
         auto nextImage = image + 1;
-        if (allowedPlaneTypes & (1 << 0))
+        if (hasFlags(AirportObjectFlags::hasShadows))
         {
             nextImage += numTiles * 4;
         }
-        var_0C = nextImage;
+        buildingImage = nextImage;
     }
 
     // 0x00490D66
@@ -93,7 +93,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        var_0C = 0;
+        buildingImage = 0;
 
         std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);
 

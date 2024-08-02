@@ -39,7 +39,7 @@ namespace OpenLoco::Paint
             const auto adjustedPart = part + (frameMask & tickThing);
 
             const auto sectionHeight = dockObj.partHeights[adjustedPart];
-            const uint32_t imageIdx = adjustedPart * 4 + dockObj.var_0C + rotation;
+            const uint32_t imageIdx = adjustedPart * 4 + dockObj.buildingImage + rotation;
             const auto image = baseColour.withIndex(imageIdx);
             session.addToPlotListAsChild(image, sectionImageOffset, bbOffset, bbSize);
             sectionImageOffset.z += sectionHeight;

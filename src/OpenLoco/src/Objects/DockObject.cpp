@@ -70,7 +70,7 @@ namespace OpenLoco
         image = imgRes.imageOffset;
 
         const auto offset = hasFlags(DockObjectFlags::hasShadows) ? numBuildingVariations * 4 : 1;
-        var_0C = imgRes.imageOffset + offset;
+        buildingImage = imgRes.imageOffset + offset;
 
         // Unused code numBuildingParts related
 
@@ -82,7 +82,7 @@ namespace OpenLoco
     {
         name = 0;
         image = 0;
-        var_0C = 0;
+        buildingImage = 0;
         partHeights = nullptr;
         buildingPartAnimations = nullptr;
         std::fill(std::begin(buildingVariationParts), std::end(buildingVariationParts), nullptr);

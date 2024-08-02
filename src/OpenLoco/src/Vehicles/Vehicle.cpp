@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "Map/RoadElement.h"
 #include "Map/TileManager.h"
+#include "Objects/AirportObject.h"
 #include "Objects/ObjectManager.h"
 #include "Ui/WindowManager.h"
 #include <OpenLoco/Core/Exception.hpp>
@@ -301,18 +302,18 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426790
-    uint16_t VehicleBogie::getPlaneType()
+    AirportObjectFlags VehicleBogie::getCompatibleAirportType()
     {
         auto* vehObj = ObjectManager::get<VehicleObject>(objectId);
         if (vehObj->hasFlags(VehicleObjectFlags::isHelicopter))
         {
-            return 1 << 4;
+            return AirportObjectFlags::acceptsHelicopter;
         }
         if (vehObj->weight < 50)
         {
-            return (1 << 3) | (1 << 2);
+            return AirportObjectFlags::acceptsHeavyPlanes | AirportObjectFlags::acceptsLightPlanes;
         }
-        return 1 << 3;
+        return AirportObjectFlags::acceptsHeavyPlanes;
     }
 
     // 0x004AF16A

@@ -34,6 +34,17 @@ namespace OpenLoco
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(AirportMovementNodeFlags);
 
+    enum class AirportObjectFlags : uint16_t
+    {
+        none = 0,
+        hasShadows = 1U << 0,
+
+        acceptsLightPlanes = 1U << 2,
+        acceptsHeavyPlanes = 1U << 3,
+        acceptsHelicopter = 1U << 4,
+    };
+    OPENLOCO_ENABLE_ENUM_OPERATORS(AirportObjectFlags);
+
     struct AirportBuilding
     {
         uint8_t index;    // 0x00
@@ -74,12 +85,12 @@ namespace OpenLoco
         int16_t sellCostFactor;  // 0x04
         uint8_t costIndex;       // 0x06
         uint8_t var_07;
-        uint32_t image; // 0x08
-        uint32_t var_0C;
-        uint16_t allowedPlaneTypes; // 0x10
-        uint8_t numSpriteSets;      // 0x12
-        uint8_t numTiles;           // 0x13
-        const uint8_t* var_14;
+        uint32_t image;                                      // 0x08
+        uint32_t buildingImage;                              // 0x0C
+        AirportObjectFlags flags;                            // 0x10
+        uint8_t numSpriteSets;                               // 0x12
+        uint8_t numTiles;                                    // 0x13
+        const uint8_t* buildingPartHeights;                  // 0x14
         const BuildingPartAnimation* buildingPartAnimations; // 0x18
         const uint8_t* buildingVariationParts[32];           // 0x1C
         const AirportBuilding* buildingPositions;            // 0x9C
@@ -105,6 +116,11 @@ namespace OpenLoco
         std::pair<World::TilePos2, World::TilePos2> getAirportExtents(const World::TilePos2& centrePos, const uint8_t rotation) const;
         std::span<const AirportBuilding> getBuildingPositions() const;
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+
+        constexpr bool hasFlags(AirportObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != AirportObjectFlags::none;
+        }
     };
 #pragma pack(pop)
 
