@@ -547,6 +547,18 @@ namespace OpenLoco::Ui::Windows::Construction
         return _lastSelectedMods;
     }
 
+    uint16_t getLastSelectedTrackModSection()
+    {
+        if (WindowManager::find(WindowType::construction) != nullptr)
+        {
+            return _lastSelectedTrackModSection;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     namespace Common
     {
         struct TabInformation
