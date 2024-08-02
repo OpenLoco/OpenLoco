@@ -10,12 +10,14 @@
 
 namespace OpenLoco::Paint
 {
-    static World::Pos3 kImageOffsetBase1x1 = { 16, 16, 0 };
-    static World::Pos3 kImageOffsetBase2x2 = { 0, 0, 0 };
-    static World::Pos3 kBBOffsetBase1x1 = { 3, 3, 0 };
-    static World::Pos3 kBBOffsetBase2x2 = { -8, -8, 0 };
-    static World::Pos3 kBBSizeBase1x1 = { 26, 26, 0 };
-    static World::Pos3 kBBSizeBase2x2 = { 38, 38, 0 };
+    // TODO: Docks, Airport, Building, Industry all have very similar code...
+
+    constexpr World::Pos3 kImageOffsetBase1x1 = { 16, 16, 0 };
+    constexpr World::Pos3 kImageOffsetBase2x2 = { 0, 0, 0 };
+    constexpr World::Pos3 kBBOffsetBase1x1 = { 3, 3, 0 };
+    constexpr World::Pos3 kBBOffsetBase2x2 = { -8, -8, 0 };
+    constexpr World::Pos3 kBBSizeBase1x1 = { 26, 26, 0 };
+    constexpr World::Pos3 kBBSizeBase2x2 = { 38, 38, 0 };
 
     static void paintBuildingBuilding(PaintSession& session, const World::BuildingElement& elBuilding, const BuildingObject& buildingObj, const World::Pos3& imageOffset, const World::Pos3& bbOffset, const World::Pos3& bbSize, const ImageId& baseColour, const uint8_t rotation, const bool isMultiTile)
     {
@@ -169,6 +171,7 @@ namespace OpenLoco::Paint
         ImageId baseColour(0, elBuilding.colour());
         if (elBuilding.isGhost())
         {
+            session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
             baseColour = Gfx::applyGhostToImage(0);
         }
         // Combine this with any imageId

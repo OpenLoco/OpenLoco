@@ -21,7 +21,7 @@ namespace OpenLoco
     enum class DockObjectFlags : uint16_t
     {
         none = 0,
-        unk01 = 1U << 0,
+        hasShadows = 1U << 0,
     };
     OPENLOCO_ENABLE_ENUM_OPERATORS(DockObjectFlags);
 
@@ -54,6 +54,11 @@ namespace OpenLoco
         void unload();
 
         std::span<const std::uint8_t> getBuildingParts(const uint8_t buildingType) const;
+
+        constexpr bool hasFlags(DockObjectFlags flagsToTest) const
+        {
+            return (flags & flagsToTest) != DockObjectFlags::none;
+        }
     };
 #pragma pack(pop)
 

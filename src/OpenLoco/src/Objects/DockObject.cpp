@@ -69,8 +69,7 @@ namespace OpenLoco
         auto imgRes = ObjectManager::loadImageTable(remainingData);
         image = imgRes.imageOffset;
 
-        // Related to unk2?
-        const auto offset = (flags & DockObjectFlags::unk01) != DockObjectFlags::none ? numBuildingVariations * 4 : 1;
+        const auto offset = hasFlags(DockObjectFlags::hasShadows) ? numBuildingVariations * 4 : 1;
         var_0C = imgRes.imageOffset + offset;
 
         // Unused code numBuildingParts related
