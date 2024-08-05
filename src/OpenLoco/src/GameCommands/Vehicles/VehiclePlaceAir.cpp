@@ -134,7 +134,7 @@ namespace OpenLoco::GameCommands
                 return FAILURE;
             }
 
-            if (!(airportObj->allowedPlaneTypes & train.cars.firstCar.front->getPlaneType()))
+            if ((airportObj->flags & train.cars.firstCar.front->getCompatibleAirportType()) == AirportObjectFlags::none)
             {
 
                 setErrorText(StringIds::airport_type_not_suitable_for_aircraft);

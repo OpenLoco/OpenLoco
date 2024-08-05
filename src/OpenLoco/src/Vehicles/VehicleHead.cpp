@@ -1816,9 +1816,9 @@ namespace OpenLoco::Vehicles
 
                 auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
                 Vehicle train(head);
-                uint16_t planeType = train.cars.firstCar.front->getPlaneType();
+                const auto airportType = train.cars.firstCar.front->getCompatibleAirportType();
 
-                if (airportObject->allowedPlaneTypes & planeType)
+                if ((airportObject->flags & airportType) != AirportObjectFlags::none)
                 {
                     stationId = orderStationId;
                     airportMovementEdge = kAirportMovementNodeNull;

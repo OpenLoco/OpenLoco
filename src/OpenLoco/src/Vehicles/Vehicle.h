@@ -14,6 +14,11 @@
 #include <OpenLoco/Core/EnumFlags.hpp>
 #include <OpenLoco/Core/Exception.hpp>
 
+namespace OpenLoco
+{
+    enum class AirportObjectFlags : uint16_t;
+}
+
 namespace OpenLoco::Vehicles
 {
     using CargoTotalArray = std::array<uint32_t, ObjectManager::getMaxObjects(ObjectType::cargo)>;
@@ -647,7 +652,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_6A;
 
     public:
-        uint16_t getPlaneType();
+        AirportObjectFlags getCompatibleAirportType();
         bool update();
         bool isOnRackRail();
         constexpr bool hasBreakdownFlags(BreakdownFlags flagsToTest) const
