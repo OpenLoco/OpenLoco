@@ -69,7 +69,7 @@ namespace OpenLoco
         auto imgRes = ObjectManager::loadImageTable(remainingData);
         image = imgRes.imageOffset;
 
-        const auto offset = hasFlags(DockObjectFlags::hasShadows) ? numBuildingVariations * 4 : 1;
+        const auto offset = hasFlags(DockObjectFlags::hasShadows) ? (numBuildingVariations * 4) + 1 : 1;
         buildingImage = imgRes.imageOffset + offset;
 
         // Unused code numBuildingParts related
