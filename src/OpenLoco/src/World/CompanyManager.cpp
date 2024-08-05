@@ -31,6 +31,7 @@
 #include "ScenarioManager.h"
 #include "SceneManager.h"
 #include "TownManager.h"
+#include "Ui/Dropdown.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -336,11 +337,11 @@ namespace OpenLoco::CompanyManager
             ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
                 ObjectType::competitor, id }));
             ObjectManager::reloadAll();
-            Ui::WindowManager::close(Ui::WindowType::dropdown);
+            Ui::Dropdown::forceCloseCompanySelect();
         }
         ObjectManager::load(header);
         ObjectManager::reloadAll();
-        Ui::WindowManager::close(Ui::WindowType::dropdown);
+        Ui::Dropdown::forceCloseCompanySelect();
         loadedObj = ObjectManager::findObjectHandle(header);
         if (loadedObj.has_value())
         {
@@ -413,6 +414,7 @@ namespace OpenLoco::CompanyManager
             if (metric < bestInstalledValue)
             {
                 bestInstalled = std::vector<ObjectHeader>{ *installed.second._header };
+                bestInstalledValue = metric;
             }
             else if (metric == bestInstalledValue)
             {
