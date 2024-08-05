@@ -20,6 +20,7 @@
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
 #include "Objects/CargoObject.h"
+#include "Objects/CompetitorObject.h"
 #include "Objects/DockObject.h"
 #include "Objects/ObjectIndex.h"
 #include "Objects/ObjectManager.h"
@@ -36,6 +37,7 @@
 #include "Vehicles/VehicleManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Math/Bound.hpp>
+#include <sfl/static_vector.hpp>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -294,17 +296,138 @@ namespace OpenLoco::CompanyManager
         WindowManager::invalidate(Ui::WindowType::company);
     }
 
-    // 0x0042F9CB
-    static LoadedObjectId selectNewCompetitor(ObjectHeader* header = nullptr)
-    {
-        registers regs;
-        if (header != nullptr)
-            regs.ebp = X86Pointer(header);
-        else
-            regs.ebp = -1;
+    constexpr std::array<uint8_t, 10> kAiToMetric = { 1, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
 
-        call(0x0042F9CB, regs);
-        return static_cast<LoadedObjectId>(regs.al);
+    // 0x0042FD62
+    static LoadedObjectId selectNewCompetitorFromHeader(const ObjectHeader& header)
+    {
+        auto loadedObj = ObjectManager::findObjectHandle(header);
+        if (loadedObj.has_value())
+        {
+            return loadedObj.value().id;
+        }
+
+        bool freeSlot = false;
+        for (LoadedObjectId id = 0U; id < ObjectManager::getMaxObjects(ObjectType::competitor); ++id)
+        {
+            auto* competitorObj = ObjectManager::get<CompetitorObject>(id);
+            if (competitorObj == nullptr)
+            {
+                freeSlot = true;
+                break;
+            }
+        }
+        if (!freeSlot)
+        {
+            LoadedObjectId id = 0U;
+            for (; id < ObjectManager::getMaxObjects(ObjectType::competitor); ++id)
+            {
+                const bool isUnused = std::none_of(companies().begin(), companies().end(), [id](Company& company) { return company.competitorId == id; });
+                if (isUnused)
+                {
+                    break;
+                }
+            }
+            if (id == ObjectManager::getMaxObjects(ObjectType::competitor))
+            {
+                return kNullObjectId;
+            }
+
+            ObjectManager::unload(ObjectManager::getHeader(LoadedObjectHandle{
+                ObjectType::competitor, id }));
+            ObjectManager::reloadAll();
+            Ui::WindowManager::close(Ui::WindowType::dropdown);
+        }
+        ObjectManager::load(header);
+        ObjectManager::reloadAll();
+        Ui::WindowManager::close(Ui::WindowType::dropdown);
+        loadedObj = ObjectManager::findObjectHandle(header);
+        if (loadedObj.has_value())
+        {
+            return loadedObj.value().id;
+        }
+        return kNullObjectId;
+    }
+
+    // 0x0042F9CB
+    static LoadedObjectId selectNewCompetitor()
+    {
+        sfl::static_vector<LoadedObjectId, Limits::kMaxCompanies> loadedUnusedCompetitors;
+        for (LoadedObjectId id = 0U; id < ObjectManager::getMaxObjects(ObjectType::competitor); ++id)
+        {
+            auto* competitorObj = ObjectManager::get<CompetitorObject>(id);
+            if (competitorObj == nullptr)
+            {
+                continue;
+            }
+            const bool isFree = std::none_of(companies().begin(), companies().end(), [id](Company& company) { return company.competitorId == id; });
+            if (isFree)
+            {
+                loadedUnusedCompetitors.push_back(id);
+            }
+        }
+
+        if (!loadedUnusedCompetitors.empty())
+        {
+            const auto r = gPrng1().randNext(loadedUnusedCompetitors.size());
+            return loadedUnusedCompetitors[r];
+        }
+
+        std::optional<std::vector<ObjectHeader>> bestInstalled = std::nullopt;
+        uint8_t bestInstalledValue = 0xFFU;
+        auto installedCompetitors = ObjectManager::getAvailableObjects(ObjectType::competitor);
+        for (auto& installed : installedCompetitors)
+        {
+            bool isInUse = false;
+            for (LoadedObjectId id = 0U; id < ObjectManager::getMaxObjects(ObjectType::competitor); ++id)
+            {
+                if (ObjectManager::get<CompetitorObject>(id) == nullptr)
+                {
+                    continue;
+                }
+                auto& loadedHeader = ObjectManager::getHeader(LoadedObjectHandle{ ObjectType::competitor, id });
+                if (loadedHeader == *installed.second._header)
+                {
+                    isInUse = true;
+                    break;
+                }
+            }
+            if (isInUse)
+            {
+                continue;
+            }
+
+            uint8_t metric = 0;
+            if (getGameState().preferredAIIntelligence != 0)
+            {
+                metric += std::abs(kAiToMetric[installed.second._displayData->intelligence] - getGameState().preferredAIIntelligence);
+            }
+            if (getGameState().preferredAIAggressiveness != 0)
+            {
+                metric += std::abs(kAiToMetric[installed.second._displayData->intelligence] - getGameState().preferredAIAggressiveness);
+            }
+            if (getGameState().preferredAICompetitiveness != 0)
+            {
+                metric += std::abs(kAiToMetric[installed.second._displayData->intelligence] - getGameState().preferredAICompetitiveness);
+            }
+            if (metric < bestInstalledValue)
+            {
+                bestInstalled = std::vector<ObjectHeader>{ *installed.second._header };
+            }
+            else if (metric == bestInstalledValue)
+            {
+                assert(bestInstalled.has_value());
+                bestInstalled->push_back(*installed.second._header);
+            }
+        }
+
+        if (!bestInstalled.has_value())
+        {
+            return kNullObjectId;
+        }
+        const auto r = gPrng1().randNext(bestInstalled->size());
+        const auto& chosenHeader = (*bestInstalled)[r];
+        return selectNewCompetitorFromHeader(chosenHeader);
     }
 
     static CompanyId createCompany(LoadedObjectId competitorId, bool isPlayer)
@@ -335,11 +458,11 @@ namespace OpenLoco::CompanyManager
             preferredOwner = &Config::get().preferredOwnerFace;
         }
 
-        auto competitorId = selectNewCompetitor(preferredOwner);
+        auto competitorId = selectNewCompetitorFromHeader(*preferredOwner);
         // This might happen if a preferredOwner object header does not exist anymore.
         if (competitorId == kNullObjectId)
         {
-            competitorId = selectNewCompetitor(nullptr);
+            competitorId = selectNewCompetitor();
         }
         gameState.playerCompanies[0] = createCompany(competitorId, true);
         gameState.playerCompanies[1] = CompanyId::null;
