@@ -845,6 +845,15 @@ namespace OpenLoco::Ui::Dropdown
         }
     }
 
+    // 0x004CF3CC
+    void forceCloseCompanySelect()
+    {
+        if (_word_113DC78 & (1U << 1))
+        {
+            WindowManager::close(WindowType::dropdown);
+        }
+    }
+
     // 0x004CF2B3
     void populateCompanySelect(Window* window, Widget* widget)
     {
