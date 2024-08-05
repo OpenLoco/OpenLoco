@@ -2188,6 +2188,19 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t noise_mask_6 = 3484;
     constexpr uint32_t noise_mask_7 = 3485;
 
+    constexpr uint32_t one_way_direction_arrow_left_lane_north_east = 3492;
+    constexpr uint32_t one_way_direction_arrow_right_lane_south_west = 3493;
+    constexpr uint32_t one_way_direction_arrow_left_lane_south_east = 3494;
+    constexpr uint32_t one_way_direction_arrow_right_lane_north_east = 3495;
+    constexpr uint32_t one_way_direction_arrow_left_lane_east = 3496;
+    constexpr uint32_t one_way_direction_arrow_right_lane_west = 3497;
+    constexpr uint32_t one_way_direction_arrow_left_lane_south = 3498;
+    constexpr uint32_t one_way_direction_arrow_right_lane_north = 3499;
+    constexpr uint32_t one_way_direction_arrow_left_lane_east_2 = 3500;
+    constexpr uint32_t one_way_direction_arrow_right_lane_west_2 = 3501;
+    constexpr uint32_t one_way_direction_arrow_left_lane_north_2 = 3502;
+    constexpr uint32_t one_way_direction_arrow_right_lane_south_2 = 3503;
+
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;
     constexpr uint32_t tab_object_currency = 3507;
