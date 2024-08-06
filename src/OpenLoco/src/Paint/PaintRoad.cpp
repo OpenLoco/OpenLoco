@@ -9,6 +9,7 @@
 #include "Paint.h"
 #include "PaintTileDecorations.h"
 #include "Ui/ViewportInteraction.h"
+#include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
 #include <OpenLoco/Interop/Interop.hpp>
 
@@ -16,12 +17,13 @@ using namespace OpenLoco::Diagnostics;
 namespace OpenLoco::Paint
 {
     static Interop::loco_global<uint32_t, 0x0112C280> _roadBaseImageId;
-    // static Interop::loco_global<uint32_t, 0x001135F2E> _trackExtraImageId;
+    static Interop::loco_global<uint32_t, 0x0112C28C> _roadExtraImageId;
     static Interop::loco_global<uint32_t, 0x01135F32> _roadImageId1;
     static Interop::loco_global<uint32_t, 0x01135F36> _roadImageId2;
     static Interop::loco_global<uint8_t, 0x00113605E> _roadTunnel;
     static Interop::loco_global<uint8_t, 0x00522095> _byte_522095;
     static Interop::loco_global<uint32_t** [3], 0x004FE43C> _roadPaintModes;
+    static Interop::loco_global<uint32_t** [2], 0x004FE448> _roadExtraPaintModes;
 
     struct RoadPaintCommon
     {
@@ -194,53 +196,71 @@ namespace OpenLoco::Paint
             // }
         }
 
-        // if (session.getRenderTarget()->zoomLevel > 0)
-        //{
-        //     return;
-        // }
+        if (session.getRenderTarget()->zoomLevel > 1)
+        {
+            return;
+        }
 
-        // session.setItemType(Ui::ViewportInteraction::InteractionItem::trackExtra);
-        // const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
-        // for (auto mod = 0; mod < 4; ++mod)
-        //{
-        //     const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-        //     if (elTrack.hasMod(mod))
-        //     {
-        //         _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
-        //     }
-        //     else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
-        //     {
-        //         _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image).toUInt32();
-        //     }
-        //     else
-        //     {
-        //         continue;
-        //     }
-        //     const auto trackExtraBaseImage = ImageId::fromUInt32(_trackExtraImageId);
+        if (elRoad.hasLevelCrossing())
+        {
+            // 475DDF
+        }
 
-        //    session.setTrackModId(mod);
+        if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::unk_03))
+        {
+            return;
+        }
+        session.setItemType(Ui::ViewportInteraction::InteractionItem::roadExtra);
+        const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
+        for (auto mod = 0; mod < 2; ++mod)
+        {
+            const auto* roadExtraObj = ObjectManager::get<RoadExtraObject>(roadObj->mods[mod]);
+            if (elRoad.hasMod(mod))
+            {
+                _roadExtraImageId = _roadImageId1 + roadExtraObj->image;
+            }
+            else if (elRoad.hasGhostMods() && (ghostMods & (1U << mod)))
+            {
+                _roadExtraImageId = Gfx::applyGhostToImage(roadExtraObj->image).toUInt32();
+            }
+            else
+            {
+                continue;
+            }
+            const auto trackExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
 
-        //    const auto paintStyle = trackExtraObj->paintStyle;
-        //    if (paintStyle == 0 && elTrack.trackId() < Style0::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style0::kTrackPaintAdditionParts[elTrack.trackId()].size())
-        //    {
-        //        auto& parts = Style0::kTrackPaintAdditionParts[elTrack.trackId()];
-        //        auto& tppa = parts[elTrack.sequenceIndex()];
+            session.setTrackModId(mod);
 
-        //        Style0::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
-        //    }
-        //    else if (paintStyle == 1 && elTrack.trackId() < Style1::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style1::kTrackPaintAdditionParts[elTrack.trackId()].size())
-        //    {
-        //        auto& parts = Style1::kTrackPaintAdditionParts[elTrack.trackId()];
-        //        auto& tppa = parts[elTrack.sequenceIndex()];
+            const auto paintStyle = roadExtraObj->paintStyle;
+            assert(paintStyle == 1);
 
-        //        Style1::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
-        //    }
-        //    else
-        //    {
-        //        assert(false);
-        //        Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elTrack.trackId(), elTrack.sequenceIndex());
-        //    }
-        //}
+            const auto roadPaintFunc = _roadExtraPaintModes[paintStyle][elRoad.roadId()][rotation];
+            Interop::registers regs;
+            regs.esi = Interop::X86Pointer(&elRoad);
+            regs.ebp = elRoad.sequenceIndex();
+            regs.ecx = rotation;
+            regs.dx = height;
+            call(roadPaintFunc, regs);
+            // if (paintStyle == 0 && elTrack.trackId() < Style0::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style0::kTrackPaintAdditionParts[elTrack.trackId()].size())
+            //{
+            //     auto& parts = Style0::kTrackPaintAdditionParts[elTrack.trackId()];
+            //     auto& tppa = parts[elTrack.sequenceIndex()];
+
+            //    Style0::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
+            //}
+            // else if (paintStyle == 1 && elTrack.trackId() < Style1::kTrackPaintAdditionParts.size() && elTrack.sequenceIndex() < Style1::kTrackPaintAdditionParts[elTrack.trackId()].size())
+            //{
+            //    auto& parts = Style1::kTrackPaintAdditionParts[elTrack.trackId()];
+            //    auto& tppa = parts[elTrack.sequenceIndex()];
+
+            //    Style1::paintTrackAdditionPP(session, elTrack, rotation, trackExtraBaseImage, tppa);
+            //}
+            // else
+            //{
+            //    assert(false);
+            //    Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elTrack.trackId(), elTrack.sequenceIndex());
+            //}
+        }
     }
 
     void registerRoadHooks()
