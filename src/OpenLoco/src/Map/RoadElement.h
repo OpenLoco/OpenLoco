@@ -33,6 +33,12 @@ namespace OpenLoco::World
             _4 &= ~0xF;
             _4 |= roadId & 0xF;
         }
+        void setHasGhostMods(bool hasGhostMods)
+        {
+            _4 &= ~0x40;
+            _4 |= hasGhostMods ? 0x40 : 0;
+        }
+        bool hasGhostMods() const { return (_4 & 0x40) != 0; }
         bool hasBridge() const { return (_4 & 0x80) != 0; }
         void setHasBridge(bool hasBridge)
         {
