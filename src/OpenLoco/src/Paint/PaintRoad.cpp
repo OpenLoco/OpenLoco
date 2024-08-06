@@ -249,6 +249,17 @@ namespace OpenLoco::Paint
             regs.dx = height;
             call(roadPaintFunc, regs);
 
+            /// Paint Style 0:
+            /// For very small and straight only sets up globals (unless in hit detection mode where it paints some dummies)
+            /// For small paints road and streetlights
+            /// For hills paints road and streetlights * 2 (either side)
+            ///
+            /// Paint Style 1:
+            /// Mergeable track style 3 parts
+            ///
+            /// Paint Style 2:
+            /// Same as style 0 but not symmetrical for image ids
+
             // if (elRoad.roadId() < kRoadPaintParts.size() && elRoad.sequenceIndex() < kRoadPaintParts[elRoad.roadId()].size())
             //{
             //     auto& parts = kRoadPaintParts[elRoad.roadId()];
