@@ -3,11 +3,13 @@
 #include "Graphics/RenderTarget.h"
 #include "Logging.h"
 #include "Map/RoadElement.h"
+#include "Objects/LevelCrossingObject.h"
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Paint.h"
 #include "PaintTileDecorations.h"
+#include "ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
 #include "World/CompanyManager.h"
@@ -103,6 +105,70 @@ namespace OpenLoco::Paint
             kDefaultOneWayArrowImageIndexs,
         },
     };
+
+    // 0x00475DDF
+    static void paintLevelCrossing(PaintSession& session, const World::RoadElement& elRoad, const uint8_t rotation)
+    {
+        auto* crossingObj = ObjectManager::get<LevelCrossingObject>(elRoad.levelCrossingObjectId());
+
+        uint8_t frame = elRoad.unk6l();
+        if (frame != 0)
+        {
+            if (frame == 15)
+            {
+                frame = (((ScenarioManager::getScenarioTicks() / (1U << crossingObj->animationSpeed)) & (crossingObj->closingFrames - 1)) + crossingObj->closedFrames + 1);
+            }
+        }
+
+        uint32_t imageIndex0 = crossingObj->image + ((rotation & 1) * 4) + (frame * 8);
+
+        const auto height = elRoad.baseHeight();
+        const auto heightOffset = World::Pos3{ 0,
+                                               0,
+                                               height };
+
+        {
+            const auto bbOffset = World::Pos3{ 2, 2, 1 } + heightOffset;
+            const auto bbSize = World::Pos3{ 1, 1, 8 };
+            const auto image0 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0);
+            session.addToPlotList4FD150(image0, heightOffset, bbOffset, bbSize);
+        }
+        {
+            const auto bbOffset = World::Pos3{ 2, 30, 1 } + heightOffset;
+            const auto bbSize = World::Pos3{ 1, 1, 8 };
+            const auto image1 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0 + 1);
+            session.addToPlotList4FD150(image1, heightOffset, bbOffset, bbSize);
+        }
+        {
+            const auto bbOffset = World::Pos3{ 30, 2, 1 } + heightOffset;
+            const auto bbSize = World::Pos3{ 1, 1, 8 };
+            const auto image2 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0 + 2);
+            session.addToPlotList4FD150(image2, heightOffset, bbOffset, bbSize);
+        }
+
+        const auto image3 = ImageId::fromUInt32(_roadImageId1).withIndex(imageIndex0 + 3);
+        if (elRoad.unk6l() != 15)
+        {
+            const auto bbOffset = World::Pos3{ 30, 30, 1 } + heightOffset;
+            const auto bbSize = World::Pos3{ 1, 1, 8 };
+            session.addToPlotList4FD150(image3, heightOffset, bbOffset, bbSize);
+        }
+        else
+        {
+            if (rotation & (1U << 0))
+            {
+                const auto bbOffset = World::Pos3{ 17, 30, 1 } + heightOffset;
+                const auto bbSize = World::Pos3{ 14, 1, 8 };
+                session.addToPlotList4FD150(image3, heightOffset, bbOffset, bbSize);
+            }
+            else
+            {
+                const auto bbOffset = World::Pos3{ 30, 17, 1 } + heightOffset;
+                const auto bbSize = World::Pos3{ 1, 14, 8 };
+                session.addToPlotList4FD150(image3, heightOffset, bbOffset, bbSize);
+            }
+        }
+    }
 
     // 0x004759A6
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad)
@@ -203,7 +269,7 @@ namespace OpenLoco::Paint
 
         if (elRoad.hasLevelCrossing())
         {
-            // 475DDF
+            paintLevelCrossing(session, elRoad, rotation);
         }
 
         if (session.getRenderTarget()->zoomLevel > 0 || roadObj->hasFlags(RoadObjectFlags::unk_03))
