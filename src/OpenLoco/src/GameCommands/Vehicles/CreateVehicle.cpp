@@ -102,25 +102,6 @@ namespace OpenLoco::GameCommands
         return static_cast<T*>(vehicleBase);
     }
 
-    // 0x004BA873
-    // esi : vehBogie
-    static void sub_4BA873(VehicleBogie* const vehBogie)
-    {
-        vehBogie->var_68 = 0xFFFF;
-        if (vehBogie->reliability != 0)
-        {
-            int32_t reliabilityFactor = vehBogie->reliability / 256;
-            reliabilityFactor *= reliabilityFactor;
-            reliabilityFactor /= 16;
-
-            auto& prng = gPrng1();
-            int32_t randVal = (prng.randNext(65535) * reliabilityFactor / 2) / 65536;
-            reliabilityFactor -= reliabilityFactor / 4;
-            reliabilityFactor += randVal;
-            vehBogie->var_68 = static_cast<uint16_t>(std::max(4, reliabilityFactor));
-        }
-    }
-
     // 0x004AE8F1, 0x004AEA9E
     static VehicleBogie* createBogie(const EntityId head, const uint16_t vehicleTypeId, [[maybe_unused]] const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
@@ -186,7 +167,7 @@ namespace OpenLoco::GameCommands
             reliability += 255;
         }
         newBogie->reliability = reliability;
-        sub_4BA873(newBogie);
+        sub_4BA873(*newBogie);
 
         // Calculate refund cost == 7/8 * cost
         auto cost = Economy::getInflationAdjustedCost(vehObject.costFactor, vehObject.costIndex, 6);
@@ -450,7 +431,7 @@ namespace OpenLoco::GameCommands
         newHead->var_61 = 0xFFU;
         newHead->totalRefundCost = 0;
         newHead->lastAverageSpeed = 0_mph;
-        newHead->var_79 = 0;
+        newHead->restartStoppedCarsTimeout = 0;
         OrderManager::allocateOrders(*newHead);
         return newHead;
     }
