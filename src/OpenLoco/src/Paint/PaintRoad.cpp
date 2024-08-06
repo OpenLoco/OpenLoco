@@ -21,6 +21,7 @@ namespace OpenLoco::Paint
     static Interop::loco_global<uint32_t, 0x01135F36> _roadImageId2;
     static Interop::loco_global<uint8_t, 0x00113605E> _roadTunnel;
     static Interop::loco_global<uint8_t, 0x00522095> _byte_522095;
+    static Interop::loco_global<uint32_t** [3], 0x004FE43C> _roadPaintModes;
 
     struct RoadPaintCommon
     {
@@ -172,42 +173,50 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
-            if (elRoad.roadId() < kRoadPaintParts.size() && elRoad.sequenceIndex() < kRoadPaintParts[elRoad.roadId()].size())
-            {
-                auto& parts = kRoadPaintParts[elRoad.roadId()];
-                auto& tpp = parts[elRoad.sequenceIndex()];
-                paintRoadPP(session, elRoad, roadSession, rotation, tpp);
-            }
-            else
-            {
-                assert(false);
-                Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elRoad.roadId(), elRoad.sequenceIndex());
-            }
+            const auto roadPaintFunc = _roadPaintModes[roadObj->paintStyle][elRoad.roadId()][rotation];
+            Interop::registers regs;
+            regs.esi = Interop::X86Pointer(&elRoad);
+            regs.ebp = elRoad.sequenceIndex();
+            regs.ecx = rotation;
+            regs.dx = height;
+            call(roadPaintFunc, regs);
+
+            // if (elRoad.roadId() < kRoadPaintParts.size() && elRoad.sequenceIndex() < kRoadPaintParts[elRoad.roadId()].size())
+            //{
+            //     auto& parts = kRoadPaintParts[elRoad.roadId()];
+            //     auto& tpp = parts[elRoad.sequenceIndex()];
+            //     paintRoadPP(session, elRoad, roadSession, rotation, tpp);
+            // }
+            // else
+            //{
+            //     assert(false);
+            //     Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elRoad.roadId(), elRoad.sequenceIndex());
+            // }
         }
 
-        //if (session.getRenderTarget()->zoomLevel > 0)
+        // if (session.getRenderTarget()->zoomLevel > 0)
         //{
-        //    return;
-        //}
+        //     return;
+        // }
 
-        //session.setItemType(Ui::ViewportInteraction::InteractionItem::trackExtra);
-        //const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
-        //for (auto mod = 0; mod < 4; ++mod)
+        // session.setItemType(Ui::ViewportInteraction::InteractionItem::trackExtra);
+        // const auto ghostMods = Ui::Windows::Construction::getLastSelectedMods();
+        // for (auto mod = 0; mod < 4; ++mod)
         //{
-        //    const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
-        //    if (elTrack.hasMod(mod))
-        //    {
-        //        _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
-        //    }
-        //    else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
-        //    {
-        //        _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image).toUInt32();
-        //    }
-        //    else
-        //    {
-        //        continue;
-        //    }
-        //    const auto trackExtraBaseImage = ImageId::fromUInt32(_trackExtraImageId);
+        //     const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[mod]);
+        //     if (elTrack.hasMod(mod))
+        //     {
+        //         _trackExtraImageId = _trackImageId1 + trackExtraObj->image;
+        //     }
+        //     else if (elTrack.hasGhostMods() && ghostMods & (1 << mod))
+        //     {
+        //         _trackExtraImageId = Gfx::applyGhostToImage(trackExtraObj->image).toUInt32();
+        //     }
+        //     else
+        //     {
+        //         continue;
+        //     }
+        //     const auto trackExtraBaseImage = ImageId::fromUInt32(_trackExtraImageId);
 
         //    session.setTrackModId(mod);
 
@@ -232,5 +241,114 @@ namespace OpenLoco::Paint
         //        Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elTrack.trackId(), elTrack.sequenceIndex());
         //    }
         //}
+    }
+
+    void registerRoadHooks()
+    {
+        // These ret's are required to patch all the individual trackid paint functions
+        // in vanilla they were jmp's that returned into paintTrack but we can't do that.
+        // This hook can be removed after all of the individual paint functions have been
+        // implemented.
+        Interop::writeRet(0x004083AC);
+        Interop::writeRet(0x00409000);
+        Interop::writeRet(0x00409198);
+        Interop::writeRet(0x0040924D);
+        Interop::writeRet(0x00409304);
+        Interop::writeRet(0x00409488);
+        Interop::writeRet(0x0040950D);
+        Interop::writeRet(0x00409594);
+        Interop::writeRet(0x004096C4);
+        Interop::writeRet(0x004097F4);
+        Interop::writeRet(0x0040987B);
+        Interop::writeRet(0x00409902);
+        Interop::writeRet(0x00409A32);
+        Interop::writeRet(0x00409B62);
+        Interop::writeRet(0x00409BE9);
+        Interop::writeRet(0x00409C6E);
+        Interop::writeRet(0x00409D9E);
+        Interop::writeRet(0x00409ECE);
+        Interop::writeRet(0x00409F55);
+        Interop::writeRet(0x00409FDC);
+        Interop::writeRet(0x0040A10C);
+        Interop::writeRet(0x0040A23C);
+        Interop::writeRet(0x0040A2C1);
+        Interop::writeRet(0x0040A348);
+        Interop::writeRet(0x0040A478);
+        Interop::writeRet(0x0040A5A8);
+        Interop::writeRet(0x0040A62F);
+        Interop::writeRet(0x0040A6B6);
+        Interop::writeRet(0x0040A7E6);
+        Interop::writeRet(0x0040A916);
+        Interop::writeRet(0x0040A99D);
+        Interop::writeRet(0x0040AA22);
+        Interop::writeRet(0x0040AB52);
+        Interop::writeRet(0x0040AC82);
+        Interop::writeRet(0x0040AD09);
+        Interop::writeRet(0x0040AD90);
+        Interop::writeRet(0x0040AEC0);
+        Interop::writeRet(0x0040B0C5);
+        Interop::writeRet(0x0040B27A);
+        Interop::writeRet(0x0040B42B);
+        Interop::writeRet(0x0040B5E0);
+        Interop::writeRet(0x0040B791);
+        Interop::writeRet(0x0040B946);
+        Interop::writeRet(0x0040BAF7);
+        Interop::writeRet(0x0040BCAC);
+        Interop::writeRet(0x0040BE5D);
+        Interop::writeRet(0x0040C012);
+        Interop::writeRet(0x0040C1C3);
+        Interop::writeRet(0x0040C378);
+        Interop::writeRet(0x0040C529);
+        Interop::writeRet(0x0040C6DE);
+        Interop::writeRet(0x0040C88F);
+        Interop::writeRet(0x0040CA44);
+        Interop::writeRet(0x0040CC29);
+        Interop::writeRet(0x0040CE0E);
+        Interop::writeRet(0x0040CFF3);
+        Interop::writeRet(0x0040D1D8);
+        Interop::writeRet(0x0040D3BD);
+        Interop::writeRet(0x0040D5A2);
+        Interop::writeRet(0x0040D787);
+        Interop::writeRet(0x0040D96C);
+        Interop::writeRet(0x0040D9A3);
+        Interop::writeRet(0x0040D9A8);
+        Interop::writeRet(0x0040DAD9);
+        Interop::writeRet(0x0040DC0A);
+        Interop::writeRet(0x0040DD41);
+        Interop::writeRet(0x0040DE78);
+        Interop::writeRet(0x0040DFAD);
+        Interop::writeRet(0x0040E0E4);
+        Interop::writeRet(0x0040E1EE);
+        Interop::writeRet(0x0040E2F6);
+        Interop::writeRet(0x0040E3FE);
+        Interop::writeRet(0x0040E508);
+        Interop::writeRet(0x0040E641);
+        Interop::writeRet(0x0040E710);
+        Interop::writeRet(0x0040E7E1);
+        Interop::writeRet(0x0040E8E2);
+        Interop::writeRet(0x0040E9E3);
+        Interop::writeRet(0x0040EAB4);
+        Interop::writeRet(0x0040EB85);
+        Interop::writeRet(0x0040EC86);
+        Interop::writeRet(0x0040ED87);
+        Interop::writeRet(0x0040EE58);
+        Interop::writeRet(0x0040EF27);
+        Interop::writeRet(0x0040F028);
+        Interop::writeRet(0x0040F129);
+        Interop::writeRet(0x0040F1FA);
+        Interop::writeRet(0x0040F2CB);
+        Interop::writeRet(0x0040F3CC);
+        Interop::writeRet(0x0040F50D);
+        Interop::writeRet(0x0040F61A);
+        Interop::writeRet(0x0040F723);
+        Interop::writeRet(0x0040F830);
+        Interop::writeRet(0x0040F939);
+        Interop::writeRet(0x0040FA46);
+        Interop::writeRet(0x0040FB4F);
+        Interop::writeRet(0x0040FC5C);
+        Interop::writeRet(0x0040FD99);
+        Interop::writeRet(0x0040FED6);
+        Interop::writeRet(0x00410013);
+        Interop::writeRet(0x00410150);
     }
 }

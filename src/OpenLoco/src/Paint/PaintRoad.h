@@ -9,4 +9,6 @@ namespace OpenLoco::Paint
     struct PaintSession;
 
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad);
+
+    void registerRoadHooks();
 }
