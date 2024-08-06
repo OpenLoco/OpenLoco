@@ -38,8 +38,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static IndustryId _industryLastPlacedId; // 0x00E0C3C9
     static uint8_t _industryGhostType;       // 0x00E0C3DA
     static IndustryId _industryGhostId;      // 0x00E0C3DB
-    static uint32_t _dword_E0C394;           // 0x00E0C394
-    static uint32_t _dword_E0C398;           // 0x00E0C398
+    static Core::Prng _placementPrng;        // 0x00E0C394
 
     namespace Common
     {
@@ -1092,8 +1091,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             GameCommands::IndustryPlacementArgs args;
             args.pos = *pos;
             args.type = industryListWnd->rowHover; // dl
-            args.srand0 = _dword_E0C394;
-            args.srand1 = _dword_E0C398;
+            args.srand0 = _placementPrng.srand_0();
+            args.srand1 = _placementPrng.srand_1();
             if (isEditorMode())
             {
                 args.buildImmediately = true; // bh
@@ -1153,8 +1152,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
 
             gPrng2().randNext();
-            _dword_E0C394 = gPrng2().srand_0();
-            _dword_E0C398 = gPrng2().srand_1();
+            _placementPrng = gPrng2();
         }
 
         // 0x004585AD
@@ -1263,8 +1261,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             updateBuildableIndustries(self);
 
             gPrng2().randNext();
-            _dword_E0C394 = gPrng2().srand_0();
-            _dword_E0C398 = gPrng2().srand_1();
+            _placementPrng = gPrng2();
         }
 
         // 0x004589E8
