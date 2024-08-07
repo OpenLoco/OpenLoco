@@ -263,6 +263,10 @@ namespace OpenLoco::Paint
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
         int16_t getMaxHeight() { return _maxHeight; }
         uint32_t getRoadExits() { return _roadMergeExits; }
+        void setRoadExits(uint32_t value) { _roadMergeExits = value; }
+        void setMergeRoadBaseImage(uint32_t value) { _roadMergeBaseImage = value; }
+        void setMergeRoadHeight(int16_t value) { _roadMergeHeight = value; }
+        void setMergeRoadStreetlight(uint16_t value) { _roadMergeStreetlightType = value; }
         int16_t getAdditionSupportHeight() { return (*_trackRoadAdditionSupports).height; }
         const TrackRoadAdditionSupports& getAdditionSupport() { return (*_trackRoadAdditionSupports); }
         void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
