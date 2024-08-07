@@ -4,7 +4,7 @@
 #include <array>
 #include <span>
 
-namespace OpenLoco::Paint
+namespace OpenLoco::Paint::Style1
 {
     struct TrackPaintPiece
     {

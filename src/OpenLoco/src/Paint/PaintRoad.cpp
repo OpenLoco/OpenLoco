@@ -8,6 +8,7 @@
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Paint.h"
+#include "PaintRoadStyle1Data.h"
 #include "PaintTileDecorations.h"
 #include "ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
@@ -170,6 +171,56 @@ namespace OpenLoco::Paint
         }
     }
 
+    namespace Style1
+    {
+        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const TrackPaintPiece& tpp)
+        {
+            const auto height = elRoad.baseHeight();
+            const auto heightOffset = World::Pos3{ 0,
+                                                   0,
+                                                   height };
+            if (elRoad.hasBridge())
+            {
+                auto newBridgeEntry = BridgeEntry(
+                    height,
+                    tpp.bridgeType[rotation],
+                    tpp.bridgeEdges[rotation],
+                    tpp.bridgeQuarters[rotation],
+                    elRoad.bridge(),
+                    roadSession.bridgeColoursBaseImageId);
+                // There may be other bridge edge/quarters due to merging so OR them together
+                newBridgeEntry.edgesQuarters |= session.getBridgeEntry().edgesQuarters;
+                session.setBridgeEntry(newBridgeEntry);
+            }
+
+            const auto baseImage = roadSession.roadBaseImageId;
+
+            session.addToPlotListTrackRoad(
+                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation][0]),
+                0,
+                heightOffset,
+                tpp.boundingBoxOffsets[rotation] + heightOffset,
+                tpp.boundingBoxSizes[rotation]);
+            session.addToPlotListTrackRoad(
+                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation][1]),
+                1,
+                heightOffset,
+                tpp.boundingBoxOffsets[rotation] + heightOffset,
+                tpp.boundingBoxSizes[rotation]);
+            session.addToPlotListTrackRoad(
+                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation][2]),
+                3,
+                heightOffset,
+                tpp.boundingBoxOffsets[rotation] + heightOffset,
+                tpp.boundingBoxSizes[rotation]);
+
+            session.insertTunnels(tpp.tunnelHeights[rotation], height, roadSession.tunnelType);
+
+            session.set525CF8(session.get525CF8() | tpp.segments[rotation]);
+            session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | tpp.segments[rotation]);
+        }
+    }
+
     // 0x004759A6
     void paintRoad(PaintSession& session, const World::RoadElement& elRoad)
     {
@@ -241,13 +292,22 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
-            const auto roadPaintFunc = _roadPaintModes[roadObj->paintStyle][elRoad.roadId()][rotation];
-            Interop::registers regs;
-            regs.esi = Interop::X86Pointer(&elRoad);
-            regs.ebp = elRoad.sequenceIndex();
-            regs.ecx = rotation;
-            regs.dx = height;
-            call(roadPaintFunc, regs);
+            if (roadObj->paintStyle == 1)
+            {
+                auto& parts = Style1::kTrackPaintParts[elRoad.roadId()];
+                auto& tpp = parts[elRoad.sequenceIndex()];
+                Style1::paintRoadPP(session, elRoad, roadSession, rotation, tpp);
+            }
+            else
+            {
+                const auto roadPaintFunc = _roadPaintModes[roadObj->paintStyle][elRoad.roadId()][rotation];
+                Interop::registers regs;
+                regs.esi = Interop::X86Pointer(&elRoad);
+                regs.ebp = elRoad.sequenceIndex();
+                regs.ecx = rotation;
+                regs.dx = height;
+                call(roadPaintFunc, regs);
+            }
 
             /// Paint Style 0:
             /// For very small and straight only sets up globals (unless in hit detection mode where it paints some dummies)
