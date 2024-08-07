@@ -427,6 +427,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 case widx::playSoundEffects:
                 {
                     Config::get().audio.playNewsSounds ^= 1;
+                    Config::write();
                     WindowManager::invalidateWidget(WindowType::messages, self.number, widgetIndex);
                     break;
                 }
