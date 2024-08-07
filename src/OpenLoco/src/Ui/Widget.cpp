@@ -935,13 +935,13 @@ namespace OpenLoco::Ui
         const auto* scroll_area = &window->scrollAreas[widgetState.scrollviewIndex];
 
         tr.setCurrentFont(Gfx::Font::medium_bold);
-        if (scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarVisible))
+        if (scroll_area->contentWidth > widget.width() && scroll_area->hasFlags(Ui::ScrollFlags::hscrollbarVisible))
         {
             draw_hscroll(drawingCtx, widget, widgetState);
             b -= 11;
         }
 
-        if (scroll_area->hasFlags(Ui::ScrollFlags::vscrollbarVisible))
+        if (scroll_area->contentHeight > widget.height() && scroll_area->hasFlags(Ui::ScrollFlags::vscrollbarVisible))
         {
             draw_vscroll(drawingCtx, widget, widgetState);
             r -= 11;
