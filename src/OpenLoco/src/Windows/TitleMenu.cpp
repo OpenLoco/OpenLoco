@@ -27,11 +27,8 @@
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <OpenLoco/Utility/String.hpp>
 #include <string_view>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleMenu
 {

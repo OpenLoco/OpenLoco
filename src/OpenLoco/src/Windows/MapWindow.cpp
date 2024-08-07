@@ -41,17 +41,12 @@
 #include "World/StationManager.h"
 #include "World/TownManager.h"
 #include <OpenLoco/Core/Numerics.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::MapWindow
 {
-    static loco_global<int32_t, 0x00523338> _cursorX2;
-    static loco_global<int32_t, 0x0052333C> _cursorY2;
-
     static constexpr int16_t kRenderedMapWidth = kMapColumns * 2;
     static constexpr int16_t kRenderedMapHeight = kRenderedMapWidth;
     static constexpr int32_t kRenderedMapSize = kRenderedMapWidth * kRenderedMapHeight;
@@ -64,28 +59,27 @@ namespace OpenLoco::Ui::Windows::MapWindow
         { -8, kMapRows },
     } };
 
-    static loco_global<uint8_t[256], 0x004FDC5C> _flashColours; // can be integrated (all 0x0A, except 0x15 at indices (11-14))
-    static loco_global<uint32_t, 0x00F253A4> _flashingItems;
+    static constexpr std::array<PaletteIndex_t, 256> kFlashColours = []() {
+        std::array<PaletteIndex_t, 256> colours;
+
+        std::fill(colours.begin(), colours.end(), PaletteIndex::index_0A);
+        std::fill(colours.begin() + 11, colours.begin() + 15, PaletteIndex::index_15);
+
+        return colours;
+    }(); // 0x004FDC5C
 
     static PaletteIndex_t* _mapPixels; // 0x00F253A8
     static PaletteIndex_t* _mapAltPixels;
 
-    static loco_global<uint32_t, 0x00F253AC> _drawMapRowIndex;
-    static std::array<uint16_t, 6> _vehicleTypeCounts = {
-        {
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        }
-    };
-    static loco_global<uint8_t[16], 0x00F253CE> _assignedIndustryColours;
-    static loco_global<uint8_t[19], 0x00F253DF> _routeToObjectIdMap;
-    static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
-    static loco_global<uint8_t[8], 0x00F25404> _trackColours;
-    static loco_global<uint8_t[8], 0x00F2540C> _roadColours;
+    static std::array<uint16_t, 6> _vehicleTypeCounts = {};
+
+    static uint32_t _flashingItems;              // 0x00F253A4
+    static uint32_t _drawMapRowIndex;            // 0x00F253AC
+    static uint8_t _assignedIndustryColours[16]; // 0x00F253CE
+    static uint8_t _routeToObjectIdMap[19];      // 0x00F253DF
+    static uint8_t _routeColours[19];            // 0x00F253F2
+    static uint8_t _trackColours[8];             // 0x00F25404
+    static uint8_t _roadColours[8];              // 0x00F2540C
 
     enum widx
     {
@@ -285,7 +279,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colour0 = colourFlash0 = PaletteIndex::index_0C;
                                 if (_flashingItems & (1 << 2))
                                 {
-                                    colourFlash0 = _flashColours[colourFlash0];
+                                    colourFlash0 = kFlashColours[colourFlash0];
                                 }
                             }
                             else
@@ -293,7 +287,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colour0 = colourFlash0 = PaletteIndex::index_11;
                                 if (_flashingItems & (1 << 3))
                                 {
-                                    colourFlash0 = _flashColours[colourFlash0];
+                                    colourFlash0 = kFlashColours[colourFlash0];
                                 }
                             }
 
@@ -308,7 +302,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             colour0 = colourFlash0 = PaletteIndex::index_BA;
                             if (_flashingItems & (1 << 4))
                             {
-                                colourFlash0 = _flashColours[colourFlash0];
+                                colourFlash0 = kFlashColours[colourFlash0];
                             }
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
@@ -324,7 +318,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             colour0 = colourFlash0 = PaletteIndex::index_41;
                             if (_flashingItems & (1 << 0))
                             {
-                                colourFlash0 = _flashColours[colourFlash0];
+                                colourFlash0 = kFlashColours[colourFlash0];
                             }
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
@@ -358,7 +352,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colour0 = colourFlash0 = PaletteIndex::index_11;
                                 if (_flashingItems & (1 << 3))
                                 {
-                                    colourFlash0 = _flashColours[colourFlash0];
+                                    colourFlash0 = kFlashColours[colourFlash0];
                                 }
                             }
                             else
@@ -366,7 +360,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                                 colour0 = colourFlash0 = PaletteIndex::index_0C;
                                 if (_flashingItems & (1 << 2))
                                 {
-                                    colourFlash0 = _flashColours[colourFlash0];
+                                    colourFlash0 = kFlashColours[colourFlash0];
                                 }
                             }
 
@@ -381,7 +375,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             colour0 = colourFlash0 = PaletteIndex::index_7D;
                             if (_flashingItems & (1 << 1))
                             {
-                                colourFlash0 = _flashColours[colourFlash0];
+                                colourFlash0 = kFlashColours[colourFlash0];
                             }
                             colourFlash1 = colourFlash0;
                             colour1 = colour0;
@@ -684,7 +678,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             if (_routeToObjectIdMap[firstFlashable] == colourFlash0)
                             {
-                                colourFlash0 = _flashColours[colourFlash0];
+                                colourFlash0 = kFlashColours[colourFlash0];
                             }
                         }
 
@@ -717,7 +711,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                         {
                             if (_routeToObjectIdMap[firstFlashable] == (roadEl->roadObjectId() | (1 << 7)))
                             {
-                                colourFlash0 = _flashColours[colourFlash0];
+                                colourFlash0 = kFlashColours[colourFlash0];
                             }
                         }
 
@@ -818,7 +812,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                             colourFlash1 = colourFlash0 = colour1 = colour0 = Colours::getShade(companyColour, 5);
                             if (_flashingItems & (1 << enumValue(owner)))
                             {
-                                colourFlash1 = colourFlash0 = _flashColours[colour0];
+                                colourFlash1 = colourFlash0 = kFlashColours[colour0];
                             }
                             break;
                         }
@@ -1678,7 +1672,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
-                        colour = _flashColours[colour];
+                        colour = kFlashColours[colour];
                     }
                 }
             }
@@ -1693,7 +1687,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 {
                     if (mapFrameNumber & (1 << 2))
                     {
-                        colour = _flashColours[colour];
+                        colour = kFlashColours[colour];
                     }
                 }
             }
@@ -1756,7 +1750,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 if (!(mapFrameNumber & (1 << 2)))
                 {
-                    colour = _flashColours[colour];
+                    colour = kFlashColours[colour];
                 }
             }
         }

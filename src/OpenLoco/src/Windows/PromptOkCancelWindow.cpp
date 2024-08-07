@@ -10,18 +10,14 @@
 #include "Ui.h"
 #include "Ui/Widget.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <SDL2/SDL.h>
 #include <cstring>
 
-using namespace OpenLoco::Interop;
-
 namespace OpenLoco::Ui::Windows::PromptOkCancel
 {
-    static loco_global<uint8_t, 0x009D1C9A> _result;
-
     static char _descriptionBuffer[512];
+    static bool _result; // 0x009D1C9A
 
     enum widx
     {
@@ -70,7 +66,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         window->setColour(WindowColour::secondary, AdvancedColour(Colour::mutedDarkRed).translucent());
         window->flags |= Ui::WindowFlags::transparent;
 
-        _result = 0;
+        _result = false;
 
         auto originalModal = WindowManager::getCurrentModalType();
         WindowManager::setCurrentModalType(WindowType::confirmationPrompt);
@@ -87,7 +83,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
             });
         WindowManager::setCurrentModalType(originalModal);
 
-        return _result != 0;
+        return _result;
     }
 
     // 0x00447125
@@ -120,7 +116,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
                 break;
 
             case widx::okButton:
-                _result = 1;
+                _result = true;
                 WindowManager::close(self.type);
                 break;
         }

@@ -8,13 +8,10 @@
 #include "Ui/Widget.h"
 #include "Ui/Window.h"
 #include "Ui/WindowManager.h"
-#include <OpenLoco/Interop/Interop.hpp>
 
 #include <array>
 #include <string>
 #include <string_view>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ProgressBar
 {

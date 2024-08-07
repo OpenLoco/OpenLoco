@@ -25,9 +25,7 @@
 #include "World/CompanyManager.h"
 #include "World/IndustryManager.h"
 #include <OpenLoco/Engine/World.hpp>
-#include <OpenLoco/Interop/Interop.hpp>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Industry

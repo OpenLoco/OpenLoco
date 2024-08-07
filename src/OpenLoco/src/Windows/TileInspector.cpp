@@ -39,10 +39,8 @@
 #include "World/CompanyManager.h"
 #include "World/Industry.h"
 #include "World/Station.h"
-#include <OpenLoco/Interop/Interop.hpp>
 #include <map>
 
-using namespace OpenLoco::Interop;
 using namespace OpenLoco::World;
 
 namespace OpenLoco::Ui::Windows::TileInspector
