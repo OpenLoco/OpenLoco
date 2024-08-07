@@ -82,4 +82,128 @@ namespace OpenLoco
 #pragma pack(pop)
 
     static_assert(sizeof(RoadObject) == 0x30);
+
+    namespace RoadObj::ImageIds
+    {
+        // Assumes rotational symmetry
+        // k{TrackId}{sequenceIndex}{type}{direction}
+        // type = Ballast, Sleeper, Rail
+        namespace Style1
+        {
+            constexpr uint32_t kStraight0BallastNE = 34;
+            constexpr uint32_t kStraight0BallastSE = 35;
+            constexpr uint32_t kStraight0SleeperNE = 36;
+            constexpr uint32_t kStraight0SleeperSE = 37;
+            constexpr uint32_t kStraight0RailNE = 38;
+            constexpr uint32_t kStraight0RailSE = 39;
+            constexpr uint32_t kRightCurveSmall0BallastNE = 40;
+            constexpr uint32_t kRightCurveSmall1BallastNE = 41;
+            constexpr uint32_t kRightCurveSmall2BallastNE = 42;
+            constexpr uint32_t kRightCurveSmall3BallastNE = 43;
+            constexpr uint32_t kRightCurveSmall0BallastSE = 44;
+            constexpr uint32_t kRightCurveSmall1BallastSE = 45;
+            constexpr uint32_t kRightCurveSmall2BallastSE = 46;
+            constexpr uint32_t kRightCurveSmall3BallastSE = 47;
+            constexpr uint32_t kRightCurveSmall0BallastSW = 48;
+            constexpr uint32_t kRightCurveSmall1BallastSW = 49;
+            constexpr uint32_t kRightCurveSmall2BallastSW = 50;
+            constexpr uint32_t kRightCurveSmall3BallastSW = 51;
+            constexpr uint32_t kRightCurveSmall0BallastNW = 52;
+            constexpr uint32_t kRightCurveSmall1BallastNW = 53;
+            constexpr uint32_t kRightCurveSmall2BallastNW = 54;
+            constexpr uint32_t kRightCurveSmall3BallastNW = 55;
+            constexpr uint32_t kRightCurveSmall0SleeperNE = 56;
+            constexpr uint32_t kRightCurveSmall1SleeperNE = 57;
+            constexpr uint32_t kRightCurveSmall2SleeperNE = 58;
+            constexpr uint32_t kRightCurveSmall3SleeperNE = 59;
+            constexpr uint32_t kRightCurveSmall0SleeperSE = 60;
+            constexpr uint32_t kRightCurveSmall1SleeperSE = 61;
+            constexpr uint32_t kRightCurveSmall2SleeperSE = 62;
+            constexpr uint32_t kRightCurveSmall3SleeperSE = 63;
+            constexpr uint32_t kRightCurveSmall0SleeperSW = 64;
+            constexpr uint32_t kRightCurveSmall1SleeperSW = 65;
+            constexpr uint32_t kRightCurveSmall2SleeperSW = 66;
+            constexpr uint32_t kRightCurveSmall3SleeperSW = 67;
+            constexpr uint32_t kRightCurveSmall0SleeperNW = 68;
+            constexpr uint32_t kRightCurveSmall1SleeperNW = 69;
+            constexpr uint32_t kRightCurveSmall2SleeperNW = 70;
+            constexpr uint32_t kRightCurveSmall3SleeperNW = 71;
+            constexpr uint32_t kRightCurveSmall0RailNE = 72;
+            constexpr uint32_t kRightCurveSmall1RailNE = 73;
+            constexpr uint32_t kRightCurveSmall2RailNE = 74;
+            constexpr uint32_t kRightCurveSmall3RailNE = 75;
+            constexpr uint32_t kRightCurveSmall0RailSE = 76;
+            constexpr uint32_t kRightCurveSmall1RailSE = 77;
+            constexpr uint32_t kRightCurveSmall2RailSE = 78;
+            constexpr uint32_t kRightCurveSmall3RailSE = 79;
+            constexpr uint32_t kRightCurveSmall0RailSW = 80;
+            constexpr uint32_t kRightCurveSmall1RailSW = 81;
+            constexpr uint32_t kRightCurveSmall2RailSW = 82;
+            constexpr uint32_t kRightCurveSmall3RailSW = 83;
+            constexpr uint32_t kRightCurveSmall0RailNW = 84;
+            constexpr uint32_t kRightCurveSmall1RailNW = 85;
+            constexpr uint32_t kRightCurveSmall2RailNW = 86;
+            constexpr uint32_t kRightCurveSmall3RailNW = 87;
+            constexpr uint32_t kStraightSlopeUp0BallastNE = 88;
+            constexpr uint32_t kStraightSlopeUp1BallastNE = 89;
+            constexpr uint32_t kStraightSlopeUp0BallastSE = 90;
+            constexpr uint32_t kStraightSlopeUp1BallastSE = 91;
+            constexpr uint32_t kStraightSlopeUp0BallastSW = 92;
+            constexpr uint32_t kStraightSlopeUp1BallastSW = 93;
+            constexpr uint32_t kStraightSlopeUp0BallastNW = 94;
+            constexpr uint32_t kStraightSlopeUp1BallastNW = 95;
+            constexpr uint32_t kStraightSlopeUp0SleeperNE = 96;
+            constexpr uint32_t kStraightSlopeUp1SleeperNE = 97;
+            constexpr uint32_t kStraightSlopeUp0SleeperSE = 98;
+            constexpr uint32_t kStraightSlopeUp1SleeperSE = 99;
+            constexpr uint32_t kStraightSlopeUp0SleeperSW = 100;
+            constexpr uint32_t kStraightSlopeUp1SleeperSW = 101;
+            constexpr uint32_t kStraightSlopeUp0SleeperNW = 102;
+            constexpr uint32_t kStraightSlopeUp1SleeperNW = 103;
+            constexpr uint32_t kStraightSlopeUp0RailNE = 104;
+            constexpr uint32_t kStraightSlopeUp1RailNE = 105;
+            constexpr uint32_t kStraightSlopeUp0RailSE = 106;
+            constexpr uint32_t kStraightSlopeUp1RailSE = 107;
+            constexpr uint32_t kStraightSlopeUp0RailSW = 108;
+            constexpr uint32_t kStraightSlopeUp1RailSW = 109;
+            constexpr uint32_t kStraightSlopeUp0RailNW = 110;
+            constexpr uint32_t kStraightSlopeUp1RailNW = 111;
+            constexpr uint32_t kStraightSteepSlopeUp0BallastNE = 112;
+            constexpr uint32_t kStraightSteepSlopeUp0BallastSE = 113;
+            constexpr uint32_t kStraightSteepSlopeUp0BallastSW = 114;
+            constexpr uint32_t kStraightSteepSlopeUp0BallastNW = 115;
+            constexpr uint32_t kStraightSteepSlopeUp0SleeperNE = 116;
+            constexpr uint32_t kStraightSteepSlopeUp0SleeperSE = 117;
+            constexpr uint32_t kStraightSteepSlopeUp0SleeperSW = 118;
+            constexpr uint32_t kStraightSteepSlopeUp0SleeperNW = 119;
+            constexpr uint32_t kStraightSteepSlopeUp0RailNE = 120;
+            constexpr uint32_t kStraightSteepSlopeUp0RailSE = 121;
+            constexpr uint32_t kStraightSteepSlopeUp0RailSW = 122;
+            constexpr uint32_t kStraightSteepSlopeUp0RailNW = 123;
+            constexpr uint32_t kRightCurveVerySmall0BallastNE = 124;
+            constexpr uint32_t kRightCurveVerySmall0BallastSE = 125;
+            constexpr uint32_t kRightCurveVerySmall0BallastSW = 126;
+            constexpr uint32_t kRightCurveVerySmall0BallastNW = 127;
+            constexpr uint32_t kRightCurveVerySmall0SleeperNE = 128;
+            constexpr uint32_t kRightCurveVerySmall0SleeperSE = 129;
+            constexpr uint32_t kRightCurveVerySmall0SleeperSW = 130;
+            constexpr uint32_t kRightCurveVerySmall0SleeperNW = 131;
+            constexpr uint32_t kRightCurveVerySmall0RailNE = 132;
+            constexpr uint32_t kRightCurveVerySmall0RailSE = 133;
+            constexpr uint32_t kRightCurveVerySmall0RailSW = 134;
+            constexpr uint32_t kRightCurveVerySmall0RailNW = 135;
+            constexpr uint32_t kTurnaround0BallastNE = 136;
+            constexpr uint32_t kTurnaround0BallastSE = 137;
+            constexpr uint32_t kTurnaround0BallastSW = 138;
+            constexpr uint32_t kTurnaround0BallastNW = 139;
+            constexpr uint32_t kTurnaround0SleeperNE = 140;
+            constexpr uint32_t kTurnaround0SleeperSE = 141;
+            constexpr uint32_t kTurnaround0SleeperSW = 142;
+            constexpr uint32_t kTurnaround0SleeperNW = 143;
+            constexpr uint32_t kTurnaround0RailNE = 144;
+            constexpr uint32_t kTurnaround0RailSE = 145;
+            constexpr uint32_t kTurnaround0RailSW = 146;
+            constexpr uint32_t kTurnaround0RailNW = 147;
+        }
+    }
 }
