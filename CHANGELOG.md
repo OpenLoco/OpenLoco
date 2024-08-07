@@ -1,6 +1,7 @@
 24.07+ (???)
 ------------------------------------------------------------------------
 - Change: [#2569] Removing overhead or third rail track mods now takes selected section mode into account.
+- Change: [#2578] Scrollbars are now hidden if the scrollable widget is not actually overflowing.
 - Change: [#2579] Error messages are now easier to read.
 - Fix: [#1668] Crash when setting preferred currency to an object that no longer exists. (original bug)
 - Fix: [#2520] Crash when loading certain saves from the title screen.

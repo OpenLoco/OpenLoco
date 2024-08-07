@@ -199,8 +199,10 @@ namespace OpenLoco::Ui::ScrollView
         auto top = widget->top + window->y;
         auto bottom = widget->bottom + window->y;
 
-        if (scroll.hasFlags(ScrollFlags::hscrollbarVisible)
-            && y >= (bottom - barWidth))
+        const bool needsHScroll = scroll.contentWidth > widget->width();
+        const bool needsVScroll = scroll.contentHeight > widget->height();
+
+        if (needsHScroll && scroll.hasFlags(ScrollFlags::hscrollbarVisible) && y >= (bottom - barWidth))
         {
             if (x < left + barWidth)
             {
@@ -241,7 +243,7 @@ namespace OpenLoco::Ui::ScrollView
 
             res.area = ScrollPart::hscrollbarThumb;
         }
-        else if (scroll.hasFlags(ScrollFlags::vscrollbarVisible) && x >= (right - barWidth))
+        else if (needsVScroll && scroll.hasFlags(ScrollFlags::vscrollbarVisible) && x >= (right - barWidth))
         {
             if (y < top + barWidth)
             {
