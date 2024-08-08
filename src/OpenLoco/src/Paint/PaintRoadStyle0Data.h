@@ -11,20 +11,20 @@ namespace OpenLoco::Paint::Style0
     private:
         constexpr void rotateTunnelHeights()
         {
-            tunnelHeights[1][0] = tunnelHeights[0][3];
-            tunnelHeights[1][1] = tunnelHeights[0][0];
-            tunnelHeights[1][2] = tunnelHeights[0][1];
-            tunnelHeights[1][3] = tunnelHeights[0][2];
+            streetlightHeights[1][0] = streetlightHeights[0][3];
+            streetlightHeights[1][1] = streetlightHeights[0][0];
+            streetlightHeights[1][2] = streetlightHeights[0][1];
+            streetlightHeights[1][3] = streetlightHeights[0][2];
 
-            tunnelHeights[2][0] = tunnelHeights[0][2];
-            tunnelHeights[2][1] = tunnelHeights[0][3];
-            tunnelHeights[2][2] = tunnelHeights[0][0];
-            tunnelHeights[2][3] = tunnelHeights[0][1];
+            streetlightHeights[2][0] = streetlightHeights[0][2];
+            streetlightHeights[2][1] = streetlightHeights[0][3];
+            streetlightHeights[2][2] = streetlightHeights[0][0];
+            streetlightHeights[2][3] = streetlightHeights[0][1];
 
-            tunnelHeights[3][0] = tunnelHeights[0][1];
-            tunnelHeights[3][1] = tunnelHeights[0][2];
-            tunnelHeights[3][2] = tunnelHeights[0][3];
-            tunnelHeights[3][3] = tunnelHeights[0][0];
+            streetlightHeights[3][0] = streetlightHeights[0][1];
+            streetlightHeights[3][1] = streetlightHeights[0][2];
+            streetlightHeights[3][2] = streetlightHeights[0][3];
+            streetlightHeights[3][3] = streetlightHeights[0][0];
         }
 
     public:
@@ -33,16 +33,16 @@ namespace OpenLoco::Paint::Style0
             const std::array<int16_t, 4>& _tunnelHeights,
             const bool _isMultiTileMerge)
             : imageIndexOffsets(_imageIndexOffsets)
-            , tunnelHeights()
+            , streetlightHeights()
             , isMultiTileMerge(_isMultiTileMerge)
         {
-            tunnelHeights = {};
-            tunnelHeights[0] = _tunnelHeights;
+            streetlightHeights = {};
+            streetlightHeights[0] = _tunnelHeights;
             rotateTunnelHeights();
         }
 
         std::array<uint32_t, 4> imageIndexOffsets;
-        std::array<std::array<int16_t, 4>, 4> tunnelHeights;
+        std::array<std::array<int16_t, 4>, 4> streetlightHeights;
         bool isMultiTileMerge;
     };
 
@@ -62,10 +62,10 @@ namespace OpenLoco::Paint::Style0
                 reference.imageIndexOffsets[rotationTable[3]],
             },
             std::array<int16_t, 4>{
-                reference.tunnelHeights[0][rotationTable[0]],
-                reference.tunnelHeights[0][rotationTable[1]],
-                reference.tunnelHeights[0][rotationTable[2]],
-                reference.tunnelHeights[0][rotationTable[3]],
+                reference.streetlightHeights[0][rotationTable[0]],
+                reference.streetlightHeights[0][rotationTable[1]],
+                reference.streetlightHeights[0][rotationTable[2]],
+                reference.streetlightHeights[0][rotationTable[3]],
             },
             reference.isMultiTileMerge
         };
