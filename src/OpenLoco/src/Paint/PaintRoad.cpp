@@ -298,12 +298,13 @@ namespace OpenLoco::Paint
         };
     }
 
+    void paintRoadStreetlights(PaintSession& session, const World::RoadElement& elRoad, uint8_t edges, int16_t height) {}
+
     namespace Style0
     {
         struct RoadPaintPiece
         {
             std::array<uint32_t, 4> imageIndexOffsets;
-            std::array<uint32_t, 4> hitImageIndexOffsets;
             std::array<World::Pos3, 4> boundingBoxOffsets;
             std::array<World::Pos3, 4> boundingBoxSizes;
             std::array<uint8_t, 4> streetlightEdges;
@@ -311,7 +312,7 @@ namespace OpenLoco::Paint
             bool isMultiTileMerge;
         };
 
-        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
+        static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
         {
             const auto height = elRoad.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -320,7 +321,7 @@ namespace OpenLoco::Paint
             if (_byte_50BF68 == 1)
             {
                 session.addToPlotListTrackRoad(
-                    roadSession.roadBaseImageId.withIndexOffset(tpp.hitImageIndexOffsets[rotation]),
+                    roadSession.roadBaseImageId.withIndexOffset(tpp.imageIndexOffsets[rotation]),
                     2,
                     heightOffset,
                     tpp.boundingBoxOffsets[rotation] + heightOffset,
@@ -329,17 +330,48 @@ namespace OpenLoco::Paint
             else
             {
                 session.setRoadExits(session.getRoadExits() | tppCommon.bridgeEdges[rotation]);
-                session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(tpp.imageIndexOffsets[rotation]).toUInt32());
+                session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(34).toUInt32());
                 session.setMergeRoadHeight(height);
             }
-            if (session.getRenderTarget()->zoomLevel == 0 &&
-                !elRoad.hasLevelCrossing() &&
-                !elRoad.hasSignalElement() &&
-                !elRoad.hasStationElement())
+            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
             {
                 session.setMergeRoadStreetlight(elRoad.streetLightStyle());
             }
         }
+
+        static void paintRoadPPStandard(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
+        {
+            const auto height = elRoad.baseHeight();
+            const auto heightOffset = World::Pos3{ 0,
+                                                   0,
+                                                   height };
+            const auto baseImage = roadSession.roadBaseImageId;
+
+            session.addToPlotListTrackRoad(
+                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation]),
+                2,
+                heightOffset,
+                tpp.boundingBoxOffsets[rotation] + heightOffset,
+                tpp.boundingBoxSizes[rotation]);
+
+            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
+            {
+                paintRoadStreetlights(session, elRoad, tpp.streetlightEdges[rotation], tpp.streetlightHeights[rotation]);
+            }
+        }
+
+        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
+        {
+            if (tpp.isMultiTileMerge)
+            {
+                paintRoadPPMultiTileMerge(session, elRoad, roadSession, rotation, tpp, tppCommon);
+            }
+            else
+            {
+                paintRoadPPStandard(session, elRoad, roadSession, rotation, tpp, tppCommon);
+            }
+        }
+
     }
     namespace Style1
     {
