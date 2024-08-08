@@ -213,12 +213,16 @@ namespace OpenLoco::Paint
 
     public:
         constexpr RoadPaintCommonPiece(
+            const std::array<World::Pos3, 4>& _boundingBoxOffsets,
+            const std::array<World::Pos3, 4>& _boundingBoxSizes,
             const std::array<uint8_t, 4>& _bridgeEdges,
             const std::array<uint8_t, 4>& _bridgeQuarters,
             const std::array<uint8_t, 4>& _bridgeType,
             const std::array<int16_t, 4>& _tunnelHeights,
             const std::array<SegmentFlags, 4>& _segments)
-            : bridgeEdges(_bridgeEdges)
+            : boundingBoxOffsets(_boundingBoxOffsets)
+            , boundingBoxSizes(_boundingBoxSizes)
+            , bridgeEdges(_bridgeEdges)
             , bridgeQuarters(_bridgeQuarters)
             , bridgeType(_bridgeType)
             , segments(_segments)
@@ -228,12 +232,16 @@ namespace OpenLoco::Paint
             rotateTunnelHeights();
         }
         constexpr RoadPaintCommonPiece(
+            const std::array<World::Pos3, 4>& _boundingBoxOffsets,
+            const std::array<World::Pos3, 4>& _boundingBoxSizes,
             uint8_t _bridgeEdges,
             uint8_t _bridgeQuarters,
             const std::array<uint8_t, 4>& _bridgeType,
             const std::array<int16_t, 4>& _tunnelHeights,
             SegmentFlags _segments)
-            : bridgeEdges()
+            : boundingBoxOffsets(_boundingBoxOffsets)
+            , boundingBoxSizes(_boundingBoxSizes)
+            , bridgeEdges()
             , bridgeQuarters()
             , bridgeType(_bridgeType)
             , tunnelHeights()
@@ -248,6 +256,8 @@ namespace OpenLoco::Paint
             rotateSegements();
         }
 
+        std::array<World::Pos3, 4> boundingBoxOffsets;
+        std::array<World::Pos3, 4> boundingBoxSizes;
         std::array<uint8_t, 4> bridgeEdges;
         std::array<uint8_t, 4> bridgeQuarters;
         std::array<uint8_t, 4> bridgeType;
@@ -265,6 +275,18 @@ namespace OpenLoco::Paint
     consteval RoadPaintCommonPiece rotateRoadCommonPP(const RoadPaintCommonPiece& reference, const std::array<uint8_t, 4>& rotationTable)
     {
         return RoadPaintCommonPiece{
+            std::array<World::Pos3, 4>{
+                reference.boundingBoxOffsets[rotationTable[0]],
+                reference.boundingBoxOffsets[rotationTable[1]],
+                reference.boundingBoxOffsets[rotationTable[2]],
+                reference.boundingBoxOffsets[rotationTable[3]],
+            },
+            std::array<World::Pos3, 4>{
+                reference.boundingBoxSizes[rotationTable[0]],
+                reference.boundingBoxSizes[rotationTable[1]],
+                reference.boundingBoxSizes[rotationTable[2]],
+                reference.boundingBoxSizes[rotationTable[3]],
+            },
             std::array<uint8_t, 4>{
                 reference.bridgeEdges[rotationTable[0]],
                 reference.bridgeEdges[rotationTable[1]],
@@ -298,17 +320,14 @@ namespace OpenLoco::Paint
         };
     }
 
-    void paintRoadStreetlights(PaintSession& session, const World::RoadElement& elRoad, uint8_t edges, int16_t height) {}
+    void paintRoadStreetlights(PaintSession& session, const World::RoadElement& elRoad, const std::array<int16_t, 4>& heights) {}
 
     namespace Style0
     {
         struct RoadPaintPiece
         {
             std::array<uint32_t, 4> imageIndexOffsets;
-            std::array<World::Pos3, 4> boundingBoxOffsets;
-            std::array<World::Pos3, 4> boundingBoxSizes;
-            std::array<uint8_t, 4> streetlightEdges;
-            std::array<int16_t, 4> streetlightHeights;
+            std::array<std::array<int16_t, 4>, 4> streetlightHeights;
             bool isMultiTileMerge;
         };
 
@@ -324,8 +343,8 @@ namespace OpenLoco::Paint
                     roadSession.roadBaseImageId.withIndexOffset(tpp.imageIndexOffsets[rotation]),
                     2,
                     heightOffset,
-                    tpp.boundingBoxOffsets[rotation] + heightOffset,
-                    tpp.boundingBoxSizes[rotation]);
+                    tppCommon.boundingBoxOffsets[rotation] + heightOffset,
+                    tppCommon.boundingBoxSizes[rotation]);
             }
             else
             {
@@ -351,12 +370,12 @@ namespace OpenLoco::Paint
                 baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation]),
                 2,
                 heightOffset,
-                tpp.boundingBoxOffsets[rotation] + heightOffset,
-                tpp.boundingBoxSizes[rotation]);
+                tppCommon.boundingBoxOffsets[rotation] + heightOffset,
+                tppCommon.boundingBoxSizes[rotation]);
 
             if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
             {
-                paintRoadStreetlights(session, elRoad, tpp.streetlightEdges[rotation], tpp.streetlightHeights[rotation]);
+                paintRoadStreetlights(session, elRoad, tpp.streetlightHeights[rotation]);
             }
         }
 
