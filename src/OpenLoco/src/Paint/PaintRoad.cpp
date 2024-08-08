@@ -8,7 +8,10 @@
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
 #include "Paint.h"
+#include "PaintRoadCommonData.h"
+#include "PaintRoadStyle0Data.h"
 #include "PaintRoadStyle1Data.h"
+#include "PaintRoadStyle2Data.h"
 #include "PaintTileDecorations.h"
 #include "ScenarioManager.h"
 #include "Ui/ViewportInteraction.h"
@@ -172,166 +175,11 @@ namespace OpenLoco::Paint
         }
     }
 
-    struct RoadPaintCommonPiece
-    {
-    private:
-        constexpr void rotateTunnelHeights()
-        {
-            tunnelHeights[1][0] = tunnelHeights[0][3];
-            tunnelHeights[1][1] = tunnelHeights[0][0];
-            tunnelHeights[1][2] = tunnelHeights[0][1];
-            tunnelHeights[1][3] = tunnelHeights[0][2];
-
-            tunnelHeights[2][0] = tunnelHeights[0][2];
-            tunnelHeights[2][1] = tunnelHeights[0][3];
-            tunnelHeights[2][2] = tunnelHeights[0][0];
-            tunnelHeights[2][3] = tunnelHeights[0][1];
-
-            tunnelHeights[3][0] = tunnelHeights[0][1];
-            tunnelHeights[3][1] = tunnelHeights[0][2];
-            tunnelHeights[3][2] = tunnelHeights[0][3];
-            tunnelHeights[3][3] = tunnelHeights[0][0];
-        }
-        constexpr void rotateBridgeEdgesQuarters()
-        {
-            for (auto i = 1; i < 4; ++i)
-            {
-                bridgeEdges[i] = Numerics::rotl4bit(bridgeEdges[0], i);
-            }
-            for (auto i = 1; i < 4; ++i)
-            {
-                bridgeQuarters[i] = Numerics::rotl4bit(bridgeQuarters[0], i);
-            }
-        }
-        constexpr void rotateSegements()
-        {
-            for (auto i = 1; i < 4; ++i)
-            {
-                segments[i] = rotlSegmentFlags(segments[0], i);
-            }
-        }
-
-    public:
-        constexpr RoadPaintCommonPiece(
-            const std::array<World::Pos3, 4>& _boundingBoxOffsets,
-            const std::array<World::Pos3, 4>& _boundingBoxSizes,
-            const std::array<uint8_t, 4>& _bridgeEdges,
-            const std::array<uint8_t, 4>& _bridgeQuarters,
-            const std::array<uint8_t, 4>& _bridgeType,
-            const std::array<int16_t, 4>& _tunnelHeights,
-            const std::array<SegmentFlags, 4>& _segments)
-            : boundingBoxOffsets(_boundingBoxOffsets)
-            , boundingBoxSizes(_boundingBoxSizes)
-            , bridgeEdges(_bridgeEdges)
-            , bridgeQuarters(_bridgeQuarters)
-            , bridgeType(_bridgeType)
-            , segments(_segments)
-        {
-            tunnelHeights = {};
-            tunnelHeights[0] = _tunnelHeights;
-            rotateTunnelHeights();
-        }
-        constexpr RoadPaintCommonPiece(
-            const std::array<World::Pos3, 4>& _boundingBoxOffsets,
-            const std::array<World::Pos3, 4>& _boundingBoxSizes,
-            uint8_t _bridgeEdges,
-            uint8_t _bridgeQuarters,
-            const std::array<uint8_t, 4>& _bridgeType,
-            const std::array<int16_t, 4>& _tunnelHeights,
-            SegmentFlags _segments)
-            : boundingBoxOffsets(_boundingBoxOffsets)
-            , boundingBoxSizes(_boundingBoxSizes)
-            , bridgeEdges()
-            , bridgeQuarters()
-            , bridgeType(_bridgeType)
-            , tunnelHeights()
-            , segments()
-        {
-            tunnelHeights[0] = _tunnelHeights;
-            bridgeEdges[0] = _bridgeEdges;
-            bridgeQuarters[0] = _bridgeQuarters;
-            segments[0] = _segments;
-            rotateTunnelHeights();
-            rotateBridgeEdgesQuarters();
-            rotateSegements();
-        }
-
-        std::array<World::Pos3, 4> boundingBoxOffsets;
-        std::array<World::Pos3, 4> boundingBoxSizes;
-        std::array<uint8_t, 4> bridgeEdges;
-        std::array<uint8_t, 4> bridgeQuarters;
-        std::array<uint8_t, 4> bridgeType;
-        std::array<std::array<int16_t, 4>, 4> tunnelHeights;
-        std::array<SegmentFlags, 4> segments;
-    };
-
-    constexpr int16_t kNoTunnel = -1;
-    constexpr std::array<int16_t, 4> kNoTunnels = { kNoTunnel, kNoTunnel, kNoTunnel, kNoTunnel };
-    constexpr std::array<uint8_t, 4> kFlatBridge = { 0, 0, 0, 0 };
-    constexpr std::array<uint8_t, 4> kRotationTable1230 = { 1, 2, 3, 0 };
-    constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
-    constexpr std::array<uint8_t, 4> kRotationTable3012 = { 3, 0, 1, 2 };
-
-    consteval RoadPaintCommonPiece rotateRoadCommonPP(const RoadPaintCommonPiece& reference, const std::array<uint8_t, 4>& rotationTable)
-    {
-        return RoadPaintCommonPiece{
-            std::array<World::Pos3, 4>{
-                reference.boundingBoxOffsets[rotationTable[0]],
-                reference.boundingBoxOffsets[rotationTable[1]],
-                reference.boundingBoxOffsets[rotationTable[2]],
-                reference.boundingBoxOffsets[rotationTable[3]],
-            },
-            std::array<World::Pos3, 4>{
-                reference.boundingBoxSizes[rotationTable[0]],
-                reference.boundingBoxSizes[rotationTable[1]],
-                reference.boundingBoxSizes[rotationTable[2]],
-                reference.boundingBoxSizes[rotationTable[3]],
-            },
-            std::array<uint8_t, 4>{
-                reference.bridgeEdges[rotationTable[0]],
-                reference.bridgeEdges[rotationTable[1]],
-                reference.bridgeEdges[rotationTable[2]],
-                reference.bridgeEdges[rotationTable[3]],
-            },
-            std::array<uint8_t, 4>{
-                reference.bridgeQuarters[rotationTable[0]],
-                reference.bridgeQuarters[rotationTable[1]],
-                reference.bridgeQuarters[rotationTable[2]],
-                reference.bridgeQuarters[rotationTable[3]],
-            },
-            std::array<uint8_t, 4>{
-                reference.bridgeType[rotationTable[0]],
-                reference.bridgeType[rotationTable[1]],
-                reference.bridgeType[rotationTable[2]],
-                reference.bridgeType[rotationTable[3]],
-            },
-            std::array<int16_t, 4>{
-                reference.tunnelHeights[0][rotationTable[0]],
-                reference.tunnelHeights[0][rotationTable[1]],
-                reference.tunnelHeights[0][rotationTable[2]],
-                reference.tunnelHeights[0][rotationTable[3]],
-            },
-            std::array<SegmentFlags, 4>{
-                reference.segments[rotationTable[0]],
-                reference.segments[rotationTable[1]],
-                reference.segments[rotationTable[2]],
-                reference.segments[rotationTable[3]],
-            }
-        };
-    }
-
-    void paintRoadStreetlights(PaintSession& session, const World::RoadElement& elRoad, const std::array<int16_t, 4>& heights) {}
+    static void paintRoadStreetlights(PaintSession&, const World::RoadElement&, const std::array<int16_t, 4>&) {}
 
     namespace Style0
     {
-        struct RoadPaintPiece
-        {
-            std::array<uint32_t, 4> imageIndexOffsets;
-            std::array<std::array<int16_t, 4>, 4> streetlightHeights;
-            bool isMultiTileMerge;
-        };
-
-        static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
+        static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             const auto height = elRoad.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -340,15 +188,15 @@ namespace OpenLoco::Paint
             if (_byte_50BF68 == 1)
             {
                 session.addToPlotListTrackRoad(
-                    roadSession.roadBaseImageId.withIndexOffset(tpp.imageIndexOffsets[rotation]),
+                    roadSession.roadBaseImageId.withIndexOffset(rpp.imageIndexOffsets[rotation]),
                     2,
                     heightOffset,
-                    tppCommon.boundingBoxOffsets[rotation] + heightOffset,
-                    tppCommon.boundingBoxSizes[rotation]);
+                    rpcp.boundingBoxOffsets[rotation] + heightOffset,
+                    rpcp.boundingBoxSizes[rotation]);
             }
             else
             {
-                session.setRoadExits(session.getRoadExits() | tppCommon.bridgeEdges[rotation]);
+                session.setRoadExits(session.getRoadExits() | rpcp.bridgeEdges[rotation]);
                 session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(34).toUInt32());
                 session.setMergeRoadHeight(height);
             }
@@ -358,7 +206,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        static void paintRoadPPStandard(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
+        static void paintRoadPPStandard(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             const auto height = elRoad.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -367,82 +215,64 @@ namespace OpenLoco::Paint
             const auto baseImage = roadSession.roadBaseImageId;
 
             session.addToPlotListTrackRoad(
-                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation]),
+                baseImage.withIndexOffset(rpp.imageIndexOffsets[rotation]),
                 2,
                 heightOffset,
-                tppCommon.boundingBoxOffsets[rotation] + heightOffset,
-                tppCommon.boundingBoxSizes[rotation]);
+                rpcp.boundingBoxOffsets[rotation] + heightOffset,
+                rpcp.boundingBoxSizes[rotation]);
 
             if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
             {
-                paintRoadStreetlights(session, elRoad, tpp.streetlightHeights[rotation]);
+                paintRoadStreetlights(session, elRoad, rpp.streetlightHeights[rotation]);
             }
         }
 
-        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& tpp, const RoadPaintCommonPiece& tppCommon)
+        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
-            if (tpp.isMultiTileMerge)
+            if (rpp.isMultiTileMerge)
             {
-                paintRoadPPMultiTileMerge(session, elRoad, roadSession, rotation, tpp, tppCommon);
+                paintRoadPPMultiTileMerge(session, elRoad, roadSession, rotation, rpp, rpcp);
             }
             else
             {
-                paintRoadPPStandard(session, elRoad, roadSession, rotation, tpp, tppCommon);
+                paintRoadPPStandard(session, elRoad, roadSession, rotation, rpp, rpcp);
             }
         }
 
     }
     namespace Style1
     {
-        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const TrackPaintPiece& tpp)
+        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             const auto height = elRoad.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
                                                    0,
                                                    height };
-            if (elRoad.hasBridge())
-            {
-                auto newBridgeEntry = BridgeEntry(
-                    height,
-                    tpp.bridgeType[rotation],
-                    tpp.bridgeEdges[rotation],
-                    tpp.bridgeQuarters[rotation],
-                    elRoad.bridge(),
-                    roadSession.bridgeColoursBaseImageId);
-                // There may be other bridge edge/quarters due to merging so OR them together
-                newBridgeEntry.edgesQuarters |= session.getBridgeEntry().edgesQuarters;
-                session.setBridgeEntry(newBridgeEntry);
-            }
 
             const auto baseImage = roadSession.roadBaseImageId;
 
             session.addToPlotListTrackRoad(
-                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation][0]),
+                baseImage.withIndexOffset(rpp.imageIndexOffsets[rotation][0]),
                 0,
                 heightOffset,
-                tpp.boundingBoxOffsets[rotation] + heightOffset,
-                tpp.boundingBoxSizes[rotation]);
+                rpcp.boundingBoxOffsets[rotation] + heightOffset,
+                rpcp.boundingBoxSizes[rotation]);
             session.addToPlotListTrackRoad(
-                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation][1]),
+                baseImage.withIndexOffset(rpp.imageIndexOffsets[rotation][1]),
                 1,
                 heightOffset,
-                tpp.boundingBoxOffsets[rotation] + heightOffset,
-                tpp.boundingBoxSizes[rotation]);
+                rpcp.boundingBoxOffsets[rotation] + heightOffset,
+                rpcp.boundingBoxSizes[rotation]);
             session.addToPlotListTrackRoad(
-                baseImage.withIndexOffset(tpp.imageIndexOffsets[rotation][2]),
+                baseImage.withIndexOffset(rpp.imageIndexOffsets[rotation][2]),
                 3,
                 heightOffset,
-                tpp.boundingBoxOffsets[rotation] + heightOffset,
-                tpp.boundingBoxSizes[rotation]);
-
-            session.insertTunnels(tpp.tunnelHeights[rotation], height, roadSession.tunnelType);
-
-            session.set525CF8(session.get525CF8() | tpp.segments[rotation]);
-            session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | tpp.segments[rotation]);
+                rpcp.boundingBoxOffsets[rotation] + heightOffset,
+                rpcp.boundingBoxSizes[rotation]);
         }
     }
 
-    static void paintRoadCommonPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintCommonPiece& tpp)
+    static void paintRoadPCP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintCommonPiece& rpcp)
     {
         const auto height = elRoad.baseHeight();
         const auto heightOffset = World::Pos3{ 0,
@@ -452,9 +282,9 @@ namespace OpenLoco::Paint
         {
             auto newBridgeEntry = BridgeEntry(
                 height,
-                tpp.bridgeType[rotation],
-                tpp.bridgeEdges[rotation],
-                tpp.bridgeQuarters[rotation],
+                rpcp.bridgeType[rotation],
+                rpcp.bridgeEdges[rotation],
+                rpcp.bridgeQuarters[rotation],
                 elRoad.bridge(),
                 roadSession.bridgeColoursBaseImageId);
             // There may be other bridge edge/quarters due to merging so OR them together
@@ -462,10 +292,10 @@ namespace OpenLoco::Paint
             session.setBridgeEntry(newBridgeEntry);
         }
 
-        session.insertTunnels(tpp.tunnelHeights[rotation], height, roadSession.tunnelType);
+        session.insertTunnels(rpcp.tunnelHeights[rotation], height, roadSession.tunnelType);
 
-        session.set525CF8(session.get525CF8() | tpp.segments[rotation]);
-        session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | tpp.segments[rotation]);
+        session.set525CF8(session.get525CF8() | rpcp.segments[rotation]);
+        session.setOccupiedAdditionSupportSegments(session.getOccupiedAdditionSupportSegments() | rpcp.segments[rotation]);
     }
 
     // 0x004759A6
@@ -539,11 +369,20 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
-            if (roadObj->paintStyle == 1)
+            auto& rpcp = kRoadPaintCommonParts[elRoad.roadId()][elRoad.sequenceIndex()];
+            if (roadObj->paintStyle == 0)
             {
-                auto& parts = Style1::kTrackPaintParts[elRoad.roadId()];
-                auto& tpp = parts[elRoad.sequenceIndex()];
-                Style1::paintRoadPP(session, elRoad, roadSession, rotation, tpp);
+                auto& parts = Style0::kRoadPaintParts[elRoad.roadId()];
+                auto& rpp = parts[elRoad.sequenceIndex()];
+                Style0::paintRoadPP(session, elRoad, roadSession, rotation, rpp, rpcp);
+                paintRoadPCP(session, elRoad, roadSession, rotation, rpcp);
+            }
+            else if (roadObj->paintStyle == 1)
+            {
+                auto& parts = Style1::kRoadPaintParts[elRoad.roadId()];
+                auto& rpp = parts[elRoad.sequenceIndex()];
+                Style1::paintRoadPP(session, elRoad, roadSession, rotation, rpp, rpcp);
+                paintRoadPCP(session, elRoad, roadSession, rotation, rpcp);
             }
             else
             {
