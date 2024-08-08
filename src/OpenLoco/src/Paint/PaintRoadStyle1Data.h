@@ -1,3 +1,4 @@
+#pragma once
 #include "Objects/RoadObject.h"
 #include "Paint.h"
 #include <array>

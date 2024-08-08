@@ -177,9 +177,9 @@ namespace OpenLoco::Paint
 
     static void paintRoadStreetlights(PaintSession&, const World::RoadElement&, const std::array<int16_t, 4>&) {}
 
-    namespace Style0
+    namespace Style02
     {
-        static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
+        static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintMergeablePiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             const auto height = elRoad.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -197,7 +197,7 @@ namespace OpenLoco::Paint
             else
             {
                 session.setRoadExits(session.getRoadExits() | rpcp.bridgeEdges[rotation]);
-                session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(34).toUInt32());
+                session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(34 /*TODO NEEDS TO TAKE INTO ACCOUNT PAINT STYLE*/).toUInt32());
                 session.setMergeRoadHeight(height);
             }
             if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
@@ -206,7 +206,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        static void paintRoadPPStandard(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
+        static void paintRoadPPStandard(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintMergeablePiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             const auto height = elRoad.baseHeight();
             const auto heightOffset = World::Pos3{ 0,
@@ -227,7 +227,7 @@ namespace OpenLoco::Paint
             }
         }
 
-        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintPiece& rpp, const RoadPaintCommonPiece& rpcp)
+        static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintMergeablePiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             if (rpp.isMultiTileMerge)
             {
@@ -374,7 +374,7 @@ namespace OpenLoco::Paint
             {
                 auto& parts = Style0::kRoadPaintParts[elRoad.roadId()];
                 auto& rpp = parts[elRoad.sequenceIndex()];
-                Style0::paintRoadPP(session, elRoad, roadSession, rotation, rpp, rpcp);
+                Style02::paintRoadPP(session, elRoad, roadSession, rotation, rpp, rpcp);
                 paintRoadPCP(session, elRoad, roadSession, rotation, rpcp);
             }
             else if (roadObj->paintStyle == 1)
@@ -384,7 +384,14 @@ namespace OpenLoco::Paint
                 Style1::paintRoadPP(session, elRoad, roadSession, rotation, rpp, rpcp);
                 paintRoadPCP(session, elRoad, roadSession, rotation, rpcp);
             }
-            else
+            else if (roadObj->paintStyle == 2)
+            {
+                auto& parts = Style2::kRoadPaintParts[elRoad.roadId()];
+                auto& rpp = parts[elRoad.sequenceIndex()];
+                Style02::paintRoadPP(session, elRoad, roadSession, rotation, rpp, rpcp);
+                paintRoadPCP(session, elRoad, roadSession, rotation, rpcp);
+            }
+            /*else
             {
                 const auto roadPaintFunc = _roadPaintModes[roadObj->paintStyle][elRoad.roadId()][rotation];
                 Interop::registers regs;
@@ -393,7 +400,7 @@ namespace OpenLoco::Paint
                 regs.ecx = rotation;
                 regs.dx = height;
                 call(roadPaintFunc, regs);
-            }
+            }*/
 
             /// Paint Style 0:
             /// For very small and straight only sets up globals (unless in hit detection mode where it paints some dummies)
