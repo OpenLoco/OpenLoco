@@ -1,3 +1,4 @@
+#pragma once
 #include "Objects/TrackObject.h"
 #include "Paint.h"
 #include <OpenLoco/Core/Numerics.hpp>
