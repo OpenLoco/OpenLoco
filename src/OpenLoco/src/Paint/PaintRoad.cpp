@@ -7,6 +7,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadExtraObject.h"
 #include "Objects/RoadObject.h"
+#include "Objects/StreetLightObject.h"
 #include "Paint.h"
 #include "PaintRoadCommonData.h"
 #include "PaintRoadStyle0Data.h"
@@ -175,7 +176,74 @@ namespace OpenLoco::Paint
         }
     }
 
-    static void paintRoadStreetlights(PaintSession&, const World::RoadElement&, const std::array<int16_t, 4>&) {}
+    constexpr std::array<std::array<uint32_t, 4>, 3> kStreetlightImageFromStyle = {
+        std::array<uint32_t, 4>{
+            Streetlight::ImageIds::kStyle0NE,
+            Streetlight::ImageIds::kStyle0SE,
+            Streetlight::ImageIds::kStyle0SW,
+            Streetlight::ImageIds::kStyle0NW,
+        },
+        std::array<uint32_t, 4>{
+            Streetlight::ImageIds::kStyle1NE,
+            Streetlight::ImageIds::kStyle1SE,
+            Streetlight::ImageIds::kStyle1SW,
+            Streetlight::ImageIds::kStyle1NW,
+        },
+        std::array<uint32_t, 4>{
+            Streetlight::ImageIds::kStyle2NE,
+            Streetlight::ImageIds::kStyle2SE,
+            Streetlight::ImageIds::kStyle2SW,
+            Streetlight::ImageIds::kStyle2NW,
+        },
+    };
+
+    constexpr std::array<World::Pos3, 4> kStreetlightOffsets = {
+        World::Pos3{ 15, 28, 0 },
+        World::Pos3{ 15, 2, 0 },
+        World::Pos3{ 2, 15, 0 },
+        World::Pos3{ 28, 2, 0 },
+    };
+    constexpr std::array<World::Pos3, 4> kStreetlightBoundingBoxOffsets = {
+        World::Pos3{ 15, 28, 6 },
+        World::Pos3{ 15, 2, 6 },
+        World::Pos3{ 2, 15, 6 },
+        World::Pos3{ 28, 2, 6 },
+    };
+    constexpr auto kStreetlightBoundingBoxSizes = World::Pos3{ 1, 1, 6 };
+
+    static void paintRoadStreetlight(PaintSession& session, const World::RoadElement& elRoad, const uint8_t style, const int16_t streetlightHeight, const uint8_t rotation)
+    {
+        assert(style < static_cast<int32_t>(kStreetlightImageFromStyle.size()));
+        const auto imageIndexOffset = kStreetlightImageFromStyle[style][rotation];
+
+        const auto& streetlightObj = ObjectManager::get<StreetLightObject>();
+
+        const int16_t height = elRoad.baseHeight() + streetlightHeight;
+        const auto heightOffset = World::Pos3{ 0,
+                                               0,
+                                               height };
+
+        session.addToPlotListAsParent(
+            ImageId(streetlightObj->image).withIndexOffset(imageIndexOffset),
+            heightOffset + kStreetlightOffsets[rotation],
+            heightOffset + kStreetlightBoundingBoxOffsets[rotation],
+            kStreetlightBoundingBoxSizes);
+    }
+
+    static void paintRoadStreetlights(PaintSession& session, const World::RoadElement& elRoad, const std::array<int16_t, 4>& streetlightHeights)
+    {
+        auto r = 0;
+
+        const auto style = elRoad.streetLightStyle() - 1;
+        for (auto& height : streetlightHeights)
+        {
+            if (height != kNoStreetlight)
+            {
+                paintRoadStreetlight(session, elRoad, style, height, r);
+            }
+            r++;
+        }
+    }
 
     namespace Style02
     {
@@ -206,7 +274,7 @@ namespace OpenLoco::Paint
                 session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(kMergeBaseImageIndex[enumValue(rpp.isMultiTileMerge[rotation]) - 1]).toUInt32());
                 session.setMergeRoadHeight(height);
             }
-            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
+            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
             {
                 session.setMergeRoadStreetlight(elRoad.streetLightStyle());
             }
@@ -227,7 +295,7 @@ namespace OpenLoco::Paint
                 rpcp.boundingBoxOffsets[rotation] + heightOffset,
                 rpcp.boundingBoxSizes[rotation]);
 
-            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
+            if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement() && elRoad.streetLightStyle() != 0)
             {
                 paintRoadStreetlights(session, elRoad, rpp.streetlightHeights[rotation]);
             }

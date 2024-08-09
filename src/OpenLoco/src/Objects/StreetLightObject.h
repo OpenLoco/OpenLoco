@@ -33,4 +33,20 @@ namespace OpenLoco
 #pragma pack(pop)
 
     static_assert(sizeof(StreetLightObject) == 0xC);
+
+    namespace Streetlight::ImageIds
+    {
+        constexpr uint32_t kStyle0NE = 0;
+        constexpr uint32_t kStyle0SE = 1;
+        constexpr uint32_t kStyle0SW = 2;
+        constexpr uint32_t kStyle0NW = 3;
+        constexpr uint32_t kStyle1NE = 4;
+        constexpr uint32_t kStyle1SE = 5;
+        constexpr uint32_t kStyle1SW = 6;
+        constexpr uint32_t kStyle1NW = 7;
+        constexpr uint32_t kStyle2NE = 8;
+        constexpr uint32_t kStyle2SE = 9;
+        constexpr uint32_t kStyle2SW = 10;
+        constexpr uint32_t kStyle2NW = 11;
+    }
 }
