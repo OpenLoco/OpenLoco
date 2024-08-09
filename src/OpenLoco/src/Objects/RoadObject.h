@@ -87,6 +87,8 @@ namespace OpenLoco
     {
         namespace Style0
         {
+            constexpr uint32_t kStraight0NE = 34;
+
             constexpr uint32_t kRightCurveSmall0NE = 45;
             constexpr uint32_t kRightCurveSmall1NE = 46;
             constexpr uint32_t kRightCurveSmall2NE = 47;
@@ -238,6 +240,8 @@ namespace OpenLoco
         }
         namespace Style2
         {
+            constexpr uint32_t kStraight0SW = 34;
+
             constexpr uint32_t kLeftCurveSmall3NW = 45;
             constexpr uint32_t kLeftCurveSmall1NW = 46;
             constexpr uint32_t kLeftCurveSmall2NW = 47;
@@ -266,6 +270,9 @@ namespace OpenLoco
             constexpr uint32_t kStraightSteepSlopeUp0SE = 70;
             constexpr uint32_t kStraightSteepSlopeUp0SW = 71;
             constexpr uint32_t kStraightSteepSlopeUp0NW = 72;
+
+            constexpr uint32_t kStraight0NE = 85;
+
             constexpr uint32_t kRightCurveSmall0NE = 96;
             constexpr uint32_t kRightCurveSmall1NE = 97;
             constexpr uint32_t kRightCurveSmall2NE = 98;

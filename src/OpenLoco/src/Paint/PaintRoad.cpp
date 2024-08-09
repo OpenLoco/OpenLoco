@@ -179,6 +179,12 @@ namespace OpenLoco::Paint
 
     namespace Style02
     {
+        constexpr std::array<uint32_t, 3> kMergeBaseImageIndex = {
+            RoadObj::ImageIds::Style0::kStraight0NE,
+            RoadObj::ImageIds::Style2::kStraight0SW,
+            RoadObj::ImageIds::Style2::kStraight0NE,
+        };
+
         static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintMergeablePiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
             const auto height = elRoad.baseHeight();
@@ -197,7 +203,7 @@ namespace OpenLoco::Paint
             else
             {
                 session.setRoadExits(session.getRoadExits() | rpcp.bridgeEdges[rotation]);
-                session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(34 /*TODO NEEDS TO TAKE INTO ACCOUNT PAINT STYLE*/).toUInt32());
+                session.setMergeRoadBaseImage(roadSession.roadBaseImageId.withIndexOffset(kMergeBaseImageIndex[enumValue(rpp.isMultiTileMerge[rotation]) - 1]).toUInt32());
                 session.setMergeRoadHeight(height);
             }
             if (session.getRenderTarget()->zoomLevel == 0 && !elRoad.hasLevelCrossing() && !elRoad.hasSignalElement() && !elRoad.hasStationElement())
@@ -229,7 +235,8 @@ namespace OpenLoco::Paint
 
         static void paintRoadPP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintMergeablePiece& rpp, const RoadPaintCommonPiece& rpcp)
         {
-            if (rpp.isMultiTileMerge)
+            // Only need to check [0] for this as none is set for all of them when not a merge
+            if (rpp.isMultiTileMerge[0] != RoadPaintMergeType::none)
             {
                 paintRoadPPMultiTileMerge(session, elRoad, roadSession, rotation, rpp, rpcp);
             }
