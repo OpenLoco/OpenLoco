@@ -55,7 +55,12 @@ namespace OpenLoco::Paint::Style0
             RoadObj::ImageIds::Style0::kRightCurveSmall0SW,
             RoadObj::ImageIds::Style0::kRightCurveSmall0NW,
         },
-        /* StreetlightHeights */ kNoStreetlights,
+        /* StreetlightHeights */ std::array<int16_t, 4>{
+            kNoStreetlight,
+            kNoStreetlight,
+            kNoStreetlight,
+            0,
+        },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
 
@@ -91,7 +96,12 @@ namespace OpenLoco::Paint::Style0
             RoadObj::ImageIds::Style0::kRightCurveSmall3SW,
             RoadObj::ImageIds::Style0::kRightCurveSmall3NW,
         },
-        /* StreetlightHeights */ kNoStreetlights,
+        /* StreetlightHeights */ std::array<int16_t, 4>{
+            0,
+            kNoStreetlight,
+            kNoStreetlight,
+            kNoStreetlight,
+        },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
 
