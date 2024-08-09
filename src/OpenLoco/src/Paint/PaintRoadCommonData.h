@@ -486,6 +486,15 @@ namespace OpenLoco::Paint
         kTurnaroundRPCP,
     };
 
+    enum class RoadPaintMergeType
+    {
+        none, // Not a Merging paint piece
+        standard,
+        // For non symmetrical pieces indicates the bank of images
+        left,
+        right,
+    };
+
     struct RoadPaintMergeablePiece
     {
     private:
@@ -511,7 +520,7 @@ namespace OpenLoco::Paint
         constexpr RoadPaintMergeablePiece(
             const std::array<uint32_t, 4>& _imageIndexOffsets,
             const std::array<int16_t, 4>& _tunnelHeights,
-            const bool _isMultiTileMerge)
+            const std::array<RoadPaintMergeType, 4> _isMultiTileMerge)
             : imageIndexOffsets(_imageIndexOffsets)
             , streetlightHeights()
             , isMultiTileMerge(_isMultiTileMerge)
@@ -523,10 +532,16 @@ namespace OpenLoco::Paint
 
         std::array<uint32_t, 4> imageIndexOffsets;
         std::array<std::array<int16_t, 4>, 4> streetlightHeights;
-        bool isMultiTileMerge;
+        std::array<RoadPaintMergeType, 4> isMultiTileMerge;
     };
 
     constexpr int16_t kNoStreetlight = -1;
+    constexpr std::array<RoadPaintMergeType, 4> kNoRoadPaintMerge = {
+        RoadPaintMergeType::none,
+        RoadPaintMergeType::none,
+        RoadPaintMergeType::none,
+        RoadPaintMergeType::none,
+    };
     constexpr std::array<int16_t, 4> kNoStreetlights = { kNoStreetlight, kNoStreetlight, kNoStreetlight, kNoStreetlight };
 
     consteval RoadPaintMergeablePiece rotateRoadPP(const RoadPaintMergeablePiece& reference, const std::array<uint8_t, 4>& rotationTable)
@@ -544,7 +559,12 @@ namespace OpenLoco::Paint
                 reference.streetlightHeights[0][rotationTable[2]],
                 reference.streetlightHeights[0][rotationTable[3]],
             },
-            reference.isMultiTileMerge
+            std::array<RoadPaintMergeType, 4>{
+                reference.isMultiTileMerge[rotationTable[0]],
+                reference.isMultiTileMerge[rotationTable[1]],
+                reference.isMultiTileMerge[rotationTable[2]],
+                reference.isMultiTileMerge[rotationTable[3]],
+            }
         };
     }
 }
