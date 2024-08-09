@@ -1,4 +1,5 @@
 #pragma once
+#include "Graphics/ImageIds.h"
 #include "Objects/RoadObject.h"
 #include "Paint.h"
 #include "PaintRoadCommonData.h"

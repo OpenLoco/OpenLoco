@@ -507,7 +507,7 @@ namespace OpenLoco::Paint
             {
                 continue;
             }
-            const auto trackExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
+            //const auto trackExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
 
             session.setTrackModId(mod);
 
