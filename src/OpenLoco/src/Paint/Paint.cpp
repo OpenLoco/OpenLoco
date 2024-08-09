@@ -10,6 +10,7 @@
 #include "Map/SurfaceElement.h"
 #include "Map/TileManager.h"
 #include "PaintEntity.h"
+#include "PaintRoad.h"
 #include "PaintTile.h"
 #include "Ui/ViewportInteraction.h"
 #include "Ui/WindowManager.h"
@@ -54,8 +55,8 @@ namespace OpenLoco::Paint
         _trackRoadAdditionSupports = TrackRoadAdditionSupports{};
         std::fill(std::begin(_trackRoadPaintStructs), std::end(_trackRoadPaintStructs), nullptr);
         std::fill(std::begin(_trackRoadAdditionsPaintStructs), std::end(_trackRoadAdditionsPaintStructs), nullptr);
-        _112C300 = 0;
-        _112C306 = 0;
+        _roadMergeExits = 0;
+        _roadMergeStreetlightType = 0;
     }
 
     void PaintSession::setMaxHeight(const World::Pos2& loc)
@@ -540,6 +541,7 @@ namespace OpenLoco::Paint
                 regs.ebp = X86Pointer(ps);
                 return res;
             });
+        registerRoadHooks();
     }
 
     void PaintSession::setSegmentsSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)

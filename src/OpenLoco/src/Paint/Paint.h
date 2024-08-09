@@ -262,7 +262,11 @@ namespace OpenLoco::Paint
         uint8_t getRotation() { return currentRotation; }
         void setRotation(uint8_t rotation) { currentRotation = rotation; }
         int16_t getMaxHeight() { return _maxHeight; }
-        uint32_t get112C300() { return _112C300; }
+        uint32_t getRoadExits() { return _roadMergeExits; }
+        void setRoadExits(uint32_t value) { _roadMergeExits = value; }
+        void setMergeRoadBaseImage(uint32_t value) { _roadMergeBaseImage = value; }
+        void setMergeRoadHeight(int16_t value) { _roadMergeHeight = value; }
+        void setMergeRoadStreetlight(uint16_t value) { _roadMergeStreetlightType = value; }
         int16_t getAdditionSupportHeight() { return (*_trackRoadAdditionSupports).height; }
         const TrackRoadAdditionSupports& getAdditionSupport() { return (*_trackRoadAdditionSupports); }
         void setAdditionSupport(const TrackRoadAdditionSupports& newValue) { _trackRoadAdditionSupports = newValue; }
@@ -506,8 +510,10 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00F25324> _waterHeight2;
         inline static Interop::loco_global<uint8_t, 0x00F252DC> _surfaceSlope;
         inline static Interop::loco_global<int16_t, 0x00F25338> _surfaceHeight;
-        inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
-        inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
+        inline static Interop::loco_global<uint32_t, 0x0112C2FC> _roadMergeBaseImage;
+        inline static Interop::loco_global<uint32_t, 0x0112C300> _roadMergeExits;
+        inline static Interop::loco_global<int16_t, 0x0112C304> _roadMergeHeight;
+        inline static Interop::loco_global<uint16_t, 0x0112C306> _roadMergeStreetlightType;
 
         // From OpenRCT2 equivalent fields not found yet or new
         // AttachedPaintStruct* unkF1AD2C;              // no equivalent

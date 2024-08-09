@@ -7,6 +7,7 @@
 namespace OpenLoco::Paint
 {
     static Interop::loco_global<int8_t[2 * 44], 0x004F86B4> _4F86B4;
+    static Interop::loco_global<int8_t[2 * 10], 0x004F720C> _4F720C;
 
     static constexpr std::array<std::array<uint32_t, 256>, 3> kHeightMarkerImages = {
         // MicroZ Units
@@ -797,6 +798,18 @@ namespace OpenLoco::Paint
         else
         {
             return _4F86B4[trackId * 2 + 1];
+        }
+    }
+
+    int8_t getRoadDecorationHeightOffset(const bool isFirstTile, const uint8_t roadId)
+    {
+        if (isFirstTile)
+        {
+            return _4F720C[roadId * 2];
+        }
+        else
+        {
+            return _4F720C[roadId * 2 + 1];
         }
     }
 
