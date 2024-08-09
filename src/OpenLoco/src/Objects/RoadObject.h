@@ -117,6 +117,10 @@ namespace OpenLoco
             constexpr uint32_t kStraightSteepSlopeUp0SE = 70;
             constexpr uint32_t kStraightSteepSlopeUp0SW = 71;
             constexpr uint32_t kStraightSteepSlopeUp0NW = 72;
+            constexpr uint32_t kTurnaround0NE = 73;
+            constexpr uint32_t kTurnaround0SE = 74;
+            constexpr uint32_t kTurnaround0SW = 75;
+            constexpr uint32_t kTurnaround0NW = 76;
         }
         // Assumes rotational symmetry
         // k{TrackId}{sequenceIndex}{type}{direction}
@@ -270,6 +274,10 @@ namespace OpenLoco
             constexpr uint32_t kStraightSteepSlopeUp0SE = 70;
             constexpr uint32_t kStraightSteepSlopeUp0SW = 71;
             constexpr uint32_t kStraightSteepSlopeUp0NW = 72;
+            constexpr uint32_t kTurnaround0NE = 73;
+            constexpr uint32_t kTurnaround0SE = 74;
+            constexpr uint32_t kTurnaround0SW = 75;
+            constexpr uint32_t kTurnaround0NW = 76;
 
             constexpr uint32_t kStraight0NE = 85;
 

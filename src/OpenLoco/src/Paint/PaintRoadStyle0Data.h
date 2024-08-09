@@ -181,7 +181,23 @@ namespace OpenLoco::Paint::Style0
         kStraightSteepSlopeDown0,
     };
 
-    constexpr std::array<std::span<const RoadPaintMergeablePiece>, 9> kRoadPaintParts = {
+    // 0x00409031, 0x004090E8, 0x0040919D, 0x00409252
+    constexpr RoadPaintMergeablePiece kTurnaround0 = {
+        std::array<uint32_t, 4>{
+            RoadObj::ImageIds::Style0::kTurnaround0NE,
+            RoadObj::ImageIds::Style0::kTurnaround0SE,
+            RoadObj::ImageIds::Style0::kTurnaround0SW,
+            RoadObj::ImageIds::Style0::kTurnaround0NW,
+        },
+        /* StreetlightHeights */ kNoStreetlights,
+        /* IsMultiTileMerge */ kNoRoadPaintMerge,
+    };
+
+    constexpr std::array<RoadPaintMergeablePiece, 1> kTurnaroundTPP = {
+        kTurnaround0,
+    };
+
+    constexpr std::array<std::span<const RoadPaintMergeablePiece>, 10> kRoadPaintParts = {
         kStraightTPP,
         kLeftCurveVerySmallTPP,
         kRightCurveVerySmallTPP,
@@ -191,5 +207,6 @@ namespace OpenLoco::Paint::Style0
         kStraightSlopeDownTPP,
         kStraightSteepSlopeUpTPP,
         kStraightSteepSlopeDownTPP,
+        kTurnaroundTPP,
     };
 }
