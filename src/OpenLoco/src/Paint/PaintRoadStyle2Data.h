@@ -10,7 +10,12 @@ namespace OpenLoco::Paint::Style2
 {
     // 0x004083B1, 0x004084BC, 0x004085C7, 0x004086D2
     constexpr RoadPaintMergeablePiece kStraight0 = {
-        std::array<uint32_t, 4>{ 3486, 3487, 3486, 3487 },
+        std::array<uint32_t, 4>{
+            ImageIds::road_hit_test_straight_NE,
+            ImageIds::road_hit_test_straight_SW,
+            ImageIds::road_hit_test_straight_NE,
+            ImageIds::road_hit_test_straight_SW,
+        },
         /* StreetlightHeights */ kNoStreetlights,
         /* IsMultiTileMerge */ std::array<RoadPaintMergeType, 4>{ RoadPaintMergeType::left, RoadPaintMergeType::left, RoadPaintMergeType::right, RoadPaintMergeType::right },
     };
@@ -21,7 +26,12 @@ namespace OpenLoco::Paint::Style2
 
     // 0x00408C07, 0x00408D12, 0x00408E1D, 0x00408F26
     constexpr RoadPaintMergeablePiece kRightCurveVerySmall0 = {
-        std::array<uint32_t, 4>{ 3488, 3489, 3490, 3491 },
+        std::array<uint32_t, 4>{
+            ImageIds::road_hit_test_very_small_curve_right_NE,
+            ImageIds::road_hit_test_very_small_curve_right_SE,
+            ImageIds::road_hit_test_very_small_curve_right_SW,
+            ImageIds::road_hit_test_very_small_curve_right_NW,
+        },
         /* StreetlightHeights */ kNoStreetlights,
         /* IsMultiTileMerge */ std::array<RoadPaintMergeType, 4>{ RoadPaintMergeType::right, RoadPaintMergeType::right, RoadPaintMergeType::right, RoadPaintMergeType::right },
     };
@@ -32,7 +42,12 @@ namespace OpenLoco::Paint::Style2
 
     // 0x004088E8, 0x004089F3, 0x00408AFC, 0x004087DD
     constexpr RoadPaintMergeablePiece kLeftCurveVerySmall0 = {
-        std::array<uint32_t, 4>{ 3489, 3490, 3491, 3488 },
+        std::array<uint32_t, 4>{
+            ImageIds::road_hit_test_very_small_curve_right_SE,
+            ImageIds::road_hit_test_very_small_curve_right_SW,
+            ImageIds::road_hit_test_very_small_curve_right_NW,
+            ImageIds::road_hit_test_very_small_curve_right_NE,
+        },
         /* StreetlightHeights */ kNoStreetlights,
         /* IsMultiTileMerge */ std::array<RoadPaintMergeType, 4>{ RoadPaintMergeType::left, RoadPaintMergeType::left, RoadPaintMergeType::left, RoadPaintMergeType::left },
     };

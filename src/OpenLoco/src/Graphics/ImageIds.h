@@ -2187,7 +2187,12 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t noise_mask_5 = 3483;
     constexpr uint32_t noise_mask_6 = 3484;
     constexpr uint32_t noise_mask_7 = 3485;
-
+    constexpr uint32_t road_hit_test_straight_NE = 3486;
+    constexpr uint32_t road_hit_test_straight_SW = 3487;
+    constexpr uint32_t road_hit_test_very_small_curve_right_NE = 3488;
+    constexpr uint32_t road_hit_test_very_small_curve_right_SE = 3489;
+    constexpr uint32_t road_hit_test_very_small_curve_right_SW = 3490;
+    constexpr uint32_t road_hit_test_very_small_curve_right_NW = 3491;
     constexpr uint32_t one_way_direction_arrow_left_lane_north_east = 3492;
     constexpr uint32_t one_way_direction_arrow_right_lane_south_west = 3493;
     constexpr uint32_t one_way_direction_arrow_left_lane_south_east = 3494;

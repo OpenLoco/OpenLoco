@@ -1,4 +1,5 @@
 #pragma once
+#include "Graphics/ImageIds.h"
 #include "Objects/RoadObject.h"
 #include "Paint.h"
 #include "PaintRoadCommonData.h"
@@ -10,7 +11,12 @@ namespace OpenLoco::Paint::Style0
 {
     // 0x004083B1, 0x004084BC, 0x004083B1, 0x004084BC
     constexpr RoadPaintMergeablePiece kStraight0 = {
-        std::array<uint32_t, 4>{ 3486, 3487, 3486, 3487 },
+        std::array<uint32_t, 4>{
+            ImageIds::road_hit_test_straight_NE,
+            ImageIds::road_hit_test_straight_SW,
+            ImageIds::road_hit_test_straight_NE,
+            ImageIds::road_hit_test_straight_SW,
+        },
         /* StreetlightHeights */ kNoStreetlights,
         /* IsMultiTileMerge */ std::array<RoadPaintMergeType, 4>{ RoadPaintMergeType::standard, RoadPaintMergeType::standard, RoadPaintMergeType::standard, RoadPaintMergeType::standard },
     };
@@ -21,7 +27,12 @@ namespace OpenLoco::Paint::Style0
 
     // 0x004087DD, 0x004088E8, 0x004089F3, 0x00408AFC
     constexpr RoadPaintMergeablePiece kRightCurveVerySmall0 = {
-        std::array<uint32_t, 4>{ 3488, 3489, 3490, 3491 },
+        std::array<uint32_t, 4>{
+            ImageIds::road_hit_test_very_small_curve_right_NE,
+            ImageIds::road_hit_test_very_small_curve_right_SE,
+            ImageIds::road_hit_test_very_small_curve_right_SW,
+            ImageIds::road_hit_test_very_small_curve_right_NW,
+        },
         /* StreetlightHeights */ kNoStreetlights,
         /* IsMultiTileMerge */ std::array<RoadPaintMergeType, 4>{ RoadPaintMergeType::standard, RoadPaintMergeType::standard, RoadPaintMergeType::standard, RoadPaintMergeType::standard },
     };

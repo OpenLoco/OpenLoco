@@ -541,7 +541,6 @@ namespace OpenLoco::Paint
                 regs.ebp = X86Pointer(ps);
                 return res;
             });
-        registerRoadHooks();
     }
 
     void PaintSession::setSegmentsSupportHeight(const SegmentFlags segments, const uint16_t height, const uint8_t slope)
