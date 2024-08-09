@@ -282,9 +282,6 @@ namespace OpenLoco::Paint
     static void paintRoadPCP(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintCommonPiece& rpcp)
     {
         const auto height = elRoad.baseHeight();
-        const auto heightOffset = World::Pos3{ 0,
-                                               0,
-                                               height };
         if (elRoad.hasBridge())
         {
             auto newBridgeEntry = BridgeEntry(
