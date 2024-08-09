@@ -262,7 +262,7 @@ namespace OpenLoco::Paint
             if (_byte_50BF68 == 1)
             {
                 session.addToPlotListTrackRoad(
-                    roadSession.roadBaseImageId.withIndexOffset(rpp.imageIndexOffsets[rotation]),
+                    ImageId(rpp.imageIndexOffsets[rotation]),
                     2,
                     heightOffset,
                     rpcp.boundingBoxOffsets[rotation] + heightOffset,
