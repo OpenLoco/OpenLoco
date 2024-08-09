@@ -441,8 +441,6 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
-            const_cast<World::RoadElement*>(&elRoad)->setHasLevelCrossing(false);
-            const_cast<World::RoadElement*>(&elRoad)->setLevelCrossingObjectId(1);
             auto& rpcp = kRoadPaintCommonParts[elRoad.roadId()][elRoad.sequenceIndex()];
             if (roadObj->paintStyle == 0)
             {
