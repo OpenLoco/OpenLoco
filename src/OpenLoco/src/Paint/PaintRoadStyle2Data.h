@@ -160,10 +160,10 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kStraightSlopeUp0NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            4,
             kNoStreetlight,
             4,
             kNoStreetlight,
+            4,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -177,10 +177,10 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kStraightSlopeUp1NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            12,
             kNoStreetlight,
             12,
             kNoStreetlight,
+            12,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -199,10 +199,10 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kStraightSlopeDown0NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            12,
             kNoStreetlight,
             12,
             kNoStreetlight,
+            12,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -216,10 +216,10 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kStraightSlopeDown1NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            4,
             kNoStreetlight,
             4,
             kNoStreetlight,
+            4,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -238,10 +238,10 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kStraightSteepSlopeUp0NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            8,
             kNoStreetlight,
             8,
             kNoStreetlight,
+            8,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -259,10 +259,10 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kStraightSteepSlopeDown0NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            8,
             kNoStreetlight,
             8,
             kNoStreetlight,
+            8,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };

@@ -115,10 +115,10 @@ namespace OpenLoco::Paint::Style0
             RoadObj::ImageIds::Style0::kStraightSlopeUp0NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            4,
             kNoStreetlight,
             4,
             kNoStreetlight,
+            4,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -132,10 +132,10 @@ namespace OpenLoco::Paint::Style0
             RoadObj::ImageIds::Style0::kStraightSlopeUp1NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            12,
             kNoStreetlight,
             12,
             kNoStreetlight,
+            12,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };
@@ -163,10 +163,10 @@ namespace OpenLoco::Paint::Style0
             RoadObj::ImageIds::Style0::kStraightSteepSlopeUp0NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            8,
             kNoStreetlight,
             8,
             kNoStreetlight,
+            8,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,
     };

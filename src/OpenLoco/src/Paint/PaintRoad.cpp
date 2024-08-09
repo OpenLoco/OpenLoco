@@ -198,16 +198,16 @@ namespace OpenLoco::Paint
     };
 
     constexpr std::array<World::Pos3, 4> kStreetlightOffsets = {
-        World::Pos3{ 15, 28, 0 },
-        World::Pos3{ 15, 2, 0 },
         World::Pos3{ 2, 15, 0 },
-        World::Pos3{ 28, 2, 0 },
+        World::Pos3{ 15, 28, 0 },
+        World::Pos3{ 28, 15, 0 },
+        World::Pos3{ 15, 2, 0 },
     };
     constexpr std::array<World::Pos3, 4> kStreetlightBoundingBoxOffsets = {
-        World::Pos3{ 15, 28, 6 },
-        World::Pos3{ 15, 2, 6 },
         World::Pos3{ 2, 15, 6 },
-        World::Pos3{ 28, 2, 6 },
+        World::Pos3{ 15, 28, 6 },
+        World::Pos3{ 28, 15, 6 },
+        World::Pos3{ 15, 2, 6 },
     };
     constexpr auto kStreetlightBoundingBoxSizes = World::Pos3{ 1, 1, 6 };
 
@@ -441,6 +441,8 @@ namespace OpenLoco::Paint
 
         if (!(*_byte_522095 & (1 << 0)))
         {
+            const_cast<World::RoadElement*>(&elRoad)->setHasLevelCrossing(false);
+            const_cast<World::RoadElement*>(&elRoad)->setLevelCrossingObjectId(1);
             auto& rpcp = kRoadPaintCommonParts[elRoad.roadId()][elRoad.sequenceIndex()];
             if (roadObj->paintStyle == 0)
             {
