@@ -53,7 +53,7 @@ namespace OpenLoco::Paint
             const std::array<uint8_t, 4>& _bridgeEdges,
             const std::array<uint8_t, 4>& _bridgeQuarters,
             const std::array<uint8_t, 4>& _bridgeType,
-            const std::array<int16_t, 4>& _tunnelHeights,
+            const std::array<std::array<int16_t, 4>, 4>& _tunnelHeights,
             const std::array<SegmentFlags, 4>& _segments,
             bool _isMergeable)
             : imageIndexOffsets(_imageIndexOffsets)
@@ -62,12 +62,10 @@ namespace OpenLoco::Paint
             , bridgeEdges(_bridgeEdges)
             , bridgeQuarters(_bridgeQuarters)
             , bridgeType(_bridgeType)
+            , tunnelHeights(_tunnelHeights)
             , segments(_segments)
             , isMergeable(_isMergeable)
         {
-            tunnelHeights = {};
-            tunnelHeights[0] = _tunnelHeights;
-            rotateTunnelHeights();
         }
         constexpr TrackPaintPiece(
             const std::array<std::array<uint32_t, 3>, 4>& _imageIndexOffsets,
@@ -185,11 +183,11 @@ namespace OpenLoco::Paint
                 reference.bridgeType[rotationTable[2]],
                 reference.bridgeType[rotationTable[3]],
             },
-            std::array<int16_t, 4>{
-                reference.tunnelHeights[0][rotationTable[0]],
-                reference.tunnelHeights[0][rotationTable[1]],
-                reference.tunnelHeights[0][rotationTable[2]],
-                reference.tunnelHeights[0][rotationTable[3]],
+            std::array<std::array<int16_t, 4>, 4>{
+                reference.tunnelHeights[rotationTable[0]],
+                reference.tunnelHeights[rotationTable[1]],
+                reference.tunnelHeights[rotationTable[2]],
+                reference.tunnelHeights[rotationTable[3]],
             },
             std::array<SegmentFlags, 4>{
                 reference.segments[rotationTable[0]],
