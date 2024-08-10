@@ -7,6 +7,7 @@
 - Fix: [#2555] Crash when setting preferred company to an object that no longer exists.
 - Fix: [#2556] Incorrect height markers on surfaces.
 - Fix: [#2557] Unable to change the fullscreen resolution.
+- Fix: [#2574] Left turn tunnels do not draw.
 - Fix: [#2576] Incoming message sound effects option is not saved properly.
 
 24.07 (2024-07-23)
