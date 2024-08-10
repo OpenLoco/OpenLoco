@@ -52,18 +52,16 @@ namespace OpenLoco::Paint
             const std::array<uint8_t, 4>& _bridgeEdges,
             const std::array<uint8_t, 4>& _bridgeQuarters,
             const std::array<uint8_t, 4>& _bridgeType,
-            const std::array<int16_t, 4>& _tunnelHeights,
+            const std::array<std::array<int16_t, 4>, 4>& _tunnelHeights,
             const std::array<SegmentFlags, 4>& _segments)
             : boundingBoxOffsets(_boundingBoxOffsets)
             , boundingBoxSizes(_boundingBoxSizes)
             , bridgeEdges(_bridgeEdges)
             , bridgeQuarters(_bridgeQuarters)
             , bridgeType(_bridgeType)
+            , tunnelHeights(_tunnelHeights)
             , segments(_segments)
         {
-            tunnelHeights = {};
-            tunnelHeights[0] = _tunnelHeights;
-            rotateTunnelHeights();
         }
         constexpr RoadPaintCommonPiece(
             const std::array<World::Pos3, 4>& _boundingBoxOffsets,
@@ -104,7 +102,6 @@ namespace OpenLoco::Paint
     constexpr std::array<uint8_t, 4> kFlatBridge = { 0, 0, 0, 0 };
     constexpr std::array<uint8_t, 4> kRotationTable1230 = { 1, 2, 3, 0 };
     constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
-    constexpr std::array<uint8_t, 4> kRotationTable3012 = { 3, 0, 1, 2 };
 
     consteval RoadPaintCommonPiece rotateRoadPCP(const RoadPaintCommonPiece& reference, const std::array<uint8_t, 4>& rotationTable)
     {
@@ -139,11 +136,11 @@ namespace OpenLoco::Paint
                 reference.bridgeType[rotationTable[2]],
                 reference.bridgeType[rotationTable[3]],
             },
-            std::array<int16_t, 4>{
-                reference.tunnelHeights[0][rotationTable[0]],
-                reference.tunnelHeights[0][rotationTable[1]],
-                reference.tunnelHeights[0][rotationTable[2]],
-                reference.tunnelHeights[0][rotationTable[3]],
+            std::array<std::array<int16_t, 4>, 4>{
+                reference.tunnelHeights[rotationTable[0]],
+                reference.tunnelHeights[rotationTable[1]],
+                reference.tunnelHeights[rotationTable[2]],
+                reference.tunnelHeights[rotationTable[3]],
             },
             std::array<SegmentFlags, 4>{
                 reference.segments[rotationTable[0]],
@@ -498,7 +495,7 @@ namespace OpenLoco::Paint
     struct RoadPaintMergeablePiece
     {
     private:
-        constexpr void rotateTunnelHeights()
+        constexpr void rotateStreetlightHeights()
         {
             streetlightHeights[1][0] = streetlightHeights[0][3];
             streetlightHeights[1][1] = streetlightHeights[0][0];
@@ -519,15 +516,24 @@ namespace OpenLoco::Paint
     public:
         constexpr RoadPaintMergeablePiece(
             const std::array<uint32_t, 4>& _imageIndexOffsets,
-            const std::array<int16_t, 4>& _tunnelHeights,
+            const std::array<int16_t, 4>& _streetlightHeights,
             const std::array<RoadPaintMergeType, 4> _isMultiTileMerge)
             : imageIndexOffsets(_imageIndexOffsets)
             , streetlightHeights()
             , isMultiTileMerge(_isMultiTileMerge)
         {
             streetlightHeights = {};
-            streetlightHeights[0] = _tunnelHeights;
-            rotateTunnelHeights();
+            streetlightHeights[0] = _streetlightHeights;
+            rotateStreetlightHeights();
+        }
+        constexpr RoadPaintMergeablePiece(
+            const std::array<uint32_t, 4>& _imageIndexOffsets,
+            const std::array<std::array<int16_t, 4>, 4>& _streetlightHeights,
+            const std::array<RoadPaintMergeType, 4> _isMultiTileMerge)
+            : imageIndexOffsets(_imageIndexOffsets)
+            , streetlightHeights(_streetlightHeights)
+            , isMultiTileMerge(_isMultiTileMerge)
+        {
         }
 
         std::array<uint32_t, 4> imageIndexOffsets;
@@ -553,11 +559,11 @@ namespace OpenLoco::Paint
                 reference.imageIndexOffsets[rotationTable[2]],
                 reference.imageIndexOffsets[rotationTable[3]],
             },
-            std::array<int16_t, 4>{
-                reference.streetlightHeights[0][rotationTable[0]],
-                reference.streetlightHeights[0][rotationTable[1]],
-                reference.streetlightHeights[0][rotationTable[2]],
-                reference.streetlightHeights[0][rotationTable[3]],
+            std::array<std::array<int16_t, 4>, 4>{
+                reference.streetlightHeights[rotationTable[0]],
+                reference.streetlightHeights[rotationTable[1]],
+                reference.streetlightHeights[rotationTable[2]],
+                reference.streetlightHeights[rotationTable[3]],
             },
             std::array<RoadPaintMergeType, 4>{
                 reference.isMultiTileMerge[rotationTable[0]],

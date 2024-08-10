@@ -172,9 +172,9 @@ namespace OpenLoco::Paint::Style2
             RoadObj::ImageIds::Style2::kLeftCurveSmall3NW,
         },
         /* StreetlightHeights */ std::array<int16_t, 4>{
-            kNoStreetlight,
-            kNoStreetlight,
             0,
+            kNoStreetlight,
+            kNoStreetlight,
             kNoStreetlight,
         },
         /* IsMultiTileMerge */ kNoRoadPaintMerge,

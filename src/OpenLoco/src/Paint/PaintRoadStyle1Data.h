@@ -13,7 +13,6 @@ namespace OpenLoco::Paint::Style1
 
     constexpr std::array<uint8_t, 4> kRotationTable1230 = { 1, 2, 3, 0 };
     constexpr std::array<uint8_t, 4> kRotationTable2301 = { 2, 3, 0, 1 };
-    constexpr std::array<uint8_t, 4> kRotationTable3012 = { 3, 0, 1, 2 };
 
     consteval RoadPaintPiece rotateRoadPP(const RoadPaintPiece& reference, const std::array<uint8_t, 4>& rotationTable)
     {
