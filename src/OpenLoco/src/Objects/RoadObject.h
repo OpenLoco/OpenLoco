@@ -88,7 +88,16 @@ namespace OpenLoco
         namespace Style0
         {
             constexpr uint32_t kStraight0NE = 34;
-
+            constexpr uint32_t kStraight0SE = 35;
+            constexpr uint32_t kRightCurveVerySmall0NE = 36;
+            constexpr uint32_t kRightCurveVerySmall0SE = 37;
+            constexpr uint32_t kRightCurveVerySmall0SW = 38;
+            constexpr uint32_t kRightCurveVerySmall0NW = 39;
+            constexpr uint32_t kJunctionLeft0NE = 40;
+            constexpr uint32_t kJunctionLeft0SE = 41;
+            constexpr uint32_t kJunctionLeft0SW = 42;
+            constexpr uint32_t kJunctionLeft0NW = 43;
+            constexpr uint32_t kJunctionCrossroads0NE = 44;
             constexpr uint32_t kRightCurveSmall0NE = 45;
             constexpr uint32_t kRightCurveSmall1NE = 46;
             constexpr uint32_t kRightCurveSmall2NE = 47;
@@ -244,8 +253,17 @@ namespace OpenLoco
         }
         namespace Style2
         {
-            constexpr uint32_t kStraight0SW = 34;
-
+            constexpr uint32_t kStraight0NE = 34;
+            constexpr uint32_t kStraight0SE = 35;
+            constexpr uint32_t kLeftCurveVerySmall0NW = 36;
+            constexpr uint32_t kLeftCurveVerySmall0NE = 37;
+            constexpr uint32_t kLeftCurveVerySmall0SE = 38;
+            constexpr uint32_t kLeftCurveVerySmall0SW = 39;
+            constexpr uint32_t kJunctionLeft0NE = 40;
+            constexpr uint32_t kJunctionLeft0SE = 41;
+            constexpr uint32_t kJunctionLeft0SW = 42;
+            constexpr uint32_t kJunctionLeft0NW = 43;
+            constexpr uint32_t kJunctionCrossroads0NE = 44;
             constexpr uint32_t kLeftCurveSmall3NW = 45;
             constexpr uint32_t kLeftCurveSmall1NW = 46;
             constexpr uint32_t kLeftCurveSmall2NW = 47;
@@ -279,8 +297,18 @@ namespace OpenLoco
             constexpr uint32_t kTurnaround0SW = 75;
             constexpr uint32_t kTurnaround0NW = 76;
 
-            constexpr uint32_t kStraight0NE = 85;
-
+            constexpr uint32_t kStraight0SW = 85;
+            constexpr uint32_t kStraight0NW = 86;
+            constexpr uint32_t kRightCurveVerySmall0NE = 87;
+            constexpr uint32_t kRightCurveVerySmall0SE = 88;
+            constexpr uint32_t kRightCurveVerySmall0SW = 89;
+            constexpr uint32_t kRightCurveVerySmall0NW = 90;
+            constexpr uint32_t kJunctionRight0NE = 91;
+            constexpr uint32_t kJunctionRight0SE = 92;
+            constexpr uint32_t kJunctionRight0SW = 93;
+            constexpr uint32_t kJunctionRight0NW = 94;
+            // Must duplicate kJunctionCrossroads0NE
+            constexpr uint32_t kJunctionCrossroads0NE2 = 95;
             constexpr uint32_t kRightCurveSmall0NE = 96;
             constexpr uint32_t kRightCurveSmall1NE = 97;
             constexpr uint32_t kRightCurveSmall2NE = 98;

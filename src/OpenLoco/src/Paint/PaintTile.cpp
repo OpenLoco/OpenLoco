@@ -97,12 +97,6 @@ namespace OpenLoco::Paint
         session.addToPlotListAsParent(imageId, { 0, 0, _constructionArrowLocation->z }, World::Pos3(0, 0, _constructionArrowLocation->z + 10), { 32, 32, -1 });
     }
 
-    // 0x004792E7 Merged road paint (including streetlights)
-    static void sub_4792E7([[maybe_unused]] PaintSession& session)
-    {
-        call(0x004792E7);
-    }
-
     // 0x0046748F
     static void sub_46748F([[maybe_unused]] PaintSession& session)
     {
@@ -159,7 +153,7 @@ namespace OpenLoco::Paint
         {
             if (session.getRoadExits() != 0)
             {
-                sub_4792E7(session);
+                finalisePaintRoad(session);
             }
             if (session.getAdditionSupportHeight() != 0)
             {

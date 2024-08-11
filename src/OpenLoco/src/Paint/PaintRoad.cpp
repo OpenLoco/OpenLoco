@@ -211,14 +211,14 @@ namespace OpenLoco::Paint
     };
     constexpr auto kStreetlightBoundingBoxSizes = World::Pos3{ 1, 1, 6 };
 
-    static void paintRoadStreetlight(PaintSession& session, const World::RoadElement& elRoad, const uint8_t style, const int16_t streetlightHeight, const uint8_t rotation)
+    static void paintRoadStreetlight(PaintSession& session, const int16_t baseHeight, const uint8_t style, const int16_t streetlightHeight, const uint8_t rotation)
     {
         assert(style < static_cast<int32_t>(kStreetlightImageFromStyle.size()));
         const auto imageIndexOffset = kStreetlightImageFromStyle[style][rotation];
 
         const auto& streetlightObj = ObjectManager::get<StreetLightObject>();
 
-        const int16_t height = elRoad.baseHeight() + streetlightHeight;
+        const int16_t height = baseHeight + streetlightHeight;
         const auto heightOffset = World::Pos3{ 0,
                                                0,
                                                height };
@@ -239,7 +239,7 @@ namespace OpenLoco::Paint
         {
             if (height != kNoStreetlight)
             {
-                paintRoadStreetlight(session, elRoad, style, height, r);
+                paintRoadStreetlight(session, elRoad.baseHeight(), style, height, r);
             }
             r++;
         }
@@ -249,8 +249,8 @@ namespace OpenLoco::Paint
     {
         constexpr std::array<uint32_t, 3> kMergeBaseImageIndex = {
             RoadObj::ImageIds::Style0::kStraight0NE,
-            RoadObj::ImageIds::Style2::kStraight0SW,
             RoadObj::ImageIds::Style2::kStraight0NE,
+            RoadObj::ImageIds::Style2::kStraight0SW,
         };
 
         static void paintRoadPPMultiTileMerge(PaintSession& session, const World::RoadElement& elRoad, const RoadPaintCommon& roadSession, const uint8_t rotation, const RoadPaintMergeablePiece& rpp, const RoadPaintCommonPiece& rpcp)
@@ -507,7 +507,7 @@ namespace OpenLoco::Paint
             {
                 continue;
             }
-            //const auto trackExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
+            // const auto trackExtraBaseImage = ImageId::fromUInt32(_roadExtraImageId);
 
             session.setTrackModId(mod);
 
@@ -540,6 +540,127 @@ namespace OpenLoco::Paint
             //    assert(false);
             //    Logging::error("Tried to draw invalid track id or sequence index: TrackId {} SequenceIndex {}", elTrack.trackId(), elTrack.sequenceIndex());
             //}
+        }
+    }
+
+    constexpr std::array<World::Pos3, 11> kMergeBoundingBoxOffsets = {
+        World::Pos3{ 2, 5, 0 },
+        World::Pos3{ 5, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+        World::Pos3{ 2, 2, 0 },
+    };
+    constexpr std::array<World::Pos3, 11> kMergeBoundingBoxSizes = {
+        World::Pos3{ 28, 22, 0 },
+        World::Pos3{ 22, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+        World::Pos3{ 28, 28, 0 },
+    };
+
+    // Currently unused but will be soon
+    constexpr std::array<uint32_t, 11> kStyle0MergeImageIndexs = {
+        RoadObj::ImageIds::Style0::kStraight0NE,
+        RoadObj::ImageIds::Style0::kStraight0SE,
+        RoadObj::ImageIds::Style0::kRightCurveVerySmall0NE,
+        RoadObj::ImageIds::Style0::kRightCurveVerySmall0SE,
+        RoadObj::ImageIds::Style0::kRightCurveVerySmall0SW,
+        RoadObj::ImageIds::Style0::kRightCurveVerySmall0NW,
+        RoadObj::ImageIds::Style0::kJunctionLeft0NE,
+        RoadObj::ImageIds::Style0::kJunctionLeft0SE,
+        RoadObj::ImageIds::Style0::kJunctionLeft0SW,
+        RoadObj::ImageIds::Style0::kJunctionLeft0NW,
+        RoadObj::ImageIds::Style0::kJunctionCrossroads0NE,
+    };
+    constexpr std::array<uint32_t, 11> kStyle2LeftMergeImageIndexs = {
+        RoadObj::ImageIds::Style2::kStraight0NE,
+        RoadObj::ImageIds::Style2::kStraight0SE,
+        RoadObj::ImageIds::Style2::kLeftCurveVerySmall0NW,
+        RoadObj::ImageIds::Style2::kLeftCurveVerySmall0NE,
+        RoadObj::ImageIds::Style2::kLeftCurveVerySmall0SE,
+        RoadObj::ImageIds::Style2::kLeftCurveVerySmall0SW,
+        RoadObj::ImageIds::Style2::kJunctionLeft0NE,
+        RoadObj::ImageIds::Style2::kJunctionLeft0SE,
+        RoadObj::ImageIds::Style2::kJunctionLeft0SW,
+        RoadObj::ImageIds::Style2::kJunctionLeft0NW,
+        RoadObj::ImageIds::Style2::kJunctionCrossroads0NE,
+    };
+    constexpr std::array<uint32_t, 11> kStyle2RightMergeImageIndexs = {
+        RoadObj::ImageIds::Style2::kStraight0SW,
+        RoadObj::ImageIds::Style2::kStraight0NW,
+        RoadObj::ImageIds::Style2::kRightCurveVerySmall0NE,
+        RoadObj::ImageIds::Style2::kRightCurveVerySmall0SE,
+        RoadObj::ImageIds::Style2::kRightCurveVerySmall0SW,
+        RoadObj::ImageIds::Style2::kRightCurveVerySmall0NW,
+        RoadObj::ImageIds::Style2::kJunctionRight0NE,
+        RoadObj::ImageIds::Style2::kJunctionRight0SE,
+        RoadObj::ImageIds::Style2::kJunctionRight0SW,
+        RoadObj::ImageIds::Style2::kJunctionRight0NW,
+        RoadObj::ImageIds::Style2::kJunctionCrossroads0NE2,
+    };
+
+    constexpr std::array<uint8_t, 16> kExitsToMergeId = {
+        0,  // 0b0000 (not possible)
+        0,  // 0b0001 (not possible)
+        1,  // 0b0010 (not possible)
+        5,  // 0b0011 (turn)
+        0,  // 0b0100 (not possible)
+        0,  // 0b0101 (straight)
+        2,  // 0b0110 (turn)
+        8,  // 0b0111 (junction)
+        1,  // 0b1000 (not possible)
+        4,  // 0b1001 (turn)
+        1,  // 0b1010 (straight)
+        7,  // 0b1011 (junction)
+        3,  // 0b1100 (turn)
+        6,  // 0b1101 (junction)
+        9,  // 0b1110 (junction)
+        10, // 0b1111 (crossroads)
+    };
+
+    // 0x004792E7
+    void finalisePaintRoad(PaintSession& session)
+    {
+        const auto exits = session.getRoadExits();
+        assert(exits < kExitsToMergeId.size());
+        const auto mergeId = kExitsToMergeId[exits];
+        const auto height = session.getMergeRoadHeight();
+        const auto streetlightType = session.getMergeRoadStreetlight();
+        const auto baseImage = ImageId::fromUInt32(session.getMergeRoadBaseImage());
+        session.setRoadExits(0);
+        session.setMergeRoadStreetlight(0);
+
+        const auto heightOffset = World::Pos3{ 0,
+                                               0,
+                                               height };
+        const auto image = baseImage.withIndexOffset(mergeId);
+        const auto boundingBoxOffset = kMergeBoundingBoxOffsets[mergeId] + heightOffset;
+        const auto boundingBoxSize = kMergeBoundingBoxSizes[mergeId];
+        session.addToPlotListTrackRoad(image, 2, heightOffset, boundingBoxOffset, boundingBoxSize);
+
+        if (streetlightType != 0)
+        {
+            const auto style = streetlightType - 1;
+            for (auto i = 0U; i < 4; ++i)
+            {
+                if (!(exits & (1U << i)))
+                {
+                    // Note: Vanilla used a different bboffset and size for this unsure why
+                    paintRoadStreetlight(session, height, style, 0, i);
+                }
+            }
         }
     }
 }
