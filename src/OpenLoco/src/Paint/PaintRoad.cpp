@@ -571,7 +571,7 @@ namespace OpenLoco::Paint
     };
 
     // Currently unused but will be soon
-    constexpr std::array<uint32_t, 11> kStyle0MergeImageIndexs = {
+    [[maybe_unused]] constexpr std::array<uint32_t, 11> kStyle0MergeImageIndexs = {
         RoadObj::ImageIds::Style0::kStraight0NE,
         RoadObj::ImageIds::Style0::kStraight0SE,
         RoadObj::ImageIds::Style0::kRightCurveVerySmall0NE,
@@ -584,7 +584,7 @@ namespace OpenLoco::Paint
         RoadObj::ImageIds::Style0::kJunctionLeft0NW,
         RoadObj::ImageIds::Style0::kJunctionCrossroads0NE,
     };
-    constexpr std::array<uint32_t, 11> kStyle2LeftMergeImageIndexs = {
+    [[maybe_unused]] constexpr std::array<uint32_t, 11> kStyle2LeftMergeImageIndexs = {
         RoadObj::ImageIds::Style2::kStraight0NE,
         RoadObj::ImageIds::Style2::kStraight0SE,
         RoadObj::ImageIds::Style2::kLeftCurveVerySmall0NW,
@@ -597,7 +597,7 @@ namespace OpenLoco::Paint
         RoadObj::ImageIds::Style2::kJunctionLeft0NW,
         RoadObj::ImageIds::Style2::kJunctionCrossroads0NE,
     };
-    constexpr std::array<uint32_t, 11> kStyle2RightMergeImageIndexs = {
+    [[maybe_unused]] constexpr std::array<uint32_t, 11> kStyle2RightMergeImageIndexs = {
         RoadObj::ImageIds::Style2::kStraight0SW,
         RoadObj::ImageIds::Style2::kStraight0NW,
         RoadObj::ImageIds::Style2::kRightCurveVerySmall0NE,
