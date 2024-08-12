@@ -443,7 +443,7 @@ namespace OpenLoco::GameCommands
                         break;
                     case NearbyStationValidation::requiresNewStation:
                     {
-                        const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), 0);
+                        const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), 3);
                         if (newStationId != StationId::null)
                         {
                             _lastPlacedDockStationId = newStationId;
@@ -467,7 +467,7 @@ namespace OpenLoco::GameCommands
                         return FAILURE;
                     case NearbyStationValidation::requiresNewStation:
                     {
-                        const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), 0);
+                        const auto newStationId = StationManager::allocateNewStation(args.pos, getUpdatingCompanyId(), 3);
                         if (newStationId == StationId::null)
                         {
                             return FAILURE;
