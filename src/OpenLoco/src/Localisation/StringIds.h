@@ -1475,7 +1475,7 @@ namespace OpenLoco::StringIds
     constexpr StringId cargo_deliver_graph_title = 1798;
     constexpr StringId cargo_transit_time = 1799;
     constexpr StringId toolbar_status_paused = 1800;
-
+    constexpr StringId town_will_not_allow_airport_to_be_built_here = 1801;
     constexpr StringId map_key_towns = 1802;
     constexpr StringId map_key_industries = 1803;
     constexpr StringId map_key_roads = 1804;
