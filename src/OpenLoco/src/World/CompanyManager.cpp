@@ -622,6 +622,8 @@ namespace OpenLoco::CompanyManager
         company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
     }
 
+    constexpr currency32_t kAiLoanStep = 1000;
+
     // 0x0046DD06
     // id : updatingCompanyId global var
     // payment : ebp
@@ -661,22 +663,25 @@ namespace OpenLoco::CompanyManager
         {
             if (company->cash < payment)
             {
-                const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
-                auto additionalFunds = 0;
 
-                while (company->cash + additionalFunds < payment)
+                const auto requiredAdditionalFunds = company->cash - payment;
+                if (requiredAdditionalFunds > 0)
                 {
-                    if (company->currentLoan + additionalFunds > maxLoan)
+                    // Round up to nearest kAiLoanStep
+                    const auto requiredAdditionalLoan = ((requiredAdditionalFunds.asInt64() + kAiLoanStep - 1) / kAiLoanStep) * kAiLoanStep;
+
+                    const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
+                    if (requiredAdditionalLoan + company->currentLoan > maxLoan)
                     {
                         FormatArguments::common(payment);
                         GameCommands::setErrorText(StringIds::not_enough_cash_requires_currency32);
                         return false;
                     }
-                    additionalFunds += 1000;
+
+                    company->currentLoan += requiredAdditionalLoan;
+                    company->cash += requiredAdditionalLoan;
+                    Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id));
                 }
-                company->currentLoan += additionalFunds;
-                company->cash += additionalFunds;
-                Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id));
             }
             return true;
         }
