@@ -680,7 +680,6 @@ namespace OpenLoco::CompanyManager
             }
             return true;
         }
-        return false;
     }
 
     // 0x004302EF
