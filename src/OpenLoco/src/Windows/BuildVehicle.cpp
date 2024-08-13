@@ -988,9 +988,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.frameNo++;
         window.callPrepareDraw();
 
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, window.currentTab + 4);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, (window.currentSecondaryTab & 0xFF) + 10);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, 19);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, widx::tab_build_new_trains + window.currentTab);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, widx::tab_track_type_0 + (window.currentSecondaryTab & 0xFF));
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, widx::scrollview_vehicle_preview);
 
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame % 16) == 0)
