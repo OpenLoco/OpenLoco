@@ -786,11 +786,12 @@ namespace OpenLoco::Input
         w->flags |= Ui::WindowFlags::flag_15;
         w->callOnResize();
         w->callPrepareDraw();
+
         w->scrollAreas[0].contentWidth = -1;
         w->scrollAreas[0].contentHeight = -1;
         w->scrollAreas[1].contentWidth = -1;
         w->scrollAreas[1].contentHeight = -1;
-        window->updateScrollWidgets();
+        w->updateScrollWidgets();
         w->invalidate();
 
         _dragLastX = x;

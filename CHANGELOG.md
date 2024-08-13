@@ -10,6 +10,7 @@
 - Fix: [#2557] Unable to change the fullscreen resolution.
 - Fix: [#2574] Left turn tunnels do not draw.
 - Fix: [#2576] Incoming message sound effects option is not saved properly.
+- Fix: [#2578] Scrollbars do not always update correctly when a window is being resized.
 
 24.07 (2024-07-23)
 ------------------------------------------------------------------------
