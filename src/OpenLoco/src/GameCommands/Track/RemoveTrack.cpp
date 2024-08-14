@@ -38,11 +38,11 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->isGhost() != (flags & Flags::ghost))
+            if (elTrack->isGhost() != (((flags & Flags::ghost) != 0)))
             {
                 continue;
             }
-            if (elTrack->isAiAllocated() != (flags & Flags::aiAllocated))
+            if (elTrack->isAiAllocated() != (((flags & Flags::aiAllocated) != 0)))
             {
                 continue;
             }
@@ -143,7 +143,7 @@ namespace OpenLoco::GameCommands
     }
 
     // 0x0049C7F2
-    static currency32_t removeTrack(const TrackRemovalArgs& args, uint8_t flags)
+    static currency32_t removeTrack(const TrackRemovalArgs& args, const uint8_t flags)
     {
         setExpenditureType(ExpenditureType::Construction);
         setPosition(args.pos + World::Pos3{ 16, 16, 0 });
