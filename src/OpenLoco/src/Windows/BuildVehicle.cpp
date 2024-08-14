@@ -928,34 +928,17 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void onResize(Window& window)
     {
         window.flags |= WindowFlags::resizable;
-        auto minWidth = std::max<int16_t>(_numTrackTypeTabs * 31 + 195, 380);
-        window.minWidth = minWidth;
-        window.maxWidth = 520;
-        window.minHeight = 233;
-        window.maxHeight = 600;
-        if (window.width < minWidth)
-        {
-            window.width = minWidth;
-            window.invalidate();
-        }
 
-        if (window.height < window.minHeight)
-        {
-            window.height = window.minHeight;
-            window.invalidate();
-        }
+        auto minWidth = std::max<uint16_t>(_numTrackTypeTabs * 31 + 195, 380);
+        window.setSize({ minWidth, 233 }, { 520, 600 });
 
-        auto scrollPosition = window.scrollAreas[scrollIdx::vehicle_selection].contentHeight;
-        scrollPosition -= window.widgets[widx::scrollview_vehicle_selection].bottom;
-        scrollPosition += window.widgets[widx::scrollview_vehicle_selection].top;
-        if (scrollPosition < 0)
-        {
-            scrollPosition = 0;
-        }
+        auto& scrollArea = window.scrollAreas[scrollIdx::vehicle_selection];
+        auto& scrollWidget = window.widgets[widx::scrollview_vehicle_selection];
+        auto scrollPosition = std::max(0, scrollArea.contentHeight - scrollWidget.bottom + scrollWidget.top);
 
-        if (scrollPosition < window.scrollAreas[scrollIdx::vehicle_selection].contentOffsetY)
+        if (scrollPosition < scrollArea.contentOffsetY)
         {
-            window.scrollAreas[scrollIdx::vehicle_selection].contentOffsetY = scrollPosition;
+            scrollArea.contentOffsetY = scrollPosition;
             Ui::ScrollView::updateThumbs(&window, widx::scrollview_vehicle_selection);
         }
 
@@ -988,9 +971,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         window.frameNo++;
         window.callPrepareDraw();
 
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, window.currentTab + 4);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, (window.currentSecondaryTab & 0xFF) + 10);
-        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, 19);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, widx::tab_build_new_trains + window.currentTab);
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, widx::tab_track_type_0 + (window.currentSecondaryTab & 0xFF));
+        WindowManager::invalidateWidget(WindowType::buildVehicle, window.number, widx::scrollview_vehicle_preview);
 
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame % 16) == 0)
