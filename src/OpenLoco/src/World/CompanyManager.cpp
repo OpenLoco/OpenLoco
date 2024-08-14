@@ -664,11 +664,11 @@ namespace OpenLoco::CompanyManager
             if (company->cash < payment)
             {
 
-                const auto requiredAdditionalFunds = company->cash - payment;
+                const auto requiredAdditionalFunds = -(company->cash - payment).asInt64();
                 if (requiredAdditionalFunds > 0)
                 {
                     // Round up to nearest kAiLoanStep
-                    const auto requiredAdditionalLoan = ((requiredAdditionalFunds.asInt64() + kAiLoanStep - 1) / kAiLoanStep) * kAiLoanStep;
+                    const auto requiredAdditionalLoan = ((requiredAdditionalFunds + kAiLoanStep - 1) / kAiLoanStep) * kAiLoanStep;
 
                     const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
                     if (requiredAdditionalLoan + company->currentLoan > maxLoan)
