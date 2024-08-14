@@ -622,6 +622,71 @@ namespace OpenLoco::CompanyManager
         company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
     }
 
+    constexpr currency32_t kAiLoanStep = 1000;
+
+    // 0x0046DD06
+    // id : updatingCompanyId global var
+    // payment : ebp
+    // return : ebp == 0x80000000 for false
+    bool ensureCompanyFunding(const CompanyId id, const currency32_t payment)
+    {
+        if (payment <= 0)
+        {
+            return true;
+        }
+        if (isEditorMode())
+        {
+            return true;
+        }
+        if (id == CompanyId::neutral)
+        {
+            return true;
+        }
+
+        auto* company = get(id);
+        if (isPlayerCompany(id))
+        {
+            if ((company->challengeFlags & CompanyFlags::bankrupt) != CompanyFlags::none)
+            {
+                GameCommands::setErrorText(StringIds::company_is_bankrupt);
+                return false;
+            }
+            if (company->cash < payment)
+            {
+                FormatArguments::common(payment);
+                GameCommands::setErrorText(StringIds::not_enough_cash_requires_currency32);
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            if (company->cash < payment)
+            {
+
+                const auto requiredAdditionalFunds = -(company->cash - payment).asInt64();
+                if (requiredAdditionalFunds > 0)
+                {
+                    // Round up to nearest kAiLoanStep
+                    const auto requiredAdditionalLoan = ((requiredAdditionalFunds + kAiLoanStep - 1) / kAiLoanStep) * kAiLoanStep;
+
+                    const auto maxLoan = Economy::getInflationAdjustedCost(CompanyManager::getMaxLoanSize(), 0, 8);
+                    if (requiredAdditionalLoan + company->currentLoan > maxLoan)
+                    {
+                        FormatArguments::common(payment);
+                        GameCommands::setErrorText(StringIds::not_enough_cash_requires_currency32);
+                        return false;
+                    }
+
+                    company->currentLoan += requiredAdditionalLoan;
+                    company->cash += requiredAdditionalLoan;
+                    Ui::WindowManager::invalidate(Ui::WindowType::company, enumValue(id));
+                }
+            }
+            return true;
+        }
+    }
+
     // 0x004302EF
     void updateColours()
     {

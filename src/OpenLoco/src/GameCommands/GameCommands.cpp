@@ -384,10 +384,10 @@ namespace OpenLoco::GameCommands
                     && (_gameCommandFlags & Flags::ghost) == 0
                     && ebx != 0)
                 {
-                    registers regs2;
-                    regs2.ebp = ebx;
-                    call(0x0046DD06, regs2);
-                    ebx = regs2.ebp;
+                    if (!CompanyManager::ensureCompanyFunding(getUpdatingCompanyId(), ebx))
+                    {
+                        ebx = GameCommands::FAILURE;
+                    }
                 }
             }
         }
