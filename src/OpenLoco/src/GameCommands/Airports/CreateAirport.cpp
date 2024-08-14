@@ -24,14 +24,8 @@ namespace OpenLoco::GameCommands
     static loco_global<uint32_t, 0x00112C734> _lastConstructedAdjoiningStationId;           // Can be 0xFFFF'FFFFU for no adjoining station
     static loco_global<World::Pos2, 0x00112C792> _lastConstructedAdjoiningStationCentrePos; // Can be x = -1 for no adjoining station
 
-    struct NearbyStation
-    {
-        StationId id;
-        bool isPhysicallyAttached;
-    };
-
     // 0x00490372
-    static NearbyStation sub_490372(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
+    static StationManager::NearbyStation sub_490372(World::Pos3 pos, uint8_t airportObjectId, uint8_t rotation)
     {
         registers regs;
         regs.eax = (pos.x & 0xFFFFU); // eax as we need to empty upper portion of eax
@@ -40,7 +34,7 @@ namespace OpenLoco::GameCommands
         regs.bl = airportObjectId;
         regs.bh = rotation;
         call(0x00490372, regs);
-        NearbyStation result{};
+        StationManager::NearbyStation result{};
         result.id = static_cast<StationId>(regs.bx);
         result.isPhysicallyAttached = regs.eax & (1U << 31);
         return result;
