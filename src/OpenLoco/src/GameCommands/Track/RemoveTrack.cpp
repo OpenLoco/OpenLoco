@@ -266,7 +266,7 @@ namespace OpenLoco::GameCommands
 
             auto baseHeight = pieceElTrack->baseHeight();
             World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(pieceElTrack));
-            setLevelCrossingFlags(World::Pos3{ piece.x, piece.y, baseHeight });
+            setLevelCrossingFlags(World::Pos3{ trackLoc.x, trackLoc.y, baseHeight });
         }
 
         totalRemovalCost += pieceRemovalCost;
