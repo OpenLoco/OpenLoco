@@ -1,6 +1,7 @@
 24.07+ (???)
 ------------------------------------------------------------------------
 - Change: [#2569] Removing overhead or third rail track mods now takes selected section mode into account.
+- Change: [#2578] Scrollbars are now hidden if the scrollable widget is not actually overflowing.
 - Change: [#2579] Error messages are now easier to read.
 - Fix: [#1668] Crash when setting preferred currency to an object that no longer exists. (original bug)
 - Fix: [#2520] Crash when loading certain saves from the title screen.
@@ -9,6 +10,7 @@
 - Fix: [#2557] Unable to change the fullscreen resolution.
 - Fix: [#2574] Left turn tunnels do not draw.
 - Fix: [#2576] Incoming message sound effects option is not saved properly.
+- Fix: [#2578] Scrollbars do not always update correctly when a window is being resized.
 
 24.07 (2024-07-23)
 ------------------------------------------------------------------------
