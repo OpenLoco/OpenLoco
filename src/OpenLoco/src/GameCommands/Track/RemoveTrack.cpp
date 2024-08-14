@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
             auto tile = World::TileManager::get(pos);
             for (auto& el : tile)
             {
-                if (el.baseZ() > pos.z)
+                if (el.baseZ() != pos.z)
                 {
                     continue;
                 }
