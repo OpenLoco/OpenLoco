@@ -86,10 +86,7 @@ namespace OpenLoco::GameCommands
     // 0x004795D1
     static void setLevelCrossingFlags(const World::Pos3 pos)
     {
-        int8_t dh = (1 << 1) | (1 << 0);
-
-        while (true)
-        {
+        auto findLevelTrackAndRoad = [pos](auto&& trackFunction, auto&& roadFunction) {
             auto tile = World::TileManager::get(pos);
             for (auto& el : tile)
             {
@@ -97,69 +94,44 @@ namespace OpenLoco::GameCommands
                 {
                     continue;
                 }
-
                 if (el.isAiAllocated())
                 {
                     continue;
                 }
-
-                auto* trackEl = el.as<World::TrackElement>();
-                if (trackEl != nullptr)
+                auto* elTrack = el.as<World::TrackElement>();
+                if (elTrack != nullptr)
                 {
-                    if (trackEl->trackId() == 0)
+                    if (elTrack->trackId() == 0)
                     {
-                        if (dh >= 0)
-                        {
-                            if (trackEl->hasLevelCrossing())
-                            {
-                                dh &= ~(1 << 0);
-                            }
-                        }
-                        else
-                        {
-                            trackEl->setHasLevelCrossing(false);
-                        }
+                        trackFunction(*elTrack);
                     }
-
-                    continue;
                 }
-
-                auto* roadEl = el.as<World::RoadElement>();
-                if (roadEl != nullptr)
+                auto* elRoad = el.as<World::RoadElement>();
+                if (elRoad != nullptr)
                 {
-                    if (roadEl->roadId() == 0)
+                    if (elRoad->roadId() == 0)
                     {
-                        if (dh >= 0)
-                        {
-                            if (roadEl->hasLevelCrossing())
-                            {
-                                dh &= ~(1 << 1);
-                            }
-                        }
-                        else
-                        {
-                            roadEl->setUnk7_10(false);
-                            roadEl->setHasLevelCrossing(false);
-                            roadEl->setLevelCrossingObjectId(0);
-                        }
+                        roadFunction(*elRoad);
                     }
                 }
             }
+        };
 
-            if (dh < 0 || dh == 3)
-            {
-                break;
-            }
+        bool hasRoad = false;
+        bool hasTrack = false;
+        findLevelTrackAndRoad(
+            [&hasTrack](World::TrackElement& elTrack) { hasTrack |= elTrack.hasLevelCrossing(); },
+            [&hasRoad](World::RoadElement& elRoad) { hasRoad |= elRoad.hasLevelCrossing(); });
 
-            dh = -dh;
-            if ((dh & (1 << 0)) == 0)
-            {
-                continue;
-            }
-            if ((dh & (1 << 1)) == 0)
-            {
-                continue;
-            }
+        if (hasRoad ^ hasTrack)
+        {
+            findLevelTrackAndRoad(
+                [hasTrack](World::TrackElement& elTrack) { if (hasTrack) { elTrack.setHasLevelCrossing(false); } },
+                [hasRoad](World::RoadElement& elRoad) { if (hasRoad) {
+                    elRoad.setHasLevelCrossing(false);
+                    elRoad.setUnk7_10(false);
+                    elRoad.setLevelCrossingObjectId(0);
+                } });
         }
     }
 
