@@ -90,7 +90,7 @@ namespace OpenLoco::GameCommands
             auto tile = World::TileManager::get(pos);
             for (auto& el : tile)
             {
-                if (el.baseZ() != pos.z)
+                if (el.baseHeight() != pos.z)
                 {
                     continue;
                 }
@@ -264,9 +264,9 @@ namespace OpenLoco::GameCommands
                 continue;
             }
 
-            auto baseZ = pieceElTrack->baseZ();
+            auto baseHeight = pieceElTrack->baseHeight();
             World::TileManager::removeElement(*reinterpret_cast<World::TileElement*>(pieceElTrack));
-            setLevelCrossingFlags(World::Pos3{ piece.x, piece.y, baseZ });
+            setLevelCrossingFlags(World::Pos3{ piece.x, piece.y, baseHeight });
         }
 
         totalRemovalCost += pieceRemovalCost;
