@@ -16,7 +16,7 @@
 
 namespace OpenLoco::GameCommands
 {
-    static World::TrackElement* getElTrackAt(const TrackRemovalArgs& args, const uint8_t trackFlags, const World::Pos3 pos, const uint8_t sequenceIndex)
+    static World::TrackElement* getElTrackAt(const TrackRemovalArgs& args, const uint8_t flags, const World::Pos3 pos, const uint8_t sequenceIndex)
     {
         auto tile = World::TileManager::get(pos);
         for (auto& el : tile)
@@ -38,11 +38,15 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if ((elTrack->flags() & 0x30) != trackFlags)
+            if (elTrack->isGhost() != (flags & Flags::ghost))
             {
                 continue;
             }
-            if ((trackFlags & 0x10) != 0 && elTrack->owner() != getUpdatingCompanyId())
+            if (elTrack->isAiAllocated() != (flags & Flags::aiAllocated))
+            {
+                continue;
+            }
+            if (elTrack->owner() != getUpdatingCompanyId())
             {
                 continue;
             }
@@ -52,10 +56,10 @@ namespace OpenLoco::GameCommands
     };
 
     // 0x0049CC23
-    static currency32_t trackRemoveCost(const TrackRemovalArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart, const uint8_t trackFlags)
+    static currency32_t trackRemoveCost(const TrackRemovalArgs& args, const World::TrackData::PreviewTrack trackPiece0, const World::Pos3 trackStart, const uint8_t flags)
     {
         const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece0.x, trackPiece0.y }, args.rotation), trackPiece0.z };
-        auto* pieceElTrack = getElTrackAt(args, trackFlags, trackLoc, trackPiece0.index);
+        auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, trackPiece0.index);
         if (pieceElTrack == nullptr)
         {
             return 0;
@@ -174,17 +178,7 @@ namespace OpenLoco::GameCommands
 
         currency32_t totalRemovalCost = 0;
 
-        uint8_t trackFlags = 0; // 0x01136083
-        if (flags & Flags::ghost)
-        {
-            trackFlags |= 0x10;
-        }
-        if (flags & Flags::aiAllocated)
-        {
-            trackFlags |= 0x20;
-        }
-
-        auto* elTrack = getElTrackAt(args, trackFlags, args.pos, args.index);
+        auto* elTrack = getElTrackAt(args, flags, args.pos, args.index);
         if (elTrack == nullptr)
         {
             return FAILURE;
@@ -231,7 +225,7 @@ namespace OpenLoco::GameCommands
 
         // 0x0049C967
         // Fetch track element again; signal removal above might have invalidated the pointer.
-        elTrack = getElTrackAt(args, trackFlags, args.pos, args.index);
+        elTrack = getElTrackAt(args, flags, args.pos, args.index);
 
         // 0x0049C9F0
         if (elTrack->hasStationElement())
@@ -255,7 +249,7 @@ namespace OpenLoco::GameCommands
 
         // 0x0049CA3B
         // Fetch track element again; station removal above might have invalidated the pointer.
-        elTrack = getElTrackAt(args, trackFlags, args.pos, args.index);
+        elTrack = getElTrackAt(args, flags, args.pos, args.index);
 
         // 0x0049CAC4
         const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
@@ -264,7 +258,7 @@ namespace OpenLoco::GameCommands
         const auto trackStart = args.pos - World::Pos3{ Math::Vector::rotate(World::Pos2{ trackPiece.x, trackPiece.y }, args.rotation), trackPiece.z };
 
         // NB: moved out of the loop below (was at 0x0049CC1B)
-        const currency32_t pieceRemovalCost = trackRemoveCost(args, trackPieces[0], trackStart, trackFlags);
+        const currency32_t pieceRemovalCost = trackRemoveCost(args, trackPieces[0], trackStart, flags);
 
         bool trackHadBridge = false; // 0x0113605B
         int8_t trackBridgeId = -1;   // 0x0113605C
@@ -274,13 +268,13 @@ namespace OpenLoco::GameCommands
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
-            if ((trackFlags & 0x20) == 0) // aiAllocated
+            if (!(flags & Flags::aiAllocated))
             {
                 World::TileManager::mapInvalidateTileFull(trackLoc); // shift piece.z?
             }
 
             // 0x0049CB84
-            auto* pieceElTrack = getElTrackAt(args, trackFlags, trackLoc, piece.index);
+            auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
                 return FAILURE;
