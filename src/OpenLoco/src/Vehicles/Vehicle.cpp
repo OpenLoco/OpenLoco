@@ -29,7 +29,7 @@ namespace OpenLoco::Vehicles
     {
         uint8_t pad_24[0x24 - 0x22];
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
@@ -99,7 +99,7 @@ namespace OpenLoco::Vehicles
         return veh->head;
     }
 
-    uint32_t VehicleBase::getRemainingDistance() const
+    int32_t VehicleBase::getRemainingDistance() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->remainingDistance;
@@ -144,7 +144,7 @@ namespace OpenLoco::Vehicles
             {
                 if (train.veh1->routingHandle == component.routingHandle)
                 {
-                    _vehicleUpdate_var_1136114 |= (1U << 15);
+                    _vehicleUpdate_var_1136114 |= (1U << 3);
                     return false;
                 }
             }
@@ -241,7 +241,7 @@ namespace OpenLoco::Vehicles
         }
         else if (component.mode == TransportMode::rail)
         {
-            component.remainingDistance = distance + component.remainingDistance;
+            component.remainingDistance += distance;
             bool hasMoved = false;
             auto returnValue = 0;
             auto intermediatePosition = component.position;
@@ -267,7 +267,7 @@ namespace OpenLoco::Vehicles
                 }
                 // 0x004B1761
                 component.subPosition = newSubPosition;
-                const auto moveData = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data)[newSubPosition];
+                const auto& moveData = World::TrackData::getTrackSubPositon(component.trackAndDirection.track._data)[newSubPosition];
                 const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
                 component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
                 intermediatePosition = nextNewPosition;
