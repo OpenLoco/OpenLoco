@@ -131,8 +131,7 @@ namespace OpenLoco::Vehicles
         call(0x004AA464, regs);
     }
 
-    template<typename T>
-    bool updateTrackMotionNewTrackPiece(T& component)
+    static bool updateTrackMotionNewTrackPiece(VehicleCommon& component)
     {
         auto newRoutingHandle = component.routingHandle;
         auto newIndex = newRoutingHandle.getIndex() + 1;
@@ -215,8 +214,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004B1876
-    template<typename T>
-    std::optional<EntityId> checkForCollisions(T& component, World::Pos3& loc)
+    std::optional<EntityId> checkForCollisions(VehicleCommon& component, World::Pos3& loc)
     {
         registers regs{};
         regs.esi = X86Pointer(&component);
@@ -231,8 +229,7 @@ namespace OpenLoco::Vehicles
         return std::nullopt;
     }
 
-    template<typename T>
-    uint32_t updateTrackMotionT(T& component, uint32_t distance)
+    static uint32_t updateTrackMotionT(VehicleCommon& component, uint32_t distance)
     {
         if (component.mode == TransportMode::road)
         {
@@ -305,23 +302,7 @@ namespace OpenLoco::Vehicles
     // 0x004B15FF
     uint32_t VehicleBase::updateTrackMotion(uint32_t unk1)
     {
-        switch (getSubType())
-        {
-            case VehicleEntityType::head:
-                return updateTrackMotionT(*reinterpret_cast<VehicleHead*>(this), unk1);
-            case VehicleEntityType::vehicle_1:
-                return updateTrackMotionT(*reinterpret_cast<Vehicle1*>(this), unk1);
-            case VehicleEntityType::vehicle_2:
-                return updateTrackMotionT(*reinterpret_cast<Vehicle2*>(this), unk1);
-            case VehicleEntityType::bogie:
-                return updateTrackMotionT(*reinterpret_cast<VehicleBogie*>(this), unk1);
-            case VehicleEntityType::body_start:
-            case VehicleEntityType::body_continued:
-                return updateTrackMotionT(*reinterpret_cast<VehicleBody*>(this), unk1);
-            case VehicleEntityType::tail:
-                return updateTrackMotionT(*reinterpret_cast<VehicleTail*>(this), unk1);
-        }
-        return 0;
+        return updateTrackMotionT(*reinterpret_cast<VehicleCommon*>(this), unk1);
     }
 
     // 0x0047D959
