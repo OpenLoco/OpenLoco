@@ -151,18 +151,16 @@ namespace OpenLoco::Vehicles
             }
             World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
 
-            World::Track::TrackConnections connections;
             auto [nextPos, nextRot] = World::Track::getTrackConnectionEnd(pos, component.trackAndDirection.track._data);
-            World::Track::getTrackConnections(nextPos, nextRot, connections, component.owner, component.trackType);
-            if (_113607D & (1U << 0))
+            const auto tc = World::Track::getTrackConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
+            if (tc.hasLevelCrossing)
             {
-                // level crossing
                 _vehicleUpdate_var_1136114 |= (1U << 4);
             }
             bool routingFound = false;
-            for (auto i = 0U; i < connections.size; ++i)
+            for (auto& connection : tc.connections)
             {
-                if ((connections.data[i] & 0x1FF) == (routing & 0x1FF))
+                if ((connection & 0x1FF) == (routing & 0x1FF))
                 {
                     routingFound = true;
                     break;
