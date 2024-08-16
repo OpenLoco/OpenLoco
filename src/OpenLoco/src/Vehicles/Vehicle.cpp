@@ -137,7 +137,7 @@ namespace OpenLoco::Vehicles
         auto newIndex = newRoutingHandle.getIndex() + 1;
         newRoutingHandle.setIndex(newIndex);
         const auto routing = RoutingManager::getRouting(newRoutingHandle);
-        if (routing != /* kAllocatedButFreeRoutingStation */ 0xFFFEU)
+        if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
         {
             Vehicle train(component.head);
             if (_vehicleUpdate_var_1136114 & (1U << 15))
