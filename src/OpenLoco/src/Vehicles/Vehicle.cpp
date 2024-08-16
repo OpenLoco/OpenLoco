@@ -214,7 +214,7 @@ namespace OpenLoco::Vehicles
     };
 
     // 0x004B1876
-    std::optional<EntityId> checkForCollisions(VehicleCommon& component, World::Pos3& loc)
+    static std::optional<EntityId> checkForCollisions(VehicleCommon& component, World::Pos3& loc)
     {
         registers regs{};
         regs.esi = X86Pointer(&component);
