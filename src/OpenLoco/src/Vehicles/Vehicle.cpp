@@ -21,7 +21,6 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
-    static loco_global<uint8_t, 0x0113607D> _113607D;
 
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
