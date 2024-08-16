@@ -266,18 +266,171 @@ namespace OpenLoco::Vehicles
         0x3689,
     };
 
+    // 0x00500244
+    constexpr std::array<World::TilePos2, 9> kNearbyTiles = {
+        World::TilePos2{ 0, 0 },
+        World::TilePos2{ 0, 1 },
+        World::TilePos2{ 1, 1 },
+        World::TilePos2{ 1, 0 },
+        World::TilePos2{ 1, -1 },
+        World::TilePos2{ 0, -1 },
+        World::TilePos2{ -1, -1 },
+        World::TilePos2{ -1, 0 },
+        World::TilePos2{ -1, 1 },
+    };
+
     // 0x004B1876
-    static std::optional<EntityId> checkForCollisions(VehicleCommon& component, World::Pos3& loc)
+    static std::optional<EntityId> checkForCollisions(VehicleBogie& bogie, World::Pos3& loc)
     {
-        registers regs{};
-        regs.esi = X86Pointer(&component);
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        regs.dx = loc.z;
-        auto res = call(0x004B1876, regs) & X86_FLAG_CARRY;
-        if (res)
+        if (bogie.mode != TransportMode::rail)
         {
-            return static_cast<EntityId>(regs.bp);
+            return std::nullopt;
+        }
+
+        Vehicle srcTrain(bogie.head);
+
+        for (auto& nearby : kNearbyTiles)
+        {
+            const auto inspectionPos = World::toTileSpace(loc) + nearby;
+            for (auto* entity : EntityManager::EntityTileList(World::toWorldSpace(inspectionPos)))
+            {
+                auto* vehicleBase = entity->asBase<VehicleBase>();
+                if (vehicleBase == nullptr)
+                {
+                    continue;
+                }
+                if (vehicleBase->getTransportMode() != TransportMode::rail)
+                {
+                    continue;
+                }
+
+                const auto zDiff = std::abs(loc.z - vehicleBase->position.z);
+                if (zDiff > 16)
+                {
+                    continue;
+                }
+
+                // vanilla did some overflow checks here but since we promote to int it shouldn't be needed
+                const auto distance = Math::Vector::manhattanDistance2D(vehicleBase->position, loc);
+                if (distance >= 12)
+                {
+                    continue;
+                }
+
+                const auto subType = vehicleBase->getSubType();
+                // Does it actually have a collidable body
+                if (subType != VehicleEntityType::body_continued && subType != VehicleEntityType::body_start && subType != VehicleEntityType::bogie)
+                {
+                    continue;
+                }
+
+                if (vehicleBase->owner != bogie.owner)
+                {
+                    continue;
+                }
+
+                // This is an optimisation compared to vanilla
+                if (vehicleBase->getHead() != bogie.head)
+                {
+                    return vehicleBase->id;
+                }
+
+                bool noSelfCollision = false;
+                {
+                    Vehicle collideTrain(vehicleBase->getHead());
+                    bool carFound = false;
+                    uint32_t numCarsToCheck = 0;
+                    for (auto& car : collideTrain.cars)
+                    {
+                        for (auto& carComponent : car)
+                        {
+
+                            if (!carFound)
+                            {
+                                carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = vehicleBase->id](auto& c) {
+                                    if (c.id == targetId)
+                                    {
+                                        carFound = true;
+                                        numCarsToCheck = 3;
+                                    }
+                                });
+                            }
+                            if (carFound)
+                            {
+                                carComponent.applyToComponents([&noSelfCollision, targetId = bogie.id](auto& c) {
+                                    if (c.id == targetId)
+                                    {
+                                        noSelfCollision = true;
+                                    }
+                                });
+                            }
+                        }
+                        if (noSelfCollision)
+                        {
+                            break;
+                        }
+                        if (carFound)
+                        {
+                            numCarsToCheck--;
+                            if (numCarsToCheck == 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (noSelfCollision)
+                {
+                    continue;
+                }
+                {
+                    bool carFound = false;
+                    uint32_t numCarsToCheck = 0;
+                    for (auto& car : srcTrain.cars)
+                    {
+                        for (auto& carComponent : car)
+                        {
+
+                            if (!carFound)
+                            {
+                                carComponent.applyToComponents([&carFound, &numCarsToCheck, targetId = bogie.id](auto& c) {
+                                    if (c.id == targetId)
+                                    {
+                                        carFound = true;
+                                        numCarsToCheck = 3;
+                                    }
+                                });
+                            }
+                            if (carFound)
+                            {
+                                carComponent.applyToComponents([&noSelfCollision, targetId = vehicleBase->id](auto& c) {
+                                    if (c.id == targetId)
+                                    {
+                                        noSelfCollision = true;
+                                    }
+                                });
+                            }
+                        }
+                        if (noSelfCollision)
+                        {
+                            break;
+                        }
+                        if (carFound)
+                        {
+                            numCarsToCheck--;
+                            if (numCarsToCheck == 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (noSelfCollision)
+                {
+                    continue;
+                }
+                return vehicleBase->id;
+            }
         }
         return std::nullopt;
     }
@@ -377,10 +530,10 @@ namespace OpenLoco::Vehicles
                 intermediatePosition = nextNewPosition;
                 component.spriteYaw = moveData.yaw;
                 component.spritePitch = moveData.pitch;
-                if (component.getSubType() == VehicleEntityType::bogie)
+                if (component.isVehicleBogie())
                 {
                     // collision checks
-                    auto collideResult = checkForCollisions(component, intermediatePosition);
+                    auto collideResult = checkForCollisions(*component.asVehicleBogie(), intermediatePosition);
                     if (collideResult.has_value())
                     {
                         _vehicleUpdate_var_1136114 |= (1U << 2);
