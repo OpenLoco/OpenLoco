@@ -21,6 +21,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t[128], 0x004F7358> _4F7358; // trackAndDirection without the direction 0x1FC
     static loco_global<uint32_t, 0x01136114> _vehicleUpdate_var_1136114;
     static loco_global<EntityId, 0x0113610E> _vehicleUpdate_collisionCarComponent;
+    static loco_global<uint8_t, 0x0112C2ED> _112C2ED;
 
 #pragma pack(push, 1)
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
@@ -130,6 +131,75 @@ namespace OpenLoco::Vehicles
         call(0x004AA464, regs);
     }
 
+    static bool updateRoadMotionNewRoadPiece(VehicleCommon& component)
+    {
+        auto newRoutingHandle = component.routingHandle;
+        auto newIndex = newRoutingHandle.getIndex() + 1;
+        newRoutingHandle.setIndex(newIndex);
+        const auto routing = RoutingManager::getRouting(newRoutingHandle);
+        if (routing != RoutingManager::kAllocatedButFreeRoutingStation)
+        {
+            Vehicle train(component.head);
+            if (_vehicleUpdate_var_1136114 & (1U << 15))
+            {
+                if (train.veh1->routingHandle == component.routingHandle)
+                {
+                    _vehicleUpdate_var_1136114 |= (1U << 3);
+                    return false;
+                }
+            }
+            World::Pos3 pos(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
+
+            auto [nextPos, nextRot] = World::Track::getRoadConnectionEnd(pos, component.trackAndDirection.road._data & 0x7F);
+            const auto tc = World::Track::getRoadConnections(nextPos, nextRot, component.owner, component.trackType, train.head->var_53, 0);
+
+            // *** FOR GLOBAL ISSUE
+            for (auto& c : tc.connections)
+            {
+                if (!(c & (1U << 2)))
+                {
+                    _112C2ED = tc.roadObjectId;
+                    break;
+                }
+            }
+            // *** FOR GLOBAL ISSUE
+
+            bool routingFound = false;
+            for (auto& connection : tc.connections)
+            {
+                if ((connection & 0x7F) == (routing & 0x7F))
+                {
+                    routingFound = true;
+                    break;
+                }
+            }
+            if (!routingFound)
+            {
+                _vehicleUpdate_var_1136114 |= (1U << 1);
+                return false;
+            }
+            component.routingHandle = newRoutingHandle;
+            const auto oldTaD = component.trackAndDirection.road._data;
+            component.trackAndDirection.road._data = routing & 0x1FF;
+            if (component.isVehicle2())
+            {
+                // *** FOR GLOBAL ISSUE
+                component.asVehicle2()->var_4F = _112C2ED;
+                // *** FOR GLOBAL ISSUE
+                
+                // component.asVehicle2()->var_4F = tc.roadObjectId;
+            }
+
+            pos += World::TrackData::getUnkRoad(oldTaD & 0x7F).pos;
+            component.tileX = pos.x;
+            component.tileY = pos.y;
+            component.tileBaseZ = pos.z / World::kSmallZStep;
+            return true;
+        }
+
+        return false;
+    }
+
     static bool updateTrackMotionNewTrackPiece(VehicleCommon& component)
     {
         auto newRoutingHandle = component.routingHandle;
@@ -228,15 +298,66 @@ namespace OpenLoco::Vehicles
         return std::nullopt;
     }
 
+    // 0x0047C7FA
+    static int32_t updateRoadMotion(VehicleCommon& component, int32_t distance)
+    {
+        component.remainingDistance += distance;
+        bool hasMoved = false;
+        auto returnValue = 0;
+        auto intermediatePosition = component.position;
+        while (component.remainingDistance >= 0x368A)
+        {
+            hasMoved = true;
+            auto newSubPosition = component.subPosition + 1U;
+            const auto subPositionDataSize = World::TrackData::getRoadSubPositon(component.trackAndDirection.road._data).size();
+            // This means we have moved forward by a road piece
+            if (newSubPosition >= subPositionDataSize)
+            {
+                if (!updateRoadMotionNewRoadPiece(component))
+                {
+                    returnValue = component.remainingDistance - 0x3689;
+                    component.remainingDistance = 0x3689;
+                    _vehicleUpdate_var_1136114 |= (1U << 0);
+                    break;
+                }
+                else
+                {
+                    newSubPosition = 0;
+                }
+            }
+            // 0x0047C95B
+            component.subPosition = newSubPosition;
+            const auto& moveData = World::TrackData::getRoadSubPositon(component.trackAndDirection.road._data)[newSubPosition];
+            const auto nextNewPosition = moveData.loc + World::Pos3(component.tileX, component.tileY, component.tileBaseZ * World::kSmallZStep);
+            component.remainingDistance -= movementNibbleToDistance[getMovementNibble(intermediatePosition, nextNewPosition)];
+            intermediatePosition = nextNewPosition;
+            component.spriteYaw = moveData.yaw;
+            component.spritePitch = moveData.pitch;
+            if (component.getSubType() == VehicleEntityType::bogie)
+            {
+                // collision checks
+                auto collideResult = checkForCollisions(component, intermediatePosition);
+                if (collideResult.has_value())
+                {
+                    _vehicleUpdate_var_1136114 |= (1U << 2);
+                    _vehicleUpdate_collisionCarComponent = collideResult.value();
+                }
+            }
+        }
+        if (hasMoved)
+        {
+            Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
+            component.moveTo(intermediatePosition);
+            Ui::ViewportManager::invalidate(&component, ZoomLevel::eighth);
+        }
+        return returnValue;
+    }
+
     static int32_t updateTrackMotion(VehicleCommon& component, int32_t distance)
     {
         if (component.mode == TransportMode::road)
         {
-            registers regs;
-            regs.eax = distance;
-            regs.esi = X86Pointer(&component);
-            call(0x004B15FF, regs);
-            return regs.eax;
+            return updateRoadMotion(component, distance);
         }
         else if (component.mode == TransportMode::rail)
         {
