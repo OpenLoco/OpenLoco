@@ -186,7 +186,7 @@ namespace OpenLoco::Vehicles
                 // *** FOR GLOBAL ISSUE
                 component.asVehicle2()->var_4F = _112C2ED;
                 // *** FOR GLOBAL ISSUE
-                
+
                 // component.asVehicle2()->var_4F = tc.roadObjectId;
             }
 
