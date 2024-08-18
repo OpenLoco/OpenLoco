@@ -921,6 +921,10 @@ namespace OpenLoco::Ui::ViewportInteraction
                     {
                         interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry;
                     }
+                    if (vp->hasFlags(ViewportFlags::seeThroughBridges))
+                    {
+                        // Bridges can't be interacted with ever so no need to exclude anything additional
+                    }
                     if (vp->hasFlags(ViewportFlags::seeThroughTrees))
                     {
                         interactionsToExclude |= InteractionItemFlags::tree;

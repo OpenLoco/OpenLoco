@@ -2397,3 +2397,6 @@ strings:
   2342: "찾아보기..."
   2343: "{COLOUR WINDOW_2}현재 높이맵 파일: {COLOUR BLACK}{STRING}"
   2344: "(선택 없음)"
+  2350: "건물 bridges"
+  2351: "건물 투명화를 bridges 끕니다"
+

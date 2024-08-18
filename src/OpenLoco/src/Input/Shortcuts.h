@@ -20,6 +20,7 @@ namespace OpenLoco::Input
         toggleSeeThroughTrees,
         toggleSeeThroughBuildings,
         toggleSeeThroughScenery,
+        toggleSeeThroughBridges,
         toggleHeightMarksOnLand,
         toggleHeightMarksOnTracks,
         toggleDirArrowsonTracks,

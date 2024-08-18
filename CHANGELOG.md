@@ -1,6 +1,7 @@
 24.08+ (???)
 ------------------------------------------------------------------------
 - Change: [#2600] The lanscape can now be regenerated from all tabs in the Landscape Generation window.
+- Change: [#2589] See-Through Bridges are now part of the viewing options
 - Fix: [#2372] Large (16xN) stations could not be created without cheats.
 - Fix: [#2592] Industry ghosts always destroy first industry instead of ghost.
 - Fix: [#2601] Highlighted items don't always blink correctly in the mini maps for transport routes and ownership.
