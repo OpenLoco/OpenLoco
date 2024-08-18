@@ -634,4 +634,22 @@ namespace OpenLoco::Vehicles
         // Vanilla called updateCargoSprite on the bogies but that does nothing so skipping that.
         carComponent.body->updateCargoSprite();
     }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x0047C7FA,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+
+                uint32_t distance = regs.eax;
+                VehicleCommon* component = X86Pointer<VehicleCommon>(regs.esi);
+
+                const auto res = updateRoadMotion(*component, distance);
+
+                regs = backup;
+                regs.eax = res;
+                return 0;
+            });
+    }
 }
