@@ -38,11 +38,11 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->isGhost() != (((flags & Flags::ghost) != 0)))
+            if (elTrack->isGhost() != ((flags & Flags::ghost) != 0))
             {
                 continue;
             }
-            if (elTrack->isAiAllocated() != (((flags & Flags::aiAllocated) != 0)))
+            if (elTrack->isAiAllocated() != ((flags & Flags::aiAllocated) != 0))
             {
                 continue;
             }
