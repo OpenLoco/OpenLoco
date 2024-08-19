@@ -30,6 +30,10 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
+            if (elTrack->baseHeight() != args.pos.z)
+            {
+                continue;
+            }
             if (elTrack->sequenceIndex() != sequenceIndex)
             {
                 continue;
