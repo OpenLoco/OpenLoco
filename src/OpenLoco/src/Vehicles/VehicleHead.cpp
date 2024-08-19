@@ -514,9 +514,80 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004AF4D6
+    void sub_4AF4D6(Vehicles::VehicleBogie& source, Vehicles::VehicleBase& dest)
+    {
+        registers regs{};
+        regs.esi = X86Pointer(&source);
+        regs.edi = X86Pointer(&dest);
+        call(0x004AF4D6, regs);
+    }
+
+    // 0x004AFFF3
+    void sub_4AFFF3(Vehicles::VehicleBogie& source)
+    {
+        // Looks to swap front/back bogies
+        registers regs{};
+        regs.esi = X86Pointer(&source);
+        call(0x004AFFF3, regs);
+    }
+
     // 0x004AF7A4
     void VehicleHead::sub_4AF7A4()
     {
+        Vehicle train(*this);
+        if (train.cars.empty())
+        {
+            return;
+        }
+
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            // Swap the first powered vehicle to the front of the train
+            std::optional<Vehicles::Car> unpoweredCar{};
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->power == 0 && !unpoweredCar.has_value())
+                {
+                    unpoweredCar = car;
+                }
+                else
+                {
+                    if (unpoweredCar.has_value())
+                    {
+                        sub_4AF4D6(*car.front, *unpoweredCar->front);
+                    }
+                    break;
+                }
+            }
+        }
+
+        uint32_t unkEdx = 0;
+        for (auto& car : train.cars)
+        {
+            auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+            if (vehicleObj->hasFlags(VehicleObjectFlags::flag_00))
+            {
+                unkEdx++;
+                if (unkEdx & 1U)
+                {
+                    if (car.body->has38Flags(Flags38::isReversed))
+                    {
+                        sub_4AFFF3(*car.front);
+                    }
+                }
+                else
+                {
+                    if (!car.body->has38Flags(Flags38::isReversed))
+                    {
+                        sub_4AFFF3(*car.front);
+                    }
+                }
+            }
+        }
+
+        // 0x004AF9B5
         registers regs{};
         regs.esi = X86Pointer(this);
         call(0x004AF7A4, regs);
