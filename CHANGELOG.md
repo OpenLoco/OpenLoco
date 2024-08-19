@@ -1,4 +1,4 @@
-24.07+ (???)
+24.08 (2024-08-19)
 ------------------------------------------------------------------------
 - Change: [#2569] Removing overhead or third rail track mods now takes selected section mode into account.
 - Change: [#2578] Scrollbars are now hidden if the scrollable widget is not actually overflowing.
