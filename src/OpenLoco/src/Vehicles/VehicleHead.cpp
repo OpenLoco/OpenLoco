@@ -73,8 +73,12 @@ namespace OpenLoco::Vehicles
 
     static constexpr uint16_t kTrainOneWaySignalTimeout = 1920;
     static constexpr uint16_t kTrainTwoWaySignalTimeout = 640;
-    static constexpr uint16_t kBusSignalTimeout = 960;   // Time to wait before turning around at barriers
-    static constexpr uint16_t kTramSignalTimeout = 2880; // Time to wait before turning around at barriers
+    static constexpr uint16_t kBusSignalTimeout = 960;                // Time to wait before turning around at barriers
+    static constexpr uint16_t kTramSignalTimeout = 2880;              // Time to wait before turning around at barriers
+    static constexpr uint8_t kAiSellCrashedVehicleTimeout = 14;       // Number of days after a crash before selling
+    static constexpr uint8_t kRestartStoppedRoadVehiclesTimeout = 20; // Number of days before stopped road vehicle (bus and tram) is restarted
+    static constexpr uint16_t kReliabilityLossPerDay = 4;
+    static constexpr uint16_t kReliabilityLossPerDayObsolete = 10;
 
     void VehicleHead::updateVehicle()
     {
@@ -220,7 +224,7 @@ namespace OpenLoco::Vehicles
                     if (Tutorial::state() == Tutorial::State::none)
                     {
                         restartStoppedCarsTimeout++;
-                        if (restartStoppedCarsTimeout >= 20)
+                        if (restartStoppedCarsTimeout >= kRestartStoppedRoadVehiclesTimeout)
                         {
                             GameCommands::VehicleChangeRunningModeArgs args{};
                             args.head = head;
@@ -259,7 +263,7 @@ namespace OpenLoco::Vehicles
             crashedTimeout = Math::Bound::add(crashedTimeout, 1U);
             if (!CompanyManager::isPlayerCompany(owner))
             {
-                if (crashedTimeout >= 14 && var_60 != 0xFF)
+                if (crashedTimeout >= kAiSellCrashedVehicleTimeout && var_60 != 0xFF)
                 {
                     auto* aiCompany = CompanyManager::get(owner);
                     auto& aiThought = aiCompany->aiThoughts[var_60];
@@ -338,7 +342,7 @@ namespace OpenLoco::Vehicles
             }
             auto newReliability = front.reliability;
             auto* vehObj = ObjectManager::get<VehicleObject>(front.objectId);
-            newReliability -= vehObj->obsolete <= getCurrentYear() ? 10 : 4;
+            newReliability -= vehObj->obsolete <= getCurrentYear() ? kReliabilityLossPerDayObsolete : kReliabilityLossPerDay;
             newReliability = std::max<uint16_t>(newReliability, 100);
             front.reliability = newReliability;
         }
