@@ -543,6 +543,7 @@ namespace OpenLoco::Vehicles
 
         if (!hasVehicleFlags(VehicleFlags::shuntCheat))
         {
+            // TODO: Can do this better using train.cars.firstCar
             // Swap the first powered vehicle to the front of the train
             std::optional<Vehicles::Car> unpoweredCar{};
             for (auto& car : train.cars)
@@ -586,8 +587,65 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            std::optional<Vehicles::Car> unkCar{};
+            uint8_t unpoweredCarCount = 0;
+            for (auto& car : train.cars)
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                if (vehicleObj->power == 0)
+                {
+                    unpoweredCarCount++;
+                }
 
-        // 0x004AF9B5
+                if (vehicleObj->hasFlags(VehicleObjectFlags::flag_01))
+                {
+                    unkCar = car;
+                }
+            }
+
+            if (unkCar.has_value())
+            {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(unkCar->front->objectId);
+                if (vehicleObj->power == 0 || unpoweredCarCount >= 2)
+                {
+                    if (unkCar->body->has38Flags(Flags38::isReversed))
+                    {
+                        sub_4AFFF3(*unkCar->front);
+                    }
+                    sub_4AF4D6(*unkCar->front, *train.cars.firstCar.front);
+                }
+            }
+        }
+        if (!hasVehicleFlags(VehicleFlags::shuntCheat))
+        {
+            [&train]() {
+                auto* vehicleObj = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->objectId);
+                if (vehicleObj->hasFlags(VehicleObjectFlags::flag_01))
+                {
+                    return;
+                }
+                if (!vehicleObj->hasFlags(VehicleObjectFlags::flag_05) && vehicleObj->power != 0)
+                {
+                    return;
+                }
+
+                for (auto& car : train.cars)
+                {
+                    auto* vehicleObj = ObjectManager::get<VehicleObject>(car.front->objectId);
+                    if (vehicleObj->hasFlags(VehicleObjectFlags::flag_01))
+                    {
+                        if (train.cars.firstCar.body->has38Flags(Flags38::isReversed))
+                        {
+                            sub_4AFFF3(*car.front);
+                        }
+                        sub_4AF4D6(*car.front, *train.cars.firstCar.front);
+                    }
+                }
+            }();
+        }
+        // 0x004AFBC0
         registers regs{};
         regs.esi = X86Pointer(this);
         call(0x004AF7A4, regs);
