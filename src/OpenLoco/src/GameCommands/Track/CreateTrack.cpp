@@ -329,26 +329,6 @@ namespace OpenLoco::GameCommands
         return World::TileClearance::ClearFuncResult::collision;
     }
 
-    // 0x0046908D
-    static void sub_46908D(const World::Pos3 pos)
-    {
-        registers regs{};
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        call(0x0046908D, regs);
-    }
-
-    // 0x00469174
-    static void sub_469174(const World::Pos3 pos)
-    {
-        registers regs{};
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = pos.z;
-        call(0x00469174, regs);
-    }
-
     // 0x0049BB98
     static uint32_t createTrack(const TrackPlacementArgs& args, uint8_t flags)
     {
@@ -550,8 +530,8 @@ namespace OpenLoco::GameCommands
             }
             if (!(flags & (Flags::ghost | Flags::aiAllocated)))
             {
-                sub_46908D(trackLoc);
-                sub_469174(trackLoc);
+                World::TileManager::removeSurfaceIndustryAtHeight(trackLoc);
+                World::TileManager::setTerrainStyleAsClearedAtHeight(trackLoc);
             }
 
             auto* newElTrack = World::TileManager::insertElement<World::TrackElement>(trackLoc, baseZ, quarterTile.getBaseQuarterOccupied());

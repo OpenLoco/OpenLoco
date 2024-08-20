@@ -22,7 +22,7 @@ namespace OpenLoco::World
         {
             setIsIndustrialFlag(false);
             setVar6SLR5(0);
-            setIndustry(IndustryId(0));
+            setVariation(0);
             auto z = baseHeight();
             Ui::ViewportManager::invalidate(pos, z, z + 32, ZoomLevel::eighth);
             TownManager::updateTownInfo(pos, 0, 0, -30, 0);
