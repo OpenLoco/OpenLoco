@@ -228,7 +228,7 @@ namespace OpenLoco::Vehicles
         return std::nullopt;
     }
 
-    static uint32_t updateTrackMotionT(VehicleCommon& component, uint32_t distance)
+    static int32_t updateTrackMotion(VehicleCommon& component, int32_t distance)
     {
         if (component.mode == TransportMode::road)
         {
@@ -299,9 +299,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B15FF
-    uint32_t VehicleBase::updateTrackMotion(uint32_t unk1)
+    int32_t VehicleBase::updateTrackMotion(int32_t unk1)
     {
-        return updateTrackMotionT(*reinterpret_cast<VehicleCommon*>(this), unk1);
+        return Vehicles::updateTrackMotion(*reinterpret_cast<VehicleCommon*>(this), unk1);
     }
 
     // 0x0047D959
