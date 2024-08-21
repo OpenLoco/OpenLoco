@@ -317,7 +317,7 @@ namespace OpenLoco
         {
             producedCargoMonthlyHistorySize[0]++;
         }
-        const auto newValue = std::min<uint32_t>(producedCargoQuantityMonthlyTotal[0], 12750u) / 50;
+        const auto newValue = static_cast<uint8_t>(std::min<uint32_t>(producedCargoQuantityMonthlyTotal[0], 12750u) / 50);
         producedCargoMonthlyHistory1[producedCargoMonthlyHistorySize[0] - 1] = newValue;
 
         if (producedCargoMonthlyHistorySize[1] == std::size(producedCargoMonthlyHistory2))
@@ -328,7 +328,7 @@ namespace OpenLoco
         {
             producedCargoMonthlyHistorySize[1]++;
         }
-        const auto newValue2 = std::min<uint32_t>(producedCargoQuantityMonthlyTotal[1], 12750u) / 50;
+        const auto newValue2 = static_cast<uint8_t>(std::min<uint32_t>(producedCargoQuantityMonthlyTotal[1], 12750u) / 50);
         producedCargoMonthlyHistory2[producedCargoMonthlyHistorySize[1] - 1] = newValue2;
 
         producedCargoQuantityPreviousMonth[0] = producedCargoQuantityMonthlyTotal[0];
