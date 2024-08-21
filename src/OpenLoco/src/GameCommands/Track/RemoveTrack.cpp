@@ -72,7 +72,12 @@ namespace OpenLoco::GameCommands
         currency32_t totalCost = 0;
 
         const auto* trackObj = ObjectManager::get<TrackObject>(pieceElTrack->trackObjectId());
-        totalCost += Economy::getInflationAdjustedCost(trackObj->sellCostFactor, trackObj->costIndex, 10);
+        {
+            const auto trackBaseCost = Economy::getInflationAdjustedCost(trackObj->sellCostFactor, trackObj->costIndex, 10);
+            const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
+            totalCost += cost;
+        }
+
 
         // Check mod removal costs
         for (auto i = 0U; i < 4; i++)
@@ -80,7 +85,9 @@ namespace OpenLoco::GameCommands
             if (pieceElTrack->hasMod(i))
             {
                 const auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[i]);
-                totalCost += Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
+                const auto trackExtraBaseCost = Economy::getInflationAdjustedCost(trackExtraObj->sellCostFactor, trackExtraObj->costIndex, 10);
+                const auto cost = (trackExtraBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
+                totalCost += cost;
             }
         }
 
