@@ -32,13 +32,14 @@
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
-    static currency32_t _dword_E0C39C;       // 0x00E0C39C
-    static bool _industryGhostPlaced;        // 0x00E0C3D9
-    static World::Pos2 _industryGhostPos;    // 0x00E0C3C2
-    static IndustryId _industryLastPlacedId; // 0x00E0C3C9
-    static uint8_t _industryGhostType;       // 0x00E0C3DA
-    static IndustryId _industryGhostId;      // 0x00E0C3DB
-    static Core::Prng _placementPrng;        // 0x00E0C394
+    static currency32_t _dword_E0C39C;    // 0x00E0C39C
+    static bool _industryGhostPlaced;     // 0x00E0C3D9
+    static World::Pos2 _industryGhostPos; // 0x00E0C3C2
+    static uint8_t _industryGhostType;    // 0x00E0C3DA
+    static IndustryId _industryGhostId;   // 0x00E0C3DB
+    static Core::Prng _placementPrng;     // 0x00E0C394
+
+    static loco_global<IndustryId, 0x00E0C3C9> _industryLastPlacedId;
 
     namespace Common
     {
