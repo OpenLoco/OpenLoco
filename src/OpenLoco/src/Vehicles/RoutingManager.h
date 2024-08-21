@@ -10,6 +10,9 @@
 
 namespace OpenLoco::Vehicles::RoutingManager
 {
+    constexpr uint16_t kAllocatedButFreeRoutingStation = 0xFFFEU; // Indicates that this array is allocated to a vehicle but no station has been set.
+    constexpr uint16_t kRoutingNull = 0xFFFFU;                    // Indicates that this array is unallocated to any vehicle.
+
     std::optional<RoutingHandle> getAndAllocateFreeRoutingHandle();
     void freeRoutingHandle(const RoutingHandle routing);
     uint16_t getRouting(const RoutingHandle routing);

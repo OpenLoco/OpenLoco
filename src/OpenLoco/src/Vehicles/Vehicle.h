@@ -275,6 +275,7 @@ namespace OpenLoco::Vehicles
         TrackAndDirection getTrackAndDirection() const;
         RoutingHandle getRoutingHandle() const;
         EntityId getHead() const;
+        int32_t getRemainingDistance() const;
         void setNextCar(const EntityId newNextCar);
         bool has38Flags(Flags38 flagsToTest) const;
         bool hasVehicleFlags(VehicleFlags flagsToTest) const;
@@ -283,7 +284,7 @@ namespace OpenLoco::Vehicles
         bool updateComponent();
         void sub_4AA464();
         uint8_t sub_47D959(const World::Pos3& loc, const TrackAndDirection::_RoadAndDirection trackAndDirection, const bool setOccupied);
-        uint32_t updateTrackMotion(uint32_t unk1);
+        int32_t updateTrackMotion(int32_t unk1);
     };
 
     struct Vehicle2or6 : VehicleBase
@@ -319,7 +320,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::head;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
@@ -471,7 +472,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_1;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
@@ -508,7 +509,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::vehicle_2;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
@@ -558,7 +559,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::body_continued;
         ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
@@ -618,7 +619,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::bogie;
         ColourScheme colourScheme;           // 0x24
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
@@ -671,7 +672,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto kVehicleThingType = VehicleEntityType::tail;
         uint8_t pad_24[0x26 - 0x24];
         EntityId head;                       // 0x26
-        uint32_t remainingDistance;          // 0x28
+        int32_t remainingDistance;           // 0x28
         TrackAndDirection trackAndDirection; // 0x2C
         uint16_t subPosition;                // 0x2E
         int16_t tileX;                       // 0x30
