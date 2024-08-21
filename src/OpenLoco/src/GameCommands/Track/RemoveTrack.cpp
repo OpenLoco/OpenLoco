@@ -177,7 +177,6 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        // 0x0049C902
         if (elTrack->hasSignal())
         {
             GameCommands::SignalRemovalArgs srArgs;
@@ -211,11 +210,9 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // 0x0049C967
         // Fetch track element again; signal removal above might have invalidated the pointer.
         elTrack = getElTrackAt(args, flags, args.pos, args.index);
 
-        // 0x0049C9F0
         if (elTrack->hasStationElement())
         {
             GameCommands::TrainStationRemovalArgs tsArgs;
@@ -235,11 +232,9 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        // 0x0049CA3B
         // Fetch track element again; station removal above might have invalidated the pointer.
         elTrack = getElTrackAt(args, flags, args.pos, args.index);
 
-        // 0x0049CAC4
         const auto trackPieces = World::TrackData::getTrackPiece(args.trackId);
         auto& trackPiece = trackPieces[args.index];
 
@@ -251,24 +246,21 @@ namespace OpenLoco::GameCommands
         bool trackHadBridge = false; // 0x0113605B
         int8_t trackBridgeId = -1;   // 0x0113605C
 
-        // 0x0049CB27
         for (auto& piece : trackPieces)
         {
             const auto trackLoc = trackStart + World::Pos3{ Math::Vector::rotate(World::Pos2{ piece.x, piece.y }, args.rotation), piece.z };
 
             if (!(flags & Flags::aiAllocated))
             {
-                World::TileManager::mapInvalidateTileFull(trackLoc); // shift piece.z?
+                World::TileManager::mapInvalidateTileFull(trackLoc);
             }
 
-            // 0x0049CB84
             auto* pieceElTrack = getElTrackAt(args, flags, trackLoc, piece.index);
             if (pieceElTrack == nullptr)
             {
                 return FAILURE;
             }
 
-            // 0x0049CC02
             if (pieceElTrack->hasBridge())
             {
                 trackHadBridge = true;
