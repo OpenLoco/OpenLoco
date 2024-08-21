@@ -42,6 +42,10 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
+            if (elTrack->trackId() != args.trackId)
+            {
+                continue;
+            }
             if (elTrack->isGhost() != ((flags & Flags::ghost) != 0))
             {
                 continue;
@@ -50,7 +54,9 @@ namespace OpenLoco::GameCommands
             {
                 continue;
             }
-            if (elTrack->owner() != getUpdatingCompanyId())
+            // Ghost only as this is checked elsewhere for non-ghost so that
+            // neutral company is always allowed
+            if (elTrack->owner() != getUpdatingCompanyId() && ((flags & Flags::ghost) != 0))
             {
                 continue;
             }
@@ -77,7 +83,6 @@ namespace OpenLoco::GameCommands
             const auto cost = (trackBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
             totalCost += cost;
         }
-
 
         // Check mod removal costs
         for (auto i = 0U; i < 4; i++)
@@ -167,7 +172,7 @@ namespace OpenLoco::GameCommands
             return FAILURE;
         }
 
-        if ((flags & Flags::aiAllocated) == 0 && !sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
+        if ((flags & Flags::ghost) == 0 && !sub_431E6A(elTrack->owner(), reinterpret_cast<World::TileElement*>(elTrack)))
         {
             return FAILURE;
         }
@@ -284,7 +289,8 @@ namespace OpenLoco::GameCommands
         if (trackHadBridge)
         {
             const auto* bridgeObj = ObjectManager::get<BridgeObject>(trackBridgeId);
-            totalRemovalCost += Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);
+            const auto bridgeBaseCost = Economy::getInflationAdjustedCost(bridgeObj->sellCostFactor, bridgeObj->costIndex, 10);
+            totalRemovalCost += (bridgeBaseCost * World::TrackData::getTrackMiscData(args.trackId).costFactor) / 256;
         }
 
         if (flags & Flags::apply)
